@@ -1,3 +1,27 @@
 {
-  "extends": ["next", "next/core-web-vitals"]
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["next", "next/core-web-vitals", "prettier"],
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "import/no-default-export": "error",
+    "import/order": ["error", { "groups": [["builtin", "external", "internal"]] }]
+  },
+  "overrides": [
+    {
+      "files": ["./src/pages/**/*.*"],
+      "rules": {
+        "import/no-default-export": "off",
+        "import/prefer-default-export": "error"
+      }
+    },
+    {
+      "files": "**.stories.tsx",
+      "rules": {
+        "import/no-anonymous-default-export": "off",
+        "import/no-default-export": "off"
+      }
+    }
+  ]
 }
