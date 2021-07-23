@@ -1,23 +1,25 @@
-import { Request, Response } from "express";
+import express, { Response as ExResponse, Request as ExRequest } from "express";
+import swaggerUi from "swagger-ui-express";
+import { RegisterRoutes } from "../build/routes";
 
-import express from "express";
-import {Express} from "express";
-import { getDB } from "./datastore";
+export const app = express();
 
-const app: Express = express();
-const port = 8080; // default port to listen
+// Use body parser to read sent json payloads
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// );
+// app.use(bodyParser.json());
 
-// define a route handler for the default home page
-app.get( "/", (req: Request, res: Response) => {
-    res.send( "Hello World!!!" );
-} );
+app.use(express.urlencoded({extended: true}));
+app.use(express.json()) // To parse the incoming requests with JSON payloads
 
-// start the Express server
-app.listen( port, () => {
-    console.log( `server started at http://localhost:${ port }` );
-} );
-
-getDB();
+app.use("/docs", swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
+  return res.send(
+    swaggerUi.generateHTML(await import("../build/swagger.json"))
+  );
+});
 
 
-
+RegisterRoutes(app);
