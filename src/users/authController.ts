@@ -60,8 +60,12 @@ export class AuthController extends Controller {
         const datastorePool: Pool = DatastoreService.get();
 
         const response: QueryResult<{datname: string}> = await datastorePool.query(`
-        INSERT INTO playhouseDev(email, username, encryptedPassword)
-        VALUES (${requestBody.email}, ${requestBody.username}, ${encryptedPassword})
+        SELECT
+          *
+        FROM
+          playhouseDev
+        WHERE
+          email = ${requestBody.email}
     `);
 
         console.log(response);
