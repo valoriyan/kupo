@@ -13,7 +13,7 @@ export const app = express();
 // app.use(bodyParser.json());
 
 app.use(express.urlencoded({extended: true}));
-app.use(express.json()) // To parse the incoming requests with JSON payloads
+app.use(express.json()); // To parse the incoming requests with JSON payloads
 
 app.use("/docs", swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
   return res.send(
