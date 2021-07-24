@@ -36,14 +36,12 @@ interface FailedAuthResponse {
   reason: AuthFailureReason;
 }
 
-const salt = "";
-const jwtPrivateKey = "akjfdafjklafsdjklafsdljk";
-
 function encryptPassword({
   password,
 }: {
   password: string;
 }): string {
+  const salt = process.env.SALT;
   return MD5(salt + password).toString();
 }
 
@@ -83,11 +81,13 @@ export class AuthController extends Controller {
           right: {
             accessToken: generateAccessToken({
               userId,
-              jwtPrivateKey,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
             }),
             refreshToken: generateRefreshToken({
               userId,
-              jwtPrivateKey,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
             }),
   
           },
@@ -142,11 +142,13 @@ export class AuthController extends Controller {
                 right: {
                   accessToken: generateAccessToken({
                     userId,
-                    jwtPrivateKey,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
                   }),
                   refreshToken: generateRefreshToken({
                     userId,
-                    jwtPrivateKey,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
                   }),
                 },
               };

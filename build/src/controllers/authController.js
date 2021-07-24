@@ -32,9 +32,8 @@ var AuthFailureReason;
     AuthFailureReason["WrongPassword"] = "Wrong Password";
     AuthFailureReason["UnknownCause"] = "Unknown Cause";
 })(AuthFailureReason || (AuthFailureReason = {}));
-const salt = "";
-const jwtPrivateKey = "akjfdafjklafsdjklafsdljk";
 function encryptPassword({ password, }) {
+    const salt = process.env.SALT;
     return crypto_js_1.MD5(salt + password).toString();
 }
 let AuthController = class AuthController extends tsoa_1.Controller {
@@ -66,11 +65,13 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                     right: {
                         accessToken: authUtilities_1.generateAccessToken({
                             userId,
-                            jwtPrivateKey,
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
                         }),
                         refreshToken: authUtilities_1.generateRefreshToken({
                             userId,
-                            jwtPrivateKey,
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
                         }),
                     },
                 };
@@ -111,11 +112,13 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                             right: {
                                 accessToken: authUtilities_1.generateAccessToken({
                                     userId,
-                                    jwtPrivateKey,
+                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
                                 }),
                                 refreshToken: authUtilities_1.generateRefreshToken({
                                     userId,
-                                    jwtPrivateKey,
+                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
                                 }),
                             },
                         };

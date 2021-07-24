@@ -91,5 +91,5 @@ class DatabaseService {
     }
 }
 exports.DatabaseService = DatabaseService;
-DatabaseService.databaseName = "playhousedev";
+DatabaseService.databaseName = process.env.DATABASE_NAME;
 DatabaseService.tableName = "playhousedevtable";
