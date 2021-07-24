@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseService = void 0;
 const pg_1 = require("pg");
 class DatabaseService {
-    static setupDatabase() {
+    static doesDatabaseExist() {
         return __awaiter(this, void 0, void 0, function* () {
             const temporaryPool = new pg_1.Pool();
             const response = yield temporaryPool.query(`
@@ -22,6 +22,14 @@ class DatabaseService {
             const databaseExists = response.rows.some((row) => {
                 return row.datname === DatabaseService.databaseName;
             });
+            yield temporaryPool.end();
+            return databaseExists;
+        });
+    }
+    static setupDatabase() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const databaseExists = yield DatabaseService.doesDatabaseExist();
+            const temporaryPool = new pg_1.Pool();
             if (!databaseExists) {
                 yield temporaryPool.query(`
                 CREATE DATABASE ${DatabaseService.databaseName};
@@ -37,6 +45,7 @@ class DatabaseService {
             });
             yield temporaryPool.query(`
             CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
+                id VARCHAR(64) UNIQUE NOT NULL,
                 email VARCHAR(64) UNIQUE NOT NULL,
                 username VARCHAR(64) UNIQUE NOT NULL,
                 encryptedpassword VARCHAR(64) NOT NULL
@@ -49,12 +58,27 @@ class DatabaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const temporaryPool = new pg_1.Pool();
             const queryString = `
-            DROP DATABASE IF EXISTS ${DatabaseService.databaseName};
+            DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
         `;
-            yield temporaryPool.query(queryString);
+            try {
+                yield temporaryPool.query(queryString);
+            }
+            catch (error) {
+                console.log(error);
+            }
             yield temporaryPool.end();
         });
     }
+    // static async teardownTable(): Promise<void> {
+    //     const databaseExists = await DatabaseService.doesDatabaseExist();
+    //     if (!databaseExists) return;
+    //     const temporaryPool = new Pool();
+    //     const queryString = `
+    //         DROP TABLE IF EXISTS ${DatabaseService.tableName};
+    //     `;
+    //     await temporaryPool.query(queryString);
+    //     await temporaryPool.end();
+    // }
     static get() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!DatabaseService.datastorePool) {

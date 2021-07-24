@@ -6,6 +6,25 @@
         "requestBodies": {},
         "responses": {},
         "schemas": {
+            "AuthFailureReason": {
+                "enum": [
+                    "Wrong Password",
+                    "Unknown Cause"
+                ],
+                "type": "string"
+            },
+            "FailedAuthResponse": {
+                "properties": {
+                    "reason": {
+                        "$ref": "#/components/schemas/AuthFailureReason"
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
             "SuccessfulAuthResponse": {
                 "properties": {
                     "accessToken": {
@@ -19,6 +38,18 @@
                     "accessToken",
                     "refreshToken"
                 ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Either_FailedAuthResponse.SuccessfulAuthResponse_": {
+                "properties": {
+                    "left": {
+                        "$ref": "#/components/schemas/FailedAuthResponse"
+                    },
+                    "right": {
+                        "$ref": "#/components/schemas/SuccessfulAuthResponse"
+                    }
+                },
                 "type": "object",
                 "additionalProperties": false
             },
@@ -80,7 +111,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SuccessfulAuthResponse"
+                                    "$ref": "#/components/schemas/Either_FailedAuthResponse.SuccessfulAuthResponse_"
                                 }
                             }
                         }
@@ -109,7 +140,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SuccessfulAuthResponse"
+                                    "$ref": "#/components/schemas/Either_FailedAuthResponse.SuccessfulAuthResponse_"
                                 }
                             }
                         }

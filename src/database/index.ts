@@ -1,7 +1,7 @@
 import { Pool, QueryResult } from "pg";
 
 export class DatabaseService {
-    static databaseName = "playhousedev";
+    static databaseName = process.env.DATABASE_NAME;
     static tableName = "playhousedevtable";
 
     static datastorePool: Pool;
@@ -41,6 +41,7 @@ export class DatabaseService {
         });
         await temporaryPool.query(`
             CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
+                id VARCHAR(64) UNIQUE NOT NULL,
                 email VARCHAR(64) UNIQUE NOT NULL,
                 username VARCHAR(64) UNIQUE NOT NULL,
                 encryptedpassword VARCHAR(64) NOT NULL
@@ -55,7 +56,7 @@ export class DatabaseService {
         const temporaryPool = new Pool();
 
         const queryString = `
-            DROP DATABASE IF EXISTS ${DatabaseService.databaseName};
+            DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
         `;
 
         try {

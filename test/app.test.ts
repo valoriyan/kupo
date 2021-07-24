@@ -13,8 +13,9 @@ describe("GET /random-url", () => {
 });
 
 describe("REGISTER /auth/register", () => {
-    beforeAll(() => {
+    beforeEach(() => {
         async function callback() {
+            await new Promise(resolve => setTimeout(resolve, 10000));
             await DatabaseService.teardownDatabase();
     
             await DatabaseService.setupDatabase();
@@ -25,15 +26,14 @@ describe("REGISTER /auth/register", () => {
       
       afterAll(() => {
         async function callback() {
-            // await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
             await DatabaseService.teardownDatabase();
-            console.log("FINISHED!");
         }
         return callback();
       });
       
 
-    it("should return 201", () => {
+    it("registers and remembers user", () => {
         async function callback() {
             await request(app)
                 .post("/auth/register")
@@ -51,6 +51,57 @@ describe("REGISTER /auth/register", () => {
                     password: "BobBobson!",
                 })
                 .expect(200);
+        }
+
+        return callback();
+    });
+
+    it("registers and attempts missing user", () => {
+        async function callback() {
+            await request(app)
+                .post("/auth/register")
+                .send({
+                    email: "bob@gmail.com",
+                    password: "BobBobson!",
+                    username: "bobward",
+                })
+                .expect(201);
+
+            await request(app)
+                .post("/auth/login")
+                .send({
+                    email: "unknownemail@gmail.com",
+                    password: "BobBobson!",
+                })
+                .expect(401);
+        }
+
+        return callback();
+    });
+
+    it("registers and attempts wrong password", () => {
+        async function callback() {
+            await request(app)
+                .post("/auth/register")
+                .send({
+                    email: "bob@gmail.com",
+                    password: "BobBobson!",
+                    username: "bobward",
+                })
+                .expect(201);
+
+            await request(app)
+                .post("/auth/login")
+                .send({
+                    email: "bob@gmail.com",
+                    password: "wrongpassword!",
+                })
+                .expect(401, {
+                    left: {
+                        reason: "Wrong Password",
+                    }
+                })
+            ;
         }
 
         return callback();

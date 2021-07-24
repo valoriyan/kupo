@@ -7,7 +7,10 @@ import {
     Post,
     Route,
   } from "tsoa";
-  
+import { generateAccessToken, generateRefreshToken } from "../utilities/authUtilities";
+import { v4 as uuidv4 } from "uuid";
+import { Either } from "../types/either";
+
 
 interface RegisterUserParams {
   email: string;
@@ -25,14 +28,23 @@ interface SuccessfulAuthResponse {
   refreshToken: string;
 }
 
+enum AuthFailureReason {
+  WrongPassword = "Wrong Password",
+  UnknownCause = "Unknown Cause",
+}
+interface FailedAuthResponse {
+  reason: AuthFailureReason;
+}
+
 const salt = "";
+const jwtPrivateKey = "akjfdafjklafsdjklafsdljk";
 
 function encryptPassword({
   password,
 }: {
   password: string;
 }): string {
-  return MD5(salt + password).toString()
+  return MD5(salt + password).toString();
 }
 
 @Route("auth")
@@ -40,37 +52,63 @@ export class AuthController extends Controller {
     @Post("register")
     public async registerUser(
       @Body() requestBody: RegisterUserParams,
-    ): Promise<SuccessfulAuthResponse> {
-      this.setStatus(201);
+    ): Promise<Either<FailedAuthResponse, SuccessfulAuthResponse>> {
+      const userId = uuidv4();
+      const { email, username, password } = requestBody;
 
       const datastorePool: Pool = await DatabaseService.get();
 
-      const encryptedPassword = encryptPassword({password: requestBody.password});
+      const encryptedPassword = encryptPassword({password});
 
       const queryString = `
-        INSERT INTO playhousedevtable(email, username, encryptedpassword)
-        VALUES ('${requestBody.email}', '${requestBody.username}', '${encryptedPassword}')
+        INSERT INTO playhousedevtable(
+          id,
+          email,
+          username,
+          encryptedpassword
+        )
+        VALUES (
+          '${userId}',
+          '${email}',
+          '${username}',
+          '${encryptedPassword}'
+        )
         ;
       `;
 
       try {
-        const response: QueryResult<{datname: string}> = await datastorePool.query(queryString);
-        console.log(response);
+        await datastorePool.query(queryString);
+        this.setStatus(201);
+        return {
+          right: {
+            accessToken: generateAccessToken({
+              userId,
+              jwtPrivateKey,
+            }),
+            refreshToken: generateRefreshToken({
+              userId,
+              jwtPrivateKey,
+            }),
+  
+          },
+        };  
       } catch (error) {
         console.log("error", error);
+        this.setStatus(401);
+        return {
+          left: {
+            reason: AuthFailureReason.UnknownCause,
+          },
+        };
       }
 
-      return {
-        accessToken: "string",
-        refreshToken: "string",
-      };
     }
 
     @Post("login")
     public async loginUser(
       @Body() requestBody: LoginUserParams,
-    ): Promise<SuccessfulAuthResponse> {
-        this.setStatus(200);
+    ): Promise<Either<FailedAuthResponse, SuccessfulAuthResponse>> {
+        const { email, password } = requestBody;
 
         const datastorePool: Pool = await DatabaseService.get();
 
@@ -81,10 +119,11 @@ export class AuthController extends Controller {
             FROM
               playhousedevtable
             WHERE
-              email = '${requestBody.email}';
+              email = '${email}';
           `;
 
           const response: QueryResult<{
+            id: string;
             email: string;
             username: string;
             encryptedpassword: string;
@@ -94,20 +133,44 @@ export class AuthController extends Controller {
 
           if (rows.length === 1) {
             const row = rows[0];
-            const hasMatchedPassword = encryptPassword({password: requestBody.password}) === row.encryptedpassword;
+            const hasMatchedPassword = encryptPassword({password}) === row.encryptedpassword;
+            if (hasMatchedPassword) {
+              const userId = row.id;
+              
+              this.setStatus(200);
+              return {
+                right: {
+                  accessToken: generateAccessToken({
+                    userId,
+                    jwtPrivateKey,
+                  }),
+                  refreshToken: generateRefreshToken({
+                    userId,
+                    jwtPrivateKey,
+                  }),
+                },
+              };
+            }
           }
+          
+          this.setStatus(401);
+          return {
+            left: {
+              reason: AuthFailureReason.WrongPassword,
+            },
+          };  
 
-          console.log(response);
+
         } catch (error) {
           console.log("error", error);
-        }
-  
-        console.log(requestBody);
 
-        return {
-          accessToken: "string",
-          refreshToken: "string",
-        };
+          this.setStatus(401);
+          return {
+            left: {
+              reason: AuthFailureReason.UnknownCause,
+            },
+          };  
+        }  
     }
   }
   

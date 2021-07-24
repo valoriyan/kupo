@@ -9,11 +9,33 @@ import * as express from 'express';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "AuthFailureReason": {
+        "dataType": "refEnum",
+        "enums": ["Wrong Password","Unknown Cause"],
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "FailedAuthResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "reason": {"ref":"AuthFailureReason","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "SuccessfulAuthResponse": {
         "dataType": "refObject",
         "properties": {
             "accessToken": {"dataType":"string","required":true},
             "refreshToken": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Either_FailedAuthResponse.SuccessfulAuthResponse_": {
+        "dataType": "refObject",
+        "properties": {
+            "left": {"ref":"FailedAuthResponse"},
+            "right": {"ref":"SuccessfulAuthResponse"},
         },
         "additionalProperties": false,
     },

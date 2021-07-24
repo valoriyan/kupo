@@ -25,49 +25,118 @@ exports.AuthController = void 0;
 const crypto_js_1 = require("crypto-js");
 const database_1 = require("../database");
 const tsoa_1 = require("tsoa");
+const authUtilities_1 = require("../utilities/authUtilities");
+const uuid_1 = require("uuid");
+var AuthFailureReason;
+(function (AuthFailureReason) {
+    AuthFailureReason["WrongPassword"] = "Wrong Password";
+    AuthFailureReason["UnknownCause"] = "Unknown Cause";
+})(AuthFailureReason || (AuthFailureReason = {}));
 const salt = "";
+const jwtPrivateKey = "akjfdafjklafsdjklafsdljk";
+function encryptPassword({ password, }) {
+    return crypto_js_1.MD5(salt + password).toString();
+}
 let AuthController = class AuthController extends tsoa_1.Controller {
     registerUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.setStatus(201);
+            const userId = uuid_1.v4();
+            const { email, username, password } = requestBody;
             const datastorePool = yield database_1.DatabaseService.get();
-            const encryptedPassword = crypto_js_1.MD5(salt + requestBody.password).toString();
+            const encryptedPassword = encryptPassword({ password });
             const queryString = `
-        INSERT INTO playhousedevtable(email, username, encryptedpassword)
-        VALUES ('${requestBody.email}', '${requestBody.username}', '${encryptedPassword}')
+        INSERT INTO playhousedevtable(
+          id,
+          email,
+          username,
+          encryptedpassword
+        )
+        VALUES (
+          '${userId}',
+          '${email}',
+          '${username}',
+          '${encryptedPassword}'
+        )
         ;
       `;
             try {
-                const response = yield datastorePool.query(queryString);
-                console.log(response);
+                yield datastorePool.query(queryString);
+                this.setStatus(201);
+                return {
+                    right: {
+                        accessToken: authUtilities_1.generateAccessToken({
+                            userId,
+                            jwtPrivateKey,
+                        }),
+                        refreshToken: authUtilities_1.generateRefreshToken({
+                            userId,
+                            jwtPrivateKey,
+                        }),
+                    },
+                };
             }
             catch (error) {
                 console.log("error", error);
+                this.setStatus(401);
+                return {
+                    left: {
+                        reason: AuthFailureReason.UnknownCause,
+                    },
+                };
             }
-            return {
-                accessToken: "string",
-                refreshToken: "string",
-            };
         });
     }
     loginUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.setStatus(200);
+            const { email, password } = requestBody;
             const datastorePool = yield database_1.DatabaseService.get();
-            const response = yield datastorePool.query(`
-        SELECT
-          *
-        FROM
-          playhouseDev
-        WHERE
-          email = ${requestBody.email}
-    `);
-            console.log(response);
-            console.log(requestBody);
-            return {
-                accessToken: "string",
-                refreshToken: "string",
-            };
+            try {
+                const queryString = `
+            SELECT
+              *
+            FROM
+              playhousedevtable
+            WHERE
+              email = '${email}';
+          `;
+                const response = yield datastorePool.query(queryString);
+                const rows = response.rows;
+                if (rows.length === 1) {
+                    const row = rows[0];
+                    const hasMatchedPassword = encryptPassword({ password }) === row.encryptedpassword;
+                    if (hasMatchedPassword) {
+                        const userId = row.id;
+                        this.setStatus(200);
+                        return {
+                            right: {
+                                accessToken: authUtilities_1.generateAccessToken({
+                                    userId,
+                                    jwtPrivateKey,
+                                }),
+                                refreshToken: authUtilities_1.generateRefreshToken({
+                                    userId,
+                                    jwtPrivateKey,
+                                }),
+                            },
+                        };
+                    }
+                }
+                this.setStatus(401);
+                return {
+                    left: {
+                        reason: AuthFailureReason.WrongPassword,
+                    },
+                };
+            }
+            catch (error) {
+                console.log("error", error);
+                this.setStatus(401);
+                return {
+                    left: {
+                        reason: AuthFailureReason.UnknownCause,
+                    },
+                };
+            }
         });
     }
 };

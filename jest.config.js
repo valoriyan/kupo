@@ -1,4 +1,5 @@
 module.exports = {
+    globalSetup: "./scripts/jestGlobalSetup.js",
     globals: {
         "ts-jest": {
             tsconfig: "tsconfig.json"
