@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); };
+    return function (target, key) { decorator(target, key, paramIndex); }
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -21,41 +21,71 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersController = void 0;
+exports.AuthController = void 0;
+const crypto_js_1 = require("crypto-js");
+const database_1 = require("../database");
 const tsoa_1 = require("tsoa");
-const usersService_1 = require("./usersService");
-let UsersController = class UsersController extends tsoa_1.Controller {
-    getUser(userId, name) {
+const salt = "";
+let AuthController = class AuthController extends tsoa_1.Controller {
+    registerUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new usersService_1.UsersService().get(userId, name);
+            this.setStatus(201);
+            const datastorePool = yield database_1.DatabaseService.get();
+            const encryptedPassword = crypto_js_1.MD5(salt + requestBody.password).toString();
+            const queryString = `
+        INSERT INTO playhousedevtable(email, username, encryptedpassword)
+        VALUES ('${requestBody.email}', '${requestBody.username}', '${encryptedPassword}')
+        ;
+      `;
+            try {
+                const response = yield datastorePool.query(queryString);
+                console.log(response);
+            }
+            catch (error) {
+                console.log("error", error);
+            }
+            return {
+                accessToken: "string",
+                refreshToken: "string",
+            };
         });
     }
-    createUser(requestBody) {
+    loginUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.setStatus(201); // set return status 201
-            new usersService_1.UsersService().create(requestBody);
-            return;
+            this.setStatus(200);
+            const datastorePool = yield database_1.DatabaseService.get();
+            const response = yield datastorePool.query(`
+        SELECT
+          *
+        FROM
+          playhouseDev
+        WHERE
+          email = ${requestBody.email}
+    `);
+            console.log(response);
+            console.log(requestBody);
+            return {
+                accessToken: "string",
+                refreshToken: "string",
+            };
         });
     }
 };
 __decorate([
-    tsoa_1.Get("{userId}"),
-    __param(0, tsoa_1.Path()),
-    __param(1, tsoa_1.Query()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUser", null);
-__decorate([
-    tsoa_1.SuccessResponse("201", "Created") // Custom success response
-    ,
-    tsoa_1.Post(),
+    tsoa_1.Post("register"),
     __param(0, tsoa_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "createUser", null);
-UsersController = __decorate([
-    tsoa_1.Route("users")
-], UsersController);
-exports.UsersController = UsersController;
+], AuthController.prototype, "registerUser", null);
+__decorate([
+    tsoa_1.Post("login"),
+    __param(0, tsoa_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "loginUser", null);
+AuthController = __decorate([
+    tsoa_1.Route("auth")
+], AuthController);
+exports.AuthController = AuthController;
