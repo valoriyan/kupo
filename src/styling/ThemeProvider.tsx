@@ -37,7 +37,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren<{}>) => {
 
     const query = "(prefers-color-scheme: dark)";
     const onChange = (e: MediaQueryListEvent) =>
-      e.matches ? setCurrentThemeState("dark") : setCurrentTheme("light");
+      e.matches ? setCurrentThemeState("dark") : setCurrentThemeState("light");
 
     window.matchMedia(query).addEventListener("change", onChange);
     return () => {

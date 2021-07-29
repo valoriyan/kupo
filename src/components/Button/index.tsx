@@ -1,19 +1,28 @@
-import { ReactNode } from "react";
 import { styled } from "#/styling";
 
-export interface ButtonProps {
-  children: ReactNode;
-  onClick?: () => void;
-}
-
-export const Button = (props: ButtonProps) => {
-  return <BaseButton onClick={props.onClick}>{props.children}</BaseButton>;
-};
-
-const BaseButton = styled("button", {
+export const Button = styled("button", {
   color: "$accentText",
   bg: "$primary",
-  px: "$2",
+  px: "$5",
   py: "$3",
-  borderRadius: "$2",
+  fontWeight: "$bold",
+  textDecoration: "none",
+  textAlign: "center",
+
+  variants: {
+    variant: {
+      primary: {},
+      secondary: { bg: "$text", color: "$inverseText" },
+    },
+    size: {
+      md: {
+        borderRadius: "$3",
+        fontSize: "$3",
+      },
+      lg: {
+        borderRadius: "$4",
+        fontSize: "$4",
+      },
+    },
+  },
 });

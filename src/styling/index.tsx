@@ -7,7 +7,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       /**
        * Primary accent color. It will be used for actionable items and accents
        */
-      primary: "#e52b66",
+      primary: "#EF5DA8",
 
       /**
        * The background colors include colors for the backgrounds of app content.
@@ -22,6 +22,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       text: "#000000", // Text that sits on the background colors
       secondaryText: "#acacac", // Secondary text that sits on background colors
       accentText: "#ffffff", // Text that sits on primary and secondary accent colors
+      inverseText: "#ffffff",
 
       link: "#6fb8ff", // Link color
       linkHover: "#4ba6ff", // For alternate states on links like hover
@@ -87,13 +88,12 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       12: "6rem", // 96px
     },
     fonts: {
-      body: "Helvetica, sans-serif",
+      heading: "Elephant, serif",
+      body: "'Work Sans', Helvetica, sans-serif",
     },
     fontWeights: {
       light: 300,
       regular: 400,
-      medium: 500,
-      semibold: 600,
       bold: 700,
     },
     lineHeights: {},
@@ -245,7 +245,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
 
 export const darkTheme = theme("dark", {
   colors: {
-    primary: "#e52b66",
+    primary: "#EF5DA8",
 
     background1: "#191919",
     background2: "#333333",
@@ -254,6 +254,7 @@ export const darkTheme = theme("dark", {
     text: "#ffffff",
     secondaryText: "#acacac",
     accentText: "#ffffff",
+    inverseText: "#000000",
 
     link: "#6fb8ff",
     linkHover: "#4ba6ff",
