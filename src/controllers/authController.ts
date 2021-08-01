@@ -9,7 +9,7 @@ import {
   } from "tsoa";
 import { generateAccessToken, generateRefreshToken } from "../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
-import { Either } from "../types/either";
+import { HTTPResponse } from "../types/httpResponse";
 
 
 interface RegisterUserParams {
@@ -50,7 +50,7 @@ export class AuthController extends Controller {
     @Post("register")
     public async registerUser(
       @Body() requestBody: RegisterUserParams,
-    ): Promise<Either<FailedAuthResponse, SuccessfulAuthResponse>> {
+    ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
       const userId = uuidv4();
       const { email, username, password } = requestBody;
 
@@ -78,7 +78,7 @@ export class AuthController extends Controller {
         await datastorePool.query(queryString);
         this.setStatus(201);
         return {
-          right: {
+          success: {
             accessToken: generateAccessToken({
               userId,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -96,7 +96,7 @@ export class AuthController extends Controller {
         console.log("error", error);
         this.setStatus(401);
         return {
-          left: {
+          error: {
             reason: AuthFailureReason.UnknownCause,
           },
         };
@@ -107,7 +107,7 @@ export class AuthController extends Controller {
     @Post("login")
     public async loginUser(
       @Body() requestBody: LoginUserParams,
-    ): Promise<Either<FailedAuthResponse, SuccessfulAuthResponse>> {
+    ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
         const { email, password } = requestBody;
 
         const datastorePool: Pool = await DatabaseService.get();
@@ -139,7 +139,7 @@ export class AuthController extends Controller {
               
               this.setStatus(200);
               return {
-                right: {
+                success: {
                   accessToken: generateAccessToken({
                     userId,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -157,7 +157,7 @@ export class AuthController extends Controller {
           
           this.setStatus(401);
           return {
-            left: {
+            error: {
               reason: AuthFailureReason.WrongPassword,
             },
           };  
@@ -168,7 +168,7 @@ export class AuthController extends Controller {
 
           this.setStatus(401);
           return {
-            left: {
+            error: {
               reason: AuthFailureReason.UnknownCause,
             },
           };  

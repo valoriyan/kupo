@@ -62,7 +62,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 yield datastorePool.query(queryString);
                 this.setStatus(201);
                 return {
-                    right: {
+                    success: {
                         accessToken: authUtilities_1.generateAccessToken({
                             userId,
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -80,7 +80,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 console.log("error", error);
                 this.setStatus(401);
                 return {
-                    left: {
+                    error: {
                         reason: AuthFailureReason.UnknownCause,
                     },
                 };
@@ -109,7 +109,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                         const userId = row.id;
                         this.setStatus(200);
                         return {
-                            right: {
+                            success: {
                                 accessToken: authUtilities_1.generateAccessToken({
                                     userId,
                                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -126,7 +126,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 }
                 this.setStatus(401);
                 return {
-                    left: {
+                    error: {
                         reason: AuthFailureReason.WrongPassword,
                     },
                 };
@@ -135,7 +135,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 console.log("error", error);
                 this.setStatus(401);
                 return {
-                    left: {
+                    error: {
                         reason: AuthFailureReason.UnknownCause,
                     },
                 };

@@ -97,7 +97,7 @@ describe("REGISTER /auth/register", () => {
                     password: "wrongpassword!",
                 })
                 .expect(401, {
-                    left: {
+                    error: {
                         reason: "Wrong Password",
                     }
                 })
