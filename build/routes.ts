@@ -31,11 +31,11 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Either_FailedAuthResponse.SuccessfulAuthResponse_": {
+    "HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_": {
         "dataType": "refObject",
         "properties": {
-            "left": {"ref":"FailedAuthResponse"},
-            "right": {"ref":"SuccessfulAuthResponse"},
+            "error": {"ref":"FailedAuthResponse"},
+            "success": {"ref":"SuccessfulAuthResponse"},
         },
         "additionalProperties": false,
     },
@@ -70,6 +70,7 @@ export function RegisterRoutes(app: express.Router) {
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
         app.post('/auth/register',
+
             function AuthController_registerUser(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"RegisterUserParams"},
@@ -92,6 +93,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/auth/login',
+
             function AuthController_loginUser(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"LoginUserParams"},

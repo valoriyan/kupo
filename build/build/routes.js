@@ -31,11 +31,11 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Either_FailedAuthResponse.SuccessfulAuthResponse_": {
+    "HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_": {
         "dataType": "refObject",
         "properties": {
-            "left": { "ref": "FailedAuthResponse" },
-            "right": { "ref": "SuccessfulAuthResponse" },
+            "error": { "ref": "FailedAuthResponse" },
+            "success": { "ref": "SuccessfulAuthResponse" },
         },
         "additionalProperties": false,
     },

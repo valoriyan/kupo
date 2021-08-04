@@ -1,45 +1,47 @@
 import { Pool, QueryResult } from "pg";
 
 export class DatabaseService {
-    static databaseName = process.env.DATABASE_NAME;
-    static tableName = "playhousedevtable";
+  static databaseName = process.env.DATABASE_NAME;
+  static tableName = "playhousedevtable";
 
-    static datastorePool: Pool;
+  static datastorePool: Pool;
 
-    static async doesDatabaseExist(): Promise<boolean> {
-        const temporaryPool = new Pool();
+  static async doesDatabaseExist(): Promise<boolean> {
+    const temporaryPool = new Pool();
 
-        const response: QueryResult<{datname: string}> = await temporaryPool.query(`
+    const response: QueryResult<{ datname: string }> = await temporaryPool.query(`
             SELECT datname FROM pg_database
             WHERE datistemplate = false;    
         `);
 
-        const databaseExists: boolean = response.rows.some((row: {datname: string}): boolean => {
-            return row.datname === DatabaseService.databaseName;
-        });
-        await temporaryPool.end();
+    const databaseExists: boolean = response.rows.some(
+      (row: { datname: string }): boolean => {
+        return row.datname === DatabaseService.databaseName;
+      },
+    );
+    await temporaryPool.end();
 
-        return databaseExists;
-    }
+    return databaseExists;
+  }
 
-    static async setupDatabase(): Promise<void> {
-        const databaseExists = await DatabaseService.doesDatabaseExist();
-        
-        const temporaryPool = new Pool();
+  static async setupDatabase(): Promise<void> {
+    const databaseExists = await DatabaseService.doesDatabaseExist();
 
-        if (!databaseExists) {
-            await temporaryPool.query(`
+    const temporaryPool = new Pool();
+
+    if (!databaseExists) {
+      await temporaryPool.query(`
                 CREATE DATABASE ${DatabaseService.databaseName};
             `);
-        }
-        await temporaryPool.end();
     }
+    await temporaryPool.end();
+  }
 
-    static async setupTable(): Promise<void> {
-        const temporaryPool = new Pool({
-            database: DatabaseService.databaseName,
-        });
-        await temporaryPool.query(`
+  static async setupTable(): Promise<void> {
+    const temporaryPool = new Pool({
+      database: DatabaseService.databaseName,
+    });
+    await temporaryPool.query(`
             CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
                 id VARCHAR(64) UNIQUE NOT NULL,
                 email VARCHAR(64) UNIQUE NOT NULL,
@@ -48,48 +50,47 @@ export class DatabaseService {
             );
         `);
 
-        await temporaryPool.end();
-    }
+    await temporaryPool.end();
+  }
 
-    static async teardownDatabase(): Promise<void> {
+  static async teardownDatabase(): Promise<void> {
+    const temporaryPool = new Pool();
 
-        const temporaryPool = new Pool();
-
-        const queryString = `
+    const queryString = `
             DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
         `;
 
-        try {
-            await temporaryPool.query(queryString);
-        } catch (error) {
-            console.log(error);
-        }
-
-        await temporaryPool.end();
+    try {
+      await temporaryPool.query(queryString);
+    } catch (error) {
+      console.log(error);
     }
 
-    // static async teardownTable(): Promise<void> {
-    //     const databaseExists = await DatabaseService.doesDatabaseExist();
-    //     if (!databaseExists) return;
+    await temporaryPool.end();
+  }
 
-    //     const temporaryPool = new Pool();
+  // static async teardownTable(): Promise<void> {
+  //     const databaseExists = await DatabaseService.doesDatabaseExist();
+  //     if (!databaseExists) return;
 
-    //     const queryString = `
-    //         DROP TABLE IF EXISTS ${DatabaseService.tableName};
-    //     `;
+  //     const temporaryPool = new Pool();
 
-    //     await temporaryPool.query(queryString);
+  //     const queryString = `
+  //         DROP TABLE IF EXISTS ${DatabaseService.tableName};
+  //     `;
 
-    //     await temporaryPool.end();
-    // }
+  //     await temporaryPool.query(queryString);
 
-    static async get(): Promise<Pool> {
-        if (!DatabaseService.datastorePool) {
-            DatabaseService.datastorePool = new Pool({
-                database: DatabaseService.databaseName,
-            });
-        }
+  //     await temporaryPool.end();
+  // }
 
-        return this.datastorePool;
+  static async get(): Promise<Pool> {
+    if (!DatabaseService.datastorePool) {
+      DatabaseService.datastorePool = new Pool({
+        database: DatabaseService.databaseName,
+      });
     }
+
+    return this.datastorePool;
+  }
 }

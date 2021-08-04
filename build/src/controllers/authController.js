@@ -32,7 +32,7 @@ var AuthFailureReason;
     AuthFailureReason["WrongPassword"] = "Wrong Password";
     AuthFailureReason["UnknownCause"] = "Unknown Cause";
 })(AuthFailureReason || (AuthFailureReason = {}));
-function encryptPassword({ password, }) {
+function encryptPassword({ password }) {
     const salt = process.env.SALT;
     return crypto_js_1.MD5(salt + password).toString();
 }
