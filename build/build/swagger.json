@@ -41,12 +41,12 @@
                 "type": "object",
                 "additionalProperties": false
             },
-            "Either_FailedAuthResponse.SuccessfulAuthResponse_": {
+            "HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_": {
                 "properties": {
-                    "left": {
+                    "error": {
                         "$ref": "#/components/schemas/FailedAuthResponse"
                     },
-                    "right": {
+                    "success": {
                         "$ref": "#/components/schemas/SuccessfulAuthResponse"
                     }
                 },
@@ -111,7 +111,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Either_FailedAuthResponse.SuccessfulAuthResponse_"
+                                    "$ref": "#/components/schemas/HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_"
                                 }
                             }
                         }
@@ -140,7 +140,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Either_FailedAuthResponse.SuccessfulAuthResponse_"
+                                    "$ref": "#/components/schemas/HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_"
                                 }
                             }
                         }

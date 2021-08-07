@@ -3,7 +3,7 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AuthController } from './../src/controllers/authController';
+import { AuthController } from './../src/controllers/auth/authController';
 import * as express from 'express';
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -31,11 +31,11 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Either_FailedAuthResponse.SuccessfulAuthResponse_": {
+    "HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_": {
         "dataType": "refObject",
         "properties": {
-            "left": {"ref":"FailedAuthResponse"},
-            "right": {"ref":"SuccessfulAuthResponse"},
+            "error": {"ref":"FailedAuthResponse"},
+            "success": {"ref":"SuccessfulAuthResponse"},
         },
         "additionalProperties": false,
     },

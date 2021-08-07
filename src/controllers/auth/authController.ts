@@ -1,15 +1,15 @@
 import { MD5 } from "crypto-js";
 import { Pool, QueryResult } from "pg";
-import { DatabaseService } from "../database";
+import { DatabaseService } from "../../database";
 import {
   Body,
     Controller,
     Post,
     Route,
   } from "tsoa";
-import { generateAccessToken, generateRefreshToken } from "../utilities/authUtilities";
+import { generateAccessToken, generateRefreshToken } from "../../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
-import { HTTPResponse } from "../types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 
 
 interface RegisterUserParams {
@@ -23,9 +23,17 @@ interface LoginUserParams {
   password: string;
 }
 
+interface RequestPasswordResetParams {
+  email: string;
+}
+
 interface SuccessfulAuthResponse {
   accessToken: string;
   refreshToken: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface SuccessfulPasswordResetResponse {
 }
 
 enum AuthFailureReason {
@@ -34,6 +42,14 @@ enum AuthFailureReason {
 }
 interface FailedAuthResponse {
   reason: AuthFailureReason;
+}
+
+enum DeniedPasswordResetResponseReason {
+  TooManyAttempts = "Too Many Attempts",
+}
+
+interface DeniedPasswordResetResponse {
+  reason: DeniedPasswordResetResponseReason;
 }
 
 function encryptPassword({
@@ -174,5 +190,16 @@ export class AuthController extends Controller {
           };  
         }  
     }
+
+    @Post("resetPassword")
+    public async requestPasswordReset(
+      @Body() requestBody: RequestPasswordResetParams,
+    ): Promise<HTTPResponse<DeniedPasswordResetResponse, SuccessfulPasswordResetResponse>> {
+      console.log(requestBody);
+      return {
+        success: {},
+      };
+    }
+
   }
   
