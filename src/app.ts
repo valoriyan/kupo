@@ -20,7 +20,7 @@ app.use("/docs", swaggerUi.serve, async (req: Request, res: Response) => {
 });
 
 app.use("/open-api-spec", async (req: Request, res: Response) => {
-  return res.send(await import("../build/swagger.json"));
+  return res.json(await (await import("../build/swagger.json")).default);
 });
 
 RegisterRoutes(app);

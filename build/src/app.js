@@ -49,6 +49,6 @@ exports.app.use("/docs", swagger_ui_express_1.default.serve, (req, res) => __awa
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
 }));
 exports.app.use("/open-api-spec", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return res.send(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json"))));
+    return res.json(yield (yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))).default);
 }));
 routes_1.RegisterRoutes(exports.app);
