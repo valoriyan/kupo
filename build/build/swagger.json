@@ -88,6 +88,53 @@
                 ],
                 "type": "object",
                 "additionalProperties": false
+            },
+            "DeniedPasswordResetResponseReason": {
+                "enum": [
+                    "Too Many Attempts"
+                ],
+                "type": "string"
+            },
+            "DeniedPasswordResetResponse": {
+                "properties": {
+                    "reason": {
+                        "$ref": "#/components/schemas/DeniedPasswordResetResponseReason"
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "SuccessfulPasswordResetResponse": {
+                "properties": {},
+                "type": "object",
+                "additionalProperties": false
+            },
+            "HTTPResponse_DeniedPasswordResetResponse.SuccessfulPasswordResetResponse_": {
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/DeniedPasswordResetResponse"
+                    },
+                    "success": {
+                        "$ref": "#/components/schemas/SuccessfulPasswordResetResponse"
+                    }
+                },
+                "type": "object",
+                "additionalProperties": false
+            },
+            "RequestPasswordResetParams": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email"
+                ],
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "securitySchemes": {}
@@ -154,6 +201,35 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/LoginUserParams"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/resetPassword": {
+            "post": {
+                "operationId": "RequestPasswordReset",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPResponse_DeniedPasswordResetResponse.SuccessfulPasswordResetResponse_"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestPasswordResetParams"
                             }
                         }
                     }

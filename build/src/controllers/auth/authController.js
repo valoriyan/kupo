@@ -32,6 +32,10 @@ var AuthFailureReason;
     AuthFailureReason["WrongPassword"] = "Wrong Password";
     AuthFailureReason["UnknownCause"] = "Unknown Cause";
 })(AuthFailureReason || (AuthFailureReason = {}));
+var DeniedPasswordResetResponseReason;
+(function (DeniedPasswordResetResponseReason) {
+    DeniedPasswordResetResponseReason["TooManyAttempts"] = "Too Many Attempts";
+})(DeniedPasswordResetResponseReason || (DeniedPasswordResetResponseReason = {}));
 function encryptPassword({ password, }) {
     const salt = process.env.SALT;
     return crypto_js_1.MD5(salt + password).toString();
@@ -142,6 +146,14 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             }
         });
     }
+    requestPasswordReset(requestBody) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(requestBody);
+            return {
+                success: {},
+            };
+        });
+    }
 };
 __decorate([
     tsoa_1.Post("register"),
@@ -157,6 +169,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginUser", null);
+__decorate([
+    tsoa_1.Post("resetPassword"),
+    __param(0, tsoa_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "requestPasswordReset", null);
 AuthController = __decorate([
     tsoa_1.Route("auth")
 ], AuthController);
