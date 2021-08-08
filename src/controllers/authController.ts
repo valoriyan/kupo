@@ -1,8 +1,15 @@
 import { MD5 } from "crypto-js";
+import express from "express";
+import { DateTime } from "luxon";
 import { Pool, QueryResult } from "pg";
 import { DatabaseService } from "../database";
-import { Body, Controller, Post, Route } from "tsoa";
-import { generateAccessToken, generateRefreshToken } from "../utilities/authUtilities";
+import { Body, Controller, Get, Post, Request, Route } from "tsoa";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  REFRESH_TOKEN_EXPIRATION_TIME,
+  validateTokenAndGetUserId,
+} from "../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { HTTPResponse } from "../types/httpResponse";
 
@@ -19,12 +26,14 @@ interface LoginUserParams {
 
 interface SuccessfulAuthResponse {
   accessToken: string;
-  refreshToken: string;
 }
 
 enum AuthFailureReason {
   WrongPassword = "Wrong Password",
   UnknownCause = "Unknown Cause",
+  NoRefreshToken = "No Refresh Token Found",
+  InvalidToken = "Failed To Validate Token",
+  TokenGenerationFailed = "Failed To Generate Access Token",
 }
 interface FailedAuthResponse {
   reason: AuthFailureReason;
@@ -66,29 +75,29 @@ export class AuthController extends Controller {
 
     try {
       await datastorePool.query(queryString);
+
+      const accessToken = generateAccessToken({
+        userId,
+        jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+      });
+      const refreshToken = generateRefreshToken({
+        userId,
+        jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+      });
+
+      this.setHeader(
+        "Set-Cookie",
+        `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${DateTime.now()
+          .plus(REFRESH_TOKEN_EXPIRATION_TIME)
+          .toJSDate()}`,
+      );
+
       this.setStatus(201);
-      return {
-        success: {
-          accessToken: generateAccessToken({
-            userId,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
-          }),
-          refreshToken: generateRefreshToken({
-            userId,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
-          }),
-        },
-      };
+      return { success: { accessToken } };
     } catch (error) {
       console.log("error", error);
       this.setStatus(401);
-      return {
-        error: {
-          reason: AuthFailureReason.UnknownCause,
-        },
-      };
+      return { error: { reason: AuthFailureReason.UnknownCause } };
     }
   }
 
@@ -126,39 +135,71 @@ export class AuthController extends Controller {
         if (hasMatchedPassword) {
           const userId = row.id;
 
+          const accessToken = generateAccessToken({
+            userId,
+            jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+          });
+          const refreshToken = generateRefreshToken({
+            userId,
+            jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+          });
+
+          this.setHeader(
+            "Set-Cookie",
+            `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${DateTime.now()
+              .plus(REFRESH_TOKEN_EXPIRATION_TIME)
+              .toJSDate()}`,
+          );
+
           this.setStatus(200);
-          return {
-            success: {
-              accessToken: generateAccessToken({
-                userId,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
-              }),
-              refreshToken: generateRefreshToken({
-                userId,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                jwtPrivateKey: process.env.JWT_PRIVATE_KEY!,
-              }),
-            },
-          };
+          return { success: { accessToken } };
         }
       }
 
       this.setStatus(401);
-      return {
-        error: {
-          reason: AuthFailureReason.WrongPassword,
-        },
-      };
+      return { error: { reason: AuthFailureReason.WrongPassword } };
     } catch (error) {
       console.log("error", error);
-
       this.setStatus(401);
-      return {
-        error: {
-          reason: AuthFailureReason.UnknownCause,
-        },
-      };
+      return { error: { reason: AuthFailureReason.UnknownCause } };
+    }
+  }
+
+  @Get("refresh-access-token")
+  public async refreshAccessToken(
+    @Request() request: express.Request,
+  ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
+    const refreshToken = request.cookies.refreshToken as string | undefined;
+    const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
+
+    if (!refreshToken) {
+      this.setStatus(401);
+      return { error: { reason: AuthFailureReason.NoRefreshToken } };
+    }
+
+    let userId: string;
+
+    try {
+      userId = validateTokenAndGetUserId({
+        token: refreshToken,
+        jwtPrivateKey,
+      });
+    } catch {
+      this.setStatus(401);
+      return { error: { reason: AuthFailureReason.InvalidToken } };
+    }
+
+    try {
+      const accessToken = generateAccessToken({
+        userId,
+        jwtPrivateKey,
+      });
+
+      this.setStatus(200);
+      return { success: { accessToken } };
+    } catch {
+      this.setStatus(401);
+      return { error: { reason: AuthFailureReason.TokenGenerationFailed } };
     }
   }
 }

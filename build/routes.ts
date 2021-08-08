@@ -11,7 +11,7 @@ import * as express from 'express';
 const models: TsoaRoute.Models = {
     "AuthFailureReason": {
         "dataType": "refEnum",
-        "enums": ["Wrong Password","Unknown Cause"],
+        "enums": ["Wrong Password","Unknown Cause","No Refresh Token Found","Failed To Validate Token","Failed To Generate Access Token"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FailedAuthResponse": {
@@ -26,7 +26,6 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "accessToken": {"dataType":"string","required":true},
-            "refreshToken": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -112,6 +111,29 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.loginUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/auth/refresh-access-token',
+
+            function AuthController_refreshAccessToken(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.refreshAccessToken.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

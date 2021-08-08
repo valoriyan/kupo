@@ -1,4 +1,7 @@
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
+
+export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
+export const ACCESS_TOKEN_EXPIRATION_TIME = 5 * 60; // five minutes
 
 export interface JWTData {
   userId: string;
@@ -11,19 +14,13 @@ export function generateRefreshToken({
   userId: string;
   jwtPrivateKey: string;
 }): string {
-  const oneHour = 60 * 60;
+  const expiresIn = REFRESH_TOKEN_EXPIRATION_TIME;
 
   const jwtData: JWTData = {
     userId,
   };
 
-  return sign(
-    {
-      data: jwtData,
-    },
-    jwtPrivateKey,
-    { expiresIn: oneHour },
-  );
+  return sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
 
 export function generateAccessToken({
@@ -33,17 +30,25 @@ export function generateAccessToken({
   userId: string;
   jwtPrivateKey: string;
 }): string {
-  const fiveMinutes = 5 * 60;
+  const expiresIn = ACCESS_TOKEN_EXPIRATION_TIME;
 
   const jwtData: JWTData = {
     userId,
   };
 
-  return sign(
-    {
-      data: jwtData,
-    },
-    jwtPrivateKey,
-    { expiresIn: fiveMinutes },
-  );
+  return sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
+}
+
+export function validateTokenAndGetUserId({
+  token,
+  jwtPrivateKey,
+}: {
+  token: string;
+  jwtPrivateKey: string;
+}): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const accessTokenData: JWTData = verify(token, jwtPrivateKey) as any;
+  const { userId } = accessTokenData;
+
+  return userId;
 }
