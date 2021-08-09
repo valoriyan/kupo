@@ -9,7 +9,7 @@ import {
   generateRefreshToken,
   REFRESH_TOKEN_EXPIRATION_TIME,
   validateTokenAndGetUserId,
-} from "../utilities/authUtilities";
+} from "../../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { HTTPResponse } from "../../types/httpResponse";
 

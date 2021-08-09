@@ -32,23 +32,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_1 = __importDefault(require("express"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const routes_1 = require("../build/routes");
 exports.app = express_1.default();
-// Use body parser to read sent json payloads
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true,
-//   })
-// );
-// app.use(bodyParser.json());
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use(express_1.default.json()); // To parse the incoming requests with JSON payloads
+exports.app.use(express_1.default.urlencoded({ extended: true }));
+exports.app.use(cookie_parser_1.default());
 exports.app.use("/docs", swagger_ui_express_1.default.serve, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
 }));
 exports.app.use("/open-api-spec", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return res.json(yield (yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))).default);
+    return res.json((yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))).default);
 }));
 routes_1.RegisterRoutes(exports.app);

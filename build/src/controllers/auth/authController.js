@@ -20,9 +20,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const crypto_js_1 = require("crypto-js");
+const express_1 = __importDefault(require("express"));
+const luxon_1 = require("luxon");
 const database_1 = require("../../database");
 const tsoa_1 = require("tsoa");
 const authUtilities_1 = require("../../utilities/authUtilities");
@@ -31,6 +36,9 @@ var AuthFailureReason;
 (function (AuthFailureReason) {
     AuthFailureReason["WrongPassword"] = "Wrong Password";
     AuthFailureReason["UnknownCause"] = "Unknown Cause";
+    AuthFailureReason["NoRefreshToken"] = "No Refresh Token Found";
+    AuthFailureReason["InvalidToken"] = "Failed To Validate Token";
+    AuthFailureReason["TokenGenerationFailed"] = "Failed To Generate Access Token";
 })(AuthFailureReason || (AuthFailureReason = {}));
 var DeniedPasswordResetResponseReason;
 (function (DeniedPasswordResetResponseReason) {
@@ -64,30 +72,25 @@ let AuthController = class AuthController extends tsoa_1.Controller {
       `;
             try {
                 yield datastorePool.query(queryString);
+                const accessToken = authUtilities_1.generateAccessToken({
+                    userId,
+                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
+                });
+                const refreshToken = authUtilities_1.generateRefreshToken({
+                    userId,
+                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
+                });
+                const tokenExpirationTime = luxon_1.DateTime.now()
+                    .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
+                    .toJSDate();
+                this.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`);
                 this.setStatus(201);
-                return {
-                    success: {
-                        accessToken: authUtilities_1.generateAccessToken({
-                            userId,
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                        }),
-                        refreshToken: authUtilities_1.generateRefreshToken({
-                            userId,
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                        }),
-                    },
-                };
+                return { success: { accessToken } };
             }
             catch (error) {
                 console.log("error", error);
                 this.setStatus(401);
-                return {
-                    error: {
-                        reason: AuthFailureReason.UnknownCause,
-                    },
-                };
+                return { error: { reason: AuthFailureReason.UnknownCause } };
             }
         });
     }
@@ -111,38 +114,61 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                     const hasMatchedPassword = encryptPassword({ password }) === row.encryptedpassword;
                     if (hasMatchedPassword) {
                         const userId = row.id;
+                        const accessToken = authUtilities_1.generateAccessToken({
+                            userId,
+                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
+                        });
+                        const refreshToken = authUtilities_1.generateRefreshToken({
+                            userId,
+                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
+                        });
+                        this.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${luxon_1.DateTime.now()
+                            .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
+                            .toJSDate()}`);
                         this.setStatus(200);
-                        return {
-                            success: {
-                                accessToken: authUtilities_1.generateAccessToken({
-                                    userId,
-                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                                }),
-                                refreshToken: authUtilities_1.generateRefreshToken({
-                                    userId,
-                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                                }),
-                            },
-                        };
+                        return { success: { accessToken } };
                     }
                 }
                 this.setStatus(401);
-                return {
-                    error: {
-                        reason: AuthFailureReason.WrongPassword,
-                    },
-                };
+                return { error: { reason: AuthFailureReason.WrongPassword } };
             }
             catch (error) {
                 console.log("error", error);
                 this.setStatus(401);
-                return {
-                    error: {
-                        reason: AuthFailureReason.UnknownCause,
-                    },
-                };
+                return { error: { reason: AuthFailureReason.UnknownCause } };
+            }
+        });
+    }
+    refreshAccessToken(request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const refreshToken = request.cookies.refreshToken;
+            const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
+            if (!refreshToken) {
+                this.setStatus(401);
+                return { error: { reason: AuthFailureReason.NoRefreshToken } };
+            }
+            let userId;
+            try {
+                userId = authUtilities_1.validateTokenAndGetUserId({
+                    token: refreshToken,
+                    jwtPrivateKey,
+                });
+            }
+            catch (_a) {
+                this.setStatus(401);
+                return { error: { reason: AuthFailureReason.InvalidToken } };
+            }
+            try {
+                const accessToken = authUtilities_1.generateAccessToken({
+                    userId,
+                    jwtPrivateKey,
+                });
+                this.setStatus(200);
+                return { success: { accessToken } };
+            }
+            catch (_b) {
+                this.setStatus(401);
+                return { error: { reason: AuthFailureReason.TokenGenerationFailed } };
             }
         });
     }
@@ -169,6 +195,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginUser", null);
+__decorate([
+    tsoa_1.Get("refresh-access-token"),
+    __param(0, tsoa_1.Request()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refreshAccessToken", null);
 __decorate([
     tsoa_1.Post("resetPassword"),
     __param(0, tsoa_1.Body()),

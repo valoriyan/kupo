@@ -15,7 +15,7 @@ const userPageController_1 = require("./../src/controllers/auth/userPageControll
 const models = {
     "AuthFailureReason": {
         "dataType": "refEnum",
-        "enums": ["Wrong Password", "Unknown Cause"],
+        "enums": ["Wrong Password", "Unknown Cause", "No Refresh Token Found", "Failed To Validate Token", "Failed To Generate Access Token"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FailedAuthResponse": {
@@ -30,7 +30,6 @@ const models = {
         "dataType": "refObject",
         "properties": {
             "accessToken": { "dataType": "string", "required": true },
-            "refreshToken": { "dataType": "string", "required": true },
         },
         "additionalProperties": false,
     },
@@ -318,6 +317,23 @@ function RegisterRoutes(app) {
         }
         const controller = new authController_1.AuthController();
         const promise = controller.loginUser.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, undefined, next);
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/auth/refresh-access-token', function AuthController_refreshAccessToken(request, response, next) {
+        const args = {
+            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+        }
+        catch (err) {
+            return next(err);
+        }
+        const controller = new authController_1.AuthController();
+        const promise = controller.refreshAccessToken.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

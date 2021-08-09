@@ -593,33 +593,41 @@
 				}
 			}
 		},
-<<<<<<< HEAD
-		"/auth/resetPassword": {
-			"post": {
-				"operationId": "RequestPasswordReset",
-=======
 		"/auth/refresh-access-token": {
 			"get": {
 				"operationId": "RefreshAccessToken",
->>>>>>> 3d89a607701f2514606837d63be6eb13e4c1392e
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-<<<<<<< HEAD
-									"$ref": "#/components/schemas/HTTPResponse_DeniedPasswordResetResponse.SuccessfulPasswordResetResponse_"
-=======
 									"$ref": "#/components/schemas/HTTPResponse_FailedAuthResponse.SuccessfulAuthResponse_"
->>>>>>> 3d89a607701f2514606837d63be6eb13e4c1392e
 								}
 							}
 						}
 					}
 				},
 				"security": [],
-<<<<<<< HEAD
+				"parameters": []
+			}
+		},
+		"/auth/resetPassword": {
+			"post": {
+				"operationId": "RequestPasswordReset",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPResponse_DeniedPasswordResetResponse.SuccessfulPasswordResetResponse_"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -718,9 +726,6 @@
 						}
 					}
 				}
-=======
-				"parameters": []
->>>>>>> 3d89a607701f2514606837d63be6eb13e4c1392e
 			}
 		}
 	},

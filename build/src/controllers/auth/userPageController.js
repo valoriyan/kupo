@@ -34,6 +34,7 @@ var DeniedGetUserPageResponseReason;
 let UserPageController = class UserPageController extends tsoa_1.Controller {
     setUserSettings(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(requestBody);
             return {};
         });
     }

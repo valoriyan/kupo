@@ -34,6 +34,7 @@ var PostDurationSetting;
 let PostController = class PostController extends tsoa_1.Controller {
     createPost(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(requestBody);
             return {};
         });
     }
