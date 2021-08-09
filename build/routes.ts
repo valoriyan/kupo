@@ -15,7 +15,7 @@ import * as express from 'express';
 const models: TsoaRoute.Models = {
     "AuthFailureReason": {
         "dataType": "refEnum",
-        "enums": ["Wrong Password","Unknown Cause"],
+        "enums": ["Wrong Password","Unknown Cause","No Refresh Token Found","Failed To Validate Token","Failed To Generate Access Token"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FailedAuthResponse": {
@@ -30,7 +30,6 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "accessToken": {"dataType":"string","required":true},
-            "refreshToken": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -338,6 +337,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+<<<<<<< HEAD
         app.post('/auth/resetPassword',
             function AuthController_requestPasswordReset(request: any, response: any, next: any) {
             const args = {
@@ -408,6 +408,13 @@ export function RegisterRoutes(app: express.Router) {
             function UserPageController_getPostsPage(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_GetUserPageParams_"},
+=======
+        app.get('/auth/refresh-access-token',
+
+            function AuthController_refreshAccessToken(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+>>>>>>> 3d89a607701f2514606837d63be6eb13e4c1392e
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -419,10 +426,17 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
+<<<<<<< HEAD
             const controller = new UserPageController();
 
 
             const promise = controller.getPostsPage.apply(controller, validatedArgs as any);
+=======
+            const controller = new AuthController();
+
+
+            const promise = controller.refreshAccessToken.apply(controller, validatedArgs as any);
+>>>>>>> 3d89a607701f2514606837d63be6eb13e4c1392e
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
