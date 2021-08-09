@@ -36,7 +36,7 @@ var DeniedPasswordResetResponseReason;
 (function (DeniedPasswordResetResponseReason) {
     DeniedPasswordResetResponseReason["TooManyAttempts"] = "Too Many Attempts";
 })(DeniedPasswordResetResponseReason || (DeniedPasswordResetResponseReason = {}));
-function encryptPassword({ password, }) {
+function encryptPassword({ password }) {
     const salt = process.env.SALT;
     return crypto_js_1.MD5(salt + password).toString();
 }

@@ -45,7 +45,10 @@ exports.app = express_1.default();
 // app.use(bodyParser.json());
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use(express_1.default.json()); // To parse the incoming requests with JSON payloads
-exports.app.use("/docs", swagger_ui_express_1.default.serve, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.app.use("/docs", swagger_ui_express_1.default.serve, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
+}));
+exports.app.use("/open-api-spec", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return res.json(yield (yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))).default);
 }));
 routes_1.RegisterRoutes(exports.app);

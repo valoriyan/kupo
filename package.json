@@ -6,12 +6,14 @@
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "build": "tsoa spec-and-routes && tsc",
     "start": "node build/src/server.js",
-    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
-    "test": "jest --forceExit --coverage --verbose --runInBand"
+    "test": "jest --forceExit --coverage --verbose --runInBand",
+    "lint": "eslint 'src/**/*.{js,ts}' --cache --fix",
+    "prettier:check": "prettier --check 'src/**/*.{js,ts}'",
+    "prettier:fix": "prettier --write 'src/**/*.{js,ts}'",
+    "prepare": "husky install"
   },
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.7.2",
     "crypto-js": "^4.1.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -22,7 +24,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.36",
     "@types/concurrently": "^6.2.1",
     "@types/crypto-js": "^4.0.2",
     "@types/dotenv": "^8.2.0",
@@ -39,11 +40,21 @@
     "@typescript-eslint/parser": "^4.28.4",
     "concurrently": "^6.2.0",
     "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.1",
     "jest": "^27.0.6",
+    "lint-staged": "^11.1.1",
     "nodemon": "^2.0.12",
+    "prettier": "^2.3.2",
     "supertest": "^6.1.4",
     "ts-jest": "^27.0.4",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --cache --fix",
+    "*.{js,ts,css,md}": "prettier --write"
   }
 }
