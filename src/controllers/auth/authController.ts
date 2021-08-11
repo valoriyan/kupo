@@ -20,7 +20,7 @@ interface RegisterUserParams {
 }
 
 interface LoginUserParams {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -73,20 +73,20 @@ export class AuthController extends Controller {
     const encryptedPassword = encryptPassword({ password });
 
     const queryString = `
-        INSERT INTO playhousedevtable(
-          id,
-          email,
-          username,
-          encryptedpassword
-        )
-        VALUES (
-          '${userId}',
-          '${email}',
-          '${username}',
-          '${encryptedPassword}'
-        )
-        ;
-      `;
+      INSERT INTO playhousedevtable(
+        id,
+        email,
+        username,
+        encryptedpassword
+      )
+      VALUES (
+        '${userId}',
+        '${email}',
+        '${username}',
+        '${encryptedPassword}'
+      )
+      ;
+    `;
 
     try {
       await datastorePool.query(queryString);
@@ -100,9 +100,10 @@ export class AuthController extends Controller {
         jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
       });
 
-      const tokenExpirationTime: Date = DateTime.now()
+      const tokenExpirationTime = DateTime.now()
         .plus(REFRESH_TOKEN_EXPIRATION_TIME)
-        .toJSDate();
+        .toJSDate()
+        .toUTCString();
 
       this.setHeader(
         "Set-Cookie",
@@ -122,19 +123,19 @@ export class AuthController extends Controller {
   public async loginUser(
     @Body() requestBody: LoginUserParams,
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
-    const { email, password } = requestBody;
+    const { username, password } = requestBody;
 
     const datastorePool: Pool = await DatabaseService.get();
 
     try {
       const queryString = `
-            SELECT
-              *
-            FROM
-              playhousedevtable
-            WHERE
-              email = '${email}';
-          `;
+        SELECT
+          *
+        FROM
+          playhousedevtable
+        WHERE
+          username = '${username}';
+      `;
 
       const response: QueryResult<{
         id: string;
@@ -161,11 +162,14 @@ export class AuthController extends Controller {
             jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
           });
 
+          const tokenExpirationTime = DateTime.now()
+            .plus(REFRESH_TOKEN_EXPIRATION_TIME)
+            .toJSDate()
+            .toUTCString();
+
           this.setHeader(
             "Set-Cookie",
-            `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${DateTime.now()
-              .plus(REFRESH_TOKEN_EXPIRATION_TIME)
-              .toJSDate()}`,
+            `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
           );
 
           this.setStatus(200);
@@ -228,5 +232,15 @@ export class AuthController extends Controller {
     return {
       success: {},
     };
+  }
+
+  @Get("logout")
+  public async logout(): Promise<void> {
+    this.setHeader(
+      "Set-Cookie",
+      `refreshToken=deleted; HttpOnly; Secure; Expires=${new Date(0).toUTCString()};`,
+    );
+
+    this.setStatus(200);
   }
 }

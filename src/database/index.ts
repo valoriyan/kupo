@@ -10,9 +10,9 @@ export class DatabaseService {
     const temporaryPool = new Pool();
 
     const response: QueryResult<{ datname: string }> = await temporaryPool.query(`
-            SELECT datname FROM pg_database
-            WHERE datistemplate = false;    
-        `);
+      SELECT datname FROM pg_database
+      WHERE datistemplate = false;
+    `);
 
     const databaseExists: boolean = response.rows.some(
       (row: { datname: string }): boolean => {
@@ -31,8 +31,8 @@ export class DatabaseService {
 
     if (!databaseExists) {
       await temporaryPool.query(`
-                CREATE DATABASE ${DatabaseService.databaseName};
-            `);
+        CREATE DATABASE ${DatabaseService.databaseName};
+      `);
     }
     await temporaryPool.end();
   }
@@ -42,13 +42,13 @@ export class DatabaseService {
       database: DatabaseService.databaseName,
     });
     await temporaryPool.query(`
-            CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
-                id VARCHAR(64) UNIQUE NOT NULL,
-                email VARCHAR(64) UNIQUE NOT NULL,
-                username VARCHAR(64) UNIQUE NOT NULL,
-                encryptedpassword VARCHAR(64) NOT NULL
-            );
-        `);
+      CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
+        id VARCHAR(64) UNIQUE NOT NULL,
+        email VARCHAR(64) UNIQUE NOT NULL,
+        username VARCHAR(64) UNIQUE NOT NULL,
+        encryptedpassword VARCHAR(64) NOT NULL
+      );
+    `);
 
     await temporaryPool.end();
   }
@@ -57,8 +57,8 @@ export class DatabaseService {
     const temporaryPool = new Pool();
 
     const queryString = `
-            DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
-        `;
+      DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
+    `;
 
     try {
       await temporaryPool.query(queryString);
@@ -69,20 +69,20 @@ export class DatabaseService {
     await temporaryPool.end();
   }
 
-  // static async teardownTable(): Promise<void> {
-  //     const databaseExists = await DatabaseService.doesDatabaseExist();
-  //     if (!databaseExists) return;
+  static async teardownTable(): Promise<void> {
+    const databaseExists = await DatabaseService.doesDatabaseExist();
+    if (!databaseExists) return;
 
-  //     const temporaryPool = new Pool();
+    const temporaryPool = new Pool();
 
-  //     const queryString = `
-  //         DROP TABLE IF EXISTS ${DatabaseService.tableName};
-  //     `;
+    const queryString = `
+        DROP TABLE IF EXISTS ${DatabaseService.tableName};
+      `;
 
-  //     await temporaryPool.query(queryString);
+    await temporaryPool.query(queryString);
 
-  //     await temporaryPool.end();
-  // }
+    await temporaryPool.end();
+  }
 
   static async get(): Promise<Pool> {
     if (!DatabaseService.datastorePool) {

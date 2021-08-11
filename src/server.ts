@@ -1,5 +1,4 @@
 import { app } from "./app";
-
 import { config as injectEnvironmentVariables } from "dotenv";
 
 injectEnvironmentVariables();
