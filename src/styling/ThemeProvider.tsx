@@ -17,7 +17,7 @@ const ThemeContext = createContext({
 
 export const useThemeSelector = () => useContext(ThemeContext);
 
-export const ThemeProvider = ({ children }: PropsWithChildren<{}>) => {
+export const ThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
   const [currentTheme, setCurrentThemeState] = useState<ThemeName | undefined>(undefined);
 
   // Set the initial theme

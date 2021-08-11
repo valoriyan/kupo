@@ -12,16 +12,24 @@
  * Do not edit the class manually.
  */
 
+import { CreatePostParams } from "./create-post-params";
+
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface SecuredHTTPRequestCreatePostParams
  */
-export interface SuccessfulAuthResponse {
+export interface SecuredHTTPRequestCreatePostParams {
   /**
    *
    * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @memberof SecuredHTTPRequestCreatePostParams
    */
   accessToken: string;
+  /**
+   *
+   * @type {CreatePostParams}
+   * @memberof SecuredHTTPRequestCreatePostParams
+   */
+  data: CreatePostParams;
 }

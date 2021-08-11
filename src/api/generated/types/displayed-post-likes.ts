@@ -15,13 +15,13 @@
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface DisplayedPostLikes
  */
-export interface SuccessfulAuthResponse {
+export interface DisplayedPostLikes {
   /**
    *
-   * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @type {number}
+   * @memberof DisplayedPostLikes
    */
-  accessToken: string;
+  count: number;
 }

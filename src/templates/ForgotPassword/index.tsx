@@ -5,8 +5,10 @@ import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 
 export const ForgotPassword = () => {
+  const onSubmit = () => {};
+
   return (
-    <AuthFormLayout title="Forgot Password">
+    <AuthFormLayout title="Forgot Password" onSubmit={onSubmit}>
       <Stack css={{ gap: "$4" }}>
         <Input placeholder="email" />
         <Button size="lg" variant="secondary">

@@ -9,6 +9,12 @@ export const Button = styled("button", {
   textDecoration: "none",
   textAlign: "center",
 
+  "&:disabled": {
+    bg: "$disabled",
+    color: "$disabledText",
+    cursor: "not-allowed",
+  },
+
   variants: {
     variant: {
       primary: {},

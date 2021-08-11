@@ -1,4 +1,6 @@
+import { Button } from "#/components/Button";
 import { Box, Flex, Grid } from "#/components/Layout";
+import { logout } from "#/contexts/auth";
 
 export const Home = () => {
   return (
@@ -18,6 +20,9 @@ export const Home = () => {
           px: "$3",
         }}
       >
+        <Button size="md" variant="primary" onClick={() => logout()}>
+          Log Out
+        </Button>
         <PlaceholderItem />
         <PlaceholderItem />
         <PlaceholderItem />

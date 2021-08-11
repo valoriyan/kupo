@@ -15,13 +15,13 @@
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface RequestPasswordResetParams
  */
-export interface SuccessfulAuthResponse {
+export interface RequestPasswordResetParams {
   /**
    *
    * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @memberof RequestPasswordResetParams
    */
-  accessToken: string;
+  email: string;
 }

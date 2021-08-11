@@ -1,5 +1,6 @@
-import { createCss } from "@stitches/react";
+import { createCss, defaultThemeMap } from "@stitches/react";
 import { OverflowProperty } from "@stitches/react/types/css-types";
+import { NoInfer } from "#/utils/noInfer";
 
 export const { styled, css, global, keyframes, getCssString, theme } = createCss({
   theme: {
@@ -8,6 +9,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
        * Primary accent color. It will be used for actionable items and accents
        */
       primary: "#EF5DA8",
+      primaryTranslucent: "#EF5DA830",
 
       /**
        * The background colors include colors for the backgrounds of app content.
@@ -23,6 +25,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       secondaryText: "#acacac", // Secondary text that sits on background colors
       accentText: "#ffffff", // Text that sits on primary and secondary accent colors
       inverseText: "#ffffff",
+      disabledText: "#000000",
 
       link: "#6fb8ff", // Link color
       linkHover: "#4ba6ff", // For alternate states on links like hover
@@ -145,94 +148,99 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
     lg: "(min-width: 62em)", // 992px
     xl: "(min-width: 75em)", // 1200px
   },
+  themeMap: {
+    ...defaultThemeMap,
+    animation: "transitions",
+  },
   utils: {
     m:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         margin: value,
       }),
     mx:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         marginLeft: value,
         marginRight: value,
       }),
     my:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         marginTop: value,
         marginBottom: value,
       }),
     mt:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         marginTop: value,
       }),
     mr:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         marginRight: value,
       }),
     mb:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         marginBottom: value,
       }),
     ml:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         marginLeft: value,
       }),
     p:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         padding: value,
       }),
     px:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         paddingLeft: value,
         paddingRight: value,
       }),
     py:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         paddingTop: value,
         paddingBottom: value,
       }),
     pt:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         paddingTop: value,
       }),
     pr:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         paddingRight: value,
       }),
     pb:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         paddingBottom: value,
       }),
     pl:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
         paddingLeft: value,
       }),
     size:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["sizes"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["sizes"]}` | NoInfer<string>) => ({
         height: value,
         width: value,
       }),
     bg:
       (config) =>
-      (value: `$${keyof typeof config["theme"]["colors"]}` | (string & {})) => ({
+      (value: `$${keyof typeof config["theme"]["colors"]}` | NoInfer<string>) => ({
         backgroundColor: value,
       }),
     height:
-      (config) => (value: `$${keyof typeof config["theme"]["sizes"]}` | (string & {})) =>
+      (config) =>
+      (value: `$${keyof typeof config["theme"]["sizes"]}` | NoInfer<string>) =>
         value === "100vh"
           ? { height: `${value}; height: -webkit-fill-available; max-height: 100vh;` }
           : { height: value },
@@ -246,6 +254,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
 export const darkTheme = theme("dark", {
   colors: {
     primary: "#EF5DA8",
+    primaryTranslucent: "#EF5DA830",
 
     background1: "#191919",
     background2: "#333333",
@@ -265,6 +274,7 @@ export const darkTheme = theme("dark", {
     warning: "#ffff00",
     failure: "#ff0000",
     disabled: "#acacac",
+    disabledText: "#000000",
 
     transparent: "rgba(0,0,0,0)",
   },

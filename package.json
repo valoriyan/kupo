@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "api": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node --script-mode --files ./generateApiClient.ts",
-    "lint": "next lint",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",
     "type-check": "tsc",
     "prettier:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx}'",
     "prettier:fix": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
@@ -18,9 +18,11 @@
   "dependencies": {
     "@stitches/react": "^0.2.2",
     "axios": "^0.21.1",
+    "jsonwebtoken": "^8.5.1",
     "next": "11.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-query": "^3.19.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
@@ -30,10 +32,12 @@
     "@storybook/addon-links": "^6.3.4",
     "@storybook/react": "^6.3.4",
     "@types/axios": "^0.14.0",
+    "@types/jsonwebtoken": "^8.5.4",
     "@types/react": "17.0.14",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "babel-loader": "^8.2.2",
+    "dotenv": "^10.0.0",
     "eslint": "7.30.0",
     "eslint-config-next": "11.0.1",
     "eslint-config-prettier": "^8.3.0",

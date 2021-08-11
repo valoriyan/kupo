@@ -15,13 +15,8 @@
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @enum {string}
  */
-export interface SuccessfulAuthResponse {
-  /**
-   *
-   * @type {string}
-   * @memberof SuccessfulAuthResponse
-   */
-  accessToken: string;
+export enum DeniedPasswordResetResponseReason {
+  TooManyAttempts = "Too Many Attempts",
 }

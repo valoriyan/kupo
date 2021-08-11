@@ -1,5 +1,8 @@
+import { RedirectAfterAuth } from "#/contexts/auth";
 import { Login } from "#/templates/Login";
 
-export default function LoginPage() {
+const LoginPage = () => {
   return <Login />;
-}
+};
+
+export default RedirectAfterAuth(LoginPage);

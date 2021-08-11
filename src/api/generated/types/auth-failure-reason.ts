@@ -20,4 +20,7 @@
 export enum AuthFailureReason {
   WrongPassword = "Wrong Password",
   UnknownCause = "Unknown Cause",
+  NoRefreshTokenFound = "No Refresh Token Found",
+  FailedToValidateToken = "Failed To Validate Token",
+  FailedToGenerateAccessToken = "Failed To Generate Access Token",
 }

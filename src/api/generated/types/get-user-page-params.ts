@@ -15,13 +15,13 @@
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface GetUserPageParams
  */
-export interface SuccessfulAuthResponse {
+export interface GetUserPageParams {
   /**
    *
    * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @memberof GetUserPageParams
    */
-  accessToken: string;
+  username: string;
 }

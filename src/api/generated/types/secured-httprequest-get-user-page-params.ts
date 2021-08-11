@@ -12,16 +12,24 @@
  * Do not edit the class manually.
  */
 
+import { GetUserPageParams } from "./get-user-page-params";
+
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface SecuredHTTPRequestGetUserPageParams
  */
-export interface SuccessfulAuthResponse {
+export interface SecuredHTTPRequestGetUserPageParams {
   /**
    *
    * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @memberof SecuredHTTPRequestGetUserPageParams
    */
   accessToken: string;
+  /**
+   *
+   * @type {GetUserPageParams}
+   * @memberof SecuredHTTPRequestGetUserPageParams
+   */
+  data: GetUserPageParams;
 }

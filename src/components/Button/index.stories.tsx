@@ -1,5 +1,4 @@
 import { Story } from "@storybook/react";
-import { ReactNode } from "react";
 import { Button } from ".";
 
 export default {
@@ -7,7 +6,9 @@ export default {
   component: Button,
 };
 
-export const Template: Story<{ children: ReactNode }> = (args) => <Button {...args} />;
+export const Template: Story = (args) => <Button {...args} />;
 Template.args = {
   children: "Click Me",
+  variant: "primary",
+  size: "md",
 };

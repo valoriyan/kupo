@@ -12,16 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { DeniedPasswordResetResponseReason } from "./denied-password-reset-response-reason";
+
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface DeniedPasswordResetResponse
  */
-export interface SuccessfulAuthResponse {
+export interface DeniedPasswordResetResponse {
   /**
    *
-   * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @type {DeniedPasswordResetResponseReason}
+   * @memberof DeniedPasswordResetResponse
    */
-  accessToken: string;
+  reason: DeniedPasswordResetResponseReason;
 }

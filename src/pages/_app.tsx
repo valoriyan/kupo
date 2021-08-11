@@ -1,13 +1,16 @@
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "#/styling/ThemeProvider";
+import { QueryClientProvider } from "#/contexts/queryClient";
 import { globalStyles } from "#/styling/globalStyles";
+import { ThemeProvider } from "#/styling/ThemeProvider";
 import "#/styling/modernNormalize.css";
 
 const PlayHouseApp = ({ Component, pageProps }: AppProps) => {
   globalStyles();
   return (
     <ThemeProvider>
-      <Component {...pageProps} />
+      <QueryClientProvider>
+        <Component {...pageProps} />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 };

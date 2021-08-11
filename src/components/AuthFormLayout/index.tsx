@@ -1,16 +1,17 @@
-import { ReactNode } from "react";
+import { FormEventHandler, ReactNode } from "react";
 import Link from "next/link";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { styled } from "#/styling";
 
 export interface AuthFormLayoutProps {
   title: string;
+  onSubmit: FormEventHandler<HTMLFormElement>;
   children: ReactNode;
 }
 
 export const AuthFormLayout = (props: AuthFormLayoutProps) => {
   return (
-    <Flex css={{ justifyContent: "center" }}>
+    <Flex css={{ justifyContent: "center" }} as="form" onSubmit={props.onSubmit}>
       <Stack
         css={{
           mt: "$9",

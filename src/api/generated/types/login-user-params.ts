@@ -23,7 +23,7 @@ export interface LoginUserParams {
    * @type {string}
    * @memberof LoginUserParams
    */
-  email: string;
+  username: string;
   /**
    *
    * @type {string}

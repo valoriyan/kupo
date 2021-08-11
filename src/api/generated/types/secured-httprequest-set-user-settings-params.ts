@@ -12,16 +12,24 @@
  * Do not edit the class manually.
  */
 
+import { SetUserSettingsParams } from "./set-user-settings-params";
+
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface SecuredHTTPRequestSetUserSettingsParams
  */
-export interface SuccessfulAuthResponse {
+export interface SecuredHTTPRequestSetUserSettingsParams {
   /**
    *
    * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @memberof SecuredHTTPRequestSetUserSettingsParams
    */
   accessToken: string;
+  /**
+   *
+   * @type {SetUserSettingsParams}
+   * @memberof SecuredHTTPRequestSetUserSettingsParams
+   */
+  data: SetUserSettingsParams;
 }

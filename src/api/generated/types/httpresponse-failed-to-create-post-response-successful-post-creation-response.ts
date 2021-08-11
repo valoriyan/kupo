@@ -15,13 +15,19 @@
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse
  */
-export interface SuccessfulAuthResponse {
+export interface HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse {
   /**
    *
-   * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @type {object}
+   * @memberof HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse
    */
-  accessToken: string;
+  error?: object;
+  /**
+   *
+   * @type {object}
+   * @memberof HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse
+   */
+  success?: object;
 }

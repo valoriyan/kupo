@@ -15,13 +15,31 @@
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface DisplayedShopItems
  */
-export interface SuccessfulAuthResponse {
+export interface DisplayedShopItems {
   /**
    *
    * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @memberof DisplayedShopItems
    */
-  accessToken: string;
+  title: string;
+  /**
+   *
+   * @type {number}
+   * @memberof DisplayedShopItems
+   */
+  price: number;
+  /**
+   *
+   * @type {string}
+   * @memberof DisplayedShopItems
+   */
+  description: string;
+  /**
+   *
+   * @type {number}
+   * @memberof DisplayedShopItems
+   */
+  countSold: number;
 }

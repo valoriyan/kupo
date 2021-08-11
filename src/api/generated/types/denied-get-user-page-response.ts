@@ -12,16 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { DeniedGetUserPageResponseReason } from "./denied-get-user-page-response-reason";
+
 /**
  *
  * @export
- * @interface SuccessfulAuthResponse
+ * @interface DeniedGetUserPageResponse
  */
-export interface SuccessfulAuthResponse {
+export interface DeniedGetUserPageResponse {
   /**
    *
-   * @type {string}
-   * @memberof SuccessfulAuthResponse
+   * @type {DeniedGetUserPageResponseReason}
+   * @memberof DeniedGetUserPageResponse
    */
-  accessToken: string;
+  reason: DeniedGetUserPageResponseReason;
 }

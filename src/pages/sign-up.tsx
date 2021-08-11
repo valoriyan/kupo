@@ -1,5 +1,8 @@
+import { RedirectAfterAuth } from "#/contexts/auth";
 import { SignUp } from "#/templates/SignUp";
 
-export default function SignUpPage() {
+const SignUpPage = () => {
   return <SignUp />;
-}
+};
+
+export default RedirectAfterAuth(SignUpPage);

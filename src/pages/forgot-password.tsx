@@ -1,5 +1,8 @@
+import { RedirectAfterAuth } from "#/contexts/auth";
 import { ForgotPassword } from "#/templates/ForgotPassword";
 
-export default function ForgotPasswordPage() {
+const ForgotPasswordPage = () => {
   return <ForgotPassword />;
-}
+};
+
+export default RedirectAfterAuth(ForgotPasswordPage);
