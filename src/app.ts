@@ -21,3 +21,15 @@ app.use("/open-api-spec", async (req: Request, res: Response) => {
 });
 
 RegisterRoutes(app);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use((err: any, req: express.Request, res: express.Response) => {
+  const status = err.status || 500;
+  const body = {
+    fields: err.fields || undefined,
+    message: err.message || "An error occurred during the request.",
+    name: err.name,
+    status,
+  };
+  res.status(status).json(body);
+});

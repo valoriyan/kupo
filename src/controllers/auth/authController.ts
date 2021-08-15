@@ -35,14 +35,16 @@ interface SuccessfulAuthResponse {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface SuccessfulPasswordResetResponse {}
 
-enum AuthFailureReason {
+export enum AuthFailureReason {
   WrongPassword = "Wrong Password",
   UnknownCause = "Unknown Cause",
   NoRefreshToken = "No Refresh Token Found",
   InvalidToken = "Failed To Validate Token",
   TokenGenerationFailed = "Failed To Generate Access Token",
+  AuthorizationError = "You Must Be Logged In",
 }
-interface FailedAuthResponse {
+
+export interface FailedAuthResponse {
   reason: AuthFailureReason;
 }
 

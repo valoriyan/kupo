@@ -50,3 +50,14 @@ exports.app.use("/open-api-spec", (req, res) => __awaiter(void 0, void 0, void 0
     return res.json((yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))).default);
 }));
 routes_1.RegisterRoutes(exports.app);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+exports.app.use((err, req, res) => {
+    const status = err.status || 500;
+    const body = {
+        fields: err.fields || undefined,
+        message: err.message || "An error occurred during the request.",
+        name: err.name,
+        status,
+    };
+    res.status(status).json(body);
+});
