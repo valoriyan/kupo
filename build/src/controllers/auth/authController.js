@@ -56,20 +56,20 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             const datastorePool = yield database_1.DatabaseService.get();
             const encryptedPassword = encryptPassword({ password });
             const queryString = `
-        INSERT INTO playhousedevtable(
-          id,
-          email,
-          username,
-          encryptedpassword
-        )
-        VALUES (
-          '${userId}',
-          '${email}',
-          '${username}',
-          '${encryptedPassword}'
-        )
-        ;
-      `;
+      INSERT INTO playhousedevtable(
+        id,
+        email,
+        username,
+        encryptedpassword
+      )
+      VALUES (
+        '${userId}',
+        '${email}',
+        '${username}',
+        '${encryptedPassword}'
+      )
+      ;
+    `;
             try {
                 yield datastorePool.query(queryString);
                 const accessToken = authUtilities_1.generateAccessToken({
@@ -82,7 +82,8 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 });
                 const tokenExpirationTime = luxon_1.DateTime.now()
                     .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
-                    .toJSDate();
+                    .toJSDate()
+                    .toUTCString();
                 this.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`);
                 this.setStatus(201);
                 return { success: { accessToken } };
@@ -96,17 +97,18 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     }
     loginUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, password } = requestBody;
+            const { username, password } = requestBody;
+            const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
             const datastorePool = yield database_1.DatabaseService.get();
             try {
                 const queryString = `
-            SELECT
-              *
-            FROM
-              playhousedevtable
-            WHERE
-              email = '${email}';
-          `;
+        SELECT
+          *
+        FROM
+          playhousedevtable
+        WHERE
+          username = '${username}';
+      `;
                 const response = yield datastorePool.query(queryString);
                 const rows = response.rows;
                 if (rows.length === 1) {
@@ -114,19 +116,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                     const hasMatchedPassword = encryptPassword({ password }) === row.encryptedpassword;
                     if (hasMatchedPassword) {
                         const userId = row.id;
-                        const accessToken = authUtilities_1.generateAccessToken({
-                            userId,
-                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                        });
-                        const refreshToken = authUtilities_1.generateRefreshToken({
-                            userId,
-                            jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                        });
-                        this.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${luxon_1.DateTime.now()
-                            .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
-                            .toJSDate()}`);
-                        this.setStatus(200);
-                        return { success: { accessToken } };
+                        return grantNewAccessToken(this, userId, jwtPrivateKey);
                     }
                 }
                 this.setStatus(401);
@@ -159,12 +149,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 return { error: { reason: AuthFailureReason.InvalidToken } };
             }
             try {
-                const accessToken = authUtilities_1.generateAccessToken({
-                    userId,
-                    jwtPrivateKey,
-                });
-                this.setStatus(200);
-                return { success: { accessToken } };
+                return grantNewAccessToken(this, userId, jwtPrivateKey);
             }
             catch (_b) {
                 this.setStatus(401);
@@ -178,6 +163,12 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             return {
                 success: {},
             };
+        });
+    }
+    logout() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.setHeader("Set-Cookie", `refreshToken=deleted; HttpOnly; Secure; Expires=${new Date(0).toUTCString()};`);
+            this.setStatus(200);
         });
     }
 };
@@ -209,7 +200,30 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "requestPasswordReset", null);
+__decorate([
+    tsoa_1.Get("logout"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 AuthController = __decorate([
     tsoa_1.Route("auth")
 ], AuthController);
 exports.AuthController = AuthController;
+const grantNewAccessToken = (controller, userId, jwtPrivateKey) => {
+    const accessToken = authUtilities_1.generateAccessToken({
+        userId,
+        jwtPrivateKey,
+    });
+    const refreshToken = authUtilities_1.generateRefreshToken({
+        userId,
+        jwtPrivateKey,
+    });
+    const tokenExpirationTime = luxon_1.DateTime.now()
+        .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
+        .toJSDate()
+        .toUTCString();
+    controller.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`);
+    controller.setStatus(200);
+    return { success: { accessToken } };
+};

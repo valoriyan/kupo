@@ -5,105 +5,95 @@ import { DatabaseService } from "../src/database";
 jest.setTimeout(100000);
 
 describe("GET /random-url", () => {
-    it("should return 404", (done) => {
-        request(app)
-            .get("/reset")
-            .expect(404, done);
-    });
+  it("should return 404", (done) => {
+    request(app).get("/reset").expect(404, done);
+  });
 });
 
 describe("REGISTER /auth/register", () => {
-    beforeEach(() => {
-        async function callback() {
-            await new Promise(resolve => setTimeout(resolve, 10000));
-            await DatabaseService.teardownDatabase();
-    
-            await DatabaseService.setupDatabase();
-            await DatabaseService.setupTable();
-        }
-        return callback();
-      });
-      
-      afterAll(() => {
-        async function callback() {
-            await new Promise(resolve => setTimeout(resolve, 10000));
-            await DatabaseService.teardownDatabase();
-        }
-        return callback();
-      });
-      
+  beforeEach(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await DatabaseService.teardownDatabase();
 
-    it("registers and remembers user", () => {
-        async function callback() {
-            await request(app)
-                .post("/auth/register")
-                .send({
-                    email: "bob@gmail.com",
-                    password: "BobBobson!",
-                    username: "bobward",
-                })
-                .expect(201);
+    await DatabaseService.setupDatabase();
+    await DatabaseService.setupTable();
+  });
 
-            await request(app)
-                .post("/auth/login")
-                .send({
-                    email: "bob@gmail.com",
-                    password: "BobBobson!",
-                })
-                .expect(200);
-        }
+  afterAll(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await DatabaseService.teardownDatabase();
+  });
 
-        return callback();
-    });
+  it("registers and remembers user", () => {
+    async function callback() {
+      await request(app)
+        .post("/auth/register")
+        .send({
+          email: "bob@gmail.com",
+          password: "BobBobson!",
+          username: "bobward",
+        })
+        .expect(201);
 
-    it("registers and attempts missing user", () => {
-        async function callback() {
-            await request(app)
-                .post("/auth/register")
-                .send({
-                    email: "bob@gmail.com",
-                    password: "BobBobson!",
-                    username: "bobward",
-                })
-                .expect(201);
+      await request(app)
+        .post("/auth/login")
+        .send({
+          email: "bob@gmail.com",
+          password: "BobBobson!",
+        })
+        .expect(200);
+    }
 
-            await request(app)
-                .post("/auth/login")
-                .send({
-                    email: "unknownemail@gmail.com",
-                    password: "BobBobson!",
-                })
-                .expect(401);
-        }
+    return callback();
+  });
 
-        return callback();
-    });
+  it("registers and attempts missing user", () => {
+    async function callback() {
+      await request(app)
+        .post("/auth/register")
+        .send({
+          email: "bob@gmail.com",
+          password: "BobBobson!",
+          username: "bobward",
+        })
+        .expect(201);
 
-    it("registers and attempts wrong password", () => {
-        async function callback() {
-            await request(app)
-                .post("/auth/register")
-                .send({
-                    email: "bob@gmail.com",
-                    password: "BobBobson!",
-                    username: "bobward",
-                })
-                .expect(201);
+      await request(app)
+        .post("/auth/login")
+        .send({
+          email: "unknownemail@gmail.com",
+          password: "BobBobson!",
+        })
+        .expect(401);
+    }
 
-            await request(app)
-                .post("/auth/login")
-                .send({
-                    email: "bob@gmail.com",
-                    password: "wrongpassword!",
-                })
-                .expect(401, {
-                    error: {
-                        reason: "Wrong Password",
-                    }
-                })
-            ;
-        }
+    return callback();
+  });
 
-        return callback();
-    });
+  it("registers and attempts wrong password", () => {
+    async function callback() {
+      await request(app)
+        .post("/auth/register")
+        .send({
+          email: "bob@gmail.com",
+          password: "BobBobson!",
+          username: "bobward",
+        })
+        .expect(201);
+
+      await request(app)
+        .post("/auth/login")
+        .send({
+          email: "bob@gmail.com",
+          password: "wrongpassword!",
+        })
+        .expect(401, {
+          error: {
+            reason: "Wrong Password",
+          },
+        });
+    }
+
+    return callback();
+  });
 });

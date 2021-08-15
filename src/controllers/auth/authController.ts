@@ -20,7 +20,7 @@ interface RegisterUserParams {
 }
 
 interface LoginUserParams {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -73,20 +73,20 @@ export class AuthController extends Controller {
     const encryptedPassword = encryptPassword({ password });
 
     const queryString = `
-        INSERT INTO playhousedevtable(
-          id,
-          email,
-          username,
-          encryptedpassword
-        )
-        VALUES (
-          '${userId}',
-          '${email}',
-          '${username}',
-          '${encryptedPassword}'
-        )
-        ;
-      `;
+      INSERT INTO playhousedevtable(
+        id,
+        email,
+        username,
+        encryptedpassword
+      )
+      VALUES (
+        '${userId}',
+        '${email}',
+        '${username}',
+        '${encryptedPassword}'
+      )
+      ;
+    `;
 
     try {
       await datastorePool.query(queryString);
@@ -100,9 +100,10 @@ export class AuthController extends Controller {
         jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
       });
 
-      const tokenExpirationTime: Date = DateTime.now()
+      const tokenExpirationTime = DateTime.now()
         .plus(REFRESH_TOKEN_EXPIRATION_TIME)
-        .toJSDate();
+        .toJSDate()
+        .toUTCString();
 
       this.setHeader(
         "Set-Cookie",
@@ -122,19 +123,20 @@ export class AuthController extends Controller {
   public async loginUser(
     @Body() requestBody: LoginUserParams,
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
-    const { email, password } = requestBody;
+    const { username, password } = requestBody;
+    const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
 
     const datastorePool: Pool = await DatabaseService.get();
 
     try {
       const queryString = `
-            SELECT
-              *
-            FROM
-              playhousedevtable
-            WHERE
-              email = '${email}';
-          `;
+        SELECT
+          *
+        FROM
+          playhousedevtable
+        WHERE
+          username = '${username}';
+      `;
 
       const response: QueryResult<{
         id: string;
@@ -151,25 +153,7 @@ export class AuthController extends Controller {
           encryptPassword({ password }) === row.encryptedpassword;
         if (hasMatchedPassword) {
           const userId = row.id;
-
-          const accessToken = generateAccessToken({
-            userId,
-            jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
-          });
-          const refreshToken = generateRefreshToken({
-            userId,
-            jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
-          });
-
-          this.setHeader(
-            "Set-Cookie",
-            `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${DateTime.now()
-              .plus(REFRESH_TOKEN_EXPIRATION_TIME)
-              .toJSDate()}`,
-          );
-
-          this.setStatus(200);
-          return { success: { accessToken } };
+          return grantNewAccessToken(this, userId, jwtPrivateKey);
         }
       }
 
@@ -207,13 +191,7 @@ export class AuthController extends Controller {
     }
 
     try {
-      const accessToken = generateAccessToken({
-        userId,
-        jwtPrivateKey,
-      });
-
-      this.setStatus(200);
-      return { success: { accessToken } };
+      return grantNewAccessToken(this, userId, jwtPrivateKey);
     } catch {
       this.setStatus(401);
       return { error: { reason: AuthFailureReason.TokenGenerationFailed } };
@@ -229,4 +207,42 @@ export class AuthController extends Controller {
       success: {},
     };
   }
+
+  @Get("logout")
+  public async logout(): Promise<void> {
+    this.setHeader(
+      "Set-Cookie",
+      `refreshToken=deleted; HttpOnly; Secure; Expires=${new Date(0).toUTCString()};`,
+    );
+
+    this.setStatus(200);
+  }
 }
+
+const grantNewAccessToken = (
+  controller: Controller,
+  userId: string,
+  jwtPrivateKey: string,
+) => {
+  const accessToken = generateAccessToken({
+    userId,
+    jwtPrivateKey,
+  });
+  const refreshToken = generateRefreshToken({
+    userId,
+    jwtPrivateKey,
+  });
+
+  const tokenExpirationTime = DateTime.now()
+    .plus(REFRESH_TOKEN_EXPIRATION_TIME)
+    .toJSDate()
+    .toUTCString();
+
+  controller.setHeader(
+    "Set-Cookie",
+    `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
+  );
+
+  controller.setStatus(200);
+  return { success: { accessToken } };
+};

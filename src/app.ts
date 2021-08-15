@@ -1,3 +1,4 @@
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
@@ -9,6 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use("/docs", swaggerUi.serve, async (req: Request, res: Response) => {
   return res.send(swaggerUi.generateHTML(await import("../build/swagger.json")));
