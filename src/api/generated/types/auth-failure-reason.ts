@@ -23,4 +23,5 @@ export enum AuthFailureReason {
   NoRefreshTokenFound = "No Refresh Token Found",
   FailedToValidateToken = "Failed To Validate Token",
   FailedToGenerateAccessToken = "Failed To Generate Access Token",
+  YouMustBeLoggedIn = "You Must Be Logged In",
 }

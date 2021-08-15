@@ -16,9 +16,9 @@ export const getAccessToken = async () => {
       logout();
       return;
     }
-    const expiresAt = new Date(Date.now() + (tokenData.exp ?? 0) * 1000);
+    const expiresAt = new Date((tokenData.exp ?? 0) * 1000);
     // Whether or not the token has at least a minute of life left
-    const expiresSoon = Date.now() - expiresAt.valueOf() < 1000 * 60 * 60;
+    const expiresSoon = expiresAt.valueOf() - Date.now() < 1000 * 60;
 
     if (expiresSoon) {
       try {

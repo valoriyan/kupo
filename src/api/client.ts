@@ -27,7 +27,7 @@ client.interceptors.request.use(async (request) => {
   if (!accessToken) {
     Router.push("/login");
   } else {
-    request.headers.Authorization = `Bearer ${accessToken}`;
+    request.headers["x-access-token"] = accessToken;
   }
 
   return request;
