@@ -76,8 +76,8 @@ export class DatabaseService {
     const temporaryPool = new Pool();
 
     const queryString = `
-        DROP TABLE IF EXISTS ${DatabaseService.tableName};
-      `;
+      DROP TABLE IF EXISTS ${DatabaseService.tableName};
+    `;
 
     await temporaryPool.query(queryString);
 

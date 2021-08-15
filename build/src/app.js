@@ -42,7 +42,7 @@ exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use(express_1.default.json()); // To parse the incoming requests with JSON payloads
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use(cookie_parser_1.default());
-exports.app.use(cors_1.default({ origin: "*" }));
+exports.app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
 exports.app.use("/docs", swagger_ui_express_1.default.serve, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
 }));

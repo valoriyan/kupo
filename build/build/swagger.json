@@ -74,7 +74,7 @@
             },
             "LoginUserParams": {
                 "properties": {
-                    "email": {
+                    "username": {
                         "type": "string"
                     },
                     "password": {
@@ -82,7 +82,7 @@
                     }
                 },
                 "required": [
-                    "email",
+                    "username",
                     "password"
                 ],
                 "type": "object",
@@ -639,6 +639,18 @@
                         }
                     }
                 }
+            }
+        },
+        "/auth/logout": {
+            "get": {
+                "operationId": "Logout",
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    }
+                },
+                "security": [],
+                "parameters": []
             }
         },
         "/post/create": {

@@ -16,9 +16,9 @@ class DatabaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const temporaryPool = new pg_1.Pool();
             const response = yield temporaryPool.query(`
-            SELECT datname FROM pg_database
-            WHERE datistemplate = false;    
-        `);
+      SELECT datname FROM pg_database
+      WHERE datistemplate = false;
+    `);
             const databaseExists = response.rows.some((row) => {
                 return row.datname === DatabaseService.databaseName;
             });
@@ -32,8 +32,8 @@ class DatabaseService {
             const temporaryPool = new pg_1.Pool();
             if (!databaseExists) {
                 yield temporaryPool.query(`
-                CREATE DATABASE ${DatabaseService.databaseName};
-            `);
+        CREATE DATABASE ${DatabaseService.databaseName};
+      `);
             }
             yield temporaryPool.end();
         });
@@ -44,13 +44,13 @@ class DatabaseService {
                 database: DatabaseService.databaseName,
             });
             yield temporaryPool.query(`
-            CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
-                id VARCHAR(64) UNIQUE NOT NULL,
-                email VARCHAR(64) UNIQUE NOT NULL,
-                username VARCHAR(64) UNIQUE NOT NULL,
-                encryptedpassword VARCHAR(64) NOT NULL
-            );
-        `);
+      CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
+        id VARCHAR(64) UNIQUE NOT NULL,
+        email VARCHAR(64) UNIQUE NOT NULL,
+        username VARCHAR(64) UNIQUE NOT NULL,
+        encryptedpassword VARCHAR(64) NOT NULL
+      );
+    `);
             yield temporaryPool.end();
         });
     }
@@ -58,8 +58,8 @@ class DatabaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const temporaryPool = new pg_1.Pool();
             const queryString = `
-            DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
-        `;
+      DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
+    `;
             try {
                 yield temporaryPool.query(queryString);
             }
@@ -69,16 +69,19 @@ class DatabaseService {
             yield temporaryPool.end();
         });
     }
-    // static async teardownTable(): Promise<void> {
-    //     const databaseExists = await DatabaseService.doesDatabaseExist();
-    //     if (!databaseExists) return;
-    //     const temporaryPool = new Pool();
-    //     const queryString = `
-    //         DROP TABLE IF EXISTS ${DatabaseService.tableName};
-    //     `;
-    //     await temporaryPool.query(queryString);
-    //     await temporaryPool.end();
-    // }
+    static teardownTable() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const databaseExists = yield DatabaseService.doesDatabaseExist();
+            if (!databaseExists)
+                return;
+            const temporaryPool = new pg_1.Pool();
+            const queryString = `
+      DROP TABLE IF EXISTS ${DatabaseService.tableName};
+    `;
+            yield temporaryPool.query(queryString);
+            yield temporaryPool.end();
+        });
+    }
     static get() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!DatabaseService.datastorePool) {

@@ -56,7 +56,7 @@ const models = {
     "LoginUserParams": {
         "dataType": "refObject",
         "properties": {
-            "email": { "dataType": "string", "required": true },
+            "username": { "dataType": "string", "required": true },
             "password": { "dataType": "string", "required": true },
         },
         "additionalProperties": false,
@@ -351,6 +351,21 @@ function RegisterRoutes(app) {
         }
         const controller = new authController_1.AuthController();
         const promise = controller.requestPasswordReset.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, undefined, next);
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/auth/logout', function AuthController_logout(request, response, next) {
+        const args = {};
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+        }
+        catch (err) {
+            return next(err);
+        }
+        const controller = new authController_1.AuthController();
+        const promise = controller.logout.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
