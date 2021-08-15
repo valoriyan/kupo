@@ -1,11 +1,12 @@
 import { global } from ".";
+import "react-toastify/dist/ReactToastify.css";
 
 export const globalStyles = global({
   "@font-face": {
     fontFamily: "Elephant",
     src: 'local("Elephant"), url("fonts/ElephantRegular.ttf")',
   },
-  html: { height: "-webkit-fill-available" },
+  "html, body, #__next": { height: "-webkit-fill-available" },
   body: {
     fontFamily: "$body !important",
     color: "$text",

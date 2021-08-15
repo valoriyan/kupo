@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { ToastContainer, Slide } from "react-toastify";
 import { darkTheme } from ".";
 
 export type ThemeName = "light" | "dark";
@@ -60,5 +61,10 @@ export const ThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
 
   const value = useMemo(() => ({ currentTheme, setCurrentTheme }), [currentTheme]);
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>
+      <ToastContainer position="top-center" transition={Slide} />
+      {children}
+    </ThemeContext.Provider>
+  );
 };
