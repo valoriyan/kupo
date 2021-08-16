@@ -12,6 +12,8 @@ import {
 } from "../../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { HTTPResponse } from "../../types/httpResponse";
+import { LocalEmailService } from "src/services/emailService";
+import { injectable } from "tsyringe";
 
 interface RegisterUserParams {
   email: string;
@@ -61,8 +63,14 @@ function encryptPassword({ password }: { password: string }): string {
   return MD5(salt + password).toString();
 }
 
+@injectable()
 @Route("auth")
 export class AuthController extends Controller {
+
+  constructor(private localEmailService: LocalEmailService) {
+    super();
+  }
+
   @Post("register")
   public async registerUser(
     @Body() requestBody: RegisterUserParams,

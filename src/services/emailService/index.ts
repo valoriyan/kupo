@@ -1,7 +1,8 @@
 import { sign } from "jsonwebtoken";
+import { singleton } from "tsyringe";
 
-export interface EmailService {
-  sendResetPasswordEmail: ({ userId }: { userId: string }) => void;
+export abstract class EmailService {
+  abstract sendResetPasswordEmail({ userId }: { userId: string }): Promise<void>;
 }
 
 const RESET_PASSWORD_TOKEN_EXPIRATION_TIME = 60 * 60 * 2; // one week
@@ -30,15 +31,16 @@ function generateResetPasswordToken({
   return sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
 
-export async function generateLocalEmailService({
-  jwtPrivateKey,
-}: {
-  jwtPrivateKey: string;
-}): Promise<EmailService> {
-  async function sendResetPasswordEmail({ userId }: { userId: string }): Promise<void> {
+@singleton()
+export class LocalEmailService extends EmailService {
+  constructor(private jwtPrivateKey: string) {
+    super();
+  }
+
+  async sendResetPasswordEmail({ userId }: { userId: string }): Promise<void> {
     const resetPasswordToken = generateResetPasswordToken({
       userId,
-      jwtPrivateKey,
+      jwtPrivateKey: this.jwtPrivateKey,
     });
 
     console.log(`
@@ -47,8 +49,4 @@ export async function generateLocalEmailService({
 
     return;
   }
-
-  return {
-    sendResetPasswordEmail,
-  };
 }

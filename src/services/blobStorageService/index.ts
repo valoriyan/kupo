@@ -7,7 +7,7 @@ export interface BlobItemPointer {
   fileKey: string;
 }
 
-abstract class BlobStorageService {
+export abstract class BlobStorageService {
   abstract saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer>;
 
   abstract deleteImage({
