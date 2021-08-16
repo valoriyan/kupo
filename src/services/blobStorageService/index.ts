@@ -20,7 +20,9 @@ export abstract class BlobStorageService {
 
 @singleton()
 export class LocalBlobStorageService extends BlobStorageService {
-  private localBlobStorageDirectory: string = getEnvironmentVariable("LOCAL_BLOB_STORAGE_DIRECTORY");
+  private localBlobStorageDirectory: string = getEnvironmentVariable(
+    "LOCAL_BLOB_STORAGE_DIRECTORY",
+  );
 
   constructor() {
     super();
