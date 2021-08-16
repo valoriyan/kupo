@@ -1,7 +1,7 @@
 import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 import { Body, Controller, Post, Route, UploadedFile } from "tsoa";
 import { HTTPResponse } from "../../types/httpResponse";
-import { injectable } from 'tsyringe';
+import { injectable } from "tsyringe";
 import { LocalBlobStorageService } from "src/services/blobStorageService";
 
 enum PostPrivacySetting {
@@ -36,7 +36,6 @@ export class PostController extends Controller {
     super();
   }
 
-
   @Post("create")
   public async createPost(
     // @UploadedFiles() files: Express.Multer.File[],
@@ -46,7 +45,7 @@ export class PostController extends Controller {
     console.log(requestBody);
 
     const imageBuffer: Buffer = file.buffer;
-    this.blobStorageService.saveImage({image: imageBuffer})
+    this.blobStorageService.saveImage({ image: imageBuffer });
     return {};
   }
 }

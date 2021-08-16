@@ -1,5 +1,5 @@
-import { IocContainer } from '@tsoa/runtime';
-import { container } from 'tsyringe';
+import { IocContainer } from "@tsoa/runtime";
+import { container } from "tsyringe";
 
 export const iocContainer: IocContainer = {
   get: <T>(controller: { prototype: T }): T => {

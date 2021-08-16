@@ -10,5 +10,4 @@
       "routesDir": "build",
       "iocModule": "src/inversionOfControl"
     }
-  }
-  
+}

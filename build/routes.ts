@@ -15,7 +15,7 @@ import * as express from 'express';
 const models: TsoaRoute.Models = {
     "AuthFailureReason": {
         "dataType": "refEnum",
-        "enums": ["Wrong Password","Unknown Cause","No Refresh Token Found","Failed To Validate Token","Failed To Generate Access Token"],
+        "enums": ["Wrong Password","Unknown Cause","No Refresh Token Found","Failed To Validate Token","Failed To Generate Access Token","You Must Be Logged In"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FailedAuthResponse": {
@@ -294,6 +294,7 @@ export function RegisterRoutes(app: express.Router) {
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
         app.post('/auth/register',
+
             function AuthController_registerUser(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"RegisterUserParams"},
@@ -316,6 +317,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/auth/login',
+
             function AuthController_loginUser(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"LoginUserParams"},
@@ -338,6 +340,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/auth/refresh-access-token',
+
             function AuthController_refreshAccessToken(request: any, response: any, next: any) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
@@ -360,6 +363,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/auth/resetPassword',
+
             function AuthController_requestPasswordReset(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"RequestPasswordResetParams"},
@@ -382,6 +386,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/auth/logout',
+
             function AuthController_logout(request: any, response: any, next: any) {
             const args = {
             };
@@ -403,6 +408,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/post/create',
+
             function PostController_createPost(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_CreatePostParams_"},
@@ -425,6 +431,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/user/SetSettings',
+
             function UserPageController_setUserSettings(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_SetUserSettingsParams_"},
@@ -447,6 +454,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/user/GetPosts',
+
             function UserPageController_getPostsPage(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_GetUserPageParams_"},

@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.AuthController = exports.AuthFailureReason = void 0;
 const crypto_js_1 = require("crypto-js");
 const express_1 = __importDefault(require("express"));
 const luxon_1 = require("luxon");
@@ -39,7 +39,8 @@ var AuthFailureReason;
     AuthFailureReason["NoRefreshToken"] = "No Refresh Token Found";
     AuthFailureReason["InvalidToken"] = "Failed To Validate Token";
     AuthFailureReason["TokenGenerationFailed"] = "Failed To Generate Access Token";
-})(AuthFailureReason || (AuthFailureReason = {}));
+    AuthFailureReason["AuthorizationError"] = "You Must Be Logged In";
+})(AuthFailureReason = exports.AuthFailureReason || (exports.AuthFailureReason = {}));
 var DeniedPasswordResetResponseReason;
 (function (DeniedPasswordResetResponseReason) {
     DeniedPasswordResetResponseReason["TooManyAttempts"] = "Too Many Attempts";

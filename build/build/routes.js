@@ -15,7 +15,7 @@ const userPageController_1 = require("./../src/controllers/auth/userPageControll
 const models = {
     "AuthFailureReason": {
         "dataType": "refEnum",
-        "enums": ["Wrong Password", "Unknown Cause", "No Refresh Token Found", "Failed To Validate Token", "Failed To Generate Access Token"],
+        "enums": ["Wrong Password", "Unknown Cause", "No Refresh Token Found", "Failed To Validate Token", "Failed To Generate Access Token", "You Must Be Logged In"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FailedAuthResponse": {

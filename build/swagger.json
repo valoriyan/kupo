@@ -12,7 +12,8 @@
 					"Unknown Cause",
 					"No Refresh Token Found",
 					"Failed To Validate Token",
-					"Failed To Generate Access Token"
+					"Failed To Generate Access Token",
+					"You Must Be Logged In"
 				],
 				"type": "string"
 			},

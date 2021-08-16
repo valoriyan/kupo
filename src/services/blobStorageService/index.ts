@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { singleton } from 'tsyringe';
+import { singleton } from "tsyringe";
 
 import { appendFileSync, unlinkSync } from "fs";
 
@@ -15,14 +15,11 @@ abstract class BlobStorageService {
   }: {
     blobImagePointer: BlobItemPointer;
   }): Promise<void>;
-};
-
+}
 
 @singleton()
 export class LocalBlobStorageService extends BlobStorageService {
-  constructor(
-    private localBlobStorageDirectory: string,
-  ) {
+  constructor(private localBlobStorageDirectory: string) {
     super();
   }
 
@@ -45,5 +42,4 @@ export class LocalBlobStorageService extends BlobStorageService {
     await unlinkSync(filePath);
     return;
   }
-
 }
