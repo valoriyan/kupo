@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,8 +18,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateLocalEmailService = void 0;
+exports.LocalEmailService = exports.EmailService = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
+const tsyringe_1 = require("tsyringe");
+class EmailService {
+}
+exports.EmailService = EmailService;
 const RESET_PASSWORD_TOKEN_EXPIRATION_TIME = 60 * 60 * 2; // one week
 function generateResetPasswordToken({ userId, jwtPrivateKey, }) {
     const expiresIn = RESET_PASSWORD_TOKEN_EXPIRATION_TIME;
@@ -21,23 +34,26 @@ function generateResetPasswordToken({ userId, jwtPrivateKey, }) {
     };
     return jsonwebtoken_1.sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
-function generateLocalEmailService({ jwtPrivateKey, }) {
-    return __awaiter(this, void 0, void 0, function* () {
-        function sendResetPasswordEmail({ userId }) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const resetPasswordToken = generateResetPasswordToken({
-                    userId,
-                    jwtPrivateKey,
-                });
-                console.log(`
+let LocalEmailService = class LocalEmailService extends EmailService {
+    constructor(jwtPrivateKey) {
+        super();
+        this.jwtPrivateKey = jwtPrivateKey;
+    }
+    sendResetPasswordEmail({ userId }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resetPasswordToken = generateResetPasswordToken({
+                userId,
+                jwtPrivateKey: this.jwtPrivateKey,
+            });
+            console.log(`
             To reset password, go to http://localhost:6006/resetpassword?token=${resetPasswordToken}
         `);
-                return;
-            });
-        }
-        return {
-            sendResetPasswordEmail,
-        };
-    });
-}
-exports.generateLocalEmailService = generateLocalEmailService;
+            return;
+        });
+    }
+};
+LocalEmailService = __decorate([
+    tsyringe_1.singleton(),
+    __metadata("design:paramtypes", [String])
+], LocalEmailService);
+exports.LocalEmailService = LocalEmailService;

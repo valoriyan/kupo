@@ -32,6 +32,8 @@ const database_1 = require("../../database");
 const tsoa_1 = require("tsoa");
 const authUtilities_1 = require("../../utilities/authUtilities");
 const uuid_1 = require("uuid");
+const emailService_1 = require("src/services/emailService");
+const tsyringe_1 = require("tsyringe");
 var AuthFailureReason;
 (function (AuthFailureReason) {
     AuthFailureReason["WrongPassword"] = "Wrong Password";
@@ -50,6 +52,10 @@ function encryptPassword({ password }) {
     return crypto_js_1.MD5(salt + password).toString();
 }
 let AuthController = class AuthController extends tsoa_1.Controller {
+    constructor(localEmailService) {
+        super();
+        this.localEmailService = localEmailService;
+    }
     registerUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = uuid_1.v4();
@@ -208,7 +214,9 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 AuthController = __decorate([
-    tsoa_1.Route("auth")
+    tsyringe_1.injectable(),
+    tsoa_1.Route("auth"),
+    __metadata("design:paramtypes", [emailService_1.LocalEmailService])
 ], AuthController);
 exports.AuthController = AuthController;
 const grantNewAccessToken = (controller, userId, jwtPrivateKey) => {

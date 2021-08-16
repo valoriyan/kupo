@@ -23,6 +23,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostController = void 0;
 const tsoa_1 = require("tsoa");
+const tsyringe_1 = require("tsyringe");
+const blobStorageService_1 = require("src/services/blobStorageService");
 var PostPrivacySetting;
 (function (PostPrivacySetting) {
     PostPrivacySetting["Tier2AndTier3"] = "Tier2AndTier3";
@@ -32,21 +34,30 @@ var PostDurationSetting;
     PostDurationSetting["Forever"] = "Forever";
 })(PostDurationSetting || (PostDurationSetting = {}));
 let PostController = class PostController extends tsoa_1.Controller {
-    createPost(requestBody) {
+    constructor(blobStorageService) {
+        super();
+        this.blobStorageService = blobStorageService;
+    }
+    createPost(
+    // @UploadedFiles() files: Express.Multer.File[],
+    file) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(requestBody);
+            const imageBuffer = file.buffer;
+            this.blobStorageService.saveImage({ image: imageBuffer });
             return {};
         });
     }
 };
 __decorate([
     tsoa_1.Post("create"),
-    __param(0, tsoa_1.Body()),
+    __param(0, tsoa_1.UploadedFile()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PostController.prototype, "createPost", null);
 PostController = __decorate([
-    tsoa_1.Route("post")
+    tsyringe_1.injectable(),
+    tsoa_1.Route("post"),
+    __metadata("design:paramtypes", [blobStorageService_1.LocalBlobStorageService])
 ], PostController);
 exports.PostController = PostController;

@@ -66,7 +66,6 @@ function encryptPassword({ password }: { password: string }): string {
 @injectable()
 @Route("auth")
 export class AuthController extends Controller {
-
   constructor(private localEmailService: LocalEmailService) {
     super();
   }

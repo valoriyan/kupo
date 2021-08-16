@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,34 +18,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateLocalBlobStorageService = void 0;
+exports.LocalBlobStorageService = exports.BlobStorageService = void 0;
 const uuid_1 = require("uuid");
+const tsyringe_1 = require("tsyringe");
 const fs_1 = require("fs");
-function generateLocalBlobStorageService({ localBlobStorageDirectory, }) {
-    return __awaiter(this, void 0, void 0, function* () {
-        function saveImage({ image }) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const fileKey = uuid_1.v4();
-                const fileWritePath = localBlobStorageDirectory + "/" + fileKey;
-                yield fs_1.appendFileSync(fileWritePath, image);
-                return {
-                    fileKey,
-                };
-            });
-        }
-        function deleteImage({ blobImagePointer, }) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const filePath = localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
-                yield fs_1.unlinkSync(filePath);
-                return;
-            });
-        }
-        return {
-            image: {
-                save: saveImage,
-                delete: deleteImage,
-            },
-        };
-    });
+class BlobStorageService {
 }
-exports.generateLocalBlobStorageService = generateLocalBlobStorageService;
+exports.BlobStorageService = BlobStorageService;
+let LocalBlobStorageService = class LocalBlobStorageService extends BlobStorageService {
+    constructor(localBlobStorageDirectory) {
+        super();
+        this.localBlobStorageDirectory = localBlobStorageDirectory;
+    }
+    saveImage({ image }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fileKey = uuid_1.v4();
+            const fileWritePath = this.localBlobStorageDirectory + "/" + fileKey;
+            yield fs_1.appendFileSync(fileWritePath, image);
+            return {
+                fileKey,
+            };
+        });
+    }
+    deleteImage({ blobImagePointer, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filePath = this.localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
+            yield fs_1.unlinkSync(filePath);
+            return;
+        });
+    }
+};
+LocalBlobStorageService = __decorate([
+    tsyringe_1.singleton(),
+    __metadata("design:paramtypes", [String])
+], LocalBlobStorageService);
+exports.LocalBlobStorageService = LocalBlobStorageService;

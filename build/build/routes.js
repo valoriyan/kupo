@@ -11,6 +11,9 @@ const authController_1 = require("./../src/controllers/auth/authController");
 const postController_1 = require("./../src/controllers/auth/postController");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const userPageController_1 = require("./../src/controllers/auth/userPageController");
+const inversionOfControl_1 = require("./../src/inversionOfControl");
+const multer = require('multer');
+const upload = multer();
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const models = {
     "AuthFailureReason": {
@@ -115,40 +118,6 @@ const models = {
         "properties": {
             "error": { "ref": "FailedToCreatePostResponse" },
             "success": { "ref": "SuccessfulPostCreationResponse" },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PostPrivacySetting": {
-        "dataType": "refEnum",
-        "enums": ["Tier2AndTier3"],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PostDurationSetting": {
-        "dataType": "refEnum",
-        "enums": ["Forever"],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreatePostParams": {
-        "dataType": "refObject",
-        "properties": {
-            "imageId": { "dataType": "string", "required": true },
-            "caption": { "dataType": "string", "required": true },
-            "visibility": { "ref": "PostPrivacySetting", "required": true },
-            "duration": { "ref": "PostDurationSetting", "required": true },
-            "title": { "dataType": "string", "required": true },
-            "price": { "dataType": "double", "required": true },
-            "collaboratorUsernames": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
-            "scheduledPublicationTimestamp": { "dataType": "double", "required": true },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SecuredHTTPRequest_CreatePostParams_": {
-        "dataType": "refObject",
-        "properties": {
-            "accessToken": { "dataType": "string", "required": true },
-            "data": { "ref": "CreatePostParams", "required": true },
         },
         "additionalProperties": false,
     },
@@ -298,7 +267,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new authController_1.AuthController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(authController_1.AuthController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.registerUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
@@ -315,7 +288,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new authController_1.AuthController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(authController_1.AuthController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.loginUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
@@ -332,7 +309,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new authController_1.AuthController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(authController_1.AuthController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.refreshAccessToken.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
@@ -349,7 +330,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new authController_1.AuthController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(authController_1.AuthController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.requestPasswordReset.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
@@ -364,14 +349,18 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new authController_1.AuthController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(authController_1.AuthController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.logout.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    app.post('/post/create', function PostController_createPost(request, response, next) {
+    app.post('/post/create', upload.single('file'), function PostController_createPost(request, response, next) {
         const args = {
-            requestBody: { "in": "body", "name": "requestBody", "required": true, "ref": "SecuredHTTPRequest_CreatePostParams_" },
+            file: { "in": "formData", "name": "file", "required": true, "dataType": "file" },
         };
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         let validatedArgs = [];
@@ -381,7 +370,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new postController_1.PostController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(postController_1.PostController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.createPost.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
@@ -398,7 +391,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new userPageController_1.UserPageController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(userPageController_1.UserPageController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.setUserSettings.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
@@ -415,7 +412,11 @@ function RegisterRoutes(app) {
         catch (err) {
             return next(err);
         }
-        const controller = new userPageController_1.UserPageController();
+        const container = typeof inversionOfControl_1.iocContainer === 'function' ? inversionOfControl_1.iocContainer(request) : inversionOfControl_1.iocContainer;
+        const controller = container.get(userPageController_1.UserPageController);
+        if (typeof controller['setStatus'] === 'function') {
+            controller.setStatus(undefined);
+        }
         const promise = controller.getPostsPage.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });

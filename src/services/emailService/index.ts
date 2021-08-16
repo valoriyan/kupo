@@ -1,4 +1,5 @@
 import { sign } from "jsonwebtoken";
+import { getEnvironmentVariable } from "../../utilities";
 import { singleton } from "tsyringe";
 
 export abstract class EmailService {
@@ -35,6 +36,7 @@ function generateResetPasswordToken({
 export class LocalEmailService extends EmailService {
   constructor(private jwtPrivateKey: string) {
     super();
+    this.jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   }
 
   async sendResetPasswordEmail({ userId }: { userId: string }): Promise<void> {

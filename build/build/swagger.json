@@ -158,79 +158,6 @@
                 "type": "object",
                 "additionalProperties": false
             },
-            "PostPrivacySetting": {
-                "enum": [
-                    "Tier2AndTier3"
-                ],
-                "type": "string"
-            },
-            "PostDurationSetting": {
-                "enum": [
-                    "Forever"
-                ],
-                "type": "string"
-            },
-            "CreatePostParams": {
-                "properties": {
-                    "imageId": {
-                        "type": "string"
-                    },
-                    "caption": {
-                        "type": "string"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/PostPrivacySetting"
-                    },
-                    "duration": {
-                        "$ref": "#/components/schemas/PostDurationSetting"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "price": {
-                        "type": "number",
-                        "format": "double"
-                    },
-                    "collaboratorUsernames": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array"
-                    },
-                    "scheduledPublicationTimestamp": {
-                        "type": "number",
-                        "format": "double"
-                    }
-                },
-                "required": [
-                    "imageId",
-                    "caption",
-                    "visibility",
-                    "duration",
-                    "title",
-                    "price",
-                    "collaboratorUsernames",
-                    "scheduledPublicationTimestamp"
-                ],
-                "type": "object",
-                "additionalProperties": false
-            },
-            "SecuredHTTPRequest_CreatePostParams_": {
-                "properties": {
-                    "accessToken": {
-                        "type": "string"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/CreatePostParams"
-                    }
-                },
-                "required": [
-                    "accessToken",
-                    "data"
-                ],
-                "type": "object",
-                "additionalProperties": false
-            },
             "FailedToUpdateUserSettingsResponse": {
                 "properties": {},
                 "type": "object",
@@ -674,9 +601,18 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/SecuredHTTPRequest_CreatePostParams_"
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "file"
+                                ]
                             }
                         }
                     }
