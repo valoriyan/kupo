@@ -401,6 +401,14 @@ export function RegisterRoutes(app: express.Router) {
             upload.single('file'),
             function PostController_createPost(request: any, response: any, next: any) {
             const args = {
+                    imageId: {"in":"formData","name":"imageId","required":true,"dataType":"string"},
+                    caption: {"in":"formData","name":"caption","required":true,"dataType":"string"},
+                    visibility: {"in":"formData","name":"visibility","required":true,"dataType":"string"},
+                    duration: {"in":"formData","name":"duration","required":true,"dataType":"string"},
+                    title: {"in":"formData","name":"title","required":true,"dataType":"string"},
+                    price: {"in":"formData","name":"price","required":true,"dataType":"string"},
+                    collaboratorUsernames: {"in":"formData","name":"collaboratorUsernames","required":true,"dataType":"string"},
+                    scheduledPublicationTimestamp: {"in":"formData","name":"scheduledPublicationTimestamp","required":true,"dataType":"string"},
                     file: {"in":"formData","name":"file","required":true,"dataType":"file"},
             };
 

@@ -20,6 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalEmailService = exports.EmailService = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
+const utilities_1 = require("../../utilities");
 const tsyringe_1 = require("tsyringe");
 class EmailService {
 }
@@ -35,9 +36,9 @@ function generateResetPasswordToken({ userId, jwtPrivateKey, }) {
     return jsonwebtoken_1.sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
 let LocalEmailService = class LocalEmailService extends EmailService {
-    constructor(jwtPrivateKey) {
+    constructor() {
         super();
-        this.jwtPrivateKey = jwtPrivateKey;
+        this.jwtPrivateKey = utilities_1.getEnvironmentVariable("JWT_PRIVATE_KEY");
     }
     sendResetPasswordEmail({ userId }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,6 +55,6 @@ let LocalEmailService = class LocalEmailService extends EmailService {
 };
 LocalEmailService = __decorate([
     tsyringe_1.singleton(),
-    __metadata("design:paramtypes", [String])
+    __metadata("design:paramtypes", [])
 ], LocalEmailService);
 exports.LocalEmailService = LocalEmailService;

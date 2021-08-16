@@ -22,6 +22,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostController = void 0;
+// import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 const tsoa_1 = require("tsoa");
 const tsyringe_1 = require("tsyringe");
 const blobStorageService_1 = require("src/services/blobStorageService");
@@ -38,9 +39,7 @@ let PostController = class PostController extends tsoa_1.Controller {
         super();
         this.blobStorageService = blobStorageService;
     }
-    createPost(
-    // @UploadedFiles() files: Express.Multer.File[],
-    file) {
+    createPost(imageId, caption, visibility, duration, title, price, collaboratorUsernames, scheduledPublicationTimestamp, file) {
         return __awaiter(this, void 0, void 0, function* () {
             const imageBuffer = file.buffer;
             this.blobStorageService.saveImage({ image: imageBuffer });
@@ -50,9 +49,17 @@ let PostController = class PostController extends tsoa_1.Controller {
 };
 __decorate([
     tsoa_1.Post("create"),
-    __param(0, tsoa_1.UploadedFile()),
+    __param(0, tsoa_1.FormField()),
+    __param(1, tsoa_1.FormField()),
+    __param(2, tsoa_1.FormField()),
+    __param(3, tsoa_1.FormField()),
+    __param(4, tsoa_1.FormField()),
+    __param(5, tsoa_1.FormField()),
+    __param(6, tsoa_1.FormField()),
+    __param(7, tsoa_1.FormField()),
+    __param(8, tsoa_1.UploadedFile()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, String, String, String, String, Number, Array, Number, Object]),
     __metadata("design:returntype", Promise)
 ], PostController.prototype, "createPost", null);
 PostController = __decorate([

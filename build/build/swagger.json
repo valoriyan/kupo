@@ -605,12 +605,44 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
+                                    "imageId": {
+                                        "type": "string"
+                                    },
+                                    "caption": {
+                                        "type": "string"
+                                    },
+                                    "visibility": {
+                                        "type": "string"
+                                    },
+                                    "duration": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "type": "string"
+                                    },
+                                    "collaboratorUsernames": {
+                                        "type": "string"
+                                    },
+                                    "scheduledPublicationTimestamp": {
+                                        "type": "string"
+                                    },
                                     "file": {
                                         "type": "string",
                                         "format": "binary"
                                     }
                                 },
                                 "required": [
+                                    "imageId",
+                                    "caption",
+                                    "visibility",
+                                    "duration",
+                                    "title",
+                                    "price",
+                                    "collaboratorUsernames",
+                                    "scheduledPublicationTimestamp",
                                     "file"
                                 ]
                             }

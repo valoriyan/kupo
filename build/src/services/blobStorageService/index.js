@@ -22,13 +22,14 @@ exports.LocalBlobStorageService = exports.BlobStorageService = void 0;
 const uuid_1 = require("uuid");
 const tsyringe_1 = require("tsyringe");
 const fs_1 = require("fs");
+const utilities_1 = require("../../utilities");
 class BlobStorageService {
 }
 exports.BlobStorageService = BlobStorageService;
 let LocalBlobStorageService = class LocalBlobStorageService extends BlobStorageService {
-    constructor(localBlobStorageDirectory) {
+    constructor() {
         super();
-        this.localBlobStorageDirectory = localBlobStorageDirectory;
+        this.localBlobStorageDirectory = utilities_1.getEnvironmentVariable("LOCAL_BLOB_STORAGE_DIRECTORY");
     }
     saveImage({ image }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +51,6 @@ let LocalBlobStorageService = class LocalBlobStorageService extends BlobStorageS
 };
 LocalBlobStorageService = __decorate([
     tsyringe_1.singleton(),
-    __metadata("design:paramtypes", [String])
+    __metadata("design:paramtypes", [])
 ], LocalBlobStorageService);
 exports.LocalBlobStorageService = LocalBlobStorageService;

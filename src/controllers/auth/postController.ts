@@ -32,9 +32,7 @@ interface SuccessfulPostCreationResponse {}
 @injectable()
 @Route("post")
 export class PostController extends Controller {
-  constructor(
-    private blobStorageService: LocalBlobStorageService,
-  ) {
+  constructor(private blobStorageService: LocalBlobStorageService) {
     super();
   }
 

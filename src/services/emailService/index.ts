@@ -34,9 +34,10 @@ function generateResetPasswordToken({
 
 @singleton()
 export class LocalEmailService extends EmailService {
-  constructor(private jwtPrivateKey: string) {
+  private jwtPrivateKey: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
+
+  constructor() {
     super();
-    this.jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   }
 
   async sendResetPasswordEmail({ userId }: { userId: string }): Promise<void> {

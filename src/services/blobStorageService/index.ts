@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { singleton } from "tsyringe";
 
 import { appendFileSync, unlinkSync } from "fs";
+import { getEnvironmentVariable } from "../../utilities";
 
 export interface BlobItemPointer {
   fileKey: string;
@@ -19,7 +20,9 @@ export abstract class BlobStorageService {
 
 @singleton()
 export class LocalBlobStorageService extends BlobStorageService {
-  constructor(private localBlobStorageDirectory: string) {
+  private localBlobStorageDirectory: string = getEnvironmentVariable("LOCAL_BLOB_STORAGE_DIRECTORY");
+
+  constructor() {
     super();
   }
 
