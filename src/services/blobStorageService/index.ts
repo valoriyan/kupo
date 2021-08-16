@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { singleton } from 'tsyringe';
 
 import { appendFileSync, unlinkSync } from "fs";
 
@@ -6,26 +7,28 @@ export interface BlobItemPointer {
   fileKey: string;
 }
 
-export interface BlobStorageService {
-  image: {
-    save: ({ image }: { image: Buffer }) => Promise<BlobItemPointer>;
+abstract class BlobStorageService {
+  abstract saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer>;
 
-    delete: ({
-      blobImagePointer,
-    }: {
-      blobImagePointer: BlobItemPointer;
-    }) => Promise<void>;
-  };
-}
+  abstract deleteImage({
+    blobImagePointer,
+  }: {
+    blobImagePointer: BlobItemPointer;
+  }): Promise<void>;
+};
 
-export async function generateLocalBlobStorageService({
-  localBlobStorageDirectory,
-}: {
-  localBlobStorageDirectory: string;
-}): Promise<BlobStorageService> {
-  async function saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer> {
+
+@singleton()
+export class LocalBlobStorageService extends BlobStorageService {
+  constructor(
+    private localBlobStorageDirectory: string,
+  ) {
+    super();
+  }
+
+  async saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer> {
     const fileKey = uuidv4();
-    const fileWritePath = localBlobStorageDirectory + "/" + fileKey;
+    const fileWritePath = this.localBlobStorageDirectory + "/" + fileKey;
 
     await appendFileSync(fileWritePath, image);
     return {
@@ -33,20 +36,14 @@ export async function generateLocalBlobStorageService({
     };
   }
 
-  async function deleteImage({
+  async deleteImage({
     blobImagePointer,
   }: {
     blobImagePointer: BlobItemPointer;
   }): Promise<void> {
-    const filePath = localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
+    const filePath = this.localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
     await unlinkSync(filePath);
     return;
   }
 
-  return {
-    image: {
-      save: saveImage,
-      delete: deleteImage,
-    },
-  };
 }
