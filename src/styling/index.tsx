@@ -115,7 +115,8 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       2: "4px",
       3: "8px",
       4: "16px",
-      5: "9999px", // Completely round (for circles)
+      5: "24px",
+      round: "9999px", // Completely round (for circles)
     },
     shadows: {
       0: "0 0 0 rgba(0,0,0,0.12), 0 0 0 rgba(0,0,0,0.12)",
@@ -273,7 +274,7 @@ export const darkTheme = theme("dark", {
     link: "#6fb8ff",
     linkHover: "#4ba6ff",
 
-    border: "#cacaca",
+    border: "#858585",
 
     success: "#00ff00",
     warning: "#ffff00",
