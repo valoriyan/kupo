@@ -79,8 +79,12 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     `;
             try {
                 yield datastorePool.query(queryString);
-                const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
-                return grantNewAccessToken(this, userId, jwtPrivateKey, 201);
+                return grantNewAccessToken({
+                    controller: this,
+                    userId,
+                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
+                    successStatusCode: 201,
+                });
             }
             catch (error) {
                 console.log("error", error);
@@ -110,7 +114,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                     const hasMatchedPassword = encryptPassword({ password }) === row.encryptedpassword;
                     if (hasMatchedPassword) {
                         const userId = row.id;
-                        return grantNewAccessToken(this, userId, jwtPrivateKey);
+                        return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
                     }
                 }
                 this.setStatus(401);
@@ -143,7 +147,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                 return { error: { reason: AuthFailureReason.InvalidToken } };
             }
             try {
-                return grantNewAccessToken(this, userId, jwtPrivateKey);
+                return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
             }
             catch (_b) {
                 this.setStatus(401);
@@ -206,7 +210,7 @@ AuthController = __decorate([
     __metadata("design:paramtypes", [emailService_1.LocalEmailService])
 ], AuthController);
 exports.AuthController = AuthController;
-const grantNewAccessToken = (controller, userId, jwtPrivateKey, successStatusCode = 200) => {
+const grantNewAccessToken = ({ controller, userId, jwtPrivateKey, successStatusCode = 200, }) => {
     const accessToken = authUtilities_1.generateAccessToken({
         userId,
         jwtPrivateKey,

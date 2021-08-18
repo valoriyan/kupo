@@ -238,8 +238,6 @@ const grantNewAccessToken = ({
     .toJSDate()
     .toUTCString();
 
-  console.log(tokenExpirationTime);
-
   controller.setHeader(
     "Set-Cookie",
     `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
