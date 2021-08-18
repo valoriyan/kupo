@@ -1,5 +1,4 @@
 export * from "./auth-failure-reason";
-export * from "./create-post-params";
 export * from "./default-post-privacy-setting";
 export * from "./denied-get-user-page-response";
 export * from "./denied-get-user-page-response-reason";
@@ -16,11 +15,8 @@ export * from "./httpresponse-failed-auth-response-successful-auth-response";
 export * from "./httpresponse-failed-to-create-post-response-successful-post-creation-response";
 export * from "./httpresponse-failed-to-update-user-settings-response-successful-update-to-user-settings-response";
 export * from "./login-user-params";
-export * from "./post-duration-setting";
-export * from "./post-privacy-setting";
 export * from "./register-user-params";
 export * from "./request-password-reset-params";
-export * from "./secured-httprequest-create-post-params";
 export * from "./secured-httprequest-get-user-page-params";
 export * from "./secured-httprequest-set-user-settings-params";
 export * from "./set-user-settings-params";

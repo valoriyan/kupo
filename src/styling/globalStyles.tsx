@@ -6,7 +6,6 @@ export const globalStyles = global({
     fontFamily: "Elephant",
     src: 'local("Elephant"), url("fonts/ElephantRegular.ttf")',
   },
-  "html, body, #__next": { height: "-webkit-fill-available" },
   body: {
     fontFamily: "$body !important",
     color: "$text",

@@ -242,7 +242,12 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       (config) =>
       (value: `$${keyof typeof config["theme"]["sizes"]}` | NoInfer<string>) =>
         value === "100vh"
-          ? { height: `${value}; height: -webkit-fill-available; max-height: 100vh;` }
+          ? {
+              height: value,
+              "@supports (-webkit-touch-callout: none)": {
+                height: "-webkit-fill-available",
+              },
+            }
           : { height: value },
     overflow: () => (value: OverflowProperty) =>
       value === "auto" || value === "scroll"

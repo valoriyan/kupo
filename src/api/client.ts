@@ -41,7 +41,7 @@ client.interceptors.response.use(
       toast.error(error.response.data.error.reason);
     }
 
-    if (error.status === 401) Router.push("/login");
+    if (error?.response?.status === 401) Router.push("/login");
 
     return error?.response;
   },

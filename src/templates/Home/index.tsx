@@ -1,41 +1,21 @@
-import { Button } from "#/components/Button";
-import { Box, Flex, Grid } from "#/components/Layout";
-import { logout } from "#/contexts/auth";
+import { AppLayout } from "#/components/AppLayout";
+import { Box, Stack } from "#/components/Layout";
 
 export const Home = () => {
   return (
-    <Grid
-      css={{
-        height: "100vh",
-        gridTemplateRows: "auto minmax(0, 1fr) auto",
-      }}
-    >
-      <Flex css={{ p: "$3" }}>Header</Flex>
-      <Flex
-        css={{
-          height: "100%",
-          overflow: "auto",
-          flexDirection: "column",
-          gap: "$3",
-          px: "$3",
-        }}
-      >
-        <Button size="md" variant="primary" onClick={() => logout()}>
-          Log Out
-        </Button>
+    <AppLayout>
+      <Stack css={{ gap: "$4", p: "$4" }}>
         <PlaceholderItem />
         <PlaceholderItem />
         <PlaceholderItem />
         <PlaceholderItem />
         <PlaceholderItem />
         <PlaceholderItem />
-        <PlaceholderItem />
-      </Flex>
-      <Flex css={{ p: "$3" }}>Footer</Flex>
-    </Grid>
+      </Stack>
+    </AppLayout>
   );
 };
 
 const PlaceholderItem = () => {
-  return <Box css={{ width: "100%%", minHeight: "$14", bg: "$primary" }} />;
+  return <Box css={{ width: "100%", minHeight: "$14", bg: "$background3" }} />;
 };

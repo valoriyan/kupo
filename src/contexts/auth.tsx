@@ -11,30 +11,34 @@ export const getAccessToken = async () => {
   const storedToken = storedAccessToken.get();
 
   if (storedToken) {
-    const tokenData = jwt.decode(storedToken);
-    if (!tokenData || typeof tokenData !== "object") {
-      logout();
-      return;
-    }
-    const expiresAt = new Date((tokenData.exp ?? 0) * 1000);
-    // Whether or not the token has at least a minute of life left
-    const expiresSoon = expiresAt.valueOf() - Date.now() < 1000 * 60;
+    const expiresSoon = doesTokenExpireSoon(storedToken);
 
     if (expiresSoon) {
       try {
         const newTokenResponse = await Api.refreshAccessToken();
+
+        const newTokenError = newTokenResponse.data.error;
+        if (newTokenError) {
+          logout();
+          return;
+        }
+
         const newToken = newTokenResponse.data.success?.accessToken;
         if (newToken) {
           setAccessToken(newToken);
           return newToken;
         }
+
+        return null;
       } catch {
-        return storedToken;
+        return null;
       }
     }
+
+    return storedToken;
   }
 
-  return storedToken;
+  return null;
 };
 
 export const setAccessToken = (accessToken: string) => {
@@ -45,6 +49,18 @@ export const logout = async () => {
   storedAccessToken.remove();
   await Api.logout();
   Router.push("/login");
+};
+
+const doesTokenExpireSoon = (token: string) => {
+  const tokenData = jwt.decode(token);
+  if (!tokenData || typeof tokenData !== "object") {
+    logout();
+    return;
+  }
+  const expiresAt = new Date((tokenData.exp ?? 0) * 1000);
+  // Whether or not the token has at least a minute of life left
+  const expiresSoon = expiresAt.valueOf() - Date.now() < 1000 * 60;
+  return expiresSoon;
 };
 
 export const ProtectedPage = <T extends unknown>(Component: ComponentType<T>) => {

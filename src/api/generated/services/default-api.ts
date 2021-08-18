@@ -53,8 +53,6 @@ import { RegisterUserParams } from "../types";
 // @ts-ignore
 import { RequestPasswordResetParams } from "../types";
 // @ts-ignore
-import { SecuredHTTPRequestCreatePostParams } from "../types";
-// @ts-ignore
 import { SecuredHTTPRequestGetUserPageParams } from "../types";
 // @ts-ignore
 import { SecuredHTTPRequestSetUserSettingsParams } from "../types";
@@ -66,20 +64,52 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
   return {
     /**
      *
-     * @param {SecuredHTTPRequestCreatePostParams} securedHTTPRequestCreatePostParams
+     * @param {string} imageId
+     * @param {string} caption
+     * @param {string} visibility
+     * @param {string} duration
+     * @param {string} title
+     * @param {string} price
+     * @param {string} collaboratorUsernames
+     * @param {string} scheduledPublicationTimestamp
+     * @param {any} file
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost: async (
-      securedHTTPRequestCreatePostParams: SecuredHTTPRequestCreatePostParams,
+      imageId: string,
+      caption: string,
+      visibility: string,
+      duration: string,
+      title: string,
+      price: string,
+      collaboratorUsernames: string,
+      scheduledPublicationTimestamp: string,
+      file: any,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'securedHTTPRequestCreatePostParams' is not null or undefined
+      // verify required parameter 'imageId' is not null or undefined
+      assertParamExists("createPost", "imageId", imageId);
+      // verify required parameter 'caption' is not null or undefined
+      assertParamExists("createPost", "caption", caption);
+      // verify required parameter 'visibility' is not null or undefined
+      assertParamExists("createPost", "visibility", visibility);
+      // verify required parameter 'duration' is not null or undefined
+      assertParamExists("createPost", "duration", duration);
+      // verify required parameter 'title' is not null or undefined
+      assertParamExists("createPost", "title", title);
+      // verify required parameter 'price' is not null or undefined
+      assertParamExists("createPost", "price", price);
+      // verify required parameter 'collaboratorUsernames' is not null or undefined
+      assertParamExists("createPost", "collaboratorUsernames", collaboratorUsernames);
+      // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
       assertParamExists(
         "createPost",
-        "securedHTTPRequestCreatePostParams",
-        securedHTTPRequestCreatePostParams,
+        "scheduledPublicationTimestamp",
+        scheduledPublicationTimestamp,
       );
+      // verify required parameter 'file' is not null or undefined
+      assertParamExists("createPost", "file", file);
       const localVarPath = `/post/create`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -91,8 +121,49 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
 
-      localVarHeaderParameter["Content-Type"] = "application/json";
+      if (imageId !== undefined) {
+        localVarFormParams.append("imageId", imageId as any);
+      }
+
+      if (caption !== undefined) {
+        localVarFormParams.append("caption", caption as any);
+      }
+
+      if (visibility !== undefined) {
+        localVarFormParams.append("visibility", visibility as any);
+      }
+
+      if (duration !== undefined) {
+        localVarFormParams.append("duration", duration as any);
+      }
+
+      if (title !== undefined) {
+        localVarFormParams.append("title", title as any);
+      }
+
+      if (price !== undefined) {
+        localVarFormParams.append("price", price as any);
+      }
+
+      if (collaboratorUsernames !== undefined) {
+        localVarFormParams.append("collaboratorUsernames", collaboratorUsernames as any);
+      }
+
+      if (scheduledPublicationTimestamp !== undefined) {
+        localVarFormParams.append(
+          "scheduledPublicationTimestamp",
+          scheduledPublicationTimestamp as any,
+        );
+      }
+
+      if (file !== undefined) {
+        localVarFormParams.append("file", file as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -102,11 +173,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        securedHTTPRequestCreatePostParams,
-        localVarRequestOptions,
-        configuration,
-      );
+      localVarRequestOptions.data = localVarFormParams;
 
       return {
         url: toPathString(localVarUrlObj),
@@ -426,12 +493,28 @@ export const DefaultApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @param {SecuredHTTPRequestCreatePostParams} securedHTTPRequestCreatePostParams
+     * @param {string} imageId
+     * @param {string} caption
+     * @param {string} visibility
+     * @param {string} duration
+     * @param {string} title
+     * @param {string} price
+     * @param {string} collaboratorUsernames
+     * @param {string} scheduledPublicationTimestamp
+     * @param {any} file
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createPost(
-      securedHTTPRequestCreatePostParams: SecuredHTTPRequestCreatePostParams,
+      imageId: string,
+      caption: string,
+      visibility: string,
+      duration: string,
+      title: string,
+      price: string,
+      collaboratorUsernames: string,
+      scheduledPublicationTimestamp: string,
+      file: any,
       options?: any,
     ): Promise<
       (
@@ -440,7 +523,15 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
-        securedHTTPRequestCreatePostParams,
+        imageId,
+        caption,
+        visibility,
+        duration,
+        title,
+        price,
+        collaboratorUsernames,
+        scheduledPublicationTimestamp,
+        file,
         options,
       );
       return createRequestFunction(
@@ -635,16 +726,43 @@ export const DefaultApiFactory = function (
   return {
     /**
      *
-     * @param {SecuredHTTPRequestCreatePostParams} securedHTTPRequestCreatePostParams
+     * @param {string} imageId
+     * @param {string} caption
+     * @param {string} visibility
+     * @param {string} duration
+     * @param {string} title
+     * @param {string} price
+     * @param {string} collaboratorUsernames
+     * @param {string} scheduledPublicationTimestamp
+     * @param {any} file
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost(
-      securedHTTPRequestCreatePostParams: SecuredHTTPRequestCreatePostParams,
+      imageId: string,
+      caption: string,
+      visibility: string,
+      duration: string,
+      title: string,
+      price: string,
+      collaboratorUsernames: string,
+      scheduledPublicationTimestamp: string,
+      file: any,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
       return localVarFp
-        .createPost(securedHTTPRequestCreatePostParams, options)
+        .createPost(
+          imageId,
+          caption,
+          visibility,
+          duration,
+          title,
+          price,
+          collaboratorUsernames,
+          scheduledPublicationTimestamp,
+          file,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -749,17 +867,44 @@ export const DefaultApiFactory = function (
 export class DefaultApi extends BaseAPI {
   /**
    *
-   * @param {SecuredHTTPRequestCreatePostParams} securedHTTPRequestCreatePostParams
+   * @param {string} imageId
+   * @param {string} caption
+   * @param {string} visibility
+   * @param {string} duration
+   * @param {string} title
+   * @param {string} price
+   * @param {string} collaboratorUsernames
+   * @param {string} scheduledPublicationTimestamp
+   * @param {any} file
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createPost(
-    securedHTTPRequestCreatePostParams: SecuredHTTPRequestCreatePostParams,
+    imageId: string,
+    caption: string,
+    visibility: string,
+    duration: string,
+    title: string,
+    price: string,
+    collaboratorUsernames: string,
+    scheduledPublicationTimestamp: string,
+    file: any,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .createPost(securedHTTPRequestCreatePostParams, options)
+      .createPost(
+        imageId,
+        caption,
+        visibility,
+        duration,
+        title,
+        price,
+        collaboratorUsernames,
+        scheduledPublicationTimestamp,
+        file,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
