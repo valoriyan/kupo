@@ -32,7 +32,7 @@ const database_1 = require("../../database");
 const tsoa_1 = require("tsoa");
 const authUtilities_1 = require("../../utilities/authUtilities");
 const uuid_1 = require("uuid");
-const emailService_1 = require("src/services/emailService");
+const emailService_1 = require("../../services/emailService");
 const tsyringe_1 = require("tsyringe");
 var AuthFailureReason;
 (function (AuthFailureReason) {
@@ -79,21 +79,8 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     `;
             try {
                 yield datastorePool.query(queryString);
-                const accessToken = authUtilities_1.generateAccessToken({
-                    userId,
-                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                });
-                const refreshToken = authUtilities_1.generateRefreshToken({
-                    userId,
-                    jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
-                });
-                const tokenExpirationTime = luxon_1.DateTime.now()
-                    .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
-                    .toJSDate()
-                    .toUTCString();
-                this.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`);
-                this.setStatus(201);
-                return { success: { accessToken } };
+                const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
+                return grantNewAccessToken(this, userId, jwtPrivateKey, 201);
             }
             catch (error) {
                 console.log("error", error);
@@ -219,7 +206,7 @@ AuthController = __decorate([
     __metadata("design:paramtypes", [emailService_1.LocalEmailService])
 ], AuthController);
 exports.AuthController = AuthController;
-const grantNewAccessToken = (controller, userId, jwtPrivateKey) => {
+const grantNewAccessToken = (controller, userId, jwtPrivateKey, successStatusCode = 200) => {
     const accessToken = authUtilities_1.generateAccessToken({
         userId,
         jwtPrivateKey,
@@ -229,10 +216,10 @@ const grantNewAccessToken = (controller, userId, jwtPrivateKey) => {
         jwtPrivateKey,
     });
     const tokenExpirationTime = luxon_1.DateTime.now()
-        .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME)
+        .plus(authUtilities_1.REFRESH_TOKEN_EXPIRATION_TIME * 1000)
         .toJSDate()
         .toUTCString();
     controller.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`);
-    controller.setStatus(200);
+    controller.setStatus(successStatusCode);
     return { success: { accessToken } };
 };

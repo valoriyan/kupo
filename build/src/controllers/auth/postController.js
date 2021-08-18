@@ -25,7 +25,7 @@ exports.PostController = void 0;
 // import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 const tsoa_1 = require("tsoa");
 const tsyringe_1 = require("tsyringe");
-const blobStorageService_1 = require("src/services/blobStorageService");
+const blobStorageService_1 = require("../../services/blobStorageService");
 var PostPrivacySetting;
 (function (PostPrivacySetting) {
     PostPrivacySetting["Tier2AndTier3"] = "Tier2AndTier3";

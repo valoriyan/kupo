@@ -12,7 +12,7 @@ import {
 } from "../../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { HTTPResponse } from "../../types/httpResponse";
-import { LocalEmailService } from "src/services/emailService";
+import { LocalEmailService } from "../../services/emailService";
 import { injectable } from "tsyringe";
 
 interface RegisterUserParams {
@@ -100,27 +100,12 @@ export class AuthController extends Controller {
     try {
       await datastorePool.query(queryString);
 
-      const accessToken = generateAccessToken({
+      return grantNewAccessToken({
+        controller: this,
         userId,
         jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+        successStatusCode: 201,
       });
-      const refreshToken = generateRefreshToken({
-        userId,
-        jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
-      });
-
-      const tokenExpirationTime = DateTime.now()
-        .plus(REFRESH_TOKEN_EXPIRATION_TIME)
-        .toJSDate()
-        .toUTCString();
-
-      this.setHeader(
-        "Set-Cookie",
-        `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
-      );
-
-      this.setStatus(201);
-      return { success: { accessToken } };
     } catch (error) {
       console.log("error", error);
       this.setStatus(401);
@@ -162,7 +147,7 @@ export class AuthController extends Controller {
           encryptPassword({ password }) === row.encryptedpassword;
         if (hasMatchedPassword) {
           const userId = row.id;
-          return grantNewAccessToken(this, userId, jwtPrivateKey);
+          return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
         }
       }
 
@@ -200,7 +185,7 @@ export class AuthController extends Controller {
     }
 
     try {
-      return grantNewAccessToken(this, userId, jwtPrivateKey);
+      return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
     } catch {
       this.setStatus(401);
       return { error: { reason: AuthFailureReason.TokenGenerationFailed } };
@@ -228,11 +213,17 @@ export class AuthController extends Controller {
   }
 }
 
-const grantNewAccessToken = (
-  controller: Controller,
-  userId: string,
-  jwtPrivateKey: string,
-) => {
+const grantNewAccessToken = ({
+  controller,
+  userId,
+  jwtPrivateKey,
+  successStatusCode = 200,
+}: {
+  controller: Controller;
+  userId: string;
+  jwtPrivateKey: string;
+  successStatusCode?: number;
+}) => {
   const accessToken = generateAccessToken({
     userId,
     jwtPrivateKey,
@@ -243,15 +234,17 @@ const grantNewAccessToken = (
   });
 
   const tokenExpirationTime = DateTime.now()
-    .plus(REFRESH_TOKEN_EXPIRATION_TIME)
+    .plus(REFRESH_TOKEN_EXPIRATION_TIME * 1000)
     .toJSDate()
     .toUTCString();
+
+  console.log(tokenExpirationTime);
 
   controller.setHeader(
     "Set-Cookie",
     `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
   );
 
-  controller.setStatus(200);
+  controller.setStatus(successStatusCode);
   return { success: { accessToken } };
 };
