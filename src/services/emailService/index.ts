@@ -47,8 +47,8 @@ export class LocalEmailService extends EmailService {
     });
 
     console.log(`
-            To reset password, go to http://localhost:6006/resetpassword?token=${resetPasswordToken}
-        `);
+      To reset password, go to http://localhost:6006/resetpassword?token=${resetPasswordToken}
+    `);
 
     return;
   }

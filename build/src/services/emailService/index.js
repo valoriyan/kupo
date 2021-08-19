@@ -47,8 +47,8 @@ let LocalEmailService = class LocalEmailService extends EmailService {
                 jwtPrivateKey: this.jwtPrivateKey,
             });
             console.log(`
-            To reset password, go to http://localhost:6006/resetpassword?token=${resetPasswordToken}
-        `);
+      To reset password, go to http://localhost:6006/resetpassword?token=${resetPasswordToken}
+    `);
             return;
         });
     }
