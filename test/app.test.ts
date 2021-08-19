@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../src/app";
-import { DatabaseService } from "../src/database";
+import { DatabaseService } from "../src/services/database";
 
 jest.setTimeout(100000);
 
@@ -16,7 +16,7 @@ describe("REGISTER /auth/register", () => {
     await DatabaseService.teardownDatabase();
 
     await DatabaseService.setupDatabase();
-    await DatabaseService.setupTable();
+    await DatabaseService.setupTables();
   });
 
   afterAll(async () => {

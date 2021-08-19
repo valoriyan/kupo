@@ -3,6 +3,9 @@ import { Controller, FormField, Post, Route, UploadedFile } from "tsoa";
 import { HTTPResponse } from "../types/httpResponse";
 import { injectable } from "tsyringe";
 import { LocalBlobStorageService } from "../services/blobStorageService";
+import { DatabaseService } from "src/services/databaseService";
+import { v4 as uuidv4 } from "uuid";
+import { Pool } from "pg";
 
 enum PostPrivacySetting {
   Tier2AndTier3 = "Tier2AndTier3",
@@ -12,16 +15,9 @@ enum PostDurationSetting {
   Forever = "Forever",
 }
 
-// interface CreatePostParams {
-//   imageId: string;
-//   caption: string;
-//   visibility: PostPrivacySetting;
-//   duration: PostDurationSetting;
-//   title: string;
-//   price: number;
-//   collaboratorUsernames: string[];
-//   scheduledPublicationTimestamp: number;
-// }
+enum CreatePostFailureReasons {
+  UnknownCause = "Unknown Cause",
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface FailedToCreatePostResponse {}
@@ -38,7 +34,6 @@ export class PostController extends Controller {
 
   @Post("create")
   public async createPost(
-    @FormField() imageId: string,
     @FormField() caption: string,
     @FormField() visibility: PostPrivacySetting,
     @FormField() duration: PostDurationSetting,
@@ -49,8 +44,44 @@ export class PostController extends Controller {
     @UploadedFile() file: Express.Multer.File,
     // @Body() requestBody: SecuredHTTPRequest<CreatePostParams>,
   ): Promise<HTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
+    const imageId = uuidv4();
+
+
     const imageBuffer: Buffer = file.buffer;
-    this.blobStorageService.saveImage({ image: imageBuffer });
-    return {};
+
+    const {fileKey: imageBlobFilekey} = await this.blobStorageService.saveImage({ image: imageBuffer });
+
+    const datastorePool: Pool = await DatabaseService.get();
+
+    const queryString = `
+      INSERT INTO ${DatabaseService.postsTableName}(
+        image_id,
+        caption,
+        image_blob_filekey,
+        title,
+        price,
+        scheduled_publication_timestamp
+      )
+      VALUES (
+        '${imageId}',
+        '${caption}',
+        '${imageBlobFilekey}',
+        '${title}',
+        '${price}',
+        '${scheduledPublicationTimestamp}'
+      )
+      ;
+    `;
+
+    try {
+      await datastorePool.query(queryString);
+      return {};
+    } catch (error) {
+      console.log("error", error);
+      this.setStatus(401);
+      return { error: { reason: CreatePostFailureReasons.UnknownCause } };
+    }
+
+
   }
 }

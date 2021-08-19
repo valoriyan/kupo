@@ -28,7 +28,7 @@ exports.AuthController = exports.AuthFailureReason = void 0;
 const crypto_js_1 = require("crypto-js");
 const express_1 = __importDefault(require("express"));
 const luxon_1 = require("luxon");
-const database_1 = require("../../database");
+const databaseService_1 = require("../../services/databaseService");
 const tsoa_1 = require("tsoa");
 const authUtilities_1 = require("../../utilities/authUtilities");
 const uuid_1 = require("uuid");
@@ -60,10 +60,10 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = uuid_1.v4();
             const { email, username, password } = requestBody;
-            const datastorePool = yield database_1.DatabaseService.get();
+            const datastorePool = yield databaseService_1.DatabaseService.get();
             const encryptedPassword = encryptPassword({ password });
             const queryString = `
-      INSERT INTO playhousedevtable(
+      INSERT INTO ${databaseService_1.DatabaseService.userTableName}(
         id,
         email,
         username,
@@ -97,13 +97,13 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         return __awaiter(this, void 0, void 0, function* () {
             const { username, password } = requestBody;
             const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
-            const datastorePool = yield database_1.DatabaseService.get();
+            const datastorePool = yield databaseService_1.DatabaseService.get();
             try {
                 const queryString = `
         SELECT
           *
         FROM
-          playhousedevtable
+          ${databaseService_1.DatabaseService.userTableName}
         WHERE
           username = '${username}';
       `;
@@ -157,7 +157,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     }
     requestPasswordReset(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(requestBody);
+            this.localEmailService.sendResetPasswordEmail({ userId: requestBody.email });
             return {
                 success: {},
             };

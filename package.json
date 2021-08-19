@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "build/src/server.js",
   "scripts": {
+    "setupDatabase": "tsc && node build/src/setup/index.js",
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "build": "tsoa spec-and-routes && tsc",
     "start": "node build/src/server.js",

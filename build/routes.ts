@@ -3,7 +3,7 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AuthController } from './../src/controllers/authController';
+import { AuthController } from './../src/controllers/auth/authController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PostController } from './../src/controllers/postController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -401,7 +401,6 @@ export function RegisterRoutes(app: express.Router) {
             upload.single('file'),
             function PostController_createPost(request: any, response: any, next: any) {
             const args = {
-                    imageId: {"in":"formData","name":"imageId","required":true,"dataType":"string"},
                     caption: {"in":"formData","name":"caption","required":true,"dataType":"string"},
                     visibility: {"in":"formData","name":"visibility","required":true,"dataType":"string"},
                     duration: {"in":"formData","name":"duration","required":true,"dataType":"string"},

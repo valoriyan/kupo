@@ -1,8 +1,13 @@
 import { Pool, QueryResult } from "pg";
+import { singleton } from "tsyringe";
 
+@singleton()
 export class DatabaseService {
   static databaseName = process.env.DATABASE_NAME;
-  static tableName = "playhousedevtable";
+  
+  static tableNamePrefix = "playhouse";
+  static userTableName = `${DatabaseService.tableNamePrefix}_users`;
+  static postsTableName = `${DatabaseService.tableNamePrefix}_posts`;
 
   static datastorePool: Pool;
 
@@ -37,12 +42,13 @@ export class DatabaseService {
     await temporaryPool.end();
   }
 
-  static async setupTable(): Promise<void> {
+  static async setupTables(): Promise<void> {
+
     const temporaryPool = new Pool({
       database: DatabaseService.databaseName,
     });
     await temporaryPool.query(`
-      CREATE TABLE IF NOT EXISTS ${DatabaseService.tableName} (
+      CREATE TABLE IF NOT EXISTS ${DatabaseService.userTableName} (
         id VARCHAR(64) UNIQUE NOT NULL,
         email VARCHAR(64) UNIQUE NOT NULL,
         username VARCHAR(64) UNIQUE NOT NULL,
@@ -50,7 +56,19 @@ export class DatabaseService {
       );
     `);
 
+    await temporaryPool.query(`
+      CREATE TABLE IF NOT EXISTS ${DatabaseService.postsTableName} (
+        image_id VARCHAR(64) UNIQUE NOT NULL,
+        caption VARCHAR(256) NOT NULL,
+        image_blob_filekey VARCHAR(128) NOT NULL,
+        title VARCHAR(128) NOT NULL,
+        price DECIMAL(12,2) NOT NULL,
+        scheduled_publication_timestamp BIGINT NOT NULL
+      );
+    `);
+
     await temporaryPool.end();
+
   }
 
   static async teardownDatabase(): Promise<void> {
@@ -69,14 +87,14 @@ export class DatabaseService {
     await temporaryPool.end();
   }
 
-  static async teardownTable(): Promise<void> {
+  static async teardownTables(): Promise<void> {
     const databaseExists = await DatabaseService.doesDatabaseExist();
     if (!databaseExists) return;
 
     const temporaryPool = new Pool();
 
     const queryString = `
-      DROP TABLE IF EXISTS ${DatabaseService.tableName};
+      DROP TABLE IF EXISTS ${DatabaseService.userTableName};
     `;
 
     await temporaryPool.query(queryString);

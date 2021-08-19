@@ -11,6 +11,8 @@ export interface BlobItemPointer {
 export abstract class BlobStorageService {
   abstract saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer>;
 
+  abstract getTemporaryImageUrl({ blobItemPointer }: { blobItemPointer: BlobItemPointer }): Promise<string>;
+
   abstract deleteImage({
     blobImagePointer,
   }: {
@@ -37,6 +39,12 @@ export class LocalBlobStorageService extends BlobStorageService {
       fileKey,
     };
   }
+
+  async getTemporaryImageUrl({ blobItemPointer }: { blobItemPointer: BlobItemPointer }): Promise<string> {
+    const fileWritePath = this.localBlobStorageDirectory + "/" + blobItemPointer.fileKey;
+    return fileWritePath;
+  };
+
 
   async deleteImage({
     blobImagePointer,

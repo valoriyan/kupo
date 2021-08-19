@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
-import { AuthFailureReason, FailedAuthResponse } from "../controllers/authController";
+import { AuthFailureReason, FailedAuthResponse } from "../controllers/auth/authController";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 5 * 60; // five minutes

@@ -605,9 +605,6 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"imageId": {
-										"type": "string"
-									},
 									"caption": {
 										"type": "string"
 									},
@@ -635,7 +632,6 @@
 									}
 								},
 								"required": [
-									"imageId",
 									"caption",
 									"visibility",
 									"duration",
