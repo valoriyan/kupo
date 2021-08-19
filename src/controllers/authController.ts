@@ -2,17 +2,17 @@ import { MD5 } from "crypto-js";
 import express from "express";
 import { DateTime } from "luxon";
 import { Pool, QueryResult } from "pg";
-import { DatabaseService } from "../../database";
+import { DatabaseService } from "../database";
 import { Body, Controller, Get, Post, Request, Route } from "tsoa";
 import {
   generateAccessToken,
   generateRefreshToken,
   REFRESH_TOKEN_EXPIRATION_TIME,
   validateTokenAndGetUserId,
-} from "../../utilities/authUtilities";
+} from "../utilities/authUtilities";
 import { v4 as uuidv4 } from "uuid";
-import { HTTPResponse } from "../../types/httpResponse";
-import { LocalEmailService } from "src/services/emailService";
+import { HTTPResponse } from "../types/httpResponse";
+import { LocalEmailService } from "../services/emailService";
 import { injectable } from "tsyringe";
 
 interface RegisterUserParams {

@@ -1,8 +1,8 @@
 // import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 import { Controller, FormField, Post, Route, UploadedFile } from "tsoa";
-import { HTTPResponse } from "../../types/httpResponse";
+import { HTTPResponse } from "../types/httpResponse";
 import { injectable } from "tsyringe";
-import { LocalBlobStorageService } from "src/services/blobStorageService";
+import { LocalBlobStorageService } from "../services/blobStorageService";
 
 enum PostPrivacySetting {
   Tier2AndTier3 = "Tier2AndTier3",

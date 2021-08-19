@@ -1,5 +1,5 @@
-import { HTTPResponse } from "../../types/httpResponse";
-import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
+import { HTTPResponse } from "../types/httpResponse";
+import { SecuredHTTPRequest } from "../types/SecuredHTTPRequest";
 import { Body, Controller, Post, Route } from "tsoa";
 
 enum DefaultPostPrivacySetting {

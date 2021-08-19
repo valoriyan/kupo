@@ -3,11 +3,11 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AuthController } from './../src/controllers/auth/authController';
+import { AuthController } from './../src/controllers/authController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { PostController } from './../src/controllers/auth/postController';
+import { PostController } from './../src/controllers/postController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { UserPageController } from './../src/controllers/auth/userPageController';
+import { UserPageController } from './../src/controllers/userPageController';
 import { iocContainer } from './../src/inversionOfControl';
 import { IocContainer, IocContainerFactory } from '@tsoa/runtime';
 import * as express from 'express';

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
