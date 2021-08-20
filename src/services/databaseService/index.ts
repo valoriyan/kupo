@@ -1,15 +1,31 @@
 import { Pool, QueryResult } from "pg";
 import { singleton } from "tsyringe";
+import { DATABASE_NAME, DATABASE_TABLE_NAMES } from "./config";
+import { setupTables } from "./setupTables";
+import { PostsTableService } from "./tableServices/postsTableService";
+import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
+import { UsersTableService } from "./tableServices/usersTableService";
 
 @singleton()
 export class DatabaseService {
-  static databaseName = process.env.DATABASE_NAME;
-  
-  static tableNamePrefix = "playhouse";
-  static userTableName = `${DatabaseService.tableNamePrefix}_users`;
-  static postsTableName = `${DatabaseService.tableNamePrefix}_posts`;
-
   static datastorePool: Pool;
+
+  public usersTableService: UsersTableService = new UsersTableService(
+    DatabaseService.datastorePool,
+  );
+  public postsTableService: PostsTableService = new PostsTableService(
+    DatabaseService.datastorePool,
+  );
+  public userFollowsTableService: UserFollowsTableService = new UserFollowsTableService(
+    DatabaseService.datastorePool,
+  );
+
+  static async start(): Promise<void> {
+    console.log("STARTING DATABASE SERVICE");
+    DatabaseService.datastorePool = new Pool({
+      database: DATABASE_NAME,
+    });
+  }
 
   static async doesDatabaseExist(): Promise<boolean> {
     const temporaryPool = new Pool();
@@ -21,7 +37,7 @@ export class DatabaseService {
 
     const databaseExists: boolean = response.rows.some(
       (row: { datname: string }): boolean => {
-        return row.datname === DatabaseService.databaseName;
+        return row.datname === DATABASE_NAME;
       },
     );
     await temporaryPool.end();
@@ -36,46 +52,21 @@ export class DatabaseService {
 
     if (!databaseExists) {
       await temporaryPool.query(`
-        CREATE DATABASE ${DatabaseService.databaseName};
+        CREATE DATABASE ${DATABASE_NAME};
       `);
     }
     await temporaryPool.end();
   }
 
   static async setupTables(): Promise<void> {
-
-    const temporaryPool = new Pool({
-      database: DatabaseService.databaseName,
-    });
-    await temporaryPool.query(`
-      CREATE TABLE IF NOT EXISTS ${DatabaseService.userTableName} (
-        id VARCHAR(64) UNIQUE NOT NULL,
-        email VARCHAR(64) UNIQUE NOT NULL,
-        username VARCHAR(64) UNIQUE NOT NULL,
-        encryptedpassword VARCHAR(64) NOT NULL
-      );
-    `);
-
-    await temporaryPool.query(`
-      CREATE TABLE IF NOT EXISTS ${DatabaseService.postsTableName} (
-        image_id VARCHAR(64) UNIQUE NOT NULL,
-        caption VARCHAR(256) NOT NULL,
-        image_blob_filekey VARCHAR(128) NOT NULL,
-        title VARCHAR(128) NOT NULL,
-        price DECIMAL(12,2) NOT NULL,
-        scheduled_publication_timestamp BIGINT NOT NULL
-      );
-    `);
-
-    await temporaryPool.end();
-
+    await setupTables();
   }
 
   static async teardownDatabase(): Promise<void> {
     const temporaryPool = new Pool();
 
     const queryString = `
-      DROP DATABASE IF EXISTS ${DatabaseService.databaseName} WITH (FORCE);
+      DROP DATABASE IF EXISTS ${DATABASE_NAME} WITH (FORCE);
     `;
 
     try {
@@ -94,7 +85,7 @@ export class DatabaseService {
     const temporaryPool = new Pool();
 
     const queryString = `
-      DROP TABLE IF EXISTS ${DatabaseService.userTableName};
+      DROP TABLE IF EXISTS ${DATABASE_TABLE_NAMES.users};
     `;
 
     await temporaryPool.query(queryString);
@@ -105,10 +96,12 @@ export class DatabaseService {
   static async get(): Promise<Pool> {
     if (!DatabaseService.datastorePool) {
       DatabaseService.datastorePool = new Pool({
-        database: DatabaseService.databaseName,
+        database: DATABASE_NAME,
       });
     }
 
     return this.datastorePool;
   }
 }
+
+DatabaseService.get();

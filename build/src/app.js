@@ -38,6 +38,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_1 = __importDefault(require("express"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const routes_1 = require("../build/routes");
+const databaseService_1 = require("./services/databaseService");
 exports.app = express_1.default();
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use(express_1.default.json()); // To parse the incoming requests with JSON payloads
@@ -62,3 +63,4 @@ exports.app.use((err, req, res) => {
     };
     res.status(status).json(body);
 });
+databaseService_1.DatabaseService.start();

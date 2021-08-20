@@ -22,11 +22,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostController = void 0;
-// import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 const tsoa_1 = require("tsoa");
 const tsyringe_1 = require("tsyringe");
 const blobStorageService_1 = require("../services/blobStorageService");
-const databaseService_1 = require("src/services/databaseService");
+const databaseService_1 = require("../services/databaseService");
 const uuid_1 = require("uuid");
 var PostPrivacySetting;
 (function (PostPrivacySetting) {
@@ -41,37 +40,22 @@ var CreatePostFailureReasons;
     CreatePostFailureReasons["UnknownCause"] = "Unknown Cause";
 })(CreatePostFailureReasons || (CreatePostFailureReasons = {}));
 let PostController = class PostController extends tsoa_1.Controller {
-    constructor(blobStorageService) {
+    constructor(blobStorageService, databaseService) {
         super();
         this.blobStorageService = blobStorageService;
+        this.databaseService = databaseService;
     }
     createPost(caption, visibility, duration, title, price, collaboratorUsernames, scheduledPublicationTimestamp, file) {
         return __awaiter(this, void 0, void 0, function* () {
             const imageId = uuid_1.v4();
             const imageBuffer = file.buffer;
-            const { fileKey: imageBlobFilekey } = yield this.blobStorageService.saveImage({ image: imageBuffer });
-            const datastorePool = yield databaseService_1.DatabaseService.get();
-            const queryString = `
-      INSERT INTO ${databaseService_1.DatabaseService.postsTableName}(
-        image_id,
-        caption,
-        image_blob_filekey,
-        title,
-        price,
-        scheduled_publication_timestamp
-      )
-      VALUES (
-        '${imageId}',
-        '${caption}',
-        '${imageBlobFilekey}',
-        '${title}',
-        '${price}',
-        '${scheduledPublicationTimestamp}'
-      )
-      ;
-    `;
+            const { fileKey: imageBlobFilekey } = yield this.blobStorageService.saveImage({
+                image: imageBuffer,
+            });
             try {
-                yield datastorePool.query(queryString);
+                yield this.databaseService.postsTableService.createPost({
+                    imageId, caption, imageBlobFilekey, title, price, scheduledPublicationTimestamp,
+                });
                 return {};
             }
             catch (error) {
@@ -99,6 +83,7 @@ __decorate([
 PostController = __decorate([
     tsyringe_1.injectable(),
     tsoa_1.Route("post"),
-    __metadata("design:paramtypes", [blobStorageService_1.LocalBlobStorageService])
+    __metadata("design:paramtypes", [blobStorageService_1.LocalBlobStorageService,
+        databaseService_1.DatabaseService])
 ], PostController);
 exports.PostController = PostController;

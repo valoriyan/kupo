@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "../build/routes";
+import { DatabaseService } from "./services/databaseService";
 
 export const app = express();
 
@@ -34,3 +35,5 @@ app.use((err: any, req: express.Request, res: express.Response) => {
   };
   res.status(status).json(body);
 });
+
+DatabaseService.start();

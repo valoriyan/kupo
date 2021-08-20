@@ -1,11 +1,9 @@
-// import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 import { Controller, FormField, Post, Route, UploadedFile } from "tsoa";
 import { HTTPResponse } from "../types/httpResponse";
 import { injectable } from "tsyringe";
 import { LocalBlobStorageService } from "../services/blobStorageService";
-import { DatabaseService } from "src/services/databaseService";
+import { DatabaseService } from "../services/databaseService";
 import { v4 as uuidv4 } from "uuid";
-import { Pool } from "pg";
 
 enum PostPrivacySetting {
   Tier2AndTier3 = "Tier2AndTier3",
@@ -28,7 +26,10 @@ interface SuccessfulPostCreationResponse {}
 @injectable()
 @Route("post")
 export class PostController extends Controller {
-  constructor(private blobStorageService: LocalBlobStorageService) {
+  constructor(
+    private blobStorageService: LocalBlobStorageService,
+    private databaseService: DatabaseService,
+  ) {
     super();
   }
 
@@ -46,42 +47,26 @@ export class PostController extends Controller {
   ): Promise<HTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
     const imageId = uuidv4();
 
-
     const imageBuffer: Buffer = file.buffer;
 
-    const {fileKey: imageBlobFilekey} = await this.blobStorageService.saveImage({ image: imageBuffer });
-
-    const datastorePool: Pool = await DatabaseService.get();
-
-    const queryString = `
-      INSERT INTO ${DatabaseService.postsTableName}(
-        image_id,
-        caption,
-        image_blob_filekey,
-        title,
-        price,
-        scheduled_publication_timestamp
-      )
-      VALUES (
-        '${imageId}',
-        '${caption}',
-        '${imageBlobFilekey}',
-        '${title}',
-        '${price}',
-        '${scheduledPublicationTimestamp}'
-      )
-      ;
-    `;
+    const { fileKey: imageBlobFilekey } = await this.blobStorageService.saveImage({
+      image: imageBuffer,
+    });
 
     try {
-      await datastorePool.query(queryString);
+      await this.databaseService.postsTableService.createPost({
+        imageId,
+        caption,
+        imageBlobFilekey,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+      });
       return {};
     } catch (error) {
       console.log("error", error);
       this.setStatus(401);
       return { error: { reason: CreatePostFailureReasons.UnknownCause } };
     }
-
-
   }
 }

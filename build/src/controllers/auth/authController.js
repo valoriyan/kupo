@@ -25,12 +25,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = exports.AuthFailureReason = void 0;
-const crypto_js_1 = require("crypto-js");
 const express_1 = __importDefault(require("express"));
 const luxon_1 = require("luxon");
 const databaseService_1 = require("../../services/databaseService");
 const tsoa_1 = require("tsoa");
-const authUtilities_1 = require("../../utilities/authUtilities");
+const authUtilities_1 = require("./authUtilities");
 const uuid_1 = require("uuid");
 const emailService_1 = require("../../services/emailService");
 const tsyringe_1 = require("tsyringe");
@@ -47,38 +46,24 @@ var DeniedPasswordResetResponseReason;
 (function (DeniedPasswordResetResponseReason) {
     DeniedPasswordResetResponseReason["TooManyAttempts"] = "Too Many Attempts";
 })(DeniedPasswordResetResponseReason || (DeniedPasswordResetResponseReason = {}));
-function encryptPassword({ password }) {
-    const salt = process.env.SALT;
-    return crypto_js_1.MD5(salt + password).toString();
-}
 let AuthController = class AuthController extends tsoa_1.Controller {
-    constructor(localEmailService) {
+    constructor(localEmailService, databaseService) {
         super();
         this.localEmailService = localEmailService;
+        this.databaseService = databaseService;
     }
     registerUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = uuid_1.v4();
             const { email, username, password } = requestBody;
-            const datastorePool = yield databaseService_1.DatabaseService.get();
-            const encryptedPassword = encryptPassword({ password });
-            const queryString = `
-      INSERT INTO ${databaseService_1.DatabaseService.userTableName}(
-        id,
-        email,
-        username,
-        encryptedpassword
-      )
-      VALUES (
-        '${userId}',
-        '${email}',
-        '${username}',
-        '${encryptedPassword}'
-      )
-      ;
-    `;
+            const encryptedPassword = authUtilities_1.encryptPassword({ password });
             try {
-                yield datastorePool.query(queryString);
+                this.databaseService.usersTableService.createUser({
+                    userId,
+                    email,
+                    username,
+                    encryptedPassword
+                });
                 return grantNewAccessToken({
                     controller: this,
                     userId,
@@ -97,23 +82,12 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         return __awaiter(this, void 0, void 0, function* () {
             const { username, password } = requestBody;
             const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
-            const datastorePool = yield databaseService_1.DatabaseService.get();
             try {
-                const queryString = `
-        SELECT
-          *
-        FROM
-          ${databaseService_1.DatabaseService.userTableName}
-        WHERE
-          username = '${username}';
-      `;
-                const response = yield datastorePool.query(queryString);
-                const rows = response.rows;
-                if (rows.length === 1) {
-                    const row = rows[0];
-                    const hasMatchedPassword = encryptPassword({ password }) === row.encryptedpassword;
+                const user = yield this.databaseService.usersTableService.selectUserByUsername({ username });
+                if (user) {
+                    const hasMatchedPassword = authUtilities_1.encryptPassword({ password }) === user.encryptedpassword;
                     if (hasMatchedPassword) {
-                        const userId = row.id;
+                        const userId = user.id;
                         return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
                     }
                 }
@@ -207,10 +181,11 @@ __decorate([
 AuthController = __decorate([
     tsyringe_1.injectable(),
     tsoa_1.Route("auth"),
-    __metadata("design:paramtypes", [emailService_1.LocalEmailService])
+    __metadata("design:paramtypes", [emailService_1.LocalEmailService,
+        databaseService_1.DatabaseService])
 ], AuthController);
 exports.AuthController = AuthController;
-const grantNewAccessToken = ({ controller, userId, jwtPrivateKey, successStatusCode = 200, }) => {
+function grantNewAccessToken({ controller, userId, jwtPrivateKey, successStatusCode = 200, }) {
     const accessToken = authUtilities_1.generateAccessToken({
         userId,
         jwtPrivateKey,
@@ -226,4 +201,5 @@ const grantNewAccessToken = ({ controller, userId, jwtPrivateKey, successStatusC
     controller.setHeader("Set-Cookie", `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`);
     controller.setStatus(successStatusCode);
     return { success: { accessToken } };
-};
+}
+;

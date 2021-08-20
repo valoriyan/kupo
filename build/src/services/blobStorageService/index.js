@@ -41,13 +41,12 @@ let LocalBlobStorageService = class LocalBlobStorageService extends BlobStorageS
             };
         });
     }
-    getTemporaryImageUrl({ blobItemPointer }) {
+    getTemporaryImageUrl({ blobItemPointer, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const fileWritePath = this.localBlobStorageDirectory + "/" + blobItemPointer.fileKey;
             return fileWritePath;
         });
     }
-    ;
     deleteImage({ blobImagePointer, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const filePath = this.localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
