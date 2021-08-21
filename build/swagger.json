@@ -233,16 +233,17 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"DeniedGetUserPageResponseReason": {
+			"DeniedGetUserProfileResponseReason": {
 				"enum": [
-					"Blocked"
+					"Blocked",
+					"User Not Found"
 				],
 				"type": "string"
 			},
-			"DeniedGetUserPageResponse": {
+			"DeniedGetUserProfileResponse": {
 				"properties": {
 					"reason": {
-						"$ref": "#/components/schemas/DeniedGetUserPageResponseReason"
+						"$ref": "#/components/schemas/DeniedGetUserProfileResponseReason"
 					}
 				},
 				"required": [
@@ -341,7 +342,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"SuccessfulGetUserPageResponse": {
+			"SuccessfulGetUserProfileResponse": {
 				"properties": {
 					"username": {
 						"type": "string"
@@ -410,43 +411,22 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"HTTPResponse_DeniedGetUserPageResponse.SuccessfulGetUserPageResponse_": {
+			"SecuredHTTPResponse_DeniedGetUserProfileResponse.SuccessfulGetUserProfileResponse_": {
 				"properties": {
 					"error": {
-						"$ref": "#/components/schemas/DeniedGetUserPageResponse"
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/DeniedGetUserProfileResponse"
+							},
+							{
+								"$ref": "#/components/schemas/FailedAuthResponse"
+							}
+						]
 					},
 					"success": {
-						"$ref": "#/components/schemas/SuccessfulGetUserPageResponse"
+						"$ref": "#/components/schemas/SuccessfulGetUserProfileResponse"
 					}
 				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"GetUserPageParams": {
-				"properties": {
-					"username": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"username"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"SecuredHTTPRequest_GetUserPageParams_": {
-				"properties": {
-					"accessToken": {
-						"type": "string"
-					},
-					"data": {
-						"$ref": "#/components/schemas/GetUserPageParams"
-					}
-				},
-				"required": [
-					"accessToken",
-					"data"
-				],
 				"type": "object",
 				"additionalProperties": false
 			}
@@ -676,33 +656,23 @@
 				}
 			}
 		},
-		"/user/GetPosts": {
+		"/user/GeUserProfile": {
 			"post": {
-				"operationId": "GetPostsPage",
+				"operationId": "GetUserProfile",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/HTTPResponse_DeniedGetUserPageResponse.SuccessfulGetUserPageResponse_"
+									"$ref": "#/components/schemas/SecuredHTTPResponse_DeniedGetUserProfileResponse.SuccessfulGetUserProfileResponse_"
 								}
 							}
 						}
 					}
 				},
 				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/SecuredHTTPRequest_GetUserPageParams_"
-							}
-						}
-					}
-				}
+				"parameters": []
 			}
 		}
 	},

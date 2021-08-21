@@ -66,4 +66,35 @@ export class UsersTableService {
 
     return rows[0];
   }
+
+  public async selectUserByUserId({ userId }: { userId: string }): Promise<
+    | {
+        id: string;
+        email: string;
+        username: string;
+      }
+    | undefined
+  > {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${DATABASE_TABLE_NAMES.users}
+        WHERE
+          id = '${userId}'
+        LIMIT
+          1
+        ;
+      `;
+
+    const response: QueryResult<{
+      id: string;
+      email: string;
+      username: string;
+    }> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    return rows[0];
+  }
 }

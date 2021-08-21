@@ -54,7 +54,12 @@ let PostController = class PostController extends tsoa_1.Controller {
             });
             try {
                 yield this.databaseService.postsTableService.createPost({
-                    imageId, caption, imageBlobFilekey, title, price, scheduledPublicationTimestamp,
+                    imageId,
+                    caption,
+                    imageBlobFilekey,
+                    title,
+                    price,
+                    scheduledPublicationTimestamp,
                 });
                 return {};
             }

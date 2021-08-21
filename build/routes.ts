@@ -175,15 +175,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "DeniedGetUserPageResponseReason": {
+    "DeniedGetUserProfileResponseReason": {
         "dataType": "refEnum",
-        "enums": ["Blocked"],
+        "enums": ["Blocked","User Not Found"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "DeniedGetUserPageResponse": {
+    "DeniedGetUserProfileResponse": {
         "dataType": "refObject",
         "properties": {
-            "reason": {"ref":"DeniedGetUserPageResponseReason","required":true},
+            "reason": {"ref":"DeniedGetUserProfileResponseReason","required":true},
         },
         "additionalProperties": false,
     },
@@ -213,7 +213,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SuccessfulGetUserPageResponse": {
+    "SuccessfulGetUserProfileResponse": {
         "dataType": "refObject",
         "properties": {
             "username": {"dataType":"string","required":true},
@@ -227,28 +227,11 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "HTTPResponse_DeniedGetUserPageResponse.SuccessfulGetUserPageResponse_": {
+    "SecuredHTTPResponse_DeniedGetUserProfileResponse.SuccessfulGetUserProfileResponse_": {
         "dataType": "refObject",
         "properties": {
-            "error": {"ref":"DeniedGetUserPageResponse"},
-            "success": {"ref":"SuccessfulGetUserPageResponse"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "GetUserPageParams": {
-        "dataType": "refObject",
-        "properties": {
-            "username": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SecuredHTTPRequest_GetUserPageParams_": {
-        "dataType": "refObject",
-        "properties": {
-            "accessToken": {"dataType":"string","required":true},
-            "data": {"ref":"GetUserPageParams","required":true},
+            "error": {"dataType":"union","subSchemas":[{"ref":"DeniedGetUserProfileResponse"},{"ref":"FailedAuthResponse"}]},
+            "success": {"ref":"SuccessfulGetUserProfileResponse"},
         },
         "additionalProperties": false,
     },
@@ -264,7 +247,8 @@ export function RegisterRoutes(app: express.Router) {
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
         app.post('/auth/register',
-            function AuthController_registerUser(request: any, response: any, next: any) {
+
+            async function AuthController_registerUser(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"RegisterUserParams"},
             };
@@ -280,7 +264,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<AuthController>(AuthController);
+            const controller: any = await container.get<AuthController>(AuthController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -291,7 +275,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/auth/login',
-            function AuthController_loginUser(request: any, response: any, next: any) {
+
+            async function AuthController_loginUser(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"LoginUserParams"},
             };
@@ -307,7 +292,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<AuthController>(AuthController);
+            const controller: any = await container.get<AuthController>(AuthController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -318,7 +303,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/auth/refresh-access-token',
-            function AuthController_refreshAccessToken(request: any, response: any, next: any) {
+
+            async function AuthController_refreshAccessToken(request: any, response: any, next: any) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
@@ -334,7 +320,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<AuthController>(AuthController);
+            const controller: any = await container.get<AuthController>(AuthController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -345,7 +331,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/auth/resetPassword',
-            function AuthController_requestPasswordReset(request: any, response: any, next: any) {
+
+            async function AuthController_requestPasswordReset(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"RequestPasswordResetParams"},
             };
@@ -361,7 +348,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<AuthController>(AuthController);
+            const controller: any = await container.get<AuthController>(AuthController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -372,7 +359,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/auth/logout',
-            function AuthController_logout(request: any, response: any, next: any) {
+
+            async function AuthController_logout(request: any, response: any, next: any) {
             const args = {
             };
 
@@ -387,7 +375,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<AuthController>(AuthController);
+            const controller: any = await container.get<AuthController>(AuthController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -399,7 +387,8 @@ export function RegisterRoutes(app: express.Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/post/create',
             upload.single('file'),
-            function PostController_createPost(request: any, response: any, next: any) {
+
+            async function PostController_createPost(request: any, response: any, next: any) {
             const args = {
                     caption: {"in":"formData","name":"caption","required":true,"dataType":"string"},
                     visibility: {"in":"formData","name":"visibility","required":true,"dataType":"string"},
@@ -422,7 +411,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<PostController>(PostController);
+            const controller: any = await container.get<PostController>(PostController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -433,7 +422,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/user/SetSettings',
-            function UserPageController_setUserSettings(request: any, response: any, next: any) {
+
+            async function UserPageController_setUserSettings(request: any, response: any, next: any) {
             const args = {
                     requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_SetUserSettingsParams_"},
             };
@@ -449,7 +439,7 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<UserPageController>(UserPageController);
+            const controller: any = await container.get<UserPageController>(UserPageController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -459,10 +449,11 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/user/GetPosts',
-            function UserPageController_getPostsPage(request: any, response: any, next: any) {
+        app.post('/user/GeUserProfile',
+
+            async function UserPageController_getUserProfile(request: any, response: any, next: any) {
             const args = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_GetUserPageParams_"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -476,13 +467,13 @@ export function RegisterRoutes(app: express.Router) {
 
             const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
 
-            const controller: any = container.get<UserPageController>(UserPageController);
+            const controller: any = await container.get<UserPageController>(UserPageController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
 
 
-            const promise = controller.getPostsPage.apply(controller, validatedArgs as any);
+            const promise = controller.getUserProfile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

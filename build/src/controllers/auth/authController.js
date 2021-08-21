@@ -62,7 +62,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
                     userId,
                     email,
                     username,
-                    encryptedPassword
+                    encryptedPassword,
                 });
                 return grantNewAccessToken({
                     controller: this,
@@ -83,7 +83,9 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             const { username, password } = requestBody;
             const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
             try {
-                const user = yield this.databaseService.usersTableService.selectUserByUsername({ username });
+                const user = yield this.databaseService.usersTableService.selectUserByUsername({
+                    username,
+                });
                 if (user) {
                     const hasMatchedPassword = authUtilities_1.encryptPassword({ password }) === user.encryptedpassword;
                     if (hasMatchedPassword) {
@@ -202,4 +204,3 @@ function grantNewAccessToken({ controller, userId, jwtPrivateKey, successStatusC
     controller.setStatus(successStatusCode);
     return { success: { accessToken } };
 }
-;

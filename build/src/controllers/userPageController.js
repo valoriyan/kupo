@@ -20,37 +20,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserPageController = void 0;
+const express_1 = __importDefault(require("express"));
 const tsoa_1 = require("tsoa");
+const tsyringe_1 = require("tsyringe");
+const databaseService_1 = require("../services/databaseService");
+const authUtilities_1 = require("./auth/authUtilities");
 var DefaultPostPrivacySetting;
 (function (DefaultPostPrivacySetting) {
     DefaultPostPrivacySetting["PublicAndGuestCheckout"] = "PublicAndGuestCheckout";
 })(DefaultPostPrivacySetting || (DefaultPostPrivacySetting = {}));
-var DeniedGetUserPageResponseReason;
-(function (DeniedGetUserPageResponseReason) {
-    DeniedGetUserPageResponseReason["Blocked"] = "Blocked";
-})(DeniedGetUserPageResponseReason || (DeniedGetUserPageResponseReason = {}));
+var DeniedGetUserProfileResponseReason;
+(function (DeniedGetUserProfileResponseReason) {
+    DeniedGetUserProfileResponseReason["Blocked"] = "Blocked";
+    DeniedGetUserProfileResponseReason["NotFound"] = "User Not Found";
+})(DeniedGetUserProfileResponseReason || (DeniedGetUserProfileResponseReason = {}));
 let UserPageController = class UserPageController extends tsoa_1.Controller {
+    constructor(databaseService) {
+        super();
+        this.databaseService = databaseService;
+    }
     setUserSettings(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(requestBody);
             return {};
         });
     }
-    getPostsPage(requestBody) {
+    getUserProfile(request) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { userId, error } = yield authUtilities_1.checkAuthorization(this, request);
+            if (error)
+                return error;
+            const user = yield this.databaseService.usersTableService.selectUserByUserId({
+                userId,
+            });
+            if (!user) {
+                this.setStatus(404);
+                return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
+            }
             return {
                 success: {
-                    username: requestBody.data.username,
+                    username: user.username,
                     followers: {
-                        count: 3000,
+                        count: 9001,
                     },
                     subscribers: {
-                        count: 83,
+                        count: 69,
                     },
                     follows: {
-                        count: 5,
+                        count: 420,
                     },
                     bio: "I really like cats, if you couldn't tell already.",
                     posts: [],
@@ -68,13 +90,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserPageController.prototype, "setUserSettings", null);
 __decorate([
-    tsoa_1.Post("GetPosts"),
-    __param(0, tsoa_1.Body()),
+    tsoa_1.Post("GeUserProfile"),
+    __param(0, tsoa_1.Request()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], UserPageController.prototype, "getPostsPage", null);
+], UserPageController.prototype, "getUserProfile", null);
 UserPageController = __decorate([
-    tsoa_1.Route("user")
+    tsyringe_1.injectable(),
+    tsoa_1.Route("user"),
+    __metadata("design:paramtypes", [databaseService_1.DatabaseService])
 ], UserPageController);
 exports.UserPageController = UserPageController;

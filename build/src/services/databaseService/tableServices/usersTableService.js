@@ -35,7 +35,7 @@ class UsersTableService {
             yield this.datastorePool.query(queryString);
         });
     }
-    selectUserByUsername({ username, }) {
+    selectUserByUsername({ username }) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
         SELECT
@@ -44,6 +44,24 @@ class UsersTableService {
           ${config_1.DATABASE_TABLE_NAMES.users}
         WHERE
           username = '${username}'
+        LIMIT
+          1
+        ;
+      `;
+            const response = yield this.datastorePool.query(queryString);
+            const rows = response.rows;
+            return rows[0];
+        });
+    }
+    selectUserByUserId({ userId }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+        SELECT
+          *
+        FROM
+          ${config_1.DATABASE_TABLE_NAMES.users}
+        WHERE
+          id = '${userId}'
         LIMIT
           1
         ;
