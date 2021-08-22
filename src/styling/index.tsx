@@ -2,6 +2,10 @@ import { createCss, defaultThemeMap } from "@stitches/react";
 import { OverflowProperty } from "@stitches/react/types/css-types";
 import { NoInfer } from "#/utils/noInfer";
 
+export type ThemeScale<TScale extends keyof typeof theme> =
+  | `$${Exclude<keyof typeof theme[TScale], bigint | symbol>}`
+  | NoInfer<string>;
+
 export const { styled, css, global, keyframes, getCssString, theme } = createCss({
   theme: {
     colors: {
@@ -20,6 +24,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       background1: "#ffffff", // Base background of app content
       background2: "#ededed", // Backgrounds that sit on top of background1
       background3: "#dddddd", // Backgrounds that sit on top of background2
+      overlay: "rgba(0,0,0,0.25)",
 
       text: "#000000", // Text that sits on the background colors
       secondaryText: "#acacac", // Secondary text that sits on background colors
@@ -27,8 +32,7 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
       inverseText: "#ffffff",
       disabledText: "#000000",
 
-      link: "#6fb8ff", // Link color
-      linkHover: "#4ba6ff", // For alternate states on links like hover
+      link: "#5D5FEF", // Link color
 
       border: "#cacaca", // For borders around elements
 
@@ -265,14 +269,14 @@ export const darkTheme = theme("dark", {
     background1: "#191919",
     background2: "#333333",
     background3: "#4c4c4c",
+    overlay: "rgba(0,0,0,0.25)",
 
     text: "#ffffff",
     secondaryText: "#acacac",
     accentText: "#ffffff",
     inverseText: "#000000",
 
-    link: "#6fb8ff",
-    linkHover: "#4ba6ff",
+    link: "#8D8FF3",
 
     border: "#858585",
 

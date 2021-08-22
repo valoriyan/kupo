@@ -1,7 +1,7 @@
 /** Mail icon sourced from https://css.gg/mail */
-export const Mail = () => {
+export const Mail = (props: JSX.IntrinsicElements["svg"]) => {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

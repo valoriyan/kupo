@@ -37,8 +37,6 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
-import { HTTPResponseDeniedGetUserPageResponseSuccessfulGetUserPageResponse } from "../types";
-// @ts-ignore
 import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
@@ -53,9 +51,9 @@ import { RegisterUserParams } from "../types";
 // @ts-ignore
 import { RequestPasswordResetParams } from "../types";
 // @ts-ignore
-import { SecuredHTTPRequestGetUserPageParams } from "../types";
-// @ts-ignore
 import { SecuredHTTPRequestSetUserSettingsParams } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -64,7 +62,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
   return {
     /**
      *
-     * @param {string} imageId
      * @param {string} caption
      * @param {string} visibility
      * @param {string} duration
@@ -77,7 +74,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     createPost: async (
-      imageId: string,
       caption: string,
       visibility: string,
       duration: string,
@@ -88,8 +84,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       file: any,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'imageId' is not null or undefined
-      assertParamExists("createPost", "imageId", imageId);
       // verify required parameter 'caption' is not null or undefined
       assertParamExists("createPost", "caption", caption);
       // verify required parameter 'visibility' is not null or undefined
@@ -123,10 +117,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarQueryParameter = {} as any;
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
-
-      if (imageId !== undefined) {
-        localVarFormParams.append("imageId", imageId as any);
-      }
 
       if (caption !== undefined) {
         localVarFormParams.append("caption", caption as any);
@@ -182,21 +172,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SecuredHTTPRequestGetUserPageParams} securedHTTPRequestGetUserPageParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getPostsPage: async (
-      securedHTTPRequestGetUserPageParams: SecuredHTTPRequestGetUserPageParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'securedHTTPRequestGetUserPageParams' is not null or undefined
-      assertParamExists(
-        "getPostsPage",
-        "securedHTTPRequestGetUserPageParams",
-        securedHTTPRequestGetUserPageParams,
-      );
-      const localVarPath = `/user/GetPosts`;
+    getUserProfile: async (options: any = {}): Promise<RequestArgs> => {
+      const localVarPath = `/user/GeUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -208,8 +188,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -218,11 +196,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        securedHTTPRequestGetUserPageParams,
-        localVarRequestOptions,
-        configuration,
-      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -493,7 +466,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @param {string} imageId
      * @param {string} caption
      * @param {string} visibility
      * @param {string} duration
@@ -506,7 +478,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async createPost(
-      imageId: string,
       caption: string,
       visibility: string,
       duration: string,
@@ -523,7 +494,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
-        imageId,
         caption,
         visibility,
         duration,
@@ -543,23 +513,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SecuredHTTPRequestGetUserPageParams} securedHTTPRequestGetUserPageParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getPostsPage(
-      securedHTTPRequestGetUserPageParams: SecuredHTTPRequestGetUserPageParams,
+    async getUserProfile(
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseDeniedGetUserPageResponseSuccessfulGetUserPageResponse>
+      ) => AxiosPromise<SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsPage(
-        securedHTTPRequestGetUserPageParams,
-        options,
-      );
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(options);
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -726,7 +691,6 @@ export const DefaultApiFactory = function (
   return {
     /**
      *
-     * @param {string} imageId
      * @param {string} caption
      * @param {string} visibility
      * @param {string} duration
@@ -739,7 +703,6 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     createPost(
-      imageId: string,
       caption: string,
       visibility: string,
       duration: string,
@@ -752,7 +715,6 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
       return localVarFp
         .createPost(
-          imageId,
           caption,
           visibility,
           duration,
@@ -767,16 +729,14 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {SecuredHTTPRequestGetUserPageParams} securedHTTPRequestGetUserPageParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getPostsPage(
-      securedHTTPRequestGetUserPageParams: SecuredHTTPRequestGetUserPageParams,
+    getUserProfile(
       options?: any,
-    ): AxiosPromise<HTTPResponseDeniedGetUserPageResponseSuccessfulGetUserPageResponse> {
+    ): AxiosPromise<SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse> {
       return localVarFp
-        .getPostsPage(securedHTTPRequestGetUserPageParams, options)
+        .getUserProfile(options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -867,7 +827,6 @@ export const DefaultApiFactory = function (
 export class DefaultApi extends BaseAPI {
   /**
    *
-   * @param {string} imageId
    * @param {string} caption
    * @param {string} visibility
    * @param {string} duration
@@ -881,7 +840,6 @@ export class DefaultApi extends BaseAPI {
    * @memberof DefaultApi
    */
   public createPost(
-    imageId: string,
     caption: string,
     visibility: string,
     duration: string,
@@ -894,7 +852,6 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .createPost(
-        imageId,
         caption,
         visibility,
         duration,
@@ -910,17 +867,13 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {SecuredHTTPRequestGetUserPageParams} securedHTTPRequestGetUserPageParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getPostsPage(
-    securedHTTPRequestGetUserPageParams: SecuredHTTPRequestGetUserPageParams,
-    options?: any,
-  ) {
+  public getUserProfile(options?: any) {
     return DefaultApiFp(this.configuration)
-      .getPostsPage(securedHTTPRequestGetUserPageParams, options)
+      .getUserProfile(options)
       .then((request) => request(this.axios, this.basePath));
   }
 

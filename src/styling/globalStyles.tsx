@@ -18,6 +18,16 @@ export const globalStyles = global({
   button: {
     background: "none",
     border: "none",
+    padding: "0",
     cursor: "pointer",
+    color: "$text",
+  },
+  a: {
+    color: "$link",
+    textDecoration: "none",
+  },
+  "[data-radix-portal]": {
+    // Lower z-index of portals so that toast messages sit on top
+    zIndex: "999 !important",
   },
 });
