@@ -18,6 +18,10 @@ interface SetUserSettingsParams {
   bannedUsernames: string[];
 }
 
+interface GetUserProfileParams {
+  username?: string;
+}
+
 interface DisplayedPost {
   imageUrl: string;
   creatorUsername: string;
@@ -95,15 +99,23 @@ export class UserPageController extends Controller {
   @Post("GeUserProfile")
   public async getUserProfile(
     @Request() request: express.Request,
+    @Body() requestBody: GetUserProfileParams,
   ): Promise<
     SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
   > {
-    const { userId, error } = await checkAuthorization(this, request);
-    if (error) return error;
+    let user;
 
-    const user = await this.databaseService.usersTableService.selectUserByUserId({
-      userId,
-    });
+    if (requestBody.username) {
+      // Fetch user profile by given username
+      user = await this.databaseService.usersTableService.selectUserByUsername({
+        username: requestBody.username,
+      });
+    } else {
+      // Fetch user profile by own userId
+      const { userId, error } = await checkAuthorization(this, request);
+      if (error) return error;
+      user = await this.databaseService.usersTableService.selectUserByUserId({ userId });
+    }
 
     if (!user) {
       this.setStatus(404);

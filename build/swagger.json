@@ -429,6 +429,15 @@
 				},
 				"type": "object",
 				"additionalProperties": false
+			},
+			"GetUserProfileParams": {
+				"properties": {
+					"username": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -672,7 +681,17 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetUserProfileParams"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

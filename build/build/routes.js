@@ -239,6 +239,14 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetUserProfileParams": {
+        "dataType": "refObject",
+        "properties": {
+            "username": { "dataType": "string" },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new runtime_1.ValidationService(models);
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -417,6 +425,7 @@ function RegisterRoutes(app) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = {
                 request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                requestBody: { "in": "body", "name": "requestBody", "required": true, "ref": "GetUserProfileParams" },
             };
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
             let validatedArgs = [];

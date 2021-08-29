@@ -50,14 +50,22 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
             return {};
         });
     }
-    getUserProfile(request) {
+    getUserProfile(request, requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { userId, error } = yield authUtilities_1.checkAuthorization(this, request);
-            if (error)
-                return error;
-            const user = yield this.databaseService.usersTableService.selectUserByUserId({
-                userId,
-            });
+            let user;
+            if (requestBody.username) {
+                // Fetch user profile by given username
+                user = yield this.databaseService.usersTableService.selectUserByUsername({
+                    username: requestBody.username,
+                });
+            }
+            else {
+                // Fetch user profile by own userId
+                const { userId, error } = yield authUtilities_1.checkAuthorization(this, request);
+                if (error)
+                    return error;
+                user = yield this.databaseService.usersTableService.selectUserByUserId({ userId });
+            }
             if (!user) {
                 this.setStatus(404);
                 return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
@@ -92,8 +100,9 @@ __decorate([
 __decorate([
     tsoa_1.Post("GeUserProfile"),
     __param(0, tsoa_1.Request()),
+    __param(1, tsoa_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserPageController.prototype, "getUserProfile", null);
 UserPageController = __decorate([
