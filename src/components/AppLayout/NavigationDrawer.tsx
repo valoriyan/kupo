@@ -12,7 +12,7 @@ export interface NavigationDrawerProps {
 }
 
 export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
-  const { data, isLoading } = useGetUserProfile();
+  const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
 
   return (
     <Wrapper>
@@ -24,7 +24,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
           </UserStatsPlaceholder>
         ) : (
           <Flex css={{ gap: "$2", flexDirection: "column" }}>
-            <Link href="/" passHref>
+            <Link href="/profile" passHref>
               <a>@{data?.success?.username}</a>
             </Link>
             <Flex css={{ flexDirection: "column" }}>

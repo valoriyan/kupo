@@ -20,7 +20,7 @@ export const client: AxiosInstance = axios.create({
   },
 });
 client.interceptors.request.use(async (request) => {
-  if (request.url === "/auth/refresh-access-token") return request;
+  if (request.noAuth) return request;
 
   const accessToken = await getAccessToken();
 

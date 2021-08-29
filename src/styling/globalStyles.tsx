@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 export const globalStyles = global({
   "@font-face": {
     fontFamily: "Elephant",
-    src: 'local("Elephant"), url("fonts/ElephantRegular.ttf")',
+    src: 'local("Elephant"), url("/fonts/ElephantRegular.ttf")',
   },
   body: {
     fontFamily: "$body !important",

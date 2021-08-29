@@ -1,6 +1,6 @@
 import { createCss, defaultThemeMap } from "@stitches/react";
 import { OverflowProperty } from "@stitches/react/types/css-types";
-import { NoInfer } from "#/utils/noInfer";
+import { NoInfer } from "#/types/noInfer";
 
 export type ThemeScale<TScale extends keyof typeof theme> =
   | `$${Exclude<keyof typeof theme[TScale], bigint | symbol>}`

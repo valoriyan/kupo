@@ -37,6 +37,8 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { GetUserProfileParams } from "../types";
+// @ts-ignore
 import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
@@ -172,10 +174,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {GetUserProfileParams} getUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUserProfile: async (options: any = {}): Promise<RequestArgs> => {
+    getUserProfile: async (
+      getUserProfileParams: GetUserProfileParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getUserProfileParams' is not null or undefined
+      assertParamExists("getUserProfile", "getUserProfileParams", getUserProfileParams);
       const localVarPath = `/user/GeUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -188,6 +196,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -196,6 +206,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -513,10 +528,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetUserProfileParams} getUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getUserProfile(
+      getUserProfileParams: GetUserProfileParams,
       options?: any,
     ): Promise<
       (
@@ -524,7 +541,10 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         basePath?: string,
       ) => AxiosPromise<SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(options);
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(
+        getUserProfileParams,
+        options,
+      );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -729,14 +749,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetUserProfileParams} getUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getUserProfile(
+      getUserProfileParams: GetUserProfileParams,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse> {
       return localVarFp
-        .getUserProfile(options)
+        .getUserProfile(getUserProfileParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -867,13 +889,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {GetUserProfileParams} getUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getUserProfile(options?: any) {
+  public getUserProfile(getUserProfileParams: GetUserProfileParams, options?: any) {
     return DefaultApiFp(this.configuration)
-      .getUserProfile(options)
+      .getUserProfile(getUserProfileParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

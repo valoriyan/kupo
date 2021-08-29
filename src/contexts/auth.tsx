@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { LocalStorageItem } from "#/utils/storage";
 import { Api } from "#/api";
 import { FullScreenLoadingArea } from "#/components/LoadingArea";
+import { isServer } from "#/utils/isServer";
 
 const storedAccessToken = LocalStorageItem<string>("accessToken");
 
@@ -15,7 +16,7 @@ export const getAccessToken = async () => {
 
     if (expiresSoon) {
       try {
-        const newTokenResponse = await Api.refreshAccessToken();
+        const newTokenResponse = await Api.refreshAccessToken({ noAuth: true });
 
         const newTokenError = newTokenResponse.data.error;
         if (newTokenError) {
@@ -113,4 +114,20 @@ export const RedirectAfterAuth = <T extends unknown>(Component: ComponentType<T>
     return <Component {...(props as any)} />;
   };
   return ProtectedComponent;
+};
+
+export const useIsAuthenticated = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    isServer() ? false : !!storedAccessToken.get(),
+  );
+
+  useEffect(() => {
+    const callback = () => setIsAuthenticated(!!storedAccessToken.get());
+    window.addEventListener("storage", callback);
+    return () => {
+      window.removeEventListener("storage", callback);
+    };
+  }, []);
+
+  return isAuthenticated;
 };

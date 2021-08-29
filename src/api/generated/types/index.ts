@@ -8,6 +8,7 @@ export * from "./displayed-post";
 export * from "./displayed-post-likes";
 export * from "./displayed-shop-items";
 export * from "./failed-auth-response";
+export * from "./get-user-profile-params";
 export * from "./httpresponse-denied-password-reset-response-successful-password-reset-response";
 export * from "./httpresponse-failed-auth-response-successful-auth-response";
 export * from "./httpresponse-failed-to-create-post-response-successful-post-creation-response";
