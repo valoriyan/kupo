@@ -50,6 +50,7 @@ const Trigger = styled(TabsPrimitive.Trigger, {
   fontSize: "$4",
   color: "$text",
   transition: "color $1 ease, box-shadow $1 ease",
+  cursor: "pointer",
 
   "&:hover": { color: "$primary" },
 
