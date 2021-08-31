@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import { darkTheme, getCssString } from "#/styling";
+import { darkTheme, getCssText } from "#/styling";
 
 export default class PlayHouseDocument extends Document {
   render() {
@@ -12,7 +12,7 @@ export default class PlayHouseDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;700&display=swap"
             rel="stylesheet"
           />
-          <style id="stitches" dangerouslySetInnerHTML={{ __html: getCssString() }} />
+          <style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
           <script dangerouslySetInnerHTML={{ __html: setPreferredTheme }} />
         </Head>
         <body>

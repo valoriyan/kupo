@@ -1,4 +1,4 @@
-import { keyframes, styled, theme } from "#/styling";
+import { keyframes, styled } from "#/styling";
 import { Box, Stack } from "../Layout";
 
 export interface SpinnerProps {
@@ -20,19 +20,22 @@ export const Spinner = ({ size = "medium", text }: SpinnerProps) => {
         viewBox={`0 0 ${spinner.size} ${spinner.size}`}
         fill="none"
       >
-        <circle
+        <Circle
           cx={spinner.size / 2}
           cy={spinner.size / 2}
           r={spinner.radius}
-          stroke={theme.colors.primaryTranslucent}
           strokeWidth="1.5"
         />
-        <path d={spinner.d} fill="none" stroke={theme.colors.primary} strokeWidth="1.5" />
+        <Path d={spinner.d} fill="none" strokeWidth="1.5" />
       </SpinningSVG>
       {text && <Box css={{ color: "$primary", fontSize: "$1" }}>{text}</Box>}
     </Stack>
   );
 };
+
+const Circle = styled("circle", { stroke: "$primaryTranslucent" });
+
+const Path = styled("path", { stroke: "$primary" });
 
 const spin = keyframes({
   "0%": { transform: "rotate(0deg)" },

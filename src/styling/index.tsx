@@ -1,12 +1,11 @@
-import { createCss, defaultThemeMap } from "@stitches/react";
-import { OverflowProperty } from "@stitches/react/types/css-types";
+import { createStitches, defaultThemeMap, PropertyValue } from "@stitches/react";
 import { NoInfer } from "#/types/noInfer";
 
 export type ThemeScale<TScale extends keyof typeof theme> =
   | `$${Exclude<keyof typeof theme[TScale], bigint | symbol>}`
   | NoInfer<string>;
 
-export const { styled, css, global, keyframes, getCssString, theme } = createCss({
+const themedStitches = createStitches({
   theme: {
     colors: {
       /**
@@ -158,110 +157,78 @@ export const { styled, css, global, keyframes, getCssString, theme } = createCss
     animation: "transitions",
   },
   utils: {
-    m:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        margin: value,
-      }),
-    mx:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        marginLeft: value,
-        marginRight: value,
-      }),
-    my:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        marginTop: value,
-        marginBottom: value,
-      }),
-    mt:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        marginTop: value,
-      }),
-    mr:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        marginRight: value,
-      }),
-    mb:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        marginBottom: value,
-      }),
-    ml:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        marginLeft: value,
-      }),
-    p:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        padding: value,
-      }),
-    px:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        paddingLeft: value,
-        paddingRight: value,
-      }),
-    py:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        paddingTop: value,
-        paddingBottom: value,
-      }),
-    pt:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        paddingTop: value,
-      }),
-    pr:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        paddingRight: value,
-      }),
-    pb:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        paddingBottom: value,
-      }),
-    pl:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["space"]}` | NoInfer<string>) => ({
-        paddingLeft: value,
-      }),
-    size:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["sizes"]}` | NoInfer<string>) => ({
-        height: value,
-        width: value,
-      }),
-    bg:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["colors"]}` | NoInfer<string>) => ({
-        backgroundColor: value,
-      }),
-    height:
-      (config) =>
-      (value: `$${keyof typeof config["theme"]["sizes"]}` | NoInfer<string>) =>
-        value === "100vh"
-          ? {
-              height: value,
-              "@supports (-webkit-touch-callout: none)": {
-                height: "-webkit-fill-available",
-              },
-            }
-          : { height: value },
-    overflow: () => (value: OverflowProperty) =>
+    m: (value: PropertyValue<"margin">) => ({
+      margin: value,
+    }),
+    mx: (value: PropertyValue<"margin">) => ({
+      marginLeft: value,
+      marginRight: value,
+    }),
+    my: (value: PropertyValue<"margin">) => ({
+      marginTop: value,
+      marginBottom: value,
+    }),
+    mt: (value: PropertyValue<"margin">) => ({
+      marginTop: value,
+    }),
+    mr: (value: PropertyValue<"margin">) => ({
+      marginRight: value,
+    }),
+    mb: (value: PropertyValue<"margin">) => ({
+      marginBottom: value,
+    }),
+    ml: (value: PropertyValue<"margin">) => ({
+      marginLeft: value,
+    }),
+    p: (value: PropertyValue<"padding">) => ({
+      padding: value,
+    }),
+    px: (value: PropertyValue<"padding">) => ({
+      paddingLeft: value,
+      paddingRight: value,
+    }),
+    py: (value: PropertyValue<"padding">) => ({
+      paddingTop: value,
+      paddingBottom: value,
+    }),
+    pt: (value: PropertyValue<"padding">) => ({
+      paddingTop: value,
+    }),
+    pr: (value: PropertyValue<"padding">) => ({
+      paddingRight: value,
+    }),
+    pb: (value: PropertyValue<"padding">) => ({
+      paddingBottom: value,
+    }),
+    pl: (value: PropertyValue<"padding">) => ({
+      paddingLeft: value,
+    }),
+    size: (value: PropertyValue<"height">) => ({
+      height: value,
+      width: value,
+    }),
+    bg: (value: PropertyValue<"backgroundColor">) => ({
+      backgroundColor: value,
+    }),
+    height: (value: PropertyValue<"height"> | NoInfer<string>) =>
+      value === "100vh"
+        ? {
+            height: value,
+            "@supports (-webkit-touch-callout: none)": {
+              height: "-webkit-fill-available",
+            },
+          }
+        : { height: value },
+    overflow: (value: PropertyValue<"overflow"> | NoInfer<string>) =>
       value === "auto" || value === "scroll"
         ? { overflow: "auto; -webkit-overflow-scrolling: touch;" }
         : { overflow: value },
   },
 });
 
-export const darkTheme = theme("dark", {
+export const { styled, css, globalCss, keyframes, theme, getCssText } = themedStitches;
+
+export const darkTheme = themedStitches.createTheme("dark", {
   colors: {
     primary: "#EF5DA8",
     primaryTranslucent: "#EF5DA830",

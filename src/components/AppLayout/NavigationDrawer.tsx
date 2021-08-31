@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
+import { formatStat } from "#/utils/formatStat";
 import { Avatar } from "../Avatar";
 import { Close, LogOut } from "../Icons";
 import { Flex } from "../Layout";
@@ -74,11 +75,6 @@ const UserStat = styled("div", {
   whiteSace: "nowrap",
   fontSize: "$1",
 });
-
-const formatStat = (stat: number | undefined) => {
-  if (!stat) return 0;
-  return stat >= 1000 ? (stat / 1000).toFixed(1) + "k" : stat;
-};
 
 const NavItem = styled("a", {
   display: "flex",

@@ -1,7 +1,7 @@
-import { global } from ".";
+import { globalCss } from ".";
 import "react-toastify/dist/ReactToastify.css";
 
-export const globalStyles = global({
+export const globalStyles = globalCss({
   "@font-face": {
     fontFamily: "Elephant",
     src: 'local("Elephant"), url("/fonts/ElephantRegular.ttf")',
