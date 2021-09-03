@@ -3,13 +3,13 @@ import { Box, Stack } from "../Layout";
 
 export interface SpinnerProps {
   /** Size of the spinner */
-  size: "xsmall" | "small" | "medium" | "large";
+  size: "xs" | "sm" | "md" | "lg";
   /** Optional text to render below the spinner */
   text?: string;
 }
 
 /** This component is used to indicate a loading state */
-export const Spinner = ({ size = "medium", text }: SpinnerProps) => {
+export const Spinner = ({ size = "md", text }: SpinnerProps) => {
   const spinner = spinnerProperties[size];
 
   return (
@@ -50,22 +50,22 @@ const spinnerProperties: Record<
   SpinnerProps["size"],
   { size: number; radius: number; d: string }
 > = {
-  xsmall: {
+  xs: {
     size: 12,
     radius: 5.25,
     d: describeArc({ x: 6, y: 6, r: 5.25, startAngle: 0, endAngle: 90 }),
   },
-  small: {
+  sm: {
     size: 16,
     radius: 7.25,
     d: describeArc({ x: 8, y: 8, r: 7.25, startAngle: 0, endAngle: 90 }),
   },
-  medium: {
+  md: {
     size: 20,
     radius: 9.25,
     d: describeArc({ x: 10, y: 10, r: 9.25, startAngle: 0, endAngle: 90 }),
   },
-  large: {
+  lg: {
     size: 28,
     radius: 13.25,
     d: describeArc({ x: 14, y: 14, r: 13.25, startAngle: 0, endAngle: 90 }),

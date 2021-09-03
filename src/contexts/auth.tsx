@@ -78,7 +78,7 @@ export const ProtectedPage = <T extends unknown>(Component: ComponentType<T>) =>
     }, []);
 
     if (!isAuthenticated) {
-      return <FullScreenLoadingArea size="large" />;
+      return <FullScreenLoadingArea size="lg" />;
     }
 
     // Cast to `any` to get around TypeScript limitation regaring HOCs
@@ -106,7 +106,7 @@ export const RedirectAfterAuth = <T extends unknown>(Component: ComponentType<T>
     }, []);
 
     if (isAuthenticated === "unset" || isAuthenticated === true) {
-      return <FullScreenLoadingArea size="large" />;
+      return <FullScreenLoadingArea size="lg" />;
     }
 
     // Cast to `any` to get around TypeScript limitation regaring HOCs

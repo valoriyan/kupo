@@ -1,6 +1,9 @@
 import { styled } from "#/styling";
 
 export const Button = styled("button", {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
   color: "$accentText",
   bg: "$primary",
   px: "$5",
@@ -20,6 +23,7 @@ export const Button = styled("button", {
       primary: {},
       secondary: { bg: "$text", color: "$inverseText" },
     },
+    outlined: { true: {} },
     size: {
       md: {
         borderRadius: "$3",
@@ -31,4 +35,38 @@ export const Button = styled("button", {
       },
     },
   },
+  compoundVariants: [
+    {
+      variant: "primary",
+      outlined: true,
+      css: {
+        bg: "transparent",
+        borderStyle: "solid",
+        borderWidth: "$1",
+        borderColor: "$primary",
+        color: "$primary",
+        "&:disabled": {
+          bg: "transparent",
+          borderColor: "$disabled",
+          color: "$disabledText",
+        },
+      },
+    },
+    {
+      variant: "secondary",
+      outlined: true,
+      css: {
+        bg: "transparent",
+        borderStyle: "solid",
+        borderWidth: "$1",
+        borderColor: "$text",
+        color: "$text",
+        "&:disabled": {
+          bg: "transparent",
+          borderColor: "$disabled",
+          color: "$disabledText",
+        },
+      },
+    },
+  ],
 });

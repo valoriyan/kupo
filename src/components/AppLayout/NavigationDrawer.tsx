@@ -21,7 +21,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
         <Avatar alt="User Avatar" />
         {isLoading ? (
           <UserStatsPlaceholder>
-            <LoadingArea size="medium" />
+            <LoadingArea size="md" />
           </UserStatsPlaceholder>
         ) : (
           <Flex css={{ gap: "$2", flexDirection: "column" }}>

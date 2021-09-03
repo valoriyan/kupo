@@ -5,4 +5,5 @@ export * from "./LogOut";
 export * from "./Mail";
 export * from "./Menu";
 export * from "./Plus";
+export * from "./Share";
 export * from "./User";

@@ -3,11 +3,14 @@ import { SuccessfulGetUserProfileResponse } from "#/api";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { AppLayout } from "#/components/AppLayout";
 import { Avatar } from "#/components/Avatar";
+import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";
-import { Stack } from "#/components/Layout";
+import { Share } from "#/components/Icons";
+import { Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
 import { styled } from "#/styling";
+import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 
 export interface UserProfileProps {
@@ -23,7 +26,7 @@ export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
       {!isLoading && (error || data?.error) ? (
         <ErrorArea>{data?.error?.reason || "An Unexpected Error Occurred"}</ErrorArea>
       ) : isLoading || !data?.success ? (
-        <LoadingArea size="large" />
+        <LoadingArea size="lg" />
       ) : (
         <ProfileBody isOwnProfile={isOwnProfile} user={data.success} />
       )}
@@ -55,6 +58,24 @@ const ProfileBody = (props: ProfileBodyProps) => {
             linktr.ee/cheese
           </ExternalLink>
         </Stack>
+        {props.isOwnProfile && (
+          <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
+            <Button size="md" variant="primary" outlined css={{ flex: 1 }}>
+              Edit Profile
+            </Button>
+            <Button
+              size="md"
+              variant="primary"
+              outlined
+              onClick={() => {
+                const link = `${location.origin}/profile/${props.user.username}`;
+                copyTextToClipboard(link, "Link");
+              }}
+            >
+              <Share />
+            </Button>
+          </Flex>
+        )}
       </Stack>
       <Tabs
         ariaLabel="User Content Categories"
