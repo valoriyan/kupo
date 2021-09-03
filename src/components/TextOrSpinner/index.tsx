@@ -14,7 +14,7 @@ export interface TextOrSpinnerProps {
 export const TextOrSpinner = ({
   children,
   isLoading,
-  size = "medium",
+  size = "md",
 }: PropsWithChildren<TextOrSpinnerProps>) => {
   return (
     <Wrapper isLoading={isLoading}>
