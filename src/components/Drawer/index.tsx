@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { ReactNode, useState } from "react";
-import { styled, keyframes } from "#/styling";
+import { styled, keyframes, prefersMotionSelector } from "#/styling";
 
 export interface DrawerProps {
   trigger: ReactNode;
@@ -39,11 +39,13 @@ const slideOutToRight = keyframes({
 
 const DialogContent = styled(Dialog.Content, {
   position: "fixed",
-  "&[data-state='open']": {
-    animation: `${slideInFromRight} $2 ease`,
-  },
-  "&[data-state='closed']": {
-    animation: `${slideOutToRight} $2 ease`,
+  [prefersMotionSelector]: {
+    "&[data-state='open']": {
+      animation: `${slideInFromRight} $2 ease`,
+    },
+    "&[data-state='closed']": {
+      animation: `${slideOutToRight} $2 ease`,
+    },
   },
 });
 
@@ -60,10 +62,12 @@ const DialogOverlay = styled(Dialog.Overlay, {
   bg: "$overlay",
   position: "fixed",
   inset: 0,
-  "&[data-state='open']": {
-    animation: `${fadeIn} $2 ease`,
-  },
-  "&[data-state='closed']": {
-    animation: `${fadeOut} $2 ease`,
+  [prefersMotionSelector]: {
+    "&[data-state='open']": {
+      animation: `${fadeIn} $2 ease`,
+    },
+    "&[data-state='closed']": {
+      animation: `${fadeOut} $2 ease`,
+    },
   },
 });
