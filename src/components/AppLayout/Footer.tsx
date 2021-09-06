@@ -35,6 +35,7 @@ export const Footer = () => {
 };
 
 const Wrapper = styled(Flex, {
+  bg: "$background1",
   px: "$7",
   py: "$3",
   justifyContent: "space-between",

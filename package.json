@@ -20,6 +20,7 @@
     "@radix-ui/react-tabs": "^0.0.16",
     "@stitches/react": "^1.0.0",
     "axios": "^0.21.1",
+    "framer-motion": "^4.1.17",
     "jsonwebtoken": "^8.5.1",
     "next": "11.1.2",
     "react": "17.0.2",

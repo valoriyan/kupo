@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { LocalStorageItem } from "#/utils/storage";
 import { Api } from "#/api";
 import { FullScreenLoadingArea } from "#/components/LoadingArea";
-import { isServer } from "#/utils/isServer";
 
 const storedAccessToken = LocalStorageItem<string>("accessToken");
 
@@ -117,11 +116,10 @@ export const RedirectAfterAuth = <T extends unknown>(Component: ComponentType<T>
 };
 
 export const useIsAuthenticated = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<"unset" | boolean>(
-    isServer() ? "unset" : !!storedAccessToken.get(),
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState<"unset" | boolean>("unset");
 
   useEffect(() => {
+    setIsAuthenticated(!!storedAccessToken.get());
     const callback = () => setIsAuthenticated(!!storedAccessToken.get());
     window.addEventListener("storage", callback);
     return () => {

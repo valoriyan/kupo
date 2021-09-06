@@ -1,5 +1,5 @@
-import { AppLayout } from "#/components/AppLayout";
+import { Stack } from "#/components/Layout";
 
 export const AddContent = () => {
-  return <AppLayout>Add content</AppLayout>;
+  return <Stack css={{ bg: "$background1", height: "100%" }}>Add content</Stack>;
 };

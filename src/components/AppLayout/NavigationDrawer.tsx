@@ -26,7 +26,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
         ) : (
           <Flex css={{ gap: "$2", flexDirection: "column" }}>
             <Link href="/profile" passHref>
-              <a>@{data?.success?.username}</a>
+              <a onClick={hide}>@{data?.success?.username}</a>
             </Link>
             <Flex css={{ flexDirection: "column" }}>
               <UserStat>{formatStat(data?.success?.followers.count)} followers</UserStat>
@@ -42,7 +42,14 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
         </Flex>
       </UserInfo>
       <Flex css={{ flexDirection: "column", px: "$8", py: "$7" }}>
-        <NavItem as="button" css={{ color: "$primary" }} onClick={logout}>
+        <NavItem
+          as="button"
+          css={{ color: "$primary" }}
+          onClick={() => {
+            hide();
+            logout();
+          }}
+        >
           <LogOut />
           <div>Log Out</div>
         </NavItem>

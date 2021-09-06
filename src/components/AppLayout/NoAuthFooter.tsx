@@ -24,6 +24,7 @@ export const NoAuthFooter = () => {
 };
 
 const Wrapper = styled(Stack, {
+  bg: "$background1",
   px: "$6",
   py: "$4",
   gap: "$4",
