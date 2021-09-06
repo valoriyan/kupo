@@ -26,6 +26,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
     const initialTheme = document.documentElement.classList.contains(darkTheme)
       ? "dark"
       : "light";
+    document.documentElement.style.setProperty("color-scheme", initialTheme);
     setCurrentThemeState(initialTheme as ThemeName);
   }, []);
 
@@ -37,8 +38,11 @@ export const ThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
     if (hasPersistedPreference) return;
 
     const query = "(prefers-color-scheme: dark)";
-    const onChange = (e: MediaQueryListEvent) =>
-      e.matches ? setCurrentThemeState("dark") : setCurrentThemeState("light");
+    const onChange = (e: MediaQueryListEvent) => {
+      const newTheme = e.matches ? "dark" : "light";
+      document.documentElement.style.setProperty("color-scheme", newTheme);
+      setCurrentThemeState(newTheme);
+    };
 
     window.matchMedia(query).addEventListener("change", onChange);
     return () => {
@@ -55,6 +59,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
   }, [currentTheme]);
 
   const setCurrentTheme = (value: ThemeName) => {
+    document.documentElement.style.setProperty("color-scheme", value);
     setCurrentThemeState(value);
     window.localStorage.setItem("current-theme", value);
   };

@@ -25,7 +25,7 @@ export default class PlayHouseDocument extends Document {
 }
 
 const setPreferredTheme = `
-  function getInitialColorMode() {
+  function getInitialColorScheme() {
     const persistedColorPreference = window.localStorage.getItem("current-theme");
     const hasPersistedPreference = typeof persistedColorPreference === "string";
     if (hasPersistedPreference)  return persistedColorPreference;
@@ -36,8 +36,9 @@ const setPreferredTheme = `
 
     return "light";
   }
-  const colorMode = getInitialColorMode();
-  colorMode === "dark"
+  const colorScheme = getInitialColorScheme();
+  document.documentElement.style.setProperty("color-scheme", colorScheme)
+  colorScheme === "dark"
     ? document.documentElement.classList.add("dark")
     : document.documentElement.classList.remove("dark");
 `;
