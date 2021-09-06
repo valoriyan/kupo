@@ -4,7 +4,7 @@ import { darkTheme, getCssText } from "#/styling";
 export default class PlayHouseDocument extends Document {
   render() {
     return (
-      <Html lang="en" className={darkTheme}>
+      <Html lang="en" className={darkTheme.className}>
         <Head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />

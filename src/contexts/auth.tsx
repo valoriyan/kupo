@@ -117,8 +117,8 @@ export const RedirectAfterAuth = <T extends unknown>(Component: ComponentType<T>
 };
 
 export const useIsAuthenticated = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    isServer() ? false : !!storedAccessToken.get(),
+  const [isAuthenticated, setIsAuthenticated] = useState<"unset" | boolean>(
+    isServer() ? "unset" : !!storedAccessToken.get(),
   );
 
   useEffect(() => {

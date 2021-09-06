@@ -27,7 +27,6 @@ const Wrapper = styled(Stack, {
   px: "$6",
   py: "$4",
   gap: "$4",
-  bg: "$background1",
   alignItems: "center",
   borderTopStyle: "solid",
   borderTopWidth: "$1",

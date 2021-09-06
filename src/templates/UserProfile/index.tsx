@@ -58,24 +58,21 @@ const ProfileBody = (props: ProfileBodyProps) => {
             linktr.ee/cheese
           </ExternalLink>
         </Stack>
-        {props.isOwnProfile && (
-          <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
-            <Button size="md" variant="primary" outlined css={{ flex: 1 }}>
-              Edit Profile
-            </Button>
-            <Button
-              size="md"
-              variant="primary"
-              outlined
-              onClick={() => {
-                const link = `${location.origin}/profile/${props.user.username}`;
-                copyTextToClipboard(link, "Link");
-              }}
-            >
-              <Share />
-            </Button>
-          </Flex>
-        )}
+        <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
+          <Button size="md" variant="primary" css={{ flex: 1 }}>
+            {props.isOwnProfile ? "Edit Profile" : "Follow"}
+          </Button>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              const link = `${location.origin}/profile/${props.user.username}`;
+              copyTextToClipboard(link, "Link");
+            }}
+          >
+            <Share />
+          </Button>
+        </Flex>
       </Stack>
       <Tabs
         ariaLabel="User Content Categories"

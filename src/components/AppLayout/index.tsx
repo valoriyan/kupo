@@ -10,7 +10,13 @@ export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
   return (
     <Grid css={{ height: "100vh", gridTemplateRows: "minmax(0, 1fr) auto" }}>
       <Box css={{ height: "100%", overflow: "auto" }}>{children}</Box>
-      <Box>{isAuthenticated ? <Footer /> : <NoAuthFooter />}</Box>
+      <Box>
+        {isAuthenticated === "unset" ? null : isAuthenticated ? (
+          <Footer />
+        ) : (
+          <NoAuthFooter />
+        )}
+      </Box>
     </Grid>
   );
 };

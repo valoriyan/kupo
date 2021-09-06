@@ -16,7 +16,7 @@ export const Footer = () => {
       <IconLink href="/">
         <Bell />
       </IconLink>
-      <Link href="/" passHref>
+      <Link href="/add-content" passHref>
         <Upload>
           <Plus />
         </Upload>
@@ -35,7 +35,6 @@ export const Footer = () => {
 };
 
 const Wrapper = styled(Flex, {
-  flexDirection: "row",
   px: "$7",
   py: "$3",
   justifyContent: "space-between",
