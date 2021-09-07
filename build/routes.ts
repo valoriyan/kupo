@@ -236,6 +236,14 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GetUserProfileParams": {
+        "dataType": "refObject",
+        "properties": {
+            "username": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -391,6 +399,7 @@ export function RegisterRoutes(app: express.Router) {
             async function PostController_createPost(request: any, response: any, next: any) {
             const args = {
                     caption: {"in":"formData","name":"caption","required":true,"dataType":"string"},
+                    creatorUserId: {"in":"formData","name":"creatorUserId","required":true,"dataType":"string"},
                     visibility: {"in":"formData","name":"visibility","required":true,"dataType":"string"},
                     duration: {"in":"formData","name":"duration","required":true,"dataType":"string"},
                     title: {"in":"formData","name":"title","required":true,"dataType":"string"},
@@ -454,6 +463,7 @@ export function RegisterRoutes(app: express.Router) {
             async function UserPageController_getUserProfile(request: any, response: any, next: any) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"GetUserProfileParams"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

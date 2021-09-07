@@ -22,10 +22,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostController = void 0;
-// import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 const tsoa_1 = require("tsoa");
 const tsyringe_1 = require("tsyringe");
-const blobStorageService_1 = require("../../services/blobStorageService");
+const blobStorageService_1 = require("../services/blobStorageService");
+const databaseService_1 = require("../services/databaseService");
+const uuid_1 = require("uuid");
 var PostPrivacySetting;
 (function (PostPrivacySetting) {
     PostPrivacySetting["Tier2AndTier3"] = "Tier2AndTier3";
@@ -34,37 +35,64 @@ var PostDurationSetting;
 (function (PostDurationSetting) {
     PostDurationSetting["Forever"] = "Forever";
 })(PostDurationSetting || (PostDurationSetting = {}));
+var CreatePostFailureReasons;
+(function (CreatePostFailureReasons) {
+    CreatePostFailureReasons["UnknownCause"] = "Unknown Cause";
+})(CreatePostFailureReasons || (CreatePostFailureReasons = {}));
 let PostController = class PostController extends tsoa_1.Controller {
-    constructor(blobStorageService) {
+    constructor(blobStorageService, databaseService) {
         super();
         this.blobStorageService = blobStorageService;
+        this.databaseService = databaseService;
     }
-    createPost(imageId, caption, visibility, duration, title, price, collaboratorUsernames, scheduledPublicationTimestamp, file) {
+    createPost(caption, creatorUserId, visibility, duration, title, price, collaboratorUsernames, scheduledPublicationTimestamp, file) {
         return __awaiter(this, void 0, void 0, function* () {
+            const postId = (0, uuid_1.v4)();
+            const imageId = (0, uuid_1.v4)();
             const imageBuffer = file.buffer;
-            this.blobStorageService.saveImage({ image: imageBuffer });
-            return {};
+            const { fileKey: imageBlobFilekey } = yield this.blobStorageService.saveImage({
+                image: imageBuffer,
+            });
+            try {
+                yield this.databaseService.tableServices.postsTableService.createPost({
+                    postId,
+                    creatorUserId,
+                    imageId,
+                    caption,
+                    imageBlobFilekey,
+                    title,
+                    price,
+                    scheduledPublicationTimestamp,
+                });
+                return {};
+            }
+            catch (error) {
+                console.log("error", error);
+                this.setStatus(401);
+                return { error: { reason: CreatePostFailureReasons.UnknownCause } };
+            }
         });
     }
 };
 __decorate([
-    tsoa_1.Post("create"),
-    __param(0, tsoa_1.FormField()),
-    __param(1, tsoa_1.FormField()),
-    __param(2, tsoa_1.FormField()),
-    __param(3, tsoa_1.FormField()),
-    __param(4, tsoa_1.FormField()),
-    __param(5, tsoa_1.FormField()),
-    __param(6, tsoa_1.FormField()),
-    __param(7, tsoa_1.FormField()),
-    __param(8, tsoa_1.UploadedFile()),
+    (0, tsoa_1.Post)("create"),
+    __param(0, (0, tsoa_1.FormField)()),
+    __param(1, (0, tsoa_1.FormField)()),
+    __param(2, (0, tsoa_1.FormField)()),
+    __param(3, (0, tsoa_1.FormField)()),
+    __param(4, (0, tsoa_1.FormField)()),
+    __param(5, (0, tsoa_1.FormField)()),
+    __param(6, (0, tsoa_1.FormField)()),
+    __param(7, (0, tsoa_1.FormField)()),
+    __param(8, (0, tsoa_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String, String, String, Number, Array, Number, Object]),
     __metadata("design:returntype", Promise)
 ], PostController.prototype, "createPost", null);
 PostController = __decorate([
-    tsyringe_1.injectable(),
-    tsoa_1.Route("post"),
-    __metadata("design:paramtypes", [blobStorageService_1.LocalBlobStorageService])
+    (0, tsyringe_1.injectable)(),
+    (0, tsoa_1.Route)("post"),
+    __metadata("design:paramtypes", [blobStorageService_1.LocalBlobStorageService,
+        databaseService_1.DatabaseService])
 ], PostController);
 exports.PostController = PostController;

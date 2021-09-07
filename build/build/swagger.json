@@ -429,6 +429,15 @@
                 },
                 "type": "object",
                 "additionalProperties": false
+            },
+            "GetUserProfileParams": {
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "securitySchemes": {}
@@ -588,6 +597,9 @@
                                     "caption": {
                                         "type": "string"
                                     },
+                                    "creatorUserId": {
+                                        "type": "string"
+                                    },
                                     "visibility": {
                                         "type": "string"
                                     },
@@ -613,6 +625,7 @@
                                 },
                                 "required": [
                                     "caption",
+                                    "creatorUserId",
                                     "visibility",
                                     "duration",
                                     "title",
@@ -672,7 +685,17 @@
                     }
                 },
                 "security": [],
-                "parameters": []
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GetUserProfileParams"
+                            }
+                        }
+                    }
+                }
             }
         }
     },

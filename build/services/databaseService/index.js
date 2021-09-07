@@ -50,7 +50,9 @@ let DatabaseService = DatabaseService_1 = class DatabaseService {
     }
     teardownDatabaseService() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0, teardown_1.teardownDatabaseServive)();
+            yield (0, teardown_1.teardownDatabaseServive)({
+                tableServices: this.tableServices,
+            });
         });
     }
     static get() {

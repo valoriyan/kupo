@@ -31,9 +31,7 @@ export class DatabaseService {
   }
 
   public async teardownDatabaseService(): Promise<void> {
-    await teardownDatabaseServive({
-      tableServices: this.tableServices,
-    });
+    await teardownDatabaseServive();
   }
 
   static async get(): Promise<Pool> {

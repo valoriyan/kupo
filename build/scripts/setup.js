@@ -9,11 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 require("reflect-metadata");
 const databaseService_1 = require("../services/databaseService");
 function setupScript() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield databaseService_1.DatabaseService.setupTables();
+        const databaseService = new databaseService_1.DatabaseService();
+        yield databaseService.setupDatabaseService();
     });
 }
 setupScript();

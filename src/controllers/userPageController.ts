@@ -18,6 +18,10 @@ interface SetUserSettingsParams {
   bannedUsernames: string[];
 }
 
+interface GetUserProfileParams {
+  username?: string;
+}
+
 interface DisplayedPost {
   imageUrl: string;
   creatorUsername: string;
@@ -95,16 +99,31 @@ export class UserPageController extends Controller {
   @Post("GeUserProfile")
   public async getUserProfile(
     @Request() request: express.Request,
+    @Body() requestBody: GetUserProfileParams,
   ): Promise<
     SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
   > {
     const { userId, error } = await checkAuthorization(this, request);
     if (error) return error;
 
-    const user =
-      await this.databaseService.tableServices.usersTableService.selectUserByUserId({
-        userId,
-      });
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    let user: any;
+
+    if (requestBody.username) {
+      // Fetch user profile by given username
+      user =
+        await this.databaseService.tableServices.usersTableService.selectUserByUsername({
+          username: requestBody.username,
+        });
+    } else {
+      // Fetch user profile by own userId
+      const { userId, error } = await checkAuthorization(this, request);
+      if (error) return error;
+      user =
+        await this.databaseService.tableServices.usersTableService.selectUserByUserId({
+          userId,
+        });
+    }
 
     const numberOfFollowersOfUserId: number =
       await this.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId(

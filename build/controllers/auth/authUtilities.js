@@ -11,13 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkAuthorization = exports.validateTokenAndGetUserId = exports.generateAccessToken = exports.generateRefreshToken = exports.encryptPassword = exports.ACCESS_TOKEN_EXPIRATION_TIME = exports.REFRESH_TOKEN_EXPIRATION_TIME = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
-const authController_1 = require("../controllers/auth/authController");
+const authController_1 = require("./authController");
 const crypto_js_1 = require("crypto-js");
 exports.REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 exports.ACCESS_TOKEN_EXPIRATION_TIME = 5 * 60; // five minutes
 function encryptPassword({ password }) {
     const salt = process.env.SALT;
-    return crypto_js_1.MD5(salt + password).toString();
+    return (0, crypto_js_1.MD5)(salt + password).toString();
 }
 exports.encryptPassword = encryptPassword;
 function generateRefreshToken({ userId, jwtPrivateKey, }) {
@@ -25,7 +25,7 @@ function generateRefreshToken({ userId, jwtPrivateKey, }) {
     const jwtData = {
         userId,
     };
-    return jsonwebtoken_1.sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
+    return (0, jsonwebtoken_1.sign)({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
 exports.generateRefreshToken = generateRefreshToken;
 function generateAccessToken({ userId, jwtPrivateKey, }) {
@@ -33,11 +33,11 @@ function generateAccessToken({ userId, jwtPrivateKey, }) {
     const jwtData = {
         userId,
     };
-    return jsonwebtoken_1.sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
+    return (0, jsonwebtoken_1.sign)({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
 exports.generateAccessToken = generateAccessToken;
 function validateTokenAndGetUserId({ token, jwtPrivateKey, }) {
-    const accessTokenData = jsonwebtoken_1.verify(token, jwtPrivateKey);
+    const accessTokenData = (0, jsonwebtoken_1.verify)(token, jwtPrivateKey);
     if (typeof accessTokenData === "string")
         return accessTokenData;
     const { userId } = accessTokenData.data;

@@ -9,31 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersDatabaseService = void 0;
-const config_1 = require("./config");
-class UsersDatabaseService {
-    constructor(datastorePool) {
-        this.datastorePool = datastorePool;
-    }
-    createUser({ userId, email, username, encryptedPassword, }) {
+exports.TableService = void 0;
+class TableService {
+    teardown() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
-        INSERT INTO ${config_1.DATABASE_TABLE_NAMES.users}(
-            id,
-            email,
-            username,
-            encryptedpassword
-        )
-        VALUES (
-            '${userId}',
-            '${email}',
-            '${username}',
-            '${encryptedPassword}'
-        )
-        ;
+            DROP TABLE IF EXISTS ${this.tableName};
         `;
             yield this.datastorePool.query(queryString);
         });
     }
 }
-exports.UsersDatabaseService = UsersDatabaseService;
+exports.TableService = TableService;
