@@ -11,18 +11,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersTableService = void 0;
 const config_1 = require("../config");
-class UsersTableService {
+const models_1 = require("./models");
+class UsersTableService extends models_1.TableService {
     constructor(datastorePool) {
+        super();
         this.datastorePool = datastorePool;
+        this.tableName = UsersTableService.tableName;
+    }
+    setup() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+      CREATE TABLE IF NOT EXISTS ${this.tableName} (
+        id VARCHAR(64) UNIQUE NOT NULL,
+        email VARCHAR(64) UNIQUE NOT NULL,
+        username VARCHAR(64) UNIQUE NOT NULL,
+        short_bio VARCHAR(64),
+        encrypted_password VARCHAR(64) NOT NULL
+      )
+      ;
+    `;
+            yield this.datastorePool.query(queryString);
+        });
     }
     createUser({ userId, email, username, encryptedPassword, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
-        INSERT INTO ${config_1.DATABASE_TABLE_NAMES.users}(
+        INSERT INTO ${UsersTableService.tableName}(
             id,
             email,
             username,
-            encryptedpassword
+            encrypted_password
         )
         VALUES (
             '${userId}',
@@ -35,13 +53,13 @@ class UsersTableService {
             yield this.datastorePool.query(queryString);
         });
     }
-    selectUserByUsername({ username }) {
+    selectUserByUsername({ username, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
         SELECT
           *
         FROM
-          ${config_1.DATABASE_TABLE_NAMES.users}
+          ${UsersTableService.tableName}
         WHERE
           username = '${username}'
         LIMIT
@@ -53,13 +71,13 @@ class UsersTableService {
             return rows[0];
         });
     }
-    selectUserByUserId({ userId }) {
+    selectUserByUserId({ userId, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
         SELECT
           *
         FROM
-          ${config_1.DATABASE_TABLE_NAMES.users}
+          ${UsersTableService.tableName}
         WHERE
           id = '${userId}'
         LIMIT
@@ -73,3 +91,4 @@ class UsersTableService {
     }
 }
 exports.UsersTableService = UsersTableService;
+UsersTableService.tableName = `${config_1.TABLE_NAME_PREFIX}_users`;

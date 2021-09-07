@@ -29,13 +29,13 @@ exports.BlobStorageService = BlobStorageService;
 let LocalBlobStorageService = class LocalBlobStorageService extends BlobStorageService {
     constructor() {
         super();
-        this.localBlobStorageDirectory = utilities_1.getEnvironmentVariable("LOCAL_BLOB_STORAGE_DIRECTORY");
+        this.localBlobStorageDirectory = (0, utilities_1.getEnvironmentVariable)("LOCAL_BLOB_STORAGE_DIRECTORY");
     }
     saveImage({ image }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const fileKey = uuid_1.v4();
+            const fileKey = (0, uuid_1.v4)();
             const fileWritePath = this.localBlobStorageDirectory + "/" + fileKey;
-            yield fs_1.appendFileSync(fileWritePath, image);
+            yield (0, fs_1.appendFileSync)(fileWritePath, image);
             return {
                 fileKey,
             };
@@ -50,13 +50,13 @@ let LocalBlobStorageService = class LocalBlobStorageService extends BlobStorageS
     deleteImage({ blobImagePointer, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const filePath = this.localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
-            yield fs_1.unlinkSync(filePath);
+            yield (0, fs_1.unlinkSync)(filePath);
             return;
         });
     }
 };
 LocalBlobStorageService = __decorate([
-    tsyringe_1.singleton(),
+    (0, tsyringe_1.singleton)(),
     __metadata("design:paramtypes", [])
 ], LocalBlobStorageService);
 exports.LocalBlobStorageService = LocalBlobStorageService;

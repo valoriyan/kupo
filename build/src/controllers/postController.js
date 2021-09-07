@@ -45,15 +45,18 @@ let PostController = class PostController extends tsoa_1.Controller {
         this.blobStorageService = blobStorageService;
         this.databaseService = databaseService;
     }
-    createPost(caption, visibility, duration, title, price, collaboratorUsernames, scheduledPublicationTimestamp, file) {
+    createPost(caption, creatorUserId, visibility, duration, title, price, collaboratorUsernames, scheduledPublicationTimestamp, file) {
         return __awaiter(this, void 0, void 0, function* () {
-            const imageId = uuid_1.v4();
+            const postId = (0, uuid_1.v4)();
+            const imageId = (0, uuid_1.v4)();
             const imageBuffer = file.buffer;
             const { fileKey: imageBlobFilekey } = yield this.blobStorageService.saveImage({
                 image: imageBuffer,
             });
             try {
-                yield this.databaseService.postsTableService.createPost({
+                yield this.databaseService.tableServices.postsTableService.createPost({
+                    postId,
+                    creatorUserId,
                     imageId,
                     caption,
                     imageBlobFilekey,
@@ -72,22 +75,23 @@ let PostController = class PostController extends tsoa_1.Controller {
     }
 };
 __decorate([
-    tsoa_1.Post("create"),
-    __param(0, tsoa_1.FormField()),
-    __param(1, tsoa_1.FormField()),
-    __param(2, tsoa_1.FormField()),
-    __param(3, tsoa_1.FormField()),
-    __param(4, tsoa_1.FormField()),
-    __param(5, tsoa_1.FormField()),
-    __param(6, tsoa_1.FormField()),
-    __param(7, tsoa_1.UploadedFile()),
+    (0, tsoa_1.Post)("create"),
+    __param(0, (0, tsoa_1.FormField)()),
+    __param(1, (0, tsoa_1.FormField)()),
+    __param(2, (0, tsoa_1.FormField)()),
+    __param(3, (0, tsoa_1.FormField)()),
+    __param(4, (0, tsoa_1.FormField)()),
+    __param(5, (0, tsoa_1.FormField)()),
+    __param(6, (0, tsoa_1.FormField)()),
+    __param(7, (0, tsoa_1.FormField)()),
+    __param(8, (0, tsoa_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, Number, Array, Number, Object]),
+    __metadata("design:paramtypes", [String, String, String, String, String, Number, Array, Number, Object]),
     __metadata("design:returntype", Promise)
 ], PostController.prototype, "createPost", null);
 PostController = __decorate([
-    tsyringe_1.injectable(),
-    tsoa_1.Route("post"),
+    (0, tsyringe_1.injectable)(),
+    (0, tsoa_1.Route)("post"),
     __metadata("design:paramtypes", [blobStorageService_1.LocalBlobStorageService,
         databaseService_1.DatabaseService])
 ], PostController);

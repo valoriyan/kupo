@@ -101,9 +101,29 @@ export class UserPageController extends Controller {
     const { userId, error } = await checkAuthorization(this, request);
     if (error) return error;
 
-    const user = await this.databaseService.usersTableService.selectUserByUserId({
-      userId,
-    });
+    const user =
+      await this.databaseService.tableServices.usersTableService.selectUserByUserId({
+        userId,
+      });
+
+    const numberOfFollowersOfUserId: number =
+      await this.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId(
+        {
+          userIdBeingFollowed: userId,
+        },
+      );
+
+    const numberOfFollowsByUserId: number =
+      await this.databaseService.tableServices.userFollowsTableService.countFollowsOfUserId(
+        {
+          userIdDoingFollowing: userId,
+        },
+      );
+
+    const posts =
+      await this.databaseService.tableServices.postsTableService.getPostsByCreatorUserId({
+        creatorUserId: userId,
+      });
 
     if (!user) {
       this.setStatus(404);
@@ -114,17 +134,33 @@ export class UserPageController extends Controller {
       success: {
         username: user.username,
         followers: {
-          count: 9001,
+          count: numberOfFollowersOfUserId,
         },
         subscribers: {
-          count: 69,
+          count: 0,
         },
         follows: {
-          count: 420,
+          count: numberOfFollowsByUserId,
         },
-        bio: "I really like cats, if you couldn't tell already.",
+        bio: user.short_bio,
 
-        posts: [],
+        posts: posts.map((post) => {
+          return {
+            imageUrl: post.image_blob_filekey,
+            creatorUsername: user.username,
+            creationTimestamp: 0,
+            caption: post.caption,
+            likes: {
+              count: 0,
+            },
+            comments: {
+              count: 0,
+            },
+            shares: {
+              count: 0,
+            },
+          };
+        }),
         shopItems: [],
       },
     };

@@ -11,14 +11,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserFollowsTableService = void 0;
 const config_1 = require("../config");
-class UserFollowsTableService {
+const models_1 = require("./models");
+class UserFollowsTableService extends models_1.TableService {
     constructor(datastorePool) {
+        super();
         this.datastorePool = datastorePool;
+        this.tableName = UserFollowsTableService.tableName;
+    }
+    setup() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+      CREATE TABLE IF NOT EXISTS ${this.tableName} (
+        user_id_doing_following VARCHAR(64) NOT NULL,
+        user_id_being_followed VARCHAR(64) NOT NULL,
+        PRIMARY KEY (user_id_doing_following, user_id_being_followed)
+      )
+      ;
+    `;
+            yield this.datastorePool.query(queryString);
+        });
     }
     createUserFollow({ userIdDoingFollowing, userIdBeingFollowed, }) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
-        INSERT INTO ${config_1.DATABASE_TABLE_NAMES.userFollows}(
+        INSERT INTO ${UserFollowsTableService.tableName}(
             user_id_doing_following,
             user_id_being_followed,
         )
@@ -37,15 +53,30 @@ class UserFollowsTableService {
         SELECT
           COUNT(*)
         FROM
-          ${config_1.DATABASE_TABLE_NAMES.userFollows}
+          ${UserFollowsTableService.tableName}
         WHERE
-          user_id_doing_following = '${userIdBeingFollowed}'
+          user_id_being_followed = '${userIdBeingFollowed}'
         ;
       `;
             const response = yield this.datastorePool.query(queryString);
-            console.log(response);
-            return 0;
+            return response.rows[0].count;
+        });
+    }
+    countFollowsOfUserId({ userIdDoingFollowing, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+        SELECT
+          COUNT(*)
+        FROM
+          ${UserFollowsTableService.tableName}
+        WHERE
+          user_id_doing_following = '${userIdDoingFollowing}'
+        ;
+      `;
+            const response = yield this.datastorePool.query(queryString);
+            return response.rows[0].count;
         });
     }
 }
 exports.UserFollowsTableService = UserFollowsTableService;
+UserFollowsTableService.tableName = `${config_1.TABLE_NAME_PREFIX}_user_follows`;

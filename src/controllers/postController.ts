@@ -36,6 +36,7 @@ export class PostController extends Controller {
   @Post("create")
   public async createPost(
     @FormField() caption: string,
+    @FormField() creatorUserId: string,
     @FormField() visibility: PostPrivacySetting,
     @FormField() duration: PostDurationSetting,
     @FormField() title: string,
@@ -45,6 +46,7 @@ export class PostController extends Controller {
     @UploadedFile() file: Express.Multer.File,
     // @Body() requestBody: SecuredHTTPRequest<CreatePostParams>,
   ): Promise<HTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
+    const postId = uuidv4();
     const imageId = uuidv4();
 
     const imageBuffer: Buffer = file.buffer;
@@ -54,7 +56,9 @@ export class PostController extends Controller {
     });
 
     try {
-      await this.databaseService.postsTableService.createPost({
+      await this.databaseService.tableServices.postsTableService.createPost({
+        postId,
+        creatorUserId,
         imageId,
         caption,
         imageBlobFilekey,

@@ -11,14 +11,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsTableService = void 0;
 const config_1 = require("../config");
-class PostsTableService {
+const models_1 = require("./models");
+class PostsTableService extends models_1.TableService {
     constructor(datastorePool) {
+        super();
         this.datastorePool = datastorePool;
+        this.tableName = PostsTableService.tableName;
     }
-    createPost({ imageId, caption, imageBlobFilekey, title, price, scheduledPublicationTimestamp, }) {
+    setup() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryString = `
-        INSERT INTO ${config_1.DATABASE_TABLE_NAMES.posts}(
+      CREATE TABLE IF NOT EXISTS ${this.tableName} (
+        post_id VARCHAR(64) UNIQUE NOT NULL,
+        creator_user_id VARCHAR(64) UNIQUE NOT NULL,
+        image_id VARCHAR(64) UNIQUE NOT NULL,
+        caption VARCHAR(256) NOT NULL,
+        image_blob_filekey VARCHAR(128) NOT NULL,
+        title VARCHAR(128) NOT NULL,
+        price DECIMAL(12,2) NOT NULL,
+        scheduled_publication_timestamp BIGINT NOT NULL
+      )
+      ;
+    `;
+            yield this.datastorePool.query(queryString);
+        });
+    }
+    createPost({ postId, creatorUserId, imageId, caption, imageBlobFilekey, title, price, scheduledPublicationTimestamp, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+        INSERT INTO ${this.tableName}(
+            post_id,
+            creator_user_id,
             image_id,
             caption,
             image_blob_filekey,
@@ -27,6 +50,8 @@ class PostsTableService {
             scheduled_publication_timestamp
         )
         VALUES (
+            '${postId}',
+            '${creatorUserId}',
             '${imageId}',
             '${caption}',
             '${imageBlobFilekey}',
@@ -39,5 +64,24 @@ class PostsTableService {
             yield this.datastorePool.query(queryString);
         });
     }
+    getPostsByCreatorUserId({ creatorUserId, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+        SELECT
+          *
+        FROM
+          ${PostsTableService.tableName}
+        WHERE
+          creator_user_id = '${creatorUserId}'
+        LIMIT
+          1
+        ;
+      `;
+            const response = yield this.datastorePool.query(queryString);
+            const rows = response.rows;
+            return rows;
+        });
+    }
 }
 exports.PostsTableService = PostsTableService;
+PostsTableService.tableName = `${config_1.TABLE_NAME_PREFIX}_posts`;

@@ -9,13 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupTables = void 0;
-const bluebird_1 = require("bluebird");
-function setupTables({ tableServices, }) {
-    return __awaiter(this, void 0, void 0, function* () {
-        bluebird_1.Promise.each(Object.values(tableServices), (tableService) => __awaiter(this, void 0, void 0, function* () {
-            yield tableService.setup();
-        }));
-    });
+exports.TableService = void 0;
+class TableService {
+    teardown() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryString = `
+            DROP TABLE IF EXISTS ${this.tableName};
+        `;
+            yield this.datastorePool.query(queryString);
+        });
+    }
 }
-exports.setupTables = setupTables;
+exports.TableService = TableService;

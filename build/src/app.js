@@ -39,19 +39,19 @@ const express_1 = __importDefault(require("express"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const routes_1 = require("../build/routes");
 const databaseService_1 = require("./services/databaseService");
-exports.app = express_1.default();
+exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use(express_1.default.json()); // To parse the incoming requests with JSON payloads
 exports.app.use(express_1.default.urlencoded({ extended: true }));
-exports.app.use(cookie_parser_1.default());
-exports.app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
+exports.app.use((0, cookie_parser_1.default)());
+exports.app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
 exports.app.use("/docs", swagger_ui_express_1.default.serve, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
 }));
 exports.app.use("/open-api-spec", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.json((yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))).default);
 }));
-routes_1.RegisterRoutes(exports.app);
+(0, routes_1.RegisterRoutes)(exports.app);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.app.use((err, req, res) => {
     const status = err.status || 500;

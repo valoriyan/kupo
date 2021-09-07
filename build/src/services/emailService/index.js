@@ -33,12 +33,12 @@ function generateResetPasswordToken({ userId, jwtPrivateKey, }) {
             userId,
         },
     };
-    return jsonwebtoken_1.sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
+    return (0, jsonwebtoken_1.sign)({ data: jwtData }, jwtPrivateKey, { expiresIn });
 }
 let LocalEmailService = class LocalEmailService extends EmailService {
     constructor() {
         super();
-        this.jwtPrivateKey = utilities_1.getEnvironmentVariable("JWT_PRIVATE_KEY");
+        this.jwtPrivateKey = (0, utilities_1.getEnvironmentVariable)("JWT_PRIVATE_KEY");
     }
     sendResetPasswordEmail({ userId }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,7 +54,7 @@ let LocalEmailService = class LocalEmailService extends EmailService {
     }
 };
 LocalEmailService = __decorate([
-    tsyringe_1.singleton(),
+    (0, tsyringe_1.singleton)(),
     __metadata("design:paramtypes", [])
 ], LocalEmailService);
 exports.LocalEmailService = LocalEmailService;

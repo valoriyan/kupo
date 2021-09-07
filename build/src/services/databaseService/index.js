@@ -20,15 +20,18 @@ exports.DatabaseService = void 0;
 const pg_1 = require("pg");
 const tsyringe_1 = require("tsyringe");
 const config_1 = require("./config");
-const setupTables_1 = require("./setupTables");
+const setup_1 = require("./setup");
 const postsTableService_1 = require("./tableServices/postsTableService");
 const userFollowsTableService_1 = require("./tableServices/userFollowsTableService");
 const usersTableService_1 = require("./tableServices/usersTableService");
+const teardown_1 = require("./teardown");
 let DatabaseService = DatabaseService_1 = class DatabaseService {
     constructor() {
-        this.usersTableService = new usersTableService_1.UsersTableService(DatabaseService_1.datastorePool);
-        this.postsTableService = new postsTableService_1.PostsTableService(DatabaseService_1.datastorePool);
-        this.userFollowsTableService = new userFollowsTableService_1.UserFollowsTableService(DatabaseService_1.datastorePool);
+        this.tableServices = {
+            usersTableService: new usersTableService_1.UsersTableService(DatabaseService_1.datastorePool),
+            postsTableService: new postsTableService_1.PostsTableService(DatabaseService_1.datastorePool),
+            userFollowsTableService: new userFollowsTableService_1.UserFollowsTableService(DatabaseService_1.datastorePool),
+        };
     }
     static start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,63 +41,18 @@ let DatabaseService = DatabaseService_1 = class DatabaseService {
             });
         });
     }
-    static doesDatabaseExist() {
+    setupDatabaseService() {
         return __awaiter(this, void 0, void 0, function* () {
-            const temporaryPool = new pg_1.Pool();
-            const response = yield temporaryPool.query(`
-      SELECT datname FROM pg_database
-      WHERE datistemplate = false;
-    `);
-            const databaseExists = response.rows.some((row) => {
-                return row.datname === config_1.DATABASE_NAME;
+            yield (0, setup_1.setupDatabaseService)({
+                tableServices: this.tableServices,
             });
-            yield temporaryPool.end();
-            return databaseExists;
         });
     }
-    static setupDatabase() {
+    teardownDatabaseService() {
         return __awaiter(this, void 0, void 0, function* () {
-            const databaseExists = yield DatabaseService_1.doesDatabaseExist();
-            const temporaryPool = new pg_1.Pool();
-            if (!databaseExists) {
-                yield temporaryPool.query(`
-        CREATE DATABASE ${config_1.DATABASE_NAME};
-      `);
-            }
-            yield temporaryPool.end();
-        });
-    }
-    static setupTables() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield setupTables_1.setupTables();
-        });
-    }
-    static teardownDatabase() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const temporaryPool = new pg_1.Pool();
-            const queryString = `
-      DROP DATABASE IF EXISTS ${config_1.DATABASE_NAME} WITH (FORCE);
-    `;
-            try {
-                yield temporaryPool.query(queryString);
-            }
-            catch (error) {
-                console.log(error);
-            }
-            yield temporaryPool.end();
-        });
-    }
-    static teardownTables() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const databaseExists = yield DatabaseService_1.doesDatabaseExist();
-            if (!databaseExists)
-                return;
-            const temporaryPool = new pg_1.Pool();
-            const queryString = `
-      DROP TABLE IF EXISTS ${config_1.DATABASE_TABLE_NAMES.users};
-    `;
-            yield temporaryPool.query(queryString);
-            yield temporaryPool.end();
+            yield (0, teardown_1.teardownDatabaseServive)({
+                tableServices: this.tableServices,
+            });
         });
     }
     static get() {
@@ -109,7 +67,7 @@ let DatabaseService = DatabaseService_1 = class DatabaseService {
     }
 };
 DatabaseService = DatabaseService_1 = __decorate([
-    tsyringe_1.singleton()
+    (0, tsyringe_1.singleton)()
 ], DatabaseService);
 exports.DatabaseService = DatabaseService;
 DatabaseService.get();

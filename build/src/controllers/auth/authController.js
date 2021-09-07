@@ -54,11 +54,11 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     }
     registerUser(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userId = uuid_1.v4();
+            const userId = (0, uuid_1.v4)();
             const { email, username, password } = requestBody;
-            const encryptedPassword = authUtilities_1.encryptPassword({ password });
+            const encryptedPassword = (0, authUtilities_1.encryptPassword)({ password });
             try {
-                this.databaseService.usersTableService.createUser({
+                this.databaseService.tableServices.usersTableService.createUser({
                     userId,
                     email,
                     username,
@@ -83,11 +83,11 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             const { username, password } = requestBody;
             const jwtPrivateKey = process.env.JWT_PRIVATE_KEY;
             try {
-                const user = yield this.databaseService.usersTableService.selectUserByUsername({
+                const user = yield this.databaseService.tableServices.usersTableService.selectUserByUsername({
                     username,
                 });
                 if (user) {
-                    const hasMatchedPassword = authUtilities_1.encryptPassword({ password }) === user.encryptedpassword;
+                    const hasMatchedPassword = (0, authUtilities_1.encryptPassword)({ password }) === user.encrypted_password;
                     if (hasMatchedPassword) {
                         const userId = user.id;
                         return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
@@ -113,7 +113,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             }
             let userId;
             try {
-                userId = authUtilities_1.validateTokenAndGetUserId({
+                userId = (0, authUtilities_1.validateTokenAndGetUserId)({
                     token: refreshToken,
                     jwtPrivateKey,
                 });
@@ -147,52 +147,52 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     }
 };
 __decorate([
-    tsoa_1.Post("register"),
-    __param(0, tsoa_1.Body()),
+    (0, tsoa_1.Post)("register"),
+    __param(0, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "registerUser", null);
 __decorate([
-    tsoa_1.Post("login"),
-    __param(0, tsoa_1.Body()),
+    (0, tsoa_1.Post)("login"),
+    __param(0, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginUser", null);
 __decorate([
-    tsoa_1.Get("refresh-access-token"),
-    __param(0, tsoa_1.Request()),
+    (0, tsoa_1.Get)("refresh-access-token"),
+    __param(0, (0, tsoa_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refreshAccessToken", null);
 __decorate([
-    tsoa_1.Post("resetPassword"),
-    __param(0, tsoa_1.Body()),
+    (0, tsoa_1.Post)("resetPassword"),
+    __param(0, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "requestPasswordReset", null);
 __decorate([
-    tsoa_1.Get("logout"),
+    (0, tsoa_1.Get)("logout"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 AuthController = __decorate([
-    tsyringe_1.injectable(),
-    tsoa_1.Route("auth"),
+    (0, tsyringe_1.injectable)(),
+    (0, tsoa_1.Route)("auth"),
     __metadata("design:paramtypes", [emailService_1.LocalEmailService,
         databaseService_1.DatabaseService])
 ], AuthController);
 exports.AuthController = AuthController;
 function grantNewAccessToken({ controller, userId, jwtPrivateKey, successStatusCode = 200, }) {
-    const accessToken = authUtilities_1.generateAccessToken({
+    const accessToken = (0, authUtilities_1.generateAccessToken)({
         userId,
         jwtPrivateKey,
     });
-    const refreshToken = authUtilities_1.generateRefreshToken({
+    const refreshToken = (0, authUtilities_1.generateRefreshToken)({
         userId,
         jwtPrivateKey,
     });

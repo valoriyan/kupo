@@ -77,7 +77,7 @@ export class AuthController extends Controller {
     const encryptedPassword = encryptPassword({ password });
 
     try {
-      this.databaseService.usersTableService.createUser({
+      this.databaseService.tableServices.usersTableService.createUser({
         userId,
         email,
         username,
@@ -105,12 +105,13 @@ export class AuthController extends Controller {
     const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
 
     try {
-      const user = await this.databaseService.usersTableService.selectUserByUsername({
-        username,
-      });
+      const user =
+        await this.databaseService.tableServices.usersTableService.selectUserByUsername({
+          username,
+        });
       if (user) {
         const hasMatchedPassword =
-          encryptPassword({ password }) === user.encryptedpassword;
+          encryptPassword({ password }) === user.encrypted_password;
         if (hasMatchedPassword) {
           const userId = user.id;
           return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });

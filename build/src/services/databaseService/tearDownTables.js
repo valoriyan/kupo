@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupTables = void 0;
+exports.teardownTables = void 0;
 const bluebird_1 = require("bluebird");
-function setupTables({ tableServices, }) {
+function teardownTables({ tableServices, }) {
     return __awaiter(this, void 0, void 0, function* () {
         bluebird_1.Promise.each(Object.values(tableServices), (tableService) => __awaiter(this, void 0, void 0, function* () {
-            yield tableService.setup();
+            yield tableService.teardown();
         }));
     });
 }
-exports.setupTables = setupTables;
+exports.teardownTables = teardownTables;

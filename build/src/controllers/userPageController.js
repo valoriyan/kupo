@@ -52,11 +52,20 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
     }
     getUserProfile(request) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { userId, error } = yield authUtilities_1.checkAuthorization(this, request);
+            const { userId, error } = yield (0, authUtilities_1.checkAuthorization)(this, request);
             if (error)
                 return error;
-            const user = yield this.databaseService.usersTableService.selectUserByUserId({
+            const user = yield this.databaseService.tableServices.usersTableService.selectUserByUserId({
                 userId,
+            });
+            const numberOfFollowersOfUserId = yield this.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId({
+                userIdBeingFollowed: userId,
+            });
+            const numberOfFollowsByUserId = yield this.databaseService.tableServices.userFollowsTableService.countFollowsOfUserId({
+                userIdDoingFollowing: userId,
+            });
+            const posts = yield this.databaseService.tableServices.postsTableService.getPostsByCreatorUserId({
+                creatorUserId: userId,
             });
             if (!user) {
                 this.setStatus(404);
@@ -66,16 +75,32 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
                 success: {
                     username: user.username,
                     followers: {
-                        count: 9001,
+                        count: numberOfFollowersOfUserId,
                     },
                     subscribers: {
-                        count: 69,
+                        count: 0,
                     },
                     follows: {
-                        count: 420,
+                        count: numberOfFollowsByUserId,
                     },
-                    bio: "I really like cats, if you couldn't tell already.",
-                    posts: [],
+                    bio: user.short_bio,
+                    posts: posts.map((post) => {
+                        return {
+                            imageUrl: post.image_blob_filekey,
+                            creatorUsername: user.username,
+                            creationTimestamp: 0,
+                            caption: post.caption,
+                            likes: {
+                                count: 0,
+                            },
+                            comments: {
+                                count: 0,
+                            },
+                            shares: {
+                                count: 0,
+                            },
+                        };
+                    }),
                     shopItems: [],
                 },
             };
@@ -83,22 +108,22 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
     }
 };
 __decorate([
-    tsoa_1.Post("SetSettings"),
-    __param(0, tsoa_1.Body()),
+    (0, tsoa_1.Post)("SetSettings"),
+    __param(0, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserPageController.prototype, "setUserSettings", null);
 __decorate([
-    tsoa_1.Post("GeUserProfile"),
-    __param(0, tsoa_1.Request()),
+    (0, tsoa_1.Post)("GeUserProfile"),
+    __param(0, (0, tsoa_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserPageController.prototype, "getUserProfile", null);
 UserPageController = __decorate([
-    tsyringe_1.injectable(),
-    tsoa_1.Route("user"),
+    (0, tsyringe_1.injectable)(),
+    (0, tsoa_1.Route)("user"),
     __metadata("design:paramtypes", [databaseService_1.DatabaseService])
 ], UserPageController);
 exports.UserPageController = UserPageController;
