@@ -1,10 +1,19 @@
+import { ComponentProps, Key, ReactNode, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
-import React, { PropsWithChildren, useEffect, useRef } from "react";
 import { styled, usePrefersMotion } from "#/styling";
 
-export const PageTransition = ({ children }: PropsWithChildren<unknown>) => {
-  const router = useRouter();
+export type Transition = Pick<
+  ComponentProps<typeof motion.div>,
+  "initial" | "animate" | "exit"
+>;
+
+export interface TransitionAreaProps {
+  transitionKey: Key;
+  animation: Transition;
+  children: ReactNode;
+}
+
+export const TransitionArea = (props: TransitionAreaProps) => {
   const isFirstRender = useRef(true);
   const prefersMotion = usePrefersMotion();
 
@@ -12,24 +21,18 @@ export const PageTransition = ({ children }: PropsWithChildren<unknown>) => {
     isFirstRender.current = false;
   }, []);
 
-  const pageTransition =
-    isFirstRender.current || !prefersMotion
-      ? // Don't run an animation on initial page load or if the user prefers reduced motion
-        noAnimation
-      : router.pathname.includes("add-content")
-      ? slideUpFromBottom
-      : slideInFromLeft;
+  const transitionAnimation =
+    isFirstRender.current || !prefersMotion ? noAnimation : props.animation;
 
   return (
     <ContentArea>
       <AnimatePresence>
         <TransitionWrapper
-          // By providing this key, this component will remount when the route changes
-          key={router.route}
+          key={props.transitionKey}
           transition={{ duration: 0.4 }}
-          {...pageTransition}
+          {...transitionAnimation}
         >
-          <CurrentContent>{children}</CurrentContent>
+          <CurrentContent>{props.children}</CurrentContent>
         </TransitionWrapper>
       </AnimatePresence>
     </ContentArea>
@@ -65,16 +68,4 @@ const noAnimation = {
   initial: { translateX: 0, translateY: 0 },
   animate: { translateX: 0, translateY: 0 },
   exit: { translateX: 0, translateY: 0 },
-};
-
-const slideInFromLeft = {
-  initial: { translateX: "100%" },
-  animate: { translateX: 0 },
-  exit: { translateX: "100%" },
-};
-
-const slideUpFromBottom = {
-  initial: { translateY: "100%" },
-  animate: { translateY: 0 },
-  exit: { translateY: "100%" },
 };
