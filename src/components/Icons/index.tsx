@@ -1,3 +1,4 @@
+export * from "./Add";
 export * from "./Bell";
 export * from "./Close";
 export * from "./Duplicate";
