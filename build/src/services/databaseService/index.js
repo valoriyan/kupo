@@ -69,3 +69,4 @@ DatabaseService = DatabaseService_1 = __decorate([
 ], DatabaseService);
 exports.DatabaseService = DatabaseService;
 DatabaseService.get();
+//# sourceMappingURL=index.js.map

@@ -5,9 +5,9 @@ import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, H
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../src/controllers/auth/authController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { PostController } from './../src/controllers/postController';
+import { PostController } from './../src/controllers/post/postController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { UserPageController } from './../src/controllers/userPageController';
+import { UserPageController } from './../src/controllers/user/userPageController';
 import { iocContainer } from './../src/inversionOfControl';
 import { IocContainer, IocContainerFactory } from '@tsoa/runtime';
 import * as express from 'express';
@@ -126,25 +126,25 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "FailedToUpdateUserSettingsResponse": {
+    "FailedToUpdateUserProfileResponse": {
         "dataType": "refObject",
         "properties": {
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SuccessfulUpdateToUserSettingsResponse": {
+    "SuccessfulUpdateToUserProfileResponse": {
         "dataType": "refObject",
         "properties": {
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "HTTPResponse_FailedToUpdateUserSettingsResponse.SuccessfulUpdateToUserSettingsResponse_": {
+    "HTTPResponse_FailedToUpdateUserProfileResponse.SuccessfulUpdateToUserProfileResponse_": {
         "dataType": "refObject",
         "properties": {
-            "error": {"ref":"FailedToUpdateUserSettingsResponse"},
-            "success": {"ref":"SuccessfulUpdateToUserSettingsResponse"},
+            "error": {"ref":"FailedToUpdateUserProfileResponse"},
+            "success": {"ref":"SuccessfulUpdateToUserProfileResponse"},
         },
         "additionalProperties": false,
     },
@@ -154,7 +154,7 @@ const models: TsoaRoute.Models = {
         "enums": ["PublicAndGuestCheckout"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SetUserSettingsParams": {
+    "UpdateUserProfileParams": {
         "dataType": "refObject",
         "properties": {
             "username": {"dataType":"string","required":true},
@@ -166,11 +166,11 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SecuredHTTPRequest_SetUserSettingsParams_": {
+    "SecuredHTTPRequest_UpdateUserProfileParams_": {
         "dataType": "refObject",
         "properties": {
             "accessToken": {"dataType":"string","required":true},
-            "data": {"ref":"SetUserSettingsParams","required":true},
+            "data": {"ref":"UpdateUserProfileParams","required":true},
         },
         "additionalProperties": false,
     },
@@ -239,7 +239,7 @@ const models: TsoaRoute.Models = {
     "GetUserProfileParams": {
         "dataType": "refObject",
         "properties": {
-            "username": {"dataType":"string"},
+            "username": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -398,6 +398,7 @@ export function RegisterRoutes(app: express.Router) {
 
             async function PostController_createPost(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     caption: {"in":"formData","name":"caption","required":true,"dataType":"string"},
                     creatorUserId: {"in":"formData","name":"creatorUserId","required":true,"dataType":"string"},
                     visibility: {"in":"formData","name":"visibility","required":true,"dataType":"string"},
@@ -430,11 +431,12 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/user/SetSettings',
+        app.post('/user/UpdateUserProfile',
 
-            async function UserPageController_setUserSettings(request: any, response: any, next: any) {
+            async function UserPageController_updateUserProfile(request: any, response: any, next: any) {
             const args = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_SetUserSettingsParams_"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"SecuredHTTPRequest_UpdateUserProfileParams_"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -454,11 +456,11 @@ export function RegisterRoutes(app: express.Router) {
             }
 
 
-            const promise = controller.setUserSettings.apply(controller, validatedArgs as any);
+            const promise = controller.updateUserProfile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/user/GeUserProfile',
+        app.post('/user/GetUserProfile',
 
             async function UserPageController_getUserProfile(request: any, response: any, next: any) {
             const args = {

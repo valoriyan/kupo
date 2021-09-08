@@ -64,3 +64,4 @@ exports.app.use((err, req, res) => {
     res.status(status).json(body);
 });
 databaseService_1.DatabaseService.start();
+//# sourceMappingURL=app.js.map

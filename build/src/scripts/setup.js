@@ -20,3 +20,4 @@ function setupScript() {
     });
 }
 setupScript();
+//# sourceMappingURL=setup.js.map

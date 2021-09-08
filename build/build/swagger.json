@@ -158,23 +158,23 @@
                 "type": "object",
                 "additionalProperties": false
             },
-            "FailedToUpdateUserSettingsResponse": {
+            "FailedToUpdateUserProfileResponse": {
                 "properties": {},
                 "type": "object",
                 "additionalProperties": false
             },
-            "SuccessfulUpdateToUserSettingsResponse": {
+            "SuccessfulUpdateToUserProfileResponse": {
                 "properties": {},
                 "type": "object",
                 "additionalProperties": false
             },
-            "HTTPResponse_FailedToUpdateUserSettingsResponse.SuccessfulUpdateToUserSettingsResponse_": {
+            "HTTPResponse_FailedToUpdateUserProfileResponse.SuccessfulUpdateToUserProfileResponse_": {
                 "properties": {
                     "error": {
-                        "$ref": "#/components/schemas/FailedToUpdateUserSettingsResponse"
+                        "$ref": "#/components/schemas/FailedToUpdateUserProfileResponse"
                     },
                     "success": {
-                        "$ref": "#/components/schemas/SuccessfulUpdateToUserSettingsResponse"
+                        "$ref": "#/components/schemas/SuccessfulUpdateToUserProfileResponse"
                     }
                 },
                 "type": "object",
@@ -186,7 +186,7 @@
                 ],
                 "type": "string"
             },
-            "SetUserSettingsParams": {
+            "UpdateUserProfileParams": {
                 "properties": {
                     "username": {
                         "type": "string"
@@ -217,13 +217,13 @@
                 "type": "object",
                 "additionalProperties": false
             },
-            "SecuredHTTPRequest_SetUserSettingsParams_": {
+            "SecuredHTTPRequest_UpdateUserProfileParams_": {
                 "properties": {
                     "accessToken": {
                         "type": "string"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/SetUserSettingsParams"
+                        "$ref": "#/components/schemas/UpdateUserProfileParams"
                     }
                 },
                 "required": [
@@ -436,6 +436,9 @@
                         "type": "string"
                     }
                 },
+                "required": [
+                    "username"
+                ],
                 "type": "object",
                 "additionalProperties": false
             }
@@ -640,16 +643,16 @@
                 }
             }
         },
-        "/user/SetSettings": {
+        "/user/UpdateUserProfile": {
             "post": {
-                "operationId": "SetUserSettings",
+                "operationId": "UpdateUserProfile",
                 "responses": {
                     "200": {
                         "description": "Ok",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/HTTPResponse_FailedToUpdateUserSettingsResponse.SuccessfulUpdateToUserSettingsResponse_"
+                                    "$ref": "#/components/schemas/HTTPResponse_FailedToUpdateUserProfileResponse.SuccessfulUpdateToUserProfileResponse_"
                                 }
                             }
                         }
@@ -662,14 +665,14 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/SecuredHTTPRequest_SetUserSettingsParams_"
+                                "$ref": "#/components/schemas/SecuredHTTPRequest_UpdateUserProfileParams_"
                             }
                         }
                     }
                 }
             }
         },
-        "/user/GeUserProfile": {
+        "/user/GetUserProfile": {
             "post": {
                 "operationId": "GetUserProfile",
                 "responses": {

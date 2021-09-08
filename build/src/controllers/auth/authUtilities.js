@@ -68,3 +68,4 @@ function checkAuthorization(controller, request) {
     });
 }
 exports.checkAuthorization = checkAuthorization;
+//# sourceMappingURL=authUtilities.js.map

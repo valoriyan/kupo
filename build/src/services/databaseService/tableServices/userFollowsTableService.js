@@ -80,3 +80,4 @@ class UserFollowsTableService extends models_1.TableService {
 }
 exports.UserFollowsTableService = UserFollowsTableService;
 UserFollowsTableService.tableName = `${config_1.TABLE_NAME_PREFIX}_user_follows`;
+//# sourceMappingURL=userFollowsTableService.js.map

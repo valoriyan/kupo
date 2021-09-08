@@ -11,3 +11,4 @@ function getEnvironmentVariable(name) {
     }
 }
 exports.getEnvironmentVariable = getEnvironmentVariable;
+//# sourceMappingURL=index.js.map

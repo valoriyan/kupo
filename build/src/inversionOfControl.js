@@ -7,3 +7,4 @@ exports.iocContainer = {
         return tsyringe_1.container.resolve(controller);
     },
 };
+//# sourceMappingURL=inversionOfControl.js.map

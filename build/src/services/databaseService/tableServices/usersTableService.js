@@ -92,3 +92,4 @@ class UsersTableService extends models_1.TableService {
 }
 exports.UsersTableService = UsersTableService;
 UsersTableService.tableName = `${config_1.TABLE_NAME_PREFIX}_users`;
+//# sourceMappingURL=usersTableService.js.map

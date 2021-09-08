@@ -44,9 +44,14 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
         super();
         this.databaseService = databaseService;
     }
-    setUserSettings(requestBody) {
+    setUserSettings(request, requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(requestBody);
+            const { userId, error } = yield (0, authUtilities_1.checkAuthorization)(this, request);
+            if (error)
+                return error;
+            const user = yield this.databaseService.tableServices.usersTableService.selectUserByUserId({
+                userId,
+            });
             return {};
         });
     }
@@ -55,19 +60,24 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
             const { userId, error } = yield (0, authUtilities_1.checkAuthorization)(this, request);
             if (error)
                 return error;
+            /* eslint-disable @typescript-eslint/no-explicit-any */
             let user;
             if (requestBody.username) {
                 // Fetch user profile by given username
-                const sfdg = yield this.databaseService.tableServices.usersTableService.selectUserByUsername({
-                    username: requestBody.username,
-                });
+                user =
+                    yield this.databaseService.tableServices.usersTableService.selectUserByUsername({
+                        username: requestBody.username,
+                    });
             }
             else {
                 // Fetch user profile by own userId
                 const { userId, error } = yield (0, authUtilities_1.checkAuthorization)(this, request);
                 if (error)
                     return error;
-                user = yield this.databaseService.tableServices.usersTableService.selectUserByUserId({ userId });
+                user =
+                    yield this.databaseService.tableServices.usersTableService.selectUserByUserId({
+                        userId,
+                    });
             }
             const numberOfFollowersOfUserId = yield this.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId({
                 userIdBeingFollowed: userId,
@@ -119,14 +129,15 @@ let UserPageController = class UserPageController extends tsoa_1.Controller {
     }
 };
 __decorate([
-    (0, tsoa_1.Post)("SetSettings"),
-    __param(0, (0, tsoa_1.Body)()),
+    (0, tsoa_1.Post)("SetUserSettings"),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserPageController.prototype, "setUserSettings", null);
 __decorate([
-    (0, tsoa_1.Post)("GeUserProfile"),
+    (0, tsoa_1.Post)("GetUserProfile"),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),

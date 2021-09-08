@@ -204,3 +204,4 @@ function grantNewAccessToken({ controller, userId, jwtPrivateKey, successStatusC
     controller.setStatus(successStatusCode);
     return { success: { accessToken } };
 }
+//# sourceMappingURL=authController.js.map

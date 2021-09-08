@@ -51,3 +51,4 @@ function setupDatabaseService({ tableServices, }) {
     });
 }
 exports.setupDatabaseService = setupDatabaseService;
+//# sourceMappingURL=setup.js.map

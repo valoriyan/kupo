@@ -60,3 +60,4 @@ LocalBlobStorageService = __decorate([
     __metadata("design:paramtypes", [])
 ], LocalBlobStorageService);
 exports.LocalBlobStorageService = LocalBlobStorageService;
+//# sourceMappingURL=index.js.map

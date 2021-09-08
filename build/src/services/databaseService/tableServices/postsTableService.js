@@ -85,3 +85,4 @@ class PostsTableService extends models_1.TableService {
 }
 exports.PostsTableService = PostsTableService;
 PostsTableService.tableName = `${config_1.TABLE_NAME_PREFIX}_posts`;
+//# sourceMappingURL=postsTableService.js.map
