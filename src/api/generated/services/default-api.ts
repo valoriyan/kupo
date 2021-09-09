@@ -45,7 +45,7 @@ import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedToUpdateUserSettingsResponseSuccessfulUpdateToUserSettingsResponse } from "../types";
+import { HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
 // @ts-ignore
 import { LoginUserParams } from "../types";
 // @ts-ignore
@@ -53,7 +53,7 @@ import { RegisterUserParams } from "../types";
 // @ts-ignore
 import { RequestPasswordResetParams } from "../types";
 // @ts-ignore
-import { SecuredHTTPRequestSetUserSettingsParams } from "../types";
+import { SecuredHTTPRequestUpdateUserProfileParams } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
 /**
@@ -65,6 +65,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @param {string} caption
+     * @param {string} creatorUserId
      * @param {string} visibility
      * @param {string} duration
      * @param {string} title
@@ -77,6 +78,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     createPost: async (
       caption: string,
+      creatorUserId: string,
       visibility: string,
       duration: string,
       title: string,
@@ -88,6 +90,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     ): Promise<RequestArgs> => {
       // verify required parameter 'caption' is not null or undefined
       assertParamExists("createPost", "caption", caption);
+      // verify required parameter 'creatorUserId' is not null or undefined
+      assertParamExists("createPost", "creatorUserId", creatorUserId);
       // verify required parameter 'visibility' is not null or undefined
       assertParamExists("createPost", "visibility", visibility);
       // verify required parameter 'duration' is not null or undefined
@@ -122,6 +126,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 
       if (caption !== undefined) {
         localVarFormParams.append("caption", caption as any);
+      }
+
+      if (creatorUserId !== undefined) {
+        localVarFormParams.append("creatorUserId", creatorUserId as any);
       }
 
       if (visibility !== undefined) {
@@ -184,7 +192,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     ): Promise<RequestArgs> => {
       // verify required parameter 'getUserProfileParams' is not null or undefined
       assertParamExists("getUserProfile", "getUserProfileParams", getUserProfileParams);
-      const localVarPath = `/user/GeUserProfile`;
+      const localVarPath = `/user/GetUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -422,21 +430,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SecuredHTTPRequestSetUserSettingsParams} securedHTTPRequestSetUserSettingsParams
+     * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    setUserSettings: async (
-      securedHTTPRequestSetUserSettingsParams: SecuredHTTPRequestSetUserSettingsParams,
+    updateUserProfile: async (
+      securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'securedHTTPRequestSetUserSettingsParams' is not null or undefined
+      // verify required parameter 'securedHTTPRequestUpdateUserProfileParams' is not null or undefined
       assertParamExists(
-        "setUserSettings",
-        "securedHTTPRequestSetUserSettingsParams",
-        securedHTTPRequestSetUserSettingsParams,
+        "updateUserProfile",
+        "securedHTTPRequestUpdateUserProfileParams",
+        securedHTTPRequestUpdateUserProfileParams,
       );
-      const localVarPath = `/user/SetSettings`;
+      const localVarPath = `/user/UpdateUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -459,7 +467,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        securedHTTPRequestSetUserSettingsParams,
+        securedHTTPRequestUpdateUserProfileParams,
         localVarRequestOptions,
         configuration,
       );
@@ -482,6 +490,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {string} caption
+     * @param {string} creatorUserId
      * @param {string} visibility
      * @param {string} duration
      * @param {string} title
@@ -494,6 +503,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async createPost(
       caption: string,
+      creatorUserId: string,
       visibility: string,
       duration: string,
       title: string,
@@ -510,6 +520,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
         caption,
+        creatorUserId,
         visibility,
         duration,
         title,
@@ -671,21 +682,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SecuredHTTPRequestSetUserSettingsParams} securedHTTPRequestSetUserSettingsParams
+     * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async setUserSettings(
-      securedHTTPRequestSetUserSettingsParams: SecuredHTTPRequestSetUserSettingsParams,
+    async updateUserProfile(
+      securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedToUpdateUserSettingsResponseSuccessfulUpdateToUserSettingsResponse>
+      ) => AxiosPromise<HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.setUserSettings(
-        securedHTTPRequestSetUserSettingsParams,
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
+        securedHTTPRequestUpdateUserProfileParams,
         options,
       );
       return createRequestFunction(
@@ -712,6 +723,7 @@ export const DefaultApiFactory = function (
     /**
      *
      * @param {string} caption
+     * @param {string} creatorUserId
      * @param {string} visibility
      * @param {string} duration
      * @param {string} title
@@ -724,6 +736,7 @@ export const DefaultApiFactory = function (
      */
     createPost(
       caption: string,
+      creatorUserId: string,
       visibility: string,
       duration: string,
       title: string,
@@ -736,6 +749,7 @@ export const DefaultApiFactory = function (
       return localVarFp
         .createPost(
           caption,
+          creatorUserId,
           visibility,
           duration,
           title,
@@ -825,16 +839,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {SecuredHTTPRequestSetUserSettingsParams} securedHTTPRequestSetUserSettingsParams
+     * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    setUserSettings(
-      securedHTTPRequestSetUserSettingsParams: SecuredHTTPRequestSetUserSettingsParams,
+    updateUserProfile(
+      securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedToUpdateUserSettingsResponseSuccessfulUpdateToUserSettingsResponse> {
+    ): AxiosPromise<HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
       return localVarFp
-        .setUserSettings(securedHTTPRequestSetUserSettingsParams, options)
+        .updateUserProfile(securedHTTPRequestUpdateUserProfileParams, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -850,6 +864,7 @@ export class DefaultApi extends BaseAPI {
   /**
    *
    * @param {string} caption
+   * @param {string} creatorUserId
    * @param {string} visibility
    * @param {string} duration
    * @param {string} title
@@ -863,6 +878,7 @@ export class DefaultApi extends BaseAPI {
    */
   public createPost(
     caption: string,
+    creatorUserId: string,
     visibility: string,
     duration: string,
     title: string,
@@ -875,6 +891,7 @@ export class DefaultApi extends BaseAPI {
     return DefaultApiFp(this.configuration)
       .createPost(
         caption,
+        creatorUserId,
         visibility,
         duration,
         title,
@@ -968,17 +985,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {SecuredHTTPRequestSetUserSettingsParams} securedHTTPRequestSetUserSettingsParams
+   * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public setUserSettings(
-    securedHTTPRequestSetUserSettingsParams: SecuredHTTPRequestSetUserSettingsParams,
+  public updateUserProfile(
+    securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .setUserSettings(securedHTTPRequestSetUserSettingsParams, options)
+      .updateUserProfile(securedHTTPRequestUpdateUserProfileParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

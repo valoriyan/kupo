@@ -1,4 +1,4 @@
-import { ComponentProps, Key, ReactNode, useEffect, useRef } from "react";
+import { ComponentProps, Key, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { styled, usePrefersMotion } from "#/styling";
 
@@ -14,19 +14,12 @@ export interface TransitionAreaProps {
 }
 
 export const TransitionArea = (props: TransitionAreaProps) => {
-  const isFirstRender = useRef(true);
   const prefersMotion = usePrefersMotion();
-
-  useEffect(() => {
-    isFirstRender.current = false;
-  }, []);
-
-  const transitionAnimation =
-    isFirstRender.current || !prefersMotion ? noAnimation : props.animation;
+  const transitionAnimation = !prefersMotion ? noAnimation : props.animation;
 
   return (
     <ContentArea>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         <TransitionWrapper
           key={props.transitionKey}
           transition={{ duration: 0.4 }}
