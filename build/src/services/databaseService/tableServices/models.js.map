@@ -1,1 +1,0 @@
-{"version":3,"file":"models.js","sourceRoot":"","sources":["../../../../../src/services/databaseService/tableServices/models.ts"],"names":[],"mappings":";;;;;;;;;;;;AAEA,MAAsB,YAAY;IAM1B,QAAQ;;YACZ,MAAM,WAAW,GAAG;mCACW,IAAI,CAAC,SAAS;SACxC,CAAC;YACN,MAAM,IAAI,CAAC,aAAa,CAAC,KAAK,CAAC,WAAW,CAAC,CAAC;QAC9C,CAAC;KAAA;CACF;AAZD,oCAYC"}

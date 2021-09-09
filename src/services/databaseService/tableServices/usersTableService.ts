@@ -2,7 +2,7 @@ import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
-interface DBUser {
+export interface DBUser {
   id: string;
   email: string;
   username: string;

@@ -2,7 +2,7 @@ import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
-interface DBPost {
+export interface DBPost {
   post_id: string;
   creator_user_id: string;
   image_id: string;

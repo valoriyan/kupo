@@ -1,5 +1,4 @@
 import { TableService } from "./tableServices/models";
-import { Promise as BluebirdPromise } from "bluebird";
 import { Pool, QueryResult } from "pg";
 import { DATABASE_NAME } from "./config";
 
@@ -41,12 +40,10 @@ async function setupTables({
 }: {
   tableServices: { [key: string]: TableService };
 }): Promise<void> {
-  BluebirdPromise.each(
-    Object.values(tableServices),
-    async (tableService: TableService) => {
-      await tableService.setup();
-    },
+  const setupPromises = Object.values(tableServices).map((tableServices) =>
+    tableServices.setup(),
   );
+  await Promise.all(setupPromises);
 }
 
 export async function setupDatabaseService({

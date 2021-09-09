@@ -1,4 +1,3 @@
-// import { Promise as BluebirdPromise } from "bluebird";
 import { Pool } from "pg";
 import { DATABASE_NAME } from "./config";
 
@@ -7,9 +6,10 @@ import { DATABASE_NAME } from "./config";
 // }: {
 //   tableServices: { [key: string]: TableService };
 // }): Promise<void> {
-//   BluebirdPromise.each(Object.values(tableServices), async (tableService) => {
-//     await tableService.teardown();
-//   });
+//   const teardownPromises = Object.values(tableServices).map((tableServices) =>
+//     tableServices.teardown(),
+//   );
+//   await Promise.all(teardownPromises);
 // }
 
 async function teardownDatabase() {

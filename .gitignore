@@ -13,9 +13,6 @@ logs
 results
 tmp
 
-# Build
-public/css/main.css
-
 # Coverage reports
 coverage
 
@@ -42,3 +39,6 @@ yarn.lock
 
 # ESLint cache
 .eslintcache
+
+# Build artifacts
+build

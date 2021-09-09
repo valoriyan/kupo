@@ -1,10 +1,12 @@
 import express from "express";
+import { DBPost } from "src/services/databaseService/tableServices/postsTableService";
+import { DBUser } from "src/services/databaseService/tableServices/usersTableService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/authUtilities";
 import { UserPageController } from "./userPageController";
 
 export interface GetUserProfileParams {
-  username: string;
+  username?: string;
 }
 
 export interface DisplayedPost {
@@ -66,42 +68,50 @@ export async function handleGetUserProfile({
 }): Promise<
   SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
 > {
-  const { userId, error } = await checkAuthorization(controller, request);
-  if (error) return error;
+  let user: DBUser | undefined;
+  if (requestBody.username) {
+    // Fetch user profile by given username
+    user =
+      await controller.databaseService.tableServices.usersTableService.selectUserByUsername(
+        {
+          username: requestBody.username,
+        },
+      );
+  } else {
+    // Fetch user profile by own userId
+    const { userId, error } = await checkAuthorization(controller, request);
+    if (error) return error;
+    user =
+      await controller.databaseService.tableServices.usersTableService.selectUserByUserId(
+        { userId },
+      );
+  }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const user =
-    await controller.databaseService.tableServices.usersTableService.selectUserByUsername(
-      {
-        username: requestBody.username,
-      },
-    );
+  if (!user) {
+    controller.setStatus(404);
+    return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
+  }
 
   const numberOfFollowersOfUserId: number =
     await controller.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId(
       {
-        userIdBeingFollowed: userId,
+        userIdBeingFollowed: user.id,
       },
     );
 
   const numberOfFollowsByUserId: number =
     await controller.databaseService.tableServices.userFollowsTableService.countFollowsOfUserId(
       {
-        userIdDoingFollowing: userId,
+        userIdDoingFollowing: user.id,
       },
     );
 
   const posts =
     await controller.databaseService.tableServices.postsTableService.getPostsByCreatorUserId(
       {
-        creatorUserId: userId,
+        creatorUserId: user.id,
       },
     );
-
-  if (!user) {
-    controller.setStatus(404);
-    return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
-  }
 
   return {
     success: {
@@ -116,25 +126,27 @@ export async function handleGetUserProfile({
         count: numberOfFollowsByUserId,
       },
       bio: user.short_bio,
-
-      posts: posts.map((post) => {
-        return {
-          imageUrl: post.image_blob_filekey,
-          creatorUsername: user.username,
-          creationTimestamp: 0,
-          caption: post.caption,
-          likes: {
-            count: 0,
-          },
-          comments: {
-            count: 0,
-          },
-          shares: {
-            count: 0,
-          },
-        };
-      }),
+      posts: postsToDisplayPosts(posts, user.username),
       shopItems: [],
     },
   };
 }
+
+const postsToDisplayPosts = (posts: DBPost[], userName: string) =>
+  posts.map((post) => {
+    return {
+      imageUrl: post.image_blob_filekey,
+      creatorUsername: userName,
+      creationTimestamp: 0,
+      caption: post.caption,
+      likes: {
+        count: 0,
+      },
+      comments: {
+        count: 0,
+      },
+      shares: {
+        count: 0,
+      },
+    };
+  });
