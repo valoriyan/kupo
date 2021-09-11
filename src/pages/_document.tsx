@@ -1,7 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { darkTheme, getCssText } from "#/styling";
 
-export default class PlayHouseDocument extends Document {
+export default class ScriburDocument extends Document {
   render() {
     return (
       <Html lang="en" className={darkTheme.className}>

@@ -6,7 +6,7 @@ import "#/styling/modernNormalize.css";
 import { ThemeProvider } from "#/styling/ThemeProvider";
 import { AppLayout } from "#/components/AppLayout";
 
-const PlayHouseApp = ({ Component, pageProps }: AppProps) => {
+const ScriburApp = ({ Component, pageProps }: AppProps) => {
   globalStyles();
   const router = useRouter();
 
@@ -30,4 +30,4 @@ const PlayHouseApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default PlayHouseApp;
+export default ScriburApp;

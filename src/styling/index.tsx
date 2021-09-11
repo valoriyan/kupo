@@ -12,8 +12,8 @@ const themedStitches = createStitches({
       /**
        * Primary accent color. It will be used for actionable items and accents
        */
-      primary: "#EF5DA8",
-      primaryTranslucent: "#EF5DA830",
+      primary: "#5D5FEF",
+      primaryTranslucent: "#5D5FEF30",
 
       /**
        * The background colors include colors for the backgrounds of app content.
@@ -95,7 +95,7 @@ const themedStitches = createStitches({
       12: "6rem", // 96px
     },
     fonts: {
-      heading: "Elephant, serif",
+      heading: "AbhayaLibre, serif",
       body: "'Work Sans', Helvetica, sans-serif",
     },
     fontWeights: {
@@ -231,8 +231,8 @@ export const { styled, css, globalCss, keyframes, theme, getCssText } = themedSt
 
 export const darkTheme = themedStitches.createTheme("dark", {
   colors: {
-    primary: "#EF5DA8",
-    primaryTranslucent: "#EF5DA830",
+    primary: "#6D6FF0",
+    primaryTranslucent: "#6D6FF030",
 
     background1: "#191919",
     background2: "#333333",

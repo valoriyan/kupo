@@ -21,7 +21,7 @@ export const AuthFormLayout = (props: AuthFormLayoutProps) => {
           maxWidth: "500px",
         }}
       >
-        <Heading>Playhouse</Heading>
+        <Heading>scribur</Heading>
         <Slogan>create. support. love</Slogan>
         <Title>{props.title}</Title>
         <Box css={{ mt: "$5", mb: "$9", width: "100%" }}>{props.children}</Box>

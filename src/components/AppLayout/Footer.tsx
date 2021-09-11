@@ -54,7 +54,7 @@ const Upload = styled("a", {
   borderRadius: "$5",
   px: "$5",
   py: "$3",
-  background: "linear-gradient(202.17deg, #FF00D6 8.58%, #FF4D00 91.42%)",
+  background: "linear-gradient(202.17deg, $primary 8.58%, #C9B6DB 91.42%)",
 });
 
 const IconLink = ({ children, href }: PropsWithChildren<{ href: string }>) => {

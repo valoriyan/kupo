@@ -3,8 +3,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 export const globalStyles = globalCss({
   "@font-face": {
-    fontFamily: "Elephant",
-    src: 'local("Elephant"), url("/fonts/ElephantRegular.ttf")',
+    fontFamily: "AbhayaLibre",
+    src: 'local("AbhayaLibre"), url("/fonts/AbhayaLibre-SemiBold.ttf")',
   },
   body: {
     fontFamily: "$body !important",
