@@ -1,9 +1,10 @@
 import Router from "next/router";
-import { useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Close } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { TransitionArea } from "#/components/TransitionArea";
 import { styled } from "#/styling";
+import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
 import { NewPost } from "./NewPost";
 import { NewShopItem } from "./NewShopItem";
@@ -22,6 +23,12 @@ const screenToHeading = {
 
 export const AddContent = () => {
   const [currentScreen, setCurrentScreen] = useState(AddContentScreen.Initial);
+  const [additionalScreen, setAdditionalScreen] = useState<ReactNode>(null);
+
+  const lastScreen = useRef<string>();
+  useEffect(() => {
+    lastScreen.current = additionalScreen ? "additionalScreen" : currentScreen;
+  }, [currentScreen, additionalScreen]);
 
   let bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
   switch (currentScreen) {
@@ -29,7 +36,7 @@ export const AddContent = () => {
       bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
       break;
     case AddContentScreen.Post:
-      bodyNode = <NewPost />;
+      bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
     case AddContentScreen.ShopItem:
       bodyNode = <NewShopItem />;
@@ -37,17 +44,32 @@ export const AddContent = () => {
   }
 
   return (
-    <Wrapper>
-      <Header>
-        <CloseButton onClick={() => Router.back()}>
-          <Close />
-        </CloseButton>
-        <Heading>{screenToHeading[currentScreen]}</Heading>
-      </Header>
-      <TransitionArea transitionKey={currentScreen} animation={slideInFromRight}>
-        {bodyNode}
-      </TransitionArea>
-    </Wrapper>
+    <FormStateProvider>
+      <Wrapper>
+        <Header>
+          {additionalScreen ? (
+            <CloseButton onClick={() => setAdditionalScreen(null)}>Done</CloseButton>
+          ) : (
+            <CloseButton onClick={() => Router.back()}>
+              <Close />
+            </CloseButton>
+          )}
+          <Heading>{screenToHeading[currentScreen]}</Heading>
+        </Header>
+        <TransitionArea
+          transitionKey={additionalScreen ? "additionalScreen" : currentScreen}
+          animation={
+            additionalScreen
+              ? rightToRight
+              : lastScreen.current === "additionalScreen"
+              ? leftToLeft
+              : rightToLeft
+          }
+        >
+          {additionalScreen || bodyNode}
+        </TransitionArea>
+      </Wrapper>
+    </FormStateProvider>
   );
 };
 
@@ -69,6 +91,12 @@ const Header = styled(Stack, {
 
 const CloseButton = styled("button", {
   alignSelf: "flex-end",
+  fontWeight: "$bold",
+  fontSize: "$4",
+  height: "$5",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 });
 
 const Heading = styled("h1", {
@@ -76,7 +104,19 @@ const Heading = styled("h1", {
   fontWeight: "$bold",
 });
 
-const slideInFromRight = {
+const rightToRight = {
+  initial: { translateX: "100%" },
+  animate: { translateX: 0 },
+  exit: { translateX: "100%" },
+};
+
+const leftToLeft = {
+  initial: { translateX: "-100%" },
+  animate: { translateX: 0 },
+  exit: { translateX: "-100%" },
+};
+
+const rightToLeft = {
   initial: { translateX: "100%" },
   animate: { translateX: 0 },
   exit: { translateX: "-100%" },

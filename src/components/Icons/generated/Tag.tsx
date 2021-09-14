@@ -1,7 +1,9 @@
+// CODE GENERATED FILE; DO NOT EDIT
+
 /** Tag icon sourced from https://css.gg/tag */
-export const Tag = (props: JSX.IntrinsicElements["svg"]) => {
+export function Tag(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" {...props}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -16,4 +18,4 @@ export const Tag = (props: JSX.IntrinsicElements["svg"]) => {
       />
     </svg>
   );
-};
+}

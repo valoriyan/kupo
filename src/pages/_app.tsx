@@ -1,10 +1,11 @@
+import { IdProvider } from "@radix-ui/react-id";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { AppLayout } from "#/components/AppLayout";
 import { QueryClientProvider } from "#/contexts/queryClient";
 import { globalStyles } from "#/styling/globalStyles";
-import "#/styling/modernNormalize.css";
 import { ThemeProvider } from "#/styling/ThemeProvider";
-import { AppLayout } from "#/components/AppLayout";
+import "#/styling/modernNormalize.css";
 
 const ScriburApp = ({ Component, pageProps }: AppProps) => {
   globalStyles();
@@ -17,15 +18,17 @@ const ScriburApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <ThemeProvider>
-      <QueryClientProvider>
-        {noAppLayout ? (
-          <Component {...pageProps} />
-        ) : (
-          <AppLayout>
+      <IdProvider>
+        <QueryClientProvider>
+          {noAppLayout ? (
             <Component {...pageProps} />
-          </AppLayout>
-        )}
-      </QueryClientProvider>
+          ) : (
+            <AppLayout>
+              <Component {...pageProps} />
+            </AppLayout>
+          )}
+        </QueryClientProvider>
+      </IdProvider>
     </ThemeProvider>
   );
 };

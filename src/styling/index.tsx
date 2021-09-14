@@ -25,6 +25,8 @@ const themedStitches = createStitches({
       background2: "#ededed", // Backgrounds that sit on top of background1
       background3: "#dddddd", // Backgrounds that sit on top of background2
       overlay: "rgba(0,0,0,0.25)",
+      heavyOverlay: "rgba(0,0,0,0.6)",
+      mediaOverlay: "rgba(115, 115, 115, 0.5)",
 
       text: "#000000", // Text that sits on the background colors
       secondaryText: "#acacac", // Secondary text that sits on background colors
@@ -238,6 +240,8 @@ export const darkTheme = themedStitches.createTheme("dark", {
     background2: "#333333",
     background3: "#4c4c4c",
     overlay: "rgba(0,0,0,0.25)",
+    heavyOverlay: "rgba(0,0,0,0.6)",
+    mediaOverlay: "rgba(115, 115, 115, 0.5)",
 
     text: "#ffffff",
     secondaryText: "#acacac",

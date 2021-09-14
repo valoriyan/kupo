@@ -1,18 +1,22 @@
+import { ReactNode } from "react";
 import { Button } from "#/components/Button";
-import { Add, Duplicate } from "#/components/Icons";
+import { AddR } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { styled } from "#/styling";
+import { MediaUpload } from "./MediaUpload";
 
-export const NewPost = () => {
+export interface NewPostProps {
+  setAdditionalScreen: (screen: ReactNode) => void;
+}
+
+export const NewPost = (props: NewPostProps) => {
   return (
     <Wrapper>
       <Stack css={{ height: "100%", overflow: "auto", gap: "$5" }}>
-        <AddMedia>
-          <Duplicate />
-        </AddMedia>
+        <MediaUpload setAdditionalScreen={props.setAdditionalScreen} />
         <Caption placeholder="add caption..." />
         <LinkItem>
-          <Add />
+          <AddR />
           Link Shop Item
         </LinkItem>
       </Stack>
@@ -36,17 +40,6 @@ const Wrapper = styled("div", {
   px: "$4",
   pt: "$4",
   pb: "$5",
-});
-
-const AddMedia = styled("button", {
-  display: "flex",
-  flexShrink: 0,
-  justifyContent: "center",
-  alignItems: "center",
-  height: "150px",
-  width: "100px",
-  bg: "$background3",
-  color: "$text",
 });
 
 const Caption = styled("textarea", {

@@ -1,7 +1,9 @@
+// CODE GENERATED FILE; DO NOT EDIT
+
 /** User icon sourced from https://css.gg/user */
-export const User = (props: JSX.IntrinsicElements["svg"]) => {
+export function User(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" {...props}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -14,4 +16,4 @@ export const User = (props: JSX.IntrinsicElements["svg"]) => {
       />
     </svg>
   );
-};
+}

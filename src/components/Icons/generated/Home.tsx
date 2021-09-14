@@ -1,7 +1,9 @@
+// CODE GENERATED FILE; DO NOT EDIT
+
 /** Home icon sourced from https://css.gg/home */
-export const Home = (props: JSX.IntrinsicElements["svg"]) => {
+export function Home(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" {...props}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -10,4 +12,4 @@ export const Home = (props: JSX.IntrinsicElements["svg"]) => {
       />
     </svg>
   );
-};
+}

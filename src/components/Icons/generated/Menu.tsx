@@ -1,7 +1,9 @@
+// CODE GENERATED FILE; DO NOT EDIT
+
 /** Menu icon sourced from https://css.gg/menu */
-export const Menu = (props: JSX.IntrinsicElements["svg"]) => {
+export function Menu(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" {...props}>
       <path
         d="M2 6C2 5.44772 2.44772 5 3 5H21C21.5523 5 22 5.44772 22 6C22 6.55228 21.5523 7 21 7H3C2.44772 7 2 6.55228 2 6Z"
         fill="currentColor"
@@ -16,4 +18,4 @@ export const Menu = (props: JSX.IntrinsicElements["svg"]) => {
       />
     </svg>
   );
-};
+}

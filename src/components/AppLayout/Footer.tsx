@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PropsWithChildren } from "react";
 import { Box, Flex } from "../Layout";
 import { styled } from "#/styling";
-import { Bell, Home, Mail, Plus } from "../Icons";
+import { Bell, Home, Mail, MathPlus } from "../Icons";
 import { Drawer } from "../Drawer";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { Avatar } from "../Avatar";
@@ -18,7 +18,7 @@ export const Footer = () => {
       </IconLink>
       <Link href="/add-content" passHref>
         <Upload>
-          <Plus />
+          <MathPlus />
         </Upload>
       </Link>
       <IconLink href="/">
