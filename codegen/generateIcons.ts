@@ -16,6 +16,7 @@ const ICONS_TO_GENERATE = [
   "mail",
   "menu",
   "math-plus",
+  "play-button-o",
   "share",
   "tag",
   "trash",

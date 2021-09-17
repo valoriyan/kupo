@@ -18,7 +18,7 @@ export const MediaUpload = (props: MediaUploadProps) => {
 
     for (const file of files) {
       const src = URL.createObjectURL(file);
-      addMedia(src);
+      addMedia({ type: file.type, src });
     }
   };
 
@@ -43,9 +43,9 @@ export const MediaUpload = (props: MediaUploadProps) => {
         <>
           {mediaPreviews.map((preview, i) => (
             <PreviewImage
-              key={preview}
-              src={preview}
-              onClick={() => onImageClick(i === 0 ? undefined : preview)}
+              key={preview.src}
+              media={preview}
+              onClick={() => onImageClick(i === 0 ? undefined : preview.src)}
               actions={getMediaActions(preview)}
             />
           ))}
@@ -57,22 +57,25 @@ export const MediaUpload = (props: MediaUploadProps) => {
       ) : (
         <>
           <PreviewImage
-            key={mediaPreviews[0]}
-            src={mediaPreviews[0]}
+            key={mediaPreviews[0].src}
+            media={mediaPreviews[0]}
             onClick={() => onImageClick()}
             actions={getMediaActions(mediaPreviews[0])}
           />
           <PreviewImage
-            key={mediaPreviews[1]}
-            src={mediaPreviews[1]}
-            onClick={() => onImageClick(mediaPreviews[1])}
+            key={mediaPreviews[1].src}
+            media={mediaPreviews[1]}
+            onClick={() => onImageClick(mediaPreviews[1].src)}
             actions={getMediaActions(mediaPreviews[1])}
           />
           <WithMoreGrid>
             <PreviewImage
-              key={mediaPreviews[2]}
-              src={mediaPreviews[2]}
-              onClick={() => onImageClick(mediaPreviews[2])}
+              key={mediaPreviews[2].src}
+              media={mediaPreviews[2]}
+              onClick={() => onImageClick(mediaPreviews[2].src)}
+              actions={
+                additionalImagesCount ? undefined : getMediaActions(mediaPreviews[1])
+              }
               overlayText={
                 additionalImagesCount ? "+" + additionalImagesCount : undefined
               }

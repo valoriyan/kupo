@@ -31,9 +31,9 @@ export const MediaPreview = (props: MediaPreviewProps) => {
       </Button>
       {mediaPreviews.map((preview) => (
         <PreviewImage
-          key={preview}
-          id={srcToId(preview)}
-          src={preview}
+          key={preview.src}
+          id={srcToId(preview.src)}
+          media={preview}
           actions={getMediaActions(preview)}
         />
       ))}

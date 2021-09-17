@@ -1,10 +1,11 @@
 import { MouseEventHandler } from "react";
-import { ChevronDownR, ChevronUpR, Trash } from "#/components/Icons";
+import { ChevronDownR, ChevronUpR, PlayButtonO, Trash } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
-import { styled } from "#/styling";
+import { css, styled } from "#/styling";
+import { Media } from "../FormContext";
 
 export interface PreviewImageProps {
-  src: string;
+  media: Media;
   id?: string;
   onClick?: () => void;
   overlayText?: string;
@@ -25,8 +26,16 @@ export const PreviewImage = (props: PreviewImageProps) => {
 
   return (
     <Wrapper id={props.id} as={props.onClick ? "button" : "div"} onClick={props.onClick}>
-      <Image src={props.src} alt="Preview Image" />
-      {props.overlayText && <Overlay>{props.overlayText}</Overlay>}
+      {props.media.type.includes("image") ? (
+        <Image src={props.media.src} alt="Preview Image" />
+      ) : (
+        <Video controls={!!props.id}>
+          <source src={props.media.src} type={props.media.type} />
+        </Video>
+      )}
+      {(props.overlayText || (props.media.type.includes("video") && !props.id)) && (
+        <Overlay>{props.overlayText || <PlayButtonO />}</Overlay>
+      )}
       {props.actions && (
         <ActionsBanner>
           <Flex css={{ gap: "$3" }}>
@@ -52,13 +61,17 @@ const Wrapper = styled("div", {
   flexShrink: 0,
 });
 
-const Image = styled("img", {
+const mediaStyles = css({
   position: "absolute",
   top: 0,
   left: 0,
   size: "100%",
   objectFit: "cover",
 });
+
+const Image = styled("img", mediaStyles);
+
+const Video = styled("video", mediaStyles);
 
 const Overlay = styled("div", {
   position: "absolute",

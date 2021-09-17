@@ -9,6 +9,7 @@ export * from "./generated/LogOut";
 export * from "./generated/Mail";
 export * from "./generated/Menu";
 export * from "./generated/MathPlus";
+export * from "./generated/PlayButtonO";
 export * from "./generated/Share";
 export * from "./generated/Tag";
 export * from "./generated/Trash";
