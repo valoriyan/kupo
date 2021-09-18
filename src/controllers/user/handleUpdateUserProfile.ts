@@ -1,6 +1,6 @@
 import express from "express";
 import { HTTPResponse } from "src/types/httpResponse";
-import { checkAuthorization } from "../auth/authUtilities";
+import { checkAuthorization } from "../auth/utilities";
 import { ProfilePrivacySetting } from "./models";
 import { UserPageController } from "./userPageController";
 
@@ -28,7 +28,7 @@ export async function handleUpdateUserProfile({
 }): Promise<
   HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
 > {
-  const { userId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const backgroundImageBlobItemPointer = requestBody.backgroundImage
@@ -43,7 +43,7 @@ export async function handleUpdateUserProfile({
     : null;
 
   await controller.databaseService.tableServices.usersTableService.updateUserByUserId({
-    userId,
+    userId: clientUserId,
 
     username: requestBody.username,
     shortBio: requestBody.shortBio,

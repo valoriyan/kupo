@@ -4,7 +4,7 @@ import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { BlobStorageService } from "src/services/blobStorageService";
-import { checkAuthorization } from "../auth/authUtilities";
+import { checkAuthorization } from "../auth/utilities";
 import {
   FiledPostContentElement,
   PostElementFileType,
@@ -159,9 +159,9 @@ export async function handleCreatePost({
   const { authorUserId, caption, title, price, scheduledPublicationTimestamp } =
     requestBody;
 
-  const { userId } = await checkAuthorization(controller, request);
+  const { clientUserId } = await checkAuthorization(controller, request);
 
-  if (authorUserId !== userId) {
+  if (authorUserId !== clientUserId) {
     throw new Error("Someone other than user is attempting to create a post");
   }
 
@@ -172,7 +172,7 @@ export async function handleCreatePost({
   try {
     await controller.databaseService.tableServices.postsTableService.createPost({
       postId,
-      authorUserId: userId,
+      authorUserId: clientUserId,
       caption,
       title,
       price,
@@ -222,7 +222,7 @@ export async function handleCreatePost({
         renderablePost: {
           contentElements: renderablePostContentElements,
           postId,
-          postAuthorUserId: userId,
+          postAuthorUserId: clientUserId,
           caption,
           title,
           price,

@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
-import { AuthFailureReason, FailedAuthResponse } from "./authController";
+import { AuthFailureReason, FailedAuthResponse } from "../authController";
 import { MD5 } from "crypto-js";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
@@ -69,7 +69,7 @@ export function validateTokenAndGetUserId({
 export async function checkAuthorization(
   controller: Controller,
   request: Request,
-): Promise<{ userId: string; error?: { error: FailedAuthResponse } }> {
+): Promise<{ clientUserId: string; error?: { error: FailedAuthResponse } }> {
   const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
   try {
     const token =
@@ -77,11 +77,11 @@ export async function checkAuthorization(
 
     if (!token) throw new Error("No token found");
 
-    return { userId: validateTokenAndGetUserId({ token, jwtPrivateKey }) };
+    return { clientUserId: validateTokenAndGetUserId({ token, jwtPrivateKey }) };
   } catch {
     controller.setStatus(403);
     return {
-      userId: "",
+      clientUserId: "",
       error: { error: { reason: AuthFailureReason.AuthorizationError } },
     };
   }

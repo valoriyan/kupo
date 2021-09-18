@@ -1,14 +1,7 @@
 import express from "express";
 import { BlobStorageService } from "src/services/blobStorageService";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
-import {
-  Body,
-  Controller,
-  Delete,
-  Post,
-  Request,
-  Route,
-} from "tsoa";
+import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import {

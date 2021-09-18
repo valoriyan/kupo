@@ -1,6 +1,6 @@
 import express from "express";
 import { HTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/authUtilities";
+import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 
 export interface FollowUserProfileParams {
@@ -32,7 +32,7 @@ export async function handleFollowUser({
 }): Promise<
   HTTPResponse<FailedToFollowUserProfileResponse, SuccessfulFollowOfUserProfileResponse>
 > {
-  const { userId: clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   await controller.databaseService.tableServices.userFollowsTableService.createUserFollow(
@@ -58,7 +58,7 @@ export async function handleUnfollowUser({
     SuccessfulUnfollowOfUserProfileResponse
   >
 > {
-  const { userId: clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   await controller.databaseService.tableServices.userFollowsTableService.deleteUserFollow(

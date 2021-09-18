@@ -1,5 +1,5 @@
-import { Controller, FormField, Post, Route, Request, UploadedFiles } from "tsoa";
-import { HTTPResponse } from "../../types/httpResponse";
+import { Controller, FormField, Post, Route, Request, UploadedFiles, Body } from "tsoa";
+import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
@@ -9,6 +9,12 @@ import {
   SuccessfulPostCreationResponse,
 } from "./handleCreatePost";
 import express from "express";
+import {
+  FailedtoGetPageOfPostsPaginationResponse,
+  GetPageOfPostsPaginationParams,
+  handleGetPageOfPostsPagination,
+  SuccessfulGetPageOfPostsPaginationResponse,
+} from "./handleGetPageOfPostsPagination";
 
 @injectable()
 @Route("post")
@@ -50,6 +56,23 @@ export class PostController extends Controller {
         price,
         scheduledPublicationTimestamp,
       },
+    });
+  }
+
+  @Post("getPageOfPostsPagination")
+  public async getPageOfPostsPagination(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfPostsPaginationParams,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedtoGetPageOfPostsPaginationResponse,
+      SuccessfulGetPageOfPostsPaginationResponse
+    >
+  > {
+    return await handleGetPageOfPostsPagination({
+      controller: this,
+      request,
+      requestBody,
     });
   }
 }

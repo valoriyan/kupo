@@ -1,8 +1,8 @@
 import express from "express";
 import { DBUser } from "src/services/databaseService/tableServices/usersTableService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/authUtilities";
-import { ProfilePrivacySetting } from "./models";
+import { checkAuthorization } from "../auth/utilities";
+import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent";
 import { UserPageController } from "./userPageController";
 
 export interface GetUserProfileParams {
@@ -49,7 +49,7 @@ export async function handleGetUserProfile({
 > {
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
-  const { userId: clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
 
   let user: DBUser | undefined;
   if (requestBody.username) {
@@ -74,14 +74,11 @@ export async function handleGetUserProfile({
     return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
   }
 
-  const canViewContent =
-    user.profile_privacy_setting === ProfilePrivacySetting.Public ||
-    (await controller.databaseService.tableServices.userFollowsTableService.isUserIdFollowingUserId(
-      {
-        userIdDoingFollowing: clientUserId,
-        userIdBeingFollowed: user.id,
-      },
-    ));
+  const canViewContent = await canUserViewUserContent({
+    clientUserId,
+    targetUser: user,
+    databaseService: controller.databaseService,
+  });
 
   const numberOfFollowersOfUserId: number =
     await controller.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId(
