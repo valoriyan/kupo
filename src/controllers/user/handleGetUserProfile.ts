@@ -1,38 +1,15 @@
 import express from "express";
-import { DBPost } from "src/services/databaseService/tableServices/postsTableService";
 import { DBUser } from "src/services/databaseService/tableServices/usersTableService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/authUtilities";
+import { ProfilePrivacySetting } from "./models";
 import { UserPageController } from "./userPageController";
 
 export interface GetUserProfileParams {
   username?: string;
 }
-
-export interface DisplayedPost {
-  imageUrl: string;
-  creatorUsername: string;
-  creationTimestamp: number;
-  caption: string;
-  likes: {
-    count: number;
-  };
-  comments: {
-    count: number;
-  };
-  shares: {
-    count: number;
-  };
-}
-
-export interface DisplayedShopItems {
-  title: string;
-  price: number;
-  description: string;
-  countSold: number;
-}
-
 export interface SuccessfulGetUserProfileResponse {
+  id: string;
   username: string;
   followers: {
     count: number;
@@ -43,9 +20,11 @@ export interface SuccessfulGetUserProfileResponse {
   follows: {
     count: number;
   };
-  bio: string;
-  posts: DisplayedPost[];
-  shopItems: DisplayedShopItems[];
+  bio?: string;
+  website?: string;
+
+  // Is this private to user
+  canViewContent: boolean;
 }
 
 export enum DeniedGetUserProfileResponseReason {
@@ -68,6 +47,10 @@ export async function handleGetUserProfile({
 }): Promise<
   SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
 > {
+  // TODO: CHECK IF USER HAS ACCESS TO PROFILE
+  // IF Private hide posts and shop
+  const { userId: clientUserId, error } = await checkAuthorization(controller, request);
+
   let user: DBUser | undefined;
   if (requestBody.username) {
     // Fetch user profile by given username
@@ -79,11 +62,10 @@ export async function handleGetUserProfile({
       );
   } else {
     // Fetch user profile by own userId
-    const { userId, error } = await checkAuthorization(controller, request);
     if (error) return error;
     user =
       await controller.databaseService.tableServices.usersTableService.selectUserByUserId(
-        { userId },
+        { userId: clientUserId },
       );
   }
 
@@ -91,6 +73,15 @@ export async function handleGetUserProfile({
     controller.setStatus(404);
     return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
   }
+
+  const canViewContent =
+    user.profile_privacy_setting === ProfilePrivacySetting.Public ||
+    (await controller.databaseService.tableServices.userFollowsTableService.isUserIdFollowingUserId(
+      {
+        userIdDoingFollowing: clientUserId,
+        userIdBeingFollowed: user.id,
+      },
+    ));
 
   const numberOfFollowersOfUserId: number =
     await controller.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId(
@@ -106,47 +97,23 @@ export async function handleGetUserProfile({
       },
     );
 
-  const posts =
-    await controller.databaseService.tableServices.postsTableService.getPostsByCreatorUserId(
-      {
-        creatorUserId: user.id,
-      },
-    );
-
   return {
     success: {
+      canViewContent,
+      id: user.id,
       username: user.username,
       followers: {
         count: numberOfFollowersOfUserId,
       },
       subscribers: {
+        // TODO: Figure out what this is
         count: 0,
       },
       follows: {
         count: numberOfFollowsByUserId,
       },
       bio: user.short_bio,
-      posts: postsToDisplayPosts(posts, user.username),
-      shopItems: [],
+      website: user.user_website,
     },
   };
 }
-
-const postsToDisplayPosts = (posts: DBPost[], userName: string) =>
-  posts.map((post) => {
-    return {
-      imageUrl: post.image_blob_filekey,
-      creatorUsername: userName,
-      creationTimestamp: 0,
-      caption: post.caption,
-      likes: {
-        count: 0,
-      },
-      comments: {
-        count: 0,
-      },
-      shares: {
-        count: 0,
-      },
-    };
-  });

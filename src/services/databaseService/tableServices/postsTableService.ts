@@ -1,15 +1,14 @@
 import { Pool, QueryResult } from "pg";
+import { UnrenderablePostWithoutElements } from "src/controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
-export interface DBPost {
+interface DBPost {
   post_id: string;
-  creator_user_id: string;
-  image_id: string;
+  author_user_id: string;
   caption: string;
-  image_blob_filekey: string;
-  title: string;
-  price: number;
+  title?: string;
+  price?: number;
   scheduled_publication_timestamp: number;
 }
 
@@ -25,12 +24,10 @@ export class PostsTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         post_id VARCHAR(64) UNIQUE NOT NULL,
-        creator_user_id VARCHAR(64) UNIQUE NOT NULL,
-        image_id VARCHAR(64) UNIQUE NOT NULL,
+        author_user_id VARCHAR(64) UNIQUE NOT NULL,
         caption VARCHAR(256) NOT NULL,
-        image_blob_filekey VARCHAR(128) NOT NULL,
-        title VARCHAR(128) NOT NULL,
-        price DECIMAL(12,2) NOT NULL,
+        title VARCHAR(128),
+        price DECIMAL(12,2),
         scheduled_publication_timestamp BIGINT NOT NULL
       )
       ;
@@ -41,40 +38,32 @@ export class PostsTableService extends TableService {
 
   public async createPost({
     postId,
-    creatorUserId,
-    imageId,
+    authorUserId,
     caption,
-    imageBlobFilekey,
     title,
     price,
     scheduledPublicationTimestamp,
   }: {
     postId: string;
-    creatorUserId: string;
-    imageId: string;
+    authorUserId: string;
     caption: string;
-    imageBlobFilekey: string;
-    title: string;
-    price: number;
+    title?: string;
+    price?: number;
     scheduledPublicationTimestamp: number;
   }): Promise<void> {
     const queryString = `
         INSERT INTO ${this.tableName}(
             post_id,
-            creator_user_id,
-            image_id,
+            author_user_id,
             caption,
-            image_blob_filekey,
             title,
             price,
             scheduled_publication_timestamp
         )
         VALUES (
             '${postId}',
-            '${creatorUserId}',
-            '${imageId}',
+            '${authorUserId}',
             '${caption}',
-            '${imageBlobFilekey}',
             '${title}',
             '${price}',
             '${scheduledPublicationTimestamp}'
@@ -89,14 +78,14 @@ export class PostsTableService extends TableService {
     creatorUserId,
   }: {
     creatorUserId: string;
-  }): Promise<DBPost[]> {
+  }): Promise<UnrenderablePostWithoutElements[]> {
     const queryString = `
         SELECT
           *
         FROM
           ${PostsTableService.tableName}
         WHERE
-          creator_user_id = '${creatorUserId}'
+          author_user_id = '${creatorUserId}'
         LIMIT
           1
         ;
@@ -104,7 +93,13 @@ export class PostsTableService extends TableService {
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
-    const rows = response.rows;
-    return rows;
+    return response.rows.map((dbPost) => ({
+      postId: dbPost.post_id,
+      postAuthorUserId: dbPost.author_user_id,
+      caption: dbPost.caption,
+      title: dbPost.title,
+      price: dbPost.price,
+      scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
+    }));
   }
 }

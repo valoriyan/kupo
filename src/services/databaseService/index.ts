@@ -2,6 +2,7 @@ import { Pool } from "pg";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
+import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PostsTableService } from "./tableServices/postsTableService";
 import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
@@ -14,6 +15,9 @@ export class DatabaseService {
   public tableServices = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
     postsTableService: new PostsTableService(DatabaseService.datastorePool),
+    postContentElementsTableService: new PostContentElementsTableService(
+      DatabaseService.datastorePool,
+    ),
     userFollowsTableService: new UserFollowsTableService(DatabaseService.datastorePool),
   };
 

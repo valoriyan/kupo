@@ -1,4 +1,5 @@
 import { Pool, QueryResult } from "pg";
+import { ProfilePrivacySetting } from "src/controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
@@ -6,8 +7,14 @@ export interface DBUser {
   id: string;
   email: string;
   username: string;
-  short_bio: string;
+  short_bio?: string;
+  user_website?: string;
   encrypted_password?: string;
+
+  profile_privacy_setting: ProfilePrivacySetting;
+
+  background_image_blob_file_key?: string;
+  profile_picture_blob_file_key?: string;
 }
 
 export class UsersTableService extends TableService {
@@ -20,12 +27,24 @@ export class UsersTableService extends TableService {
 
   public async setup(): Promise<void> {
     const queryString = `
+      CREATE TYPE
+        enumerated_profile_privacy_setting
+      AS ENUM (
+        'Public',
+        'Private'
+      )
+      ;
+
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         id VARCHAR(64) UNIQUE NOT NULL,
         email VARCHAR(64) UNIQUE NOT NULL,
         username VARCHAR(64) UNIQUE NOT NULL,
         short_bio VARCHAR(64),
-        encrypted_password VARCHAR(64) NOT NULL
+        userWser_website VARCHAR(64),
+        encrypted_password VARCHAR(64) NOT NULL,
+        profile_privacy_setting enumerated_profile_privacy_setting,
+        background_image_blob_file_key VARCHAR(64) UNIQUE,
+        profile_picture_blob_file_key VARCHAR(64) UNIQUE
       )
       ;
     `;
@@ -49,13 +68,15 @@ export class UsersTableService extends TableService {
             id,
             email,
             username,
-            encrypted_password
+            encrypted_password,
+            profile_privacy_setting
         )
         VALUES (
             '${userId}',
             '${email}',
             '${username}',
-            '${encryptedPassword}'
+            '${encryptedPassword}',
+            '${ProfilePrivacySetting.Public}'
         )
         ;
         `;
@@ -109,5 +130,84 @@ export class UsersTableService extends TableService {
     const rows = response.rows;
 
     return rows[0];
+  }
+
+  public async updateUserByUserId({
+    userId,
+
+    username,
+    shortBio,
+    userWebsite,
+    profilePrivacySetting,
+    backgroundImageBlobFileKey,
+    profilePictureBlobFileKey,
+  }: {
+    userId: string;
+
+    username?: string;
+    shortBio?: string;
+    userWebsite?: string;
+    profilePrivacySetting?: ProfilePrivacySetting;
+    backgroundImageBlobFileKey?: string;
+    profilePictureBlobFileKey?: string;
+  }): Promise<void> {
+    if (
+      [
+        username,
+        shortBio,
+        userWebsite,
+        profilePrivacySetting,
+        backgroundImageBlobFileKey,
+        profilePictureBlobFileKey,
+      ].some((value) => !!value)
+    ) {
+      let updateString = "";
+      if (!!username) {
+        updateString += `
+          username = '${username}'
+        `;
+      }
+      if (!!shortBio) {
+        updateString += `
+          short_bio = '${shortBio}'
+        `;
+      }
+
+      if (!!userWebsite) {
+        updateString += `
+          user_website = '${userWebsite}'
+        `;
+      }
+
+      if (!!profilePrivacySetting) {
+        updateString += `
+          profile_privacy_setting = '${profilePrivacySetting}'
+        `;
+      }
+
+      if (!!backgroundImageBlobFileKey) {
+        updateString += `
+          background_image_blob_file_key = '${backgroundImageBlobFileKey}'
+        `;
+      }
+
+      if (!!profilePictureBlobFileKey) {
+        updateString += `
+          profile_picture_blob_file_key = '${profilePictureBlobFileKey}'
+        `;
+      }
+
+      const queryString = `
+          UPDATE
+            ${UsersTableService.tableName}
+          SET
+            ${updateString}
+          WHERE
+            id = '${userId}'
+          ;
+        `;
+
+      await this.datastorePool.query(queryString);
+    }
   }
 }

@@ -1,20 +1,8 @@
 import express from "express";
 import { HTTPResponse } from "src/types/httpResponse";
-import { SecuredHTTPRequest } from "src/types/SecuredHTTPRequest";
 import { checkAuthorization } from "../auth/authUtilities";
+import { ProfilePrivacySetting } from "./models";
 import { UserPageController } from "./userPageController";
-
-export enum DefaultPostPrivacySetting {
-  PublicAndGuestCheckout = "PublicAndGuestCheckout",
-}
-
-export interface UpdateUserProfileParams {
-  username: string;
-  bio: string;
-  website: string;
-  profileVisibility: DefaultPostPrivacySetting;
-  bannedUsernames: string[];
-}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FailedToUpdateUserProfileResponse {}
@@ -29,19 +17,41 @@ export async function handleUpdateUserProfile({
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: SecuredHTTPRequest<UpdateUserProfileParams>;
+  requestBody: {
+    username?: string;
+    shortBio?: string;
+    userWebsite?: string;
+    profileVisibility?: ProfilePrivacySetting;
+    backgroundImage?: Express.Multer.File;
+    profilePicture?: Express.Multer.File;
+  };
 }): Promise<
   HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
 > {
-  console.log(requestBody);
   const { userId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const user =
-    await controller.databaseService.tableServices.usersTableService.selectUserByUserId({
-      userId,
-    });
+  const backgroundImageBlobItemPointer = requestBody.backgroundImage
+    ? await controller.blobStorageService.saveImage({
+        image: requestBody.backgroundImage?.buffer,
+      })
+    : null;
+  const profilePictureBlobItemPointer = requestBody.profilePicture
+    ? await controller.blobStorageService.saveImage({
+        image: requestBody.profilePicture?.buffer,
+      })
+    : null;
 
-  console.log(user);
+  await controller.databaseService.tableServices.usersTableService.updateUserByUserId({
+    userId,
+
+    username: requestBody.username,
+    shortBio: requestBody.shortBio,
+    userWebsite: requestBody.userWebsite,
+    profilePrivacySetting: requestBody.profileVisibility,
+    backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
+    profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+  });
+
   return {};
 }

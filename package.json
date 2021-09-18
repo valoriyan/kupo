@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "build/src/server.js",
   "scripts": {
+    "clear": "echo '\n\n\n\n\n\n\n\n\n\n'",
     "setupDatabase": "tsc && node build/src/scripts/setup.js",
     "teardownDatabase": "tsc && node build/src/scripts/teardown.js",
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
-    "build": "tsoa spec-and-routes && tsc",
+    "build": "yarn run clear && tsoa spec-and-routes && tsc",
     "start": "node build/src/server.js",
     "test": "jest --forceExit --coverage --verbose --runInBand",
     "lint": "eslint 'src/**/*.{js,ts}' --cache --fix",

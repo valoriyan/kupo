@@ -1,9 +1,9 @@
 import express from "express";
-import { Body, Controller, Post, Request, Route } from "tsoa";
+import { BlobStorageService } from "src/services/blobStorageService";
+import { Body, Controller, FormField, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
-import { SecuredHTTPRequest } from "../../types/SecuredHTTPRequest";
 import {
   GetUserProfileParams,
   SuccessfulGetUserProfileResponse,
@@ -14,27 +14,42 @@ import {
   FailedToUpdateUserProfileResponse,
   handleUpdateUserProfile,
   SuccessfulUpdateToUserProfileResponse,
-  UpdateUserProfileParams,
 } from "./handleUpdateUserProfile";
+import { ProfilePrivacySetting } from "./models";
 
 @injectable()
 @Route("user")
 export class UserPageController extends Controller {
-  constructor(public databaseService: DatabaseService) {
+  constructor(
+    public blobStorageService: BlobStorageService,
+    public databaseService: DatabaseService,
+  ) {
     super();
   }
 
   @Post("UpdateUserProfile")
   public async updateUserProfile(
     @Request() request: express.Request,
-    @Body() requestBody: SecuredHTTPRequest<UpdateUserProfileParams>,
+    @FormField() username?: string,
+    @FormField() shortBio?: string,
+    @FormField() userWebsite?: string,
+    @FormField() profileVisibility?: ProfilePrivacySetting,
+    @UploadedFile() backgroundImage?: Express.Multer.File,
+    @UploadedFile() profilePicture?: Express.Multer.File,
   ): Promise<
     HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
   > {
     return await handleUpdateUserProfile({
       controller: this,
       request,
-      requestBody,
+      requestBody: {
+        username,
+        shortBio,
+        userWebsite,
+        profileVisibility,
+        backgroundImage,
+        profilePicture,
+      },
     });
   }
 

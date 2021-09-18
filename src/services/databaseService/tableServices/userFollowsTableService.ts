@@ -2,6 +2,11 @@ import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
+interface DBUserFollow {
+  user_id_doing_following: string;
+  user_id_being_followed: string;
+}
+
 export class UserFollowsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_user_follows`;
   public readonly tableName = UserFollowsTableService.tableName;
@@ -87,5 +92,51 @@ export class UserFollowsTableService extends TableService {
     }> = await this.datastorePool.query(queryString);
 
     return response.rows[0].count;
+  }
+  public async isUserIdFollowingUserId({
+    userIdDoingFollowing,
+    userIdBeingFollowed,
+  }: {
+    userIdDoingFollowing: string;
+    userIdBeingFollowed: string;
+  }): Promise<boolean> {
+    const queryString = `
+      SELECT
+        COUNT(*)
+      FROM
+        ${UserFollowsTableService.tableName}
+      WHERE
+        user_id_doing_following = '${userIdDoingFollowing}'
+      AND
+        user_id_being_followed = '${userIdBeingFollowed}'
+      LIMIT
+        1
+      ;
+    `;
+
+    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(
+      queryString,
+    );
+
+    return response.rows.length > 0;
+  }
+
+  public async deleteUserFollow({
+    userIdDoingUnfollowing,
+    userIdBeingUnfollowed,
+  }: {
+    userIdDoingUnfollowing: string;
+    userIdBeingUnfollowed: string;
+  }): Promise<void> {
+    const queryString = `
+      DELETE FROM ${UserFollowsTableService.tableName}
+      WHERE
+        user_id_doing_following = '${userIdDoingUnfollowing}'
+      AND
+        user_id_being_followed = '${userIdBeingUnfollowed}'
+      ;
+    `;
+
+    await this.datastorePool.query(queryString);
   }
 }
