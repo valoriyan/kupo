@@ -9,6 +9,8 @@ import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUse
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPageOfPostsPaginationParams {
   userId: string;
+  limit: number;
+  offset: number;
 }
 
 export interface SuccessfulGetPageOfPostsPaginationResponse {
