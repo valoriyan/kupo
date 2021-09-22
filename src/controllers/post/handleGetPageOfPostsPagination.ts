@@ -1,5 +1,5 @@
 import express from "express";
-import { RenderablePost, RenderablePostContentElement } from "./models";
+import { RenderablePost, RenderablePostContentElement, UnrenderablePostWithoutElements } from "./models";
 import { PostController } from "./postController";
 import { Promise as BluebirdPromise } from "bluebird";
 import { HTTPResponse } from "src/types/httpResponse";
@@ -9,12 +9,16 @@ import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUse
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPageOfPostsPaginationParams {
   userId: string;
-  limit: number;
-  offset: number;
+  
+  cursor?: string;
+  pageSize: number;
 }
 
 export interface SuccessfulGetPageOfPostsPaginationResponse {
   renderablePosts: RenderablePost[];
+  
+  previousPageCursor?: string;
+  nextPageCursor?: string;
 }
 
 export enum FailedtoGetPageOfPostsPaginationResponseReason {
@@ -73,8 +77,26 @@ export async function handleGetPageOfPostsPagination({
       },
     );
 
+  // For simplicity, we are returning posts ordered by timestamp
+  // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
+  let filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElements[];
+  if (!!requestBody.cursor) {
+    const decodedCursor = Number(
+      Buffer.from(requestBody.cursor, 'base64').toString('binary')
+    );
+
+
+    filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements.filter((unrenderablePostWithoutElements) => {
+      return unrenderablePostWithoutElements.scheduledPublicationTimestamp > decodedCursor;
+    }).slice(
+      -requestBody.pageSize);
+  } else {
+    filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements.slice(
+      -requestBody.pageSize);
+  }
+
   const renderablePosts = await BluebirdPromise.map(
-    unrenderablePostsWithoutElements,
+    filteredUnrenderablePostsWithoutElements,
     async (unrenderablePostWithoutElements): Promise<RenderablePost> => {
       const filedPostContentElements =
         await controller.databaseService.tableServices.postContentElementsTableService.getPostContentElementsByPostId(
@@ -115,9 +137,19 @@ export async function handleGetPageOfPostsPagination({
     },
   );
 
+  const encodedNextPageCursor =
+    renderablePosts.length > 0 ?
+    Buffer.from(
+      String(renderablePosts.at(-1)?.scheduledPublicationTimestamp), 
+      'binary'
+    ).toString('base64') :
+    undefined;  
+
   return {
     success: {
       renderablePosts,
+      previousPageCursor: requestBody.cursor,
+      nextPageCursor: encodedNextPageCursor,
     },
   };
 }
