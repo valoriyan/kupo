@@ -1,5 +1,5 @@
 import express from "express";
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { ProfilePrivacySetting } from "./models";
 import { UserPageController } from "./userPageController";

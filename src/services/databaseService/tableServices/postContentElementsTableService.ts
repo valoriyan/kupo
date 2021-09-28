@@ -2,7 +2,7 @@ import { Pool, QueryResult } from "pg";
 import {
   PostElementFileType,
   FiledPostContentElement,
-} from "src/controllers/post/models";
+} from "../../../controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 

@@ -17,6 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
@@ -33,6 +34,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.36",
     "@types/concurrently": "^6.2.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
