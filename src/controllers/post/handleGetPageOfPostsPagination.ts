@@ -1,5 +1,9 @@
 import express from "express";
-import { RenderablePost, RenderablePostContentElement, UnrenderablePostWithoutElements } from "./models";
+import {
+  RenderablePost,
+  RenderablePostContentElement,
+  UnrenderablePostWithoutElements,
+} from "./models";
 import { PostController } from "./postController";
 import { Promise as BluebirdPromise } from "bluebird";
 import { HTTPResponse } from "src/types/httpResponse";
@@ -9,14 +13,14 @@ import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUse
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPageOfPostsPaginationParams {
   userId: string;
-  
+
   cursor?: string;
   pageSize: number;
 }
 
 export interface SuccessfulGetPageOfPostsPaginationResponse {
   renderablePosts: RenderablePost[];
-  
+
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
@@ -82,17 +86,20 @@ export async function handleGetPageOfPostsPagination({
   let filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElements[];
   if (!!requestBody.cursor) {
     const decodedCursor = Number(
-      Buffer.from(requestBody.cursor, 'base64').toString('binary')
+      Buffer.from(requestBody.cursor, "base64").toString("binary"),
     );
 
-
-    filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements.filter((unrenderablePostWithoutElements) => {
-      return unrenderablePostWithoutElements.scheduledPublicationTimestamp > decodedCursor;
-    }).slice(
-      -requestBody.pageSize);
+    filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements
+      .filter((unrenderablePostWithoutElements) => {
+        return (
+          unrenderablePostWithoutElements.scheduledPublicationTimestamp > decodedCursor
+        );
+      })
+      .slice(-requestBody.pageSize);
   } else {
     filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements.slice(
-      -requestBody.pageSize);
+      -requestBody.pageSize,
+    );
   }
 
   const renderablePosts = await BluebirdPromise.map(
@@ -138,12 +145,12 @@ export async function handleGetPageOfPostsPagination({
   );
 
   const encodedNextPageCursor =
-    renderablePosts.length > 0 ?
-    Buffer.from(
-      String(renderablePosts.at(-1)?.scheduledPublicationTimestamp), 
-      'binary'
-    ).toString('base64') :
-    undefined;  
+    renderablePosts.length > 0
+      ? Buffer.from(
+          String(renderablePosts.at(-1)?.scheduledPublicationTimestamp),
+          "binary",
+        ).toString("base64")
+      : undefined;
 
   return {
     success: {
