@@ -7,6 +7,7 @@ import { Avatar } from "../Avatar";
 import { Close, LogOut } from "../Icons";
 import { Flex } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
+import { headingStyles, Subtext } from "../Typography";
 
 export interface NavigationDrawerProps {
   hide: () => void;
@@ -78,14 +79,10 @@ const UserInfo = styled("div", {
 
 const UserStatsPlaceholder = styled("div", { alignSelf: "center", width: "$10" });
 
-const UserStat = styled("div", {
-  whiteSace: "nowrap",
-  fontSize: "$1",
-});
+const UserStat = styled(Subtext, { whiteSace: "nowrap" });
 
-const NavItem = styled("a", {
+const NavItem = styled("a", headingStyles, {
   display: "flex",
   alignItems: "center",
   gap: "$4",
-  fontSize: "$3",
 });

@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import { styled } from "#/styling";
 import { Flex } from "../Layout";
+import { MainTitle } from "../Typography";
 
 export const ErrorArea = (props: PropsWithChildren<unknown>) => {
   return (
@@ -32,9 +33,7 @@ export const FullScreenErrorArea = (props: PropsWithChildren<unknown>) => {
   );
 };
 
-const ErrorMessage = styled("div", {
-  fontWeight: "$bold",
-  fontSize: "$3",
+const ErrorMessage = styled(MainTitle, {
   textAlign: "center",
   p: "$5",
 });

@@ -1,4 +1,8 @@
-import { createStitches, defaultThemeMap, PropertyValue } from "@stitches/react";
+import Stitches, {
+  createStitches,
+  defaultThemeMap,
+  PropertyValue,
+} from "@stitches/react";
 import { useEffect, useState } from "react";
 import { NoInfer } from "#/types/noInfer";
 
@@ -229,7 +233,9 @@ const themedStitches = createStitches({
   },
 });
 
-export const { styled, css, globalCss, keyframes, theme, getCssText } = themedStitches;
+export const { styled, css, globalCss, keyframes, theme, getCssText, config } =
+  themedStitches;
+export type CSS = Stitches.CSS<typeof config>;
 
 export const darkTheme = themedStitches.createTheme("dark", {
   colors: {

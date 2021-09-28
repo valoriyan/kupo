@@ -1,5 +1,6 @@
 export * from "./generated/AddR";
 export * from "./generated/Bell";
+export * from "./generated/Calendar";
 export * from "./generated/ChevronDownR";
 export * from "./generated/ChevronUpR";
 export * from "./generated/Close";

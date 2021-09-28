@@ -4,6 +4,7 @@ import { AddR } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { styled } from "#/styling";
 import { MediaUpload } from "./MediaUpload";
+import { HashTags } from "./HashTags";
 
 export interface NewPostProps {
   setAdditionalScreen: (screen: ReactNode) => void;
@@ -12,15 +13,24 @@ export interface NewPostProps {
 export const NewPost = (props: NewPostProps) => {
   return (
     <Wrapper>
-      <Stack css={{ height: "100%", overflow: "auto", gap: "$5" }}>
-        <MediaUpload setAdditionalScreen={props.setAdditionalScreen} />
-        <Caption placeholder="add caption..." />
-        <LinkItem>
-          <AddR />
-          Link Shop Item
-        </LinkItem>
+      <Stack css={{ height: "100%", overflow: "auto" }}>
+        <SectionWrapper>
+          <MediaUpload setAdditionalScreen={props.setAdditionalScreen} />
+        </SectionWrapper>
+        <SectionWrapper>
+          <Caption placeholder="add caption..." />
+        </SectionWrapper>
+        <SectionWrapper>
+          <HashTags />
+        </SectionWrapper>
+        <SectionWrapper>
+          <LinkItem>
+            <AddR />
+            Link Shop Item
+          </LinkItem>
+        </SectionWrapper>
       </Stack>
-      <Stack css={{ gap: "$3" }}>
+      <Stack css={{ gap: "$3", px: "$4" }}>
         <Button size="lg" variant="secondary">
           Post Now
         </Button>
@@ -37,12 +47,19 @@ const Wrapper = styled("div", {
   gridTemplateRows: "minmax(0, 1fr) auto",
   rowGap: "$4",
   height: "100%",
-  px: "$4",
-  pt: "$4",
   pb: "$5",
 });
 
+const SectionWrapper = styled("div", {
+  px: "$4",
+  py: "$4",
+  borderBottomStyle: "solid",
+  borderBottomColor: "$border",
+  borderBottomWidth: "$1",
+});
+
 const Caption = styled("textarea", {
+  width: "100%",
   height: "15vh",
   minHeight: "$10",
   bg: "transparent",

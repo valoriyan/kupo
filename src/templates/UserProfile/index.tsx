@@ -11,6 +11,7 @@ import { Tabs } from "#/components/Tabs";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
+import { Subtext, subtextStyles } from "#/components/Typography";
 
 export interface UserProfileProps {
   isOwnProfile?: boolean;
@@ -43,12 +44,15 @@ const ProfileBody = (props: ProfileBodyProps) => {
           <Link href={`/profile/${props.user.username}`} passHref>
             <a>@{props.user.username}</a>
           </Link>
-          <UserStats>
+          <Subtext>
             {formatStat(props.user.followers.count)} followers |{" "}
             {formatStat(props.user.subscribers.count)} subscribers |{" "}
             {formatStat(props.user.follows.count)} followed
-          </UserStats>
-          <Description>{props.user.bio}</Description>
+          </Subtext>
+          <Description>
+            I love to travel and take pictures and then post all of them to this website
+            {props.user.bio}
+          </Description>
           <ExternalLink target="_blank" rel="noopener noreferrer">
             linktr.ee/cheese
           </ExternalLink>
@@ -88,15 +92,6 @@ const ProfileBody = (props: ProfileBodyProps) => {
   );
 };
 
-const UserStats = styled("div", {
-  fontSize: "$1",
-});
+const Description = styled(Subtext, { fontWeight: "$light" });
 
-const Description = styled("div", {
-  fontWeight: "$light",
-  fontSize: "$1",
-});
-
-const ExternalLink = styled("a", {
-  fontSize: "$1",
-});
+const ExternalLink = styled("a", subtextStyles);

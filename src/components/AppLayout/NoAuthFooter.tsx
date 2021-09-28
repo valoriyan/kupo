@@ -2,11 +2,12 @@ import Link from "next/link";
 import { styled } from "#/styling";
 import { Button } from "../Button";
 import { Flex, Stack } from "../Layout";
+import { MainTitle } from "../Typography";
 
 export const NoAuthFooter = () => {
   return (
     <Wrapper>
-      <Text>Experience the full site</Text>
+      <MainTitle>Experience the full site</MainTitle>
       <Flex css={{ gap: "$5" }}>
         <Link href="/login" passHref>
           <Button as="a" size="lg" variant="primary">
@@ -32,10 +33,4 @@ const Wrapper = styled(Stack, {
   borderTopStyle: "solid",
   borderTopWidth: "$1",
   borderTopColor: "$border",
-});
-
-const Text = styled("div", {
-  color: "$text",
-  fontWeight: "$bold",
-  fontSize: "$3",
 });

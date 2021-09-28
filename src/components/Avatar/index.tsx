@@ -27,11 +27,10 @@ const baseStyles = css({
   color: "$inverseText",
 });
 
-const Img = styled("img", {
-  ...baseStyles,
+const Img = styled("img", baseStyles, {
   objectFit: "cover",
 });
 
-const Fallback = styled("div", { ...baseStyles });
+const Fallback = styled("div", baseStyles);
 
 const FallBackIcon = styled(User, { minHeight: "50%", minWidth: "50%" });

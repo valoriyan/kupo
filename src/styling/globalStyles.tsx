@@ -7,6 +7,7 @@ export const globalStyles = globalCss({
     src: 'local("AbhayaLibre"), url("/fonts/AbhayaLibre-SemiBold.ttf")',
   },
   body: {
+    p: "0 !important",
     fontFamily: "$body !important",
     color: "$text",
     bg: "$background1",

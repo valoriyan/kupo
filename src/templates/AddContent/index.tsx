@@ -8,17 +8,21 @@ import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
 import { NewPost } from "./NewPost";
 import { NewShopItem } from "./NewShopItem";
+import { MainTitle } from "#/components/Typography";
+import { assertUnreachable } from "#/utils/assertUnreachable";
 
 export enum AddContentScreen {
   Initial = "Initial",
   Post = "Post",
   ShopItem = "ShopItem",
+  PostSchedule = "PostSchedule",
 }
 
 const screenToHeading = {
   [AddContentScreen.Initial]: "Add Content",
   [AddContentScreen.Post]: "New Post",
   [AddContentScreen.ShopItem]: "New Shop Item",
+  [AddContentScreen.PostSchedule]: "View Post Schedule",
 };
 
 export const AddContent = () => {
@@ -41,6 +45,11 @@ export const AddContent = () => {
     case AddContentScreen.ShopItem:
       bodyNode = <NewShopItem />;
       break;
+    case AddContentScreen.PostSchedule:
+      bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
+      break;
+    default:
+      assertUnreachable(currentScreen, "Unknown screen received");
   }
 
   return (
@@ -54,7 +63,7 @@ export const AddContent = () => {
               <Close />
             </CloseButton>
           )}
-          <Heading>{screenToHeading[currentScreen]}</Heading>
+          <MainTitle as="h1">{screenToHeading[currentScreen]}</MainTitle>
         </Header>
         <TransitionArea
           transitionKey={additionalScreen ? "additionalScreen" : currentScreen}
@@ -97,11 +106,6 @@ const CloseButton = styled("button", {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-});
-
-const Heading = styled("h1", {
-  fontSize: "$4",
-  fontWeight: "$bold",
 });
 
 const rightToRight = {

@@ -3,7 +3,7 @@ import { Spinner, SpinnerProps } from ".";
 import { Flex } from "../Layout";
 
 export default {
-  title: "Spinner",
+  title: "Components/Spinner",
   component: Spinner,
 };
 

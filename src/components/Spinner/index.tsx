@@ -1,5 +1,6 @@
 import { keyframes, styled } from "#/styling";
-import { Box, Stack } from "../Layout";
+import { Stack } from "../Layout";
+import { Subtext } from "../Typography";
 
 export interface SpinnerProps {
   /** Size of the spinner */
@@ -28,7 +29,7 @@ export const Spinner = ({ size = "md", text }: SpinnerProps) => {
         />
         <Path d={spinner.d} fill="none" strokeWidth="1.5" />
       </SpinningSVG>
-      {text && <Box css={{ color: "$primary", fontSize: "$1" }}>{text}</Box>}
+      {text && <Subtext css={{ color: "$primary" }}>{text}</Subtext>}
     </Stack>
   );
 };

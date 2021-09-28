@@ -1,6 +1,7 @@
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { ReactNode } from "react";
 import { styled } from "#/styling";
+import { mainTitleStyles } from "../Typography";
 
 export interface Tab {
   id: string;
@@ -40,14 +41,14 @@ const TabList = styled(TabsPrimitive.TabsList, {
   borderBottomColor: "$border",
 });
 
-const Trigger = styled(TabsPrimitive.Trigger, {
+const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   flex: 1,
   height: "$7",
   px: "$4",
-  fontSize: "$4",
+  fontWeight: "$regular",
   color: "$text",
   transition: "color $1 ease, box-shadow $1 ease",
   cursor: "pointer",

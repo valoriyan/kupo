@@ -7,6 +7,7 @@ import { createDirectory, emptyDirectory, formatCode, kebabToPascalCase } from "
 const ICONS_TO_GENERATE = [
   "add-r",
   "bell",
+  "calendar",
   "chevron-down-r",
   "chevron-up-r",
   "close",
