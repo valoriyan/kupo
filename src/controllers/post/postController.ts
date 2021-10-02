@@ -14,7 +14,7 @@ import {
   GetPageOfPostsPaginationParams,
   handleGetPageOfPostsPagination,
   SuccessfulGetPageOfPostsPaginationResponse,
-} from "./handleGetPageOfPostsPagination";
+} from "./pagination/handleGetPageOfPostsPagination";
 
 @injectable()
 @Route("post")
