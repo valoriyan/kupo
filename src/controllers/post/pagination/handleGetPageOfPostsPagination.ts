@@ -51,6 +51,7 @@ export async function handleGetPageOfPostsPagination({
   // check if requesting user is allowed to view posts - 403
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
+
   if (error) {
     return {
       error: {
