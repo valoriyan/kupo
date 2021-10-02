@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
-import { BlobStorageService } from "src/services/blobStorageService";
+import { BlobStorageService } from "../../services/blobStorageService";
 import { checkAuthorization } from "../auth/utilities";
 import {
   FiledPostContentElement,

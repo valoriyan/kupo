@@ -1,5 +1,5 @@
 import express from "express";
-import { BlobStorageService } from "src/services/blobStorageService";
+import { BlobStorageService } from "../../services/blobStorageService";
 import { Body, Controller, FormField, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";

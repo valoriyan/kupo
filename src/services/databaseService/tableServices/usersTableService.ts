@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { ProfilePrivacySetting } from "src/controllers/user/models";
+import { ProfilePrivacySetting } from "../../../controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 

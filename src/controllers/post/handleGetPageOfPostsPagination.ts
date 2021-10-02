@@ -6,7 +6,7 @@ import {
 } from "./models";
 import { PostController } from "./postController";
 import { Promise as BluebirdPromise } from "bluebird";
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
 
@@ -147,7 +147,9 @@ export async function handleGetPageOfPostsPagination({
   const encodedNextPageCursor =
     renderablePosts.length > 0
       ? Buffer.from(
-          String(renderablePosts.at(-1)?.scheduledPublicationTimestamp),
+          String(
+            renderablePosts[renderablePosts.length - 1]?.scheduledPublicationTimestamp,
+          ),
           "binary",
         ).toString("base64")
       : undefined;

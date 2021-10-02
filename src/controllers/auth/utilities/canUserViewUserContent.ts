@@ -1,6 +1,6 @@
-import { ProfilePrivacySetting } from "src/controllers/user/models";
-import { DatabaseService } from "src/services/databaseService";
-import { DBUser } from "src/services/databaseService/tableServices/usersTableService";
+import { ProfilePrivacySetting } from "../../../controllers/user/models";
+import { DatabaseService } from "../../../services/databaseService";
+import { DBUser } from "../../../services/databaseService/tableServices/usersTableService";
 
 export async function canUserViewUserContent({
   clientUserId,

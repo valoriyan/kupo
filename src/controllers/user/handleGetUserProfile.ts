@@ -1,5 +1,5 @@
 import express from "express";
-import { DBUser } from "src/services/databaseService/tableServices/usersTableService";
+import { DBUser } from "../../services/databaseService/tableServices/usersTableService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent";
