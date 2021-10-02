@@ -33,6 +33,21 @@ export interface FailedtoGetPageOfPostsPaginationResponse {
   reason: FailedtoGetPageOfPostsPaginationResponseReason;
 }
 
+function getEncodedNextPageCursor({renderablePosts}: {renderablePosts: RenderablePost[]}): string | undefined {
+  const encodedNextPageCursor =
+    renderablePosts.length > 0
+      ? Buffer.from(
+          String(
+            renderablePosts[renderablePosts.length - 1]?.scheduledPublicationTimestamp,
+          ),
+          "binary",
+        ).toString("base64")
+      : undefined;
+
+    return encodedNextPageCursor;
+}
+
+
 export async function handleGetPageOfPostsPagination({
   controller,
   request,
@@ -144,21 +159,11 @@ export async function handleGetPageOfPostsPagination({
     },
   );
 
-  const encodedNextPageCursor =
-    renderablePosts.length > 0
-      ? Buffer.from(
-          String(
-            renderablePosts[renderablePosts.length - 1]?.scheduledPublicationTimestamp,
-          ),
-          "binary",
-        ).toString("base64")
-      : undefined;
-
   return {
     success: {
       renderablePosts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: encodedNextPageCursor,
+      nextPageCursor: getEncodedNextPageCursor({renderablePosts}),
     },
   };
 }
