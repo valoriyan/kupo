@@ -63,10 +63,15 @@ export const Button = styled("button", {
         color: "$text",
         "&:disabled": {
           bg: "transparent",
-          borderColor: "$disabled",
-          color: "$disabledText",
+          borderColor: "$text",
+          color: "$text",
+          filter: "opacity(0.5)",
         },
       },
     },
   ],
+  defaultVariants: {
+    variant: "primary",
+    size: "md",
+  },
 });

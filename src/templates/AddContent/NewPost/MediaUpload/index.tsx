@@ -10,7 +10,7 @@ export interface MediaUploadProps {
 }
 
 export const MediaUpload = (props: MediaUploadProps) => {
-  const { mediaPreviews, addMedia, getMediaActions } = useFormState();
+  const { mediaFiles, addMedia, getMediaActions } = useFormState();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.currentTarget;
@@ -18,7 +18,7 @@ export const MediaUpload = (props: MediaUploadProps) => {
 
     for (const file of files) {
       const src = URL.createObjectURL(file);
-      addMedia({ type: file.type, src });
+      addMedia({ file, src });
     }
   };
 
@@ -35,18 +35,18 @@ export const MediaUpload = (props: MediaUploadProps) => {
     props.setAdditionalScreen(<MediaPreview initialId={id} />);
   };
 
-  const additionalImagesCount = mediaPreviews.length - 3;
+  const additionalImagesCount = mediaFiles.length - 3;
 
   return (
     <ImageGrid>
-      {mediaPreviews.length < 3 ? (
+      {mediaFiles.length < 3 ? (
         <>
-          {mediaPreviews.map((preview, i) => (
+          {mediaFiles.map((media, i) => (
             <PreviewImage
-              key={preview.src}
-              media={preview}
-              onClick={() => onImageClick(i === 0 ? undefined : preview.src)}
-              actions={getMediaActions(preview)}
+              key={media.src}
+              media={media}
+              onClick={() => onImageClick(i === 0 ? undefined : media.src)}
+              actions={getMediaActions(media)}
             />
           ))}
           <AddMedia>
@@ -57,25 +57,23 @@ export const MediaUpload = (props: MediaUploadProps) => {
       ) : (
         <>
           <PreviewImage
-            key={mediaPreviews[0].src}
-            media={mediaPreviews[0]}
+            key={mediaFiles[0].src}
+            media={mediaFiles[0]}
             onClick={() => onImageClick()}
-            actions={getMediaActions(mediaPreviews[0])}
+            actions={getMediaActions(mediaFiles[0])}
           />
           <PreviewImage
-            key={mediaPreviews[1].src}
-            media={mediaPreviews[1]}
-            onClick={() => onImageClick(mediaPreviews[1].src)}
-            actions={getMediaActions(mediaPreviews[1])}
+            key={mediaFiles[1].src}
+            media={mediaFiles[1]}
+            onClick={() => onImageClick(mediaFiles[1].src)}
+            actions={getMediaActions(mediaFiles[1])}
           />
           <WithMoreGrid>
             <PreviewImage
-              key={mediaPreviews[2].src}
-              media={mediaPreviews[2]}
-              onClick={() => onImageClick(mediaPreviews[2].src)}
-              actions={
-                additionalImagesCount ? undefined : getMediaActions(mediaPreviews[1])
-              }
+              key={mediaFiles[2].src}
+              media={mediaFiles[2]}
+              onClick={() => onImageClick(mediaFiles[2].src)}
+              actions={additionalImagesCount ? undefined : getMediaActions(mediaFiles[1])}
               overlayText={
                 additionalImagesCount ? "+" + additionalImagesCount : undefined
               }

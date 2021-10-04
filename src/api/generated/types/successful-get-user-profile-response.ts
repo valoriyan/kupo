@@ -12,9 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { DisplayedPost } from "./displayed-post";
-import { DisplayedPostLikes } from "./displayed-post-likes";
-import { DisplayedShopItems } from "./displayed-shop-items";
+import { SuccessfulGetUserProfileResponseFollowers } from "./successful-get-user-profile-response-followers";
 
 /**
  *
@@ -27,41 +25,47 @@ export interface SuccessfulGetUserProfileResponse {
    * @type {string}
    * @memberof SuccessfulGetUserProfileResponse
    */
-  username: string;
-  /**
-   *
-   * @type {DisplayedPostLikes}
-   * @memberof SuccessfulGetUserProfileResponse
-   */
-  followers: DisplayedPostLikes;
-  /**
-   *
-   * @type {DisplayedPostLikes}
-   * @memberof SuccessfulGetUserProfileResponse
-   */
-  subscribers: DisplayedPostLikes;
-  /**
-   *
-   * @type {DisplayedPostLikes}
-   * @memberof SuccessfulGetUserProfileResponse
-   */
-  follows: DisplayedPostLikes;
+  id: string;
   /**
    *
    * @type {string}
    * @memberof SuccessfulGetUserProfileResponse
    */
-  bio: string;
+  username: string;
   /**
    *
-   * @type {Array<DisplayedPost>}
+   * @type {SuccessfulGetUserProfileResponseFollowers}
    * @memberof SuccessfulGetUserProfileResponse
    */
-  posts: Array<DisplayedPost>;
+  followers: SuccessfulGetUserProfileResponseFollowers;
   /**
    *
-   * @type {Array<DisplayedShopItems>}
+   * @type {SuccessfulGetUserProfileResponseFollowers}
    * @memberof SuccessfulGetUserProfileResponse
    */
-  shopItems: Array<DisplayedShopItems>;
+  subscribers: SuccessfulGetUserProfileResponseFollowers;
+  /**
+   *
+   * @type {SuccessfulGetUserProfileResponseFollowers}
+   * @memberof SuccessfulGetUserProfileResponse
+   */
+  follows: SuccessfulGetUserProfileResponseFollowers;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfulGetUserProfileResponse
+   */
+  bio?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfulGetUserProfileResponse
+   */
+  website?: string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof SuccessfulGetUserProfileResponse
+   */
+  canViewContent: boolean;
 }

@@ -26,14 +26,14 @@ export const PreviewImage = (props: PreviewImageProps) => {
 
   return (
     <Wrapper id={props.id} as={props.onClick ? "button" : "div"} onClick={props.onClick}>
-      {props.media.type.includes("image") ? (
+      {props.media.file.type.includes("image") ? (
         <Image src={props.media.src} alt="Preview Image" />
       ) : (
         <Video controls={!!props.id}>
-          <source src={props.media.src} type={props.media.type} />
+          <source src={props.media.src} type={props.media.file.type} />
         </Video>
       )}
-      {(props.overlayText || (props.media.type.includes("video") && !props.id)) && (
+      {(props.overlayText || (props.media.file.type.includes("video") && !props.id)) && (
         <Overlay>{props.overlayText || <PlayButtonO />}</Overlay>
       )}
       {props.actions && (

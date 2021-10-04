@@ -12,7 +12,7 @@ export interface MediaPreviewProps {
 }
 
 export const MediaPreview = (props: MediaPreviewProps) => {
-  const { mediaPreviews, getMediaActions } = useFormState();
+  const { mediaFiles, getMediaActions } = useFormState();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,12 +29,12 @@ export const MediaPreview = (props: MediaPreviewProps) => {
       <Button size="lg" variant="secondary" css={{ gap: "$3", m: "$4" }}>
         <Duplicate /> Add Media
       </Button>
-      {mediaPreviews.map((preview) => (
+      {mediaFiles.map((media) => (
         <PreviewImage
-          key={preview.src}
-          id={srcToId(preview.src)}
-          media={preview}
-          actions={getMediaActions(preview)}
+          key={media.src}
+          id={srcToId(media.src)}
+          media={media}
+          actions={getMediaActions(media)}
         />
       ))}
     </Stack>

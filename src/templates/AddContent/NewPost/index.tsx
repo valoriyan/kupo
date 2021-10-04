@@ -5,12 +5,17 @@ import { Stack } from "#/components/Layout";
 import { styled } from "#/styling";
 import { MediaUpload } from "./MediaUpload";
 import { HashTags } from "./HashTags";
+import { useFormState } from "../FormContext";
 
 export interface NewPostProps {
   setAdditionalScreen: (screen: ReactNode) => void;
 }
 
 export const NewPost = (props: NewPostProps) => {
+  const { caption, setCaption, mediaFiles } = useFormState();
+
+  const canSubmit = !!caption || !!mediaFiles.length;
+
   return (
     <Wrapper>
       <Stack css={{ height: "100%", overflow: "auto" }}>
@@ -18,7 +23,11 @@ export const NewPost = (props: NewPostProps) => {
           <MediaUpload setAdditionalScreen={props.setAdditionalScreen} />
         </SectionWrapper>
         <SectionWrapper>
-          <Caption placeholder="add caption..." />
+          <Caption
+            placeholder="add caption..."
+            value={caption}
+            onChange={(e) => setCaption(e.currentTarget.value)}
+          />
         </SectionWrapper>
         <SectionWrapper>
           <HashTags />
@@ -31,10 +40,10 @@ export const NewPost = (props: NewPostProps) => {
         </SectionWrapper>
       </Stack>
       <Stack css={{ gap: "$3", px: "$4" }}>
-        <Button size="lg" variant="secondary">
+        <Button size="lg" variant="secondary" disabled={!canSubmit}>
           Post Now
         </Button>
-        <Button size="lg" variant="secondary" outlined>
+        <Button size="lg" variant="secondary" outlined disabled={!canSubmit}>
           Schedule For Later
         </Button>
       </Stack>

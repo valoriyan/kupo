@@ -36,7 +36,7 @@ const themedStitches = createStitches({
       secondaryText: "#acacac", // Secondary text that sits on background colors
       accentText: "#ffffff", // Text that sits on primary and secondary accent colors
       inverseText: "#ffffff",
-      disabledText: "#000000",
+      disabledText: "#454545",
 
       link: "#5D5FEF", // Link color
 
@@ -45,7 +45,7 @@ const themedStitches = createStitches({
       success: "#00ff00", // For success messages
       warning: "#ffff00", // For warning messages
       failure: "#ff0000", // For error messages
-      disabled: "#acacac", // For disabled elements
+      disabled: "#b0b0b0", // For disabled elements
 
       transparent: "rgba(0,0,0,0)",
     },
@@ -253,6 +253,7 @@ export const darkTheme = themedStitches.createTheme("dark", {
     secondaryText: "#acacac",
     accentText: "#ffffff",
     inverseText: "#000000",
+    disabledText: "#323232",
 
     link: "#8D8FF3",
 
@@ -261,8 +262,7 @@ export const darkTheme = themedStitches.createTheme("dark", {
     success: "#00ff00",
     warning: "#ffff00",
     failure: "#ff0000",
-    disabled: "#acacac",
-    disabledText: "#000000",
+    disabled: "#a0a0a0",
 
     transparent: "rgba(0,0,0,0)",
   },

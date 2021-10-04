@@ -1,9 +1,10 @@
 import React, { ChangeEventHandler, KeyboardEventHandler, useState } from "react";
 import { styled } from "#/styling";
 import { HashTag } from "./HashTag";
+import { useFormState } from "../../FormContext";
 
 export const HashTags = () => {
-  const [hashTags, setHashTags] = useState<string[]>([]);
+  const { hashTags, setHashTags } = useFormState();
   const [text, setText] = useState("");
 
   const handleBackspace: KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -65,7 +66,7 @@ const Wrapper = styled("div", {
   gap: "$3",
   lineHeight: 1.25,
   fontSize: "$3",
-  minHeight: "calc($fontSizes$3 * 1.25)",
+  minHeight: "calc($5 + $1)",
   width: "100%",
 });
 

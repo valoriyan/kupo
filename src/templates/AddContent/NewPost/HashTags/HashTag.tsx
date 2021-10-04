@@ -43,7 +43,7 @@ const HashTagBackground = styled("div", {
   top: 0,
   left: 0,
   size: "100%",
-  borderRadius: "round",
+  borderRadius: "$round",
   bg: "$primary",
   animation: `${growFromCorner} $2 ease`,
 });

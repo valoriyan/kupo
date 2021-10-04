@@ -49,12 +49,9 @@ const ProfileBody = (props: ProfileBodyProps) => {
             {formatStat(props.user.subscribers.count)} subscribers |{" "}
             {formatStat(props.user.follows.count)} followed
           </Subtext>
-          <Description>
-            I love to travel and take pictures and then post all of them to this website
-            {props.user.bio}
-          </Description>
+          <Description>{props.user.bio}</Description>
           <ExternalLink target="_blank" rel="noopener noreferrer">
-            linktr.ee/cheese
+            {props.user.website}
           </ExternalLink>
         </Stack>
         <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>

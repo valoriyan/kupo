@@ -12,6 +12,9 @@
  * Do not edit the class manually.
  */
 
+import { FailedToCreatePostResponse } from "./failed-to-create-post-response";
+import { SuccessfulPostCreationResponse } from "./successful-post-creation-response";
+
 /**
  *
  * @export
@@ -20,14 +23,14 @@
 export interface HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse {
   /**
    *
-   * @type {object}
+   * @type {FailedToCreatePostResponse}
    * @memberof HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse
    */
-  error?: object;
+  error?: FailedToCreatePostResponse;
   /**
    *
-   * @type {object}
+   * @type {SuccessfulPostCreationResponse}
    * @memberof HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse
    */
-  success?: object;
+  success?: SuccessfulPostCreationResponse;
 }

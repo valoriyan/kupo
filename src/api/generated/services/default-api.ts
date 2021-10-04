@@ -37,6 +37,10 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { FollowUserProfileParams } from "../types";
+// @ts-ignore
+import { GetPageOfPostsPaginationParams } from "../types";
+// @ts-ignore
 import { GetUserProfileParams } from "../types";
 // @ts-ignore
 import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
@@ -53,9 +57,15 @@ import { RegisterUserParams } from "../types";
 // @ts-ignore
 import { RequestPasswordResetParams } from "../types";
 // @ts-ignore
-import { SecuredHTTPRequestUpdateUserProfileParams } from "../types";
-// @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
+// @ts-ignore
+import { UnfollowUserProfileParams } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -65,51 +75,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @param {string} caption
-     * @param {string} creatorUserId
-     * @param {string} visibility
-     * @param {string} duration
+     * @param {string} authorUserId
      * @param {string} title
      * @param {string} price
-     * @param {string} collaboratorUsernames
      * @param {string} scheduledPublicationTimestamp
-     * @param {any} file
+     * @param {string} indexesOfUploadedImages
+     * @param {string} indexesOfUploadedVideos
+     * @param {Array<any>} images
+     * @param {Array<any>} videos
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost: async (
       caption: string,
-      creatorUserId: string,
-      visibility: string,
-      duration: string,
+      authorUserId: string,
       title: string,
       price: string,
-      collaboratorUsernames: string,
       scheduledPublicationTimestamp: string,
-      file: any,
+      indexesOfUploadedImages: string,
+      indexesOfUploadedVideos: string,
+      images: Array<any>,
+      videos: Array<any>,
       options: any = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'caption' is not null or undefined
       assertParamExists("createPost", "caption", caption);
-      // verify required parameter 'creatorUserId' is not null or undefined
-      assertParamExists("createPost", "creatorUserId", creatorUserId);
-      // verify required parameter 'visibility' is not null or undefined
-      assertParamExists("createPost", "visibility", visibility);
-      // verify required parameter 'duration' is not null or undefined
-      assertParamExists("createPost", "duration", duration);
+      // verify required parameter 'authorUserId' is not null or undefined
+      assertParamExists("createPost", "authorUserId", authorUserId);
       // verify required parameter 'title' is not null or undefined
       assertParamExists("createPost", "title", title);
       // verify required parameter 'price' is not null or undefined
       assertParamExists("createPost", "price", price);
-      // verify required parameter 'collaboratorUsernames' is not null or undefined
-      assertParamExists("createPost", "collaboratorUsernames", collaboratorUsernames);
       // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
       assertParamExists(
         "createPost",
         "scheduledPublicationTimestamp",
         scheduledPublicationTimestamp,
       );
-      // verify required parameter 'file' is not null or undefined
-      assertParamExists("createPost", "file", file);
+      // verify required parameter 'indexesOfUploadedImages' is not null or undefined
+      assertParamExists("createPost", "indexesOfUploadedImages", indexesOfUploadedImages);
+      // verify required parameter 'indexesOfUploadedVideos' is not null or undefined
+      assertParamExists("createPost", "indexesOfUploadedVideos", indexesOfUploadedVideos);
+      // verify required parameter 'images' is not null or undefined
+      assertParamExists("createPost", "images", images);
+      // verify required parameter 'videos' is not null or undefined
+      assertParamExists("createPost", "videos", videos);
       const localVarPath = `/post/create`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -128,16 +138,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarFormParams.append("caption", caption as any);
       }
 
-      if (creatorUserId !== undefined) {
-        localVarFormParams.append("creatorUserId", creatorUserId as any);
-      }
-
-      if (visibility !== undefined) {
-        localVarFormParams.append("visibility", visibility as any);
-      }
-
-      if (duration !== undefined) {
-        localVarFormParams.append("duration", duration as any);
+      if (authorUserId !== undefined) {
+        localVarFormParams.append("authorUserId", authorUserId as any);
       }
 
       if (title !== undefined) {
@@ -148,10 +150,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarFormParams.append("price", price as any);
       }
 
-      if (collaboratorUsernames !== undefined) {
-        localVarFormParams.append("collaboratorUsernames", collaboratorUsernames as any);
-      }
-
       if (scheduledPublicationTimestamp !== undefined) {
         localVarFormParams.append(
           "scheduledPublicationTimestamp",
@@ -159,8 +157,29 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         );
       }
 
-      if (file !== undefined) {
-        localVarFormParams.append("file", file as any);
+      if (indexesOfUploadedImages !== undefined) {
+        localVarFormParams.append(
+          "indexesOfUploadedImages",
+          indexesOfUploadedImages as any,
+        );
+      }
+
+      if (indexesOfUploadedVideos !== undefined) {
+        localVarFormParams.append(
+          "indexesOfUploadedVideos",
+          indexesOfUploadedVideos as any,
+        );
+      }
+      if (images) {
+        images.forEach((element) => {
+          localVarFormParams.append("images", element as any);
+        });
+      }
+
+      if (videos) {
+        videos.forEach((element) => {
+          localVarFormParams.append("videos", element as any);
+        });
       }
 
       localVarHeaderParameter["Content-Type"] = "multipart/form-data";
@@ -174,6 +193,100 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {FollowUserProfileParams} followUserProfileParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    followUser: async (
+      followUserProfileParams: FollowUserProfileParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'followUserProfileParams' is not null or undefined
+      assertParamExists("followUser", "followUserProfileParams", followUserProfileParams);
+      const localVarPath = `/userInteractions/FollowUser`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        followUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfPostsPagination: async (
+      getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfPostsPaginationParams' is not null or undefined
+      assertParamExists(
+        "getPageOfPostsPagination",
+        "getPageOfPostsPaginationParams",
+        getPageOfPostsPaginationParams,
+      );
+      const localVarPath = `/post/getPageOfPostsPagination`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfPostsPaginationParams,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -430,21 +543,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
+     * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateUserProfile: async (
-      securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
+    unfollowUser: async (
+      unfollowUserProfileParams: UnfollowUserProfileParams,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'securedHTTPRequestUpdateUserProfileParams' is not null or undefined
+      // verify required parameter 'unfollowUserProfileParams' is not null or undefined
       assertParamExists(
-        "updateUserProfile",
-        "securedHTTPRequestUpdateUserProfileParams",
-        securedHTTPRequestUpdateUserProfileParams,
+        "unfollowUser",
+        "unfollowUserProfileParams",
+        unfollowUserProfileParams,
       );
-      const localVarPath = `/user/UpdateUserProfile`;
+      const localVarPath = `/userInteractions/UnfollowUser`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -452,7 +565,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
@@ -467,10 +580,85 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        securedHTTPRequestUpdateUserProfileParams,
+        unfollowUserProfileParams,
         localVarRequestOptions,
         configuration,
       );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} [username]
+     * @param {string} [shortBio]
+     * @param {string} [userWebsite]
+     * @param {string} [profileVisibility]
+     * @param {any} [backgroundImage]
+     * @param {any} [profilePicture]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserProfile: async (
+      username?: string,
+      shortBio?: string,
+      userWebsite?: string,
+      profileVisibility?: string,
+      backgroundImage?: any,
+      profilePicture?: any,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/user/UpdateUserProfile`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (username !== undefined) {
+        localVarFormParams.append("username", username as any);
+      }
+
+      if (shortBio !== undefined) {
+        localVarFormParams.append("shortBio", shortBio as any);
+      }
+
+      if (userWebsite !== undefined) {
+        localVarFormParams.append("userWebsite", userWebsite as any);
+      }
+
+      if (profileVisibility !== undefined) {
+        localVarFormParams.append("profileVisibility", profileVisibility as any);
+      }
+
+      if (backgroundImage !== undefined) {
+        localVarFormParams.append("backgroundImage", backgroundImage as any);
+      }
+
+      if (profilePicture !== undefined) {
+        localVarFormParams.append("profilePicture", profilePicture as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
 
       return {
         url: toPathString(localVarUrlObj),
@@ -490,27 +678,27 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {string} caption
-     * @param {string} creatorUserId
-     * @param {string} visibility
-     * @param {string} duration
+     * @param {string} authorUserId
      * @param {string} title
      * @param {string} price
-     * @param {string} collaboratorUsernames
      * @param {string} scheduledPublicationTimestamp
-     * @param {any} file
+     * @param {string} indexesOfUploadedImages
+     * @param {string} indexesOfUploadedVideos
+     * @param {Array<any>} images
+     * @param {Array<any>} videos
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createPost(
       caption: string,
-      creatorUserId: string,
-      visibility: string,
-      duration: string,
+      authorUserId: string,
       title: string,
       price: string,
-      collaboratorUsernames: string,
       scheduledPublicationTimestamp: string,
-      file: any,
+      indexesOfUploadedImages: string,
+      indexesOfUploadedVideos: string,
+      images: Array<any>,
+      videos: Array<any>,
       options?: any,
     ): Promise<
       (
@@ -520,14 +708,66 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
         caption,
-        creatorUserId,
-        visibility,
-        duration,
+        authorUserId,
         title,
         price,
-        collaboratorUsernames,
         scheduledPublicationTimestamp,
-        file,
+        indexesOfUploadedImages,
+        indexesOfUploadedVideos,
+        images,
+        videos,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {FollowUserProfileParams} followUserProfileParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async followUser(
+      followUserProfileParams: FollowUserProfileParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
+        followUserProfileParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfPostsPagination(
+      getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfPostsPagination(
+        getPageOfPostsPaginationParams,
         options,
       );
       return createRequestFunction(
@@ -682,12 +922,48 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
+     * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async unfollowUser(
+      unfollowUserProfileParams: UnfollowUserProfileParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.unfollowUser(
+        unfollowUserProfileParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} [username]
+     * @param {string} [shortBio]
+     * @param {string} [userWebsite]
+     * @param {string} [profileVisibility]
+     * @param {any} [backgroundImage]
+     * @param {any} [profilePicture]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateUserProfile(
-      securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
+      username?: string,
+      shortBio?: string,
+      userWebsite?: string,
+      profileVisibility?: string,
+      backgroundImage?: any,
+      profilePicture?: any,
       options?: any,
     ): Promise<
       (
@@ -696,7 +972,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
-        securedHTTPRequestUpdateUserProfileParams,
+        username,
+        shortBio,
+        userWebsite,
+        profileVisibility,
+        backgroundImage,
+        profilePicture,
         options,
       );
       return createRequestFunction(
@@ -723,42 +1004,70 @@ export const DefaultApiFactory = function (
     /**
      *
      * @param {string} caption
-     * @param {string} creatorUserId
-     * @param {string} visibility
-     * @param {string} duration
+     * @param {string} authorUserId
      * @param {string} title
      * @param {string} price
-     * @param {string} collaboratorUsernames
      * @param {string} scheduledPublicationTimestamp
-     * @param {any} file
+     * @param {string} indexesOfUploadedImages
+     * @param {string} indexesOfUploadedVideos
+     * @param {Array<any>} images
+     * @param {Array<any>} videos
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost(
       caption: string,
-      creatorUserId: string,
-      visibility: string,
-      duration: string,
+      authorUserId: string,
       title: string,
       price: string,
-      collaboratorUsernames: string,
       scheduledPublicationTimestamp: string,
-      file: any,
+      indexesOfUploadedImages: string,
+      indexesOfUploadedVideos: string,
+      images: Array<any>,
+      videos: Array<any>,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
       return localVarFp
         .createPost(
           caption,
-          creatorUserId,
-          visibility,
-          duration,
+          authorUserId,
           title,
           price,
-          collaboratorUsernames,
           scheduledPublicationTimestamp,
-          file,
+          indexesOfUploadedImages,
+          indexesOfUploadedVideos,
+          images,
+          videos,
           options,
         )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {FollowUserProfileParams} followUserProfileParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    followUser(
+      followUserProfileParams: FollowUserProfileParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse> {
+      return localVarFp
+        .followUser(followUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfPostsPagination(
+      getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse> {
+      return localVarFp
+        .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -839,16 +1148,48 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
+     * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    unfollowUser(
+      unfollowUserProfileParams: UnfollowUserProfileParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse> {
+      return localVarFp
+        .unfollowUser(unfollowUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} [username]
+     * @param {string} [shortBio]
+     * @param {string} [userWebsite]
+     * @param {string} [profileVisibility]
+     * @param {any} [backgroundImage]
+     * @param {any} [profilePicture]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfile(
-      securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
+      username?: string,
+      shortBio?: string,
+      userWebsite?: string,
+      profileVisibility?: string,
+      backgroundImage?: any,
+      profilePicture?: any,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
       return localVarFp
-        .updateUserProfile(securedHTTPRequestUpdateUserProfileParams, options)
+        .updateUserProfile(
+          username,
+          shortBio,
+          userWebsite,
+          profileVisibility,
+          backgroundImage,
+          profilePicture,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
   };
@@ -864,43 +1205,72 @@ export class DefaultApi extends BaseAPI {
   /**
    *
    * @param {string} caption
-   * @param {string} creatorUserId
-   * @param {string} visibility
-   * @param {string} duration
+   * @param {string} authorUserId
    * @param {string} title
    * @param {string} price
-   * @param {string} collaboratorUsernames
    * @param {string} scheduledPublicationTimestamp
-   * @param {any} file
+   * @param {string} indexesOfUploadedImages
+   * @param {string} indexesOfUploadedVideos
+   * @param {Array<any>} images
+   * @param {Array<any>} videos
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createPost(
     caption: string,
-    creatorUserId: string,
-    visibility: string,
-    duration: string,
+    authorUserId: string,
     title: string,
     price: string,
-    collaboratorUsernames: string,
     scheduledPublicationTimestamp: string,
-    file: any,
+    indexesOfUploadedImages: string,
+    indexesOfUploadedVideos: string,
+    images: Array<any>,
+    videos: Array<any>,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
       .createPost(
         caption,
-        creatorUserId,
-        visibility,
-        duration,
+        authorUserId,
         title,
         price,
-        collaboratorUsernames,
         scheduledPublicationTimestamp,
-        file,
+        indexesOfUploadedImages,
+        indexesOfUploadedVideos,
+        images,
+        videos,
         options,
       )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {FollowUserProfileParams} followUserProfileParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public followUser(followUserProfileParams: FollowUserProfileParams, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .followUser(followUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfPostsPagination(
+    getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -985,17 +1355,51 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {SecuredHTTPRequestUpdateUserProfileParams} securedHTTPRequestUpdateUserProfileParams
+   * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public unfollowUser(
+    unfollowUserProfileParams: UnfollowUserProfileParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .unfollowUser(unfollowUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} [username]
+   * @param {string} [shortBio]
+   * @param {string} [userWebsite]
+   * @param {string} [profileVisibility]
+   * @param {any} [backgroundImage]
+   * @param {any} [profilePicture]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public updateUserProfile(
-    securedHTTPRequestUpdateUserProfileParams: SecuredHTTPRequestUpdateUserProfileParams,
+    username?: string,
+    shortBio?: string,
+    userWebsite?: string,
+    profileVisibility?: string,
+    backgroundImage?: any,
+    profilePicture?: any,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .updateUserProfile(securedHTTPRequestUpdateUserProfileParams, options)
+      .updateUserProfile(
+        username,
+        shortBio,
+        userWebsite,
+        profileVisibility,
+        backgroundImage,
+        profilePicture,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }
