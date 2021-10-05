@@ -1,5 +1,4 @@
 To Do
-- return profile and banner image from getUser
 - store hashtags for posts
 
 

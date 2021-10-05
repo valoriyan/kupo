@@ -79,23 +79,24 @@ export async function handleGetUserProfile({
 
   let backgroundImageTemporaryUrl;
   if (user.background_image_blob_file_key) {
-    backgroundImageTemporaryUrl = await controller.blobStorageService.getTemporaryImageUrl({
-      blobItemPointer: {
-        fileKey: user.background_image_blob_file_key,
-      },
-    });
-
+    backgroundImageTemporaryUrl =
+      await controller.blobStorageService.getTemporaryImageUrl({
+        blobItemPointer: {
+          fileKey: user.background_image_blob_file_key,
+        },
+      });
   }
 
   let profilePictureTemporaryUrl;
   if (user.profile_picture_blob_file_key) {
-    profilePictureTemporaryUrl = await controller.blobStorageService.getTemporaryImageUrl({
-      blobItemPointer: {
-        fileKey: user.profile_picture_blob_file_key,
+    profilePictureTemporaryUrl = await controller.blobStorageService.getTemporaryImageUrl(
+      {
+        blobItemPointer: {
+          fileKey: user.profile_picture_blob_file_key,
+        },
       },
-    });
+    );
   }
-
 
   const clientCanViewContent = await canUserViewUserContent({
     clientUserId,
