@@ -23,8 +23,11 @@ export interface SuccessfulGetUserProfileResponse {
   bio?: string;
   website?: string;
 
+  backgroundImageTemporaryUrl?: string;
+  profilePictureTemporaryUrl?: string;
+
   // Is this private to user
-  canViewContent: boolean;
+  clientCanViewContent: boolean;
 }
 
 export enum DeniedGetUserProfileResponseReason {
@@ -74,7 +77,27 @@ export async function handleGetUserProfile({
     return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
   }
 
-  const canViewContent = await canUserViewUserContent({
+  let backgroundImageTemporaryUrl;
+  if (user.background_image_blob_file_key) {
+    backgroundImageTemporaryUrl = await controller.blobStorageService.getTemporaryImageUrl({
+      blobItemPointer: {
+        fileKey: user.background_image_blob_file_key,
+      },
+    });
+
+  }
+
+  let profilePictureTemporaryUrl;
+  if (user.profile_picture_blob_file_key) {
+    profilePictureTemporaryUrl = await controller.blobStorageService.getTemporaryImageUrl({
+      blobItemPointer: {
+        fileKey: user.profile_picture_blob_file_key,
+      },
+    });
+  }
+
+
+  const clientCanViewContent = await canUserViewUserContent({
     clientUserId,
     targetUser: user,
     databaseService: controller.databaseService,
@@ -96,7 +119,7 @@ export async function handleGetUserProfile({
 
   return {
     success: {
-      canViewContent,
+      clientCanViewContent,
       id: user.id,
       username: user.username,
       followers: {
@@ -111,6 +134,9 @@ export async function handleGetUserProfile({
       },
       bio: user.short_bio,
       website: user.user_website,
+
+      backgroundImageTemporaryUrl,
+      profilePictureTemporaryUrl,
     },
   };
 }
