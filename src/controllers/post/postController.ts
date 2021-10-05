@@ -30,6 +30,7 @@ export class PostController extends Controller {
   public async createPost(
     @Request() request: express.Request,
     @FormField() caption: string,
+    @FormField() hashtags: string[],
     @FormField() authorUserId: string,
     @FormField() title: string,
     @FormField() price: number,
@@ -52,6 +53,7 @@ export class PostController extends Controller {
         indexesOfUploadedImages,
         indexesOfUploadedVideos,
         caption,
+        hashtags,
         title,
         price,
         scheduledPublicationTimestamp,

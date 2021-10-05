@@ -35,6 +35,7 @@ interface HandlerRequestBody {
   indexesOfUploadedVideos?: number[];
 
   caption: string;
+  hashtags: string[];
   expirationTimestamp?: number;
   authorUserId: string;
 
