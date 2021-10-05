@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
-import { Box, Flex } from "../Layout";
 import { styled } from "#/styling";
-import { Bell, Home, Mail, MathPlus } from "../Icons";
-import { Drawer } from "../Drawer";
-import { NavigationDrawer } from "./NavigationDrawer";
 import { Avatar } from "../Avatar";
+import { Drawer } from "../Drawer";
+import { Bell, Home, Mail, MathPlus } from "../Icons";
+import { Box, Flex } from "../Layout";
+import { NavigationDrawer } from "./NavigationDrawer";
+import { UploadLink } from "./shared";
 
 export const Footer = () => {
   return (
@@ -13,15 +14,15 @@ export const Footer = () => {
       <IconLink href="/">
         <Home />
       </IconLink>
-      <IconLink href="/">
+      <IconLink href="/notifications">
         <Bell />
       </IconLink>
       <Link href="/add-content" passHref>
-        <Upload>
+        <UploadLink>
           <MathPlus />
-        </Upload>
+        </UploadLink>
       </Link>
-      <IconLink href="/">
+      <IconLink href="/messages">
         <Mail />
       </IconLink>
       <Drawer
@@ -44,17 +45,6 @@ const Wrapper = styled(Flex, {
   borderTopWidth: "$1",
   borderTopColor: "$border",
   "> *": { lineHeight: 0 },
-});
-
-const Upload = styled("a", {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  color: "$accentText",
-  borderRadius: "$5",
-  px: "$5",
-  py: "$3",
-  background: "linear-gradient(202.17deg, $primary 8.58%, #C9B6DB 91.42%)",
 });
 
 const IconLink = ({ children, href }: PropsWithChildren<{ href: string }>) => {

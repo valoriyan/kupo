@@ -1,6 +1,6 @@
 import { ComponentProps, Key, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { styled, usePrefersMotion } from "#/styling";
+import { CSS, styled, usePrefersMotion } from "#/styling";
 
 export type Transition = Pick<
   ComponentProps<typeof motion.div>,
@@ -11,6 +11,7 @@ export interface TransitionAreaProps {
   transitionKey: Key;
   animation: Transition;
   children: ReactNode;
+  css?: CSS;
 }
 
 export const TransitionArea = (props: TransitionAreaProps) => {
@@ -18,7 +19,7 @@ export const TransitionArea = (props: TransitionAreaProps) => {
   const transitionAnimation = !prefersMotion ? noAnimation : props.animation;
 
   return (
-    <ContentArea>
+    <ContentArea css={props.css as Record<string, string>}>
       <AnimatePresence initial={false}>
         <TransitionWrapper
           key={props.transitionKey}

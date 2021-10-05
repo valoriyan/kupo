@@ -1,60 +1,46 @@
-import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { formatStat } from "#/utils/formatStat";
-import { Avatar } from "../Avatar";
-import { Close, LogOut } from "../Icons";
-import { Flex } from "../Layout";
-import { LoadingArea } from "../LoadingArea";
-import { headingStyles, Subtext } from "../Typography";
+import { Bookmark, Box, Close, Girl, List, LogOut, Options, Support } from "../Icons";
+import { Flex, Stack } from "../Layout";
+import { NavItem, NavLink } from "./shared";
+import { UserInfo } from "./UserInfo";
 
 export interface NavigationDrawerProps {
   hide: () => void;
 }
 
 export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
-  const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
-
   return (
     <Wrapper>
-      <UserInfo>
-        <Avatar alt="User Avatar" />
-        {isLoading ? (
-          <UserStatsPlaceholder>
-            <LoadingArea size="md" />
-          </UserStatsPlaceholder>
-        ) : (
-          <Flex css={{ gap: "$2", flexDirection: "column" }}>
-            <Link href="/profile" passHref>
-              <a onClick={hide}>@{data?.success?.username}</a>
-            </Link>
-            <Flex css={{ flexDirection: "column" }}>
-              <UserStat>{formatStat(data?.success?.followers.count)} followers</UserStat>
-              <UserStat>
-                {formatStat(data?.success?.subscribers.count)} subscribers
-              </UserStat>
-              <UserStat>{formatStat(data?.success?.follows.count)} following</UserStat>
-            </Flex>
-          </Flex>
-        )}
+      <UserInfoWrapper>
+        <UserInfo />
         <Flex as="button" onClick={hide}>
           <Close />
         </Flex>
-      </UserInfo>
-      <Flex css={{ flexDirection: "column", px: "$8", py: "$7" }}>
-        <NavItem
-          as="button"
-          css={{ color: "$primary" }}
-          onClick={() => {
-            hide();
-            logout();
-          }}
-        >
-          <LogOut />
-          <div>Log Out</div>
-        </NavItem>
-      </Flex>
+      </UserInfoWrapper>
+      <Stack css={{ gap: "$8", px: "$7", py: "$7" }}>
+        <Stack css={{ gap: "$5" }}>
+          <NavLink href="/profile" Icon={Girl} label="My Profile" onClick={hide} />
+          <NavLink href="/lists" Icon={List} label="My Lists" onClick={hide} />
+          <NavLink href="/saved" Icon={Bookmark} label="Saved Posts" onClick={hide} />
+          <NavLink href="/purchases" Icon={Box} label="Purchases" onClick={hide} />
+          <NavLink href="/settings" Icon={Options} label="Settings" onClick={hide} />
+        </Stack>
+        <Stack css={{ gap: "$5" }}>
+          <NavLink href="/support" Icon={Support} label="Support" onClick={hide} />
+          <NavItem
+            as="button"
+            css={{ color: "$link" }}
+            onClick={() => {
+              hide();
+              logout();
+            }}
+          >
+            <LogOut />
+            <div>Log Out</div>
+          </NavItem>
+        </Stack>
+      </Stack>
     </Wrapper>
   );
 };
@@ -65,7 +51,7 @@ const Wrapper = styled("div", {
   flexDirection: "column",
 });
 
-const UserInfo = styled("div", {
+const UserInfoWrapper = styled("div", {
   display: "grid",
   gridTemplateColumns: "auto auto auto",
   alignItems: "start",
@@ -75,14 +61,4 @@ const UserInfo = styled("div", {
   borderBottomColor: "$text",
   borderBottomWidth: "1px",
   "> *:first-child": { alignSelf: "center" },
-});
-
-const UserStatsPlaceholder = styled("div", { alignSelf: "center", width: "$10" });
-
-const UserStat = styled(Subtext, { whiteSace: "nowrap" });
-
-const NavItem = styled("a", headingStyles, {
-  display: "flex",
-  alignItems: "center",
-  gap: "$4",
 });
