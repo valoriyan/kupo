@@ -9,7 +9,11 @@ import {
   handleCreateShopItem,
   SuccessfulShopItemCreationResponse,
 } from "./handleCreateShopItem";
-import { FailedToUpdateShopItemResponse, handleUpdateShopItem, SuccessfulShopItemUpdateResponse } from "./handleUpdateShopItem";
+import {
+  FailedToUpdateShopItemResponse,
+  handleUpdateShopItem,
+  SuccessfulShopItemUpdateResponse,
+} from "./handleUpdateShopItem";
 
 @injectable()
 @Route("shopitem")
@@ -66,10 +70,7 @@ export class ShopItemController extends Controller {
     @FormField() collaboratorUserIds?: string[],
     @UploadedFiles() mediaFiles?: Express.Multer.File[],
   ): Promise<
-    SecuredHTTPResponse<
-      FailedToUpdateShopItemResponse,
-      SuccessfulShopItemUpdateResponse
-    >
+    SecuredHTTPResponse<FailedToUpdateShopItemResponse, SuccessfulShopItemUpdateResponse>
   > {
     return await handleUpdateShopItem({
       controller: this,
@@ -86,5 +87,4 @@ export class ShopItemController extends Controller {
       },
     });
   }
-
 }

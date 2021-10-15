@@ -1,5 +1,5 @@
 import { Controller, FormField, Post, Route, Request, UploadedFiles, Body } from "tsoa";
-import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
@@ -15,6 +15,11 @@ import {
   handleGetPageOfPostsPagination,
   SuccessfulGetPageOfPostsPaginationResponse,
 } from "./pagination/handleGetPageOfPostsPagination";
+import {
+  FailedToUpdatePostResponse,
+  handleUpdatePost,
+  SuccessfulPostUpdateResponse,
+} from "./handleUpdatePost";
 
 @injectable()
 @Route("post")
@@ -40,7 +45,9 @@ export class PostController extends Controller {
     @FormField() indexesOfUploadedVideos: number[],
     @UploadedFiles() images: Express.Multer.File[],
     @UploadedFiles() videos: Express.Multer.File[],
-  ): Promise<HTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
+  ): Promise<
+    SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
+  > {
     return await handleCreatePost({
       controller: this,
       request,
@@ -50,6 +57,28 @@ export class PostController extends Controller {
         videos,
         indexesOfUploadedImages,
         indexesOfUploadedVideos,
+        caption,
+        hashtags,
+        scheduledPublicationTimestamp,
+      },
+    });
+  }
+
+  @Post("update")
+  public async updatePost(
+    @Request() request: express.Request,
+    @FormField() caption?: string,
+    @FormField() hashtags?: string[],
+    @FormField() scheduledPublicationTimestamp?: number,
+    @UploadedFiles() mediaFiles?: Express.Multer.File[],
+  ): Promise<
+    SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
+  > {
+    return await handleUpdatePost({
+      controller: this,
+      request,
+      requestBody: {
+        mediaFiles,
         caption,
         hashtags,
         scheduledPublicationTimestamp,
