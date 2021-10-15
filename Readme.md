@@ -2,8 +2,6 @@ To Do
 - 
 
 
-- store hashtags for posts
-- slit shop items and post items
 - handle post schedules
 
 - endpoint for accessing post scheduled
@@ -18,12 +16,6 @@ To Do
 
 - add expiration to create post
 
-
-- search
-    - Request:
-        - usernames
-    - Response:
-        - users
 
 
 
@@ -40,5 +32,7 @@ To Do
 - implement handleUpdatePost
 - implement handleDeletePost
 - implement handleDeleteShopItem
-- implement handleSearchUserProfilesByUsername
 
+
+- Determine response fields for handleSearchUserProfilesByUsername
+- implement handleSearchUserProfilesByUsername

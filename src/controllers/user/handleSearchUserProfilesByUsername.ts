@@ -1,5 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { UserProfileSearchResponseItem } from "./models";
 import { UserPageController } from "./userPageController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -8,7 +9,9 @@ export interface SearchUserProfilesByUsernameParams {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulSearchUserProfilesByUsernameResponse {}
+export interface SuccessfulSearchUserProfilesByUsernameResponse {
+  results: UserProfileSearchResponseItem[];
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FailedToSearchUserProfilesByUsernameResponse {}
