@@ -9,6 +9,7 @@ import {
   handleCreateShopItem,
   SuccessfulShopItemCreationResponse,
 } from "./handleCreateShopItem";
+import { FailedToUpdateShopItemResponse, handleUpdateShopItem, SuccessfulShopItemUpdateResponse } from "./handleUpdateShopItem";
 
 @injectable()
 @Route("shopitem")
@@ -52,4 +53,38 @@ export class ShopItemController extends Controller {
       },
     });
   }
+
+  @Post("update")
+  public async updateShopItem(
+    @Request() request: express.Request,
+    @FormField() caption?: string,
+    @FormField() hashtags?: string[],
+    @FormField() title?: string,
+    @FormField() price?: number,
+    @FormField() scheduledPublicationTimestamp?: number,
+    @FormField() expirationTimestamp?: number,
+    @FormField() collaboratorUserIds?: string[],
+    @UploadedFiles() mediaFiles?: Express.Multer.File[],
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToUpdateShopItemResponse,
+      SuccessfulShopItemUpdateResponse
+    >
+  > {
+    return await handleUpdateShopItem({
+      controller: this,
+      request,
+      requestBody: {
+        caption,
+        hashtags,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+        collaboratorUserIds,
+        mediaFiles,
+      },
+    });
+  }
+
 }

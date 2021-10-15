@@ -31,3 +31,5 @@ To Do
 
 - add post hash tags db service
 - add post hashtags to handleGetPageOfPostsPagination
+
+- implement create shop item
