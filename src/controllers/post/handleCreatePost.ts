@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { HTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -155,7 +155,7 @@ export async function handleCreatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<HTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
+}): Promise<SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
   const { authorUserId, caption, title, price, scheduledPublicationTimestamp, hashtags } =
     requestBody;
 

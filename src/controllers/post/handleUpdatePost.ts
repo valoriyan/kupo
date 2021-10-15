@@ -1,5 +1,5 @@
 import express from "express";
-import { HTTPResponse } from "src/types/httpResponse";
+import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -10,7 +10,7 @@ export interface SuccessfulPostUpdateResponse {}
 
 interface HandlerRequestBody {
   postId: string;
-  
+
   mediaFiles?: Express.Multer.File[];
 
   caption?: string;
@@ -31,7 +31,7 @@ export async function handleUpdatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<HTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>> {
+}): Promise<SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>> {
   console.log("controller", controller);
   console.log("request", request);
   console.log("requestBody", requestBody);

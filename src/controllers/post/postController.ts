@@ -1,4 +1,13 @@
-import { Controller, FormField, Post, Route, Request, UploadedFiles, Body, Delete } from "tsoa";
+import {
+  Controller,
+  FormField,
+  Post,
+  Route,
+  Request,
+  UploadedFiles,
+  Body,
+  Delete,
+} from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
@@ -20,7 +29,11 @@ import {
   handleUpdatePost,
   SuccessfulPostUpdateResponse,
 } from "./handleUpdatePost";
-import { FailedToDeletePostResponse, handleDeletePost, SuccessfulPostDeleteResponse } from "./handleDeletePost";
+import {
+  FailedToDeletePostResponse,
+  handleDeletePost,
+  SuccessfulPostDeletionResponse,
+} from "./handleDeletePost";
 
 @injectable()
 @Route("post")
@@ -111,7 +124,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @FormField() postId: string,
   ): Promise<
-    SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeleteResponse>
+    SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
   > {
     return await handleDeletePost({
       controller: this,
@@ -121,6 +134,4 @@ export class PostController extends Controller {
       },
     });
   }
-
-
 }

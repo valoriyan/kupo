@@ -1,26 +1,26 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
-import { PostController } from "./postController";
+import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToDeletePostResponse {}
+export interface FailedToDeleteShopItemResponse {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulPostDeletionResponse {}
+export interface SuccessfulShopItemDeletionResponse {}
 
 interface HandlerRequestBody {
-  postId: string;
+  shopItemId: string;
 }
 
-export async function handleDeletePost({
+export async function handleDeleteShopItem({
   controller,
   request,
   requestBody,
 }: {
-  controller: PostController;
+  controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>> {
+}): Promise<SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>> {
   console.log("controller", controller);
   console.log("request", request);
   console.log("requestBody", requestBody);

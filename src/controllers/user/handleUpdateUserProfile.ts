@@ -1,5 +1,5 @@
 import express from "express";
-import { HTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { ProfilePrivacySetting } from "./models";
 import { UserPageController } from "./userPageController";
@@ -26,7 +26,7 @@ export async function handleUpdateUserProfile({
     profilePicture?: Express.Multer.File;
   };
 }): Promise<
-  HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
+  SecuredHTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

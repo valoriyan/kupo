@@ -1,5 +1,5 @@
 import express from "express";
-import { HTTPResponse } from "src/types/httpResponse";
+import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -29,7 +29,7 @@ export async function handleCreateShopItem({
   request: express.Request;
   requestBody: HandlerRequestBody;
 }): Promise<
-  HTTPResponse<FailedToCreateShopItemResponse, SuccessfulShopItemCreationResponse>
+  SecuredHTTPResponse<FailedToCreateShopItemResponse, SuccessfulShopItemCreationResponse>
 > {
   console.log("controller", controller);
   console.log("request", request);

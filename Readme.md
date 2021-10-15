@@ -18,8 +18,6 @@ To Do
 
 - add expiration to create post
 
-- deleting post
-
 - deleting shop item
 
 - search
@@ -41,3 +39,5 @@ To Do
 - implement create shop item
 - implement update shop item
 - implement handleUpdatePost
+- implement handleDeletePost
+

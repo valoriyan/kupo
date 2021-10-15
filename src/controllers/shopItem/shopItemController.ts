@@ -1,4 +1,4 @@
-import { Controller, FormField, Post, Route, Request, UploadedFiles } from "tsoa";
+import { Controller, FormField, Post, Route, Request, UploadedFiles, Delete } from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
@@ -14,6 +14,7 @@ import {
   handleUpdateShopItem,
   SuccessfulShopItemUpdateResponse,
 } from "./handleUpdateShopItem";
+import { FailedToDeleteShopItemResponse, handleDeleteShopItem, SuccessfulShopItemDeletionResponse } from "./handleDeleteShopItem";
 
 @injectable()
 @Route("shopitem")
@@ -87,4 +88,21 @@ export class ShopItemController extends Controller {
       },
     });
   }
+
+  @Delete("delete")
+  public async deletePost(
+    @Request() request: express.Request,
+    @FormField() shopItemId: string,
+  ): Promise<
+    SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>
+  > {
+    return await handleDeleteShopItem({
+      controller: this,
+      request,
+      requestBody: {
+        shopItemId,
+      },
+    });
+  }
+
 }
