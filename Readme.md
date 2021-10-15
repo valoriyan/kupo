@@ -1,4 +1,7 @@
 To Do
+- 
+
+
 - store hashtags for posts
 - slit shop items and post items
 - handle post schedules
@@ -15,10 +18,8 @@ To Do
 
 - add expiration to create post
 
-- editing post
 - deleting post
 
-- editing shop item
 - deleting shop item
 
 - search
@@ -29,7 +30,14 @@ To Do
 
 
 
+
+
+
+
+
 - add post hash tags db service
 - add post hashtags to handleGetPageOfPostsPagination
 
 - implement create shop item
+- implement update shop item
+- implement handleUpdatePost

@@ -1,4 +1,4 @@
-import { Controller, FormField, Post, Route, Request, UploadedFiles, Body } from "tsoa";
+import { Controller, FormField, Post, Route, Request, UploadedFiles, Body, Delete } from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
@@ -20,6 +20,7 @@ import {
   handleUpdatePost,
   SuccessfulPostUpdateResponse,
 } from "./handleUpdatePost";
+import { FailedToDeletePostResponse, handleDeletePost, SuccessfulPostDeleteResponse } from "./handleDeletePost";
 
 @injectable()
 @Route("post")
@@ -64,28 +65,6 @@ export class PostController extends Controller {
     });
   }
 
-  @Post("update")
-  public async updatePost(
-    @Request() request: express.Request,
-    @FormField() caption?: string,
-    @FormField() hashtags?: string[],
-    @FormField() scheduledPublicationTimestamp?: number,
-    @UploadedFiles() mediaFiles?: Express.Multer.File[],
-  ): Promise<
-    SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
-  > {
-    return await handleUpdatePost({
-      controller: this,
-      request,
-      requestBody: {
-        mediaFiles,
-        caption,
-        hashtags,
-        scheduledPublicationTimestamp,
-      },
-    });
-  }
-
   @Post("getPageOfPostsPagination")
   public async getPageOfPostsPagination(
     @Request() request: express.Request,
@@ -102,4 +81,46 @@ export class PostController extends Controller {
       requestBody,
     });
   }
+
+  @Post("update")
+  public async updatePost(
+    @Request() request: express.Request,
+    @FormField() postId: string,
+    @FormField() caption?: string,
+    @FormField() hashtags?: string[],
+    @FormField() scheduledPublicationTimestamp?: number,
+    @UploadedFiles() mediaFiles?: Express.Multer.File[],
+  ): Promise<
+    SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
+  > {
+    return await handleUpdatePost({
+      controller: this,
+      request,
+      requestBody: {
+        postId,
+        mediaFiles,
+        caption,
+        hashtags,
+        scheduledPublicationTimestamp,
+      },
+    });
+  }
+
+  @Delete("delete")
+  public async deletePost(
+    @Request() request: express.Request,
+    @FormField() postId: string,
+  ): Promise<
+    SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeleteResponse>
+  > {
+    return await handleDeletePost({
+      controller: this,
+      request,
+      requestBody: {
+        postId,
+      },
+    });
+  }
+
+
 }

@@ -3,27 +3,16 @@ import { HTTPResponse } from "src/types/httpResponse";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToUpdatePostResponse {}
+export interface FailedToDeletePostResponse {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulPostUpdateResponse {}
+export interface SuccessfulPostDeleteResponse {}
 
 interface HandlerRequestBody {
-  postId: string;
-  
-  mediaFiles?: Express.Multer.File[];
-
-  caption?: string;
-  hashtags?: string[];
-  expirationTimestamp?: number;
-
-  title?: string;
-  price?: number;
-
-  scheduledPublicationTimestamp?: number;
+  postId: string;  
 }
 
-export async function handleUpdatePost({
+export async function handleDeletePost({
   controller,
   request,
   requestBody,
@@ -31,7 +20,7 @@ export async function handleUpdatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<HTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>> {
+}): Promise<HTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeleteResponse>> {
   console.log("controller", controller);
   console.log("request", request);
   console.log("requestBody", requestBody);
