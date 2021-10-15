@@ -157,7 +157,7 @@ export async function handleCreatePost({
   request: express.Request;
   requestBody: HandlerRequestBody;
 }): Promise<HTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
-  const { authorUserId, caption, title, price, scheduledPublicationTimestamp } =
+  const { authorUserId, caption, title, price, scheduledPublicationTimestamp, hashtags } =
     requestBody;
 
   const { clientUserId } = await checkAuthorization(controller, request);
@@ -225,9 +225,8 @@ export async function handleCreatePost({
           postId,
           postAuthorUserId: clientUserId,
           caption,
-          title,
-          price,
           scheduledPublicationTimestamp,
+          hashtags,
         },
       },
     };

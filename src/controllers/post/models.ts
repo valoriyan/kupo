@@ -13,15 +13,15 @@ export interface RenderablePostContentElement {
   fileTemporaryUrl: string;
 }
 
-export interface UnrenderablePostWithoutElements {
+export interface UnrenderablePostWithoutElementsOrHashtags {
   postId: string;
   postAuthorUserId: string;
   caption: string;
-  title?: string;
-  price?: number;
   scheduledPublicationTimestamp: number;
+  expirationTimestamp?: number;
 }
 
-export interface RenderablePost extends UnrenderablePostWithoutElements {
+export interface RenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
   contentElements: RenderablePostContentElement[];
+  hashtags: string[];
 }

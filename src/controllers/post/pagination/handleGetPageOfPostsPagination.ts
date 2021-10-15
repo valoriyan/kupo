@@ -2,7 +2,7 @@ import express from "express";
 import {
   RenderablePost,
   RenderablePostContentElement,
-  UnrenderablePostWithoutElements,
+  UnrenderablePostWithoutElementsOrHashtags,
 } from "../models";
 import { PostController } from "../postController";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -83,7 +83,7 @@ export async function handleGetPageOfPostsPagination({
 
   // For simplicity, we are returning posts ordered by timestamp
   // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
-  let filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElements[];
+  let filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[];
   if (!!requestBody.cursor) {
     const decodedCursor = Number(
       Buffer.from(requestBody.cursor, "base64").toString("binary"),
@@ -131,15 +131,9 @@ export async function handleGetPageOfPostsPagination({
         );
 
       return {
+        ...unrenderablePostWithoutElements,
         contentElements: renderablePostContentElements,
-
-        postId: unrenderablePostWithoutElements.postId,
-        postAuthorUserId: unrenderablePostWithoutElements.postAuthorUserId,
-        caption: unrenderablePostWithoutElements.caption,
-        title: unrenderablePostWithoutElements.title,
-        price: unrenderablePostWithoutElements.price,
-        scheduledPublicationTimestamp:
-          unrenderablePostWithoutElements.scheduledPublicationTimestamp,
+        hashtags: [],
       };
     },
   );

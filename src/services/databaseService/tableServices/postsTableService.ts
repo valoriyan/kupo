@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderablePostWithoutElements } from "../../../controllers/post/models";
+import { UnrenderablePostWithoutElementsOrHashtags } from "../../../controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
@@ -78,7 +78,7 @@ export class PostsTableService extends TableService {
     creatorUserId,
   }: {
     creatorUserId: string;
-  }): Promise<UnrenderablePostWithoutElements[]> {
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const queryString = `
         SELECT
           *
