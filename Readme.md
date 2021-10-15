@@ -31,7 +31,3 @@ To Do
 
 - add post hash tags db service
 - add post hashtags to handleGetPageOfPostsPagination
-
-
-Maybe To Do:
-- remove title and price from posts

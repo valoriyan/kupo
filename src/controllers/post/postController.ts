@@ -32,8 +32,6 @@ export class PostController extends Controller {
     @FormField() caption: string,
     @FormField() hashtags: string[],
     @FormField() authorUserId: string,
-    @FormField() title: string,
-    @FormField() price: number,
     // @FormField() collaboratorUsernames: string[],
     @FormField() scheduledPublicationTimestamp: number,
     // Within all the files uploaded, what is the index of each uploaded image
@@ -54,8 +52,6 @@ export class PostController extends Controller {
         indexesOfUploadedVideos,
         caption,
         hashtags,
-        title,
-        price,
         scheduledPublicationTimestamp,
       },
     });
