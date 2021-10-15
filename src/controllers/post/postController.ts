@@ -34,6 +34,12 @@ import {
   handleDeletePost,
   SuccessfulPostDeletionResponse,
 } from "./handleDeletePost";
+import {
+  FailedToGetPostsScheduledByUserResponse,
+  GetPostsScheduledByUserParams,
+  handleGetPostsScheduledByUser,
+  SuccessfulGetPostsScheduledByUserResponse,
+} from "./handleGetPostsScheduledByUser";
 
 @injectable()
 @Route("post")
@@ -89,6 +95,23 @@ export class PostController extends Controller {
     >
   > {
     return await handleGetPageOfPostsPagination({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPostsScheduledByUser")
+  public async getPostsScheduledByUser(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPostsScheduledByUserParams,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetPostsScheduledByUserResponse,
+      SuccessfulGetPostsScheduledByUserResponse
+    >
+  > {
+    return await handleGetPostsScheduledByUser({
       controller: this,
       request,
       requestBody,

@@ -3,12 +3,10 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { UserProfileSearchResponseItem } from "./models";
 import { UserPageController } from "./userPageController";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchUserProfilesByUsernameParams {
   searchString: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulSearchUserProfilesByUsernameResponse {
   results: UserProfileSearchResponseItem[];
 }
