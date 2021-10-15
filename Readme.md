@@ -40,4 +40,5 @@ To Do
 - implement handleUpdatePost
 - implement handleDeletePost
 - implement handleDeleteShopItem
+- implement handleSearchUserProfilesByUsername
 

@@ -2,18 +2,16 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { UserPageController } from "./userPageController";
 
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchUserProfilesByUsernameParams {
+  searchString: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
-}
+export interface SuccessfulSearchUserProfilesByUsernameResponse {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FailedToSearchUserProfilesByUsernameResponse {}
-
 
 export async function handleSearchUserProfilesByUsername({
   controller,
@@ -24,11 +22,14 @@ export async function handleSearchUserProfilesByUsername({
   request: express.Request;
   requestBody: SearchUserProfilesByUsernameParams;
 }): Promise<
-  SecuredHTTPResponse<FailedToSearchUserProfilesByUsernameResponse, SearchUserProfilesByUsernameParams>
+  SecuredHTTPResponse<
+    FailedToSearchUserProfilesByUsernameResponse,
+    SuccessfulSearchUserProfilesByUsernameResponse
+  >
 > {
-    console.log("controller", controller);
-    console.log("request", request);
-    console.log("requestBody", requestBody);
+  console.log("controller", controller);
+  console.log("request", request);
+  console.log("requestBody", requestBody);
 
-    return {};
+  return {};
 }
