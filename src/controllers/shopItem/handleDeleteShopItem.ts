@@ -20,7 +20,9 @@ export async function handleDeleteShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>> {
+}): Promise<
+  SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>
+> {
   console.log("controller", controller);
   console.log("request", request);
   console.log("requestBody", requestBody);

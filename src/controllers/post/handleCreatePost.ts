@@ -155,7 +155,9 @@ export async function handleCreatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>> {
+}): Promise<
+  SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
+> {
   const { authorUserId, caption, title, price, scheduledPublicationTimestamp, hashtags } =
     requestBody;
 

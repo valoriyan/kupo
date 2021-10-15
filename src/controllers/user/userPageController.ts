@@ -16,6 +16,7 @@ import {
   SuccessfulUpdateToUserProfileResponse,
 } from "./handleUpdateUserProfile";
 import { ProfilePrivacySetting } from "./models";
+import { FailedToSearchUserProfilesByUsernameResponse, handleSearchUserProfilesByUsername, SearchUserProfilesByUsernameParams } from "./handleSearchUserProfilesByUsername";
 
 @injectable()
 @Route("user")
@@ -66,4 +67,19 @@ export class UserPageController extends Controller {
       requestBody,
     });
   }
+
+  @Post("SearchUserProfilesByUsername")
+  public async searchUserProfilesByUsername(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUserProfileParams,
+  ): Promise<
+  SecuredHTTPResponse<FailedToSearchUserProfilesByUsernameResponse, SearchUserProfilesByUsernameParams>
+  > {
+    return await handleSearchUserProfilesByUsername({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
 }

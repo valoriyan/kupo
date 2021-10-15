@@ -26,7 +26,10 @@ export async function handleUpdateUserProfile({
     profilePicture?: Express.Multer.File;
   };
 }): Promise<
-  SecuredHTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
+  SecuredHTTPResponse<
+    FailedToUpdateUserProfileResponse,
+    SuccessfulUpdateToUserProfileResponse
+  >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

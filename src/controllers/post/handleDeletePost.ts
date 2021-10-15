@@ -20,7 +20,9 @@ export async function handleDeletePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>> {
+}): Promise<
+  SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
+> {
   console.log("controller", controller);
   console.log("request", request);
   console.log("requestBody", requestBody);

@@ -14,7 +14,11 @@ import {
   handleUpdateShopItem,
   SuccessfulShopItemUpdateResponse,
 } from "./handleUpdateShopItem";
-import { FailedToDeleteShopItemResponse, handleDeleteShopItem, SuccessfulShopItemDeletionResponse } from "./handleDeleteShopItem";
+import {
+  FailedToDeleteShopItemResponse,
+  handleDeleteShopItem,
+  SuccessfulShopItemDeletionResponse,
+} from "./handleDeleteShopItem";
 
 @injectable()
 @Route("shopitem")
@@ -94,7 +98,10 @@ export class ShopItemController extends Controller {
     @Request() request: express.Request,
     @FormField() shopItemId: string,
   ): Promise<
-    SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>
+    SecuredHTTPResponse<
+      FailedToDeleteShopItemResponse,
+      SuccessfulShopItemDeletionResponse
+    >
   > {
     return await handleDeleteShopItem({
       controller: this,
@@ -104,5 +111,4 @@ export class ShopItemController extends Controller {
       },
     });
   }
-
 }

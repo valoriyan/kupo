@@ -31,7 +31,9 @@ export async function handleUpdatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>> {
+}): Promise<
+  SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
+> {
   console.log("controller", controller);
   console.log("request", request);
   console.log("requestBody", requestBody);
