@@ -90,4 +90,18 @@ export class PostsTableService extends TableService {
       }),
     );
   }
+
+  public async deletePost({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<void> {
+    const queryString = `
+      DELETE FROM ${this.tableName}
+      WHERE post_id = '${postId}'
+      ;
+    `;
+
+    await this.datastorePool.query(queryString);
+  }
 }
