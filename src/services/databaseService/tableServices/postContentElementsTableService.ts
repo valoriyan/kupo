@@ -112,4 +112,20 @@ export class PostContentElementsTableService extends TableService {
         blobFileKey: dbPostContentElement.blob_file_key,
       }));
   }
+
+  public async deleteContentElementsByPostId({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<void> {
+    const queryString = `
+      DELETE FROM ${this.tableName}
+      WHERE
+        post_id = '${postId}'
+      ;
+    `;
+
+    await this.datastorePool.query(queryString);
+  }
+  
 }
