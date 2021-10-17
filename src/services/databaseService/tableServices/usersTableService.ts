@@ -3,7 +3,7 @@ import { ProfilePrivacySetting } from "../../../controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
-export interface DBUser {
+interface DBUser {
   id: string;
   email: string;
   username: string;

@@ -29,9 +29,9 @@ export async function handleGetPostsScheduledByUser({
     SuccessfulGetPostsScheduledByUserResponse
   >
 > {
-    console.log("controller", controller);
-    console.log("request", request);
-    console.log("requestBody", requestBody);  
+  console.log("controller", controller);
+  console.log("request", request);
+  console.log("requestBody", requestBody);
 
   return {};
 }

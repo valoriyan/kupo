@@ -38,9 +38,6 @@ interface HandlerRequestBody {
   expirationTimestamp?: number;
   authorUserId: string;
 
-  title?: string;
-  price?: number;
-
   scheduledPublicationTimestamp: number;
 }
 
@@ -158,7 +155,7 @@ export async function handleCreatePost({
 }): Promise<
   SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
 > {
-  const { authorUserId, caption, title, price, scheduledPublicationTimestamp, hashtags } =
+  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags } =
     requestBody;
 
   const { clientUserId } = await checkAuthorization(controller, request);
@@ -176,8 +173,6 @@ export async function handleCreatePost({
       postId,
       authorUserId: clientUserId,
       caption,
-      title,
-      price,
       scheduledPublicationTimestamp,
     });
 

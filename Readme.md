@@ -36,3 +36,5 @@ To Do
 
 - Determine response fields for handleSearchUserProfilesByUsername
 - implement handleSearchUserProfilesByUsername
+- implement handleGetPostsScheduledByUser
+

@@ -7,8 +7,6 @@ interface DBPost {
   post_id: string;
   author_user_id: string;
   caption: string;
-  title?: string;
-  price?: number;
   scheduled_publication_timestamp: number;
 }
 
@@ -26,8 +24,6 @@ export class PostsTableService extends TableService {
         post_id VARCHAR(64) UNIQUE NOT NULL,
         author_user_id VARCHAR(64) UNIQUE NOT NULL,
         caption VARCHAR(256) NOT NULL,
-        title VARCHAR(128),
-        price DECIMAL(12,2),
         scheduled_publication_timestamp BIGINT NOT NULL
       )
       ;
@@ -40,15 +36,11 @@ export class PostsTableService extends TableService {
     postId,
     authorUserId,
     caption,
-    title,
-    price,
     scheduledPublicationTimestamp,
   }: {
     postId: string;
     authorUserId: string;
     caption: string;
-    title?: string;
-    price?: number;
     scheduledPublicationTimestamp: number;
   }): Promise<void> {
     const queryString = `
@@ -56,16 +48,12 @@ export class PostsTableService extends TableService {
             post_id,
             author_user_id,
             caption,
-            title,
-            price,
             scheduled_publication_timestamp
         )
         VALUES (
             '${postId}',
             '${authorUserId}',
             '${caption}',
-            '${title}',
-            '${price}',
             '${scheduledPublicationTimestamp}'
         )
         ;
@@ -93,12 +81,10 @@ export class PostsTableService extends TableService {
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
-    return response.rows.map((dbPost) => ({
+    return response.rows.map((dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
       postId: dbPost.post_id,
       postAuthorUserId: dbPost.author_user_id,
       caption: dbPost.caption,
-      title: dbPost.title,
-      price: dbPost.price,
       scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
     }));
   }

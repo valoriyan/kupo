@@ -1,6 +1,5 @@
-import { ProfilePrivacySetting } from "../../../controllers/user/models";
+import { ProfilePrivacySetting, User } from "../../../controllers/user/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { DBUser } from "../../../services/databaseService/tableServices/usersTableService";
 
 export async function canUserViewUserContent({
   clientUserId,
@@ -8,7 +7,7 @@ export async function canUserViewUserContent({
   databaseService,
 }: {
   clientUserId: string;
-  targetUser: DBUser;
+  targetUser: User;
   databaseService: DatabaseService;
 }): Promise<boolean> {
   if (targetUser.profile_privacy_setting === ProfilePrivacySetting.Public) {

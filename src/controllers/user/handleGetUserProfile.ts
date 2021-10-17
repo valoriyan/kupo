@@ -1,8 +1,8 @@
 import express from "express";
-import { DBUser } from "../../services/databaseService/tableServices/usersTableService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent";
+import { User } from "./models";
 import { UserPageController } from "./userPageController";
 
 export interface GetUserProfileParams {
@@ -54,7 +54,7 @@ export async function handleGetUserProfile({
   // IF Private hide posts and shop
   const { clientUserId, error } = await checkAuthorization(controller, request);
 
-  let user: DBUser | undefined;
+  let user: User | undefined;
   if (requestBody.username) {
     // Fetch user profile by given username
     user =

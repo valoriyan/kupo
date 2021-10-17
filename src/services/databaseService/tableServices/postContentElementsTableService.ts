@@ -6,7 +6,7 @@ import {
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
-export interface DBPostContentElement {
+interface DBPostContentElement {
   post_id: string;
   post_content_element_index: number;
   post_content_element_type: PostElementFileType;
