@@ -1,17 +1,17 @@
-import { ComponentProps, Key, ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { Key, ReactNode } from "react";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { CSS, styled, usePrefersMotion } from "#/styling";
 
-export type Transition = Pick<
-  ComponentProps<typeof motion.div>,
-  "initial" | "animate" | "exit"
->;
+export type Transition = Record<"initial" | "animate" | "exit", Variants[string]>;
 
 export interface TransitionAreaProps {
   transitionKey: Key;
   animation: Transition;
   children: ReactNode;
   css?: CSS;
+  // custom is defined as being any by framer-motion
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  custom?: any;
 }
 
 export const TransitionArea = (props: TransitionAreaProps) => {
@@ -20,11 +20,15 @@ export const TransitionArea = (props: TransitionAreaProps) => {
 
   return (
     <ContentArea css={props.css as Record<string, string>}>
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} custom={props.custom}>
         <TransitionWrapper
           key={props.transitionKey}
           transition={{ duration: 0.4 }}
-          {...transitionAnimation}
+          custom={props.custom}
+          variants={transitionAnimation}
+          initial="initial"
+          animate="animate"
+          exit="exit"
         >
           <CurrentContent>{props.children}</CurrentContent>
         </TransitionWrapper>

@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Button } from "#/components/Button";
 import { AddR } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
@@ -6,9 +5,10 @@ import { styled } from "#/styling";
 import { MediaUpload } from "./MediaUpload";
 import { HashTags } from "./HashTags";
 import { useFormState } from "../FormContext";
+import { AdditionalScreen } from "..";
 
 export interface NewPostProps {
-  setAdditionalScreen: (screen: ReactNode) => void;
+  setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
 }
 
 export const NewPost = (props: NewPostProps) => {

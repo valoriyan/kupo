@@ -26,12 +26,8 @@ export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
           <NoAuthSidePanel />
         )}
       </SidePanelWrapper>
-      <TransitionArea
-        transitionKey={router.route}
-        animation={pageTransition}
-        css={{ "@md": { maxWidth: "600px" } }}
-      >
-        {children}
+      <TransitionArea transitionKey={router.route} animation={pageTransition}>
+        <Box css={{ "@md": { maxWidth: "600px" }, height: "100%" }}>{children}</Box>
       </TransitionArea>
       <Box css={{ zIndex: 1, "@md": { display: "none" } }}>
         {isAuthenticated === "unset" ? null : isAuthenticated ? (

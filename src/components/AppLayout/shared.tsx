@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { PropsWithChildren } from "react";
 import { styled } from "#/styling";
 import { Grid } from "../Layout";
-import { headingStyles } from "../Typography";
+import { headingStyles, mainTitleStyles } from "../Typography";
 
 export interface NavLinkProps {
   href: string;
@@ -50,7 +50,7 @@ export const SidePanelWrapper = ({ children }: PropsWithChildren<unknown>) => {
   );
 };
 
-export const UploadLink = styled("a", {
+export const UploadLink = styled("a", mainTitleStyles, {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",

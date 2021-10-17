@@ -5,12 +5,15 @@ import path from "path";
 import { createDirectory, emptyDirectory, formatCode, kebabToPascalCase } from "./utils";
 
 const ICONS_TO_GENERATE = [
+  "add",
   "add-r",
   "bell",
   "bookmark",
   "box",
   "calendar",
   "chevron-down-r",
+  "chevron-left",
+  "chevron-right",
   "chevron-up-r",
   "close",
   "duplicate",
@@ -23,6 +26,7 @@ const ICONS_TO_GENERATE = [
   "menu",
   "math-plus",
   "play-button-o",
+  "remove",
   "share",
   "support",
   "tag",

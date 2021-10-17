@@ -19,6 +19,8 @@ const themedStitches = createStitches({
       primary: "#5D5FEF",
       primaryTranslucent: "#5D5FEF30",
 
+      secondary: "#EF5DA8",
+
       /**
        * The background colors include colors for the backgrounds of app content.
        *
@@ -42,9 +44,9 @@ const themedStitches = createStitches({
 
       border: "#cacaca", // For borders around elements
 
-      success: "#00ff00", // For success messages
-      warning: "#ffff00", // For warning messages
-      failure: "#ff0000", // For error messages
+      success: "#5FEF5D", // For success messages
+      warning: "#EFED5D", // For warning messages
+      failure: "#EF5D5F", // For error messages
       disabled: "#b0b0b0", // For disabled elements
 
       transparent: "rgba(0,0,0,0)",
@@ -242,6 +244,8 @@ export const darkTheme = themedStitches.createTheme("dark", {
     primary: "#6D6FF0",
     primaryTranslucent: "#6D6FF030",
 
+    secondary: "#EF5DA8",
+
     background1: "#191919",
     background2: "#333333",
     background3: "#4c4c4c",
@@ -259,9 +263,9 @@ export const darkTheme = themedStitches.createTheme("dark", {
 
     border: "#858585",
 
-    success: "#00ff00",
-    warning: "#ffff00",
-    failure: "#ff0000",
+    success: "#5FEF5D",
+    warning: "#EFED5D",
+    failure: "#EF5D5F",
     disabled: "#a0a0a0",
 
     transparent: "rgba(0,0,0,0)",

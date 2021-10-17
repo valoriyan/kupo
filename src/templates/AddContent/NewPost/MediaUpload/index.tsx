@@ -1,12 +1,13 @@
-import { ChangeEvent, ReactNode } from "react";
+import { ChangeEvent } from "react";
 import { HiddenInput } from "#/components/HiddenInput";
 import { Duplicate } from "#/components/Icons";
 import { styled } from "#/styling";
 import { PreviewImage, MediaPreview } from "../../MediaPreview";
 import { useFormState } from "../../FormContext";
+import { AdditionalScreen } from "../..";
 
 export interface MediaUploadProps {
-  setAdditionalScreen: (screen: ReactNode) => void;
+  setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
 }
 
 export const MediaUpload = (props: MediaUploadProps) => {
@@ -32,7 +33,10 @@ export const MediaUpload = (props: MediaUploadProps) => {
   );
 
   const onImageClick = (id?: string) => {
-    props.setAdditionalScreen(<MediaPreview initialId={id} />);
+    props.setAdditionalScreen({
+      node: <MediaPreview initialId={id} />,
+      heading: "New Post",
+    });
   };
 
   const additionalImagesCount = mediaFiles.length - 3;

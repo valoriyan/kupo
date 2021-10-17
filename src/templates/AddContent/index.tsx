@@ -10,6 +10,9 @@ import { NewPost } from "./NewPost";
 import { NewShopItem } from "./NewShopItem";
 import { MainTitle } from "#/components/Typography";
 import { assertUnreachable } from "#/utils/assertUnreachable";
+import { PostSchedule } from "./PostSchedule";
+import { SHORT_MONTHS, useCalendarState } from "#/components/Calendar";
+import { ScheduleByDay } from "./ScheduleByDay";
 
 export enum AddContentScreen {
   Initial = "Initial",
@@ -25,9 +28,27 @@ const screenToHeading = {
   [AddContentScreen.PostSchedule]: "View Post Schedule",
 };
 
+export interface AdditionalScreen {
+  node: ReactNode;
+  heading: string;
+}
+
 export const AddContent = () => {
   const [currentScreen, setCurrentScreen] = useState(AddContentScreen.Initial);
-  const [additionalScreen, setAdditionalScreen] = useState<ReactNode>(null);
+  const [additionalScreen, setAdditionalScreen] = useState<AdditionalScreen | null>(null);
+
+  const calendarState = useCalendarState({
+    initialSelectedDate: null,
+    shouldNotSelectDate: true,
+    onDateSelection: (newDate) => {
+      setAdditionalScreen({
+        node: <ScheduleByDay date={newDate} />,
+        heading: `Post Schedule > ${
+          SHORT_MONTHS[newDate.getMonth()]
+        } ${newDate.getDate()}, ${newDate.getFullYear()}`,
+      });
+    },
+  });
 
   const lastScreen = useRef<string>();
   useEffect(() => {
@@ -46,7 +67,7 @@ export const AddContent = () => {
       bodyNode = <NewShopItem />;
       break;
     case AddContentScreen.PostSchedule:
-      bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
+      bodyNode = <PostSchedule calendarState={calendarState} />;
       break;
     default:
       assertUnreachable(currentScreen, "Unknown screen received");
@@ -57,13 +78,15 @@ export const AddContent = () => {
       <Wrapper>
         <Header>
           {additionalScreen ? (
-            <CloseButton onClick={() => setAdditionalScreen(null)}>Done</CloseButton>
+            <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
           ) : (
             <CloseButton onClick={() => Router.back()}>
               <Close />
             </CloseButton>
           )}
-          <MainTitle as="h1">{screenToHeading[currentScreen]}</MainTitle>
+          <MainTitle as="h1">
+            {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
+          </MainTitle>
         </Header>
         <TransitionArea
           transitionKey={additionalScreen ? "additionalScreen" : currentScreen}
@@ -75,7 +98,7 @@ export const AddContent = () => {
               : rightToLeft
           }
         >
-          {additionalScreen || bodyNode}
+          {additionalScreen?.node || bodyNode}
         </TransitionArea>
       </Wrapper>
     </FormStateProvider>
