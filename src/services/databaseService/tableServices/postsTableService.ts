@@ -81,11 +81,13 @@ export class PostsTableService extends TableService {
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
-    return response.rows.map((dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
-      postId: dbPost.post_id,
-      postAuthorUserId: dbPost.author_user_id,
-      caption: dbPost.caption,
-      scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
-    }));
+    return response.rows.map(
+      (dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
+        postId: dbPost.post_id,
+        postAuthorUserId: dbPost.author_user_id,
+        caption: dbPost.caption,
+        scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
+      }),
+    );
   }
 }

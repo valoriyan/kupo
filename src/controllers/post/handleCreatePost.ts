@@ -155,8 +155,7 @@ export async function handleCreatePost({
 }): Promise<
   SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
 > {
-  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags } =
-    requestBody;
+  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags } = requestBody;
 
   const { clientUserId } = await checkAuthorization(controller, request);
 
