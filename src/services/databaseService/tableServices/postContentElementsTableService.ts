@@ -127,5 +127,4 @@ export class PostContentElementsTableService extends TableService {
 
     await this.datastorePool.query(queryString);
   }
-  
 }

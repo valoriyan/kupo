@@ -29,7 +29,6 @@ To Do
 - implement create shop item
 - implement update shop item
 - implement handleUpdatePost
-- implement handleDeletePost
 - implement handleDeleteShopItem
 
 
@@ -37,3 +36,8 @@ To Do
 - implement handleSearchUserProfilesByUsername
 - implement handleGetPostsScheduledByUser
 
+
+
+### COMPLETED October 17, 2021
+- create hashtag database service
+- implement handleDeletePost
