@@ -31,6 +31,42 @@ export class ShopItemMediaElementTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  public async createShopItemMediaElements({
+    shopItemMediaElements,
+  }: {
+    shopItemMediaElements: {
+      shopItemId: string;
+      shopItemElementIndex: number;
+      blobFileKey: string;
+    }[];
+  }): Promise<void> {
+    const queryString = shopItemMediaElements.reduce(
+      (previousValue, currentValue): string => {
+        return (
+          previousValue +
+          `
+            INSERT INTO ${this.tableName}(
+              shop_item_id,
+              shop_item_element_index,
+              blob_file_key
+            )
+            VALUES (
+                '${currentValue.shopItemId}',
+                '${currentValue.shopItemElementIndex}',
+                '${currentValue.blobFileKey}'
+            )
+            ;
+            ` +
+          "\n"
+        );
+      },
+      "",
+    );
+
+    await this.datastorePool.query(queryString);
+  }
+
+
   public async getShopItemMediaElementsByShopItemId({
     shopItemId,
   }: {
@@ -60,6 +96,4 @@ export class ShopItemMediaElementTableService extends TableService {
         blobFileKey: dbShopItemMediaElement.blob_file_key,
       }));
   }
-
-
 }
