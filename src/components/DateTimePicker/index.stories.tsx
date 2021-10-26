@@ -11,7 +11,6 @@ export default {
 
 export const Template: Story<DateTimePickerProps> = (args) => {
   const [dateTime, setDateTime] = useState<Date>();
-  console.log("STATE", dateTime);
 
   return (
     <Box css={{ p: "$4" }}>
