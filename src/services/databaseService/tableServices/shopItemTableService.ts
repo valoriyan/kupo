@@ -120,15 +120,15 @@ export class ShopItemTableService extends TableService {
         price: dbShopItem.price,
         scheduledPublicationTimestamp: dbShopItem.scheduled_publication_timestamp,
         expirationTimestamp: dbShopItem.expiration_timestamp,
-      
+
         countSold: 0,
-      
+
         hashtags: [],
         collaboratorUserIds: [],
-      
+
         likesCount: 0,
-        tipsSum: 0,      
+        tipsSum: 0,
       }),
     );
-  }  
+  }
 }
