@@ -1,18 +1,21 @@
 import { Button } from "#/components/Button";
 import { AddR } from "#/components/Icons";
-import { Stack } from "#/components/Layout";
+import { Flex, Stack } from "#/components/Layout";
+import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 import { MediaUpload } from "./MediaUpload";
 import { HashTags } from "./HashTags";
 import { useFormState } from "../FormContext";
 import { AdditionalScreen } from "..";
+import { DateTimePicker } from "#/components/DateTimePicker";
 
 export interface NewPostProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
 }
 
 export const NewPost = (props: NewPostProps) => {
-  const { caption, setCaption, mediaFiles } = useFormState();
+  const { caption, setCaption, mediaFiles, expirationDate, setExpirationDate } =
+    useFormState();
 
   const canSubmit = !!caption || !!mediaFiles.length;
 
@@ -37,6 +40,18 @@ export const NewPost = (props: NewPostProps) => {
             <AddR />
             Link Shop Item
           </LinkItem>
+        </SectionWrapper>
+        <SectionWrapper>
+          <Flex
+            css={{ alignItems: "center", justifyContent: "space-between", gap: "$3" }}
+          >
+            <MainTitle>Duration</MainTitle>
+            <DateTimePicker
+              placeholder="Forever"
+              dateTime={expirationDate}
+              setDateTime={setExpirationDate}
+            />
+          </Flex>
         </SectionWrapper>
       </Stack>
       <Stack css={{ gap: "$3", px: "$4" }}>

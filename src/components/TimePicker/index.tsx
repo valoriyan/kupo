@@ -92,9 +92,11 @@ export const TimePicker = (props: TimePickerProps) => {
 };
 
 const Input = styled("input", bodyStyles, {
-  width: "2ch",
+  background: "transparent",
   px: "$1",
+  width: "calc(2ch + $1 + $1 + $1)",
   border: "solid $borderWidths$1 $border",
+  textAlign: "center",
 
   // hide spin button for number input
   "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {

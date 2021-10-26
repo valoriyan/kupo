@@ -64,8 +64,20 @@ export interface SuccessfulGetUserProfileResponse {
   website?: string;
   /**
    *
+   * @type {string}
+   * @memberof SuccessfulGetUserProfileResponse
+   */
+  backgroundImageTemporaryUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfulGetUserProfileResponse
+   */
+  profilePictureTemporaryUrl?: string;
+  /**
+   *
    * @type {boolean}
    * @memberof SuccessfulGetUserProfileResponse
    */
-  canViewContent: boolean;
+  clientCanViewContent: boolean;
 }

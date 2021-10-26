@@ -41,13 +41,13 @@ import { FollowUserProfileParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostsPaginationParams } from "../types";
 // @ts-ignore
+import { GetPostsScheduledByUserParams } from "../types";
+// @ts-ignore
 import { GetUserProfileParams } from "../types";
 // @ts-ignore
 import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
-// @ts-ignore
-import { HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
 // @ts-ignore
@@ -57,11 +57,29 @@ import { RegisterUserParams } from "../types";
 // @ts-ignore
 import { RequestPasswordResetParams } from "../types";
 // @ts-ignore
+import { SearchUserProfilesByUsernameParams } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
@@ -75,9 +93,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @param {string} caption
-     * @param {string} authorUserId
-     * @param {string} title
-     * @param {string} price
+     * @param {string} hashtags
      * @param {string} scheduledPublicationTimestamp
      * @param {string} indexesOfUploadedImages
      * @param {string} indexesOfUploadedVideos
@@ -88,9 +104,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     createPost: async (
       caption: string,
-      authorUserId: string,
-      title: string,
-      price: string,
+      hashtags: string,
       scheduledPublicationTimestamp: string,
       indexesOfUploadedImages: string,
       indexesOfUploadedVideos: string,
@@ -100,12 +114,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     ): Promise<RequestArgs> => {
       // verify required parameter 'caption' is not null or undefined
       assertParamExists("createPost", "caption", caption);
-      // verify required parameter 'authorUserId' is not null or undefined
-      assertParamExists("createPost", "authorUserId", authorUserId);
-      // verify required parameter 'title' is not null or undefined
-      assertParamExists("createPost", "title", title);
-      // verify required parameter 'price' is not null or undefined
-      assertParamExists("createPost", "price", price);
+      // verify required parameter 'hashtags' is not null or undefined
+      assertParamExists("createPost", "hashtags", hashtags);
       // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
       assertParamExists(
         "createPost",
@@ -138,16 +148,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarFormParams.append("caption", caption as any);
       }
 
-      if (authorUserId !== undefined) {
-        localVarFormParams.append("authorUserId", authorUserId as any);
-      }
-
-      if (title !== undefined) {
-        localVarFormParams.append("title", title as any);
-      }
-
-      if (price !== undefined) {
-        localVarFormParams.append("price", price as any);
+      if (hashtags !== undefined) {
+        localVarFormParams.append("hashtags", hashtags as any);
       }
 
       if (scheduledPublicationTimestamp !== undefined) {
@@ -180,6 +182,208 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         videos.forEach((element) => {
           localVarFormParams.append("videos", element as any);
         });
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} caption
+     * @param {string} hashtags
+     * @param {string} title
+     * @param {string} price
+     * @param {string} scheduledPublicationTimestamp
+     * @param {string} expirationTimestamp
+     * @param {string} collaboratorUserIds
+     * @param {Array<any>} mediaFiles
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createShopItem: async (
+      caption: string,
+      hashtags: string,
+      title: string,
+      price: string,
+      scheduledPublicationTimestamp: string,
+      expirationTimestamp: string,
+      collaboratorUserIds: string,
+      mediaFiles: Array<any>,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'caption' is not null or undefined
+      assertParamExists("createShopItem", "caption", caption);
+      // verify required parameter 'hashtags' is not null or undefined
+      assertParamExists("createShopItem", "hashtags", hashtags);
+      // verify required parameter 'title' is not null or undefined
+      assertParamExists("createShopItem", "title", title);
+      // verify required parameter 'price' is not null or undefined
+      assertParamExists("createShopItem", "price", price);
+      // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
+      assertParamExists(
+        "createShopItem",
+        "scheduledPublicationTimestamp",
+        scheduledPublicationTimestamp,
+      );
+      // verify required parameter 'expirationTimestamp' is not null or undefined
+      assertParamExists("createShopItem", "expirationTimestamp", expirationTimestamp);
+      // verify required parameter 'collaboratorUserIds' is not null or undefined
+      assertParamExists("createShopItem", "collaboratorUserIds", collaboratorUserIds);
+      // verify required parameter 'mediaFiles' is not null or undefined
+      assertParamExists("createShopItem", "mediaFiles", mediaFiles);
+      const localVarPath = `/shopitem/create`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (caption !== undefined) {
+        localVarFormParams.append("caption", caption as any);
+      }
+
+      if (hashtags !== undefined) {
+        localVarFormParams.append("hashtags", hashtags as any);
+      }
+
+      if (title !== undefined) {
+        localVarFormParams.append("title", title as any);
+      }
+
+      if (price !== undefined) {
+        localVarFormParams.append("price", price as any);
+      }
+
+      if (scheduledPublicationTimestamp !== undefined) {
+        localVarFormParams.append(
+          "scheduledPublicationTimestamp",
+          scheduledPublicationTimestamp as any,
+        );
+      }
+
+      if (expirationTimestamp !== undefined) {
+        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
+      }
+
+      if (collaboratorUserIds !== undefined) {
+        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
+      }
+      if (mediaFiles) {
+        mediaFiles.forEach((element) => {
+          localVarFormParams.append("mediaFiles", element as any);
+        });
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} postId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deletePost: async (postId: string, options: any = {}): Promise<RequestArgs> => {
+      // verify required parameter 'postId' is not null or undefined
+      assertParamExists("deletePost", "postId", postId);
+      const localVarPath = `/post/delete`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (postId !== undefined) {
+        localVarFormParams.append("postId", postId as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} shopItemId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteShopItem: async (
+      shopItemId: string,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'shopItemId' is not null or undefined
+      assertParamExists("deleteShopItem", "shopItemId", shopItemId);
+      const localVarPath = `/shopitem/delete`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (shopItemId !== undefined) {
+        localVarFormParams.append("shopItemId", shopItemId as any);
       }
 
       localVarHeaderParameter["Content-Type"] = "multipart/form-data";
@@ -284,6 +488,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPageOfPostsPaginationParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPostsScheduledByUser: async (
+      getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPostsScheduledByUserParams' is not null or undefined
+      assertParamExists(
+        "getPostsScheduledByUser",
+        "getPostsScheduledByUserParams",
+        getPostsScheduledByUserParams,
+      );
+      const localVarPath = `/post/getPostsScheduledByUser`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPostsScheduledByUserParams,
         localVarRequestOptions,
         configuration,
       );
@@ -543,6 +796,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchUserProfilesByUsername: async (
+      searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'searchUserProfilesByUsernameParams' is not null or undefined
+      assertParamExists(
+        "searchUserProfilesByUsername",
+        "searchUserProfilesByUsernameParams",
+        searchUserProfilesByUsernameParams,
+      );
+      const localVarPath = `/user/SearchUserProfilesByUsername`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        searchUserProfilesByUsernameParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -584,6 +886,172 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarRequestOptions,
         configuration,
       );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} postId
+     * @param {string} [caption]
+     * @param {string} [hashtags]
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {Array<any>} [mediaFiles]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePost: async (
+      postId: string,
+      caption?: string,
+      hashtags?: string,
+      scheduledPublicationTimestamp?: string,
+      mediaFiles?: Array<any>,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'postId' is not null or undefined
+      assertParamExists("updatePost", "postId", postId);
+      const localVarPath = `/post/update`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (postId !== undefined) {
+        localVarFormParams.append("postId", postId as any);
+      }
+
+      if (caption !== undefined) {
+        localVarFormParams.append("caption", caption as any);
+      }
+
+      if (hashtags !== undefined) {
+        localVarFormParams.append("hashtags", hashtags as any);
+      }
+
+      if (scheduledPublicationTimestamp !== undefined) {
+        localVarFormParams.append(
+          "scheduledPublicationTimestamp",
+          scheduledPublicationTimestamp as any,
+        );
+      }
+      if (mediaFiles) {
+        mediaFiles.forEach((element) => {
+          localVarFormParams.append("mediaFiles", element as any);
+        });
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} [caption]
+     * @param {string} [hashtags]
+     * @param {string} [title]
+     * @param {string} [price]
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
+     * @param {string} [collaboratorUserIds]
+     * @param {Array<any>} [mediaFiles]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateShopItem: async (
+      caption?: string,
+      hashtags?: string,
+      title?: string,
+      price?: string,
+      scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
+      collaboratorUserIds?: string,
+      mediaFiles?: Array<any>,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/shopitem/update`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (caption !== undefined) {
+        localVarFormParams.append("caption", caption as any);
+      }
+
+      if (hashtags !== undefined) {
+        localVarFormParams.append("hashtags", hashtags as any);
+      }
+
+      if (title !== undefined) {
+        localVarFormParams.append("title", title as any);
+      }
+
+      if (price !== undefined) {
+        localVarFormParams.append("price", price as any);
+      }
+
+      if (scheduledPublicationTimestamp !== undefined) {
+        localVarFormParams.append(
+          "scheduledPublicationTimestamp",
+          scheduledPublicationTimestamp as any,
+        );
+      }
+
+      if (expirationTimestamp !== undefined) {
+        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
+      }
+
+      if (collaboratorUserIds !== undefined) {
+        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
+      }
+      if (mediaFiles) {
+        mediaFiles.forEach((element) => {
+          localVarFormParams.append("mediaFiles", element as any);
+        });
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
 
       return {
         url: toPathString(localVarUrlObj),
@@ -678,9 +1146,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {string} caption
-     * @param {string} authorUserId
-     * @param {string} title
-     * @param {string} price
+     * @param {string} hashtags
      * @param {string} scheduledPublicationTimestamp
      * @param {string} indexesOfUploadedImages
      * @param {string} indexesOfUploadedVideos
@@ -691,9 +1157,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async createPost(
       caption: string,
-      authorUserId: string,
-      title: string,
-      price: string,
+      hashtags: string,
       scheduledPublicationTimestamp: string,
       indexesOfUploadedImages: string,
       indexesOfUploadedVideos: string,
@@ -704,18 +1168,115 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
         caption,
-        authorUserId,
-        title,
-        price,
+        hashtags,
         scheduledPublicationTimestamp,
         indexesOfUploadedImages,
         indexesOfUploadedVideos,
         images,
         videos,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} caption
+     * @param {string} hashtags
+     * @param {string} title
+     * @param {string} price
+     * @param {string} scheduledPublicationTimestamp
+     * @param {string} expirationTimestamp
+     * @param {string} collaboratorUserIds
+     * @param {Array<any>} mediaFiles
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async createShopItem(
+      caption: string,
+      hashtags: string,
+      title: string,
+      price: string,
+      scheduledPublicationTimestamp: string,
+      expirationTimestamp: string,
+      collaboratorUserIds: string,
+      mediaFiles: Array<any>,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
+        caption,
+        hashtags,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+        collaboratorUserIds,
+        mediaFiles,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} postId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deletePost(
+      postId: string,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deletePost(
+        postId,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} shopItemId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deleteShopItem(
+      shopItemId: string,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deleteShopItem(
+        shopItemId,
         options,
       );
       return createRequestFunction(
@@ -768,6 +1329,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfPostsPagination(
         getPageOfPostsPaginationParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPostsScheduledByUser(
+      getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsScheduledByUser(
+        getPostsScheduledByUserParams,
         options,
       );
       return createRequestFunction(
@@ -922,6 +1509,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchUserProfilesByUsername(
+      searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.searchUserProfilesByUsername(
+          searchUserProfilesByUsernameParams,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -937,6 +1551,91 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.unfollowUser(
         unfollowUserProfileParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} postId
+     * @param {string} [caption]
+     * @param {string} [hashtags]
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {Array<any>} [mediaFiles]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updatePost(
+      postId: string,
+      caption?: string,
+      hashtags?: string,
+      scheduledPublicationTimestamp?: string,
+      mediaFiles?: Array<any>,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updatePost(
+        postId,
+        caption,
+        hashtags,
+        scheduledPublicationTimestamp,
+        mediaFiles,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} [caption]
+     * @param {string} [hashtags]
+     * @param {string} [title]
+     * @param {string} [price]
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
+     * @param {string} [collaboratorUserIds]
+     * @param {Array<any>} [mediaFiles]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateShopItem(
+      caption?: string,
+      hashtags?: string,
+      title?: string,
+      price?: string,
+      scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
+      collaboratorUserIds?: string,
+      mediaFiles?: Array<any>,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
+        caption,
+        hashtags,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+        collaboratorUserIds,
+        mediaFiles,
         options,
       );
       return createRequestFunction(
@@ -1004,9 +1703,7 @@ export const DefaultApiFactory = function (
     /**
      *
      * @param {string} caption
-     * @param {string} authorUserId
-     * @param {string} title
-     * @param {string} price
+     * @param {string} hashtags
      * @param {string} scheduledPublicationTimestamp
      * @param {string} indexesOfUploadedImages
      * @param {string} indexesOfUploadedVideos
@@ -1017,22 +1714,18 @@ export const DefaultApiFactory = function (
      */
     createPost(
       caption: string,
-      authorUserId: string,
-      title: string,
-      price: string,
+      hashtags: string,
       scheduledPublicationTimestamp: string,
       indexesOfUploadedImages: string,
       indexesOfUploadedVideos: string,
       images: Array<any>,
       videos: Array<any>,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
       return localVarFp
         .createPost(
           caption,
-          authorUserId,
-          title,
-          price,
+          hashtags,
           scheduledPublicationTimestamp,
           indexesOfUploadedImages,
           indexesOfUploadedVideos,
@@ -1040,6 +1733,72 @@ export const DefaultApiFactory = function (
           videos,
           options,
         )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} caption
+     * @param {string} hashtags
+     * @param {string} title
+     * @param {string} price
+     * @param {string} scheduledPublicationTimestamp
+     * @param {string} expirationTimestamp
+     * @param {string} collaboratorUserIds
+     * @param {Array<any>} mediaFiles
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createShopItem(
+      caption: string,
+      hashtags: string,
+      title: string,
+      price: string,
+      scheduledPublicationTimestamp: string,
+      expirationTimestamp: string,
+      collaboratorUserIds: string,
+      mediaFiles: Array<any>,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse> {
+      return localVarFp
+        .createShopItem(
+          caption,
+          hashtags,
+          title,
+          price,
+          scheduledPublicationTimestamp,
+          expirationTimestamp,
+          collaboratorUserIds,
+          mediaFiles,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} postId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deletePost(
+      postId: string,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse> {
+      return localVarFp
+        .deletePost(postId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} shopItemId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteShopItem(
+      shopItemId: string,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse> {
+      return localVarFp
+        .deleteShopItem(shopItemId, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -1068,6 +1827,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse> {
       return localVarFp
         .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPostsScheduledByUser(
+      getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse> {
+      return localVarFp
+        .getPostsScheduledByUser(getPostsScheduledByUserParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -1148,6 +1921,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchUserProfilesByUsername(
+      searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse> {
+      return localVarFp
+        .searchUserProfilesByUsername(searchUserProfilesByUsernameParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1158,6 +1945,73 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse> {
       return localVarFp
         .unfollowUser(unfollowUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} postId
+     * @param {string} [caption]
+     * @param {string} [hashtags]
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {Array<any>} [mediaFiles]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePost(
+      postId: string,
+      caption?: string,
+      hashtags?: string,
+      scheduledPublicationTimestamp?: string,
+      mediaFiles?: Array<any>,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse> {
+      return localVarFp
+        .updatePost(
+          postId,
+          caption,
+          hashtags,
+          scheduledPublicationTimestamp,
+          mediaFiles,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} [caption]
+     * @param {string} [hashtags]
+     * @param {string} [title]
+     * @param {string} [price]
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
+     * @param {string} [collaboratorUserIds]
+     * @param {Array<any>} [mediaFiles]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateShopItem(
+      caption?: string,
+      hashtags?: string,
+      title?: string,
+      price?: string,
+      scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
+      collaboratorUserIds?: string,
+      mediaFiles?: Array<any>,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse> {
+      return localVarFp
+        .updateShopItem(
+          caption,
+          hashtags,
+          title,
+          price,
+          scheduledPublicationTimestamp,
+          expirationTimestamp,
+          collaboratorUserIds,
+          mediaFiles,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -1205,9 +2059,7 @@ export class DefaultApi extends BaseAPI {
   /**
    *
    * @param {string} caption
-   * @param {string} authorUserId
-   * @param {string} title
-   * @param {string} price
+   * @param {string} hashtags
    * @param {string} scheduledPublicationTimestamp
    * @param {string} indexesOfUploadedImages
    * @param {string} indexesOfUploadedVideos
@@ -1219,9 +2071,7 @@ export class DefaultApi extends BaseAPI {
    */
   public createPost(
     caption: string,
-    authorUserId: string,
-    title: string,
-    price: string,
+    hashtags: string,
     scheduledPublicationTimestamp: string,
     indexesOfUploadedImages: string,
     indexesOfUploadedVideos: string,
@@ -1232,9 +2082,7 @@ export class DefaultApi extends BaseAPI {
     return DefaultApiFp(this.configuration)
       .createPost(
         caption,
-        authorUserId,
-        title,
-        price,
+        hashtags,
         scheduledPublicationTimestamp,
         indexesOfUploadedImages,
         indexesOfUploadedVideos,
@@ -1242,6 +2090,72 @@ export class DefaultApi extends BaseAPI {
         videos,
         options,
       )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} caption
+   * @param {string} hashtags
+   * @param {string} title
+   * @param {string} price
+   * @param {string} scheduledPublicationTimestamp
+   * @param {string} expirationTimestamp
+   * @param {string} collaboratorUserIds
+   * @param {Array<any>} mediaFiles
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createShopItem(
+    caption: string,
+    hashtags: string,
+    title: string,
+    price: string,
+    scheduledPublicationTimestamp: string,
+    expirationTimestamp: string,
+    collaboratorUserIds: string,
+    mediaFiles: Array<any>,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .createShopItem(
+        caption,
+        hashtags,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+        collaboratorUserIds,
+        mediaFiles,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} postId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deletePost(postId: string, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .deletePost(postId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} shopItemId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteShopItem(shopItemId: string, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .deleteShopItem(shopItemId, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -1271,6 +2185,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPostsScheduledByUser(
+    getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPostsScheduledByUser(getPostsScheduledByUserParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -1355,6 +2285,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public searchUserProfilesByUsername(
+    searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .searchUserProfilesByUsername(searchUserProfilesByUsernameParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {UnfollowUserProfileParams} unfollowUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -1366,6 +2312,77 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .unfollowUser(unfollowUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} postId
+   * @param {string} [caption]
+   * @param {string} [hashtags]
+   * @param {string} [scheduledPublicationTimestamp]
+   * @param {Array<any>} [mediaFiles]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updatePost(
+    postId: string,
+    caption?: string,
+    hashtags?: string,
+    scheduledPublicationTimestamp?: string,
+    mediaFiles?: Array<any>,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updatePost(
+        postId,
+        caption,
+        hashtags,
+        scheduledPublicationTimestamp,
+        mediaFiles,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} [caption]
+   * @param {string} [hashtags]
+   * @param {string} [title]
+   * @param {string} [price]
+   * @param {string} [scheduledPublicationTimestamp]
+   * @param {string} [expirationTimestamp]
+   * @param {string} [collaboratorUserIds]
+   * @param {Array<any>} [mediaFiles]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateShopItem(
+    caption?: string,
+    hashtags?: string,
+    title?: string,
+    price?: string,
+    scheduledPublicationTimestamp?: string,
+    expirationTimestamp?: string,
+    collaboratorUserIds?: string,
+    mediaFiles?: Array<any>,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updateShopItem(
+        caption,
+        hashtags,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+        collaboratorUserIds,
+        mediaFiles,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 

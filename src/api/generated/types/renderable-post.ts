@@ -40,26 +40,26 @@ export interface RenderablePost {
   caption: string;
   /**
    *
-   * @type {string}
-   * @memberof RenderablePost
-   */
-  title?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RenderablePost
-   */
-  price?: number;
-  /**
-   *
    * @type {number}
    * @memberof RenderablePost
    */
   scheduledPublicationTimestamp: number;
   /**
    *
+   * @type {number}
+   * @memberof RenderablePost
+   */
+  expirationTimestamp?: number;
+  /**
+   *
    * @type {Array<RenderablePostContentElement>}
    * @memberof RenderablePost
    */
   contentElements: Array<RenderablePostContentElement>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof RenderablePost
+   */
+  hashtags: Array<string>;
 }
