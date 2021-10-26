@@ -19,7 +19,9 @@ export class HashtagTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         hashtag VARCHAR(64) NOT NULL,
+
         post_id VARCHAR(64) NOT NULL,
+        shop_item_id VARCHAR(64) NOT NULL,
         UNIQUE (hashtag, post_id)
       )
       ;

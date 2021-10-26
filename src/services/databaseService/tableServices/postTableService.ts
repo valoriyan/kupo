@@ -10,9 +10,9 @@ interface DBPost {
   scheduled_publication_timestamp: number;
 }
 
-export class PostsTableService extends TableService {
+export class PostTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_posts`;
-  public readonly tableName = PostsTableService.tableName;
+  public readonly tableName = PostTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
@@ -71,11 +71,9 @@ export class PostsTableService extends TableService {
         SELECT
           *
         FROM
-          ${PostsTableService.tableName}
+          ${PostTableService.tableName}
         WHERE
           author_user_id = '${creatorUserId}'
-        LIMIT
-          1
         ;
       `;
 

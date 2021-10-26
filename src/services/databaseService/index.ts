@@ -3,7 +3,7 @@ import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
-import { PostsTableService } from "./tableServices/postsTableService";
+import { PostTableService } from "./tableServices/postTableService";
 import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseServive } from "./teardown";
@@ -14,7 +14,7 @@ export class DatabaseService {
 
   public tableServices = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
-    postsTableService: new PostsTableService(DatabaseService.datastorePool),
+    postsTableService: new PostTableService(DatabaseService.datastorePool),
     postContentElementsTableService: new PostContentElementsTableService(
       DatabaseService.datastorePool,
     ),

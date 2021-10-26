@@ -27,11 +27,12 @@ export async function handleDeletePost({
   console.log("request", request);
   console.log("requestBody", requestBody);
 
-  const {postId} = requestBody;
+  const { postId } = requestBody;
 
-  await controller.databaseService.tableServices.postsTableService.deletePost({postId});
-  await controller.databaseService.tableServices.postContentElementsTableService.deleteContentElementsByPostId({postId});
-
+  await controller.databaseService.tableServices.postsTableService.deletePost({ postId });
+  await controller.databaseService.tableServices.postContentElementsTableService.deleteContentElementsByPostId(
+    { postId },
+  );
 
   return {};
 }
