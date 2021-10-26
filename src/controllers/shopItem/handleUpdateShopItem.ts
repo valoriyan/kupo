@@ -1,5 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -10,13 +11,14 @@ export interface FailedToUpdateShopItemResponse {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
+  shopItemId: string;
   caption?: string;
-  hashtags?: string[];
   title?: string;
   price?: number;
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
   collaboratorUserIds?: string[];
+  hashtags?: string[];
   mediaFiles?: Express.Multer.File[];
 }
 
@@ -31,9 +33,18 @@ export async function handleUpdateShopItem({
 }): Promise<
   SecuredHTTPResponse<SuccessfulShopItemUpdateResponse, FailedToUpdateShopItemResponse>
 > {
-  console.log("controller", controller);
-  console.log("request", request);
-  console.log("requestBody", requestBody);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
+  if (error) return error;
+
+  await controller.databaseService.tableServices.shopItemTableService.updateShopItemByShopItemId({
+    shopItemId: requestBody.shopItemId,
+    authorUserId: clientUserId,
+    caption: requestBody.caption,
+    title: requestBody.title,
+    price: requestBody.price,
+    scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
+    expirationTimestamp: requestBody.expirationTimestamp,
+  });
 
   return {};
 }

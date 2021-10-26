@@ -1,5 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -23,9 +24,14 @@ export async function handleDeleteShopItem({
 }): Promise<
   SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>
 > {
-  console.log("controller", controller);
-  console.log("request", request);
-  console.log("requestBody", requestBody);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
+  if (error) return error;
+
+  await controller.databaseService.tableServices.shopItemTableService.deleteShopItem({
+    shopItemId: requestBody.shopItemId,
+    authorUserId: clientUserId,
+  });
+
 
   return {};
 }

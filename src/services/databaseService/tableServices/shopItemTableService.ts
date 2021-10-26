@@ -80,14 +80,14 @@ export class ShopItemTableService extends TableService {
     }
 
     const queryString = `
-        INSERT INTO ${this.tableName}(
-            ${columnListString}
-        )
-        VALUES (
-            ${valuesListString}
-        )
-        ;
-        `;
+      INSERT INTO ${this.tableName}(
+          ${columnListString}
+      )
+      VALUES (
+          ${valuesListString}
+      )
+      ;
+    `;
 
     await this.datastorePool.query(queryString);
   }
@@ -131,4 +131,96 @@ export class ShopItemTableService extends TableService {
       }),
     );
   }
+
+  public async updateShopItemByShopItemId({
+    shopItemId,
+    authorUserId,
+    caption,
+    title,
+    price,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
+  }: {
+    shopItemId: string;
+    authorUserId: string,
+    caption?: string;
+    title?: string;
+    price?: number;
+    scheduledPublicationTimestamp?: number;
+    expirationTimestamp?: number;
+  }): Promise<void> {
+    if (
+      [
+        caption,
+        title,
+        price,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+      ].some((value) => !!value)
+    ) {
+      let updateString = "";
+      if (!!caption) {
+        updateString += `
+          caption = '${caption}'
+        `;
+      }
+      if (!!title) {
+        updateString += `
+          title = '${title}'
+        `;
+      }
+
+      if (!!price) {
+        updateString += `
+          price = '${price}'
+        `;
+      }
+
+      if (!!scheduledPublicationTimestamp) {
+        updateString += `
+          scheduled_publication_timestamp = '${scheduledPublicationTimestamp}'
+        `;
+      }
+
+      if (!!expirationTimestamp) {
+        updateString += `
+          expiration_timestamp = '${expirationTimestamp}'
+        `;
+      }
+
+      const queryString = `
+          UPDATE
+            ${this.tableName}
+          SET
+            ${updateString}
+          WHERE
+              shop_item_id = '${shopItemId}'
+            AND
+              author_user_id = '${authorUserId}'
+          ;
+        `;
+
+      await this.datastorePool.query(queryString);
+    }
+  }
+
+  public async deleteShopItem({
+    shopItemId,
+    authorUserId,
+  }: {
+    shopItemId: string,
+    authorUserId: string,
+  }): Promise<void> {
+    const queryString = `
+      DELETE FROM ${this.tableName}
+      WHERE
+          shop_item_id = '${shopItemId}'
+        AND
+          author_user_id = '${authorUserId}'
+      ;
+    `;
+
+    await this.datastorePool.query(queryString);
+  }
+
 }
