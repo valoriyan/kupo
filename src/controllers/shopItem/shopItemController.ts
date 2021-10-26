@@ -94,7 +94,7 @@ export class ShopItemController extends Controller {
   }
 
   @Delete("delete")
-  public async deletePost(
+  public async deleteShopItem(
     @Request() request: express.Request,
     @FormField() shopItemId: string,
   ): Promise<
