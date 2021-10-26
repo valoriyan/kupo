@@ -1,6 +1,8 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
+import { v4 as uuidv4 } from "uuid";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulShopItemCreationResponse {}
@@ -16,7 +18,7 @@ interface HandlerRequestBody {
   price: number;
   scheduledPublicationTimestamp: number;
   expirationTimestamp: number;
-  collaboratorUserIds: string[];
+  collaboratorUserIds?: string[];
   mediaFiles: Express.Multer.File[];
 }
 
@@ -31,9 +33,20 @@ export async function handleCreateShopItem({
 }): Promise<
   SecuredHTTPResponse<FailedToCreateShopItemResponse, SuccessfulShopItemCreationResponse>
 > {
-  console.log("controller", controller);
-  console.log("request", request);
-  console.log("requestBody", requestBody);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
+  if (error) return error;
+
+  const shopItemId = uuidv4();
+
+  await controller.databaseService.tableServices.shopItemTableService.createShopItem({
+    shopItemId,
+    authorUserId: clientUserId,
+    caption: requestBody.caption,
+    title: requestBody.title,
+    price: requestBody.price,
+    scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
+    expirationTimestamp: requestBody.expirationTimestamp,
+  });
 
   return {};
 }

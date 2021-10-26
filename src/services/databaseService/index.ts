@@ -4,6 +4,7 @@ import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PostTableService } from "./tableServices/postTableService";
+import { ShopItemTableService } from "./tableServices/shopItemTableService";
 import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseServive } from "./teardown";
@@ -19,6 +20,7 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     userFollowsTableService: new UserFollowsTableService(DatabaseService.datastorePool),
+    shopItemTableService: new ShopItemTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {
