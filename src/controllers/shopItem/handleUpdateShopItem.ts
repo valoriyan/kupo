@@ -36,15 +36,17 @@ export async function handleUpdateShopItem({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableServices.shopItemTableService.updateShopItemByShopItemId({
-    shopItemId: requestBody.shopItemId,
-    authorUserId: clientUserId,
-    caption: requestBody.caption,
-    title: requestBody.title,
-    price: requestBody.price,
-    scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
-    expirationTimestamp: requestBody.expirationTimestamp,
-  });
+  await controller.databaseService.tableServices.shopItemTableService.updateShopItemByShopItemId(
+    {
+      shopItemId: requestBody.shopItemId,
+      authorUserId: clientUserId,
+      caption: requestBody.caption,
+      title: requestBody.title,
+      price: requestBody.price,
+      scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
+      expirationTimestamp: requestBody.expirationTimestamp,
+    },
+  );
 
   return {};
 }

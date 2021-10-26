@@ -32,6 +32,5 @@ export async function handleDeleteShopItem({
     authorUserId: clientUserId,
   });
 
-
   return {};
 }

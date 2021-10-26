@@ -38,6 +38,5 @@ To Do
 
 
 
-### COMPLETED October 17, 2021
-- create hashtag database service
-- implement handleDeletePost
+### COMPLETED October 26, 2021
+- added shop item C,U,D

@@ -142,7 +142,7 @@ export class ShopItemTableService extends TableService {
     expirationTimestamp,
   }: {
     shopItemId: string;
-    authorUserId: string,
+    authorUserId: string;
     caption?: string;
     title?: string;
     price?: number;
@@ -150,13 +150,9 @@ export class ShopItemTableService extends TableService {
     expirationTimestamp?: number;
   }): Promise<void> {
     if (
-      [
-        caption,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-      ].some((value) => !!value)
+      [caption, title, price, scheduledPublicationTimestamp, expirationTimestamp].some(
+        (value) => !!value,
+      )
     ) {
       let updateString = "";
       if (!!caption) {
@@ -208,8 +204,8 @@ export class ShopItemTableService extends TableService {
     shopItemId,
     authorUserId,
   }: {
-    shopItemId: string,
-    authorUserId: string,
+    shopItemId: string;
+    authorUserId: string;
   }): Promise<void> {
     const queryString = `
       DELETE FROM ${this.tableName}
@@ -222,5 +218,4 @@ export class ShopItemTableService extends TableService {
 
     await this.datastorePool.query(queryString);
   }
-
 }
