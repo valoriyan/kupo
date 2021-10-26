@@ -66,7 +66,6 @@ export class ShopItemMediaElementTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
-
   public async getShopItemMediaElementsByShopItemId({
     shopItemId,
   }: {
