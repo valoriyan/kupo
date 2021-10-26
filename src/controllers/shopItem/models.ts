@@ -1,3 +1,7 @@
+export interface ShopItemMediaElement {
+  blobFileKey: string;
+}
+
 export interface UnrenderableShopItemPreview {
   numberOfElements: number;
 
