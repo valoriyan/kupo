@@ -3,6 +3,7 @@ import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 import { v4 as uuidv4 } from "uuid";
+import { Promise as BluebirdPromise } from "bluebird";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulShopItemCreationResponse {}
@@ -37,6 +38,13 @@ export async function handleCreateShopItem({
   if (error) return error;
 
   const shopItemId = uuidv4();
+
+  await BluebirdPromise.map(requestBody.mediaFiles, async (mediaFile) => {
+    const blobItemPointer = await controller.blobStorageService.saveImage({
+      image: mediaFile.buffer,
+    });
+    return blobItemPointer;
+  });
 
   await controller.databaseService.tableServices.shopItemTableService.createShopItem({
     shopItemId,
