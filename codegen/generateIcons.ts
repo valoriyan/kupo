@@ -11,6 +11,7 @@ const ICONS_TO_GENERATE = [
   "bookmark",
   "box",
   "calendar",
+  "chevron-down",
   "chevron-down-r",
   "chevron-left",
   "chevron-right",

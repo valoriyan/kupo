@@ -4,6 +4,7 @@ export * from "./generated/Bell";
 export * from "./generated/Bookmark";
 export * from "./generated/Box";
 export * from "./generated/Calendar";
+export * from "./generated/ChevronDown";
 export * from "./generated/ChevronDownR";
 export * from "./generated/ChevronLeft";
 export * from "./generated/ChevronRight";

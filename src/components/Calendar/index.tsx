@@ -14,12 +14,14 @@ export interface CalendarProps {
   calendarState: ReturnType<typeof useCalendarState>;
   datesWithAdditions?: Date[];
   datesWithRemovals?: Date[];
+  compact?: boolean;
 }
 
 export const Calendar = ({
   calendarState,
   datesWithAdditions,
   datesWithRemovals,
+  compact,
 }: CalendarProps) => {
   const { year: viewingYear, month: viewingMonth } = calendarState;
 
@@ -35,8 +37,8 @@ export const Calendar = ({
       <CalendarHeader
         year={calendarState.year}
         month={calendarState.month}
-        toPreviousMonth={calendarState.toPreviousMonth}
-        toNextMonth={calendarState.toNextMonth}
+        setMonth={calendarState.setMonth}
+        setYear={calendarState.setYear}
       />
       <TransitionArea
         transitionKey={`${calendarState.year}-${calendarState.month}`}
@@ -54,6 +56,7 @@ export const Calendar = ({
           monthDetails={monthDetails}
           datesWithAdditions={datesWithAdditions}
           datesWithRemovals={datesWithRemovals}
+          compact={compact}
         />
       </TransitionArea>
     </Stack>

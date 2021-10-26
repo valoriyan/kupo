@@ -25,6 +25,12 @@ export const Button = styled("button", {
     },
     outlined: { true: {} },
     size: {
+      sm: {
+        borderRadius: "$3",
+        fontSize: "$2",
+        px: "$3",
+        py: "$2",
+      },
       md: {
         borderRadius: "$3",
         fontSize: "$3",

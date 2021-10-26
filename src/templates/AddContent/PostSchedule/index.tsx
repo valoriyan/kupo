@@ -1,4 +1,4 @@
-import { Calendar, CalendarState } from "#/components/Calendar";
+import { Calendar, CalendarState, CALENDAR_HEIGHT } from "#/components/Calendar";
 import { Add, Remove } from "#/components/Icons";
 import { Box, Stack } from "#/components/Layout";
 import { Body, MainTitle } from "#/components/Typography";
@@ -24,7 +24,7 @@ export const PostSchedule = (props: PostScheduleProps) => {
 
   return (
     <Stack css={{ "@md": { px: "$3", pt: "$3" }, gap: "$4", height: "100%" }}>
-      <Box css={{ height: "390px" }}>
+      <Box css={{ height: CALENDAR_HEIGHT }}>
         <Calendar
           calendarState={props.calendarState}
           datesWithAdditions={datesWithAdditions}

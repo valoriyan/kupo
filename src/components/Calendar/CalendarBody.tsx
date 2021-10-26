@@ -13,11 +13,12 @@ export interface CalendarBodyProps {
   monthDetails: DayDetails[];
   datesWithAdditions?: Date[];
   datesWithRemovals?: Date[];
+  compact?: boolean;
 }
 
 export const CalendarBody = (props: CalendarBodyProps) => {
   return (
-    <Wrapper>
+    <Wrapper css={{ rowGap: props.compact ? "$2" : "$3" }}>
       <Row>
         {SHORT_DAYS.map((day) => {
           return <WeekDay key={day}>{day}</WeekDay>;
@@ -40,6 +41,7 @@ export const CalendarBody = (props: CalendarBodyProps) => {
                 isSelectedDate={props.selectedDate && isSameDay(date, props.selectedDate)}
                 isToday={isSameDay(date, new Date())}
                 onClick={() => props.selectDate(date)}
+                css={{ size: props.compact ? "$6" : "$7" }}
               >
                 {(hasAdditions || hasRemovals) && (
                   <NotificationWrapper double={hasAdditions && hasRemovals}>
@@ -59,7 +61,6 @@ export const CalendarBody = (props: CalendarBodyProps) => {
 
 const Wrapper = styled(Grid, {
   gridTemplateRows: "repeat(7, 1fr)",
-  rowGap: "$3",
   px: "$4",
 });
 
@@ -82,7 +83,6 @@ const Day = styled("button", bodyStyles, {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  size: "$7",
   color: "$secondaryText",
   borderRadius: "$round",
 

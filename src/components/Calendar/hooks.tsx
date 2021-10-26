@@ -25,30 +25,13 @@ export const useCalendarState = (args?: useCalendarStateArgs) => {
     };
   });
 
-  const toNextMonth = () => {
-    setState((prev) => {
-      const curView = new Date(prev.year, prev.month + 1);
-      return {
-        ...prev,
-        year: curView.getFullYear(),
-        month: curView.getMonth(),
-        prevView: prev.curView,
-        curView,
-      };
-    });
-  };
-
-  const toPreviousMonth = () => {
-    setState((prev) => {
-      const curView = new Date(prev.year, prev.month - 1);
-      return {
-        ...prev,
-        year: curView.getFullYear(),
-        month: curView.getMonth(),
-        prevView: prev.curView,
-        curView,
-      };
-    });
+  const setMonth = (month: number) => {
+    setState((prev) => ({
+      ...prev,
+      month,
+      prevView: prev.curView,
+      curView: new Date(prev.year, month),
+    }));
   };
 
   const setYear = (year: number) => {
@@ -77,8 +60,7 @@ export const useCalendarState = (args?: useCalendarStateArgs) => {
 
   return {
     ...state,
-    toNextMonth,
-    toPreviousMonth,
+    setMonth,
     setYear,
     selectDate,
   };
