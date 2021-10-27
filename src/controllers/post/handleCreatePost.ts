@@ -6,10 +6,7 @@ import { Promise as BluebirdPromise } from "bluebird";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { checkAuthorization } from "../auth/utilities";
 import {
-  FiledPostContentElement,
-  PostElementFileType,
   RenderablePost,
-  RenderablePostContentElement,
 } from "./models";
 
 export enum CreatePostFailureReasons {
@@ -27,11 +24,7 @@ export interface SuccessfulPostCreationResponse {
 }
 
 interface HandlerRequestBody {
-  images?: Express.Multer.File[];
-  videos?: Express.Multer.File[];
-
-  indexesOfUploadedImages?: number[];
-  indexesOfUploadedVideos?: number[];
+  mediaFiles: Express.Multer.File[];
 
   caption: string;
   hashtags: string[];
@@ -41,87 +34,21 @@ interface HandlerRequestBody {
   scheduledPublicationTimestamp: number;
 }
 
-function getOrderedUploadedFiles({ requestBody }: { requestBody: HandlerRequestBody }): {
-  file: Express.Multer.File;
-  type: PostElementFileType;
-}[] {
-  if (
-    !!requestBody.images &&
-    (!requestBody.indexesOfUploadedImages ||
-      requestBody.images.length !== requestBody.indexesOfUploadedImages.length)
-  ) {
-    throw new Error("Uploaded images are missing matching indexes");
-  }
-
-  if (
-    !!requestBody.videos &&
-    (!requestBody.indexesOfUploadedVideos ||
-      requestBody.videos.length !== requestBody.indexesOfUploadedVideos.length)
-  ) {
-    throw new Error("Uploaded videos are missing matching indexes");
-  }
-
-  const setOfEncounteredFileIndexes = new Set();
-  if (requestBody.indexesOfUploadedImages) {
-    requestBody.indexesOfUploadedImages.forEach((uploadedImageIndex) => {
-      setOfEncounteredFileIndexes.add(uploadedImageIndex);
-    });
-  }
-  if (requestBody.indexesOfUploadedVideos) {
-    requestBody.indexesOfUploadedVideos.forEach((uploadedVideoIndex) => {
-      setOfEncounteredFileIndexes.add(uploadedVideoIndex);
-    });
-  }
-
-  const numberOfUploadedFiles =
-    (!!requestBody.images ? requestBody.images.length : 0) +
-    (!!requestBody.videos ? requestBody.videos.length : 0);
-
-  if (numberOfUploadedFiles !== setOfEncounteredFileIndexes.size) {
-    throw new Error("Uploaded files have incorrect indexes.");
-  }
-
-  const orderedUploadedFiles: {
-    file: Express.Multer.File;
-    type: PostElementFileType;
-  }[] = [...Array(numberOfUploadedFiles).keys()].map((targetIndex) => {
-    const uploadedImageFileIndex = !!requestBody.indexesOfUploadedImages
-      ? requestBody.indexesOfUploadedImages.indexOf(targetIndex)
-      : -1;
-    if (uploadedImageFileIndex !== -1) {
-      return {
-        file: requestBody.images![uploadedImageFileIndex],
-        type: PostElementFileType.Image,
-      };
-    }
-    const uploadedVideoFileIndex = !!requestBody.indexesOfUploadedVideos
-      ? requestBody.indexesOfUploadedVideos.indexOf(targetIndex)
-      : -1;
-    return {
-      file: requestBody.videos![uploadedVideoFileIndex],
-      type: PostElementFileType.Video,
-    };
-  });
-
-  return orderedUploadedFiles;
-}
-
 async function uploadFile({
   file,
-  fileType,
   blobStorageService,
 }: {
   file: Express.Multer.File;
-  fileType: PostElementFileType;
   blobStorageService: BlobStorageService;
 }): Promise<{
-  filedPostContentElement: FiledPostContentElement;
-  renderablePostContentElement: RenderablePostContentElement;
+  blobFileKey: string;
+  fileTemporaryUrl: string;
 }> {
-  if (fileType === PostElementFileType.Video) {
-    // TODO ADD VIDEO HANDLING
-    throw new Error("Videos are unhandled");
-  } else {
+  const fileType = file.mimetype;
+  if (fileType !== "image/jpeg") {
+    throw new Error(`Cannot handle file of type ${fileType}`);
+  }
+
     // TODO: ADD IMAGE VALIDATION
     const blobItemPointer = await blobStorageService.saveImage({
       image: file.buffer,
@@ -132,16 +59,11 @@ async function uploadFile({
     });
 
     return {
-      filedPostContentElement: {
-        fileType,
-        blobFileKey: blobItemPointer.fileKey,
-      },
-      renderablePostContentElement: {
-        fileType,
-        fileTemporaryUrl,
-      },
+      blobFileKey: blobItemPointer.fileKey,
+      fileTemporaryUrl,
     };
-  }
+
+
 }
 
 export async function handleCreatePost({
@@ -155,7 +77,7 @@ export async function handleCreatePost({
 }): Promise<
   SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
 > {
-  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags } = requestBody;
+  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags, mediaFiles } = requestBody;
 
   const { clientUserId } = await checkAuthorization(controller, request);
 
@@ -164,8 +86,6 @@ export async function handleCreatePost({
   }
 
   const postId: string = uuidv4();
-
-  const orderedUploadedFiles = getOrderedUploadedFiles({ requestBody });
 
   try {
     await controller.databaseService.tableServices.postsTableService.createPost({
@@ -176,38 +96,36 @@ export async function handleCreatePost({
     });
 
     const filedAndRenderablePostContentElements = await BluebirdPromise.map(
-      orderedUploadedFiles,
+      mediaFiles,
       async (
         file,
       ): Promise<{
-        filedPostContentElement: FiledPostContentElement;
-        renderablePostContentElement: RenderablePostContentElement;
-      }> =>
+        blobFileKey: string;
+        fileTemporaryUrl: string;
+            }> =>
         uploadFile({
-          file: file.file,
-          fileType: file.type,
+          file,
           blobStorageService: controller.blobStorageService,
         }),
     );
 
-    const renderablePostContentElements = filedAndRenderablePostContentElements.map(
+    const blobFileKeys = filedAndRenderablePostContentElements.map(
       (filedAndRenderablePostContentElement) =>
-        filedAndRenderablePostContentElement.renderablePostContentElement,
+        filedAndRenderablePostContentElement.blobFileKey,
     );
 
-    const filedPostContentElements = filedAndRenderablePostContentElements.map(
+    const contentElementTemporaryUrls = filedAndRenderablePostContentElements.map(
       (filedAndRenderablePostContentElement) =>
-        filedAndRenderablePostContentElement.filedPostContentElement,
+        filedAndRenderablePostContentElement.fileTemporaryUrl,
     );
 
     await controller.databaseService.tableServices.postContentElementsTableService.createPostContentElements(
       {
-        postContentElements: filedPostContentElements.map(
-          (filedPostContentElement, index) => ({
+        postContentElements: blobFileKeys.map(
+          (blobFileKey, index) => ({
             postId,
             postContentElementIndex: index,
-            postContentElementType: filedPostContentElement.fileType,
-            blobFileKey: filedPostContentElement.blobFileKey,
+            blobFileKey,
           }),
         ),
       },
@@ -216,7 +134,7 @@ export async function handleCreatePost({
     return {
       success: {
         renderablePost: {
-          contentElements: renderablePostContentElements,
+          contentElementTemporaryUrls,
           postId,
           postAuthorUserId: clientUserId,
           caption,

@@ -1,15 +1,10 @@
 import { Pool, QueryResult } from "pg";
-import {
-  PostElementFileType,
-  FiledPostContentElement,
-} from "../../../controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
 interface DBPostContentElement {
   post_id: string;
   post_content_element_index: number;
-  post_content_element_type: PostElementFileType;
   blob_file_key: string;
 }
 
@@ -23,18 +18,9 @@ export class PostContentElementsTableService extends TableService {
 
   public async setup(): Promise<void> {
     const queryString = `
-      CREATE TYPE
-        enumerated_post_content_element_type
-      AS ENUM (
-        'image',
-        'video'
-      )
-      ;
-
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         post_id VARCHAR(64) NOT NULL,
         post_content_element_index SMALLINT NOT NULL,
-        post_content_element_type enumerated_post_content_element_type NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         UNIQUE (post_id, post_content_element_index)
       )
@@ -50,7 +36,6 @@ export class PostContentElementsTableService extends TableService {
     postContentElements: {
       postId: string;
       postContentElementIndex: number;
-      postContentElementType: PostElementFileType;
       blobFileKey: string;
     }[];
   }): Promise<void> {
@@ -62,13 +47,11 @@ export class PostContentElementsTableService extends TableService {
             INSERT INTO ${this.tableName}(
               post_id,
               post_content_element_index,
-              post_content_element_type,
               blob_file_key
             )
             VALUES (
                 '${currentValue.postId}',
                 '${currentValue.postContentElementIndex}',
-                '${currentValue.postContentElementType}',
                 '${currentValue.blobFileKey}'
             )
             ;
@@ -86,7 +69,9 @@ export class PostContentElementsTableService extends TableService {
     postId,
   }: {
     postId: string;
-  }): Promise<FiledPostContentElement[]> {
+  }): Promise<{
+    blobFileKey: string;
+  }[]> {
     const queryString = `
         SELECT
           *
@@ -108,7 +93,6 @@ export class PostContentElementsTableService extends TableService {
           : -1,
       )
       .map((dbPostContentElement) => ({
-        fileType: dbPostContentElement.post_content_element_type,
         blobFileKey: dbPostContentElement.blob_file_key,
       }));
   }

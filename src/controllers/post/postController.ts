@@ -59,12 +59,7 @@ export class PostController extends Controller {
     @FormField() authorUserId: string,
     // @FormField() collaboratorUsernames: string[],
     @FormField() scheduledPublicationTimestamp: number,
-    // Within all the files uploaded, what is the index of each uploaded image
-    @FormField() indexesOfUploadedImages: number[],
-    // Within all the files uploaded, what is the index of each uploaded video
-    @FormField() indexesOfUploadedVideos: number[],
-    @UploadedFiles() images: Express.Multer.File[],
-    @UploadedFiles() videos: Express.Multer.File[],
+    @UploadedFiles() mediaFiles: Express.Multer.File[],
   ): Promise<
     SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
   > {
@@ -72,11 +67,9 @@ export class PostController extends Controller {
       controller: this,
       request,
       requestBody: {
+        mediaFiles,
+
         authorUserId,
-        images,
-        videos,
-        indexesOfUploadedImages,
-        indexesOfUploadedVideos,
         caption,
         hashtags,
         scheduledPublicationTimestamp,

@@ -22,7 +22,9 @@ export class DatabaseService {
     ),
     userFollowsTableService: new UserFollowsTableService(DatabaseService.datastorePool),
     shopItemTableService: new ShopItemTableService(DatabaseService.datastorePool),
-    shopItemMediaElementTableService: new ShopItemMediaElementTableService(DatabaseService.datastorePool),
+    shopItemMediaElementTableService: new ShopItemMediaElementTableService(
+      DatabaseService.datastorePool,
+    ),
   };
 
   static async start(): Promise<void> {

@@ -66,6 +66,7 @@ export class ShopItemController extends Controller {
   @Post("update")
   public async updateShopItem(
     @Request() request: express.Request,
+    @FormField() shopItemId: string,
     @FormField() caption?: string,
     @FormField() hashtags?: string[],
     @FormField() title?: string,
@@ -81,6 +82,7 @@ export class ShopItemController extends Controller {
       controller: this,
       request,
       requestBody: {
+        shopItemId,
         caption,
         hashtags,
         title,

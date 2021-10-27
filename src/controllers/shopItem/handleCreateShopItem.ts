@@ -41,26 +41,31 @@ export async function handleCreateShopItem({
 
   const shopItemMediaElements = await BluebirdPromise.map(
     requestBody.mediaFiles,
-    async (mediaFile, index): Promise<{
+    async (
+      mediaFile,
+      index,
+    ): Promise<{
       shopItemId: string;
       shopItemElementIndex: number;
       blobFileKey: string;
     }> => {
-    const blobItemPointer = await controller.blobStorageService.saveImage({
-      image: mediaFile.buffer,
-    });
+      const blobItemPointer = await controller.blobStorageService.saveImage({
+        image: mediaFile.buffer,
+      });
 
-    return {
-      shopItemId,
-      shopItemElementIndex: index,
-      blobFileKey: blobItemPointer.fileKey,
-    };
-  });
+      return {
+        shopItemId,
+        shopItemElementIndex: index,
+        blobFileKey: blobItemPointer.fileKey,
+      };
+    },
+  );
 
-  await controller.databaseService.tableServices.shopItemMediaElementTableService.createShopItemMediaElements({
-    shopItemMediaElements,
-  });
-
+  await controller.databaseService.tableServices.shopItemMediaElementTableService.createShopItemMediaElements(
+    {
+      shopItemMediaElements,
+    },
+  );
 
   await controller.databaseService.tableServices.shopItemTableService.createShopItem({
     shopItemId,
@@ -71,7 +76,6 @@ export async function handleCreateShopItem({
     scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
     expirationTimestamp: requestBody.expirationTimestamp,
   });
-
 
   return {};
 }

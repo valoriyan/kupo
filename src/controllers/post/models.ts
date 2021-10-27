@@ -1,18 +1,3 @@
-export enum PostElementFileType {
-  Image = "image",
-  Video = "video",
-}
-
-export interface FiledPostContentElement {
-  fileType: PostElementFileType;
-  blobFileKey: string;
-}
-
-export interface RenderablePostContentElement {
-  fileType: PostElementFileType;
-  fileTemporaryUrl: string;
-}
-
 export interface UnrenderablePostWithoutElementsOrHashtags {
   postId: string;
   postAuthorUserId: string;
@@ -22,6 +7,6 @@ export interface UnrenderablePostWithoutElementsOrHashtags {
 }
 
 export interface RenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
-  contentElements: RenderablePostContentElement[];
+  contentElementTemporaryUrls: string[];
   hashtags: string[];
 }

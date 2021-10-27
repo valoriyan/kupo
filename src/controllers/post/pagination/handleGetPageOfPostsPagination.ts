@@ -1,7 +1,6 @@
 import express from "express";
 import {
   RenderablePost,
-  RenderablePostContentElement,
   UnrenderablePostWithoutElementsOrHashtags,
 } from "../models";
 import { PostController } from "../postController";
@@ -112,10 +111,10 @@ export async function handleGetPageOfPostsPagination({
           },
         );
 
-      const renderablePostContentElements: RenderablePostContentElement[] =
+      const contentElementTemporaryUrls: string[] =
         await BluebirdPromise.map(
           filedPostContentElements,
-          async (filedPostContentElement): Promise<RenderablePostContentElement> => {
+          async (filedPostContentElement): Promise<string> => {
             const fileTemporaryUrl =
               await controller.blobStorageService.getTemporaryImageUrl({
                 blobItemPointer: {
@@ -123,16 +122,13 @@ export async function handleGetPageOfPostsPagination({
                 },
               });
 
-            return {
-              fileType: filedPostContentElement.fileType,
-              fileTemporaryUrl,
-            };
+            return fileTemporaryUrl;
           },
         );
 
       return {
         ...unrenderablePostWithoutElements,
-        contentElements: renderablePostContentElements,
+        contentElementTemporaryUrls,
         hashtags: [],
       };
     },
