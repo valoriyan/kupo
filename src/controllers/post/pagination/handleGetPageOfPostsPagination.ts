@@ -1,8 +1,5 @@
 import express from "express";
-import {
-  RenderablePost,
-  UnrenderablePostWithoutElementsOrHashtags,
-} from "../models";
+import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "../models";
 import { PostController } from "../postController";
 import { Promise as BluebirdPromise } from "bluebird";
 import { HTTPResponse } from "../../../types/httpResponse";
@@ -111,20 +108,19 @@ export async function handleGetPageOfPostsPagination({
           },
         );
 
-      const contentElementTemporaryUrls: string[] =
-        await BluebirdPromise.map(
-          filedPostContentElements,
-          async (filedPostContentElement): Promise<string> => {
-            const fileTemporaryUrl =
-              await controller.blobStorageService.getTemporaryImageUrl({
-                blobItemPointer: {
-                  fileKey: filedPostContentElement.blobFileKey,
-                },
-              });
+      const contentElementTemporaryUrls: string[] = await BluebirdPromise.map(
+        filedPostContentElements,
+        async (filedPostContentElement): Promise<string> => {
+          const fileTemporaryUrl =
+            await controller.blobStorageService.getTemporaryImageUrl({
+              blobItemPointer: {
+                fileKey: filedPostContentElement.blobFileKey,
+              },
+            });
 
-            return fileTemporaryUrl;
-          },
-        );
+          return fileTemporaryUrl;
+        },
+      );
 
       return {
         ...unrenderablePostWithoutElements,

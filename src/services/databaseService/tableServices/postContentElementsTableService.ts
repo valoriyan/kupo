@@ -65,13 +65,11 @@ export class PostContentElementsTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
-  public async getPostContentElementsByPostId({
-    postId,
-  }: {
-    postId: string;
-  }): Promise<{
-    blobFileKey: string;
-  }[]> {
+  public async getPostContentElementsByPostId({ postId }: { postId: string }): Promise<
+    {
+      blobFileKey: string;
+    }[]
+  > {
     const queryString = `
         SELECT
           *

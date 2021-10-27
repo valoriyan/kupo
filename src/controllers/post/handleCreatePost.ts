@@ -5,9 +5,7 @@ import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { checkAuthorization } from "../auth/utilities";
-import {
-  RenderablePost,
-} from "./models";
+import { RenderablePost } from "./models";
 
 export enum CreatePostFailureReasons {
   UnknownCause = "Unknown Cause",
@@ -49,21 +47,19 @@ async function uploadFile({
     throw new Error(`Cannot handle file of type ${fileType}`);
   }
 
-    // TODO: ADD IMAGE VALIDATION
-    const blobItemPointer = await blobStorageService.saveImage({
-      image: file.buffer,
-    });
+  // TODO: ADD IMAGE VALIDATION
+  const blobItemPointer = await blobStorageService.saveImage({
+    image: file.buffer,
+  });
 
-    const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
-      blobItemPointer,
-    });
+  const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
+    blobItemPointer,
+  });
 
-    return {
-      blobFileKey: blobItemPointer.fileKey,
-      fileTemporaryUrl,
-    };
-
-
+  return {
+    blobFileKey: blobItemPointer.fileKey,
+    fileTemporaryUrl,
+  };
 }
 
 export async function handleCreatePost({
@@ -77,7 +73,8 @@ export async function handleCreatePost({
 }): Promise<
   SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
 > {
-  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags, mediaFiles } = requestBody;
+  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags, mediaFiles } =
+    requestBody;
 
   const { clientUserId } = await checkAuthorization(controller, request);
 
@@ -102,7 +99,7 @@ export async function handleCreatePost({
       ): Promise<{
         blobFileKey: string;
         fileTemporaryUrl: string;
-            }> =>
+      }> =>
         uploadFile({
           file,
           blobStorageService: controller.blobStorageService,
@@ -121,13 +118,11 @@ export async function handleCreatePost({
 
     await controller.databaseService.tableServices.postContentElementsTableService.createPostContentElements(
       {
-        postContentElements: blobFileKeys.map(
-          (blobFileKey, index) => ({
-            postId,
-            postContentElementIndex: index,
-            blobFileKey,
-          }),
-        ),
+        postContentElements: blobFileKeys.map((blobFileKey, index) => ({
+          postId,
+          postContentElementIndex: index,
+          blobFileKey,
+        })),
       },
     );
 
