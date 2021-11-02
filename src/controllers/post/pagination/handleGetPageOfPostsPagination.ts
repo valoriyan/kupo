@@ -1,11 +1,11 @@
 import express from "express";
 import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "../models";
 import { PostController } from "../postController";
-import { Promise as BluebirdPromise } from "bluebird";
 import { HTTPResponse } from "../../../types/httpResponse";
 import { checkAuthorization } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
-import { getEncodedNextPageCursor } from "./utilities";
+import { getEncodedNextPageCursor, getPageOfPosts } from "./utilities";
+import { constructRenderablePostsFromParts } from "../utilities";
 
 export interface GetPageOfPostsPaginationParams {
   userId: string;
@@ -77,58 +77,18 @@ export async function handleGetPageOfPostsPagination({
       },
     );
 
-  // For simplicity, we are returning posts ordered by timestamp
-  // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
-  let filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[];
-  if (!!requestBody.cursor) {
-    const decodedCursor = Number(
-      Buffer.from(requestBody.cursor, "base64").toString("binary"),
-    );
+    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] = getPageOfPosts({
+      unfilteredUnrenderablePostsWithoutElementsOrHashtags: unrenderablePostsWithoutElements,
+      encodedCursor: requestBody.cursor,
+      pageSize: requestBody.pageSize,
+    
+    });
 
-    filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements
-      .filter((unrenderablePostWithoutElements) => {
-        return (
-          unrenderablePostWithoutElements.scheduledPublicationTimestamp > decodedCursor
-        );
-      })
-      .slice(-requestBody.pageSize);
-  } else {
-    filteredUnrenderablePostsWithoutElements = unrenderablePostsWithoutElements.slice(
-      -requestBody.pageSize,
-    );
-  }
-
-  const renderablePosts = await BluebirdPromise.map(
-    filteredUnrenderablePostsWithoutElements,
-    async (unrenderablePostWithoutElements): Promise<RenderablePost> => {
-      const filedPostContentElements =
-        await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
-          {
-            postId: unrenderablePostWithoutElements.postId,
-          },
-        );
-
-      const contentElementTemporaryUrls: string[] = await BluebirdPromise.map(
-        filedPostContentElements,
-        async (filedPostContentElement): Promise<string> => {
-          const fileTemporaryUrl =
-            await controller.blobStorageService.getTemporaryImageUrl({
-              blobItemPointer: {
-                fileKey: filedPostContentElement.blobFileKey,
-              },
-            });
-
-          return fileTemporaryUrl;
-        },
-      );
-
-      return {
-        ...unrenderablePostWithoutElements,
-        contentElementTemporaryUrls,
-        hashtags: [],
-      };
-    },
-  );
+  const renderablePosts = await constructRenderablePostsFromParts({
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+    unrenderablePostsWithoutElementsOrHashtags: filteredUnrenderablePostsWithoutElements,
+  });
 
   return {
     success: {

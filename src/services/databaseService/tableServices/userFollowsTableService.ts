@@ -50,6 +50,28 @@ export class UserFollowsTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  public async getUserIdsFollowedByUserId({
+    userIdDoingFollowing,
+  }: {
+    userIdDoingFollowing: string;
+  }): Promise<string[]> {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${UserFollowsTableService.tableName}
+        WHERE
+          user_id_doing_following = '${userIdDoingFollowing}'
+        ;
+      `;
+
+      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(queryString);
+      const rows = response.rows;
+
+      const userIdsBeingFollowed = rows.map(row => row.user_id_being_followed);
+      return userIdsBeingFollowed;
+  }
+
   public async countFollowersOfUserId({
     userIdBeingFollowed,
   }: {

@@ -89,6 +89,35 @@ export class PostTableService extends TableService {
     );
   }
 
+  public async getPostsByCreatorUserIds({
+    creatorUserIds,
+  }: {
+    creatorUserIds: string[];
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    const creatorUserIdsQueryString = `(${creatorUserIds.join(", ")})`;
+
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${PostTableService.tableName}
+        WHERE
+          author_user_id IN ${creatorUserIdsQueryString}
+        ;
+      `;
+
+    const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
+
+    return response.rows.map(
+      (dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
+        postId: dbPost.post_id,
+        postAuthorUserId: dbPost.author_user_id,
+        caption: dbPost.caption,
+        scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
+      }),
+    );
+  }
+
   public async deletePost({ postId }: { postId: string }): Promise<void> {
     const queryString = `
       DELETE FROM ${this.tableName}

@@ -66,9 +66,6 @@ export class UserPageController extends Controller {
   ): Promise<
     SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
   > {
-    console.log("this.blobStorageService");
-    console.log(this.blobStorageService);
-
     return await handleGetUserProfile({
       controller: this,
       request,

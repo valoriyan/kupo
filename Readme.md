@@ -1,4 +1,6 @@
 To Do
+- fill in handleGetPostsScheduledByUser
+
 
 - confirm that Postgres types are deleted
 
