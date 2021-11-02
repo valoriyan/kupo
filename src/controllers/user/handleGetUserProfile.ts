@@ -50,6 +50,12 @@ export async function handleGetUserProfile({
 }): Promise<
   SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
 > {
+  // console.log("controller.blobStorageService.getTemporaryImageUrl");
+  // console.log(controller.blobStorageService.getTemporaryImageUrl);
+
+  // console.log(controller.blobStorageService.getTemporaryImageUrl({blobItemPointer: {
+  //   fileKey: "/app",
+  // }}))
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -58,7 +64,7 @@ export async function handleGetUserProfile({
   if (requestBody.username) {
     // Fetch user profile by given username
     user =
-      await controller.databaseService.tableServices.usersTableService.selectUserByUsername(
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
         {
           username: requestBody.username,
         },
@@ -67,7 +73,7 @@ export async function handleGetUserProfile({
     // Fetch user profile by own userId
     if (error) return error;
     user =
-      await controller.databaseService.tableServices.usersTableService.selectUserByUserId(
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
         { userId: clientUserId },
       );
   }
@@ -105,14 +111,14 @@ export async function handleGetUserProfile({
   });
 
   const numberOfFollowersOfUserId: number =
-    await controller.databaseService.tableServices.userFollowsTableService.countFollowersOfUserId(
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
       {
         userIdBeingFollowed: user.id,
       },
     );
 
   const numberOfFollowsByUserId: number =
-    await controller.databaseService.tableServices.userFollowsTableService.countFollowsOfUserId(
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.countFollowsOfUserId(
       {
         userIdDoingFollowing: user.id,
       },

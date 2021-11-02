@@ -36,7 +36,7 @@ export async function handleUpdateShopItem({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableServices.shopItemTableService.updateShopItemByShopItemId(
+  await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByShopItemId(
     {
       shopItemId: requestBody.shopItemId,
       authorUserId: clientUserId,

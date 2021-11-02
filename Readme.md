@@ -1,5 +1,7 @@
 To Do
 
+- confirm that Postgres types are deleted
+
 
 - Edit Posts controller to accept ordered list of Media (https://softwareengineering.stackexchange.com/questions/304593/how-to-store-ordered-information-in-a-relational-database)
 
@@ -7,6 +9,8 @@ To Do
 - add image validation
 
 
+
+- add user to followed posts list
 
 
 

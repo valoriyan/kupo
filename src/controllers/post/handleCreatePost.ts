@@ -85,7 +85,7 @@ export async function handleCreatePost({
   const postId: string = uuidv4();
 
   try {
-    await controller.databaseService.tableServices.postsTableService.createPost({
+    await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
       authorUserId: clientUserId,
       caption,
@@ -116,7 +116,7 @@ export async function handleCreatePost({
         filedAndRenderablePostContentElement.fileTemporaryUrl,
     );
 
-    await controller.databaseService.tableServices.postContentElementsTableService.createPostContentElements(
+    await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
       {
         postContentElements: blobFileKeys.map((blobFileKey, index) => ({
           postId,

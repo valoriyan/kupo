@@ -2,6 +2,7 @@ import { Pool, QueryResult } from "pg";
 import { ProfilePrivacySetting } from "../../../controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import { generatePostgreSQLCreateEnumTypeQueryString } from "./utilities";
 
 interface DBUser {
   id: string;
@@ -27,13 +28,10 @@ export class UsersTableService extends TableService {
 
   public async setup(): Promise<void> {
     const queryString = `
-      CREATE TYPE
-        enumerated_profile_privacy_setting
-      AS ENUM (
-        'Public',
-        'Private'
-      )
-      ;
+      ${generatePostgreSQLCreateEnumTypeQueryString({
+        typeName: "enumerated_profile_privacy_setting",
+        enumValues: ["Public", "Private"],
+      })}
 
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         id VARCHAR(64) UNIQUE NOT NULL,

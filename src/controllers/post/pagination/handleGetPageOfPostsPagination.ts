@@ -71,7 +71,7 @@ export async function handleGetPageOfPostsPagination({
   }
 
   const unrenderablePostsWithoutElements =
-    await controller.databaseService.tableServices.postsTableService.getPostsByCreatorUserId(
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserId(
       {
         creatorUserId: requestBody.userId,
       },
@@ -102,7 +102,7 @@ export async function handleGetPageOfPostsPagination({
     filteredUnrenderablePostsWithoutElements,
     async (unrenderablePostWithoutElements): Promise<RenderablePost> => {
       const filedPostContentElements =
-        await controller.databaseService.tableServices.postContentElementsTableService.getPostContentElementsByPostId(
+        await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
           {
             postId: unrenderablePostWithoutElements.postId,
           },

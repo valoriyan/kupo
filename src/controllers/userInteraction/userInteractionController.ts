@@ -1,5 +1,5 @@
 import express from "express";
-import { BlobStorageService } from "../../services/blobStorageService";
+import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
@@ -19,7 +19,7 @@ import {
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
   constructor(
-    public blobStorageService: BlobStorageService,
+    public blobStorageService: LocalBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

@@ -61,21 +61,23 @@ export async function handleCreateShopItem({
     },
   );
 
-  await controller.databaseService.tableServices.shopItemMediaElementTableService.createShopItemMediaElements(
+  await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
     {
       shopItemMediaElements,
     },
   );
 
-  await controller.databaseService.tableServices.shopItemTableService.createShopItem({
-    shopItemId,
-    authorUserId: clientUserId,
-    caption: requestBody.caption,
-    title: requestBody.title,
-    price: requestBody.price,
-    scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
-    expirationTimestamp: requestBody.expirationTimestamp,
-  });
+  await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
+    {
+      shopItemId,
+      authorUserId: clientUserId,
+      caption: requestBody.caption,
+      title: requestBody.title,
+      price: requestBody.price,
+      scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
+      expirationTimestamp: requestBody.expirationTimestamp,
+    },
+  );
 
   return {};
 }

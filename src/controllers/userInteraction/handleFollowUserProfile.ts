@@ -35,7 +35,7 @@ export async function handleFollowUser({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableServices.userFollowsTableService.createUserFollow(
+  await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
     {
       userIdDoingFollowing: clientUserId,
       userIdBeingFollowed: requestBody.userIdBeingFollowed,
@@ -61,7 +61,7 @@ export async function handleUnfollowUser({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableServices.userFollowsTableService.deleteUserFollow(
+  await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
     {
       userIdDoingUnfollowing: clientUserId,
       userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,

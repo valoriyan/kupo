@@ -77,7 +77,7 @@ export class AuthController extends Controller {
     const encryptedPassword = encryptPassword({ password });
 
     try {
-      this.databaseService.tableServices.usersTableService.createUser({
+      this.databaseService.tableNameToServicesMap.usersTableService.createUser({
         userId,
         email,
         username,
@@ -106,9 +106,11 @@ export class AuthController extends Controller {
 
     try {
       const user =
-        await this.databaseService.tableServices.usersTableService.selectUserByUsername({
-          username,
-        });
+        await this.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
+          {
+            username,
+          },
+        );
       if (user) {
         const hasMatchedPassword =
           encryptPassword({ password }) === user.encrypted_password;

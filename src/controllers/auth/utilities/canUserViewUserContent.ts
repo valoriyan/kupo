@@ -14,7 +14,7 @@ export async function canUserViewUserContent({
     return true;
   }
 
-  return await databaseService.tableServices.userFollowsTableService.isUserIdFollowingUserId(
+  return await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
     {
       userIdDoingFollowing: clientUserId,
       userIdBeingFollowed: targetUser.id,
@@ -32,7 +32,7 @@ export async function canUserViewUserContentByUserId({
   databaseService: DatabaseService;
 }): Promise<boolean> {
   const targetUser =
-    await databaseService.tableServices.usersTableService.selectUserByUserId({
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
       userId: targetUserId,
     });
 

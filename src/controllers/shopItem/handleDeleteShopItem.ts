@@ -27,10 +27,12 @@ export async function handleDeleteShopItem({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableServices.shopItemTableService.deleteShopItem({
-    shopItemId: requestBody.shopItemId,
-    authorUserId: clientUserId,
-  });
+  await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
+    {
+      shopItemId: requestBody.shopItemId,
+      authorUserId: clientUserId,
+    },
+  );
 
   return {};
 }

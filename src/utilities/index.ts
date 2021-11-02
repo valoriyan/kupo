@@ -3,6 +3,6 @@ export function getEnvironmentVariable(name: string): string {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return process.env[name]!;
   } else {
-    throw `Missing ${name} environment variable`;
+    throw new Error(`Missing ${name} environment variable`);
   }
 }

@@ -1,6 +1,7 @@
 import { TableService } from "./tableServices/models";
 import { Pool, QueryResult } from "pg";
 import { DATABASE_NAME } from "./config";
+import { Promise as BluebirdPromise } from "bluebird";
 
 async function doesDatabaseExist({
   datastorePool,
@@ -36,21 +37,24 @@ async function setupDatabase() {
 }
 
 async function setupTables({
-  tableServices,
+  tableNameToServicesMap,
 }: {
-  tableServices: { [key: string]: TableService };
+  tableNameToServicesMap: { [key: string]: TableService };
 }): Promise<void> {
-  const setupPromises = Object.values(tableServices).map((tableServices) =>
-    tableServices.setup(),
+  await BluebirdPromise.map(
+    Object.entries(tableNameToServicesMap),
+    async ([tableName, tableService]) => {
+      console.log(`Setting up table ${tableName}`);
+      tableService.setup();
+    },
   );
-  await Promise.all(setupPromises);
 }
 
 export async function setupDatabaseService({
-  tableServices,
+  tableNameToServicesMap,
 }: {
-  tableServices: { [key: string]: TableService };
+  tableNameToServicesMap: { [key: string]: TableService };
 }): Promise<void> {
   await setupDatabase();
-  await setupTables({ tableServices });
+  await setupTables({ tableNameToServicesMap });
 }

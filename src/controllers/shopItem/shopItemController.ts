@@ -1,7 +1,7 @@
 import { Controller, FormField, Post, Route, Request, UploadedFiles, Delete } from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
-import { BlobStorageService } from "../../services/blobStorageService";
+import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
 import express from "express";
 import {
@@ -24,7 +24,7 @@ import {
 @Route("shopitem")
 export class ShopItemController extends Controller {
   constructor(
-    public blobStorageService: BlobStorageService,
+    public blobStorageService: LocalBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

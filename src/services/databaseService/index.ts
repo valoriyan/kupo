@@ -14,7 +14,7 @@ import { teardownDatabaseServive } from "./teardown";
 export class DatabaseService {
   static datastorePool: Pool;
 
-  public tableServices = {
+  public tableNameToServicesMap = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
     postsTableService: new PostTableService(DatabaseService.datastorePool),
     postContentElementsTableService: new PostContentElementsTableService(
@@ -36,7 +36,7 @@ export class DatabaseService {
 
   public async setupDatabaseService(): Promise<void> {
     await setupDatabaseService({
-      tableServices: this.tableServices,
+      tableNameToServicesMap: this.tableNameToServicesMap,
     });
   }
 

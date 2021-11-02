@@ -45,16 +45,18 @@ export async function handleUpdateUserProfile({
       })
     : null;
 
-  await controller.databaseService.tableServices.usersTableService.updateUserByUserId({
-    userId: clientUserId,
+  await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
+    {
+      userId: clientUserId,
 
-    username: requestBody.username,
-    shortBio: requestBody.shortBio,
-    userWebsite: requestBody.userWebsite,
-    profilePrivacySetting: requestBody.profileVisibility,
-    backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
-    profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
-  });
+      username: requestBody.username,
+      shortBio: requestBody.shortBio,
+      userWebsite: requestBody.userWebsite,
+      profilePrivacySetting: requestBody.profileVisibility,
+      backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
+      profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+    },
+  );
 
   return {};
 }

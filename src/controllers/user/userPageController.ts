@@ -1,5 +1,5 @@
 import express from "express";
-import { BlobStorageService } from "../../services/blobStorageService";
+import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { Body, Controller, FormField, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
@@ -27,7 +27,7 @@ import {
 @Route("user")
 export class UserPageController extends Controller {
   constructor(
-    public blobStorageService: BlobStorageService,
+    public blobStorageService: LocalBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();
@@ -66,6 +66,9 @@ export class UserPageController extends Controller {
   ): Promise<
     SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
   > {
+    console.log("this.blobStorageService");
+    console.log(this.blobStorageService);
+
     return await handleGetUserProfile({
       controller: this,
       request,
