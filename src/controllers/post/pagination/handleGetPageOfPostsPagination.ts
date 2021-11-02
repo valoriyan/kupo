@@ -77,11 +77,12 @@ export async function handleGetPageOfPostsPagination({
       },
     );
 
-    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] = getPageOfPosts({
-      unfilteredUnrenderablePostsWithoutElementsOrHashtags: unrenderablePostsWithoutElements,
+  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
+    getPageOfPosts({
+      unfilteredUnrenderablePostsWithoutElementsOrHashtags:
+        unrenderablePostsWithoutElements,
       encodedCursor: requestBody.cursor,
       pageSize: requestBody.pageSize,
-    
     });
 
   const renderablePosts = await constructRenderablePostsFromParts({

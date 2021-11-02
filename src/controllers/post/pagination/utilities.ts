@@ -18,46 +18,41 @@ export function getEncodedNextPageCursor({
   return encodedNextPageCursor;
 }
 
-export function decodeCursor({encodedCursor}: {encodedCursor: string;}): number {
-  const decodedCursor = Number(
-    Buffer.from(encodedCursor, "base64").toString("binary"),
-  );
+export function decodeCursor({ encodedCursor }: { encodedCursor: string }): number {
+  const decodedCursor = Number(Buffer.from(encodedCursor, "base64").toString("binary"));
   return decodedCursor;
 }
 
-export function getPageOfPosts(
-{
+export function getPageOfPosts({
   unfilteredUnrenderablePostsWithoutElementsOrHashtags,
   encodedCursor,
   pageSize,
-
 }: {
-  unfilteredUnrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[],
+  unfilteredUnrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[];
   encodedCursor?: string;
   pageSize: number;
-}
-): UnrenderablePostWithoutElementsOrHashtags[] {
+}): UnrenderablePostWithoutElementsOrHashtags[] {
   // For simplicity, we are returning posts ordered by timestamp
   // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
 
   if (!!encodedCursor) {
-    const decodedCursor = decodeCursor({encodedCursor});
+    const decodedCursor = decodeCursor({ encodedCursor });
 
-    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] = unfilteredUnrenderablePostsWithoutElementsOrHashtags
-      .filter((unrenderablePostWithoutElementsOrHashtags) => {
-        return (
-          unrenderablePostWithoutElementsOrHashtags.scheduledPublicationTimestamp > decodedCursor
-        );
-      })
-      .slice(-pageSize);
+    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
+      unfilteredUnrenderablePostsWithoutElementsOrHashtags
+        .filter((unrenderablePostWithoutElementsOrHashtags) => {
+          return (
+            unrenderablePostWithoutElementsOrHashtags.scheduledPublicationTimestamp >
+            decodedCursor
+          );
+        })
+        .slice(-pageSize);
 
-      return filteredUnrenderablePostsWithoutElements;
+    return filteredUnrenderablePostsWithoutElements;
   }
 
-  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] = unfilteredUnrenderablePostsWithoutElementsOrHashtags.slice(
-    -pageSize,
-  );
-  
-  return filteredUnrenderablePostsWithoutElements;
+  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
+    unfilteredUnrenderablePostsWithoutElementsOrHashtags.slice(-pageSize);
 
+  return filteredUnrenderablePostsWithoutElements;
 }

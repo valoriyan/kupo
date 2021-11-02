@@ -65,11 +65,13 @@ export class UserFollowsTableService extends TableService {
         ;
       `;
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(queryString);
-      const rows = response.rows;
+    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(
+      queryString,
+    );
+    const rows = response.rows;
 
-      const userIdsBeingFollowed = rows.map(row => row.user_id_being_followed);
-      return userIdsBeingFollowed;
+    const userIdsBeingFollowed = rows.map((row) => row.user_id_being_followed);
+    return userIdsBeingFollowed;
   }
 
   public async countFollowersOfUserId({
