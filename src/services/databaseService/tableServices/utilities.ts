@@ -4,7 +4,7 @@ export function generatePostgreSQLCreateEnumTypeQueryString({
 }: {
   typeName: string;
   enumValues: string[];
-}) {
+}): string {
   const quotedEnumValues = enumValues.map((enumValue) => `'${enumValue}'`).join(", ");
 
   const queryString = `
