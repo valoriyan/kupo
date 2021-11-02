@@ -2,6 +2,7 @@ import { Pool } from "pg";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
+import { HashtagTableService } from "./tableServices/hashtagTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PostTableService } from "./tableServices/postTableService";
 import { ShopItemMediaElementTableService } from "./tableServices/shopItemMediaElementTableService";
@@ -25,6 +26,10 @@ export class DatabaseService {
     shopItemMediaElementTableService: new ShopItemMediaElementTableService(
       DatabaseService.datastorePool,
     ),
+    hashtagTableService: new HashtagTableService(
+      DatabaseService.datastorePool,
+    ),
+
   };
 
   static async start(): Promise<void> {

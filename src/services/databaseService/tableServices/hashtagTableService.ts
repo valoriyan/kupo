@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
@@ -56,5 +56,26 @@ export class HashtagTableService extends TableService {
     }, "");
 
     await this.datastorePool.query<DBHashtag>(queryString);
+  }
+
+  public async getPostIdsWithHashtagId({hashtag}: {hashtag: string}): Promise<string[]> {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+            hashtag = '${hashtag}'
+          AND
+            post_id IS NOT NULL
+        ;
+      `;
+
+      const response: QueryResult<DBHashtag> = await this.datastorePool.query(queryString);
+
+      const postIds = response.rows.map(row => row.post_id!);
+      return postIds;
+
+
   }
 }

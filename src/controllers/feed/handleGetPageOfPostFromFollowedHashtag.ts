@@ -9,45 +9,41 @@ import { getPageOfPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
-export interface GetPageOfPostFromFollowedUsersParams {
+export interface GetPageOfPostFromFollowedHashtagParams {
+  hashtag: string;
   cursor?: string;
   pageSize: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfPostFromFollowedUsersResponse {}
+export interface FailedToGetPageOfPostFromFollowedHashtagResponse {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulGetPageOfPostFromFollowedUsersResponse {
+export interface SuccessfulGetPageOfPostFromFollowedHashtagResponse {
   posts: RenderablePost[];
 }
 
-export async function handleGetPageOfPostFromFollowedUsers({
+export async function handleGetPageOfPostFromFollowedHashtag({
   controller,
   request,
   requestBody,
 }: {
   controller: FeedController;
   request: express.Request;
-  requestBody: GetPageOfPostFromFollowedUsersParams;
+  requestBody: GetPageOfPostFromFollowedHashtagParams;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToGetPageOfPostFromFollowedUsersResponse,
-    SuccessfulGetPageOfPostFromFollowedUsersResponse
+    FailedToGetPageOfPostFromFollowedHashtagResponse,
+    SuccessfulGetPageOfPostFromFollowedHashtagResponse
   >
 > {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const userIdsBeingFollowed: string[] =
-    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
-      { userIdDoingFollowing: clientUserId },
-    );
 
-  const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserIds(
-      { creatorUserIds: userIdsBeingFollowed },
-    );
+  const postIdsWithHashtag = await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtagId({hashtag: requestBody.hashtag});
+
+  const unrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds({postIds: postIdsWithHashtag})
 
   const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
     getPageOfPosts({

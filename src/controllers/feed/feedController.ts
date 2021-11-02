@@ -4,11 +4,12 @@ import { DatabaseService } from "src/services/databaseService";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
+import { FailedToGetPageOfPostFromFollowedHashtagResponse, GetPageOfPostFromFollowedHashtagParams, SuccessfulGetPageOfPostFromFollowedHashtagResponse } from "./handleGetPageOfPostFromFollowedHashtag";
 import {
-  FailedToGetPostsFromFollowedUsersResponse,
+  FailedToGetPageOfPostFromFollowedUsersResponse,
   GetPageOfPostFromFollowedUsersParams,
   handleGetPageOfPostFromFollowedUsers,
-  SuccessfulGetPostsFromFollowedUsersResponse,
+  SuccessfulGetPageOfPostFromFollowedUsersResponse,
 } from "./handleGetPageOfPostFromFollowedUsers";
 
 @injectable()
@@ -21,14 +22,14 @@ export class FeedController extends Controller {
     super();
   }
 
-  @Post("getFollowedUsersPosts")
-  public async getFollowedUsersPosts(
+  @Post("getPageOfPostFromFollowedUsers")
+  public async getPageOfPostFromFollowedUsers(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfPostFromFollowedUsersParams,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetPostsFromFollowedUsersResponse,
-      SuccessfulGetPostsFromFollowedUsersResponse
+      FailedToGetPageOfPostFromFollowedUsersResponse,
+      SuccessfulGetPageOfPostFromFollowedUsersResponse
     >
   > {
     return await handleGetPageOfPostFromFollowedUsers({
@@ -37,4 +38,22 @@ export class FeedController extends Controller {
       requestBody,
     });
   }
+
+  @Post("getPageOfPostFromFollowedHashtag")
+  public async getPageOfPostFromFollowedHashtag(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfPostFromFollowedHashtagParams,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetPageOfPostFromFollowedHashtagResponse,
+      SuccessfulGetPageOfPostFromFollowedHashtagResponse
+    >
+  > {
+    return await handleGetPageOfPostFromFollowedUsers({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
 }
