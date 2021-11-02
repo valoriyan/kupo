@@ -40,10 +40,15 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const postIdsWithHashtag =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtagId(
+      { hashtag: requestBody.hashtag },
+    );
 
-  const postIdsWithHashtag = await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtagId({hashtag: requestBody.hashtag});
-
-  const unrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds({postIds: postIdsWithHashtag})
+  const unrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] =
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
+      { postIds: postIdsWithHashtag },
+    );
 
   const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
     getPageOfPosts({

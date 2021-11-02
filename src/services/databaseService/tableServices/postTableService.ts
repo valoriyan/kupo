@@ -123,7 +123,7 @@ export class PostTableService extends TableService {
   }: {
     postIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    const postIdsQueryString = `(${postIds.map(postId => `'${postId}'`).join(", ")})`;
+    const postIdsQueryString = `(${postIds.map((postId) => `'${postId}'`).join(", ")})`;
 
     const queryString = `
         SELECT
@@ -146,7 +146,6 @@ export class PostTableService extends TableService {
       }),
     );
   }
-
 
   public async deletePost({ postId }: { postId: string }): Promise<void> {
     const queryString = `

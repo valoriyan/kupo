@@ -58,7 +58,11 @@ export class HashtagTableService extends TableService {
     await this.datastorePool.query<DBHashtag>(queryString);
   }
 
-  public async getPostIdsWithHashtagId({hashtag}: {hashtag: string}): Promise<string[]> {
+  public async getPostIdsWithHashtagId({
+    hashtag,
+  }: {
+    hashtag: string;
+  }): Promise<string[]> {
     const queryString = `
         SELECT
           *
@@ -71,11 +75,10 @@ export class HashtagTableService extends TableService {
         ;
       `;
 
-      const response: QueryResult<DBHashtag> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(queryString);
 
-      const postIds = response.rows.map(row => row.post_id!);
-      return postIds;
-
-
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const postIds = response.rows.map((row) => row.post_id!);
+    return postIds;
   }
 }

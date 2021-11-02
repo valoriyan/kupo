@@ -26,10 +26,7 @@ export class DatabaseService {
     shopItemMediaElementTableService: new ShopItemMediaElementTableService(
       DatabaseService.datastorePool,
     ),
-    hashtagTableService: new HashtagTableService(
-      DatabaseService.datastorePool,
-    ),
-
+    hashtagTableService: new HashtagTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

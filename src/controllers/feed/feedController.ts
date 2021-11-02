@@ -4,7 +4,11 @@ import { DatabaseService } from "src/services/databaseService";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
-import { FailedToGetPageOfPostFromFollowedHashtagResponse, GetPageOfPostFromFollowedHashtagParams, SuccessfulGetPageOfPostFromFollowedHashtagResponse } from "./handleGetPageOfPostFromFollowedHashtag";
+import {
+  FailedToGetPageOfPostFromFollowedHashtagResponse,
+  GetPageOfPostFromFollowedHashtagParams,
+  SuccessfulGetPageOfPostFromFollowedHashtagResponse,
+} from "./handleGetPageOfPostFromFollowedHashtag";
 import {
   FailedToGetPageOfPostFromFollowedUsersResponse,
   GetPageOfPostFromFollowedUsersParams,
@@ -55,5 +59,4 @@ export class FeedController extends Controller {
       requestBody,
     });
   }
-
 }
