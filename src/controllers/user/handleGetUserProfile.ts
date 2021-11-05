@@ -1,34 +1,14 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent";
-import { User } from "./models";
+import { RenderableUser, UnrenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
+import { constructRenderableUserFromParts } from "./utilities";
 
 export interface GetUserProfileParams {
   username?: string;
 }
-export interface SuccessfulGetUserProfileResponse {
-  id: string;
-  username: string;
-  followers: {
-    count: number;
-  };
-  subscribers: {
-    count: number;
-  };
-  follows: {
-    count: number;
-  };
-  bio?: string;
-  website?: string;
-
-  backgroundImageTemporaryUrl?: string;
-  profilePictureTemporaryUrl?: string;
-
-  // Is this private to user
-  clientCanViewContent: boolean;
-}
+export type SuccessfulGetUserProfileResponse = RenderableUser;
 
 export enum DeniedGetUserProfileResponseReason {
   Blocked = "Blocked",
@@ -60,10 +40,10 @@ export async function handleGetUserProfile({
   // IF Private hide posts and shop
   const { clientUserId, error } = await checkAuthorization(controller, request);
 
-  let user: User | undefined;
+  let unrenderableUser: UnrenderableUser | undefined;
   if (requestBody.username) {
     // Fetch user profile by given username
-    user =
+    unrenderableUser =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
         {
           username: requestBody.username,
@@ -72,78 +52,25 @@ export async function handleGetUserProfile({
   } else {
     // Fetch user profile by own userId
     if (error) return error;
-    user =
+    unrenderableUser =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
         { userId: clientUserId },
       );
   }
 
-  if (!user) {
+  if (!unrenderableUser) {
     controller.setStatus(404);
     return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
   }
 
-  let backgroundImageTemporaryUrl;
-  if (user.background_image_blob_file_key) {
-    backgroundImageTemporaryUrl =
-      await controller.blobStorageService.getTemporaryImageUrl({
-        blobItemPointer: {
-          fileKey: user.background_image_blob_file_key,
-        },
-      });
-  }
-
-  let profilePictureTemporaryUrl;
-  if (user.profile_picture_blob_file_key) {
-    profilePictureTemporaryUrl = await controller.blobStorageService.getTemporaryImageUrl(
-      {
-        blobItemPointer: {
-          fileKey: user.profile_picture_blob_file_key,
-        },
-      },
-    );
-  }
-
-  const clientCanViewContent = await canUserViewUserContent({
+  const renderableUser = await constructRenderableUserFromParts({
     clientUserId,
-    targetUser: user,
+    unrenderableUser,
+    blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
   });
 
-  const numberOfFollowersOfUserId: number =
-    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
-      {
-        userIdBeingFollowed: user.id,
-      },
-    );
-
-  const numberOfFollowsByUserId: number =
-    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.countFollowsOfUserId(
-      {
-        userIdDoingFollowing: user.id,
-      },
-    );
-
   return {
-    success: {
-      clientCanViewContent,
-      id: user.id,
-      username: user.username,
-      followers: {
-        count: numberOfFollowersOfUserId,
-      },
-      subscribers: {
-        // TODO: Figure out what this is
-        count: 0,
-      },
-      follows: {
-        count: numberOfFollowsByUserId,
-      },
-      bio: user.short_bio,
-      website: user.user_website,
-
-      backgroundImageTemporaryUrl,
-      profilePictureTemporaryUrl,
-    },
+    success: renderableUser,
   };
 }

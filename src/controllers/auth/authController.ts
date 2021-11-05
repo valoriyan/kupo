@@ -105,17 +105,17 @@ export class AuthController extends Controller {
     const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
 
     try {
-      const user =
-        await this.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
+      const user_WITH_PASSWORD =
+        await this.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByUsername(
           {
             username,
           },
         );
-      if (user) {
+      if (!!user_WITH_PASSWORD) {
         const hasMatchedPassword =
-          encryptPassword({ password }) === user.encrypted_password;
+          encryptPassword({ password }) === user_WITH_PASSWORD.encryptedPassword;
         if (hasMatchedPassword) {
-          const userId = user.id;
+          const userId = user_WITH_PASSWORD.userId;
           return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
         }
       }

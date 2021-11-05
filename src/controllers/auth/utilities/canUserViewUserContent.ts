@@ -1,4 +1,7 @@
-import { ProfilePrivacySetting, User } from "../../../controllers/user/models";
+import {
+  ProfilePrivacySetting,
+  UnrenderableUser,
+} from "../../../controllers/user/models";
 import { DatabaseService } from "../../../services/databaseService";
 
 export async function canUserViewUserContent({
@@ -7,17 +10,17 @@ export async function canUserViewUserContent({
   databaseService,
 }: {
   clientUserId: string;
-  targetUser: User;
+  targetUser: UnrenderableUser;
   databaseService: DatabaseService;
 }): Promise<boolean> {
-  if (targetUser.profile_privacy_setting === ProfilePrivacySetting.Public) {
+  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public) {
     return true;
   }
 
   return await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
     {
       userIdDoingFollowing: clientUserId,
-      userIdBeingFollowed: targetUser.id,
+      userIdBeingFollowed: targetUser.userId,
     },
   );
 }

@@ -1,5 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { checkAuthorization } from "../auth/utilities";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -23,9 +24,8 @@ export async function handleDeletePost({
 }): Promise<
   SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
 > {
-  console.log("controller", controller);
-  console.log("request", request);
-  console.log("requestBody", requestBody);
+  const { error } = await checkAuthorization(controller, request);
+  if (error) return error;
 
   const { postId } = requestBody;
 

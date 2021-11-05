@@ -1,9 +1,7 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import {
-  RenderablePost,
-} from "../post/models";
+import { RenderablePost } from "../post/models";
 import { getPageOfPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";

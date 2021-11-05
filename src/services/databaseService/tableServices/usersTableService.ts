@@ -1,5 +1,9 @@
 import { Pool, QueryResult } from "pg";
-import { ProfilePrivacySetting } from "../../../controllers/user/models";
+import {
+  ProfilePrivacySetting,
+  UnrenderableUser,
+  UnrenderableUser_WITH_PASSWORD,
+} from "../../../controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
@@ -8,7 +12,7 @@ import {
 } from "./utilities";
 
 interface DBUser {
-  id: string;
+  user_id: string;
   email: string;
   username: string;
   short_bio?: string;
@@ -19,6 +23,35 @@ interface DBUser {
 
   background_image_blob_file_key?: string;
   profile_picture_blob_file_key?: string;
+}
+
+function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
+  return {
+    userId: dbUser.user_id,
+    email: dbUser.email,
+    username: dbUser.username,
+    shortBio: dbUser.short_bio,
+    userWebsite: dbUser.user_website,
+    profilePrivacySetting: dbUser.profile_privacy_setting,
+    backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
+    profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
+  };
+}
+
+function convertDBUserToUnrenderableUserWITHPASSWORD(
+  dbUser: DBUser,
+): UnrenderableUser_WITH_PASSWORD {
+  return {
+    userId: dbUser.user_id,
+    email: dbUser.email,
+    username: dbUser.username,
+    shortBio: dbUser.short_bio,
+    userWebsite: dbUser.user_website,
+    profilePrivacySetting: dbUser.profile_privacy_setting,
+    backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
+    profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
+    encryptedPassword: dbUser.encrypted_password,
+  };
 }
 
 export class UsersTableService extends TableService {
@@ -37,7 +70,7 @@ export class UsersTableService extends TableService {
       })}
 
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        id VARCHAR(64) UNIQUE NOT NULL,
+        user_id VARCHAR(64) UNIQUE NOT NULL,
         email VARCHAR(64) UNIQUE NOT NULL,
         username VARCHAR(64) UNIQUE NOT NULL,
         short_bio VARCHAR(64),
@@ -70,7 +103,7 @@ export class UsersTableService extends TableService {
   }): Promise<void> {
     const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
       rows: [
-        { field: "id", value: userId },
+        { field: "user_id", value: userId },
         { field: "email", value: email },
         { field: "username", value: username },
         { field: "encrypted_password", value: encryptedPassword },
@@ -86,11 +119,11 @@ export class UsersTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async selectUserByUsername({
+  public async selectUser_WITH_PASSWORD_ByUsername({
     username,
   }: {
     username: string;
-  }): Promise<DBUser | undefined> {
+  }): Promise<UnrenderableUser_WITH_PASSWORD | undefined> {
     const queryString = `
         SELECT
           *
@@ -107,21 +140,24 @@ export class UsersTableService extends TableService {
 
     const rows = response.rows;
 
-    return rows[0];
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUserWITHPASSWORD(rows[0]);
+    }
+    return;
   }
 
-  public async selectUserByUserId({
-    userId,
+  public async selectUserByUsername({
+    username,
   }: {
-    userId: string;
-  }): Promise<DBUser | undefined> {
+    username: string;
+  }): Promise<UnrenderableUser | undefined> {
     const queryString = `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          id = '${userId}'
+          username = '${username}'
         LIMIT
           1
         ;
@@ -131,7 +167,59 @@ export class UsersTableService extends TableService {
 
     const rows = response.rows;
 
-    return rows[0];
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
+  }
+
+  public async selectUsersByUsernameMatchingSubstring({
+    usernameSubstring,
+  }: {
+    usernameSubstring: string;
+  }): Promise<UnrenderableUser[]> {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          username LIKE '%${usernameSubstring}%'
+        ;
+      `;
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    return rows.map(convertDBUserToUnrenderableUser);
+  }
+
+  public async selectUserByUserId({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UnrenderableUser | undefined> {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          user_id = '${userId}'
+        LIMIT
+          1
+        ;
+      `;
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    if (!!rows[0]) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
   }
 
   //////////////////////////////////////////////////
@@ -209,7 +297,7 @@ export class UsersTableService extends TableService {
           SET
             ${updateString}
           WHERE
-            id = '${userId}'
+            user_id = '${userId}'
           ;
         `;
 

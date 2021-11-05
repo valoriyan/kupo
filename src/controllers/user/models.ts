@@ -3,22 +3,31 @@ export enum ProfilePrivacySetting {
   Private = "Private",
 }
 
-export interface UserProfileSearchResponseItem {
+export interface BaseUnrenderableUser {
   userId: string;
-  username: string;
-  profilePictureTemporaryUrl?: string;
-}
-
-export interface User {
-  id: string;
   email: string;
   username: string;
-  short_bio?: string;
-  user_website?: string;
-  encrypted_password?: string;
+  shortBio?: string;
+  userWebsite?: string;
+  profilePrivacySetting: ProfilePrivacySetting;
+}
+export interface UnrenderableUser extends BaseUnrenderableUser {
+  backgroundImageBlobFileKey?: string;
+  profilePictureBlobFileKey?: string;
+}
 
-  profile_privacy_setting: ProfilePrivacySetting;
+export interface UnrenderableUser_WITH_PASSWORD extends UnrenderableUser {
+  encryptedPassword?: string;
+}
 
-  background_image_blob_file_key?: string;
-  profile_picture_blob_file_key?: string;
+export interface RenderableUser extends BaseUnrenderableUser {
+  backgroundImageTemporaryUrl?: string;
+  profilePictureTemporaryUrl?: string;
+  followers: {
+    count: number;
+  };
+  follows: {
+    count: number;
+  };
+  clientCanViewContent: boolean;
 }
