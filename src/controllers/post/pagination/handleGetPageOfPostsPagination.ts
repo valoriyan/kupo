@@ -47,6 +47,8 @@ export async function handleGetPageOfPostsPagination({
   // needs to filter out posts by expiration and scheduled publication timestamp
   // check if requesting user is allowed to view posts - 403
 
+  const { userTimeZone } = requestBody;
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
 
   if (error) {
@@ -57,7 +59,6 @@ export async function handleGetPageOfPostsPagination({
     };
   }
 
-  const { userTimeZone } = requestBody;
 
   const canViewContent = await canUserViewUserContentByUserId({
     clientUserId,
@@ -77,6 +78,7 @@ export async function handleGetPageOfPostsPagination({
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserId(
       {
         creatorUserId: requestBody.userId,
+        filterOutExpiredAndUnscheduledPosts: true,
       },
     );
 

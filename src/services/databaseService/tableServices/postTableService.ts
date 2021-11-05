@@ -90,9 +90,24 @@ export class PostTableService extends TableService {
 
   public async getPostsByCreatorUserId({
     creatorUserId,
+    filterOutExpiredAndUnscheduledPosts,
   }: {
     creatorUserId: string;
+    filterOutExpiredAndUnscheduledPosts: boolean;
   }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
+    const currentTimestamp = Date.now();
+
+    const filteringWhereClause = !!filterOutExpiredAndUnscheduledPosts ? `
+      AND
+        scheduled_publication_timestamp < ${currentTimestamp}
+      AND
+        expiration_timestamp > ${currentTimestamp}
+    ` : "";
+    
+    if (filterOutExpiredAndUnscheduledPosts) {
+
+    }
+
     const queryString = `
         SELECT
           *
@@ -100,6 +115,7 @@ export class PostTableService extends TableService {
           ${PostTableService.tableName}
         WHERE
           author_user_id = '${creatorUserId}'
+        ${filteringWhereClause}
         ;
       `;
 
