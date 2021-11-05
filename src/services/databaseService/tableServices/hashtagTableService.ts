@@ -1,6 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import { generatePSQLGenericCreateRowQueryString } from "./utilities";
 
 interface DBHashtag {
   hashtag: string;
@@ -30,6 +31,10 @@ export class HashtagTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async addHashtagsToPost({
     hashtags,
     postId,
@@ -40,23 +45,22 @@ export class HashtagTableService extends TableService {
     const queryString = hashtags.reduce((previousValue, hashtag): string => {
       return (
         previousValue +
-        `
-            INSERT INTO ${this.tableName}(
-              hashtag,
-              post_id,
-            )
-            VALUES (
-                '${hashtag}',
-                '${postId}'
-            )
-            ;
-            ` +
-        "\n"
+        generatePSQLGenericCreateRowQueryString<string | number>({
+          rows: [
+            { field: "hashtag", value: hashtag },
+            { field: "post_id", value: postId },
+          ],
+          tableName: this.tableName,
+        })
       );
     }, "");
 
     await this.datastorePool.query<DBHashtag>(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async getPostIdsWithHashtagId({
     hashtag,
@@ -81,4 +85,29 @@ export class HashtagTableService extends TableService {
     const postIds = response.rows.map((row) => row.post_id!);
     return postIds;
   }
+
+  public async getHashtagsForPostId({ postId }: { postId: string }): Promise<string[]> {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+        post_id = '${postId}'
+        ;
+      `;
+
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(queryString);
+
+    const hashtags = response.rows.map((row) => row.hashtag);
+    return hashtags;
+  }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 }

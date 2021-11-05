@@ -1,5 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { checkAuthorization } from "../auth/utilities";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -12,15 +13,13 @@ interface HandlerRequestBody {
   postId: string;
 
   mediaFiles?: Express.Multer.File[];
+  mediaBlobFileKeys?: (boolean | null)[];
 
   caption?: string;
   hashtags?: string[];
-  expirationTimestamp?: number;
-
-  title?: string;
-  price?: number;
 
   scheduledPublicationTimestamp?: number;
+  expirationTimestamp?: number;
 }
 
 export async function handleUpdatePost({
@@ -34,9 +33,19 @@ export async function handleUpdatePost({
 }): Promise<
   SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
 > {
-  console.log("controller", controller);
-  console.log("request", request);
-  console.log("requestBody", requestBody);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
+  if (error) return error;
+
+  const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
+    requestBody;
+
+  await controller.databaseService.tableNameToServicesMap.postsTableService.updatePost({
+    postId,
+    authorUserId: clientUserId,
+    caption: caption,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
+  });
 
   return {};
 }

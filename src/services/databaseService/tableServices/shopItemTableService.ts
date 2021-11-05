@@ -2,6 +2,7 @@ import { Pool, QueryResult } from "pg";
 import { UnrenderableShopItemPreview } from "src/controllers/shopItem/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import { generatePSQLGenericCreateRowQueryString } from "./utilities";
 
 interface DBShopItem {
   shop_item_id: string;
@@ -38,6 +39,10 @@ export class ShopItemTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async createShopItem({
     shopItemId,
     authorUserId,
@@ -55,42 +60,28 @@ export class ShopItemTableService extends TableService {
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
   }): Promise<void> {
-    let columnListString = `
-        shop_item_id,
-        author_user_id,
-        caption,
-        title,
-        price,
-        scheduled_publication_timestamp
-    `;
-    if (!!expirationTimestamp) {
-      columnListString += `, expiration_timestamp`;
-    }
-
-    let valuesListString = `
-        '${shopItemId}',
-        '${authorUserId}',
-        '${caption}',
-        '${title}',
-        '${price}',
-        '${scheduledPublicationTimestamp}'
-    `;
-    if (!!expirationTimestamp) {
-      valuesListString += `, '${expirationTimestamp}'`;
-    }
-
-    const queryString = `
-      INSERT INTO ${this.tableName}(
-          ${columnListString}
-      )
-      VALUES (
-          ${valuesListString}
-      )
-      ;
-    `;
+    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
+      rows: [
+        { field: "shop_item_id", value: shopItemId },
+        { field: "author_user_id", value: authorUserId },
+        { field: "caption", value: caption },
+        { field: "title", value: title },
+        { field: "price", value: price },
+        {
+          field: "scheduled_publication_timestamp",
+          value: scheduledPublicationTimestamp,
+        },
+        { field: "expiration_timestamp", value: expirationTimestamp },
+      ],
+      tableName: this.tableName,
+    });
 
     await this.datastorePool.query(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async getShopItemsByCreatorUserId({
     creatorUserId,
@@ -131,6 +122,10 @@ export class ShopItemTableService extends TableService {
       }),
     );
   }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async updateShopItemByShopItemId({
     shopItemId,
@@ -199,6 +194,10 @@ export class ShopItemTableService extends TableService {
       await this.datastorePool.query(queryString);
     }
   }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async deleteShopItem({
     shopItemId,

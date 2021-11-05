@@ -2,6 +2,7 @@ import { Pool, QueryResult } from "pg";
 import { ShopItemMediaElement } from "src/controllers/shopItem/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import { generatePSQLGenericCreateRowQueryString } from "./utilities";
 
 interface DBShopItemMediaElement {
   shop_item_id: string;
@@ -31,6 +32,10 @@ export class ShopItemMediaElementTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async createShopItemMediaElements({
     shopItemMediaElements,
   }: {
@@ -42,22 +47,18 @@ export class ShopItemMediaElementTableService extends TableService {
   }): Promise<void> {
     const queryString = shopItemMediaElements.reduce(
       (previousValue, currentValue): string => {
+        const { shopItemId, shopItemElementIndex, blobFileKey } = currentValue;
+
         return (
           previousValue +
-          `
-            INSERT INTO ${this.tableName}(
-              shop_item_id,
-              shop_item_element_index,
-              blob_file_key
-            )
-            VALUES (
-                '${currentValue.shopItemId}',
-                '${currentValue.shopItemElementIndex}',
-                '${currentValue.blobFileKey}'
-            )
-            ;
-            ` +
-          "\n"
+          generatePSQLGenericCreateRowQueryString<string | number>({
+            rows: [
+              { field: "shop_item_id", value: shopItemId },
+              { field: "shop_item_element_index", value: shopItemElementIndex },
+              { field: "blob_file_key", value: blobFileKey },
+            ],
+            tableName: this.tableName,
+          })
         );
       },
       "",
@@ -65,6 +66,10 @@ export class ShopItemMediaElementTableService extends TableService {
 
     await this.datastorePool.query(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async getShopItemMediaElementsByShopItemId({
     shopItemId,
@@ -95,4 +100,12 @@ export class ShopItemMediaElementTableService extends TableService {
         blobFileKey: dbShopItemMediaElement.blob_file_key,
       }));
   }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 }

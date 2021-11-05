@@ -32,7 +32,7 @@ export async function handleDeletePost({
   await controller.databaseService.tableNameToServicesMap.postsTableService.deletePost({
     postId,
   });
-  await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deleteContentElementsByPostId(
+  await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
     { postId },
   );
 

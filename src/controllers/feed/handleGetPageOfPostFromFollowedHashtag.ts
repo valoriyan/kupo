@@ -1,10 +1,7 @@
 import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import {
-  RenderablePost,
-  UnrenderablePostWithoutElementsOrHashtags,
-} from "../post/models";
+import { RenderablePost } from "../post/models";
 import { getPageOfPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
@@ -13,6 +10,7 @@ export interface GetPageOfPostFromFollowedHashtagParams {
   hashtag: string;
   cursor?: string;
   pageSize: number;
+  userTimeZone: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -37,6 +35,8 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     SuccessfulGetPageOfPostFromFollowedHashtagResponse
   >
 > {
+  const { userTimeZone } = requestBody;
+
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
@@ -45,23 +45,23 @@ export async function handleGetPageOfPostFromFollowedHashtag({
       { hashtag: requestBody.hashtag },
     );
 
-  const unrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] =
+  const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
       { postIds: postIdsWithHashtag },
     );
 
-  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
-    getPageOfPosts({
-      unfilteredUnrenderablePostsWithoutElementsOrHashtags:
-        unrenderablePostsWithoutElementsOrHashtags,
-      encodedCursor: requestBody.cursor,
-      pageSize: requestBody.pageSize,
-    });
+  const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
+    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags:
+      unrenderablePostsWithoutElementsOrHashtags,
+    encodedCursor: requestBody.cursor,
+    pageSize: requestBody.pageSize,
+  });
 
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    unrenderablePostsWithoutElementsOrHashtags: filteredUnrenderablePostsWithoutElements,
+    posts: filteredUnrenderablePostsWithoutElements,
+    userTimeZone,
   });
 
   return {

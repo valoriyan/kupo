@@ -1,13 +1,30 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderablePostWithoutElementsOrHashtags } from "../../../controllers/post/models";
+import { UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags } from "src/controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import {
+  generatePSQLGenericCreateRowQueryString,
+  generatePSQLGenericUpdateRowQueryString,
+} from "./utilities";
 
 interface DBPost {
   post_id: string;
   author_user_id: string;
   caption: string;
   scheduled_publication_timestamp: number;
+  expiration_timestamp?: number;
+}
+
+function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
+  dbPost: DBPost,
+): UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags {
+  return {
+    postId: dbPost.post_id,
+    postAuthorUserId: dbPost.author_user_id,
+    caption: dbPost.caption,
+    scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
+    expirationTimestamp: dbPost.expiration_timestamp,
+  };
 }
 
 export class PostTableService extends TableService {
@@ -24,7 +41,8 @@ export class PostTableService extends TableService {
         post_id VARCHAR(64) UNIQUE NOT NULL,
         author_user_id VARCHAR(64) UNIQUE NOT NULL,
         caption VARCHAR(256) NOT NULL,
-        scheduled_publication_timestamp BIGINT NOT NULL
+        scheduled_publication_timestamp BIGINT NOT NULL,
+        expiration_timestamp BIGINT
       )
       ;
     `;
@@ -32,41 +50,49 @@ export class PostTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async createPost({
     postId,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,
+    expirationTimestamp,
   }: {
     postId: string;
     authorUserId: string;
     caption: string;
     scheduledPublicationTimestamp: number;
+    expirationTimestamp?: number;
   }): Promise<void> {
-    const queryString = `
-        INSERT INTO ${this.tableName}(
-            post_id,
-            author_user_id,
-            caption,
-            scheduled_publication_timestamp
-        )
-        VALUES (
-            '${postId}',
-            '${authorUserId}',
-            '${caption}',
-            '${scheduledPublicationTimestamp}'
-        )
-        ;
-        `;
+    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
+      rows: [
+        { field: "post_id", value: postId },
+        { field: "author_user_id", value: authorUserId },
+        { field: "caption", value: caption },
+        {
+          field: "scheduled_publication_timestamp",
+          value: scheduledPublicationTimestamp,
+        },
+        { field: "expiration_timestamp", value: expirationTimestamp },
+      ],
+      tableName: this.tableName,
+    });
 
     await this.datastorePool.query(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async getPostsByCreatorUserId({
     creatorUserId,
   }: {
     creatorUserId: string;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
     const queryString = `
         SELECT
           *
@@ -79,21 +105,42 @@ export class PostTableService extends TableService {
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
-    return response.rows.map(
-      (dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
-        postId: dbPost.post_id,
-        postAuthorUserId: dbPost.author_user_id,
-        caption: dbPost.caption,
-        scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
-      }),
-    );
+    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+  }
+
+  public async getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId({
+    creatorUserId,
+    scheduledPublicationTimestampMaxValue,
+    scheduledPublicationTimestampMinValue,
+  }: {
+    creatorUserId: string;
+    scheduledPublicationTimestampMaxValue: number;
+    scheduledPublicationTimestampMinValue: number;
+  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
+    const queryString = `
+        SELECT
+          *
+        FROM
+          ${PostTableService.tableName}
+        WHERE
+            author_user_id = '${creatorUserId}'
+          AND
+            scheduled_publication_timestamp >= ${scheduledPublicationTimestampMinValue}
+          AND
+            scheduled_publication_timestamp <= ${scheduledPublicationTimestampMaxValue}
+        ;
+      `;
+
+    const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
+
+    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
 
   public async getPostsByCreatorUserIds({
     creatorUserIds,
   }: {
     creatorUserIds: string[];
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
     const creatorUserIdsQueryString = `(${creatorUserIds.join(", ")})`;
 
     const queryString = `
@@ -108,21 +155,14 @@ export class PostTableService extends TableService {
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
-    return response.rows.map(
-      (dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
-        postId: dbPost.post_id,
-        postAuthorUserId: dbPost.author_user_id,
-        caption: dbPost.caption,
-        scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
-      }),
-    );
+    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
 
   public async getPostsByPostIds({
     postIds,
   }: {
     postIds: string[];
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
     const postIdsQueryString = `(${postIds.map((postId) => `'${postId}'`).join(", ")})`;
 
     const queryString = `
@@ -137,15 +177,51 @@ export class PostTableService extends TableService {
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
-    return response.rows.map(
-      (dbPost): UnrenderablePostWithoutElementsOrHashtags => ({
-        postId: dbPost.post_id,
-        postAuthorUserId: dbPost.author_user_id,
-        caption: dbPost.caption,
-        scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
-      }),
-    );
+    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  public async updatePost({
+    postId,
+    authorUserId,
+    caption,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
+  }: {
+    postId: string;
+    authorUserId?: string;
+    caption?: string;
+    scheduledPublicationTimestamp?: number;
+    expirationTimestamp?: number;
+  }): Promise<void> {
+    const queryString = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "author_user_id", value: authorUserId },
+        { field: "caption", value: caption },
+        {
+          field: "scheduled_publication_timestamp",
+          value: scheduledPublicationTimestamp,
+        },
+        { field: "expirationTimestamp", value: expirationTimestamp },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "post_id",
+        value: postId,
+      },
+      tableName: this.tableName,
+    });
+
+    if (queryString) {
+      await this.datastorePool.query(queryString);
+    }
+  }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async deletePost({ postId }: { postId: string }): Promise<void> {
     const queryString = `

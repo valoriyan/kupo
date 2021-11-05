@@ -3,7 +3,6 @@ import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import {
   RenderablePost,
-  UnrenderablePostWithoutElementsOrHashtags,
 } from "../post/models";
 import { getPageOfPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
@@ -12,6 +11,7 @@ import { FeedController } from "./feedController";
 export interface GetPageOfPostFromFollowedUsersParams {
   cursor?: string;
   pageSize: number;
+  userTimeZone: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -39,6 +39,8 @@ export async function handleGetPageOfPostFromFollowedUsers({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const { userTimeZone } = requestBody;
+
   const userIdsBeingFollowed: string[] =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
       { userIdDoingFollowing: clientUserId },
@@ -49,18 +51,18 @@ export async function handleGetPageOfPostFromFollowedUsers({
       { creatorUserIds: userIdsBeingFollowed },
     );
 
-  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
-    getPageOfPosts({
-      unfilteredUnrenderablePostsWithoutElementsOrHashtags:
-        unrenderablePostsWithoutElementsOrHashtags,
-      encodedCursor: requestBody.cursor,
-      pageSize: requestBody.pageSize,
-    });
+  const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
+    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags:
+      unrenderablePostsWithoutElementsOrHashtags,
+    encodedCursor: requestBody.cursor,
+    pageSize: requestBody.pageSize,
+  });
 
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    unrenderablePostsWithoutElementsOrHashtags: filteredUnrenderablePostsWithoutElements,
+    posts: filteredUnrenderablePostsWithoutElements,
+    userTimeZone,
   });
 
   return {

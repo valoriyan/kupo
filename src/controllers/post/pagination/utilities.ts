@@ -1,16 +1,14 @@
-import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "../models";
+import { UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags } from "../models";
 
 export function getEncodedNextPageCursor({
-  renderablePosts,
+  posts,
 }: {
-  renderablePosts: RenderablePost[];
+  posts: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[];
 }): string | undefined {
   const encodedNextPageCursor =
-    renderablePosts.length > 0
+    posts.length > 0
       ? Buffer.from(
-          String(
-            renderablePosts[renderablePosts.length - 1]?.scheduledPublicationTimestamp,
-          ),
+          String(posts[posts.length - 1]?.scheduledPublicationTimestamp),
           "binary",
         ).toString("base64")
       : undefined;
@@ -24,25 +22,25 @@ export function decodeCursor({ encodedCursor }: { encodedCursor: string }): numb
 }
 
 export function getPageOfPosts({
-  unfilteredUnrenderablePostsWithoutElementsOrHashtags,
+  unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags,
   encodedCursor,
   pageSize,
 }: {
-  unfilteredUnrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[];
+  unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[];
   encodedCursor?: string;
   pageSize: number;
-}): UnrenderablePostWithoutElementsOrHashtags[] {
+}): UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[] {
   // For simplicity, we are returning posts ordered by timestamp
   // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
 
   if (!!encodedCursor) {
     const decodedCursor = decodeCursor({ encodedCursor });
 
-    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
-      unfilteredUnrenderablePostsWithoutElementsOrHashtags
-        .filter((unrenderablePostWithoutElementsOrHashtags) => {
+    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[] =
+      unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags
+        .filter((unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags) => {
           return (
-            unrenderablePostWithoutElementsOrHashtags.scheduledPublicationTimestamp >
+            unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags.scheduledPublicationTimestamp >
             decodedCursor
           );
         })
@@ -51,8 +49,8 @@ export function getPageOfPosts({
     return filteredUnrenderablePostsWithoutElements;
   }
 
-  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
-    unfilteredUnrenderablePostsWithoutElementsOrHashtags.slice(-pageSize);
+  const filteredUnrenderablePostsWithoutElements =
+    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags.slice(-pageSize);
 
   return filteredUnrenderablePostsWithoutElements;
 }

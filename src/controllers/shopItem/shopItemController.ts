@@ -38,9 +38,9 @@ export class ShopItemController extends Controller {
     @FormField() title: string,
     @FormField() price: number,
     @FormField() scheduledPublicationTimestamp: number,
-    @FormField() expirationTimestamp: number,
     @FormField() collaboratorUserIds: string[],
     @UploadedFiles() mediaFiles: Express.Multer.File[],
+    @FormField() expirationTimestamp?: number,
   ): Promise<
     SecuredHTTPResponse<
       FailedToCreateShopItemResponse,

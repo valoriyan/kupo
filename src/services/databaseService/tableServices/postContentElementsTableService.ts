@@ -1,6 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import { generatePSQLGenericCreateRowQueryString } from "./utilities";
 
 interface DBPostContentElement {
   post_id: string;
@@ -30,6 +31,10 @@ export class PostContentElementsTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async createPostContentElements({
     postContentElements,
   }: {
@@ -41,22 +46,18 @@ export class PostContentElementsTableService extends TableService {
   }): Promise<void> {
     const queryString = postContentElements.reduce(
       (previousValue, currentValue): string => {
+        const { postId, postContentElementIndex, blobFileKey } = currentValue;
+
         return (
           previousValue +
-          `
-            INSERT INTO ${this.tableName}(
-              post_id,
-              post_content_element_index,
-              blob_file_key
-            )
-            VALUES (
-                '${currentValue.postId}',
-                '${currentValue.postContentElementIndex}',
-                '${currentValue.blobFileKey}'
-            )
-            ;
-            ` +
-          "\n"
+          generatePSQLGenericCreateRowQueryString<string | number>({
+            rows: [
+              { field: "post_id", value: postId },
+              { field: "post_content_element_index", value: postContentElementIndex },
+              { field: "blob_file_key", value: blobFileKey },
+            ],
+            tableName: this.tableName,
+          })
         );
       },
       "",
@@ -64,6 +65,10 @@ export class PostContentElementsTableService extends TableService {
 
     await this.datastorePool.query(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async getPostContentElementsByPostId({ postId }: { postId: string }): Promise<
     {
@@ -95,7 +100,20 @@ export class PostContentElementsTableService extends TableService {
       }));
   }
 
-  public async deleteContentElementsByPostId({
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  public async updatePostContentElements({ postId }: { postId: string }): Promise<void> {
+    // TODO: DECIDE HOW TO HANDLE MEDIA REPLACEMENT
+    console.log(postId);
+  }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  public async deletePostContentElementsByPostId({
     postId,
   }: {
     postId: string;

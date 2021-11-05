@@ -2,7 +2,10 @@ import { Pool, QueryResult } from "pg";
 import { ProfilePrivacySetting } from "../../../controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePostgreSQLCreateEnumTypeQueryString } from "./utilities";
+import {
+  generatePostgreSQLCreateEnumTypeQueryString,
+  generatePSQLGenericCreateRowQueryString,
+} from "./utilities";
 
 interface DBUser {
   id: string;
@@ -50,6 +53,10 @@ export class UsersTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async createUser({
     userId,
     email,
@@ -61,26 +68,23 @@ export class UsersTableService extends TableService {
     username: string;
     encryptedPassword: string;
   }): Promise<void> {
-    const queryString = `
-        INSERT INTO ${UsersTableService.tableName}(
-            id,
-            email,
-            username,
-            encrypted_password,
-            profile_privacy_setting
-        )
-        VALUES (
-            '${userId}',
-            '${email}',
-            '${username}',
-            '${encryptedPassword}',
-            '${ProfilePrivacySetting.Public}'
-        )
-        ;
-        `;
+    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
+      rows: [
+        { field: "id", value: userId },
+        { field: "email", value: email },
+        { field: "username", value: username },
+        { field: "encrypted_password", value: encryptedPassword },
+        { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
+      ],
+      tableName: this.tableName,
+    });
 
     await this.datastorePool.query(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async selectUserByUsername({
     username,
@@ -91,7 +95,7 @@ export class UsersTableService extends TableService {
         SELECT
           *
         FROM
-          ${UsersTableService.tableName}
+          ${this.tableName}
         WHERE
           username = '${username}'
         LIMIT
@@ -115,7 +119,7 @@ export class UsersTableService extends TableService {
         SELECT
           *
         FROM
-          ${UsersTableService.tableName}
+          ${this.tableName}
         WHERE
           id = '${userId}'
         LIMIT
@@ -129,6 +133,10 @@ export class UsersTableService extends TableService {
 
     return rows[0];
   }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async updateUserByUserId({
     userId,
@@ -197,7 +205,7 @@ export class UsersTableService extends TableService {
 
       const queryString = `
           UPDATE
-            ${UsersTableService.tableName}
+            ${this.tableName}
           SET
             ${updateString}
           WHERE
@@ -208,4 +216,8 @@ export class UsersTableService extends TableService {
       await this.datastorePool.query(queryString);
     }
   }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 }

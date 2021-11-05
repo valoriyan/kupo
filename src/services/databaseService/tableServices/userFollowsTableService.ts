@@ -1,6 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
+import { generatePSQLGenericCreateRowQueryString } from "./utilities";
 
 interface DBUserFollow {
   user_id_doing_following: string;
@@ -28,6 +29,10 @@ export class UserFollowsTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   public async createUserFollow({
     userIdDoingFollowing,
     userIdBeingFollowed,
@@ -35,20 +40,20 @@ export class UserFollowsTableService extends TableService {
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
   }): Promise<void> {
-    const queryString = `
-        INSERT INTO ${UserFollowsTableService.tableName}(
-            user_id_doing_following,
-            user_id_being_followed,
-        )
-        VALUES (
-            '${userIdDoingFollowing}',
-            '${userIdBeingFollowed}'
-        )
-        ;
-        `;
+    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
+      rows: [
+        { field: "user_id_doing_following", value: userIdDoingFollowing },
+        { field: "user_id_being_followed", value: userIdBeingFollowed },
+      ],
+      tableName: this.tableName,
+    });
 
     await this.datastorePool.query(queryString);
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async getUserIdsFollowedByUserId({
     userIdDoingFollowing,
@@ -144,6 +149,14 @@ export class UserFollowsTableService extends TableService {
 
     return response.rows.length > 0;
   }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   public async deleteUserFollow({
     userIdDoingUnfollowing,

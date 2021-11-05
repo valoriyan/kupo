@@ -1,5 +1,5 @@
 import express from "express";
-import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "../models";
+import { RenderablePost } from "../models";
 import { PostController } from "../postController";
 import { HTTPResponse } from "../../../types/httpResponse";
 import { checkAuthorization } from "../../auth/utilities";
@@ -12,6 +12,7 @@ export interface GetPageOfPostsPaginationParams {
 
   cursor?: string;
   pageSize: number;
+  userTimeZone: string;
 }
 
 export interface SuccessfulGetPageOfPostsPaginationResponse {
@@ -56,6 +57,8 @@ export async function handleGetPageOfPostsPagination({
     };
   }
 
+  const { userTimeZone } = requestBody;
+
   const canViewContent = await canUserViewUserContentByUserId({
     clientUserId,
     targetUserId: requestBody.userId,
@@ -77,25 +80,27 @@ export async function handleGetPageOfPostsPagination({
       },
     );
 
-  const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
-    getPageOfPosts({
-      unfilteredUnrenderablePostsWithoutElementsOrHashtags:
-        unrenderablePostsWithoutElements,
-      encodedCursor: requestBody.cursor,
-      pageSize: requestBody.pageSize,
-    });
+  const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
+    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags:
+      unrenderablePostsWithoutElements,
+    encodedCursor: requestBody.cursor,
+    pageSize: requestBody.pageSize,
+  });
 
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    unrenderablePostsWithoutElementsOrHashtags: filteredUnrenderablePostsWithoutElements,
+    posts: filteredUnrenderablePostsWithoutElements,
+    userTimeZone,
   });
 
   return {
     success: {
       renderablePosts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getEncodedNextPageCursor({ renderablePosts }),
+      nextPageCursor: getEncodedNextPageCursor({
+        posts: filteredUnrenderablePostsWithoutElements,
+      }),
     },
   };
 }

@@ -18,7 +18,7 @@ interface HandlerRequestBody {
   title: string;
   price: number;
   scheduledPublicationTimestamp: number;
-  expirationTimestamp: number;
+  expirationTimestamp?: number;
   collaboratorUserIds?: string[];
   mediaFiles: Express.Multer.File[];
 }

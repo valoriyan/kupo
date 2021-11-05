@@ -6,6 +6,7 @@ import { Promise as BluebirdPromise } from "bluebird";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "./models";
+import { getJSDateFromTimestamp } from "src/utilities";
 
 export enum CreatePostFailureReasons {
   UnknownCause = "Unknown Cause",
@@ -26,10 +27,11 @@ interface HandlerRequestBody {
 
   caption: string;
   hashtags: string[];
-  expirationTimestamp?: number;
   authorUserId: string;
+  userTimeZone: string;
 
   scheduledPublicationTimestamp: number;
+  expirationTimestamp?: number;
 }
 
 async function uploadFile({
@@ -73,10 +75,18 @@ export async function handleCreatePost({
 }): Promise<
   SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
 > {
-  const { authorUserId, caption, scheduledPublicationTimestamp, hashtags, mediaFiles } =
-    requestBody;
+  const {
+    userTimeZone,
+    authorUserId,
+    caption,
+    scheduledPublicationTimestamp,
+    hashtags,
+    mediaFiles,
+    expirationTimestamp,
+  } = requestBody;
 
-  const { clientUserId } = await checkAuthorization(controller, request);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
+  if (error) return error;
 
   if (authorUserId !== clientUserId) {
     throw new Error("Someone other than user is attempting to create a post");
@@ -90,6 +100,7 @@ export async function handleCreatePost({
       authorUserId: clientUserId,
       caption,
       scheduledPublicationTimestamp,
+      expirationTimestamp,
     });
 
     const filedAndRenderablePostContentElements = await BluebirdPromise.map(
@@ -126,6 +137,15 @@ export async function handleCreatePost({
       },
     );
 
+    const scheduledPublicationDateTime = getJSDateFromTimestamp({
+      timestamp: scheduledPublicationTimestamp,
+      timezone: userTimeZone,
+    });
+
+    const expirationDateTime = expirationTimestamp
+      ? getJSDateFromTimestamp({ timestamp: expirationTimestamp, timezone: userTimeZone })
+      : undefined;
+
     return {
       success: {
         renderablePost: {
@@ -133,8 +153,9 @@ export async function handleCreatePost({
           postId,
           postAuthorUserId: clientUserId,
           caption,
-          scheduledPublicationTimestamp,
+          scheduledPublicationDateTime,
           hashtags,
+          expirationDateTime,
         },
       },
     };

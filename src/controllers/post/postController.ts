@@ -59,6 +59,7 @@ export class PostController extends Controller {
     @FormField() authorUserId: string,
     // @FormField() collaboratorUsernames: string[],
     @FormField() scheduledPublicationTimestamp: number,
+    @FormField() userTimeZone: string,
     @UploadedFiles() mediaFiles: Express.Multer.File[],
   ): Promise<
     SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
@@ -68,6 +69,7 @@ export class PostController extends Controller {
       request,
       requestBody: {
         mediaFiles,
+        userTimeZone,
 
         authorUserId,
         caption,
@@ -118,6 +120,8 @@ export class PostController extends Controller {
     @FormField() caption?: string,
     @FormField() hashtags?: string[],
     @FormField() scheduledPublicationTimestamp?: number,
+    @FormField() expirationTimestamp?: number,
+    @FormField() mediaBlobFileKeys?: (boolean | null)[],
     @UploadedFiles() mediaFiles?: Express.Multer.File[],
   ): Promise<
     SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
@@ -128,9 +132,11 @@ export class PostController extends Controller {
       requestBody: {
         postId,
         mediaFiles,
+        mediaBlobFileKeys,
         caption,
         hashtags,
         scheduledPublicationTimestamp,
+        expirationTimestamp,
       },
     });
   }
