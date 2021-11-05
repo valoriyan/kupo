@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags } from "src/controllers/post/models";
+import { UnrenderablePostWithoutElementsOrHashtags } from "src/controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
@@ -17,7 +17,7 @@ interface DBPost {
 
 function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
   dbPost: DBPost,
-): UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags {
+): UnrenderablePostWithoutElementsOrHashtags {
   return {
     postId: dbPost.post_id,
     postAuthorUserId: dbPost.author_user_id,
@@ -94,7 +94,7 @@ export class PostTableService extends TableService {
   }: {
     creatorUserId: string;
     filterOutExpiredAndUnscheduledPosts: boolean;
-  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const currentTimestamp = Date.now();
 
     const filteringWhereClause = !!filterOutExpiredAndUnscheduledPosts
@@ -133,7 +133,7 @@ export class PostTableService extends TableService {
     creatorUserId: string;
     scheduledPublicationTimestampMaxValue: number;
     scheduledPublicationTimestampMinValue: number;
-  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const queryString = `
         SELECT
           *
@@ -157,7 +157,7 @@ export class PostTableService extends TableService {
     creatorUserIds,
   }: {
     creatorUserIds: string[];
-  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const creatorUserIdsQueryString = `(${creatorUserIds.join(", ")})`;
 
     const queryString = `
@@ -179,7 +179,7 @@ export class PostTableService extends TableService {
     postIds,
   }: {
     postIds: string[];
-  }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const postIdsQueryString = `(${postIds.map((postId) => `'${postId}'`).join(", ")})`;
 
     const queryString = `

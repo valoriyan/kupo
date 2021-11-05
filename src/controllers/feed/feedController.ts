@@ -1,7 +1,7 @@
 import express from "express";
-import { LocalBlobStorageService } from "src/services/blobStorageService";
-import { DatabaseService } from "src/services/databaseService";
-import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { LocalBlobStorageService } from "../../services/blobStorageService";
+import { DatabaseService } from "../../services/databaseService";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
 import {

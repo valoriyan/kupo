@@ -51,8 +51,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     );
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
-    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags:
-      unrenderablePostsWithoutElementsOrHashtags,
+    unrenderablePostsWithoutElementsOrHashtags,
     encodedCursor: requestBody.cursor,
     pageSize: requestBody.pageSize,
   });

@@ -1,9 +1,9 @@
-import { UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags } from "../models";
+import { UnrenderablePostWithoutElementsOrHashtags } from "../models";
 
 export function getEncodedNextPageCursor({
   posts,
 }: {
-  posts: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[];
+  posts: UnrenderablePostWithoutElementsOrHashtags[];
 }): string | undefined {
   const encodedNextPageCursor =
     posts.length > 0
@@ -22,25 +22,25 @@ export function decodeCursor({ encodedCursor }: { encodedCursor: string }): numb
 }
 
 export function getPageOfPosts({
-  unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags,
+  unrenderablePostsWithoutElementsOrHashtags,
   encodedCursor,
   pageSize,
 }: {
-  unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[];
+  unrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[];
   encodedCursor?: string;
   pageSize: number;
-}): UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[] {
+}): UnrenderablePostWithoutElementsOrHashtags[] {
   // For simplicity, we are returning posts ordered by timestamp
   // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
 
   if (!!encodedCursor) {
     const decodedCursor = decodeCursor({ encodedCursor });
 
-    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[] =
-      unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags
-        .filter((unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags) => {
+    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
+      unrenderablePostsWithoutElementsOrHashtags
+        .filter((unrenderablePostsWithoutElementsOrHashtags) => {
           return (
-            unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags.scheduledPublicationTimestamp >
+            unrenderablePostsWithoutElementsOrHashtags.scheduledPublicationTimestamp >
             decodedCursor
           );
         })
@@ -50,7 +50,7 @@ export function getPageOfPosts({
   }
 
   const filteredUnrenderablePostsWithoutElements =
-    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags.slice(-pageSize);
+    unrenderablePostsWithoutElementsOrHashtags.slice(-pageSize);
 
   return filteredUnrenderablePostsWithoutElements;
 }

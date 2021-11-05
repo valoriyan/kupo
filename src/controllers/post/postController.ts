@@ -54,13 +54,13 @@ export class PostController extends Controller {
   @Post("create")
   public async createPost(
     @Request() request: express.Request,
-    @FormField() caption: string,
-    @FormField() hashtags: string[],
-    @FormField() authorUserId: string,
-    // @FormField() collaboratorUsernames: string[],
-    @FormField() scheduledPublicationTimestamp: number,
-    @FormField() userTimeZone: string,
     @UploadedFiles() mediaFiles: Express.Multer.File[],
+    @FormField() caption: string,
+    // @FormField() only supports strings so we'll have to do some parsing
+    // for the following fields
+    @FormField() hashtags: string, // string[]
+    @FormField() scheduledPublicationTimestamp?: string, // number
+    @FormField() expirationTimestamp?: string, // number
   ): Promise<
     SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
   > {
@@ -69,12 +69,14 @@ export class PostController extends Controller {
       request,
       requestBody: {
         mediaFiles,
-        userTimeZone,
-
-        authorUserId,
         caption,
-        hashtags,
-        scheduledPublicationTimestamp,
+        hashtags: JSON.parse(hashtags),
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp
+          ? parseInt(scheduledPublicationTimestamp, 10)
+          : undefined,
+        expirationTimestamp: expirationTimestamp
+          ? parseInt(expirationTimestamp, 10)
+          : undefined,
       },
     });
   }

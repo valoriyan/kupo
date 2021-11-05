@@ -1,11 +1,8 @@
 import express from "express";
-import { SecuredHTTPResponse } from "src/types/httpResponse";
-import { getTimestampRangeFromJSMonth } from "src/utilities";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { getTimestampRangeFromJSMonth } from "../../utilities";
 import { checkAuthorization } from "../auth/utilities";
-import {
-  RenderablePost,
-  UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags,
-} from "./models";
+import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
 import { PostController } from "./postController";
 import { constructRenderablePostsFromParts } from "./utilities";
 
@@ -49,7 +46,7 @@ export async function handleGetPostsScheduledByUser({
     upperTimestamp: scheduledPublicationTimestampMaxValue,
   } = getTimestampRangeFromJSMonth({ year, month, timeZone: userTimeZone });
 
-  const unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[] =
+  const unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
       {
         creatorUserId: clientUserId,

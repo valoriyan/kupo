@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-import { RenderableDateTime } from "src/controllers/models";
 
 export function getEnvironmentVariable(name: string): string {
   if (!!process.env[name]) {
@@ -22,7 +21,7 @@ export function getTimestampRangeFromJSMonth({
   lowerTimestamp: number;
   upperTimestamp: number;
 } {
-  const lowerDate = DateTime.fromObject({ year, month: month + 1 }, { zone: timeZone });
+  const lowerDate = DateTime.fromObject({ year, month: month + 1, zone: timeZone });
 
   const upperDate = lowerDate.plus({ months: 1 });
 
@@ -32,24 +31,5 @@ export function getTimestampRangeFromJSMonth({
   return {
     lowerTimestamp,
     upperTimestamp,
-  };
-}
-
-export function getJSDateFromTimestamp({
-  timestamp,
-  timezone,
-}: {
-  timestamp: number;
-  timezone: string;
-}): RenderableDateTime {
-  const date = DateTime.fromMillis(timestamp).setZone(timezone);
-
-  return {
-    year: date.year,
-    month: date.month - 1,
-    day: date.day,
-    hour: date.hour,
-    minute: date.minute,
-    userTimeZone: timezone,
   };
 }

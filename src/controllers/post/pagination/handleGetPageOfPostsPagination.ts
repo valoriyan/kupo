@@ -73,7 +73,7 @@ export async function handleGetPageOfPostsPagination({
     };
   }
 
-  const unrenderablePostsWithoutElements =
+  const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserId(
       {
         creatorUserId: requestBody.userId,
@@ -82,8 +82,7 @@ export async function handleGetPageOfPostsPagination({
     );
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
-    unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags:
-      unrenderablePostsWithoutElements,
+    unrenderablePostsWithoutElementsOrHashtags,
     encodedCursor: requestBody.cursor,
     pageSize: requestBody.pageSize,
   });

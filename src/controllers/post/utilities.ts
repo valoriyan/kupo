@@ -1,31 +1,25 @@
 import { LocalBlobStorageService } from "src/services/blobStorageService";
 import { DatabaseService } from "src/services/databaseService";
-import {
-  RenderablePost,
-  UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags,
-} from "./models";
+import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
-import { getJSDateFromTimestamp } from "src/utilities";
 
 export async function constructRenderablePostsFromParts({
   blobStorageService,
   databaseService,
   posts,
-  userTimeZone,
 }: {
   blobStorageService: LocalBlobStorageService;
   databaseService: DatabaseService;
-  posts: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[];
+  posts: UnrenderablePostWithoutElementsOrHashtags[];
   userTimeZone: string;
 }): Promise<RenderablePost[]> {
   const renderablePosts = await BluebirdPromise.map(
     posts,
-    async (unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags) =>
+    async (unrenderablePostWithoutElementsOrHashtags) =>
       await constructRenderablePostFromParts({
         blobStorageService,
         databaseService,
-        unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags,
-        userTimeZone,
+        unrenderablePostWithoutElementsOrHashtags,
       }),
   );
 
@@ -35,13 +29,11 @@ export async function constructRenderablePostsFromParts({
 export async function constructRenderablePostFromParts({
   blobStorageService,
   databaseService,
-  unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags,
-  userTimeZone,
+  unrenderablePostWithoutElementsOrHashtags,
 }: {
   blobStorageService: LocalBlobStorageService;
   databaseService: DatabaseService;
-  unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags;
-  userTimeZone: string;
+  unrenderablePostWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags;
 }): Promise<RenderablePost> {
   const {
     postId,
@@ -49,7 +41,7 @@ export async function constructRenderablePostFromParts({
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
-  } = unrenderablePostWithoutRenderableDatesTimesElementsOrHashtags;
+  } = unrenderablePostWithoutElementsOrHashtags;
 
   const filedPostContentElements =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
@@ -73,27 +65,15 @@ export async function constructRenderablePostFromParts({
 
   const hashtags =
     await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPostId(
-      {
-        postId,
-      },
+      { postId },
     );
-
-  const scheduledPublicationDateTime = getJSDateFromTimestamp({
-    timestamp: scheduledPublicationTimestamp,
-    timezone: userTimeZone,
-  });
-
-  const expirationDateTime = expirationTimestamp
-    ? getJSDateFromTimestamp({ timestamp: expirationTimestamp, timezone: userTimeZone })
-    : undefined;
 
   return {
     postId,
     postAuthorUserId,
     caption,
-
-    scheduledPublicationDateTime,
-    expirationDateTime,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
     contentElementTemporaryUrls,
     hashtags,
   };

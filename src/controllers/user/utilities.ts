@@ -1,5 +1,5 @@
-import { LocalBlobStorageService } from "src/services/blobStorageService";
-import { DatabaseService } from "src/services/databaseService";
+import { LocalBlobStorageService } from "../../services/blobStorageService";
+import { DatabaseService } from "../../services/databaseService";
 import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent";
 import { RenderableUser, UnrenderableUser } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
