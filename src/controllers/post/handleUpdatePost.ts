@@ -12,11 +12,7 @@ export interface SuccessfulPostUpdateResponse {}
 interface HandlerRequestBody {
   postId: string;
 
-  mediaFiles?: Express.Multer.File[];
-  mediaBlobFileKeys?: (boolean | null)[];
-
   caption?: string;
-  hashtags?: string[];
 
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;

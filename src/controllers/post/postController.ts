@@ -120,11 +120,8 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @FormField() postId: string,
     @FormField() caption?: string,
-    @FormField() hashtags?: string[],
     @FormField() scheduledPublicationTimestamp?: number,
     @FormField() expirationTimestamp?: number,
-    @FormField() mediaBlobFileKeys?: (boolean | null)[],
-    @UploadedFiles() mediaFiles?: Express.Multer.File[],
   ): Promise<
     SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
   > {
@@ -133,10 +130,7 @@ export class PostController extends Controller {
       request,
       requestBody: {
         postId,
-        mediaFiles,
-        mediaBlobFileKeys,
         caption,
-        hashtags,
         scheduledPublicationTimestamp,
         expirationTimestamp,
       },
