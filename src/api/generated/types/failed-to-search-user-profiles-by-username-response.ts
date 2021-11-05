@@ -12,18 +12,18 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUser } from "./renderable-user";
+import { FailedToSearchUserProfilesByUsernameResponseReason } from "./failed-to-search-user-profiles-by-username-response-reason";
 
 /**
  *
  * @export
- * @interface SuccessfulSearchUserProfilesByUsernameResponse
+ * @interface FailedToSearchUserProfilesByUsernameResponse
  */
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
+export interface FailedToSearchUserProfilesByUsernameResponse {
   /**
    *
-   * @type {Array<RenderableUser>}
-   * @memberof SuccessfulSearchUserProfilesByUsernameResponse
+   * @type {FailedToSearchUserProfilesByUsernameResponseReason}
+   * @memberof FailedToSearchUserProfilesByUsernameResponse
    */
-  results: Array<RenderableUser>;
+  reason: FailedToSearchUserProfilesByUsernameResponseReason;
 }

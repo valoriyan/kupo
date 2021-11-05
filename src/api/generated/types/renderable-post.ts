@@ -12,8 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { RenderablePostContentElement } from "./renderable-post-content-element";
-
 /**
  *
  * @export
@@ -52,10 +50,10 @@ export interface RenderablePost {
   expirationTimestamp?: number;
   /**
    *
-   * @type {Array<RenderablePostContentElement>}
+   * @type {Array<string>}
    * @memberof RenderablePost
    */
-  contentElements: Array<RenderablePostContentElement>;
+  contentElementTemporaryUrls: Array<string>;
   /**
    *
    * @type {Array<string>}

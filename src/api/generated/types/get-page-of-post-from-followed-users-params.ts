@@ -12,18 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUser } from "./renderable-user";
-
 /**
  *
  * @export
- * @interface SuccessfulSearchUserProfilesByUsernameResponse
+ * @interface GetPageOfPostFromFollowedUsersParams
  */
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
+export interface GetPageOfPostFromFollowedUsersParams {
   /**
    *
-   * @type {Array<RenderableUser>}
-   * @memberof SuccessfulSearchUserProfilesByUsernameResponse
+   * @type {string}
+   * @memberof GetPageOfPostFromFollowedUsersParams
    */
-  results: Array<RenderableUser>;
+  cursor?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof GetPageOfPostFromFollowedUsersParams
+   */
+  pageSize: number;
+  /**
+   *
+   * @type {string}
+   * @memberof GetPageOfPostFromFollowedUsersParams
+   */
+  userTimeZone: string;
 }

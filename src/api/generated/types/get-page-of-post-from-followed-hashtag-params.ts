@@ -15,31 +15,31 @@
 /**
  *
  * @export
- * @interface GetPageOfPostsPaginationParams
+ * @interface GetPageOfPostFromFollowedHashtagParams
  */
-export interface GetPageOfPostsPaginationParams {
+export interface GetPageOfPostFromFollowedHashtagParams {
   /**
    *
    * @type {string}
-   * @memberof GetPageOfPostsPaginationParams
+   * @memberof GetPageOfPostFromFollowedHashtagParams
    */
-  userId: string;
+  hashtag: string;
   /**
    *
    * @type {string}
-   * @memberof GetPageOfPostsPaginationParams
+   * @memberof GetPageOfPostFromFollowedHashtagParams
    */
   cursor?: string;
   /**
    *
    * @type {number}
-   * @memberof GetPageOfPostsPaginationParams
+   * @memberof GetPageOfPostFromFollowedHashtagParams
    */
   pageSize: number;
   /**
    *
    * @type {string}
-   * @memberof GetPageOfPostsPaginationParams
+   * @memberof GetPageOfPostFromFollowedHashtagParams
    */
   userTimeZone: string;
 }

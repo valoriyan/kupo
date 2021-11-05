@@ -14,7 +14,7 @@
 
 import { DeniedGetUserProfileResponse } from "./denied-get-user-profile-response";
 import { FailedAuthResponse } from "./failed-auth-response";
-import { SuccessfulGetUserProfileResponse } from "./successful-get-user-profile-response";
+import { RenderableUser } from "./renderable-user";
 
 /**
  *
@@ -30,8 +30,8 @@ export interface SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUse
   error?: DeniedGetUserProfileResponse | FailedAuthResponse;
   /**
    *
-   * @type {SuccessfulGetUserProfileResponse}
+   * @type {RenderableUser}
    * @memberof SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse
    */
-  success?: SuccessfulGetUserProfileResponse;
+  success?: RenderableUser;
 }

@@ -8,6 +8,7 @@ import { HashTags } from "./HashTags";
 import { useFormState } from "../FormContext";
 import { AdditionalScreen } from "..";
 import { DateTimePicker } from "#/components/DateTimePicker";
+import { useCreatePost } from "#/api/mutations/createPost";
 
 export interface NewPostProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
@@ -16,6 +17,7 @@ export interface NewPostProps {
 export const NewPost = (props: NewPostProps) => {
   const { caption, setCaption, mediaFiles, expirationDate, setExpirationDate } =
     useFormState();
+  const { mutateAsync: createPost } = useCreatePost();
 
   const canSubmit = !!caption || !!mediaFiles.length;
 
@@ -55,7 +57,12 @@ export const NewPost = (props: NewPostProps) => {
         </SectionWrapper>
       </Stack>
       <Stack css={{ gap: "$3", px: "$4" }}>
-        <Button size="lg" variant="secondary" disabled={!canSubmit}>
+        <Button
+          size="lg"
+          variant="secondary"
+          disabled={!canSubmit}
+          onClick={() => createPost()}
+        >
           Post Now
         </Button>
         <Button size="lg" variant="secondary" outlined disabled={!canSubmit}>

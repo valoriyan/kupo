@@ -39,6 +39,10 @@ import {
 // @ts-ignore
 import { FollowUserProfileParams } from "../types";
 // @ts-ignore
+import { GetPageOfPostFromFollowedHashtagParams } from "../types";
+// @ts-ignore
+import { GetPageOfPostFromFollowedUsersParams } from "../types";
+// @ts-ignore
 import { GetPageOfPostsPaginationParams } from "../types";
 // @ts-ignore
 import { GetPostsScheduledByUserParams } from "../types";
@@ -71,6 +75,10 @@ import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDele
 // @ts-ignore
 import { SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
@@ -92,44 +100,28 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
   return {
     /**
      *
+     * @param {Array<any>} mediaFiles
      * @param {string} caption
      * @param {string} hashtags
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} indexesOfUploadedImages
-     * @param {string} indexesOfUploadedVideos
-     * @param {Array<any>} images
-     * @param {Array<any>} videos
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost: async (
+      mediaFiles: Array<any>,
       caption: string,
       hashtags: string,
-      scheduledPublicationTimestamp: string,
-      indexesOfUploadedImages: string,
-      indexesOfUploadedVideos: string,
-      images: Array<any>,
-      videos: Array<any>,
+      scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'mediaFiles' is not null or undefined
+      assertParamExists("createPost", "mediaFiles", mediaFiles);
       // verify required parameter 'caption' is not null or undefined
       assertParamExists("createPost", "caption", caption);
       // verify required parameter 'hashtags' is not null or undefined
       assertParamExists("createPost", "hashtags", hashtags);
-      // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
-      assertParamExists(
-        "createPost",
-        "scheduledPublicationTimestamp",
-        scheduledPublicationTimestamp,
-      );
-      // verify required parameter 'indexesOfUploadedImages' is not null or undefined
-      assertParamExists("createPost", "indexesOfUploadedImages", indexesOfUploadedImages);
-      // verify required parameter 'indexesOfUploadedVideos' is not null or undefined
-      assertParamExists("createPost", "indexesOfUploadedVideos", indexesOfUploadedVideos);
-      // verify required parameter 'images' is not null or undefined
-      assertParamExists("createPost", "images", images);
-      // verify required parameter 'videos' is not null or undefined
-      assertParamExists("createPost", "videos", videos);
       const localVarPath = `/post/create`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -143,6 +135,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarQueryParameter = {} as any;
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
+
+      if (mediaFiles) {
+        mediaFiles.forEach((element) => {
+          localVarFormParams.append("mediaFiles", element as any);
+        });
+      }
 
       if (caption !== undefined) {
         localVarFormParams.append("caption", caption as any);
@@ -159,29 +157,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         );
       }
 
-      if (indexesOfUploadedImages !== undefined) {
-        localVarFormParams.append(
-          "indexesOfUploadedImages",
-          indexesOfUploadedImages as any,
-        );
-      }
-
-      if (indexesOfUploadedVideos !== undefined) {
-        localVarFormParams.append(
-          "indexesOfUploadedVideos",
-          indexesOfUploadedVideos as any,
-        );
-      }
-      if (images) {
-        images.forEach((element) => {
-          localVarFormParams.append("images", element as any);
-        });
-      }
-
-      if (videos) {
-        videos.forEach((element) => {
-          localVarFormParams.append("videos", element as any);
-        });
+      if (expirationTimestamp !== undefined) {
+        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
       }
 
       localVarHeaderParameter["Content-Type"] = "multipart/form-data";
@@ -208,9 +185,9 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} title
      * @param {string} price
      * @param {string} scheduledPublicationTimestamp
-     * @param {string} expirationTimestamp
      * @param {string} collaboratorUserIds
      * @param {Array<any>} mediaFiles
+     * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -220,9 +197,9 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       title: string,
       price: string,
       scheduledPublicationTimestamp: string,
-      expirationTimestamp: string,
       collaboratorUserIds: string,
       mediaFiles: Array<any>,
+      expirationTimestamp?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'caption' is not null or undefined
@@ -239,8 +216,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         "scheduledPublicationTimestamp",
         scheduledPublicationTimestamp,
       );
-      // verify required parameter 'expirationTimestamp' is not null or undefined
-      assertParamExists("createShopItem", "expirationTimestamp", expirationTimestamp);
       // verify required parameter 'collaboratorUserIds' is not null or undefined
       assertParamExists("createShopItem", "collaboratorUserIds", collaboratorUserIds);
       // verify required parameter 'mediaFiles' is not null or undefined
@@ -282,10 +257,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         );
       }
 
-      if (expirationTimestamp !== undefined) {
-        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
-      }
-
       if (collaboratorUserIds !== undefined) {
         localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
       }
@@ -293,6 +264,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         mediaFiles.forEach((element) => {
           localVarFormParams.append("mediaFiles", element as any);
         });
+      }
+
+      if (expirationTimestamp !== undefined) {
+        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
       }
 
       localVarHeaderParameter["Content-Type"] = "multipart/form-data";
@@ -439,6 +414,104 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         followUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfPostFromFollowedHashtag: async (
+      getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfPostFromFollowedHashtagParams' is not null or undefined
+      assertParamExists(
+        "getPageOfPostFromFollowedHashtag",
+        "getPageOfPostFromFollowedHashtagParams",
+        getPageOfPostFromFollowedHashtagParams,
+      );
+      const localVarPath = `/feed/getPageOfPostFromFollowedHashtag`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfPostFromFollowedHashtagParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfPostFromFollowedUsers: async (
+      getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfPostFromFollowedUsersParams' is not null or undefined
+      assertParamExists(
+        "getPageOfPostFromFollowedUsers",
+        "getPageOfPostFromFollowedUsersParams",
+        getPageOfPostFromFollowedUsersParams,
+      );
+      const localVarPath = `/feed/getPageOfPostFromFollowedUsers`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfPostFromFollowedUsersParams,
         localVarRequestOptions,
         configuration,
       );
@@ -898,6 +971,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} [caption]
      * @param {string} [hashtags]
      * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
+     * @param {string} [mediaBlobFileKeys]
      * @param {Array<any>} [mediaFiles]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -907,6 +982,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       caption?: string,
       hashtags?: string,
       scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
+      mediaBlobFileKeys?: string,
       mediaFiles?: Array<any>,
       options: any = {},
     ): Promise<RequestArgs> => {
@@ -944,6 +1021,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
           scheduledPublicationTimestamp as any,
         );
       }
+
+      if (expirationTimestamp !== undefined) {
+        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
+      }
+
+      if (mediaBlobFileKeys !== undefined) {
+        localVarFormParams.append("mediaBlobFileKeys", mediaBlobFileKeys as any);
+      }
       if (mediaFiles) {
         mediaFiles.forEach((element) => {
           localVarFormParams.append("mediaFiles", element as any);
@@ -969,6 +1054,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {string} shopItemId
      * @param {string} [caption]
      * @param {string} [hashtags]
      * @param {string} [title]
@@ -981,6 +1067,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     updateShopItem: async (
+      shopItemId: string,
       caption?: string,
       hashtags?: string,
       title?: string,
@@ -991,6 +1078,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       mediaFiles?: Array<any>,
       options: any = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'shopItemId' is not null or undefined
+      assertParamExists("updateShopItem", "shopItemId", shopItemId);
       const localVarPath = `/shopitem/update`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1004,6 +1093,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarQueryParameter = {} as any;
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
+
+      if (shopItemId !== undefined) {
+        localVarFormParams.append("shopItemId", shopItemId as any);
+      }
 
       if (caption !== undefined) {
         localVarFormParams.append("caption", caption as any);
@@ -1145,24 +1238,20 @@ export const DefaultApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @param {Array<any>} mediaFiles
      * @param {string} caption
      * @param {string} hashtags
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} indexesOfUploadedImages
-     * @param {string} indexesOfUploadedVideos
-     * @param {Array<any>} images
-     * @param {Array<any>} videos
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createPost(
+      mediaFiles: Array<any>,
       caption: string,
       hashtags: string,
-      scheduledPublicationTimestamp: string,
-      indexesOfUploadedImages: string,
-      indexesOfUploadedVideos: string,
-      images: Array<any>,
-      videos: Array<any>,
+      scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
       options?: any,
     ): Promise<
       (
@@ -1171,13 +1260,11 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
+        mediaFiles,
         caption,
         hashtags,
         scheduledPublicationTimestamp,
-        indexesOfUploadedImages,
-        indexesOfUploadedVideos,
-        images,
-        videos,
+        expirationTimestamp,
         options,
       );
       return createRequestFunction(
@@ -1194,9 +1281,9 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} title
      * @param {string} price
      * @param {string} scheduledPublicationTimestamp
-     * @param {string} expirationTimestamp
      * @param {string} collaboratorUserIds
      * @param {Array<any>} mediaFiles
+     * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1206,9 +1293,9 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       title: string,
       price: string,
       scheduledPublicationTimestamp: string,
-      expirationTimestamp: string,
       collaboratorUserIds: string,
       mediaFiles: Array<any>,
+      expirationTimestamp?: string,
       options?: any,
     ): Promise<
       (
@@ -1222,9 +1309,9 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         title,
         price,
         scheduledPublicationTimestamp,
-        expirationTimestamp,
         collaboratorUserIds,
         mediaFiles,
+        expirationTimestamp,
         options,
       );
       return createRequestFunction(
@@ -1305,6 +1392,60 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         followUserProfileParams,
         options,
       );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfPostFromFollowedHashtag(
+      getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPageOfPostFromFollowedHashtag(
+          getPageOfPostFromFollowedHashtagParams,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfPostFromFollowedUsers(
+      getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPageOfPostFromFollowedUsers(
+          getPageOfPostFromFollowedUsersParams,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -1566,6 +1707,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} [caption]
      * @param {string} [hashtags]
      * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
+     * @param {string} [mediaBlobFileKeys]
      * @param {Array<any>} [mediaFiles]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1575,6 +1718,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       caption?: string,
       hashtags?: string,
       scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
+      mediaBlobFileKeys?: string,
       mediaFiles?: Array<any>,
       options?: any,
     ): Promise<
@@ -1588,6 +1733,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         caption,
         hashtags,
         scheduledPublicationTimestamp,
+        expirationTimestamp,
+        mediaBlobFileKeys,
         mediaFiles,
         options,
       );
@@ -1600,6 +1747,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} shopItemId
      * @param {string} [caption]
      * @param {string} [hashtags]
      * @param {string} [title]
@@ -1612,6 +1760,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async updateShopItem(
+      shopItemId: string,
       caption?: string,
       hashtags?: string,
       title?: string,
@@ -1628,6 +1777,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
+        shopItemId,
         caption,
         hashtags,
         title,
@@ -1702,35 +1852,29 @@ export const DefaultApiFactory = function (
   return {
     /**
      *
+     * @param {Array<any>} mediaFiles
      * @param {string} caption
      * @param {string} hashtags
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} indexesOfUploadedImages
-     * @param {string} indexesOfUploadedVideos
-     * @param {Array<any>} images
-     * @param {Array<any>} videos
+     * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost(
+      mediaFiles: Array<any>,
       caption: string,
       hashtags: string,
-      scheduledPublicationTimestamp: string,
-      indexesOfUploadedImages: string,
-      indexesOfUploadedVideos: string,
-      images: Array<any>,
-      videos: Array<any>,
+      scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
       return localVarFp
         .createPost(
+          mediaFiles,
           caption,
           hashtags,
           scheduledPublicationTimestamp,
-          indexesOfUploadedImages,
-          indexesOfUploadedVideos,
-          images,
-          videos,
+          expirationTimestamp,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -1742,9 +1886,9 @@ export const DefaultApiFactory = function (
      * @param {string} title
      * @param {string} price
      * @param {string} scheduledPublicationTimestamp
-     * @param {string} expirationTimestamp
      * @param {string} collaboratorUserIds
      * @param {Array<any>} mediaFiles
+     * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1754,9 +1898,9 @@ export const DefaultApiFactory = function (
       title: string,
       price: string,
       scheduledPublicationTimestamp: string,
-      expirationTimestamp: string,
       collaboratorUserIds: string,
       mediaFiles: Array<any>,
+      expirationTimestamp?: string,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse> {
       return localVarFp
@@ -1766,9 +1910,9 @@ export const DefaultApiFactory = function (
           title,
           price,
           scheduledPublicationTimestamp,
-          expirationTimestamp,
           collaboratorUserIds,
           mediaFiles,
+          expirationTimestamp,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -1813,6 +1957,34 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse> {
       return localVarFp
         .followUser(followUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfPostFromFollowedHashtag(
+      getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse> {
+      return localVarFp
+        .getPageOfPostFromFollowedHashtag(getPageOfPostFromFollowedHashtagParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfPostFromFollowedUsers(
+      getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse> {
+      return localVarFp
+        .getPageOfPostFromFollowedUsers(getPageOfPostFromFollowedUsersParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -1953,6 +2125,8 @@ export const DefaultApiFactory = function (
      * @param {string} [caption]
      * @param {string} [hashtags]
      * @param {string} [scheduledPublicationTimestamp]
+     * @param {string} [expirationTimestamp]
+     * @param {string} [mediaBlobFileKeys]
      * @param {Array<any>} [mediaFiles]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1962,6 +2136,8 @@ export const DefaultApiFactory = function (
       caption?: string,
       hashtags?: string,
       scheduledPublicationTimestamp?: string,
+      expirationTimestamp?: string,
+      mediaBlobFileKeys?: string,
       mediaFiles?: Array<any>,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse> {
@@ -1971,6 +2147,8 @@ export const DefaultApiFactory = function (
           caption,
           hashtags,
           scheduledPublicationTimestamp,
+          expirationTimestamp,
+          mediaBlobFileKeys,
           mediaFiles,
           options,
         )
@@ -1978,6 +2156,7 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {string} shopItemId
      * @param {string} [caption]
      * @param {string} [hashtags]
      * @param {string} [title]
@@ -1990,6 +2169,7 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     updateShopItem(
+      shopItemId: string,
       caption?: string,
       hashtags?: string,
       title?: string,
@@ -2002,6 +2182,7 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse> {
       return localVarFp
         .updateShopItem(
+          shopItemId,
           caption,
           hashtags,
           title,
@@ -2058,36 +2239,30 @@ export const DefaultApiFactory = function (
 export class DefaultApi extends BaseAPI {
   /**
    *
+   * @param {Array<any>} mediaFiles
    * @param {string} caption
    * @param {string} hashtags
-   * @param {string} scheduledPublicationTimestamp
-   * @param {string} indexesOfUploadedImages
-   * @param {string} indexesOfUploadedVideos
-   * @param {Array<any>} images
-   * @param {Array<any>} videos
+   * @param {string} [scheduledPublicationTimestamp]
+   * @param {string} [expirationTimestamp]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createPost(
+    mediaFiles: Array<any>,
     caption: string,
     hashtags: string,
-    scheduledPublicationTimestamp: string,
-    indexesOfUploadedImages: string,
-    indexesOfUploadedVideos: string,
-    images: Array<any>,
-    videos: Array<any>,
+    scheduledPublicationTimestamp?: string,
+    expirationTimestamp?: string,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
       .createPost(
+        mediaFiles,
         caption,
         hashtags,
         scheduledPublicationTimestamp,
-        indexesOfUploadedImages,
-        indexesOfUploadedVideos,
-        images,
-        videos,
+        expirationTimestamp,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -2100,9 +2275,9 @@ export class DefaultApi extends BaseAPI {
    * @param {string} title
    * @param {string} price
    * @param {string} scheduledPublicationTimestamp
-   * @param {string} expirationTimestamp
    * @param {string} collaboratorUserIds
    * @param {Array<any>} mediaFiles
+   * @param {string} [expirationTimestamp]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
@@ -2113,9 +2288,9 @@ export class DefaultApi extends BaseAPI {
     title: string,
     price: string,
     scheduledPublicationTimestamp: string,
-    expirationTimestamp: string,
     collaboratorUserIds: string,
     mediaFiles: Array<any>,
+    expirationTimestamp?: string,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
@@ -2125,9 +2300,9 @@ export class DefaultApi extends BaseAPI {
         title,
         price,
         scheduledPublicationTimestamp,
-        expirationTimestamp,
         collaboratorUserIds,
         mediaFiles,
+        expirationTimestamp,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -2169,6 +2344,38 @@ export class DefaultApi extends BaseAPI {
   public followUser(followUserProfileParams: FollowUserProfileParams, options?: any) {
     return DefaultApiFp(this.configuration)
       .followUser(followUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfPostFromFollowedHashtag(
+    getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfPostFromFollowedHashtag(getPageOfPostFromFollowedHashtagParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfPostFromFollowedUsers(
+    getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfPostFromFollowedUsers(getPageOfPostFromFollowedUsersParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2321,6 +2528,8 @@ export class DefaultApi extends BaseAPI {
    * @param {string} [caption]
    * @param {string} [hashtags]
    * @param {string} [scheduledPublicationTimestamp]
+   * @param {string} [expirationTimestamp]
+   * @param {string} [mediaBlobFileKeys]
    * @param {Array<any>} [mediaFiles]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2331,6 +2540,8 @@ export class DefaultApi extends BaseAPI {
     caption?: string,
     hashtags?: string,
     scheduledPublicationTimestamp?: string,
+    expirationTimestamp?: string,
+    mediaBlobFileKeys?: string,
     mediaFiles?: Array<any>,
     options?: any,
   ) {
@@ -2340,6 +2551,8 @@ export class DefaultApi extends BaseAPI {
         caption,
         hashtags,
         scheduledPublicationTimestamp,
+        expirationTimestamp,
+        mediaBlobFileKeys,
         mediaFiles,
         options,
       )
@@ -2348,6 +2561,7 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {string} shopItemId
    * @param {string} [caption]
    * @param {string} [hashtags]
    * @param {string} [title]
@@ -2361,6 +2575,7 @@ export class DefaultApi extends BaseAPI {
    * @memberof DefaultApi
    */
   public updateShopItem(
+    shopItemId: string,
     caption?: string,
     hashtags?: string,
     title?: string,
@@ -2373,6 +2588,7 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .updateShopItem(
+        shopItemId,
         caption,
         hashtags,
         title,

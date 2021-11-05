@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUser } from "./renderable-user";
-
 /**
  *
  * @export
- * @interface SuccessfulSearchUserProfilesByUsernameResponse
+ * @interface RenderableUserFollowers
  */
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
+export interface RenderableUserFollowers {
   /**
    *
-   * @type {Array<RenderableUser>}
-   * @memberof SuccessfulSearchUserProfilesByUsernameResponse
+   * @type {number}
+   * @memberof RenderableUserFollowers
    */
-  results: Array<RenderableUser>;
+  count: number;
 }

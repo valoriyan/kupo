@@ -28,9 +28,6 @@ export const UserInfo = (props: UserInfoProps) => {
           </Link>
           <Flex css={{ flexDirection: "column" }}>
             <UserStat>{formatStat(data?.success?.followers.count)} followers</UserStat>
-            <UserStat>
-              {formatStat(data?.success?.subscribers.count)} subscribers
-            </UserStat>
             <UserStat>{formatStat(data?.success?.follows.count)} following</UserStat>
           </Flex>
         </Flex>

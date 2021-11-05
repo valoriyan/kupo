@@ -12,18 +12,18 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUser } from "./renderable-user";
+import { RenderablePost } from "./renderable-post";
 
 /**
  *
  * @export
- * @interface SuccessfulSearchUserProfilesByUsernameResponse
+ * @interface SuccessfulGetPostsScheduledByUserResponse
  */
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
+export interface SuccessfulGetPostsScheduledByUserResponse {
   /**
    *
-   * @type {Array<RenderableUser>}
-   * @memberof SuccessfulSearchUserProfilesByUsernameResponse
+   * @type {Array<RenderablePost>}
+   * @memberof SuccessfulGetPostsScheduledByUserResponse
    */
-  results: Array<RenderableUser>;
+  posts: Array<RenderablePost>;
 }

@@ -13,6 +13,7 @@
  */
 
 import { FailedAuthResponse } from "./failed-auth-response";
+import { FailedToSearchUserProfilesByUsernameResponse } from "./failed-to-search-user-profiles-by-username-response";
 import { SuccessfulSearchUserProfilesByUsernameResponse } from "./successful-search-user-profiles-by-username-response";
 
 /**
@@ -23,10 +24,10 @@ import { SuccessfulSearchUserProfilesByUsernameResponse } from "./successful-sea
 export interface SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse {
   /**
    *
-   * @type {object | FailedAuthResponse}
+   * @type {FailedToSearchUserProfilesByUsernameResponse | FailedAuthResponse}
    * @memberof SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse
    */
-  error?: object | FailedAuthResponse;
+  error?: FailedToSearchUserProfilesByUsernameResponse | FailedAuthResponse;
   /**
    *
    * @type {SuccessfulSearchUserProfilesByUsernameResponse}

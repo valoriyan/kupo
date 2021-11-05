@@ -13,6 +13,7 @@
  */
 
 import { FailedAuthResponse } from "./failed-auth-response";
+import { SuccessfulGetPostsScheduledByUserResponse } from "./successful-get-posts-scheduled-by-user-response";
 
 /**
  *
@@ -28,8 +29,8 @@ export interface SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSucce
   error?: object | FailedAuthResponse;
   /**
    *
-   * @type {object}
+   * @type {SuccessfulGetPostsScheduledByUserResponse}
    * @memberof SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse
    */
-  success?: object;
+  success?: SuccessfulGetPostsScheduledByUserResponse;
 }

@@ -12,18 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUser } from "./renderable-user";
-
 /**
  *
  * @export
- * @interface SuccessfulSearchUserProfilesByUsernameResponse
+ * @enum {string}
  */
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
-  /**
-   *
-   * @type {Array<RenderableUser>}
-   * @memberof SuccessfulSearchUserProfilesByUsernameResponse
-   */
-  results: Array<RenderableUser>;
+export enum FailedToSearchUserProfilesByUsernameResponseReason {
+  UserNotFound = "User Not Found",
 }

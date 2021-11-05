@@ -12,6 +12,8 @@ export interface FormState {
   setCaption: (caption: string) => void;
   hashTags: string[];
   setHashTags: (hashTags: string[] | ((prev: string[]) => string[])) => void;
+  publicationDate: Date | undefined;
+  setPublicationDate: (publicationDate: Date | undefined) => void;
   expirationDate: Date | undefined;
   setExpirationDate: (expirationDate: Date | undefined) => void;
   mediaFiles: Media[];
@@ -36,6 +38,9 @@ const createFormStateStore = () =>
         set((prev) => ({ hashTags: hashTags(prev.hashTags) }));
       }
     },
+
+    publicationDate: undefined,
+    setPublicationDate: (publicationDate) => set({ publicationDate }),
 
     expirationDate: undefined,
     setExpirationDate: (expirationDate) => set({ expirationDate }),
