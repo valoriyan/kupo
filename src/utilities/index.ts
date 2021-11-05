@@ -21,7 +21,7 @@ export function getTimestampRangeFromJSMonth({
   lowerTimestamp: number;
   upperTimestamp: number;
 } {
-  const lowerDate = DateTime.fromObject({ year, month: month + 1, zone: timeZone });
+  const lowerDate = DateTime.fromObject({ year, month: month + 1 }, { zone: timeZone });
 
   const upperDate = lowerDate.plus({ months: 1 });
 
