@@ -59,7 +59,6 @@ export async function handleGetPageOfPostsPagination({
     };
   }
 
-
   const canViewContent = await canUserViewUserContentByUserId({
     clientUserId,
     targetUserId: requestBody.userId,

@@ -97,15 +97,16 @@ export class PostTableService extends TableService {
   }): Promise<UnrenderablePostWithoutRenderableDatesTimesElementsOrHashtags[]> {
     const currentTimestamp = Date.now();
 
-    const filteringWhereClause = !!filterOutExpiredAndUnscheduledPosts ? `
+    const filteringWhereClause = !!filterOutExpiredAndUnscheduledPosts
+      ? `
       AND
         scheduled_publication_timestamp < ${currentTimestamp}
       AND
         expiration_timestamp > ${currentTimestamp}
-    ` : "";
-    
-    if (filterOutExpiredAndUnscheduledPosts) {
+    `
+      : "";
 
+    if (filterOutExpiredAndUnscheduledPosts) {
     }
 
     const queryString = `
