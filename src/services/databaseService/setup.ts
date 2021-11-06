@@ -2,6 +2,7 @@ import { TableService } from "./tableServices/models";
 import { Pool, QueryResult } from "pg";
 import { DATABASE_NAME } from "./config";
 import { Promise as BluebirdPromise } from "bluebird";
+import { sleep } from "../../utilities";
 
 async function doesDatabaseExist({
   datastorePool,
@@ -44,9 +45,11 @@ async function setupTables({
   await BluebirdPromise.map(
     Object.entries(tableNameToServicesMap),
     async ([tableName, tableService]) => {
-      console.log(`Setting up table ${tableName}`);
-      tableService.setup();
+      await sleep(1500);
+      console.log(`Setting up table ${tableName}`);      
+      await tableService.setup();
     },
+    {concurrency: 1},
   );
 }
 

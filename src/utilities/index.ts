@@ -1,4 +1,7 @@
 import { DateTime } from "luxon";
+import { promisify } from "util";
+
+export const sleep = promisify(setTimeout);
 
 export function getEnvironmentVariable(name: string): string {
   if (!!process.env[name]) {
