@@ -37,11 +37,11 @@ export class LocalBlobStorageService extends BlobStorageService {
   async saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer> {
     const fileKey = uuidv4();
     const fileWritePath = this.localBlobStorageDirectory + "/" + fileKey;
-    console.log(`Writing file to ${fileWritePath}`)
+    console.log(`Writing file to ${fileWritePath}`);
 
     await mkdirSync(this.localBlobStorageDirectory, { recursive: true });
     await writeFileSync(fileWritePath, image);
-    
+
     return {
       fileKey,
     };

@@ -4,9 +4,8 @@
   "main": "build/src/server.js",
   "scripts": {
     "clear": "echo '\n\n\n\n\n\n\n\n\n\n'",
-    "setupDatabase": "tsc && node build/src/scripts/setup.js",
-    "teardownDatabase": "tsc && node build/src/scripts/teardown.js",
-    "dev": "yarn run killRunningDev && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
+    "resetDatabase": "tsc && node build/src/scripts/teardown.js && sleep 3 && node build/src/scripts/setup.js",
+    "dev": "yarn run killRunningDev && sleep 2 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "killRunningDev": "lsof -i:4000 -Fp | head -n 1 | sed 's/^p//' | xargs kill",
     "build": "yarn run clear && tsoa spec-and-routes && tsc",
     "start": "node build/src/server.js",
