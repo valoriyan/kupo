@@ -11,7 +11,7 @@ interface DBShopItemMediaElement {
 }
 
 export class ShopItemMediaElementTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_post_content_elements`;
+  public static readonly tableName = `${TABLE_NAME_PREFIX}_shop_item_media_elements`;
   public readonly tableName = ShopItemMediaElementTableService.tableName;
 
   constructor(public datastorePool: Pool) {

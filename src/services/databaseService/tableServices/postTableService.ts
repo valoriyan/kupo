@@ -39,7 +39,7 @@ export class PostTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         post_id VARCHAR(64) UNIQUE NOT NULL,
-        author_user_id VARCHAR(64) UNIQUE NOT NULL,
+        author_user_id VARCHAR(64) NOT NULL,
         caption VARCHAR(256) NOT NULL,
         scheduled_publication_timestamp BIGINT NOT NULL,
         expiration_timestamp BIGINT

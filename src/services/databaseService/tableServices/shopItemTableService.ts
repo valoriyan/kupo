@@ -15,7 +15,7 @@ interface DBShopItem {
 }
 
 export class ShopItemTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_hashtags`;
+  public static readonly tableName = `${TABLE_NAME_PREFIX}_shop_items`;
   public readonly tableName = ShopItemTableService.tableName;
 
   constructor(public datastorePool: Pool) {

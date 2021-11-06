@@ -48,12 +48,14 @@ export class PostContentElementsTableService extends TableService {
       (previousValue, currentValue): string => {
         const { postId, postContentElementIndex, blobFileKey } = currentValue;
 
+        console.log("postContentElementIndex", postContentElementIndex);
+
         return (
           previousValue +
           generatePSQLGenericCreateRowQueryString<string | number>({
             rows: [
               { field: "post_id", value: postId },
-              { field: "post_content_element_index", value: postContentElementIndex },
+              { field: "post_content_element_index", value: `${postContentElementIndex}` },
               { field: "blob_file_key", value: blobFileKey },
             ],
             tableName: this.tableName,

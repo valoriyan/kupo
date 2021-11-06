@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { singleton } from "tsyringe";
 
-import { appendFileSync, unlinkSync } from "fs";
+import { writeFileSync, unlinkSync, mkdirSync } from "fs";
 import { getEnvironmentVariable } from "../../utilities";
 
 export interface BlobItemPointer {
@@ -37,8 +37,11 @@ export class LocalBlobStorageService extends BlobStorageService {
   async saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer> {
     const fileKey = uuidv4();
     const fileWritePath = this.localBlobStorageDirectory + "/" + fileKey;
+    console.log(`Writing file to ${fileWritePath}`)
 
-    await appendFileSync(fileWritePath, image);
+    await mkdirSync(this.localBlobStorageDirectory, { recursive: true });
+    await writeFileSync(fileWritePath, image);
+    
     return {
       fileKey,
     };

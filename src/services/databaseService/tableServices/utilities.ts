@@ -36,11 +36,7 @@ export function generatePSQLGenericCreateRowQueryString<T>({
 
   const rowValuesString = activeRows
     .map(({ value }) => {
-      if (Number.isFinite(value)) {
-        return value;
-      } else {
-        return `'${value}'`;
-      }
+      return `'${value}'`;
     })
     .join(", ");
 

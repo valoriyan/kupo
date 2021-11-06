@@ -40,7 +40,7 @@ async function uploadFile({
   fileTemporaryUrl: string;
 }> {
   const fileType = file.mimetype;
-  if (fileType !== "image/jpeg") {
+  if (!["image/jpeg", "image/png"].includes(fileType)) {
     throw new Error(`Cannot handle file of type ${fileType}`);
   }
 
