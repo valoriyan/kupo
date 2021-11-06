@@ -12,14 +12,13 @@ export function generatePostgreSQLCreateEnumTypeQueryString({
 }): string {
   const quotedEnumValues = enumValues.map((enumValue) => `'${enumValue}'`).join(", ");
 
-    const queryString = `
+  const queryString = `
       CREATE TYPE
         ${typeName}
       AS ENUM (
         ${quotedEnumValues}
       );
     `;
-
 
   return queryString;
 }

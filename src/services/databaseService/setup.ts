@@ -46,10 +46,10 @@ async function setupTables({
     Object.entries(tableNameToServicesMap),
     async ([tableName, tableService]) => {
       await sleep(1500);
-      console.log(`Setting up table ${tableName}`);      
+      console.log(`Setting up table ${tableName}`);
       await tableService.setup();
     },
-    {concurrency: 1},
+    { concurrency: 1 },
   );
 }
 
