@@ -62,28 +62,23 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
   fieldUsedToIdentifyUpdatedRow: PSQLFieldAndValue<T>;
   tableName: string;
 }): string {
-  const updateString: string = updatedFields.reduce(
-    (accumulatedString, { field, value }) => {
-      if (!!value) {
-        return (accumulatedString += `
-          ${field} = '${value}'
-        `);
-      } else {
-        return accumulatedString;
-      }
-    },
-    "",
-  );
+  const filteredUpdatedFields = updatedFields.filter(({ value }) => {
+    return !!value;
+  });
+
+  const updateString = filteredUpdatedFields
+    .map(({ field, value }, index) => {
+      const commaSeperator = index < filteredUpdatedFields.length - 1 ? "," : "";
+
+      return `${field} = '${value}'${commaSeperator}`;
+    })
+    .join("\n");
 
   if (updateString === "") {
     return "";
   }
 
-  const escapedFieldUsedToIdentifyUpdatedRowValue = Number.isFinite(
-    fieldUsedToIdentifyUpdatedRow.value,
-  )
-    ? fieldUsedToIdentifyUpdatedRow.value
-    : `'${fieldUsedToIdentifyUpdatedRow.value}'`;
+  const escapedFieldUsedToIdentifyUpdatedRowValue = `'${fieldUsedToIdentifyUpdatedRow.value}'`;
 
   const queryString = `
     UPDATE

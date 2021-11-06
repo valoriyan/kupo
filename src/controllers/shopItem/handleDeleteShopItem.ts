@@ -9,7 +9,7 @@ export interface FailedToDeleteShopItemResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulShopItemDeletionResponse {}
 
-interface HandlerRequestBody {
+export interface DeleteShopItemRequestBody {
   shopItemId: string;
 }
 
@@ -20,10 +20,12 @@ export async function handleDeleteShopItem({
 }: {
   controller: ShopItemController;
   request: express.Request;
-  requestBody: HandlerRequestBody;
+  requestBody: DeleteShopItemRequestBody;
 }): Promise<
   SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>
 > {
+  const { shopItemId } = requestBody;
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
@@ -33,6 +35,15 @@ export async function handleDeleteShopItem({
       authorUserId: clientUserId,
     },
   );
+
+  const blobPointers =
+    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByShopItemId(
+      {
+        shopItemId,
+      },
+    );
+
+  await controller.blobStorageService.deleteImages({ blobPointers });
 
   return {};
 }

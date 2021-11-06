@@ -3,6 +3,7 @@ import { singleton } from "tsyringe";
 
 import { writeFileSync, unlinkSync, mkdirSync } from "fs";
 import { getEnvironmentVariable } from "../../utilities";
+import { Promise as BluebirdPromise } from "bluebird";
 
 export interface BlobItemPointer {
   fileKey: string;
@@ -17,10 +18,10 @@ export abstract class BlobStorageService {
     blobItemPointer: BlobItemPointer;
   }): Promise<string>;
 
-  abstract deleteImage({
-    blobImagePointer,
+  abstract deleteImages({
+    blobPointers,
   }: {
-    blobImagePointer: BlobItemPointer;
+    blobPointers: BlobItemPointer[];
   }): Promise<void>;
 }
 
@@ -56,13 +57,16 @@ export class LocalBlobStorageService extends BlobStorageService {
     return fileWritePath;
   }
 
-  async deleteImage({
-    blobImagePointer,
+  async deleteImages({
+    blobPointers,
   }: {
-    blobImagePointer: BlobItemPointer;
+    blobPointers: BlobItemPointer[];
   }): Promise<void> {
-    const filePath = this.localBlobStorageDirectory + "/" + blobImagePointer.fileKey;
-    await unlinkSync(filePath);
+    await BluebirdPromise.map(blobPointers, async (blobPointer) => {
+      const filePath = this.localBlobStorageDirectory + "/" + blobPointer.fileKey;
+      await unlinkSync(filePath);
+    });
+
     return;
   }
 }

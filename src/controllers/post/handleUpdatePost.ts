@@ -9,7 +9,7 @@ export interface FailedToUpdatePostResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulPostUpdateResponse {}
 
-interface HandlerRequestBody {
+export interface UpdatePostParams {
   postId: string;
 
   caption?: string;
@@ -25,7 +25,7 @@ export async function handleUpdatePost({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: HandlerRequestBody;
+  requestBody: UpdatePostParams;
 }): Promise<
   SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
 > {

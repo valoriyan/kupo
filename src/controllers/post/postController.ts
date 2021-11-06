@@ -28,8 +28,10 @@ import {
   FailedToUpdatePostResponse,
   handleUpdatePost,
   SuccessfulPostUpdateResponse,
+  UpdatePostParams,
 } from "./handleUpdatePost";
 import {
+  DeletePostRequestBody,
   FailedToDeletePostResponse,
   handleDeletePost,
   SuccessfulPostDeletionResponse,
@@ -115,41 +117,31 @@ export class PostController extends Controller {
     });
   }
 
-  @Post("update")
+  @Post("updatePost")
   public async updatePost(
     @Request() request: express.Request,
-    @FormField() postId: string,
-    @FormField() caption?: string,
-    @FormField() scheduledPublicationTimestamp?: number,
-    @FormField() expirationTimestamp?: number,
+    @Body() requestBody: UpdatePostParams,
   ): Promise<
     SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
   > {
     return await handleUpdatePost({
       controller: this,
       request,
-      requestBody: {
-        postId,
-        caption,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-      },
+      requestBody,
     });
   }
 
-  @Delete("delete")
+  @Delete("deletePost")
   public async deletePost(
     @Request() request: express.Request,
-    @FormField() postId: string,
+    @Body() requestBody: DeletePostRequestBody,
   ): Promise<
     SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
   > {
     return await handleDeletePost({
       controller: this,
       request,
-      requestBody: {
-        postId,
-      },
+      requestBody,
     });
   }
 }

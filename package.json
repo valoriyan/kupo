@@ -5,7 +5,7 @@
   "scripts": {
     "clear": "echo '\n\n\n\n\n\n\n\n\n\n'",
     "resetDatabase": "tsc && node build/src/scripts/teardown.js && sleep 3 && node build/src/scripts/setup.js",
-    "dev": "yarn run killRunningDev && sleep 2 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
+    "dev": "yarn run killRunningDev && sleep 4 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "killRunningDev": "lsof -i:4000 -Fp | head -n 1 | sed 's/^p//' | xargs kill",
     "build": "yarn run clear && tsoa spec-and-routes && tsc",
     "start": "node build/src/server.js",

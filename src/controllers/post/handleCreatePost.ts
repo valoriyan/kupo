@@ -127,6 +127,13 @@ export async function handleCreatePost({
       },
     );
 
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
+      {
+        hashtags,
+        postId,
+      },
+    );
+
     return {
       success: {
         renderablePost: {

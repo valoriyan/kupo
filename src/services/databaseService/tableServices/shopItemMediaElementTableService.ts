@@ -54,7 +54,7 @@ export class ShopItemMediaElementTableService extends TableService {
           generatePSQLGenericCreateRowQueryString<string | number>({
             rows: [
               { field: "shop_item_id", value: shopItemId },
-              { field: "shop_item_element_index", value: shopItemElementIndex },
+              { field: "shop_item_element_index", value: `${shopItemElementIndex}` },
               { field: "blob_file_key", value: blobFileKey },
             ],
             tableName: this.tableName,
@@ -108,4 +108,31 @@ export class ShopItemMediaElementTableService extends TableService {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async deleteShopItemMediaElementsByShopItemId({
+    shopItemId,
+  }: {
+    shopItemId: string;
+  }): Promise<
+    {
+      fileKey: string;
+    }[]
+  > {
+    const queryString = `
+      DELETE FROM ${this.tableName}
+      WHERE
+        shop_item_id = '${shopItemId}'
+      RETURNING
+        blob_file_key
+      ;
+    `;
+
+    const response: QueryResult<DBShopItemMediaElement> = await this.datastorePool.query(
+      queryString,
+    );
+
+    return response.rows.map((dbShopItemMediaElement) => ({
+      fileKey: dbShopItemMediaElement.blob_file_key,
+    }));
+  }
 }

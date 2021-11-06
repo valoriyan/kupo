@@ -9,6 +9,7 @@ import { TableService } from "./models";
 import {
   generatePostgreSQLCreateEnumTypeQueryString,
   generatePSQLGenericCreateRowQueryString,
+  generatePSQLGenericUpdateRowQueryString,
 } from "./utilities";
 
 interface DBUser {
@@ -74,7 +75,7 @@ export class UsersTableService extends TableService {
         email VARCHAR(64) UNIQUE NOT NULL,
         username VARCHAR(64) UNIQUE NOT NULL,
         short_bio VARCHAR(64),
-        userWser_website VARCHAR(64),
+        user_website VARCHAR(64),
         encrypted_password VARCHAR(64) NOT NULL,
         profile_privacy_setting enumerated_profile_privacy_setting,
         background_image_blob_file_key VARCHAR(64) UNIQUE,
@@ -245,64 +246,26 @@ export class UsersTableService extends TableService {
     backgroundImageBlobFileKey?: string;
     profilePictureBlobFileKey?: string;
   }): Promise<void> {
-    if (
-      [
-        username,
-        shortBio,
-        userWebsite,
-        profilePrivacySetting,
-        backgroundImageBlobFileKey,
-        profilePictureBlobFileKey,
-      ].some((value) => !!value)
-    ) {
-      let updateString = "";
-      if (!!username) {
-        updateString += `
-          username = '${username}'
-        `;
-      }
-      if (!!shortBio) {
-        updateString += `
-          short_bio = '${shortBio}'
-        `;
-      }
+    const queryString = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "username", value: username },
+        { field: "short_bio", value: shortBio },
+        {
+          field: "user_website",
+          value: userWebsite,
+        },
+        { field: "profile_privacy_setting", value: profilePrivacySetting },
+        { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
+        { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "user_id",
+        value: userId,
+      },
+      tableName: this.tableName,
+    });
 
-      if (!!userWebsite) {
-        updateString += `
-          user_website = '${userWebsite}'
-        `;
-      }
-
-      if (!!profilePrivacySetting) {
-        updateString += `
-          profile_privacy_setting = '${profilePrivacySetting}'
-        `;
-      }
-
-      if (!!backgroundImageBlobFileKey) {
-        updateString += `
-          background_image_blob_file_key = '${backgroundImageBlobFileKey}'
-        `;
-      }
-
-      if (!!profilePictureBlobFileKey) {
-        updateString += `
-          profile_picture_blob_file_key = '${profilePictureBlobFileKey}'
-        `;
-      }
-
-      const queryString = `
-          UPDATE
-            ${this.tableName}
-          SET
-            ${updateString}
-          WHERE
-            user_id = '${userId}'
-          ;
-        `;
-
-      await this.datastorePool.query(queryString);
-    }
+    await this.datastorePool.query(queryString);
   }
 
   //////////////////////////////////////////////////

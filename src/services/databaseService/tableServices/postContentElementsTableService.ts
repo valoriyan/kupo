@@ -48,8 +48,6 @@ export class PostContentElementsTableService extends TableService {
       (previousValue, currentValue): string => {
         const { postId, postContentElementIndex, blobFileKey } = currentValue;
 
-        console.log("postContentElementIndex", postContentElementIndex);
-
         return (
           previousValue +
           generatePSQLGenericCreateRowQueryString<string | number>({
@@ -118,18 +116,26 @@ export class PostContentElementsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deletePostContentElementsByPostId({
-    postId,
-  }: {
-    postId: string;
-  }): Promise<void> {
+  public async deletePostContentElementsByPostId({ postId }: { postId: string }): Promise<
+    {
+      fileKey: string;
+    }[]
+  > {
     const queryString = `
       DELETE FROM ${this.tableName}
       WHERE
         post_id = '${postId}'
+      RETURNING
+        blob_file_key
       ;
     `;
 
-    await this.datastorePool.query(queryString);
+    const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
+      queryString,
+    );
+
+    return response.rows.map((dbPostContentElement) => ({
+      fileKey: dbPostContentElement.blob_file_key,
+    }));
   }
 }

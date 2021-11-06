@@ -9,7 +9,7 @@ export interface FailedToDeletePostResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulPostDeletionResponse {}
 
-interface HandlerRequestBody {
+export interface DeletePostRequestBody {
   postId: string;
 }
 
@@ -20,7 +20,7 @@ export async function handleDeletePost({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: HandlerRequestBody;
+  requestBody: DeletePostRequestBody;
 }): Promise<
   SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
 > {
@@ -32,9 +32,12 @@ export async function handleDeletePost({
   await controller.databaseService.tableNameToServicesMap.postsTableService.deletePost({
     postId,
   });
-  await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
-    { postId },
-  );
+  const blobPointers =
+    await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
+      { postId },
+    );
+
+  await controller.blobStorageService.deleteImages({ blobPointers });
 
   return {};
 }

@@ -6,6 +6,7 @@ import {
   generatePSQLGenericCreateRowQueryString,
   generatePSQLGenericUpdateRowQueryString,
 } from "./utilities";
+import { assertIsNumber } from "./utilities/validations";
 
 interface DBPost {
   post_id: string;
@@ -100,9 +101,17 @@ export class PostTableService extends TableService {
     const filteringWhereClause = !!filterOutExpiredAndUnscheduledPosts
       ? `
       AND
-        scheduled_publication_timestamp < ${currentTimestamp}
+        (
+          scheduled_publication_timestamp IS NULL
+            OR
+          scheduled_publication_timestamp < ${currentTimestamp}
+        ) 
       AND
-        expiration_timestamp > ${currentTimestamp}
+        (
+            expiration_timestamp IS NULL
+          OR
+            expiration_timestamp > ${currentTimestamp}
+        )
     `
       : "";
 
@@ -134,6 +143,9 @@ export class PostTableService extends TableService {
     scheduledPublicationTimestampMaxValue: number;
     scheduledPublicationTimestampMinValue: number;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    assertIsNumber(scheduledPublicationTimestampMaxValue);
+    assertIsNumber(scheduledPublicationTimestampMinValue);
+
     const queryString = `
         SELECT
           *
@@ -142,9 +154,11 @@ export class PostTableService extends TableService {
         WHERE
             author_user_id = '${creatorUserId}'
           AND
-            scheduled_publication_timestamp >= ${scheduledPublicationTimestampMinValue}
+            scheduled_publication_timestamp IS NOT NULL
           AND
-            scheduled_publication_timestamp <= ${scheduledPublicationTimestampMaxValue}
+            scheduled_publication_timestamp >= '${scheduledPublicationTimestampMinValue}'
+          AND
+            scheduled_publication_timestamp <= '${scheduledPublicationTimestampMaxValue}'
         ;
       `;
 
@@ -158,7 +172,9 @@ export class PostTableService extends TableService {
   }: {
     creatorUserIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    const creatorUserIdsQueryString = `(${creatorUserIds.join(", ")})`;
+    const creatorUserIdsQueryString = creatorUserIds
+      .map((creatorUserId) => `'${creatorUserId}'`)
+      .join(", ");
 
     const queryString = `
         SELECT
@@ -166,9 +182,13 @@ export class PostTableService extends TableService {
         FROM
           ${PostTableService.tableName}
         WHERE
-          author_user_id IN ${creatorUserIdsQueryString}
+          author_user_id IN (${creatorUserIdsQueryString})
         ;
       `;
+
+    console.log("queryString");
+    console.log();
+    console.log(queryString);
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
 
