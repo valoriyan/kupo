@@ -1,17 +1,15 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { getTimestampRangeFromJSMonth } from "../../utilities";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
 import { PostController } from "./postController";
 import { constructRenderablePostsFromParts } from "./utilities";
 
 export interface GetPostsScheduledByUserParams {
-  // 0 based value
-  month: number;
-  year: number;
-  // Example: 'America/New_York'
-  userTimeZone: string;
+  // JS Timestamp
+  rangeStartTimestamp: number;
+  // JS Timestamp
+  rangeEndTimestamp: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -39,19 +37,15 @@ export async function handleGetPostsScheduledByUser({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const { year, month, userTimeZone } = requestBody;
+  const { rangeStartTimestamp, rangeEndTimestamp } = requestBody;
 
-  const {
-    lowerTimestamp: scheduledPublicationTimestampMinValue,
-    upperTimestamp: scheduledPublicationTimestampMaxValue,
-  } = getTimestampRangeFromJSMonth({ year, month, timeZone: userTimeZone });
 
   const unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
       {
         creatorUserId: clientUserId,
-        scheduledPublicationTimestampMaxValue,
-        scheduledPublicationTimestampMinValue,
+        rangeEndTimestamp,
+        rangeStartTimestamp,
       },
     );
 
@@ -59,7 +53,6 @@ export async function handleGetPostsScheduledByUser({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags,
-    userTimeZone,
   });
 
   return {

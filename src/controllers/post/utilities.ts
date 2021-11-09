@@ -11,7 +11,6 @@ export async function constructRenderablePostsFromParts({
   blobStorageService: LocalBlobStorageService;
   databaseService: DatabaseService;
   posts: UnrenderablePostWithoutElementsOrHashtags[];
-  userTimeZone: string;
 }): Promise<RenderablePost[]> {
   const renderablePosts = await BluebirdPromise.map(
     posts,

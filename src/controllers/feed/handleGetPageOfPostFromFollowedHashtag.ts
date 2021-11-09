@@ -10,7 +10,6 @@ export interface GetPageOfPostFromFollowedHashtagParams {
   hashtag: string;
   cursor?: string;
   pageSize: number;
-  userTimeZone: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -35,7 +34,6 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     SuccessfulGetPageOfPostFromFollowedHashtagResponse
   >
 > {
-  const { userTimeZone } = requestBody;
 
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -60,7 +58,6 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: filteredUnrenderablePostsWithoutElements,
-    userTimeZone,
   });
 
   return {

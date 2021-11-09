@@ -136,15 +136,15 @@ export class PostTableService extends TableService {
 
   public async getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId({
     creatorUserId,
-    scheduledPublicationTimestampMaxValue,
-    scheduledPublicationTimestampMinValue,
+    rangeEndTimestamp,
+    rangeStartTimestamp,
   }: {
     creatorUserId: string;
-    scheduledPublicationTimestampMaxValue: number;
-    scheduledPublicationTimestampMinValue: number;
+    rangeEndTimestamp: number;
+    rangeStartTimestamp: number;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    assertIsNumber(scheduledPublicationTimestampMaxValue);
-    assertIsNumber(scheduledPublicationTimestampMinValue);
+    assertIsNumber(rangeEndTimestamp);
+    assertIsNumber(rangeStartTimestamp);
 
     const queryString = `
         SELECT
@@ -156,9 +156,9 @@ export class PostTableService extends TableService {
           AND
             scheduled_publication_timestamp IS NOT NULL
           AND
-            scheduled_publication_timestamp >= '${scheduledPublicationTimestampMinValue}'
+            scheduled_publication_timestamp >= '${rangeStartTimestamp}'
           AND
-            scheduled_publication_timestamp <= '${scheduledPublicationTimestampMaxValue}'
+            scheduled_publication_timestamp <= '${rangeEndTimestamp}'
         ;
       `;
 

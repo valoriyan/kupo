@@ -12,7 +12,6 @@ export interface GetPageOfPostsPaginationParams {
 
   cursor?: string;
   pageSize: number;
-  userTimeZone: string;
 }
 
 export interface SuccessfulGetPageOfPostsPaginationResponse {
@@ -44,11 +43,7 @@ export async function handleGetPageOfPostsPagination({
     SuccessfulGetPageOfPostsPaginationResponse
   >
 > {
-  // needs to filter out posts by expiration and scheduled publication timestamp
   // check if requesting user is allowed to view posts - 403
-
-  const { userTimeZone } = requestBody;
-
   const { clientUserId, error } = await checkAuthorization(controller, request);
 
   if (error) {
@@ -91,7 +86,6 @@ export async function handleGetPageOfPostsPagination({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: filteredUnrenderablePostsWithoutElements,
-    userTimeZone,
   });
 
   return {

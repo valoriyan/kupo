@@ -9,7 +9,6 @@ import { FeedController } from "./feedController";
 export interface GetPageOfPostFromFollowedUsersParams {
   cursor?: string;
   pageSize: number;
-  userTimeZone: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -37,8 +36,6 @@ export async function handleGetPageOfPostFromFollowedUsers({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const { userTimeZone } = requestBody;
-
   const userIdsBeingFollowed: string[] =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
       { userIdDoingFollowing: clientUserId },
@@ -59,7 +56,6 @@ export async function handleGetPageOfPostFromFollowedUsers({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: filteredUnrenderablePostsWithoutElements,
-    userTimeZone,
   });
 
   return {
