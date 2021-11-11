@@ -39,7 +39,6 @@ export async function handleGetPostsScheduledByUser({
 
   const { rangeStartTimestamp, rangeEndTimestamp } = requestBody;
 
-
   const unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
       {

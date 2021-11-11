@@ -34,7 +34,6 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     SuccessfulGetPageOfPostFromFollowedHashtagResponse
   >
 > {
-
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
