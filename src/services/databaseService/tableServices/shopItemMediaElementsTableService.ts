@@ -10,9 +10,9 @@ interface DBShopItemMediaElement {
   blob_file_key: string;
 }
 
-export class ShopItemMediaElementTableService extends TableService {
+export class ShopItemMediaElementsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_shop_item_media_elements`;
-  public readonly tableName = ShopItemMediaElementTableService.tableName;
+  public readonly tableName = ShopItemMediaElementsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();

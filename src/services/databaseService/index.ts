@@ -2,11 +2,13 @@ import { Pool } from "pg";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
-import { HashtagTableService } from "./tableServices/hashtagTableService";
+import { ChatMessagesTableService } from "./tableServices/chatMessagesService";
+import { ChatRoomsTableService } from "./tableServices/chatRoomsTableService";
+import { HashtagsTableService } from "./tableServices/hashtagsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
-import { PostTableService } from "./tableServices/postTableService";
-import { ShopItemMediaElementTableService } from "./tableServices/shopItemMediaElementTableService";
-import { ShopItemTableService } from "./tableServices/shopItemTableService";
+import { PostsTableService } from "./tableServices/postsTableService";
+import { ShopItemMediaElementsTableService } from "./tableServices/shopItemMediaElementsTableService";
+import { ShopItemsTableService } from "./tableServices/shopItemsTableService";
 import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseServive } from "./teardown";
@@ -17,16 +19,18 @@ export class DatabaseService {
 
   public tableNameToServicesMap = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
-    postsTableService: new PostTableService(DatabaseService.datastorePool),
+    postsTableService: new PostsTableService(DatabaseService.datastorePool),
     postContentElementsTableService: new PostContentElementsTableService(
       DatabaseService.datastorePool,
     ),
     userFollowsTableService: new UserFollowsTableService(DatabaseService.datastorePool),
-    shopItemTableService: new ShopItemTableService(DatabaseService.datastorePool),
-    shopItemMediaElementTableService: new ShopItemMediaElementTableService(
+    shopItemTableService: new ShopItemsTableService(DatabaseService.datastorePool),
+    shopItemMediaElementTableService: new ShopItemMediaElementsTableService(
       DatabaseService.datastorePool,
     ),
-    hashtagTableService: new HashtagTableService(DatabaseService.datastorePool),
+    hashtagTableService: new HashtagsTableService(DatabaseService.datastorePool),
+    chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
+    chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

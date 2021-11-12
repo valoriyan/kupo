@@ -8,9 +8,9 @@ interface DBHashtag {
   post_id?: string;
 }
 
-export class HashtagTableService extends TableService {
+export class HashtagsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_hashtags`;
-  public readonly tableName = HashtagTableService.tableName;
+  public readonly tableName = HashtagsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();

@@ -14,9 +14,9 @@ interface DBShopItem {
   expiration_timestamp?: number;
 }
 
-export class ShopItemTableService extends TableService {
+export class ShopItemsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_shop_items`;
-  public readonly tableName = ShopItemTableService.tableName;
+  public readonly tableName = ShopItemsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
@@ -92,7 +92,7 @@ export class ShopItemTableService extends TableService {
         SELECT
           *
         FROM
-          ${ShopItemTableService.tableName}
+          ${this.tableName}
         WHERE
           author_user_id = '${creatorUserId}'
         ;

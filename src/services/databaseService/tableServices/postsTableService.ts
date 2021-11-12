@@ -28,9 +28,9 @@ function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
   };
 }
 
-export class PostTableService extends TableService {
+export class PostsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_posts`;
-  public readonly tableName = PostTableService.tableName;
+  public readonly tableName = PostsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();

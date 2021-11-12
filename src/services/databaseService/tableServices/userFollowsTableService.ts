@@ -64,7 +64,7 @@ export class UserFollowsTableService extends TableService {
         SELECT
           *
         FROM
-          ${UserFollowsTableService.tableName}
+          ${this.tableName}
         WHERE
           user_id_doing_following = '${userIdDoingFollowing}'
         ;
@@ -88,7 +88,7 @@ export class UserFollowsTableService extends TableService {
         SELECT
           COUNT(*)
         FROM
-          ${UserFollowsTableService.tableName}
+          ${this.tableName}
         WHERE
           user_id_being_followed = '${userIdBeingFollowed}'
         ;
@@ -110,7 +110,7 @@ export class UserFollowsTableService extends TableService {
         SELECT
           COUNT(*)
         FROM
-          ${UserFollowsTableService.tableName}
+          ${this.tableName}
         WHERE
           user_id_doing_following = '${userIdDoingFollowing}'
         ;
@@ -133,7 +133,7 @@ export class UserFollowsTableService extends TableService {
       SELECT
         COUNT(*)
       FROM
-        ${UserFollowsTableService.tableName}
+        ${this.tableName}
       WHERE
         user_id_doing_following = '${userIdDoingFollowing}'
       AND
@@ -166,7 +166,7 @@ export class UserFollowsTableService extends TableService {
     userIdBeingUnfollowed: string;
   }): Promise<void> {
     const queryString = `
-      DELETE FROM ${UserFollowsTableService.tableName}
+      DELETE FROM ${this.tableName}
       WHERE
         user_id_doing_following = '${userIdDoingUnfollowing}'
       AND

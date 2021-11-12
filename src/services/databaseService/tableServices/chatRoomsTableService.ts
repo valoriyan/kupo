@@ -2,9 +2,7 @@ import { Pool, QueryResult } from "pg";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import {
-  generatePSQLGenericCreateRowQueryString,
-} from "./utilities";
+import { generatePSQLGenericCreateRowQueryString } from "./utilities";
 
 interface DBChatRoom {
   chatRoomId: string;
