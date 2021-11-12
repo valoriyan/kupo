@@ -13,7 +13,7 @@ export async function handleNewChatMessage({
   incomingUserId: string;
   sendAcknowledgement: ({ received }: { received: boolean }) => void;
 }): Promise<void> {
-  const roomName = generatePrivateUserWebSocketRoomName({userId: incomingUserId});
+  const roomName = generatePrivateUserWebSocketRoomName({ userId: incomingUserId });
 
   sendAcknowledgement({ received: true });
 

@@ -35,7 +35,7 @@ export class WebSocketService {
           jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
         });
 
-        const rooms = [generatePrivateUserWebSocketRoomName({userId})];
+        const rooms = [generatePrivateUserWebSocketRoomName({ userId })];
         socket.join(rooms);
 
         console.log(rooms);
@@ -76,7 +76,7 @@ export class WebSocketService {
       username,
     };
 
-    const roomName = generatePrivateUserWebSocketRoomName({userId: recipientUserId});
+    const roomName = generatePrivateUserWebSocketRoomName({ userId: recipientUserId });
 
     WebSocketService.io.to([roomName]).emit(NEW_POST_NOTIFICATION_EVENT_NAME, message);
   }
