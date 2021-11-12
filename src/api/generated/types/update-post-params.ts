@@ -15,19 +15,31 @@
 /**
  *
  * @export
- * @interface GetPostsScheduledByUserParams
+ * @interface UpdatePostParams
  */
-export interface GetPostsScheduledByUserParams {
+export interface UpdatePostParams {
+  /**
+   *
+   * @type {string}
+   * @memberof UpdatePostParams
+   */
+  postId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof UpdatePostParams
+   */
+  caption?: string;
   /**
    *
    * @type {number}
-   * @memberof GetPostsScheduledByUserParams
+   * @memberof UpdatePostParams
    */
-  rangeStartTimestamp: number;
+  scheduledPublicationTimestamp?: number;
   /**
    *
    * @type {number}
-   * @memberof GetPostsScheduledByUserParams
+   * @memberof UpdatePostParams
    */
-  rangeEndTimestamp: number;
+  expirationTimestamp?: number;
 }

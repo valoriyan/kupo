@@ -36,10 +36,4 @@ export interface GetPageOfPostFromFollowedHashtagParams {
    * @memberof GetPageOfPostFromFollowedHashtagParams
    */
   pageSize: number;
-  /**
-   *
-   * @type {string}
-   * @memberof GetPageOfPostFromFollowedHashtagParams
-   */
-  userTimeZone: string;
 }

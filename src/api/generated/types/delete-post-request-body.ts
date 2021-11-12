@@ -15,19 +15,13 @@
 /**
  *
  * @export
- * @interface GetPostsScheduledByUserParams
+ * @interface DeletePostRequestBody
  */
-export interface GetPostsScheduledByUserParams {
+export interface DeletePostRequestBody {
   /**
    *
-   * @type {number}
-   * @memberof GetPostsScheduledByUserParams
+   * @type {string}
+   * @memberof DeletePostRequestBody
    */
-  rangeStartTimestamp: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetPostsScheduledByUserParams
-   */
-  rangeEndTimestamp: number;
+  postId: string;
 }

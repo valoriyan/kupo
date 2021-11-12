@@ -15,19 +15,13 @@
 /**
  *
  * @export
- * @interface GetPostsScheduledByUserParams
+ * @interface DeleteShopItemRequestBody
  */
-export interface GetPostsScheduledByUserParams {
+export interface DeleteShopItemRequestBody {
   /**
    *
-   * @type {number}
-   * @memberof GetPostsScheduledByUserParams
+   * @type {string}
+   * @memberof DeleteShopItemRequestBody
    */
-  rangeStartTimestamp: number;
-  /**
-   *
-   * @type {number}
-   * @memberof GetPostsScheduledByUserParams
-   */
-  rangeEndTimestamp: number;
+  shopItemId: string;
 }

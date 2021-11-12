@@ -37,6 +37,10 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { DeletePostRequestBody } from "../types";
+// @ts-ignore
+import { DeleteShopItemRequestBody } from "../types";
+// @ts-ignore
 import { FollowUserProfileParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
@@ -92,6 +96,8 @@ import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpda
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
 import { UnfollowUserProfileParams } from "../types";
+// @ts-ignore
+import { UpdatePostParams } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -289,14 +295,17 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} postId
+     * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deletePost: async (postId: string, options: any = {}): Promise<RequestArgs> => {
-      // verify required parameter 'postId' is not null or undefined
-      assertParamExists("deletePost", "postId", postId);
-      const localVarPath = `/post/delete`;
+    deletePost: async (
+      deletePostRequestBody: DeletePostRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'deletePostRequestBody' is not null or undefined
+      assertParamExists("deletePost", "deletePostRequestBody", deletePostRequestBody);
+      const localVarPath = `/post/deletePost`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -307,14 +316,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (postId !== undefined) {
-        localVarFormParams.append("postId", postId as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -324,7 +327,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        deletePostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -333,16 +340,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} shopItemId
+     * @param {DeleteShopItemRequestBody} deleteShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     deleteShopItem: async (
-      shopItemId: string,
+      deleteShopItemRequestBody: DeleteShopItemRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'shopItemId' is not null or undefined
-      assertParamExists("deleteShopItem", "shopItemId", shopItemId);
+      // verify required parameter 'deleteShopItemRequestBody' is not null or undefined
+      assertParamExists(
+        "deleteShopItem",
+        "deleteShopItemRequestBody",
+        deleteShopItemRequestBody,
+      );
       const localVarPath = `/shopitem/delete`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -354,14 +365,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (shopItemId !== undefined) {
-        localVarFormParams.append("shopItemId", shopItemId as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -371,7 +376,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        deleteShopItemRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -967,29 +976,17 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} postId
-     * @param {string} [caption]
-     * @param {string} [hashtags]
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
-     * @param {string} [mediaBlobFileKeys]
-     * @param {Array<any>} [mediaFiles]
+     * @param {UpdatePostParams} updatePostParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePost: async (
-      postId: string,
-      caption?: string,
-      hashtags?: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
-      mediaBlobFileKeys?: string,
-      mediaFiles?: Array<any>,
+      updatePostParams: UpdatePostParams,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'postId' is not null or undefined
-      assertParamExists("updatePost", "postId", postId);
-      const localVarPath = `/post/update`;
+      // verify required parameter 'updatePostParams' is not null or undefined
+      assertParamExists("updatePost", "updatePostParams", updatePostParams);
+      const localVarPath = `/post/updatePost`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1000,42 +997,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (postId !== undefined) {
-        localVarFormParams.append("postId", postId as any);
-      }
-
-      if (caption !== undefined) {
-        localVarFormParams.append("caption", caption as any);
-      }
-
-      if (hashtags !== undefined) {
-        localVarFormParams.append("hashtags", hashtags as any);
-      }
-
-      if (scheduledPublicationTimestamp !== undefined) {
-        localVarFormParams.append(
-          "scheduledPublicationTimestamp",
-          scheduledPublicationTimestamp as any,
-        );
-      }
-
-      if (expirationTimestamp !== undefined) {
-        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
-      }
-
-      if (mediaBlobFileKeys !== undefined) {
-        localVarFormParams.append("mediaBlobFileKeys", mediaBlobFileKeys as any);
-      }
-      if (mediaFiles) {
-        mediaFiles.forEach((element) => {
-          localVarFormParams.append("mediaFiles", element as any);
-        });
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -1045,7 +1008,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updatePostParams,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1323,12 +1290,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} postId
+     * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async deletePost(
-      postId: string,
+      deletePostRequestBody: DeletePostRequestBody,
       options?: any,
     ): Promise<
       (
@@ -1337,7 +1304,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deletePost(
-        postId,
+        deletePostRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1349,12 +1316,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} shopItemId
+     * @param {DeleteShopItemRequestBody} deleteShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async deleteShopItem(
-      shopItemId: string,
+      deleteShopItemRequestBody: DeleteShopItemRequestBody,
       options?: any,
     ): Promise<
       (
@@ -1363,7 +1330,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteShopItem(
-        shopItemId,
+        deleteShopItemRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1703,24 +1670,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} postId
-     * @param {string} [caption]
-     * @param {string} [hashtags]
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
-     * @param {string} [mediaBlobFileKeys]
-     * @param {Array<any>} [mediaFiles]
+     * @param {UpdatePostParams} updatePostParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updatePost(
-      postId: string,
-      caption?: string,
-      hashtags?: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
-      mediaBlobFileKeys?: string,
-      mediaFiles?: Array<any>,
+      updatePostParams: UpdatePostParams,
       options?: any,
     ): Promise<
       (
@@ -1729,13 +1684,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePost(
-        postId,
-        caption,
-        hashtags,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        mediaBlobFileKeys,
-        mediaFiles,
+        updatePostParams,
         options,
       );
       return createRequestFunction(
@@ -1919,30 +1868,30 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} postId
+     * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     deletePost(
-      postId: string,
+      deletePostRequestBody: DeletePostRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse> {
       return localVarFp
-        .deletePost(postId, options)
+        .deletePost(deletePostRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} shopItemId
+     * @param {DeleteShopItemRequestBody} deleteShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     deleteShopItem(
-      shopItemId: string,
+      deleteShopItemRequestBody: DeleteShopItemRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse> {
       return localVarFp
-        .deleteShopItem(shopItemId, options)
+        .deleteShopItem(deleteShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2121,37 +2070,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} postId
-     * @param {string} [caption]
-     * @param {string} [hashtags]
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
-     * @param {string} [mediaBlobFileKeys]
-     * @param {Array<any>} [mediaFiles]
+     * @param {UpdatePostParams} updatePostParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePost(
-      postId: string,
-      caption?: string,
-      hashtags?: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
-      mediaBlobFileKeys?: string,
-      mediaFiles?: Array<any>,
+      updatePostParams: UpdatePostParams,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse> {
       return localVarFp
-        .updatePost(
-          postId,
-          caption,
-          hashtags,
-          scheduledPublicationTimestamp,
-          expirationTimestamp,
-          mediaBlobFileKeys,
-          mediaFiles,
-          options,
-        )
+        .updatePost(updatePostParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2310,27 +2238,30 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} postId
+   * @param {DeletePostRequestBody} deletePostRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public deletePost(postId: string, options?: any) {
+  public deletePost(deletePostRequestBody: DeletePostRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .deletePost(postId, options)
+      .deletePost(deletePostRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} shopItemId
+   * @param {DeleteShopItemRequestBody} deleteShopItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public deleteShopItem(shopItemId: string, options?: any) {
+  public deleteShopItem(
+    deleteShopItemRequestBody: DeleteShopItemRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .deleteShopItem(shopItemId, options)
+      .deleteShopItem(deleteShopItemRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2524,38 +2455,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} postId
-   * @param {string} [caption]
-   * @param {string} [hashtags]
-   * @param {string} [scheduledPublicationTimestamp]
-   * @param {string} [expirationTimestamp]
-   * @param {string} [mediaBlobFileKeys]
-   * @param {Array<any>} [mediaFiles]
+   * @param {UpdatePostParams} updatePostParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public updatePost(
-    postId: string,
-    caption?: string,
-    hashtags?: string,
-    scheduledPublicationTimestamp?: string,
-    expirationTimestamp?: string,
-    mediaBlobFileKeys?: string,
-    mediaFiles?: Array<any>,
-    options?: any,
-  ) {
+  public updatePost(updatePostParams: UpdatePostParams, options?: any) {
     return DefaultApiFp(this.configuration)
-      .updatePost(
-        postId,
-        caption,
-        hashtags,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        mediaBlobFileKeys,
-        mediaFiles,
-        options,
-      )
+      .updatePost(updatePostParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

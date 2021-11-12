@@ -36,10 +36,4 @@ export interface GetPageOfPostsPaginationParams {
    * @memberof GetPageOfPostsPaginationParams
    */
   pageSize: number;
-  /**
-   *
-   * @type {string}
-   * @memberof GetPageOfPostsPaginationParams
-   */
-  userTimeZone: string;
 }

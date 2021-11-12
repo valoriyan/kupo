@@ -1,5 +1,7 @@
 export * from "./auth-failure-reason";
 export * from "./create-post-failure-reasons";
+export * from "./delete-post-request-body";
+export * from "./delete-shop-item-request-body";
 export * from "./denied-get-user-profile-response";
 export * from "./denied-get-user-profile-response-reason";
 export * from "./denied-password-reset-response";
@@ -49,3 +51,4 @@ export * from "./successful-get-posts-scheduled-by-user-response";
 export * from "./successful-post-creation-response";
 export * from "./successful-search-user-profiles-by-username-response";
 export * from "./unfollow-user-profile-params";
+export * from "./update-post-params";

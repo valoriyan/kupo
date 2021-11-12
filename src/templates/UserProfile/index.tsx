@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SuccessfulGetUserProfileResponse } from "#/api";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
@@ -12,6 +11,7 @@ import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { Subtext, subtextStyles } from "#/components/Typography";
+import { RenderableUser } from "#/api";
 
 export interface UserProfileProps {
   isOwnProfile?: boolean;
@@ -32,7 +32,7 @@ export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
 
 interface ProfileBodyProps {
   isOwnProfile?: boolean;
-  user: SuccessfulGetUserProfileResponse;
+  user: RenderableUser;
 }
 
 const ProfileBody = (props: ProfileBodyProps) => {
@@ -46,12 +46,11 @@ const ProfileBody = (props: ProfileBodyProps) => {
           </Link>
           <Subtext>
             {formatStat(props.user.followers.count)} followers |{" "}
-            {formatStat(props.user.subscribers.count)} subscribers |{" "}
             {formatStat(props.user.follows.count)} followed
           </Subtext>
-          <Description>{props.user.bio}</Description>
+          <Description>{props.user.shortBio}</Description>
           <ExternalLink target="_blank" rel="noopener noreferrer">
-            {props.user.website}
+            {props.user.userWebsite}
           </ExternalLink>
         </Stack>
         <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>

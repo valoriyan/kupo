@@ -30,10 +30,4 @@ export interface GetPageOfPostFromFollowedUsersParams {
    * @memberof GetPageOfPostFromFollowedUsersParams
    */
   pageSize: number;
-  /**
-   *
-   * @type {string}
-   * @memberof GetPageOfPostFromFollowedUsersParams
-   */
-  userTimeZone: string;
 }
