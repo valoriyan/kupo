@@ -42,6 +42,7 @@ app.use((err: any, req: express.Request, res: express.Response) => {
   }
 });
 
+// TODO: REMOVE WHEN ADDING CLOUD STORAGE
 app.use("/tmp", express.static("tmp"));
 
 DatabaseService.start();

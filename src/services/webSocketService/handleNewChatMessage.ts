@@ -10,7 +10,7 @@ export async function handleNewChatMessage({
   io: Server;
   incomingMessage: ChatMessage;
   incomingUserId: string;
-  sendAcknowledgement: ({received}: {received: boolean}) => void;
+  sendAcknowledgement: ({ received }: { received: boolean }) => void;
 }): Promise<void> {
   const roomName = `user:${incomingUserId}`;
 

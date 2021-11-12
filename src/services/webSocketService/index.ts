@@ -14,7 +14,7 @@ import { singleton } from "tsyringe";
 export class WebSocketService {
   static io: Server;
 
-  static async start(httpServer: httpServer) {
+  static async start(httpServer: httpServer): Promise<void> {
     const io = new Server(httpServer, {
       cors: {
         origin: "http://localhost:3000",
@@ -71,7 +71,7 @@ export class WebSocketService {
     recipientUserId: string;
     username: string;
     previewTemporaryUrl: string;
-  }) {
+  }): Promise<void> {
     const message: NewChatNotification = {
       previewTemporaryUrl,
       username,
