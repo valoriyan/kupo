@@ -9,6 +9,7 @@ import {
 } from "./eventsConfig";
 import { handleNewChatMessage } from "./handleNewChatMessage";
 import { singleton } from "tsyringe";
+import { generatePrivateUserWebSocketRoomName } from "./utilities";
 
 @singleton()
 export class WebSocketService {
@@ -26,8 +27,6 @@ export class WebSocketService {
     io.on("connection", (socket) => {
       console.log("USER HAS CONNECTED");
 
-      socket.join("user:128223123");
-
       const accessToken = socket.handshake.auth["accessToken"];
 
       try {
@@ -36,7 +35,7 @@ export class WebSocketService {
           jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
         });
 
-        const rooms = [`user:${userId}`];
+        const rooms = [generatePrivateUserWebSocketRoomName({userId})];
         socket.join(rooms);
 
         console.log(rooms);
@@ -77,7 +76,7 @@ export class WebSocketService {
       username,
     };
 
-    const roomName = `user:${recipientUserId}`;
+    const roomName = generatePrivateUserWebSocketRoomName({userId: recipientUserId});
 
     WebSocketService.io.to([roomName]).emit(NEW_POST_NOTIFICATION_EVENT_NAME, message);
   }

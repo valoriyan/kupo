@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { ChatMessage, NEW_CHAT_MESSAGE_EVENT_NAME } from "./eventsConfig";
+import { generatePrivateUserWebSocketRoomName } from "./utilities";
 
 export async function handleNewChatMessage({
   io,
@@ -12,7 +13,7 @@ export async function handleNewChatMessage({
   incomingUserId: string;
   sendAcknowledgement: ({ received }: { received: boolean }) => void;
 }): Promise<void> {
-  const roomName = `user:${incomingUserId}`;
+  const roomName = generatePrivateUserWebSocketRoomName({userId: incomingUserId});
 
   sendAcknowledgement({ received: true });
 
