@@ -11,7 +11,12 @@ import {
   handleCreateChatMessage,
   SuccessfulChatMessageCreationResponse,
 } from "./handleCreateChatMessage";
-import { FailedtoGetPageOfChatMessagesResponse, GetPageOfChatMessagesRequestBody, handleGetPageOfChatMessages, SuccessfulGetPageOfChatMessagesResponse } from "./handleGetPageOfChatMessages";
+import {
+  FailedtoGetPageOfChatMessagesResponse,
+  GetPageOfChatMessagesRequestBody,
+  handleGetPageOfChatMessages,
+  SuccessfulGetPageOfChatMessagesResponse,
+} from "./handleGetPageOfChatMessages";
 
 @injectable()
 @Route("chat")
@@ -46,16 +51,15 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
   ): Promise<
-  SecuredHTTPResponse<
+    SecuredHTTPResponse<
       FailedtoGetPageOfChatMessagesResponse,
       SuccessfulGetPageOfChatMessagesResponse
-  >
-  >  {
+    >
+  > {
     return await handleGetPageOfChatMessages({
       controller: this,
       request,
       requestBody,
     });
   }
-
 }
