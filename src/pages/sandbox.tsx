@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import React, { useEffect, useState } from "react";
-import Image from 'next/image'
+import Image from "next/image";
 import { getAccessToken, ProtectedPage } from "#/contexts/auth";
 
 interface CustomMessageType {
