@@ -87,9 +87,9 @@ export class ChatMessagesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getChatMessagesByChatRoomId({
-    chatMessageId,
+    chatRoomId,
   }: {
-    chatMessageId: string;
+    chatRoomId: string;
   }): Promise<UnrenderableChatMessage[]> {
     const queryString = `
         SELECT
@@ -97,7 +97,7 @@ export class ChatMessagesTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-            chat_message_id = '${chatMessageId}'
+            chat_room_id = '${chatRoomId}'
         ;
       `;
 

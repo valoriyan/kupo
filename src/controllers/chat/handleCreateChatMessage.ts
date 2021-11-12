@@ -17,7 +17,6 @@ export interface SuccessfulChatMessageCreationResponse {}
 
 export interface CreateChatMessageRequestBody {
   chatMessageText: string;
-  postId: string;
   chatRoomId: string;
 }
 
