@@ -115,14 +115,11 @@ export class PostTableService extends TableService {
     `
       : "";
 
-    if (filterOutExpiredAndUnscheduledPosts) {
-    }
-
     const queryString = `
         SELECT
           *
         FROM
-          ${PostTableService.tableName}
+          ${this.tableName}
         WHERE
           author_user_id = '${creatorUserId}'
         ${filteringWhereClause}
@@ -150,7 +147,7 @@ export class PostTableService extends TableService {
         SELECT
           *
         FROM
-          ${PostTableService.tableName}
+          ${this.tableName}
         WHERE
             author_user_id = '${creatorUserId}'
           AND
@@ -180,7 +177,7 @@ export class PostTableService extends TableService {
         SELECT
           *
         FROM
-          ${PostTableService.tableName}
+          ${this.tableName}
         WHERE
           author_user_id IN (${creatorUserIdsQueryString})
         ;
