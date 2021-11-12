@@ -62,9 +62,7 @@ const Sandbox = () => {
     };
 
     if (!!socket) {
-      socket.emit(NEW_CHAT_MESSAGE_EVENT_NAME, message, (acknowledgement: any) => {
-        console.log("acknowledgement", acknowledgement);
-      });
+      socket.emit(NEW_CHAT_MESSAGE_EVENT_NAME, message);
     }
   }
 
