@@ -134,6 +134,18 @@ export async function handleCreatePost({
       },
     );
 
+    const unrenderableUser =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+        { userId: clientUserId },
+      );
+
+    await controller.webSocketService.notifyOfNewPost({
+      recipientUserId: clientUserId,
+      previewTemporaryUrl: contentElementTemporaryUrls[0],
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      username: unrenderableUser!.username,
+    });
+
     return {
       success: {
         renderablePost: {

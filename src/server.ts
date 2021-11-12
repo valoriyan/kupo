@@ -11,6 +11,8 @@ const port = process.env.PORT || 4000;
 
 const httpServer = createServer(app);
 
-new WebSocketService(httpServer);
+WebSocketService.start(httpServer);
 
-httpServer.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+httpServer.listen(port, () =>
+  console.log(`Example app listening at http://localhost:${port}`),
+);

@@ -53,8 +53,12 @@ export class LocalBlobStorageService extends BlobStorageService {
   }: {
     blobItemPointer: BlobItemPointer;
   }): Promise<string> {
-    const fileWritePath = this.localBlobStorageDirectory + "/" + blobItemPointer.fileKey;
-    return fileWritePath;
+    const fileReadPath =
+      "http://localhost:4000/" +
+      this.localBlobStorageDirectory +
+      "/" +
+      blobItemPointer.fileKey;
+    return fileReadPath;
   }
 
   async deleteImages({

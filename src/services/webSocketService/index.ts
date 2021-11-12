@@ -1,50 +1,84 @@
 import { Server } from "socket.io";
-import {Server as httpServer } from "http";
+import { Server as httpServer } from "http";
+import { validateTokenAndGetUserId } from "../../controllers/auth/utilities";
+import {
+  ChatMessage,
+  NewChatNotification,
+  NEW_CHAT_MESSAGE_EVENT_NAME,
+  NEW_POST_NOTIFICATION_EVENT_NAME,
+} from "./eventsConfig";
+import { handleNewChatMessage } from "./handleNewChatMessage";
+import { singleton } from "tsyringe";
 
+@singleton()
 export class WebSocketService {
-    private io: Server;
+  static io: Server;
 
-    constructor(httpServer: httpServer) {
-        const io = new Server(
-            httpServer,
-            {
-                cors: {
-                    origin: "http://localhost:3000",
-                  }                
-            }
-            );
+  static async start(httpServer: httpServer) {
+    const io = new Server(httpServer, {
+      cors: {
+        origin: "http://localhost:3000",
+      },
+    });
 
-        this.io = io;
+    WebSocketService.io = io;
 
-        io.on('connection', (socket) => {
+    io.on("connection", (socket) => {
+      console.log("USER HAS CONNECTED");
 
-            socket.join("user:128223123");
+      socket.join("user:128223123");
 
-            socket.on('chat message', (msg) => {
-                io.emit('chat message', msg);
+      const accessToken = socket.handshake.auth["accessToken"];
 
-                socket.join("bob's room");
-                
-                io.in("bob's room").in("bob's room").emit("woah");
-
-                // sent to everyone except the socket
-                socket.to("bob's room").emit("woah");
-            
-                socket.id;
-              });
-            
-        });          
-    }
-
-    sendData({userId}: {userId: string;}) {
-        this.io.in(`user:${userId}`).emit("bla bla", (acknowledgementOne: string, acknowledgementTwo: string) => {
-            console.log(acknowledgementOne, acknowledgementTwo);
+      try {
+        const userId = validateTokenAndGetUserId({
+          token: accessToken,
+          jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
         });
-    }
 
-    handleChatMessage() {
-        this.io.on("chat-message", (messageText: string, sendAcknowledgement) => {
-            sendAcknowledgement({customREsponseCode: 123}, "okayy");
-        })
-    }
+        const rooms = [`user:${userId}`];
+        socket.join(rooms);
+
+        console.log(rooms);
+
+        socket.on(
+          NEW_CHAT_MESSAGE_EVENT_NAME,
+          (incomingMessage: ChatMessage, sendAcknowledgement) => {
+            console.log("MESSAGE CAME IN!");
+            console.log(incomingMessage);
+            console.log(sendAcknowledgement);
+
+            handleNewChatMessage({
+              io,
+              incomingMessage,
+              incomingUserId: userId,
+              sendAcknowledgement,
+            });
+          },
+        );
+      } catch (error) {
+        console.log(error);
+        socket.disconnect();
+      }
+    });
+  }
+
+  public async notifyOfNewPost({
+    recipientUserId,
+    username,
+    previewTemporaryUrl,
+  }: {
+    recipientUserId: string;
+    username: string;
+    previewTemporaryUrl: string;
+  }) {
+    const message: NewChatNotification = {
+      previewTemporaryUrl,
+      username,
+    };
+
+    const roomName = `user:${recipientUserId}`;
+
+    WebSocketService.io.to([roomName]).emit(NEW_POST_NOTIFICATION_EVENT_NAME, message);
+  }
 }

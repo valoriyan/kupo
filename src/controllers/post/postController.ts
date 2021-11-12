@@ -42,6 +42,7 @@ import {
   handleGetPostsScheduledByUser,
   SuccessfulGetPostsScheduledByUserResponse,
 } from "./handleGetPostsScheduledByUser";
+import { WebSocketService } from "../../services/webSocketService";
 
 @injectable()
 @Route("post")
@@ -49,6 +50,7 @@ export class PostController extends Controller {
   constructor(
     public blobStorageService: LocalBlobStorageService,
     public databaseService: DatabaseService,
+    public webSocketService: WebSocketService,
   ) {
     super();
   }

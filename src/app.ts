@@ -10,7 +10,6 @@ export const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
-app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
@@ -33,7 +32,16 @@ app.use((err: any, req: express.Request, res: express.Response) => {
     name: err.name,
     status,
   };
-  res.status(status).json(body);
+
+  if (res.status) {
+    res.status(status).json(body);
+  } else {
+    // `res` is next function in some cases
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (res as any)();
+  }
 });
+
+app.use("/tmp", express.static("tmp"));
 
 DatabaseService.start();
