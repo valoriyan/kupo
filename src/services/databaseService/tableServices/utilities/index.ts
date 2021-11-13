@@ -40,7 +40,8 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       values: [],
     };
   }
-
+  
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const queryValues: (T | string)[] = filteredUpdatedFields.map(({ value }) => value!);
   let queryValueIndex = 0;
 
@@ -87,6 +88,7 @@ export function generatePSQLGenericDeleteRowsQueryString<T>({
     return !!value;
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const queryValues: T[] = filteredFields.map((fields) => fields.value!);
   let queryValueIndex = 0;
 

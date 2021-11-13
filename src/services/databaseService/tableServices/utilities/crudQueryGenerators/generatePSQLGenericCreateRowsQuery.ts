@@ -42,6 +42,7 @@ export function generatePSQLGenericCreateRowsQuery<T>({
     queryText += "\n" + rowQueryText;
 
     activeFieldsAndValuesInRow.forEach((row) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       queryValues.push(row.value!);
     });
   });
