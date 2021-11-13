@@ -73,7 +73,7 @@ const Sandbox = () => {
 
   const lines = messages.map((message, index) => {
     const image = !!message.imageUrl ? (
-      <Image src={message.imageUrl} width={"100px"} height={"100px"} />
+      <Image alt={"alt text"} src={message.imageUrl} width={"100px"} height={"100px"} />
     ) : null;
 
     return (
