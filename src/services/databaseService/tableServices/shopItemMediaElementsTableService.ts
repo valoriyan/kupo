@@ -46,7 +46,6 @@ export class ShopItemMediaElementsTableService extends TableService {
       blobFileKey: string;
     }[];
   }): Promise<void> {
-
     const rowsOfFieldsAndValues = shopItemMediaElements.map(
       ({ shopItemId, shopItemElementIndex, blobFileKey }) => [
         { field: "shop_item_id", value: shopItemId },

@@ -236,8 +236,8 @@ export class UsersTableService extends TableService {
       values: [userId],
     };
 
-    console.log(query.text)
-    console.log(query.values)
+    console.log(query.text);
+    console.log(query.values);
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 

@@ -13,7 +13,7 @@ export function generatePSQLGenericCreateRowsQuery<T>({
 
   const setOfFields = new Set();
   rowsOfFieldsAndValues.forEach((rowOfFieldsAndValues) => {
-    rowOfFieldsAndValues.forEach(({field}) => {
+    rowOfFieldsAndValues.forEach(({ field }) => {
       setOfFields.add(field);
     });
   });
@@ -23,9 +23,9 @@ export function generatePSQLGenericCreateRowsQuery<T>({
   const rowsOfParameterizedValues: string[] = [];
 
   rowsOfFieldsAndValues.forEach((rowOfFieldsAndValues) => {
-    let rowOfParameterizedValues: string[] = [];
+    const rowOfParameterizedValues: string[] = [];
 
-    rowOfFieldsAndValues.map(({value}) => {
+    rowOfFieldsAndValues.map(({ value }) => {
       queryValueIndex += 1;
       rowOfParameterizedValues.push(`$${queryValueIndex}`);
       queryValues.push(value);
@@ -35,7 +35,6 @@ export function generatePSQLGenericCreateRowsQuery<T>({
 
     rowsOfParameterizedValues.push(rowOfParameterizedValuesString);
   });
-
 
   const parameterizedValues = rowsOfParameterizedValues.join(", ");
 

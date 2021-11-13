@@ -41,8 +41,10 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
     };
   }
 
+  const queryValues: (T | string | undefined)[] = filteredUpdatedFields.map(
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const queryValues: (T | string | undefined)[] = filteredUpdatedFields.map(({ value }) => value!);
+    ({ value }) => value!,
+  );
   let queryValueIndex = 0;
 
   const updateString = filteredUpdatedFields

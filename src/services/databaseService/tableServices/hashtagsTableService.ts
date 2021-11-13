@@ -45,21 +45,18 @@ export class HashtagsTableService extends TableService {
   }): Promise<void> {
     console.log(`${this.tableName}|addHashtagsToPost`);
 
-    const rowsOfFieldsAndValues = hashtags.map(
-      (hashtag) => [
-        { field: "hashtag", value: hashtag },
-        {
-          field: "post_id",
-          value: `${postId}`,
-        },
-      ],
-    );
+    const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
+      { field: "hashtag", value: hashtag },
+      {
+        field: "post_id",
+        value: `${postId}`,
+      },
+    ]);
 
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues,
       tableName: this.tableName,
     });
-
 
     await this.datastorePool.query<DBHashtag>(query);
   }
