@@ -13,7 +13,7 @@ export async function uploadMediaFile({
 }> {
   const mimetype = file.mimetype;
 
-  const permittedImageTypes = ["image/jpeg", "image/png"];
+  const permittedImageTypes = ["image/jpeg", "image/png", "image/heic", "image/heif"];
 
   const permittedVideoTypes = ["video/mp4"];
 
