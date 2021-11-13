@@ -2,7 +2,8 @@ import { Pool, QueryResult } from "pg";
 import { ShopItemMediaElement } from "src/controllers/shopItem/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericCreateRowQueryString } from "./utilities";
+import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBShopItemMediaElement {
   shop_item_id: string;
@@ -45,26 +46,25 @@ export class ShopItemMediaElementsTableService extends TableService {
       blobFileKey: string;
     }[];
   }): Promise<void> {
-    const queryString = shopItemMediaElements.reduce(
-      (previousValue, currentValue): string => {
-        const { shopItemId, shopItemElementIndex, blobFileKey } = currentValue;
+    const query = shopItemMediaElements.reduce((previousValue, currentValue): string => {
+      const { shopItemId, shopItemElementIndex, blobFileKey } = currentValue;
 
-        return (
-          previousValue +
-          generatePSQLGenericCreateRowQueryString<string | number>({
-            rows: [
+      return (
+        previousValue +
+        generatePSQLGenericCreateRowsQuery<string | number>({
+          rowsOfFieldsAndValues: [
+            [
               { field: "shop_item_id", value: shopItemId },
               { field: "shop_item_element_index", value: `${shopItemElementIndex}` },
               { field: "blob_file_key", value: blobFileKey },
             ],
-            tableName: this.tableName,
-          })
-        );
-      },
-      "",
-    );
+          ],
+          tableName: this.tableName,
+        })
+      );
+    }, "");
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -76,18 +76,21 @@ export class ShopItemMediaElementsTableService extends TableService {
   }: {
     shopItemId: string;
   }): Promise<ShopItemMediaElement[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          shop_item_id = '${shopItemId}'
+          shop_item_id = '$1'
         ;
-      `;
+      `,
+      values: [shopItemId],
+    };
 
     const response: QueryResult<DBShopItemMediaElement> = await this.datastorePool.query(
-      queryString,
+      query,
     );
 
     return response.rows
@@ -118,17 +121,13 @@ export class ShopItemMediaElementsTableService extends TableService {
       fileKey: string;
     }[]
   > {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-        shop_item_id = '${shopItemId}'
-      RETURNING
-        blob_file_key
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [{ field: "shop_item_id", value: shopItemId }],
+      tableName: this.tableName,
+    });
 
     const response: QueryResult<DBShopItemMediaElement> = await this.datastorePool.query(
-      queryString,
+      query,
     );
 
     return response.rows.map((dbShopItemMediaElement) => ({

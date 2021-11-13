@@ -1,7 +1,8 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericCreateRowQueryString } from "./utilities";
+import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBPostContentElement {
   post_id: string;
@@ -44,29 +45,25 @@ export class PostContentElementsTableService extends TableService {
       blobFileKey: string;
     }[];
   }): Promise<void> {
-    const queryString = postContentElements.reduce(
-      (previousValue, currentValue): string => {
-        const { postId, postContentElementIndex, blobFileKey } = currentValue;
+    console.log(`${this.tableName}|createPostContentElements`);
 
-        return (
-          previousValue +
-          generatePSQLGenericCreateRowQueryString<string | number>({
-            rows: [
-              { field: "post_id", value: postId },
-              {
-                field: "post_content_element_index",
-                value: `${postContentElementIndex}`,
-              },
-              { field: "blob_file_key", value: blobFileKey },
-            ],
-            tableName: this.tableName,
-          })
-        );
-      },
-      "",
+    const rowsOfFieldsAndValues = postContentElements.map(
+      ({ postId, postContentElementIndex, blobFileKey }) => [
+        { field: "post_id", value: postId },
+        {
+          field: "post_content_element_index",
+          value: `${postContentElementIndex}`,
+        },
+        { field: "blob_file_key", value: blobFileKey },
+      ],
     );
 
-    await this.datastorePool.query(queryString);
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues,
+      tableName: this.tableName,
+    });
+
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -78,15 +75,18 @@ export class PostContentElementsTableService extends TableService {
       blobFileKey: string;
     }[]
   > {
-    const queryString = `
+    const queryString = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-        post_id = '${postId}'
+          post_id = '$1'
         ;
-      `;
+      `,
+      values: [postId],
+    };
 
     const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
       queryString,
@@ -121,17 +121,13 @@ export class PostContentElementsTableService extends TableService {
       fileKey: string;
     }[]
   > {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-        post_id = '${postId}'
-      RETURNING
-        blob_file_key
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
+      tableName: this.tableName,
+    });
 
     const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
-      queryString,
+      query,
     );
 
     return response.rows.map((dbPostContentElement) => ({

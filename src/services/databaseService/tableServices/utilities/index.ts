@@ -1,7 +1,5 @@
-export interface PSQLFieldAndValue<T> {
-  field: string;
-  value: T | undefined;
-}
+import { QueryConfig } from "pg";
+import { PSQLFieldAndValue } from "./models";
 
 export function generatePostgreSQLCreateEnumTypeQueryString({
   typeName,
@@ -23,36 +21,6 @@ export function generatePostgreSQLCreateEnumTypeQueryString({
   return queryString;
 }
 
-export function generatePSQLGenericCreateRowQueryString<T>({
-  rows,
-  tableName,
-}: {
-  rows: PSQLFieldAndValue<T>[];
-  tableName: string;
-}): string {
-  const activeRows = rows.filter((row) => !!row.value);
-
-  const rowFieldNamesString = activeRows.map(({ field }) => field).join(", ");
-
-  const rowValuesString = activeRows
-    .map(({ value }) => {
-      return `'${value}'`;
-    })
-    .join(", ");
-
-  const queryString = `
-    INSERT INTO ${tableName} (
-      ${rowFieldNamesString}
-    )
-    VALUES (
-      ${rowValuesString}
-    )
-    ;
-  `;
-
-  return queryString;
-}
-
 export function generatePSQLGenericUpdateRowQueryString<T>({
   updatedFields,
   fieldUsedToIdentifyUpdatedRow,
@@ -61,34 +29,85 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
   updatedFields: PSQLFieldAndValue<T>[];
   fieldUsedToIdentifyUpdatedRow: PSQLFieldAndValue<T>;
   tableName: string;
-}): string {
+}): QueryConfig {
   const filteredUpdatedFields = updatedFields.filter(({ value }) => {
     return !!value;
   });
 
+  if (filteredUpdatedFields.length === 0) {
+    return {
+      text: "",
+      values: [],
+    };
+  }
+
+  const queryValues: (T | string)[] = filteredUpdatedFields.map(({ value }) => value!);
+  let queryValueIndex = 0;
+
   const updateString = filteredUpdatedFields
-    .map(({ field, value }, index) => {
+    .map(({ field }, index) => {
       const commaSeperator = index < filteredUpdatedFields.length - 1 ? "," : "";
 
-      return `${field} = '${value}'${commaSeperator}`;
+      queryValueIndex += 1;
+      return `${field} = '$${queryValueIndex}'${commaSeperator}`;
     })
     .join("\n");
 
-  if (updateString === "") {
-    return "";
-  }
-
   const escapedFieldUsedToIdentifyUpdatedRowValue = `'${fieldUsedToIdentifyUpdatedRow.value}'`;
+  queryValues.push(escapedFieldUsedToIdentifyUpdatedRowValue);
 
-  const queryString = `
+  const queryText = `
     UPDATE
       ${tableName}
     SET
       ${updateString}
     WHERE
-      ${fieldUsedToIdentifyUpdatedRow.field} = ${escapedFieldUsedToIdentifyUpdatedRowValue}
+      ${fieldUsedToIdentifyUpdatedRow.field} = $${queryValueIndex + 1}
     ;
   `;
 
-  return queryString;
+  return {
+    text: queryText,
+    values: queryValues,
+  };
+}
+
+export function isQueryEmpty({ query }: { query: QueryConfig }): boolean {
+  return query.text.length === 0;
+}
+
+export function generatePSQLGenericDeleteRowsQueryString<T>({
+  fieldsUsedToIdentifyRowsToDelete,
+  tableName,
+}: {
+  fieldsUsedToIdentifyRowsToDelete: PSQLFieldAndValue<T>[];
+  tableName: string;
+}): QueryConfig {
+  const filteredFields = fieldsUsedToIdentifyRowsToDelete.filter(({ value }) => {
+    return !!value;
+  });
+
+  const queryValues: T[] = filteredFields.map((fields) => fields.value!);
+  let queryValueIndex = 0;
+
+  const parameterizedValuesString = filteredFields
+    .map(({ field }) => {
+      queryValueIndex += 1;
+      return `${field} = $${queryValueIndex}`;
+    })
+    .join(" AND ");
+
+  const queryText = `
+    DELETE FROM ${tableName}
+    WHERE
+      ${parameterizedValuesString}
+    RETURNING
+      *
+    ;
+  `;
+
+  return {
+    text: queryText,
+    values: queryValues,
+  };
 }

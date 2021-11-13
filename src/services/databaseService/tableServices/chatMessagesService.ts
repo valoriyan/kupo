@@ -4,9 +4,11 @@ import { UnrenderableChatMessage } from "src/controllers/chat/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
-  generatePSQLGenericCreateRowQueryString,
+  generatePSQLGenericDeleteRowsQueryString,
   generatePSQLGenericUpdateRowQueryString,
+  isQueryEmpty,
 } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBChatMessage {
   chatMessageId: string;
@@ -68,18 +70,20 @@ export class ChatMessagesTableService extends TableService {
     chatRoomId: string;
     creationTimestamp: number;
   }): Promise<void> {
-    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
-      rows: [
-        { field: "chat_message_id", value: chatMessageId },
-        { field: "text", value: text },
-        { field: "author_user_id", value: authorUserId },
-        { field: "chat_room_id", value: chatRoomId },
-        { field: "creation_timestamp", value: creationTimestamp },
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: [
+        [
+          { field: "chat_message_id", value: chatMessageId },
+          { field: "text", value: text },
+          { field: "author_user_id", value: authorUserId },
+          { field: "chat_room_id", value: chatRoomId },
+          { field: "creation_timestamp", value: creationTimestamp },
+        ],
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -91,19 +95,20 @@ export class ChatMessagesTableService extends TableService {
   }: {
     chatRoomId: string;
   }): Promise<UnrenderableChatMessage[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-            chat_room_id = '${chatRoomId}'
+            chat_room_id = '$1'
         ;
-      `;
+      `,
+      values: [chatRoomId],
+    };
 
-    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(
-      queryString,
-    );
+    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBChatMessageToUnrenderableChatMessage);
   }
@@ -119,7 +124,7 @@ export class ChatMessagesTableService extends TableService {
     chatMessageId: string;
     text: string;
   }): Promise<void> {
-    const queryString = generatePSQLGenericUpdateRowQueryString<string | number>({
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [{ field: "text", value: text }],
       fieldUsedToIdentifyUpdatedRow: {
         field: "chat_message_id",
@@ -128,8 +133,8 @@ export class ChatMessagesTableService extends TableService {
       tableName: this.tableName,
     });
 
-    if (!!queryString) {
-      await this.datastorePool.query(queryString);
+    if (!isQueryEmpty({ query })) {
+      await this.datastorePool.query(query);
     }
   }
 
@@ -142,13 +147,13 @@ export class ChatMessagesTableService extends TableService {
   }: {
     chatMessageId: string;
   }): Promise<void> {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-        chat_message_id = '${chatMessageId}'
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "chat_message_id", value: chatMessageId },
+      ],
+      tableName: this.tableName,
+    });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 }

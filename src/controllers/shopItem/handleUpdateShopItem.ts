@@ -33,13 +33,12 @@ export async function handleUpdateShopItem({
 }): Promise<
   SecuredHTTPResponse<SuccessfulShopItemUpdateResponse, FailedToUpdateShopItemResponse>
 > {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByShopItemId(
     {
       shopItemId: requestBody.shopItemId,
-      authorUserId: clientUserId,
       caption: requestBody.caption,
       title: requestBody.title,
       price: requestBody.price,

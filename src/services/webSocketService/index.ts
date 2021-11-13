@@ -38,23 +38,16 @@ export class WebSocketService {
         const rooms = [generatePrivateUserWebSocketRoomName({ userId })];
         socket.join(rooms);
 
-        console.log(rooms);
+        socket.on(NEW_CHAT_MESSAGE_EVENT_NAME, (incomingMessage: ChatMessage) => {
+          console.log("MESSAGE CAME IN!");
+          console.log(incomingMessage);
 
-        socket.on(
-          NEW_CHAT_MESSAGE_EVENT_NAME,
-          (incomingMessage: ChatMessage, sendAcknowledgement) => {
-            console.log("MESSAGE CAME IN!");
-            console.log(incomingMessage);
-            console.log(sendAcknowledgement);
-
-            handleNewChatMessage({
-              io,
-              incomingMessage,
-              incomingUserId: userId,
-              sendAcknowledgement,
-            });
-          },
-        );
+          handleNewChatMessage({
+            io,
+            incomingMessage,
+            incomingUserId: userId,
+          });
+        });
       } catch (error) {
         console.log(error);
         socket.disconnect();

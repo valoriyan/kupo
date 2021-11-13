@@ -1,7 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericCreateRowQueryString } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBHashtag {
   hashtag: string;
@@ -43,20 +43,24 @@ export class HashtagsTableService extends TableService {
     hashtags: string[];
     postId: string;
   }): Promise<void> {
-    const queryString = hashtags.reduce((previousValue, hashtag): string => {
+    console.log(`${this.tableName}|addHashtagsToPost`);
+
+    const query = hashtags.reduce((previousValue, hashtag): string => {
       return (
         previousValue +
-        generatePSQLGenericCreateRowQueryString<string | number>({
-          rows: [
-            { field: "hashtag", value: hashtag },
-            { field: "post_id", value: postId },
+        generatePSQLGenericCreateRowsQuery<string | number>({
+          rowsOfFieldsAndValues: [
+            [
+              { field: "hashtag", value: hashtag },
+              { field: "post_id", value: postId },
+            ],
           ],
           tableName: this.tableName,
         })
       );
     }, "");
 
-    await this.datastorePool.query<DBHashtag>(queryString);
+    await this.datastorePool.query<DBHashtag>(query);
   }
 
   //////////////////////////////////////////////////
@@ -68,19 +72,22 @@ export class HashtagsTableService extends TableService {
   }: {
     hashtag: string;
   }): Promise<string[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-            hashtag = '${hashtag}'
+            hashtag = '$1'
           AND
             post_id IS NOT NULL
         ;
-      `;
+      `,
+      values: [hashtag],
+    };
 
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const postIds = response.rows.map((row) => row.post_id!);
@@ -88,17 +95,20 @@ export class HashtagsTableService extends TableService {
   }
 
   public async getHashtagsForPostId({ postId }: { postId: string }): Promise<string[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-        post_id = '${postId}'
+          post_id = '$1'
         ;
-      `;
+      `,
+      values: [postId],
+    };
 
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
     const hashtags = response.rows.map((row) => row.hashtag);
     return hashtags;

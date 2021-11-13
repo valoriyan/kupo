@@ -3,10 +3,12 @@ import { UnrenderablePostWithoutElementsOrHashtags } from "src/controllers/post/
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
-  generatePSQLGenericCreateRowQueryString,
+  generatePSQLGenericDeleteRowsQueryString,
   generatePSQLGenericUpdateRowQueryString,
+  isQueryEmpty,
 } from "./utilities";
 import { assertIsNumber } from "./utilities/validations";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBPost {
   post_id: string;
@@ -68,21 +70,25 @@ export class PostsTableService extends TableService {
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
   }): Promise<void> {
-    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
-      rows: [
-        { field: "post_id", value: postId },
-        { field: "author_user_id", value: authorUserId },
-        { field: "caption", value: caption },
-        {
-          field: "scheduled_publication_timestamp",
-          value: scheduledPublicationTimestamp,
-        },
-        { field: "expiration_timestamp", value: expirationTimestamp },
+    console.log(`${this.tableName}|createPost`);
+
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: [
+        [
+          { field: "post_id", value: postId },
+          { field: "author_user_id", value: authorUserId },
+          { field: "caption", value: caption },
+          {
+            field: "scheduled_publication_timestamp",
+            value: scheduledPublicationTimestamp,
+          },
+          { field: "expiration_timestamp", value: expirationTimestamp },
+        ],
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -96,37 +102,46 @@ export class PostsTableService extends TableService {
     creatorUserId: string;
     filterOutExpiredAndUnscheduledPosts: boolean;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    const queryValues: (string | number)[] = [creatorUserId];
+
     const currentTimestamp = Date.now();
 
-    const filteringWhereClause = !!filterOutExpiredAndUnscheduledPosts
-      ? `
-      AND
-        (
-          scheduled_publication_timestamp IS NULL
-            OR
-          scheduled_publication_timestamp < ${currentTimestamp}
-        ) 
-      AND
-        (
-            expiration_timestamp IS NULL
-          OR
-            expiration_timestamp > ${currentTimestamp}
-        )
-    `
-      : "";
+    let filteringWhereClause = "";
+    if (!!filterOutExpiredAndUnscheduledPosts) {
+      queryValues.push(currentTimestamp);
+      queryValues.push(currentTimestamp);
 
-    const queryString = `
+      filteringWhereClause = `
+        AND
+          (
+            scheduled_publication_timestamp IS NULL
+              OR
+            scheduled_publication_timestamp < $2
+          ) 
+        AND
+          (
+              expiration_timestamp IS NULL
+            OR
+              expiration_timestamp > $3
+          )
+      `;
+    }
+
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          author_user_id = '${creatorUserId}'
+          author_user_id = '$1'
         ${filteringWhereClause}
         ;
-      `;
+      `,
+      values: queryValues,
+    };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
@@ -143,23 +158,26 @@ export class PostsTableService extends TableService {
     assertIsNumber(rangeEndTimestamp);
     assertIsNumber(rangeStartTimestamp);
 
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-            author_user_id = '${creatorUserId}'
+            author_user_id = '$1'
           AND
             scheduled_publication_timestamp IS NOT NULL
           AND
-            scheduled_publication_timestamp >= '${rangeStartTimestamp}'
+            scheduled_publication_timestamp >= '$2'
           AND
-            scheduled_publication_timestamp <= '${rangeEndTimestamp}'
+            scheduled_publication_timestamp <= '$3'
         ;
-      `;
+      `,
+      values: [creatorUserId, rangeStartTimestamp, rangeEndTimestamp],
+    };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
@@ -170,10 +188,11 @@ export class PostsTableService extends TableService {
     creatorUserIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const creatorUserIdsQueryString = creatorUserIds
-      .map((creatorUserId) => `'${creatorUserId}'`)
+      .map((_, index) => `'$${index + 1}'`)
       .join(", ");
 
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
@@ -181,13 +200,11 @@ export class PostsTableService extends TableService {
         WHERE
           author_user_id IN (${creatorUserIdsQueryString})
         ;
-      `;
+      `,
+      values: creatorUserIds,
+    };
 
-    console.log("queryString");
-    console.log();
-    console.log(queryString);
-
-    const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
@@ -197,9 +214,12 @@ export class PostsTableService extends TableService {
   }: {
     postIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    const postIdsQueryString = `(${postIds.map((postId) => `'${postId}'`).join(", ")})`;
+    const postIdsQueryString = `(${postIds
+      .map((_, index) => `'$${index + 1}'`)
+      .join(", ")})`;
 
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
@@ -207,9 +227,11 @@ export class PostsTableService extends TableService {
         WHERE
           postId IN ${postIdsQueryString}
         ;
-      `;
+      `,
+      values: postIds,
+    };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
@@ -231,7 +253,7 @@ export class PostsTableService extends TableService {
     scheduledPublicationTimestamp?: number;
     expirationTimestamp?: number;
   }): Promise<void> {
-    const queryString = generatePSQLGenericUpdateRowQueryString<string | number>({
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
         { field: "author_user_id", value: authorUserId },
         { field: "caption", value: caption },
@@ -248,8 +270,8 @@ export class PostsTableService extends TableService {
       tableName: this.tableName,
     });
 
-    if (queryString) {
-      await this.datastorePool.query(queryString);
+    if (!isQueryEmpty({ query })) {
+      await this.datastorePool.query(query);
     }
   }
 
@@ -258,13 +280,11 @@ export class PostsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deletePost({ postId }: { postId: string }): Promise<void> {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-        post_id = '${postId}'
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
+      tableName: this.tableName,
+    });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 }

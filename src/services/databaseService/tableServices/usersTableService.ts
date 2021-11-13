@@ -8,9 +8,9 @@ import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
   generatePostgreSQLCreateEnumTypeQueryString,
-  generatePSQLGenericCreateRowQueryString,
   generatePSQLGenericUpdateRowQueryString,
 } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUser {
   user_id: string;
@@ -102,18 +102,20 @@ export class UsersTableService extends TableService {
     username: string;
     encryptedPassword: string;
   }): Promise<void> {
-    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
-      rows: [
-        { field: "user_id", value: userId },
-        { field: "email", value: email },
-        { field: "username", value: username },
-        { field: "encrypted_password", value: encryptedPassword },
-        { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: [
+        [
+          { field: "user_id", value: userId },
+          { field: "email", value: email },
+          { field: "username", value: username },
+          { field: "encrypted_password", value: encryptedPassword },
+          { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
+        ],
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -125,19 +127,22 @@ export class UsersTableService extends TableService {
   }: {
     username: string;
   }): Promise<UnrenderableUser_WITH_PASSWORD | undefined> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          username = '${username}'
+          username = '$1'
         LIMIT
           1
         ;
-      `;
+      `,
+      values: [username],
+    };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 
@@ -152,17 +157,20 @@ export class UsersTableService extends TableService {
   }: {
     username: string;
   }): Promise<UnrenderableUser | undefined> {
-    const queryString = `
+    const queryString = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          username = '${username}'
+          username = '$1'
         LIMIT
           1
         ;
-      `;
+      `,
+      values: [username],
+    };
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
 
@@ -179,17 +187,20 @@ export class UsersTableService extends TableService {
   }: {
     usernameSubstring: string;
   }): Promise<UnrenderableUser[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          username LIKE '%${usernameSubstring}%'
+          username LIKE '%$1%'
         ;
-      `;
+      `,
+      vales: [usernameSubstring],
+    };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 
@@ -201,19 +212,24 @@ export class UsersTableService extends TableService {
   }: {
     userId: string;
   }): Promise<UnrenderableUser | undefined> {
-    const queryString = `
+    console.log(`${this.tableName}|selectUserByUserId`);
+
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          user_id = '${userId}'
+          user_id = '$1'
         LIMIT
           1
         ;
-      `;
+      `,
+      values: [userId],
+    };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 

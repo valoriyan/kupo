@@ -2,7 +2,12 @@ import { Pool, QueryResult } from "pg";
 import { UnrenderableShopItemPreview } from "src/controllers/shopItem/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericCreateRowQueryString } from "./utilities";
+import {
+  generatePSQLGenericDeleteRowsQueryString,
+  generatePSQLGenericUpdateRowQueryString,
+  isQueryEmpty,
+} from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBShopItem {
   shop_item_id: string;
@@ -60,23 +65,25 @@ export class ShopItemsTableService extends TableService {
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
   }): Promise<void> {
-    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
-      rows: [
-        { field: "shop_item_id", value: shopItemId },
-        { field: "author_user_id", value: authorUserId },
-        { field: "caption", value: caption },
-        { field: "title", value: title },
-        { field: "price", value: price },
-        {
-          field: "scheduled_publication_timestamp",
-          value: scheduledPublicationTimestamp,
-        },
-        { field: "expiration_timestamp", value: expirationTimestamp },
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: [
+        [
+          { field: "shop_item_id", value: shopItemId },
+          { field: "author_user_id", value: authorUserId },
+          { field: "caption", value: caption },
+          { field: "title", value: title },
+          { field: "price", value: price },
+          {
+            field: "scheduled_publication_timestamp",
+            value: scheduledPublicationTimestamp,
+          },
+          { field: "expiration_timestamp", value: expirationTimestamp },
+        ],
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -88,17 +95,20 @@ export class ShopItemsTableService extends TableService {
   }: {
     creatorUserId: string;
   }): Promise<UnrenderableShopItemPreview[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          author_user_id = '${creatorUserId}'
+          author_user_id = '$1'
         ;
-      `;
+      `,
+      values: [creatorUserId],
+    };
 
-    const response: QueryResult<DBShopItem> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
 
     return response.rows.map(
       (dbShopItem): UnrenderableShopItemPreview => ({
@@ -129,7 +139,6 @@ export class ShopItemsTableService extends TableService {
 
   public async updateShopItemByShopItemId({
     shopItemId,
-    authorUserId,
     caption,
     title,
     price,
@@ -137,61 +146,32 @@ export class ShopItemsTableService extends TableService {
     expirationTimestamp,
   }: {
     shopItemId: string;
-    authorUserId: string;
     caption?: string;
     title?: string;
     price?: number;
     scheduledPublicationTimestamp?: number;
     expirationTimestamp?: number;
   }): Promise<void> {
-    if (
-      [caption, title, price, scheduledPublicationTimestamp, expirationTimestamp].some(
-        (value) => !!value,
-      )
-    ) {
-      let updateString = "";
-      if (!!caption) {
-        updateString += `
-          caption = '${caption}'
-        `;
-      }
-      if (!!title) {
-        updateString += `
-          title = '${title}'
-        `;
-      }
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "caption", value: caption },
+        { field: "title", value: title },
+        { field: "price", value: price },
+        {
+          field: "scheduled_publication_timestamp",
+          value: scheduledPublicationTimestamp,
+        },
+        { field: "expiration_timestamp", value: expirationTimestamp },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "shop_item_id",
+        value: shopItemId,
+      },
+      tableName: this.tableName,
+    });
 
-      if (!!price) {
-        updateString += `
-          price = '${price}'
-        `;
-      }
-
-      if (!!scheduledPublicationTimestamp) {
-        updateString += `
-          scheduled_publication_timestamp = '${scheduledPublicationTimestamp}'
-        `;
-      }
-
-      if (!!expirationTimestamp) {
-        updateString += `
-          expiration_timestamp = '${expirationTimestamp}'
-        `;
-      }
-
-      const queryString = `
-          UPDATE
-            ${this.tableName}
-          SET
-            ${updateString}
-          WHERE
-              shop_item_id = '${shopItemId}'
-            AND
-              author_user_id = '${authorUserId}'
-          ;
-        `;
-
-      await this.datastorePool.query(queryString);
+    if (!isQueryEmpty({ query })) {
+      await this.datastorePool.query(query);
     }
   }
 
@@ -206,15 +186,14 @@ export class ShopItemsTableService extends TableService {
     shopItemId: string;
     authorUserId: string;
   }): Promise<void> {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-          shop_item_id = '${shopItemId}'
-        AND
-          author_user_id = '${authorUserId}'
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "shop_item_id", value: shopItemId },
+        { field: "author_user_id", value: authorUserId },
+      ],
+      tableName: this.tableName,
+    });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 }

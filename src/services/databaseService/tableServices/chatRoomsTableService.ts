@@ -2,7 +2,8 @@ import { Pool, QueryResult } from "pg";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericCreateRowQueryString } from "./utilities";
+import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBChatRoom {
   chatRoomId: string;
@@ -45,16 +46,18 @@ export class ChatRoomsTableService extends TableService {
     userId: string;
     joinTimestamp: number;
   }): Promise<void> {
-    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
-      rows: [
-        { field: "chat_room_id", value: chatRoomId },
-        { field: "user_id", value: userId },
-        { field: "join_timestamp", value: joinTimestamp },
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: [
+        [
+          { field: "chat_room_id", value: chatRoomId },
+          { field: "user_id", value: userId },
+          { field: "join_timestamp", value: joinTimestamp },
+        ],
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -66,17 +69,20 @@ export class ChatRoomsTableService extends TableService {
   }: {
     chatRoomId: string;
   }): Promise<string[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-        chat_room_id = '${chatRoomId}'
+        chat_room_id = '$1'
         ;
-      `;
+      `,
+      values: [chatRoomId],
+    };
 
-    const response: QueryResult<DBChatRoom> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBChatRoom> = await this.datastorePool.query(query);
 
     return response.rows.map((dbChatRoom) => dbChatRoom.userId);
   }
@@ -96,14 +102,14 @@ export class ChatRoomsTableService extends TableService {
     chatRoomId: string;
     userId: string;
   }): Promise<void> {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-        chat_room_id = '${chatRoomId}'
-        user_id = '${userId}'
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "chat_room_id", value: chatRoomId },
+        { field: "user_id", value: userId },
+      ],
+      tableName: this.tableName,
+    });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 }

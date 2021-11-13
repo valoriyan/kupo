@@ -1,7 +1,8 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericCreateRowQueryString } from "./utilities";
+import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
+import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUserFollow {
   user_id_doing_following: string;
@@ -40,15 +41,17 @@ export class UserFollowsTableService extends TableService {
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
   }): Promise<void> {
-    const queryString = generatePSQLGenericCreateRowQueryString<string | number>({
-      rows: [
-        { field: "user_id_doing_following", value: userIdDoingFollowing },
-        { field: "user_id_being_followed", value: userIdBeingFollowed },
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: [
+        [
+          { field: "user_id_doing_following", value: userIdDoingFollowing },
+          { field: "user_id_being_followed", value: userIdBeingFollowed },
+        ],
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////
@@ -60,19 +63,20 @@ export class UserFollowsTableService extends TableService {
   }: {
     userIdDoingFollowing: string;
   }): Promise<string[]> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          user_id_doing_following = '${userIdDoingFollowing}'
+          user_id_doing_following = '$1'
         ;
-      `;
+      `,
+      values: [userIdDoingFollowing],
+    };
 
-    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(
-      queryString,
-    );
+    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
     const rows = response.rows;
 
     const userIdsBeingFollowed = rows.map((row) => row.user_id_being_followed);
@@ -84,19 +88,22 @@ export class UserFollowsTableService extends TableService {
   }: {
     userIdBeingFollowed: string;
   }): Promise<number> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           COUNT(*)
         FROM
           ${this.tableName}
         WHERE
-          user_id_being_followed = '${userIdBeingFollowed}'
+          user_id_being_followed = '$1'
         ;
-      `;
+      `,
+      values: [userIdBeingFollowed],
+    };
 
     const response: QueryResult<{
       count: number;
-    }> = await this.datastorePool.query(queryString);
+    }> = await this.datastorePool.query(query);
 
     return response.rows[0].count;
   }
@@ -106,19 +113,22 @@ export class UserFollowsTableService extends TableService {
   }: {
     userIdDoingFollowing: string;
   }): Promise<number> {
-    const queryString = `
+    const query = {
+      text: `
         SELECT
           COUNT(*)
         FROM
           ${this.tableName}
         WHERE
-          user_id_doing_following = '${userIdDoingFollowing}'
+          user_id_doing_following = '$1'
         ;
-      `;
+      `,
+      values: [userIdDoingFollowing],
+    };
 
     const response: QueryResult<{
       count: number;
-    }> = await this.datastorePool.query(queryString);
+    }> = await this.datastorePool.query(query);
 
     return response.rows[0].count;
   }
@@ -129,23 +139,24 @@ export class UserFollowsTableService extends TableService {
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
   }): Promise<boolean> {
-    const queryString = `
-      SELECT
-        COUNT(*)
-      FROM
-        ${this.tableName}
-      WHERE
-        user_id_doing_following = '${userIdDoingFollowing}'
-      AND
-        user_id_being_followed = '${userIdBeingFollowed}'
-      LIMIT
-        1
-      ;
-    `;
+    const query = {
+      text: `
+        SELECT
+          COUNT(*)
+        FROM
+          ${this.tableName}
+        WHERE
+          user_id_doing_following = '$1'
+        AND
+          user_id_being_followed = '$2'
+        LIMIT
+          1
+        ;
+      `,
+      values: [userIdDoingFollowing, userIdBeingFollowed],
+    };
 
-    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(
-      queryString,
-    );
+    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
 
     return response.rows.length > 0;
   }
@@ -165,15 +176,14 @@ export class UserFollowsTableService extends TableService {
     userIdDoingUnfollowing: string;
     userIdBeingUnfollowed: string;
   }): Promise<void> {
-    const queryString = `
-      DELETE FROM ${this.tableName}
-      WHERE
-        user_id_doing_following = '${userIdDoingUnfollowing}'
-      AND
-        user_id_being_followed = '${userIdBeingUnfollowed}'
-      ;
-    `;
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "user_id_doing_following", value: userIdDoingUnfollowing },
+        { field: "user_id_being_followed", value: userIdBeingUnfollowed },
+      ],
+      tableName: this.tableName,
+    });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 }
