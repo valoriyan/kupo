@@ -12,11 +12,23 @@ export async function uploadMediaFile({
   mimetype: string;
 }> {
   const mimetype = file.mimetype;
-  if (!["image/jpeg", "image/png"].includes(mimetype)) {
+
+  const permittedImageTypes = ["image/jpeg", "image/png"];
+
+  const permittedVideoTypes = ["video/mp4"];
+
+  const permittedMimeTypes = [...permittedImageTypes, ...permittedVideoTypes];
+
+  if (!permittedMimeTypes.includes(mimetype)) {
     throw new Error(`Cannot handle file of type ${mimetype}`);
   }
 
-  // TODO: ADD IMAGE VALIDATION
+  if (permittedImageTypes.includes(mimetype)) {
+    // TODO: ADD IMAGE VALIDATION
+  } else if (permittedVideoTypes.includes(mimetype)) {
+    // TODO: ADD VIDEO VALIDATION
+  }
+
   const blobItemPointer = await blobStorageService.saveImage({
     image: file.buffer,
   });
