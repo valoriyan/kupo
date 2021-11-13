@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from "pg";
+import { Pool, QueryConfig, QueryResult } from "pg";
 import {
   ProfilePrivacySetting,
   UnrenderableUser,
@@ -134,13 +134,17 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          username = '$1'
+          username = $1
         LIMIT
           1
         ;
       `,
       values: [username],
     };
+
+    console.log("query");
+    console.log(query.text);
+    console.log(query.values);
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
@@ -164,7 +168,7 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          username = '$1'
+          username = $1
         LIMIT
           1
         ;
@@ -187,18 +191,21 @@ export class UsersTableService extends TableService {
   }: {
     usernameSubstring: string;
   }): Promise<UnrenderableUser[]> {
-    const query = {
+    const query: QueryConfig = {
       text: `
         SELECT
           *
         FROM
           ${this.tableName}
         WHERE
-          username LIKE '%$1%'
+          username LIKE CONCAT('%', $1::text, '%' )
         ;
       `,
-      vales: [usernameSubstring],
+      values: [usernameSubstring],
     };
+
+    console.log(query.text);
+    console.log(query.values);
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
@@ -221,13 +228,16 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id = '$1'
+          user_id = $1
         LIMIT
           1
         ;
       `,
       values: [userId],
     };
+
+    console.log(query.text)
+    console.log(query.values)
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
@@ -262,7 +272,7 @@ export class UsersTableService extends TableService {
     backgroundImageBlobFileKey?: string;
     profilePictureBlobFileKey?: string;
   }): Promise<void> {
-    const queryString = generatePSQLGenericUpdateRowQueryString<string | number>({
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
         { field: "username", value: username },
         { field: "short_bio", value: shortBio },
@@ -281,7 +291,7 @@ export class UsersTableService extends TableService {
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(queryString);
+    await this.datastorePool.query(query);
   }
 
   //////////////////////////////////////////////////

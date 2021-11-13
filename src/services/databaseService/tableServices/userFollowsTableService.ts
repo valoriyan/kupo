@@ -70,7 +70,7 @@ export class UserFollowsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id_doing_following = '$1'
+          user_id_doing_following = $1
         ;
       `,
       values: [userIdDoingFollowing],
@@ -95,7 +95,7 @@ export class UserFollowsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id_being_followed = '$1'
+          user_id_being_followed = $1
         ;
       `,
       values: [userIdBeingFollowed],
@@ -120,7 +120,7 @@ export class UserFollowsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id_doing_following = '$1'
+          user_id_doing_following = $1
         ;
       `,
       values: [userIdDoingFollowing],
@@ -146,9 +146,9 @@ export class UserFollowsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id_doing_following = '$1'
+          user_id_doing_following = $1
         AND
-          user_id_being_followed = '$2'
+          user_id_being_followed = $2
         LIMIT
           1
         ;

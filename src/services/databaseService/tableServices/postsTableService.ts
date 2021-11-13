@@ -88,6 +88,10 @@ export class PostsTableService extends TableService {
       tableName: this.tableName,
     });
 
+    console.log("query.text");
+    console.log(query.text);
+    console.log(query.values);
+
     await this.datastorePool.query(query);
   }
 
@@ -134,7 +138,7 @@ export class PostsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          author_user_id = '$1'
+          author_user_id = $1
         ${filteringWhereClause}
         ;
       `,
@@ -165,13 +169,13 @@ export class PostsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-            author_user_id = '$1'
+            author_user_id = $1
           AND
             scheduled_publication_timestamp IS NOT NULL
           AND
-            scheduled_publication_timestamp >= '$2'
+            scheduled_publication_timestamp >= $2
           AND
-            scheduled_publication_timestamp <= '$3'
+            scheduled_publication_timestamp <= $3
         ;
       `,
       values: [creatorUserId, rangeStartTimestamp, rangeEndTimestamp],
@@ -187,8 +191,12 @@ export class PostsTableService extends TableService {
   }: {
     creatorUserIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    if (creatorUserIds.length === 0) {
+      return [];
+    }
+
     const creatorUserIdsQueryString = creatorUserIds
-      .map((_, index) => `'$${index + 1}'`)
+      .map((_, index) => `$${index + 1}`)
       .join(", ");
 
     const query = {

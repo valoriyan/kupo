@@ -46,23 +46,22 @@ export class ShopItemMediaElementsTableService extends TableService {
       blobFileKey: string;
     }[];
   }): Promise<void> {
-    const query = shopItemMediaElements.reduce((previousValue, currentValue): string => {
-      const { shopItemId, shopItemElementIndex, blobFileKey } = currentValue;
 
-      return (
-        previousValue +
-        generatePSQLGenericCreateRowsQuery<string | number>({
-          rowsOfFieldsAndValues: [
-            [
-              { field: "shop_item_id", value: shopItemId },
-              { field: "shop_item_element_index", value: `${shopItemElementIndex}` },
-              { field: "blob_file_key", value: blobFileKey },
-            ],
-          ],
-          tableName: this.tableName,
-        })
-      );
-    }, "");
+    const rowsOfFieldsAndValues = shopItemMediaElements.map(
+      ({ shopItemId, shopItemElementIndex, blobFileKey }) => [
+        { field: "shop_item_id", value: shopItemId },
+        {
+          field: "shop_item_element_index",
+          value: `${shopItemElementIndex}`,
+        },
+        { field: "blob_file_key", value: blobFileKey },
+      ],
+    );
+
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues,
+      tableName: this.tableName,
+    });
 
     await this.datastorePool.query(query);
   }
@@ -83,7 +82,7 @@ export class ShopItemMediaElementsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          shop_item_id = '$1'
+          shop_item_id = $1
         ;
       `,
       values: [shopItemId],

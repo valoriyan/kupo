@@ -82,7 +82,7 @@ export class PostContentElementsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          post_id = '$1'
+          post_id = $1
         ;
       `,
       values: [postId],

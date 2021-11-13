@@ -102,7 +102,7 @@ export class ChatMessagesTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-            chat_room_id = '$1'
+            chat_room_id = $1
         ;
       `,
       values: [chatRoomId],

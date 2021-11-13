@@ -5,7 +5,7 @@ import { AuthFailureReason, FailedAuthResponse } from "../authController";
 import { MD5 } from "crypto-js";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
-export const ACCESS_TOKEN_EXPIRATION_TIME = 5 * 60; // five minutes
+export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
 
 export interface JWTData {
   userId: string;

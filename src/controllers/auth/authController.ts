@@ -77,7 +77,7 @@ export class AuthController extends Controller {
     const encryptedPassword = encryptPassword({ password });
 
     try {
-      this.databaseService.tableNameToServicesMap.usersTableService.createUser({
+      await this.databaseService.tableNameToServicesMap.usersTableService.createUser({
         userId,
         email,
         username,

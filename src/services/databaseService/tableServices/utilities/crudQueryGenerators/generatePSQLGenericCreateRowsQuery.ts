@@ -8,44 +8,45 @@ export function generatePSQLGenericCreateRowsQuery<T>({
   rowsOfFieldsAndValues: PSQLFieldAndValue<T>[][];
   tableName: string;
 }): QueryConfig {
-  let queryText = "";
-  const queryValues: T[] = [];
+  const queryValues: (T | undefined)[] = [];
   let queryValueIndex = 0;
 
+  const setOfFields = new Set();
   rowsOfFieldsAndValues.forEach((rowOfFieldsAndValues) => {
-    const activeFieldsAndValuesInRow = rowOfFieldsAndValues.filter(
-      (rowFieldAndValue) => !!rowFieldAndValue.value,
-    );
-
-    const rowFieldNamesString = activeFieldsAndValuesInRow
-      .map(({ field }) => field)
-      .join(", ");
-
-    const rowParameterizedValuesString = activeFieldsAndValuesInRow
-      .map(() => {
-        queryValueIndex += 1;
-
-        return `$${queryValueIndex}`;
-      })
-      .join(", ");
-
-    const rowQueryText = `
-        INSERT INTO ${tableName} (
-          ${rowFieldNamesString}
-        )
-        VALUES (
-          ${rowParameterizedValuesString}
-        )
-        ;
-      `;
-
-    queryText += "\n" + rowQueryText;
-
-    activeFieldsAndValuesInRow.forEach((row) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      queryValues.push(row.value!);
+    rowOfFieldsAndValues.forEach(({field}) => {
+      setOfFields.add(field);
     });
   });
+
+  const rowFieldNamesString = [...setOfFields].join(", ");
+
+  const rowsOfParameterizedValues: string[] = [];
+
+  rowsOfFieldsAndValues.forEach((rowOfFieldsAndValues) => {
+    let rowOfParameterizedValues: string[] = [];
+
+    rowOfFieldsAndValues.map(({value}) => {
+      queryValueIndex += 1;
+      rowOfParameterizedValues.push(`$${queryValueIndex}`);
+      queryValues.push(value);
+    });
+
+    const rowOfParameterizedValuesString = `(${rowOfParameterizedValues.join(", ")})`;
+
+    rowsOfParameterizedValues.push(rowOfParameterizedValuesString);
+  });
+
+
+  const parameterizedValues = rowsOfParameterizedValues.join(", ");
+
+  const queryText = `
+    INSERT INTO ${tableName} (
+      ${rowFieldNamesString}
+    )
+    VALUES
+      ${parameterizedValues}
+  ;
+`;
 
   return {
     text: queryText,

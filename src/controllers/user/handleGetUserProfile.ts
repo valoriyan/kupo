@@ -30,12 +30,6 @@ export async function handleGetUserProfile({
 }): Promise<
   SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
 > {
-  // console.log("controller.blobStorageService.getTemporaryImageUrl");
-  // console.log(controller.blobStorageService.getTemporaryImageUrl);
-
-  // console.log(controller.blobStorageService.getTemporaryImageUrl({blobItemPointer: {
-  //   fileKey: "/app",
-  // }}))
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
   const { clientUserId, error } = await checkAuthorization(controller, request);

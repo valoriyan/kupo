@@ -40,9 +40,9 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       values: [],
     };
   }
-  
+
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const queryValues: (T | string)[] = filteredUpdatedFields.map(({ value }) => value!);
+  const queryValues: (T | string | undefined)[] = filteredUpdatedFields.map(({ value }) => value!);
   let queryValueIndex = 0;
 
   const updateString = filteredUpdatedFields
@@ -50,12 +50,11 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       const commaSeperator = index < filteredUpdatedFields.length - 1 ? "," : "";
 
       queryValueIndex += 1;
-      return `${field} = '$${queryValueIndex}'${commaSeperator}`;
+      return `${field} = $${queryValueIndex}${commaSeperator}`;
     })
     .join("\n");
 
-  const escapedFieldUsedToIdentifyUpdatedRowValue = `'${fieldUsedToIdentifyUpdatedRow.value}'`;
-  queryValues.push(escapedFieldUsedToIdentifyUpdatedRowValue);
+  queryValues.push(fieldUsedToIdentifyUpdatedRow.value);
 
   const queryText = `
     UPDATE

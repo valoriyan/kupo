@@ -35,7 +35,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
-
+  
   const userIdsBeingFollowed: string[] =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
       { userIdDoingFollowing: clientUserId },

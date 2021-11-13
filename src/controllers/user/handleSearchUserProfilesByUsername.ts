@@ -41,12 +41,17 @@ export async function handleSearchUserProfilesByUsername({
 
   const { searchString } = requestBody;
 
+  console.log("HITTT");
+
   const unrenderableUsers =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
       {
         usernameSubstring: searchString,
       },
     );
+
+  console.log("222HITTT2222");
+  console.log("unrenderableUsers", unrenderableUsers);
 
   if (unrenderableUsers.length === 0) {
     controller.setStatus(404);

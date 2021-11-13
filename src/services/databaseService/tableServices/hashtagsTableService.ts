@@ -45,20 +45,21 @@ export class HashtagsTableService extends TableService {
   }): Promise<void> {
     console.log(`${this.tableName}|addHashtagsToPost`);
 
-    const query = hashtags.reduce((previousValue, hashtag): string => {
-      return (
-        previousValue +
-        generatePSQLGenericCreateRowsQuery<string | number>({
-          rowsOfFieldsAndValues: [
-            [
-              { field: "hashtag", value: hashtag },
-              { field: "post_id", value: postId },
-            ],
-          ],
-          tableName: this.tableName,
-        })
-      );
-    }, "");
+    const rowsOfFieldsAndValues = hashtags.map(
+      (hashtag) => [
+        { field: "hashtag", value: hashtag },
+        {
+          field: "post_id",
+          value: `${postId}`,
+        },
+      ],
+    );
+
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues,
+      tableName: this.tableName,
+    });
+
 
     await this.datastorePool.query<DBHashtag>(query);
   }
@@ -79,7 +80,7 @@ export class HashtagsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-            hashtag = '$1'
+            hashtag = $1
           AND
             post_id IS NOT NULL
         ;
@@ -102,7 +103,7 @@ export class HashtagsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          post_id = '$1'
+          post_id = $1
         ;
       `,
       values: [postId],

@@ -102,7 +102,7 @@ export class ShopItemsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          author_user_id = '$1'
+          author_user_id = $1
         ;
       `,
       values: [creatorUserId],
@@ -169,6 +169,9 @@ export class ShopItemsTableService extends TableService {
       },
       tableName: this.tableName,
     });
+
+    console.log(query.text);
+    console.log(query.values);
 
     if (!isQueryEmpty({ query })) {
       await this.datastorePool.query(query);
