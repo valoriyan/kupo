@@ -43,7 +43,7 @@ export class HashtagsTableService extends TableService {
     hashtags: string[];
     postId: string;
   }): Promise<void> {
-    console.log(`${this.tableName}|addHashtagsToPost`);
+    console.log(`${this.tableName} | addHashtagsToPost`);
 
     const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
       { field: "hashtag", value: hashtag },

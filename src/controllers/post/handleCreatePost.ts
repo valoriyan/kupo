@@ -3,9 +3,9 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
-import { BlobStorageService } from "../../services/blobStorageService";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "./models";
+import { uploadMediaFile } from "../../utilities/uploadMediaFile";
 
 export enum CreatePostFailureReasons {
   UnknownCause = "Unknown Cause",
@@ -27,36 +27,6 @@ interface HandlerRequestBody {
   hashtags: string[];
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
-}
-
-async function uploadFile({
-  file,
-  blobStorageService,
-}: {
-  file: Express.Multer.File;
-  blobStorageService: BlobStorageService;
-}): Promise<{
-  blobFileKey: string;
-  fileTemporaryUrl: string;
-}> {
-  const fileType = file.mimetype;
-  if (!["image/jpeg", "image/png"].includes(fileType)) {
-    throw new Error(`Cannot handle file of type ${fileType}`);
-  }
-
-  // TODO: ADD IMAGE VALIDATION
-  const blobItemPointer = await blobStorageService.saveImage({
-    image: file.buffer,
-  });
-
-  const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
-    blobItemPointer,
-  });
-
-  return {
-    blobFileKey: blobItemPointer.fileKey,
-    fileTemporaryUrl,
-  };
 }
 
 export async function handleCreatePost({
@@ -95,21 +65,11 @@ export async function handleCreatePost({
 
     const filedAndRenderablePostContentElements = await BluebirdPromise.map(
       mediaFiles,
-      async (
-        file,
-      ): Promise<{
-        blobFileKey: string;
-        fileTemporaryUrl: string;
-      }> =>
-        uploadFile({
+      async (file) =>
+        uploadMediaFile({
           file,
           blobStorageService: controller.blobStorageService,
         }),
-    );
-
-    const blobFileKeys = filedAndRenderablePostContentElements.map(
-      (filedAndRenderablePostContentElement) =>
-        filedAndRenderablePostContentElement.blobFileKey,
     );
 
     const contentElementTemporaryUrls = filedAndRenderablePostContentElements.map(
@@ -119,11 +79,14 @@ export async function handleCreatePost({
 
     await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
       {
-        postContentElements: blobFileKeys.map((blobFileKey, index) => ({
-          postId,
-          postContentElementIndex: index,
-          blobFileKey,
-        })),
+        postContentElements: filedAndRenderablePostContentElements.map(
+          ({ blobFileKey, mimetype }, index) => ({
+            postId,
+            postContentElementIndex: index,
+            blobFileKey,
+            mimetype,
+          }),
+        ),
       },
     );
 

@@ -9,6 +9,7 @@ interface DBShopItemMediaElement {
   shop_item_id: string;
   shop_item_element_index: number;
   blob_file_key: string;
+  mimetype: string;
 }
 
 export class ShopItemMediaElementsTableService extends TableService {
@@ -25,6 +26,7 @@ export class ShopItemMediaElementsTableService extends TableService {
         shop_item_id VARCHAR(64) NOT NULL,
         shop_item_element_index SMALLINT NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
+        mimetype VARCHAR(64) NOT NULL,
         UNIQUE (shop_item_id, shop_item_element_index)
       )
       ;
@@ -44,16 +46,18 @@ export class ShopItemMediaElementsTableService extends TableService {
       shopItemId: string;
       shopItemElementIndex: number;
       blobFileKey: string;
+      mimetype: string;
     }[];
   }): Promise<void> {
     const rowsOfFieldsAndValues = shopItemMediaElements.map(
-      ({ shopItemId, shopItemElementIndex, blobFileKey }) => [
+      ({ shopItemId, shopItemElementIndex, blobFileKey, mimetype }) => [
         { field: "shop_item_id", value: shopItemId },
         {
           field: "shop_item_element_index",
           value: `${shopItemElementIndex}`,
         },
         { field: "blob_file_key", value: blobFileKey },
+        { field: "mimetype", value: mimetype },
       ],
     );
 

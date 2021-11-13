@@ -219,7 +219,7 @@ export class UsersTableService extends TableService {
   }: {
     userId: string;
   }): Promise<UnrenderableUser | undefined> {
-    console.log(`${this.tableName}|selectUserByUserId`);
+    console.log(`${this.tableName} | selectUserByUserId`);
 
     const query = {
       text: `

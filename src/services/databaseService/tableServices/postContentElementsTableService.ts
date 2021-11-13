@@ -8,6 +8,7 @@ interface DBPostContentElement {
   post_id: string;
   post_content_element_index: number;
   blob_file_key: string;
+  mimetype: string;
 }
 
 export class PostContentElementsTableService extends TableService {
@@ -24,6 +25,7 @@ export class PostContentElementsTableService extends TableService {
         post_id VARCHAR(64) NOT NULL,
         post_content_element_index SMALLINT NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
+        mimetype VARCHAR(64) NOT NULL,
         UNIQUE (post_id, post_content_element_index)
       )
       ;
@@ -43,18 +45,20 @@ export class PostContentElementsTableService extends TableService {
       postId: string;
       postContentElementIndex: number;
       blobFileKey: string;
+      mimetype: string;
     }[];
   }): Promise<void> {
-    console.log(`${this.tableName}|createPostContentElements`);
+    console.log(`${this.tableName} | createPostContentElements`);
 
     const rowsOfFieldsAndValues = postContentElements.map(
-      ({ postId, postContentElementIndex, blobFileKey }) => [
+      ({ postId, postContentElementIndex, blobFileKey, mimetype }) => [
         { field: "post_id", value: postId },
         {
           field: "post_content_element_index",
           value: `${postContentElementIndex}`,
         },
         { field: "blob_file_key", value: blobFileKey },
+        { field: "mimetype", value: mimetype },
       ],
     );
 

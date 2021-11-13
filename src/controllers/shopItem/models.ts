@@ -3,16 +3,16 @@ export interface ShopItemMediaElement {
 }
 
 export interface UnrenderableShopItemPreview {
-  numberOfElements: number;
-
-  id: string;
+  shopItemId: string;
   authorUserId: string;
   caption: string;
   title: string;
   price: number;
   scheduledPublicationTimestamp: number;
   expirationTimestamp?: number;
+}
 
+export interface RenderableShopItemPreview extends UnrenderableShopItemPreview {
   countSold: number;
 
   hashtags: string[];

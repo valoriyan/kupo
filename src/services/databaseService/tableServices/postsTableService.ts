@@ -70,7 +70,7 @@ export class PostsTableService extends TableService {
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
   }): Promise<void> {
-    console.log(`${this.tableName}|createPost`);
+    console.log(`${this.tableName} | createPost`);
 
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [

@@ -19,6 +19,20 @@ interface DBShopItem {
   expiration_timestamp?: number;
 }
 
+function convertDBShopItemToUnrenderableShopItemPreview(
+  dbShopItem: DBShopItem,
+): UnrenderableShopItemPreview {
+  return {
+    shopItemId: dbShopItem.shop_item_id,
+    authorUserId: dbShopItem.author_user_id,
+    caption: dbShopItem.caption,
+    title: dbShopItem.title,
+    price: dbShopItem.price,
+    scheduledPublicationTimestamp: dbShopItem.scheduled_publication_timestamp,
+    expirationTimestamp: dbShopItem.expiration_timestamp,
+  };
+}
+
 export class ShopItemsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_shop_items`;
   public readonly tableName = ShopItemsTableService.tableName;
@@ -110,27 +124,7 @@ export class ShopItemsTableService extends TableService {
 
     const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
 
-    return response.rows.map(
-      (dbShopItem): UnrenderableShopItemPreview => ({
-        numberOfElements: 0,
-
-        id: dbShopItem.shop_item_id,
-        authorUserId: dbShopItem.author_user_id,
-        caption: dbShopItem.caption,
-        title: dbShopItem.title,
-        price: dbShopItem.price,
-        scheduledPublicationTimestamp: dbShopItem.scheduled_publication_timestamp,
-        expirationTimestamp: dbShopItem.expiration_timestamp,
-
-        countSold: 0,
-
-        hashtags: [],
-        collaboratorUserIds: [],
-
-        likesCount: 0,
-        tipsSum: 0,
-      }),
-    );
+    return response.rows.map(convertDBShopItemToUnrenderableShopItemPreview);
   }
 
   //////////////////////////////////////////////////
