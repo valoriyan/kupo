@@ -40,8 +40,6 @@ export class UserPageController extends Controller {
     @FormField() shortBio?: string,
     @FormField() userWebsite?: string,
     @FormField() profileVisibility?: ProfilePrivacySetting,
-    @UploadedFile() backgroundImage?: Express.Multer.File,
-    @UploadedFile() profilePicture?: Express.Multer.File,
   ): Promise<
     HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
   > {
@@ -53,8 +51,38 @@ export class UserPageController extends Controller {
         shortBio,
         userWebsite,
         profileVisibility,
-        backgroundImage,
+      },
+    });
+  }
+
+  @Post("UpdateUserProfilePicture")
+  public async updateUserProfilePicture(
+    @Request() request: express.Request,
+    @UploadedFile("profilePicture") profilePicture?: Express.Multer.File,
+  ): Promise<
+    HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
+  > {
+    return await handleUpdateUserProfile({
+      controller: this,
+      request,
+      requestBody: {
         profilePicture,
+      },
+    });
+  }
+
+  @Post("UpdateUserBackgroundImage")
+  public async updateUserBackgroundImage(
+    @Request() request: express.Request,
+    @UploadedFile("backgroundImage") backgroundImage?: Express.Multer.File,
+  ): Promise<
+    HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
+  > {
+    return await handleUpdateUserProfile({
+      controller: this,
+      request,
+      requestBody: {
+        backgroundImage,
       },
     });
   }

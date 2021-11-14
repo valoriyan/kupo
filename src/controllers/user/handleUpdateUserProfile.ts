@@ -31,6 +31,9 @@ export async function handleUpdateUserProfile({
     SuccessfulUpdateToUserProfileResponse
   >
 > {
+  console.log("requestBody");
+  console.log(requestBody);
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
