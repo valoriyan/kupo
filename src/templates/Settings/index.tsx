@@ -9,6 +9,7 @@ import { FormStateProvider } from "../AddContent/FormContext";
 import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
 import { Close } from "#/components/Icons";
+import { ProfileSettings } from "./ProfileSettings";
 
 export enum SettingsScreen {
   Initial = "Initial",
@@ -39,6 +40,7 @@ export const Settings = () => {
       bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
       break;
     case SettingsScreen.Profile:
+      bodyNode = <ProfileSettings />;
       // bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
     case SettingsScreen.Account:

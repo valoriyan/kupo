@@ -37,11 +37,15 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { CreateChatMessageRequestBody } from "../types";
+// @ts-ignore
 import { DeletePostRequestBody } from "../types";
 // @ts-ignore
 import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
 import { FollowUserProfileParams } from "../types";
+// @ts-ignore
+import { GetPageOfChatMessagesRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
 // @ts-ignore
@@ -57,8 +61,6 @@ import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse 
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
-// @ts-ignore
 import { LoginUserParams } from "../types";
 // @ts-ignore
 import { RegisterUserParams } from "../types";
@@ -68,6 +70,8 @@ import { RequestPasswordResetParams } from "../types";
 import { SearchUserProfilesByUsernameParams } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
 // @ts-ignore
@@ -93,6 +97,10 @@ import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateRespon
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
 import { UnfollowUserProfileParams } from "../types";
@@ -104,6 +112,55 @@ import { UpdatePostParams } from "../types";
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     *
+     * @param {CreateChatMessageRequestBody} createChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createChatMessage: async (
+      createChatMessageRequestBody: CreateChatMessageRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'createChatMessageRequestBody' is not null or undefined
+      assertParamExists(
+        "createChatMessage",
+        "createChatMessageRequestBody",
+        createChatMessageRequestBody,
+      );
+      const localVarPath = `/chat/create`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createChatMessageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @param {Array<any>} mediaFiles
@@ -423,6 +480,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         followUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfChatMessages: async (
+      getPageOfChatMessagesRequestBody: GetPageOfChatMessagesRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfChatMessagesRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfChatMessages",
+        "getPageOfChatMessagesRequestBody",
+        getPageOfChatMessagesRequestBody,
+      );
+      const localVarPath = `/chat/getPage`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfChatMessagesRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1120,12 +1226,57 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {any} backgroundImage
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserBackgroundImage: async (
+      backgroundImage: any,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'backgroundImage' is not null or undefined
+      assertParamExists("updateUserBackgroundImage", "backgroundImage", backgroundImage);
+      const localVarPath = `/user/UpdateUserBackgroundImage`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (backgroundImage !== undefined) {
+        localVarFormParams.append("backgroundImage", backgroundImage as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {string} [username]
      * @param {string} [shortBio]
      * @param {string} [userWebsite]
      * @param {string} [profileVisibility]
-     * @param {any} [backgroundImage]
-     * @param {any} [profilePicture]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1134,8 +1285,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       shortBio?: string,
       userWebsite?: string,
       profileVisibility?: string,
-      backgroundImage?: any,
-      profilePicture?: any,
       options: any = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/user/UpdateUserProfile`;
@@ -1168,9 +1317,48 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarFormParams.append("profileVisibility", profileVisibility as any);
       }
 
-      if (backgroundImage !== undefined) {
-        localVarFormParams.append("backgroundImage", backgroundImage as any);
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {any} profilePicture
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserProfilePicture: async (
+      profilePicture: any,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'profilePicture' is not null or undefined
+      assertParamExists("updateUserProfilePicture", "profilePicture", profilePicture);
+      const localVarPath = `/user/UpdateUserProfilePicture`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
       }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
 
       if (profilePicture !== undefined) {
         localVarFormParams.append("profilePicture", profilePicture as any);
@@ -1203,6 +1391,32 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 export const DefaultApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration);
   return {
+    /**
+     *
+     * @param {CreateChatMessageRequestBody} createChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async createChatMessage(
+      createChatMessageRequestBody: CreateChatMessageRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.createChatMessage(
+        createChatMessageRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
     /**
      *
      * @param {Array<any>} mediaFiles
@@ -1357,6 +1571,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
         followUserProfileParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfChatMessages(
+      getPageOfChatMessagesRequestBody: GetPageOfChatMessagesRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatMessages(
+        getPageOfChatMessagesRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1746,12 +1986,36 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {any} backgroundImage
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateUserBackgroundImage(
+      backgroundImage: any,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserBackgroundImage(
+        backgroundImage,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {string} [username]
      * @param {string} [shortBio]
      * @param {string} [userWebsite]
      * @param {string} [profileVisibility]
-     * @param {any} [backgroundImage]
-     * @param {any} [profilePicture]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1760,21 +2024,43 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       shortBio?: string,
       userWebsite?: string,
       profileVisibility?: string,
-      backgroundImage?: any,
-      profilePicture?: any,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
         username,
         shortBio,
         userWebsite,
         profileVisibility,
-        backgroundImage,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {any} profilePicture
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateUserProfilePicture(
+      profilePicture: any,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfilePicture(
         profilePicture,
         options,
       );
@@ -1799,6 +2085,20 @@ export const DefaultApiFactory = function (
 ) {
   const localVarFp = DefaultApiFp(configuration);
   return {
+    /**
+     *
+     * @param {CreateChatMessageRequestBody} createChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createChatMessage(
+      createChatMessageRequestBody: CreateChatMessageRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse> {
+      return localVarFp
+        .createChatMessage(createChatMessageRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
     /**
      *
      * @param {Array<any>} mediaFiles
@@ -1906,6 +2206,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse> {
       return localVarFp
         .followUser(followUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfChatMessages(
+      getPageOfChatMessagesRequestBody: GetPageOfChatMessagesRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse> {
+      return localVarFp
+        .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2125,12 +2439,24 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {any} backgroundImage
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserBackgroundImage(
+      backgroundImage: any,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
+      return localVarFp
+        .updateUserBackgroundImage(backgroundImage, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {string} [username]
      * @param {string} [shortBio]
      * @param {string} [userWebsite]
      * @param {string} [profileVisibility]
-     * @param {any} [backgroundImage]
-     * @param {any} [profilePicture]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2139,20 +2465,24 @@ export const DefaultApiFactory = function (
       shortBio?: string,
       userWebsite?: string,
       profileVisibility?: string,
-      backgroundImage?: any,
-      profilePicture?: any,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
       return localVarFp
-        .updateUserProfile(
-          username,
-          shortBio,
-          userWebsite,
-          profileVisibility,
-          backgroundImage,
-          profilePicture,
-          options,
-        )
+        .updateUserProfile(username, shortBio, userWebsite, profileVisibility, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {any} profilePicture
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserProfilePicture(
+      profilePicture: any,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
+      return localVarFp
+        .updateUserProfilePicture(profilePicture, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -2165,6 +2495,22 @@ export const DefaultApiFactory = function (
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+  /**
+   *
+   * @param {CreateChatMessageRequestBody} createChatMessageRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createChatMessage(
+    createChatMessageRequestBody: CreateChatMessageRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .createChatMessage(createChatMessageRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @param {Array<any>} mediaFiles
@@ -2275,6 +2621,22 @@ export class DefaultApi extends BaseAPI {
   public followUser(followUserProfileParams: FollowUserProfileParams, options?: any) {
     return DefaultApiFp(this.configuration)
       .followUser(followUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfChatMessages(
+    getPageOfChatMessagesRequestBody: GetPageOfChatMessagesRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2511,12 +2873,23 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {any} backgroundImage
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateUserBackgroundImage(backgroundImage: any, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .updateUserBackgroundImage(backgroundImage, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {string} [username]
    * @param {string} [shortBio]
    * @param {string} [userWebsite]
    * @param {string} [profileVisibility]
-   * @param {any} [backgroundImage]
-   * @param {any} [profilePicture]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
@@ -2526,20 +2899,23 @@ export class DefaultApi extends BaseAPI {
     shortBio?: string,
     userWebsite?: string,
     profileVisibility?: string,
-    backgroundImage?: any,
-    profilePicture?: any,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .updateUserProfile(
-        username,
-        shortBio,
-        userWebsite,
-        profileVisibility,
-        backgroundImage,
-        profilePicture,
-        options,
-      )
+      .updateUserProfile(username, shortBio, userWebsite, profileVisibility, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {any} profilePicture
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateUserProfilePicture(profilePicture: any, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .updateUserProfilePicture(profilePicture, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }
