@@ -95,9 +95,7 @@ export const ProfileSettings = () => {
     );
 
     setLoadedProfilePictureUrl(profilePictureTemporaryUrl || defaultProfilePictureUrl);
-    setLoadedBackgroundImageUrl(
-      backgroundImageTemporaryUrl || defaultBackgroundImageUrl,
-    );
+    setLoadedBackgroundImageUrl(backgroundImageTemporaryUrl || defaultBackgroundImageUrl);
   }
 
   function onClickBackgroundImage(event: MouseEvent<HTMLImageElement>) {
@@ -110,10 +108,7 @@ export const ProfileSettings = () => {
 
     for (const file of files) {
       Api.updateUserProfilePicture(file).then((response) => {
-        if (
-          response.data.success &&
-          !!response.data.success.profilePictureTemporaryUrl
-        ) {
+        if (response.data.success && !!response.data.success.profilePictureTemporaryUrl) {
           setLoadedProfilePictureUrl(response.data.success.profilePictureTemporaryUrl);
         }
       });
@@ -131,9 +126,7 @@ export const ProfileSettings = () => {
           response.data.success &&
           !!response.data.success.backgroundImageTemporaryUrl
         ) {
-          setLoadedBackgroundImageUrl(
-            response.data.success.backgroundImageTemporaryUrl,
-          );
+          setLoadedBackgroundImageUrl(response.data.success.backgroundImageTemporaryUrl);
         }
       });
     }
@@ -229,7 +222,7 @@ export const ProfileSettings = () => {
       <div>Your Profile</div>
 
       <div>
-        <Avatar src={loadedProfilePictureUrl}  alt="User Avatar" size="$6" />
+        <Avatar src={loadedProfilePictureUrl} alt="User Avatar" size="$6" />
         Profile Picture
         <form>
           <label>
@@ -311,6 +304,5 @@ export const ProfileSettings = () => {
       <br />
       <button onClick={onSubmitSettings}>Save Settings</button>
     </div>
-  );  
-
+  );
 };

@@ -64,7 +64,6 @@ export const AccountSettings = (props: InitialProps) => {
       </div>
     </div>
   );
-
 };
 
 const NewItemButton = styled("button", mainTitleStyles, {

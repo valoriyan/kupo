@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Api, RenderableChatRoom } from "#/api";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
-import { useState } from "react";
 
 export const Messages = () => {
   const [chatRooms, setChatRooms] = useState<RenderableChatRoom[]>([]);
@@ -11,35 +11,28 @@ export const Messages = () => {
   if (isLoading) {
     return <div>Loading</div>;
   }
-  
+
   if (!data || !!data.error) {
     return <div>Error: {data?.error}</div>;
   }
 
-
   if (!hasLoaded) {
     updatedHasLoaded(true);
-    Api.getPageOfChatRooms({pageSize: 5}).then(({data: pageOfchatRoomsResponse}) => {
+    Api.getPageOfChatRooms({ pageSize: 5 }).then(({ data: pageOfchatRoomsResponse }) => {
       if (pageOfchatRoomsResponse.success) {
         setChatRooms(pageOfchatRoomsResponse.success.chatRooms);
       }
     });
   }
 
-
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
-    return (
-      <div key={index}>
-        Chat Room
-      </div>
-    )
-  })
+    return <div key={index}>Chat Room</div>;
+  });
 
   return (
     <div>
       Messages
-
       {renderedChatRooms}
     </div>
-  )
-}
+  );
+};
