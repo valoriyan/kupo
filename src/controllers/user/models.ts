@@ -13,7 +13,7 @@ export interface BaseUnrenderableUser {
   userWebsite?: string;
   phoneNumber?: string;
   profilePrivacySetting: ProfilePrivacySetting;
-  
+
   preferredPagePrimaryColor?: Color;
 }
 export interface UnrenderableUser extends BaseUnrenderableUser {

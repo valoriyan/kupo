@@ -30,17 +30,19 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
   fieldUsedToIdentifyUpdatedRow: PSQLFieldAndValue<T>;
   tableName: string;
 }): QueryConfig {
-  const filteredUpdatedFields = updatedFields.map((updatedField) => {
-    if (typeof updatedField.value === "number") {
-      return {
-        ...updatedField,
-        value: updatedField.value.toString(),
+  const filteredUpdatedFields = updatedFields
+    .map((updatedField) => {
+      if (typeof updatedField.value === "number") {
+        return {
+          ...updatedField,
+          value: updatedField.value.toString(),
+        };
       }
-    }
-    return updatedField;
-  }).filter(({ value }) => {
-    return !!value;
-  });
+      return updatedField;
+    })
+    .filter(({ value }) => {
+      return !!value;
+    });
 
   if (filteredUpdatedFields.length === 0) {
     return {

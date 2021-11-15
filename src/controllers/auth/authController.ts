@@ -61,8 +61,8 @@ interface DeniedPasswordResetResponse {
 @Route("auth")
 export class AuthController extends Controller {
   constructor(
-    private localEmailService: LocalEmailService,
-    private databaseService: DatabaseService,
+    public localEmailService: LocalEmailService,
+    public databaseService: DatabaseService,
   ) {
     super();
   }

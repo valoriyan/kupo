@@ -26,7 +26,7 @@ interface DBUser {
 
   background_image_blob_file_key?: string;
   profile_picture_blob_file_key?: string;
-  
+
   preferred_page_primary_color_red?: number;
   preferred_page_primary_color_green?: number;
   preferred_page_primary_color_blue?: number;
@@ -38,17 +38,20 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
   console.log("dbUser");
   console.log(dbUser);
 
-  if (dbUser.preferred_page_primary_color_red !== undefined && dbUser.preferred_page_primary_color_green !== undefined && dbUser.preferred_page_primary_color_blue !== undefined) {
+  if (
+    (dbUser.preferred_page_primary_color_red !== undefined && dbUser.preferred_page_primary_color_red !== null) &&
+    (dbUser.preferred_page_primary_color_green !== undefined && dbUser.preferred_page_primary_color_red !== null) &&
+    (dbUser.preferred_page_primary_color_blue !== undefined && dbUser.preferred_page_primary_color_red !== null)
+  ) {
     preferredPagePrimaryColor = {
       red: dbUser.preferred_page_primary_color_red,
       green: dbUser.preferred_page_primary_color_green,
       blue: dbUser.preferred_page_primary_color_blue,
-    }
+    };
   }
 
   console.log("preferredPagePrimaryColor");
   console.log(preferredPagePrimaryColor);
-
 
   return {
     userId: dbUser.user_id,
@@ -265,6 +268,27 @@ export class UsersTableService extends TableService {
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async updateUserPassword({
+    userId,
+    encryptedPassword,
+  }: {
+    userId: string;
+    encryptedPassword: string;
+  }): Promise<void> {
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "encrypted_password", value: encryptedPassword },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "user_id",
+        value: userId,
+      },
+      tableName: this.tableName,
+    });
+
+    await this.datastorePool.query(query);
+  }
+
   public async updateUserByUserId({
     userId,
 
@@ -290,7 +314,6 @@ export class UsersTableService extends TableService {
     profilePictureBlobFileKey?: string;
     preferredPagePrimaryColor?: Color;
   }): Promise<UnrenderableUser | undefined> {
-
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
         { field: "username", value: username },
@@ -310,9 +333,18 @@ export class UsersTableService extends TableService {
         { field: "profile_privacy_setting", value: profilePrivacySetting },
         { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
         { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
-        { field: "preferred_page_primary_color_red", value: preferredPagePrimaryColor?.red },
-        { field: "preferred_page_primary_color_green", value: preferredPagePrimaryColor?.green },
-        { field: "preferred_page_primary_color_blue", value: preferredPagePrimaryColor?.blue },
+        {
+          field: "preferred_page_primary_color_red",
+          value: preferredPagePrimaryColor?.red,
+        },
+        {
+          field: "preferred_page_primary_color_green",
+          value: preferredPagePrimaryColor?.green,
+        },
+        {
+          field: "preferred_page_primary_color_blue",
+          value: preferredPagePrimaryColor?.blue,
+        },
       ],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",

@@ -36,7 +36,7 @@ export async function handleSetUserHashtags({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const [hashtag1, hashtag2, hashtag3] = requestBody.hashtags;
+  const [hashtag1, hashtag2, hashtag3, hashtag4, hashtag5] = requestBody.hashtags;
 
   await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.upsertHashtagsForUser(
     {
@@ -44,6 +44,8 @@ export async function handleSetUserHashtags({
       hashtag1,
       hashtag2,
       hashtag3,
+      hashtag4,
+      hashtag5,
     },
   );
 

@@ -7,6 +7,8 @@ interface DBUserHashtag {
   hashtag_1: string;
   hashtag_2: string;
   hashtag_3: string;
+  hashtag_4: string;
+  hashtag_5: string;
 }
 
 export class UserHashtagsTableService extends TableService {
@@ -23,7 +25,9 @@ export class UserHashtagsTableService extends TableService {
         user_id VARCHAR(64) UNIQUE NOT NULL,
         hashtag_1 VARCHAR(64),
         hashtag_2 VARCHAR(64),
-        hashtag_3 VARCHAR(64)
+        hashtag_3 VARCHAR(64),
+        hashtag_4 VARCHAR(64),
+        hashtag_5 VARCHAR(64)
       )
       ;
     `;
@@ -40,11 +44,15 @@ export class UserHashtagsTableService extends TableService {
     hashtag1,
     hashtag2,
     hashtag3,
+    hashtag4,
+    hashtag5,
   }: {
     userId: string;
     hashtag1: string;
     hashtag2: string;
     hashtag3: string;
+    hashtag4: string;
+    hashtag5: string;
   }): Promise<void> {
     console.log(`${this.tableName} | addHashtagsToUser`);
 
@@ -53,13 +61,17 @@ export class UserHashtagsTableService extends TableService {
         user_id,
         hashtag_1,
         hashtag_2,
-        hashtag_3
+        hashtag_3,
+        hashtag_4,
+        hashtag_5
       )
       VALUES(
         $1,
         $2,
         $3,
-        $4
+        $4,
+        $5,
+        $6
       )
       ON CONFLICT(user_id)
       DO
@@ -67,13 +79,15 @@ export class UserHashtagsTableService extends TableService {
         SET
           hashtag_1 = $2,
           hashtag_2 = $3,
-          hashtag_3 = $4
+          hashtag_3 = $4,
+          hashtag_4 = $5,
+          hashtag_5 = $6
       ;
     `;
 
     const query = {
       text: queryText,
-      values: [userId, hashtag1, hashtag2, hashtag3],
+      values: [userId, hashtag1, hashtag2, hashtag3, hashtag4, hashtag5],
     };
 
     await this.datastorePool.query<DBUserHashtag>(query);
@@ -100,6 +114,10 @@ export class UserHashtagsTableService extends TableService {
             hashtag_2 = $2
           OR
             hashtag_3 = $3
+          OR
+            hashtag_4 = $4
+          OR
+            hashtag_5 = $5
         ;
       `,
       values: [hashtag],
@@ -133,7 +151,7 @@ export class UserHashtagsTableService extends TableService {
     }
 
     const row = response.rows[0];
-    const hashtags = [row.hashtag_1, row.hashtag_2, row.hashtag_3];
+    const hashtags = [row.hashtag_1, row.hashtag_2, row.hashtag_3, row.hashtag_4, row.hashtag_5];
     return hashtags;
   }
 
