@@ -1,4 +1,5 @@
 import express from "express";
+import { Color } from "src/types/color";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { ProfilePrivacySetting, RenderableUser } from "./models";
@@ -21,6 +22,7 @@ export interface UpdateUserProfileRequestBody {
   userWebsite?: string;
   userEmail?: string;
   phoneNumber?: string;
+  preferredPagePrimaryColor?: Color;
   profileVisibility?: ProfilePrivacySetting;
   backgroundImage?: Express.Multer.File;
   profilePicture?: Express.Multer.File;
@@ -66,6 +68,7 @@ export async function handleUpdateUserProfile({
         email: requestBody.userEmail,
         backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
         profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+        preferredPagePrimaryColor: requestBody.preferredPagePrimaryColor,
       },
     );
 

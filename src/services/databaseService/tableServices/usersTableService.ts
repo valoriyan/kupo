@@ -1,4 +1,5 @@
 import { Pool, QueryConfig, QueryResult } from "pg";
+import { Color } from "src/types/color";
 import {
   ProfilePrivacySetting,
   UnrenderableUser,
@@ -25,9 +26,30 @@ interface DBUser {
 
   background_image_blob_file_key?: string;
   profile_picture_blob_file_key?: string;
+  
+  preferred_page_primary_color_red?: number;
+  preferred_page_primary_color_green?: number;
+  preferred_page_primary_color_blue?: number;
 }
 
 function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
+  let preferredPagePrimaryColor: Color | undefined = undefined;
+
+  console.log("dbUser");
+  console.log(dbUser);
+
+  if (dbUser.preferred_page_primary_color_red !== undefined && dbUser.preferred_page_primary_color_green !== undefined && dbUser.preferred_page_primary_color_blue !== undefined) {
+    preferredPagePrimaryColor = {
+      red: dbUser.preferred_page_primary_color_red,
+      green: dbUser.preferred_page_primary_color_green,
+      blue: dbUser.preferred_page_primary_color_blue,
+    }
+  }
+
+  console.log("preferredPagePrimaryColor");
+  console.log(preferredPagePrimaryColor);
+
+
   return {
     userId: dbUser.user_id,
     email: dbUser.email,
@@ -38,6 +60,7 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     profilePrivacySetting: dbUser.profile_privacy_setting,
     backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
     profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
+    preferredPagePrimaryColor,
   };
 }
 
@@ -74,7 +97,11 @@ export class UsersTableService extends TableService {
         encrypted_password VARCHAR(64) NOT NULL,
         profile_privacy_setting enumerated_profile_privacy_setting,
         background_image_blob_file_key VARCHAR(64) UNIQUE,
-        profile_picture_blob_file_key VARCHAR(64) UNIQUE
+        profile_picture_blob_file_key VARCHAR(64) UNIQUE,
+        
+        preferred_page_primary_color_red SMALLINT,
+        preferred_page_primary_color_green SMALLINT,
+        preferred_page_primary_color_blue SMALLINT
       )
       ;
     `;
@@ -137,10 +164,6 @@ export class UsersTableService extends TableService {
       values: [username],
     };
 
-    console.log("query");
-    console.log(query.text);
-    console.log(query.values);
-
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
@@ -199,9 +222,6 @@ export class UsersTableService extends TableService {
       values: [usernameSubstring],
     };
 
-    console.log(query.text);
-    console.log(query.values);
-
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
@@ -231,9 +251,6 @@ export class UsersTableService extends TableService {
       values: [userId],
     };
 
-    console.log(query.text);
-    console.log(query.values);
-
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
@@ -259,6 +276,7 @@ export class UsersTableService extends TableService {
     profilePrivacySetting,
     backgroundImageBlobFileKey,
     profilePictureBlobFileKey,
+    preferredPagePrimaryColor,
   }: {
     userId: string;
 
@@ -270,7 +288,9 @@ export class UsersTableService extends TableService {
     profilePrivacySetting?: ProfilePrivacySetting;
     backgroundImageBlobFileKey?: string;
     profilePictureBlobFileKey?: string;
+    preferredPagePrimaryColor?: Color;
   }): Promise<UnrenderableUser | undefined> {
+
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
         { field: "username", value: username },
@@ -290,6 +310,9 @@ export class UsersTableService extends TableService {
         { field: "profile_privacy_setting", value: profilePrivacySetting },
         { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
         { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
+        { field: "preferred_page_primary_color_red", value: preferredPagePrimaryColor?.red },
+        { field: "preferred_page_primary_color_green", value: preferredPagePrimaryColor?.green },
+        { field: "preferred_page_primary_color_blue", value: preferredPagePrimaryColor?.blue },
       ],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
@@ -297,10 +320,6 @@ export class UsersTableService extends TableService {
       },
       tableName: this.tableName,
     });
-
-    console.log("query");
-    console.log(query.text);
-    console.log(query.values);
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 

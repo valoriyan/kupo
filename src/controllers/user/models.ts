@@ -1,3 +1,5 @@
+import { Color } from "../../types/color";
+
 export enum ProfilePrivacySetting {
   Public = "Public",
   Private = "Private",
@@ -11,6 +13,8 @@ export interface BaseUnrenderableUser {
   userWebsite?: string;
   phoneNumber?: string;
   profilePrivacySetting: ProfilePrivacySetting;
+  
+  preferredPagePrimaryColor?: Color;
 }
 export interface UnrenderableUser extends BaseUnrenderableUser {
   backgroundImageBlobFileKey?: string;

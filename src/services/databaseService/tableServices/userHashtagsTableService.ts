@@ -21,7 +21,7 @@ export class UserHashtagsTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         user_id VARCHAR(64) UNIQUE NOT NULL,
-        hashtag_1 VARCHAR(64) NOT NULL,
+        hashtag_1 VARCHAR(64),
         hashtag_2 VARCHAR(64),
         hashtag_3 VARCHAR(64)
       )
