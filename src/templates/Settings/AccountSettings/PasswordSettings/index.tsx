@@ -1,6 +1,5 @@
-import { Api } from "#/api";
 import { ChangeEvent, useState, MouseEvent } from "react";
-
+import { Api } from "#/api";
 
 export const PasswordSettings = () => {
   const [newPassword, setNewPassword] = useState<string>("");
@@ -18,30 +17,21 @@ export const PasswordSettings = () => {
 
   function onClickSubmitUpdatedPassword(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-    Api.updatePassword({updatedPassword: newPassword});
-
+    Api.updatePassword({ updatedPassword: newPassword });
   }
 
-  return <div>
-    Password
-
+  return (
     <div>
-      <label>
-        New Password
-      </label>
-      <input onChange={onChangeNewPassword} value={newPassword} />
+      Password
+      <div>
+        <label>New Password</label>
+        <input onChange={onChangeNewPassword} value={newPassword} />
+      </div>
+      <div>
+        <label>Confirm Password</label>
+        <input onChange={onChangeConfirmedNewPassword} value={newConfirmedPassword} />
+      </div>
+      <button onClick={onClickSubmitUpdatedPassword}>Save Settings</button>
     </div>
-
-    <div>
-      <label>
-        Confirm Password
-      </label>
-      <input onChange={onChangeConfirmedNewPassword} value={newConfirmedPassword} />
-    </div>
-
-  <button onClick={onClickSubmitUpdatedPassword}>
-    Save Settings
-  </button>
-
-  </div>
-}
+  );
+};

@@ -11,7 +11,6 @@ export interface InitialProps {
   setCurrentScreen: (newScreen: SettingsScreen) => void;
 }
 
-
 export const AccountSettings = (props: InitialProps) => {
   const [updatedEmail, setUpdatedEmail] = useState<string>("");
 
@@ -60,14 +59,12 @@ export const AccountSettings = (props: InitialProps) => {
             <Duplicate /> Password
           </NewItemButton>
         </div>
-
       </div>
     );
   }
 
   return <div>Missing</div>;
 };
-
 
 const NewItemButton = styled("button", mainTitleStyles, {
   display: "flex",
