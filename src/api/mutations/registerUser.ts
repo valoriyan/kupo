@@ -1,11 +1,11 @@
 import Router from "next/router";
 import { useMutation } from "react-query";
 import { setAccessToken } from "#/contexts/auth";
-import { Api, RegisterUserParams } from "..";
+import { Api, RegisterUserRequestBody } from "..";
 
 export const useRegisterUser = () => {
   return useMutation(
-    async (args: RegisterUserParams) => {
+    async (args: RegisterUserRequestBody) => {
       return await Api.registerUser(args);
     },
     {

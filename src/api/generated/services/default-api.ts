@@ -47,6 +47,8 @@ import { FollowUserProfileParams } from "../types";
 // @ts-ignore
 import { GetPageOfChatMessagesRequestBody } from "../types";
 // @ts-ignore
+import { GetPageOfChatRoomsRequestBody } from "../types";
+// @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedUsersParams } from "../types";
@@ -104,6 +106,8 @@ import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpda
 import { SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
@@ -515,7 +519,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         "getPageOfChatMessagesRequestBody",
         getPageOfChatMessagesRequestBody,
       );
-      const localVarPath = `/chat/getPage`;
+      const localVarPath = `/chat/getPageOfChatMessages`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -539,6 +543,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPageOfChatMessagesRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfChatRooms: async (
+      getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfChatRoomsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfChatRooms",
+        "getPageOfChatRoomsRequestBody",
+        getPageOfChatRoomsRequestBody,
+      );
+      const localVarPath = `/chat/getPageOfChatRooms`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfChatRoomsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1706,6 +1759,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfChatRooms(
+      getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatRooms(
+        getPageOfChatRoomsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2365,6 +2444,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfChatRooms(
+      getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse> {
+      return localVarFp
+        .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2800,6 +2893,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfChatRooms(
+    getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
