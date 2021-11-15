@@ -63,7 +63,7 @@ import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
 import { LoginUserParams } from "../types";
 // @ts-ignore
-import { RegisterUserParams } from "../types";
+import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
 import { RequestPasswordResetParams } from "../types";
 // @ts-ignore
@@ -95,6 +95,8 @@ import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHa
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse } from "../types";
@@ -108,6 +110,8 @@ import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGe
 import { SetUserHashtagsRequestBody } from "../types";
 // @ts-ignore
 import { UnfollowUserProfileParams } from "../types";
+// @ts-ignore
+import { UpdatePasswordRequestBody } from "../types";
 // @ts-ignore
 import { UpdatePostParams } from "../types";
 // @ts-ignore
@@ -896,16 +900,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {RegisterUserParams} registerUserParams
+     * @param {RegisterUserRequestBody} registerUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     registerUser: async (
-      registerUserParams: RegisterUserParams,
+      registerUserRequestBody: RegisterUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'registerUserParams' is not null or undefined
-      assertParamExists("registerUser", "registerUserParams", registerUserParams);
+      // verify required parameter 'registerUserRequestBody' is not null or undefined
+      assertParamExists(
+        "registerUser",
+        "registerUserRequestBody",
+        registerUserRequestBody,
+      );
       const localVarPath = `/auth/register`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -929,7 +937,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        registerUserParams,
+        registerUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1126,6 +1134,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         unfollowUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePassword: async (
+      updatePasswordRequestBody: UpdatePasswordRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'updatePasswordRequestBody' is not null or undefined
+      assertParamExists(
+        "updatePassword",
+        "updatePasswordRequestBody",
+        updatePasswordRequestBody,
+      );
+      const localVarPath = `/auth/updatePassword`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updatePasswordRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1846,12 +1903,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RegisterUserParams} registerUserParams
+     * @param {RegisterUserRequestBody} registerUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async registerUser(
-      registerUserParams: RegisterUserParams,
+      registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
     ): Promise<
       (
@@ -1860,7 +1917,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(
-        registerUserParams,
+        registerUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1966,6 +2023,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.unfollowUser(
         unfollowUserProfileParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updatePassword(
+      updatePasswordRequestBody: UpdatePasswordRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updatePassword(
+        updatePasswordRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2386,16 +2469,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {RegisterUserParams} registerUserParams
+     * @param {RegisterUserRequestBody} registerUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     registerUser(
-      registerUserParams: RegisterUserParams,
+      registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
       return localVarFp
-        .registerUser(registerUserParams, options)
+        .registerUser(registerUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2452,6 +2535,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse> {
       return localVarFp
         .unfollowUser(unfollowUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePassword(
+      updatePasswordRequestBody: UpdatePasswordRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse> {
+      return localVarFp
+        .updatePassword(updatePasswordRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2822,14 +2919,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {RegisterUserParams} registerUserParams
+   * @param {RegisterUserRequestBody} registerUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public registerUser(registerUserParams: RegisterUserParams, options?: any) {
+  public registerUser(registerUserRequestBody: RegisterUserRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .registerUser(registerUserParams, options)
+      .registerUser(registerUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2894,6 +2991,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .unfollowUser(unfollowUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updatePassword(
+    updatePasswordRequestBody: UpdatePasswordRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updatePassword(updatePasswordRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

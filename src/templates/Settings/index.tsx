@@ -11,17 +11,20 @@ import { MainTitle } from "#/components/Typography";
 import { Close } from "#/components/Icons";
 import { ProfileSettings } from "./ProfileSettings";
 import { AccountSettings } from "./AccountSettings";
+import { PasswordSettings } from "./AccountSettings/PasswordSettings";
 
 export enum SettingsScreen {
   Initial = "Initial",
   Profile = "Profile",
   Account = "Account",
+  Password = "Password",
 }
 
 const screenToHeading = {
   [SettingsScreen.Initial]: "Settings",
   [SettingsScreen.Profile]: "Profile",
   [SettingsScreen.Account]: "Account",
+  [SettingsScreen.Password]: "Password",
 };
 
 export const Settings = () => {
@@ -44,9 +47,10 @@ export const Settings = () => {
       bodyNode = <ProfileSettings />;
       break;
     case SettingsScreen.Account:
-      bodyNode = <AccountSettings />;
-
-      // bodyNode = <NewShopItem />;
+      bodyNode = <AccountSettings setCurrentScreen={setCurrentScreen} />;
+      break;
+    case SettingsScreen.Password:
+      bodyNode = <PasswordSettings />;
       break;
     default:
       assertUnreachable(currentScreen, "Unknown screen received");

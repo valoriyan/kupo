@@ -159,25 +159,33 @@ export const ProfileSettings = () => {
       setUpdatedUserWebsite(newValue);
     }
 
-    function onChangUserHashtag1(event: ChangeEvent<HTMLInputElement>) {
-      event.preventDefault();
-      const newValue = event.currentTarget.value;
-      setUpdatedUserHashtags([newValue, updatedUserHashtags[1], updatedUserHashtags[2]]);
-    }
+    function generateOnChangUserHashtag(hashtagIndex: number) {
+      function onChangUserHashtag(event: ChangeEvent<HTMLInputElement>) {
+        event.preventDefault();
+        const newValue = event.currentTarget.value;
+        const updatedHashtags = [...Array(5).keys()].map((index) => {
+          if (index === hashtagIndex) {
+            return newValue;
+          }
+          return updatedUserHashtags[index];
+        });
 
-    function onChangUserHashtag2(event: ChangeEvent<HTMLInputElement>) {
-      event.preventDefault();
-      const newValue = event.currentTarget.value;
-      setUpdatedUserHashtags([updatedUserHashtags[0], newValue, updatedUserHashtags[2]]);
-    }
-    function onChangUserHashtag3(event: ChangeEvent<HTMLInputElement>) {
-      event.preventDefault();
-      const newValue = event.currentTarget.value;
-      setUpdatedUserHashtags([updatedUserHashtags[0], updatedUserHashtags[1], newValue]);
+        setUpdatedUserHashtags(updatedHashtags);
+      }
+  
+      return onChangUserHashtag;
     }
 
     function onSubmitSettings(event: MouseEvent<HTMLButtonElement>) {
       event.preventDefault();
+
+      console.log(
+        "updateUserProfile",
+        updatedUsername,
+        updatedShortBio,
+        updatedUserWebsite,
+        updatedUserPreferredPagePrimaryColor,
+      )
 
       Api.updateUserProfile({
         username: updatedUsername,
@@ -284,9 +292,11 @@ export const ProfileSettings = () => {
         <div>Profile Hashtags</div>
 
         <div>
-          <input value={updatedUserHashtags[0] || ""} onChange={onChangUserHashtag1} />
-          <input value={updatedUserHashtags[1] || ""} onChange={onChangUserHashtag2} />
-          <input value={updatedUserHashtags[2] || ""} onChange={onChangUserHashtag3} />
+          <input value={updatedUserHashtags[0] || ""} onChange={generateOnChangUserHashtag(0)} />
+          <input value={updatedUserHashtags[1] || ""} onChange={generateOnChangUserHashtag(1)} />
+          <input value={updatedUserHashtags[2] || ""} onChange={generateOnChangUserHashtag(2)} />
+          <input value={updatedUserHashtags[3] || ""} onChange={generateOnChangUserHashtag(3)} />
+          <input value={updatedUserHashtags[4] || ""} onChange={generateOnChangUserHashtag(4)} />
         </div>
 
         <br />

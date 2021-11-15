@@ -2,8 +2,17 @@ import { ChangeEvent, MouseEvent, useState } from "react";
 
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { Api } from "#/api";
+import { SettingsScreen } from "..";
+import { styled } from "#/styling";
+import { mainTitleStyles } from "#/components/Typography";
+import { Duplicate } from "#/components/Icons";
 
-export const AccountSettings = () => {
+export interface InitialProps {
+  setCurrentScreen: (newScreen: SettingsScreen) => void;
+}
+
+
+export const AccountSettings = (props: InitialProps) => {
   const [updatedEmail, setUpdatedEmail] = useState<string>("");
 
   const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
@@ -45,9 +54,30 @@ export const AccountSettings = () => {
 
         <br />
         <button onClick={onSubmitSettings}>Save Settings</button>
+
+        <div>
+          <NewItemButton onClick={() => props.setCurrentScreen(SettingsScreen.Password)}>
+            <Duplicate /> Password
+          </NewItemButton>
+        </div>
+
       </div>
     );
   }
 
   return <div>Missing</div>;
 };
+
+
+const NewItemButton = styled("button", mainTitleStyles, {
+  display: "flex",
+  alignItems: "center",
+  gap: "$5",
+  px: "$8",
+  py: "$6",
+  fontSize: "$3",
+  fontWeight: "$bold",
+  borderBottomStyle: "solid",
+  borderBottomWidth: "$1",
+  borderBottomColor: "$border",
+});
