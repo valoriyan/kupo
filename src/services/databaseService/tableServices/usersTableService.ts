@@ -39,9 +39,12 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
   console.log(dbUser);
 
   if (
-    (dbUser.preferred_page_primary_color_red !== undefined && dbUser.preferred_page_primary_color_red !== null) &&
-    (dbUser.preferred_page_primary_color_green !== undefined && dbUser.preferred_page_primary_color_red !== null) &&
-    (dbUser.preferred_page_primary_color_blue !== undefined && dbUser.preferred_page_primary_color_red !== null)
+    dbUser.preferred_page_primary_color_red !== undefined &&
+    dbUser.preferred_page_primary_color_red !== null &&
+    dbUser.preferred_page_primary_color_green !== undefined &&
+    dbUser.preferred_page_primary_color_red !== null &&
+    dbUser.preferred_page_primary_color_blue !== undefined &&
+    dbUser.preferred_page_primary_color_red !== null
   ) {
     preferredPagePrimaryColor = {
       red: dbUser.preferred_page_primary_color_red,
@@ -276,9 +279,7 @@ export class UsersTableService extends TableService {
     encryptedPassword: string;
   }): Promise<void> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [
-        { field: "encrypted_password", value: encryptedPassword },
-      ],
+      updatedFields: [{ field: "encrypted_password", value: encryptedPassword }],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
         value: userId,

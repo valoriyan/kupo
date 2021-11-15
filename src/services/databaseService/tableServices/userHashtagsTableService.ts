@@ -151,7 +151,13 @@ export class UserHashtagsTableService extends TableService {
     }
 
     const row = response.rows[0];
-    const hashtags = [row.hashtag_1, row.hashtag_2, row.hashtag_3, row.hashtag_4, row.hashtag_5];
+    const hashtags = [
+      row.hashtag_1,
+      row.hashtag_2,
+      row.hashtag_3,
+      row.hashtag_4,
+      row.hashtag_5,
+    ];
     return hashtags;
   }
 

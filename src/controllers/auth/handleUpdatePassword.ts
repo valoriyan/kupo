@@ -4,7 +4,7 @@ import { checkAuthorization, encryptPassword } from "../auth/utilities";
 import { AuthController } from "./authController";
 
 export interface UpdatePasswordRequestBody {
-    updatedPassword: string;
+  updatedPassword: string;
 }
 
 export enum FailedToUpdatePasswordResponseReason {
@@ -28,20 +28,19 @@ export async function handleUpdatePassword({
   request: express.Request;
   requestBody: UpdatePasswordRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-  FailedToUpdatePasswordResponse,
-  SuccessfullyUpdatedPasswordResponse
-  >
+  SecuredHTTPResponse<FailedToUpdatePasswordResponse, SuccessfullyUpdatedPasswordResponse>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const encryptedPassword = encryptPassword({password: requestBody.updatedPassword});
+  const encryptedPassword = encryptPassword({ password: requestBody.updatedPassword });
 
-  await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword({
-    userId: clientUserId,
-    encryptedPassword,
-  });
+  await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
+    {
+      userId: clientUserId,
+      encryptedPassword,
+    },
+  );
 
   return {};
 }

@@ -1,24 +1,18 @@
 import express from "express";
-import { DateTime } from "luxon";
 import { DatabaseService } from "../../services/databaseService";
 import { Body, Controller, Get, Post, Request, Route } from "tsoa";
-import {
-  encryptPassword,
-  generateAccessToken,
-  generateRefreshToken,
-  REFRESH_TOKEN_EXPIRATION_TIME,
-  validateTokenAndGetUserId,
-} from "./utilities";
-import { v4 as uuidv4 } from "uuid";
-import { HTTPResponse } from "../../types/httpResponse";
+import { encryptPassword, validateTokenAndGetUserId } from "./utilities";
+import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
 import { LocalEmailService } from "../../services/emailService";
 import { injectable } from "tsyringe";
-
-interface RegisterUserParams {
-  email: string;
-  password: string;
-  username: string;
-}
+import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
+import { handleRegisterUser, RegisterUserRequestBody } from "./handleRegisterUser";
+import {
+  FailedToUpdatePasswordResponse,
+  handleUpdatePassword,
+  SuccessfullyUpdatedPasswordResponse,
+  UpdatePasswordRequestBody,
+} from "./handleUpdatePassword";
 
 interface LoginUserParams {
   username: string;
@@ -29,7 +23,7 @@ interface RequestPasswordResetParams {
   email: string;
 }
 
-interface SuccessfulAuthResponse {
+export interface SuccessfulAuthResponse {
   accessToken: string;
 }
 
@@ -69,32 +63,12 @@ export class AuthController extends Controller {
 
   @Post("register")
   public async registerUser(
-    @Body() requestBody: RegisterUserParams,
+    @Body() requestBody: RegisterUserRequestBody,
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
-    const userId = uuidv4();
-    const { email, username, password } = requestBody;
-
-    const encryptedPassword = encryptPassword({ password });
-
-    try {
-      await this.databaseService.tableNameToServicesMap.usersTableService.createUser({
-        userId,
-        email,
-        username,
-        encryptedPassword,
-      });
-
-      return grantNewAccessToken({
-        controller: this,
-        userId,
-        jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
-        successStatusCode: 201,
-      });
-    } catch (error) {
-      console.log("error", error);
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.UnknownCause } };
-    }
+    return handleRegisterUser({
+      controller: this,
+      requestBody,
+    });
   }
 
   @Post("login")
@@ -171,6 +145,23 @@ export class AuthController extends Controller {
     };
   }
 
+  @Post("updatePassword")
+  public async requestUpdatePassword(
+    @Request() request: express.Request,
+    @Body() requestBody: UpdatePasswordRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToUpdatePasswordResponse,
+      SuccessfullyUpdatedPasswordResponse
+    >
+  > {
+    return await handleUpdatePassword({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   @Get("logout")
   public async logout(): Promise<void> {
     this.setHeader(
@@ -180,38 +171,4 @@ export class AuthController extends Controller {
 
     this.setStatus(200);
   }
-}
-
-function grantNewAccessToken({
-  controller,
-  userId,
-  jwtPrivateKey,
-  successStatusCode = 200,
-}: {
-  controller: Controller;
-  userId: string;
-  jwtPrivateKey: string;
-  successStatusCode?: number;
-}): HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse> {
-  const accessToken = generateAccessToken({
-    userId,
-    jwtPrivateKey,
-  });
-  const refreshToken = generateRefreshToken({
-    userId,
-    jwtPrivateKey,
-  });
-
-  const tokenExpirationTime = DateTime.now()
-    .plus(REFRESH_TOKEN_EXPIRATION_TIME * 1000)
-    .toJSDate()
-    .toUTCString();
-
-  controller.setHeader(
-    "Set-Cookie",
-    `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
-  );
-
-  controller.setStatus(successStatusCode);
-  return { success: { accessToken } };
 }
