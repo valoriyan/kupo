@@ -146,7 +146,7 @@ export class AuthController extends Controller {
   }
 
   @Post("updatePassword")
-  public async requestUpdatePassword(
+  public async updatePassword(
     @Request() request: express.Request,
     @Body() requestBody: UpdatePasswordRequestBody,
   ): Promise<

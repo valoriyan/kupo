@@ -1,14 +1,35 @@
 import { Pool, QueryResult } from "pg";
+import { UnrenderableChatRoom } from "src/controllers/chat/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
-interface DBChatRoom {
+interface DBChatRoomMembership {
   chatRoomId: string;
   userId: string;
   joinTimestamp: number;
+}
+
+function convertDBChatRoomMembershipsToUnrenderableChatRooms(
+  dbChatRoomMemberships: DBChatRoomMembership[],
+): UnrenderableChatRoom[] {
+  // const chatRoomIdToUserIdsMap: {[chatRoomId: string]: Set<string>} = {};
+  const chatRoomIdToUserIdsMap: Map<string, Set<string>> = new Map();
+
+  dbChatRoomMemberships.forEach(({ chatRoomId, userId }) => {
+    const chatRoomMembers = chatRoomIdToUserIdsMap.get(chatRoomId) || new Set();
+    chatRoomMembers.add(userId);
+    chatRoomIdToUserIdsMap.set(chatRoomId, chatRoomMembers);
+  });
+
+  return [...chatRoomIdToUserIdsMap.entries()].map(([chatRoomId, memberUserIds]) => {
+    return {
+      chatRoomId,
+      memberUserIds: [...memberUserIds],
+    };
+  });
 }
 
 export class ChatRoomsTableService extends TableService {
@@ -76,15 +97,44 @@ export class ChatRoomsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-        chat_room_id = $1
+          chat_room_id = $1
         ;
       `,
       values: [chatRoomId],
     };
 
-    const response: QueryResult<DBChatRoom> = await this.datastorePool.query(query);
+    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+      query,
+    );
 
     return response.rows.map((dbChatRoom) => dbChatRoom.userId);
+  }
+
+  public async getChatRoomsJoinedByUserId({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UnrenderableChatRoom[]> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          userId = $1
+        ;
+      `,
+      values: [userId],
+    };
+
+    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+      query,
+    );
+
+    const dbChatRoomMemberships = response.rows;
+
+    return convertDBChatRoomMembershipsToUnrenderableChatRooms(dbChatRoomMemberships);
   }
 
   //////////////////////////////////////////////////

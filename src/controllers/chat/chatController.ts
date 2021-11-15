@@ -17,6 +17,12 @@ import {
   handleGetPageOfChatMessages,
   SuccessfulGetPageOfChatMessagesResponse,
 } from "./handleGetPageOfChatMessages";
+import {
+  FailedtoGetPageOfChatRoomsResponse,
+  GetPageOfChatRoomsRequestBody,
+  handleGetPageOfChatRooms,
+  SuccessfulGetPageOfChatRoomsResponse,
+} from "./handleGetPageOfChatRooms";
 
 @injectable()
 @Route("chat")
@@ -46,7 +52,7 @@ export class ChatController extends Controller {
     });
   }
 
-  @Post("getPage")
+  @Post("getPageOfChatMessages")
   public async getPageOfChatMessages(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
@@ -57,6 +63,23 @@ export class ChatController extends Controller {
     >
   > {
     return await handleGetPageOfChatMessages({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPageOfChatRooms")
+  public async getPageOfChatRooms(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfChatRoomsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedtoGetPageOfChatRoomsResponse,
+      SuccessfulGetPageOfChatRoomsResponse
+    >
+  > {
+    return await handleGetPageOfChatRooms({
       controller: this,
       request,
       requestBody,

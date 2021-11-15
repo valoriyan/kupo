@@ -1,3 +1,4 @@
+import { map } from "bluebird";
 import { Pool, QueryConfig, QueryResult } from "pg";
 import { Color } from "src/types/color";
 import {
@@ -235,12 +236,20 @@ export class UsersTableService extends TableService {
     return rows.map(convertDBUserToUnrenderableUser);
   }
 
-  public async selectUserByUserId({
-    userId,
+  public async selectUsersByUserIds({
+    userIds,
   }: {
-    userId: string;
-  }): Promise<UnrenderableUser | undefined> {
+    userIds: string[];
+  }): Promise<UnrenderableUser[]> {
     console.log(`${this.tableName} | selectUserByUserId`);
+
+    const filteredUserIds = userIds.filter((userId) => !!userId);
+
+    const userIdsQueryText = filteredUserIds
+      .map((index) => {
+        return `$${index + 1}`;
+      })
+      .join(", ");
 
     const query = {
       text: `
@@ -249,22 +258,17 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id = $1
-        LIMIT
-          1
+          user_id IN (${userIdsQueryText})
         ;
       `,
-      values: [userId],
+      values: filteredUserIds,
     };
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 
-    if (!!rows[0]) {
-      return convertDBUserToUnrenderableUser(rows[0]);
-    }
-    return;
+    return map(rows, convertDBUserToUnrenderableUser);
   }
 
   //////////////////////////////////////////////////
