@@ -241,12 +241,16 @@ export class UsersTableService extends TableService {
   }: {
     userIds: string[];
   }): Promise<UnrenderableUser[]> {
-    console.log(`${this.tableName} | selectUserByUserId`);
+    console.log(`${this.tableName} | selectUsersByUserIds`);
 
     const filteredUserIds = userIds.filter((userId) => !!userId);
 
+    if (filteredUserIds.length === 0) {
+      return [];
+    }
+
     const userIdsQueryText = filteredUserIds
-      .map((index) => {
+      .map((_, index) => {
         return `$${index + 1}`;
       })
       .join(", ");
@@ -258,7 +262,7 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id IN (${userIdsQueryText})
+          user_id IN ( ${userIdsQueryText} )
         ;
       `,
       values: filteredUserIds,

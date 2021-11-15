@@ -39,7 +39,7 @@ export async function handleGetPageOfChatRooms({
     SuccessfulGetPageOfChatRoomsResponse
   >
 > {
-  const {pageSize} = requestBody;
+  const { pageSize } = requestBody;
   console.log(pageSize);
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

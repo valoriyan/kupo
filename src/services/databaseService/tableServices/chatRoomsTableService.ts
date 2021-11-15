@@ -122,11 +122,15 @@ export class ChatRoomsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          userId = $1
+          user_id = $1
         ;
       `,
       values: [userId],
     };
+
+    console.log("query.text");
+    console.log(query.text);
+    console.log(query.values);
 
     const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
       query,
