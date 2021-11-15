@@ -1,4 +1,5 @@
 export * from "./auth-failure-reason";
+export * from "./color";
 export * from "./create-chat-message-failure-reasons";
 export * from "./create-chat-message-request-body";
 export * from "./create-post-failure-reasons";

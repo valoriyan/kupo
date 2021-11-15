@@ -10,21 +10,17 @@ export const AccountSettings = () => {
 
   const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
 
-
   if (!!isLoading) {
     return <div>Loading</div>;
   }
 
   if (data && data.success) {
-    const {
-      email,      
-    } = data.success!;
+    const { email } = data.success!;
 
     if (!hasLoaded) {
       updatedHasLoaded(true);
       setUpdatedEmail(email || "");
     }
-
 
     function onChangUserEmail(event: ChangeEvent<HTMLInputElement>) {
       event.preventDefault();
@@ -32,42 +28,26 @@ export const AccountSettings = () => {
       setUpdatedEmail(newValue);
     }
 
-
-    function onSubmitSettings (event: MouseEvent<HTMLButtonElement>) {
+    function onSubmitSettings(event: MouseEvent<HTMLButtonElement>) {
       event.preventDefault();
 
-      Api.updateUserProfile(
-        {
-          userEmail: updatedEmail,
-        },
-      )
+      Api.updateUserProfile({
+        userEmail: updatedEmail,
+      });
     }
-
 
     return (
       <div>
-
         <div>
-          Email: 
-          <input type="text" value={updatedEmail} onChange={onChangUserEmail}/>
+          Email:
+          <input type="text" value={updatedEmail} onChange={onChangUserEmail} />
         </div>
 
-
-        <br/>
-        <button onClick={onSubmitSettings}>
-          Save Settings
-        </button>
+        <br />
+        <button onClick={onSubmitSettings}>Save Settings</button>
       </div>
-    )
-
-
+    );
   }
 
-  return (
-    <div>
-      Missing
-    </div>
-  );
-
-
-} 
+  return <div>Missing</div>;
+};

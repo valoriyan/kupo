@@ -1,10 +1,52 @@
-import { ChangeEvent, MouseEvent, useState} from "react";
-import { Api } from "#/api";
+import { ChangeEvent, MouseEvent, useState } from "react";
+import { Api, Color } from "#/api";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 
 const defaultProfilePictureUrl =
   "https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-1024.png";
 const defaultBackgroundImageUrl = "https://i.redd.it/1lrfl5fk5j951.png";
+
+
+const colorOption1 = {
+  red: 94,
+  green: 95,
+  blue: 239,
+};
+
+const colorOption2 = {
+  red: 255,
+  green: 77,
+  blue: 0,
+};
+
+const colorOption3 = {
+  red: 128,
+  green: 255,
+  blue: 0,
+};
+
+const colorOption4 = {
+  red: 51,
+  green: 0,
+  blue: 255,
+};
+
+const colorOption5 = {
+  red: 196,
+  green: 196,
+  blue: 196,
+};
+
+const colorOptions = [
+  colorOption1,
+  colorOption2,
+  colorOption3,
+  colorOption4,
+  colorOption5,
+];
+
+const defaultPreferredPagePrimaryColor = colorOption1;
+
 
 export const ProfileSettings = () => {
   const [loadedProfilePictureUrl, setLoadedProfilePictureUrl] = useState<string>(
@@ -17,10 +59,10 @@ export const ProfileSettings = () => {
   const [updatedShortBio, setUpdatedShortBio] = useState<string>("");
   const [updatedUserWebsite, setUpdatedUserWebsite] = useState<string>("");
   const [updatedUserHashtags, setUpdatedUserHashtags] = useState<string[]>([]);
+  const [updatedUserPreferredPagePrimaryColor, setUpdatedUserPreferredPagePrimaryColor] = useState<Color>(defaultPreferredPagePrimaryColor);
 
   const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
 
-  
   const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
 
   if (!!isLoading) {
@@ -35,6 +77,7 @@ export const ProfileSettings = () => {
       profilePictureTemporaryUrl,
       backgroundImageTemporaryUrl,
       hashtags,
+      preferredPagePrimaryColor
     } = data.success!;
 
     if (!hasLoaded) {
@@ -44,10 +87,15 @@ export const ProfileSettings = () => {
       setUpdatedShortBio(shortBio || "");
       setUpdatedUserWebsite(userWebsite || "");
       setUpdatedUserHashtags(hashtags);
+      setUpdatedUserPreferredPagePrimaryColor(preferredPagePrimaryColor || defaultPreferredPagePrimaryColor);
+
+      console.log("LOADED: preferredPagePrimaryColor");
+      console.log(preferredPagePrimaryColor);
 
       setLoadedProfilePictureUrl(profilePictureTemporaryUrl || defaultProfilePictureUrl);
-      setLoadedBackgroundImageUrl(backgroundImageTemporaryUrl || defaultBackgroundImageUrl);
-
+      setLoadedBackgroundImageUrl(
+        backgroundImageTemporaryUrl || defaultBackgroundImageUrl,
+      );
     }
 
     function onClickProfilePicture(event: MouseEvent<HTMLImageElement>) {
@@ -116,50 +164,50 @@ export const ProfileSettings = () => {
     function onChangUserHashtag1(event: ChangeEvent<HTMLInputElement>) {
       event.preventDefault();
       const newValue = event.currentTarget.value;
-      setUpdatedUserHashtags([
-        newValue,
-        updatedUserHashtags[1],
-        updatedUserHashtags[2],
-      ]);
+      setUpdatedUserHashtags([newValue, updatedUserHashtags[1], updatedUserHashtags[2]]);
     }
 
     function onChangUserHashtag2(event: ChangeEvent<HTMLInputElement>) {
       event.preventDefault();
       const newValue = event.currentTarget.value;
-      setUpdatedUserHashtags([
-        updatedUserHashtags[0],
-        newValue,
-        updatedUserHashtags[2],
-      ]);
+      setUpdatedUserHashtags([updatedUserHashtags[0], newValue, updatedUserHashtags[2]]);
     }
     function onChangUserHashtag3(event: ChangeEvent<HTMLInputElement>) {
       event.preventDefault();
       const newValue = event.currentTarget.value;
-      setUpdatedUserHashtags([
-        updatedUserHashtags[0],
-        updatedUserHashtags[1],
-        newValue,
-      ]);
+      setUpdatedUserHashtags([updatedUserHashtags[0], updatedUserHashtags[1], newValue]);
     }
 
-
-    function onSubmitSettings (event: MouseEvent<HTMLButtonElement>) {
+    function onSubmitSettings(event: MouseEvent<HTMLButtonElement>) {
       event.preventDefault();
 
-      Api.updateUserProfile(
-        {
-          username: updatedUsername,
-          shortBio: updatedShortBio,
-          userWebsite: updatedUserWebsite,
-        },
-      )
+      Api.updateUserProfile({
+        username: updatedUsername,
+        shortBio: updatedShortBio,
+        userWebsite: updatedUserWebsite,
+        preferredPagePrimaryColor: updatedUserPreferredPagePrimaryColor,
+      });
 
-      console.log(updatedUserHashtags.filter(hashtag => !!hashtag));
       Api.setUserHashtags({
-        hashtags: updatedUserHashtags.filter(hashtag => !!hashtag),
+        hashtags: updatedUserHashtags.filter((hashtag) => !!hashtag),
       });
     }
 
+    const colorPallete = colorOptions.map((colorOption, index) => {
+      function onClick(event: MouseEvent<HTMLDivElement>) {
+        event.preventDefault();
+        console.log(colorOption);
+        setUpdatedUserPreferredPagePrimaryColor(colorOption);
+      }
+      const border = (colorOption.red === updatedUserPreferredPagePrimaryColor.red && colorOption.green === updatedUserPreferredPagePrimaryColor.green && colorOption.blue === updatedUserPreferredPagePrimaryColor.blue) ?
+      "1px solid red" : "";
+
+      console.log(border);
+
+      return (
+        <div key={index} onClick={onClick} style={{width: "15px", height: "15px", backgroundColor: `rgb(${colorOption.red} ${colorOption.green} ${colorOption.blue})`, border, }}/>
+      )      
+    })
 
     /* eslint-disable @next/next/no-img-element */
     return (
@@ -204,19 +252,23 @@ export const ProfileSettings = () => {
 
         <div>Page Color</div>
 
+        {colorPallete}
+
+        <br/>
+
         <div>
-          Username: 
-          <input type="text" value={updatedUsername} onChange={onChangeUsername}/>
+          Username:
+          <input type="text" value={updatedUsername} onChange={onChangeUsername} />
         </div>
 
         <div>
-          Profile Bio: 
-          <input type="text" value={updatedShortBio} onChange={onChangeShortBio}/>
+          Profile Bio:
+          <input type="text" value={updatedShortBio} onChange={onChangeShortBio} />
         </div>
 
         <div>
-          Website: 
-          <input type="text" value={updatedUserWebsite} onChange={onChangUserWebsite}/>
+          Website:
+          <input type="text" value={updatedUserWebsite} onChange={onChangUserWebsite} />
         </div>
 
         <div>Discover</div>
@@ -229,19 +281,11 @@ export const ProfileSettings = () => {
           <input value={updatedUserHashtags[2] || ""} onChange={onChangUserHashtag3} />
         </div>
 
-        <br/>
-        <button onClick={onSubmitSettings}>
-          Save Settings
-        </button>
+        <br />
+        <button onClick={onSubmitSettings}>Save Settings</button>
       </div>
     );
-
   }
 
-  return (
-    <div>
-      Missing
-    </div>
-  );
-
+  return <div>Missing</div>;
 };

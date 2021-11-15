@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { Color } from "./color";
 import { ProfilePrivacySetting } from "./profile-privacy-setting";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
@@ -63,6 +64,12 @@ export interface RenderableUser {
    * @memberof RenderableUser
    */
   profilePrivacySetting: ProfilePrivacySetting;
+  /**
+   *
+   * @type {Color}
+   * @memberof RenderableUser
+   */
+  preferredPagePrimaryColor?: Color;
   /**
    *
    * @type {string}

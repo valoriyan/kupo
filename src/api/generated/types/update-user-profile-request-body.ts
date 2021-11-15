@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { Color } from "./color";
 import { ExpressMulterFile } from "./express-multer-file";
 import { ProfilePrivacySetting } from "./profile-privacy-setting";
 
@@ -51,6 +52,12 @@ export interface UpdateUserProfileRequestBody {
    * @memberof UpdateUserProfileRequestBody
    */
   phoneNumber?: string;
+  /**
+   *
+   * @type {Color}
+   * @memberof UpdateUserProfileRequestBody
+   */
+  preferredPagePrimaryColor?: Color;
   /**
    *
    * @type {ProfilePrivacySetting}
