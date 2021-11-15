@@ -87,6 +87,11 @@ export async function constructRenderableUserFromParts({
       },
     );
 
+  const userHashtags =
+    await databaseService.tableNameToServicesMap.userHashtagsTableService.getHashtagsForUserId(
+      { userId },
+    );
+
   return {
     backgroundImageTemporaryUrl,
     profilePictureTemporaryUrl,
@@ -103,5 +108,6 @@ export async function constructRenderableUserFromParts({
     profilePrivacySetting,
     userWebsite,
     shortBio,
+    hashtags: userHashtags,
   };
 }

@@ -6,6 +6,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBHashtag {
   hashtag: string;
   post_id?: string;
+  shop_item_id?: string;
 }
 
 export class HashtagsTableService extends TableService {

@@ -10,6 +10,7 @@ import { PostsTableService } from "./tableServices/postsTableService";
 import { ShopItemMediaElementsTableService } from "./tableServices/shopItemMediaElementsTableService";
 import { ShopItemsTableService } from "./tableServices/shopItemsTableService";
 import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
+import { UserHashtagsTableService } from "./tableServices/userHashtagsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseServive } from "./teardown";
 
@@ -31,6 +32,7 @@ export class DatabaseService {
     hashtagTableService: new HashtagsTableService(DatabaseService.datastorePool),
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
     chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
+    userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

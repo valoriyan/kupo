@@ -9,6 +9,7 @@ export interface BaseUnrenderableUser {
   username: string;
   shortBio?: string;
   userWebsite?: string;
+  phoneNumber?: string;
   profilePrivacySetting: ProfilePrivacySetting;
 }
 export interface UnrenderableUser extends BaseUnrenderableUser {
@@ -30,4 +31,5 @@ export interface RenderableUser extends BaseUnrenderableUser {
     count: number;
   };
   clientCanViewContent: boolean;
+  hashtags: string[];
 }

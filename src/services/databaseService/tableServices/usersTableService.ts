@@ -18,6 +18,7 @@ interface DBUser {
   username: string;
   short_bio?: string;
   user_website?: string;
+  phone_number?: string;
   encrypted_password?: string;
 
   profile_privacy_setting: ProfilePrivacySetting;
@@ -33,6 +34,7 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     username: dbUser.username,
     shortBio: dbUser.short_bio,
     userWebsite: dbUser.user_website,
+    phoneNumber: dbUser.phone_number,
     profilePrivacySetting: dbUser.profile_privacy_setting,
     backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
     profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
@@ -43,14 +45,7 @@ function convertDBUserToUnrenderableUserWITHPASSWORD(
   dbUser: DBUser,
 ): UnrenderableUser_WITH_PASSWORD {
   return {
-    userId: dbUser.user_id,
-    email: dbUser.email,
-    username: dbUser.username,
-    shortBio: dbUser.short_bio,
-    userWebsite: dbUser.user_website,
-    profilePrivacySetting: dbUser.profile_privacy_setting,
-    backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
-    profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
+    ...convertDBUserToUnrenderableUser(dbUser),
     encryptedPassword: dbUser.encrypted_password,
   };
 }
@@ -259,6 +254,8 @@ export class UsersTableService extends TableService {
     username,
     shortBio,
     userWebsite,
+    email,
+    phoneNumber,
     profilePrivacySetting,
     backgroundImageBlobFileKey,
     profilePictureBlobFileKey,
@@ -268,10 +265,12 @@ export class UsersTableService extends TableService {
     username?: string;
     shortBio?: string;
     userWebsite?: string;
+    email?: string;
+    phoneNumber?: string;
     profilePrivacySetting?: ProfilePrivacySetting;
     backgroundImageBlobFileKey?: string;
     profilePictureBlobFileKey?: string;
-  }): Promise<void> {
+  }): Promise<UnrenderableUser | undefined> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
         { field: "username", value: username },
@@ -279,6 +278,14 @@ export class UsersTableService extends TableService {
         {
           field: "user_website",
           value: userWebsite,
+        },
+        {
+          field: "email",
+          value: email,
+        },
+        {
+          field: "phone_number",
+          value: phoneNumber,
         },
         { field: "profile_privacy_setting", value: profilePrivacySetting },
         { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
@@ -291,7 +298,18 @@ export class UsersTableService extends TableService {
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(query);
+    console.log("query");
+    console.log(query.text);
+    console.log(query.values);
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
   }
 
   //////////////////////////////////////////////////

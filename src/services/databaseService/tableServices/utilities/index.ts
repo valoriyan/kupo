@@ -65,6 +65,8 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       ${updateString}
     WHERE
       ${fieldUsedToIdentifyUpdatedRow.field} = $${queryValueIndex + 1}
+    RETURNING
+      *
     ;
   `;
 
