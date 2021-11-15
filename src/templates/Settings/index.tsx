@@ -10,6 +10,7 @@ import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
 import { Close } from "#/components/Icons";
 import { ProfileSettings } from "./ProfileSettings";
+import { AccountSettings } from "./AccountSettings";
 
 export enum SettingsScreen {
   Initial = "Initial",
@@ -41,10 +42,9 @@ export const Settings = () => {
       break;
     case SettingsScreen.Profile:
       bodyNode = <ProfileSettings />;
-      // bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
     case SettingsScreen.Account:
-      bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
+      bodyNode = <AccountSettings />;
 
       // bodyNode = <NewShopItem />;
       break;

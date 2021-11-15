@@ -53,6 +53,12 @@ export interface RenderableUser {
   userWebsite?: string;
   /**
    *
+   * @type {string}
+   * @memberof RenderableUser
+   */
+  phoneNumber?: string;
+  /**
+   *
    * @type {ProfilePrivacySetting}
    * @memberof RenderableUser
    */
@@ -87,4 +93,10 @@ export interface RenderableUser {
    * @memberof RenderableUser
    */
   clientCanViewContent: boolean;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof RenderableUser
+   */
+  hashtags: Array<string>;
 }

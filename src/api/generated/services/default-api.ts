@@ -91,6 +91,8 @@ import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGet
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse } from "../types";
@@ -103,9 +105,13 @@ import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPa
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
+import { SetUserHashtagsRequestBody } from "../types";
+// @ts-ignore
 import { UnfollowUserProfileParams } from "../types";
 // @ts-ignore
 import { UpdatePostParams } from "../types";
+// @ts-ignore
+import { UpdateUserProfileRequestBody } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -1033,6 +1039,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserHashtags: async (
+      setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'setUserHashtagsRequestBody' is not null or undefined
+      assertParamExists(
+        "setUserHashtags",
+        "setUserHashtagsRequestBody",
+        setUserHashtagsRequestBody,
+      );
+      const localVarPath = `/user/SetUserHashtags`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        setUserHashtagsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1273,20 +1328,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} [username]
-     * @param {string} [shortBio]
-     * @param {string} [userWebsite]
-     * @param {string} [profileVisibility]
+     * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfile: async (
-      username?: string,
-      shortBio?: string,
-      userWebsite?: string,
-      profileVisibility?: string,
+      updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'updateUserProfileRequestBody' is not null or undefined
+      assertParamExists(
+        "updateUserProfile",
+        "updateUserProfileRequestBody",
+        updateUserProfileRequestBody,
+      );
       const localVarPath = `/user/UpdateUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1298,26 +1353,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (username !== undefined) {
-        localVarFormParams.append("username", username as any);
-      }
-
-      if (shortBio !== undefined) {
-        localVarFormParams.append("shortBio", shortBio as any);
-      }
-
-      if (userWebsite !== undefined) {
-        localVarFormParams.append("userWebsite", userWebsite as any);
-      }
-
-      if (profileVisibility !== undefined) {
-        localVarFormParams.append("profileVisibility", profileVisibility as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -1327,7 +1364,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateUserProfileRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1884,6 +1925,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async setUserHashtags(
+      setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.setUserHashtags(
+        setUserHashtagsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2012,18 +2079,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} [username]
-     * @param {string} [shortBio]
-     * @param {string} [userWebsite]
-     * @param {string} [profileVisibility]
+     * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateUserProfile(
-      username?: string,
-      shortBio?: string,
-      userWebsite?: string,
-      profileVisibility?: string,
+      updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options?: any,
     ): Promise<
       (
@@ -2032,10 +2093,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
-        username,
-        shortBio,
-        userWebsite,
-        profileVisibility,
+        updateUserProfileRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2370,6 +2428,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserHashtags(
+      setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse> {
+      return localVarFp
+        .setUserHashtags(setUserHashtagsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2453,22 +2525,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} [username]
-     * @param {string} [shortBio]
-     * @param {string} [userWebsite]
-     * @param {string} [profileVisibility]
+     * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfile(
-      username?: string,
-      shortBio?: string,
-      userWebsite?: string,
-      profileVisibility?: string,
+      updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
       return localVarFp
-        .updateUserProfile(username, shortBio, userWebsite, profileVisibility, options)
+        .updateUserProfile(updateUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2801,6 +2867,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public setUserHashtags(
+    setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .setUserHashtags(setUserHashtagsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {UnfollowUserProfileParams} unfollowUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2886,23 +2968,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} [username]
-   * @param {string} [shortBio]
-   * @param {string} [userWebsite]
-   * @param {string} [profileVisibility]
+   * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public updateUserProfile(
-    username?: string,
-    shortBio?: string,
-    userWebsite?: string,
-    profileVisibility?: string,
+    updateUserProfileRequestBody: UpdateUserProfileRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .updateUserProfile(username, shortBio, userWebsite, profileVisibility, options)
+      .updateUserProfile(updateUserProfileRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
