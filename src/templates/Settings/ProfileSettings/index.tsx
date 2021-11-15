@@ -6,7 +6,6 @@ const defaultProfilePictureUrl =
   "https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-1024.png";
 const defaultBackgroundImageUrl = "https://i.redd.it/1lrfl5fk5j951.png";
 
-
 const colorOption1 = {
   red: 94,
   green: 95,
@@ -47,7 +46,6 @@ const colorOptions = [
 
 const defaultPreferredPagePrimaryColor = colorOption1;
 
-
 export const ProfileSettings = () => {
   const [loadedProfilePictureUrl, setLoadedProfilePictureUrl] = useState<string>(
     defaultProfilePictureUrl,
@@ -59,7 +57,8 @@ export const ProfileSettings = () => {
   const [updatedShortBio, setUpdatedShortBio] = useState<string>("");
   const [updatedUserWebsite, setUpdatedUserWebsite] = useState<string>("");
   const [updatedUserHashtags, setUpdatedUserHashtags] = useState<string[]>([]);
-  const [updatedUserPreferredPagePrimaryColor, setUpdatedUserPreferredPagePrimaryColor] = useState<Color>(defaultPreferredPagePrimaryColor);
+  const [updatedUserPreferredPagePrimaryColor, setUpdatedUserPreferredPagePrimaryColor] =
+    useState<Color>(defaultPreferredPagePrimaryColor);
 
   const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
 
@@ -77,7 +76,7 @@ export const ProfileSettings = () => {
       profilePictureTemporaryUrl,
       backgroundImageTemporaryUrl,
       hashtags,
-      preferredPagePrimaryColor
+      preferredPagePrimaryColor,
     } = data.success!;
 
     if (!hasLoaded) {
@@ -87,10 +86,9 @@ export const ProfileSettings = () => {
       setUpdatedShortBio(shortBio || "");
       setUpdatedUserWebsite(userWebsite || "");
       setUpdatedUserHashtags(hashtags);
-      setUpdatedUserPreferredPagePrimaryColor(preferredPagePrimaryColor || defaultPreferredPagePrimaryColor);
-
-      console.log("LOADED: preferredPagePrimaryColor");
-      console.log(preferredPagePrimaryColor);
+      setUpdatedUserPreferredPagePrimaryColor(
+        preferredPagePrimaryColor || defaultPreferredPagePrimaryColor,
+      );
 
       setLoadedProfilePictureUrl(profilePictureTemporaryUrl || defaultProfilePictureUrl);
       setLoadedBackgroundImageUrl(
@@ -196,18 +194,28 @@ export const ProfileSettings = () => {
     const colorPallete = colorOptions.map((colorOption, index) => {
       function onClick(event: MouseEvent<HTMLDivElement>) {
         event.preventDefault();
-        console.log(colorOption);
         setUpdatedUserPreferredPagePrimaryColor(colorOption);
       }
-      const border = (colorOption.red === updatedUserPreferredPagePrimaryColor.red && colorOption.green === updatedUserPreferredPagePrimaryColor.green && colorOption.blue === updatedUserPreferredPagePrimaryColor.blue) ?
-      "1px solid red" : "";
-
-      console.log(border);
+      const border =
+        colorOption.red === updatedUserPreferredPagePrimaryColor.red &&
+        colorOption.green === updatedUserPreferredPagePrimaryColor.green &&
+        colorOption.blue === updatedUserPreferredPagePrimaryColor.blue
+          ? "1px solid red"
+          : "";
 
       return (
-        <div key={index} onClick={onClick} style={{width: "15px", height: "15px", backgroundColor: `rgb(${colorOption.red} ${colorOption.green} ${colorOption.blue})`, border, }}/>
-      )      
-    })
+        <div
+          key={index}
+          onClick={onClick}
+          style={{
+            width: "15px",
+            height: "15px",
+            backgroundColor: `rgb(${colorOption.red} ${colorOption.green} ${colorOption.blue})`,
+            border,
+          }}
+        />
+      );
+    });
 
     /* eslint-disable @next/next/no-img-element */
     return (
@@ -254,7 +262,7 @@ export const ProfileSettings = () => {
 
         {colorPallete}
 
-        <br/>
+        <br />
 
         <div>
           Username:
