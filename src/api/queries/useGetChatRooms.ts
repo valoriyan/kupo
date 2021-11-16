@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api } from "..";
 
@@ -6,10 +6,13 @@ export interface GetChatRoomsArgs {
   cursor?: string;
 }
 
+async function fetchPageOfChatRooms({ pageParam = undefined }) {
+  const res = await Api.getPageOfChatRooms({ cursor: pageParam, pageSize: 5 });
+  return res.data;
+}
 
 export const useGetChatRooms = ({ cursor }: GetChatRoomsArgs) => {
-  return useQuery([CacheKeys.chatRooms, cursor], async () => {
-    const res = await Api.getPageOfChatRooms({ cursor, pageSize: 5 });
-    return res.data;
+  return useInfiniteQuery([CacheKeys.chatRooms, cursor], fetchPageOfChatRooms, {
+    getNextPageParam: (lastPage) => lastPage.success?.nextPageCursor,
   });
 };
