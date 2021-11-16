@@ -36,9 +36,6 @@ interface DBUser {
 function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
   let preferredPagePrimaryColor: Color | undefined = undefined;
 
-  console.log("dbUser");
-  console.log(dbUser);
-
   if (
     dbUser.preferred_page_primary_color_red !== undefined &&
     dbUser.preferred_page_primary_color_red !== null &&
@@ -53,9 +50,6 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
       blue: dbUser.preferred_page_primary_color_blue,
     };
   }
-
-  console.log("preferredPagePrimaryColor");
-  console.log(preferredPagePrimaryColor);
 
   return {
     userId: dbUser.user_id,

@@ -39,7 +39,7 @@ export async function handleGetPageOfChatRooms({
     SuccessfulGetPageOfChatRoomsResponse
   >
 > {
-  const { pageSize } = requestBody;
+  const { pageSize, cursor } = requestBody;
   console.log(pageSize);
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -90,9 +90,15 @@ export async function handleGetPageOfChatRooms({
     },
   );
 
+  const beginningOfPageCursor = cursor ? +cursor : 0;
+  const endOfPageCursor = beginningOfPageCursor + pageSize;
+  const pageOfRenderableChatRooms = renderableChatRooms.slice(beginningOfPageCursor,endOfPageCursor);
+  
   return {
     success: {
-      chatRooms: renderableChatRooms,
+      chatRooms: pageOfRenderableChatRooms,
+      previousPageCursor: cursor,
+      nextPageCursor: endOfPageCursor.toString(),
     },
   };
 }

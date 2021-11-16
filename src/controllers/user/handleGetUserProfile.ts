@@ -53,9 +53,6 @@ export async function handleGetUserProfile({
     unrenderableUser = unrenderableUsers[0];
   }
 
-  console.log("unrenderableUser");
-  console.log(unrenderableUser);
-
   if (!unrenderableUser) {
     controller.setStatus(404);
     return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };

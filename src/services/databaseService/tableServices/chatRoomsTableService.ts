@@ -7,9 +7,9 @@ import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBChatRoomMembership {
-  chatRoomId: string;
-  userId: string;
-  joinTimestamp: number;
+  chat_room_id: string;
+  user_id: string;
+  join_timestamp: number;
 }
 
 function convertDBChatRoomMembershipsToUnrenderableChatRooms(
@@ -18,10 +18,10 @@ function convertDBChatRoomMembershipsToUnrenderableChatRooms(
   // const chatRoomIdToUserIdsMap: {[chatRoomId: string]: Set<string>} = {};
   const chatRoomIdToUserIdsMap: Map<string, Set<string>> = new Map();
 
-  dbChatRoomMemberships.forEach(({ chatRoomId, userId }) => {
-    const chatRoomMembers = chatRoomIdToUserIdsMap.get(chatRoomId) || new Set();
-    chatRoomMembers.add(userId);
-    chatRoomIdToUserIdsMap.set(chatRoomId, chatRoomMembers);
+  dbChatRoomMemberships.forEach(({ chat_room_id, user_id }) => {
+    const chatRoomMembers = chatRoomIdToUserIdsMap.get(chat_room_id) || new Set();
+    chatRoomMembers.add(user_id);
+    chatRoomIdToUserIdsMap.set(chat_room_id, chatRoomMembers);
   });
 
   return [...chatRoomIdToUserIdsMap.entries()].map(([chatRoomId, memberUserIds]) => {
@@ -107,7 +107,7 @@ export class ChatRoomsTableService extends TableService {
       query,
     );
 
-    return response.rows.map((dbChatRoom) => dbChatRoom.userId);
+    return response.rows.map((dbChatRoom) => dbChatRoom.user_id);
   }
 
   public async getChatRoomsJoinedByUserId({
@@ -127,10 +127,6 @@ export class ChatRoomsTableService extends TableService {
       `,
       values: [userId],
     };
-
-    console.log("query.text");
-    console.log(query.text);
-    console.log(query.values);
 
     const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
       query,
