@@ -1,32 +1,22 @@
-import { useState } from "react";
-import { Api, RenderableChatRoom } from "#/api";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetChatRooms } from "#/api/queries/useGetChatRooms";
 
 export const Messages = () => {
-  const [chatRooms, setChatRooms] = useState<RenderableChatRoom[]>([]);
-
   const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
-  const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
+  const { data: chatRoomData, isLoading: isLoadingChatRoomData } = useGetChatRooms();
 
-  if (isLoading) {
+  if (isLoading || isLoadingChatRoomData) {
     return <div>Loading</div>;
   }
 
-  if (!data || !!data.error) {
+  if (!data || !data.success || !chatRoomData || !chatRoomData.success) {
     return <div>Error: {data?.error}</div>;
   }
 
-  if (!hasLoaded) {
-    updatedHasLoaded(true);
-    Api.getPageOfChatRooms({ pageSize: 5 }).then(({ data: pageOfchatRoomsResponse }) => {
-      if (pageOfchatRoomsResponse.success) {
-        setChatRooms(pageOfchatRoomsResponse.success.chatRooms);
-      }
-    });
-  }
+  const chatRooms = chatRoomData.success.chatRooms;
 
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
-    return <div key={index}>Chat Room</div>;
+    return <div key={index}>Chat Room: {chatRoom.chatRoomId}</div>;
   });
 
   return (

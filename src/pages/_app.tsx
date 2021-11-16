@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from "react-query/devtools";
 import { IdProvider } from "@radix-ui/react-id";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
@@ -20,6 +21,7 @@ const ScriburApp = ({ Component, pageProps }: AppProps) => {
     <ThemeProvider>
       <IdProvider>
         <QueryClientProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
           {noAppLayout ? (
             <Component {...pageProps} />
           ) : (
