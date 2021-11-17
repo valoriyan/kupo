@@ -35,7 +35,7 @@ export function generatePSQLGenericCreateRowsQuery<T>({
       }
     });
 
-    const rowOfParameterizedValuesString = `(${rowOfParameterizedValues.join(", ")})`;
+    const rowOfParameterizedValuesString = `( ${rowOfParameterizedValues.join(" , ")} )`;
 
     rowsOfParameterizedValues.push(rowOfParameterizedValuesString);
   });

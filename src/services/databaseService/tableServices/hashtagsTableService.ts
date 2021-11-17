@@ -46,6 +46,10 @@ export class HashtagsTableService extends TableService {
   }): Promise<void> {
     console.log(`${this.tableName} | addHashtagsToPost`);
 
+    if (hashtags.length === 0) {
+      return;
+    }
+
     const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
       { field: "hashtag", value: hashtag },
       {
@@ -58,6 +62,10 @@ export class HashtagsTableService extends TableService {
       rowsOfFieldsAndValues,
       tableName: this.tableName,
     });
+
+    console.log("query");
+    console.log(query.text);
+    console.log(query.values);
 
     await this.datastorePool.query<DBHashtag>(query);
   }

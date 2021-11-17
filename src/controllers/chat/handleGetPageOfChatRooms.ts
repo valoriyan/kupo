@@ -92,8 +92,11 @@ export async function handleGetPageOfChatRooms({
 
   const beginningOfPageCursor = cursor ? +cursor : 0;
   const endOfPageCursor = beginningOfPageCursor + pageSize;
-  const pageOfRenderableChatRooms = renderableChatRooms.slice(beginningOfPageCursor,endOfPageCursor);
-  
+  const pageOfRenderableChatRooms = renderableChatRooms.slice(
+    beginningOfPageCursor,
+    endOfPageCursor,
+  );
+
   return {
     success: {
       chatRooms: pageOfRenderableChatRooms,
