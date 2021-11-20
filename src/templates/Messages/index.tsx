@@ -1,26 +1,26 @@
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { useGetChatRooms } from "#/api/queries/useGetChatRooms";
 
 export const Messages = () => {
-  const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
   const {
-    data: chatRoomData,
-    isLoading: isLoadingChatRoomData,
+    data,
+    isLoading,
     isFetching: isFetchingChatRooms,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    error,
+    isError,
   } = useGetChatRooms({});
 
-  if (isLoading || isLoadingChatRoomData) {
+  if (isError && !isLoading) {
+    return <div>Error: {(error as Error).message}</div>;
+  }
+
+  if (isLoading || !data) {
     return <div>Loading</div>;
   }
 
-  if (!data || !data.success || !chatRoomData) {
-    return <div>Error: {data?.error}</div>;
-  }
-
-  const chatRooms = chatRoomData.pages
+  const chatRooms = data.pages
     .filter((chatRoomDataPage) => !!chatRoomDataPage.success)
     .flatMap((chatRoomDataPage) => {
       return chatRoomDataPage.success!.chatRooms;
@@ -30,8 +30,6 @@ export const Messages = () => {
     console.log("HIT!", chatRoom);
     return <div key={index}>Chat Room: {chatRoom.chatRoomId}</div>;
   });
-
-  // const nextChatPageCursor = (chatRoomData.pages.at(-1) && chatRoomData.pages.at(-1)?.success) ? chatRoomData.pages.at(-1)?.success?.nextPageCursor : undefined;
 
   return (
     <div>

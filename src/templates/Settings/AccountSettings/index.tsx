@@ -14,19 +14,19 @@ export interface InitialProps {
 export const AccountSettings = (props: InitialProps) => {
   const [updatedEmail, setUpdatedEmail] = useState<string>("");
 
-  const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
+  const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
 
   const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
 
-  if (isLoading) {
+  if (error && !isLoading) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !data) {
     return <div>Loading</div>;
   }
 
-  if (!data || !!data.error) {
-    return <div>Error: {data?.error}</div>;
-  }
-
-  const { email } = data.success!;
+  const { email } = data;
 
   if (!hasLoaded) {
     updatedHasLoaded(true);

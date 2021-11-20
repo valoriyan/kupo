@@ -1,117 +1,57 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
-import { Api, Color } from "#/api";
+import { ChangeEvent, MouseEvent } from "react";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
-
-const defaultProfilePictureUrl =
-  "https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-1024.png";
-const defaultBackgroundImageUrl = "https://i.redd.it/1lrfl5fk5j951.png";
-
-const colorOption1 = {
-  red: 94,
-  green: 95,
-  blue: 239,
-};
-
-const colorOption2 = {
-  red: 255,
-  green: 77,
-  blue: 0,
-};
-
-const colorOption3 = {
-  red: 128,
-  green: 255,
-  blue: 0,
-};
-
-const colorOption4 = {
-  red: 51,
-  green: 0,
-  blue: 255,
-};
-
-const colorOption5 = {
-  red: 196,
-  green: 196,
-  blue: 196,
-};
-
-const colorOptions = [
-  colorOption1,
-  colorOption2,
-  colorOption3,
-  colorOption4,
-  colorOption5,
-];
-
-const defaultPreferredPagePrimaryColor = colorOption1;
+import { useUpdateOwnProfilePicture } from "#/api/mutations/profile/updateOwnProfilePicture";
+import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";
+import { useUpdateOwnProfile } from "#/api/mutations/profile/updateOwnProfile";
+import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
+import { FormStateProvider, useFormState } from "./FormContext";
+import { colorOptions } from "./config";
 
 export const ProfileSettings = () => {
-  const [loadedProfilePictureUrl, setLoadedProfilePictureUrl] = useState<string>(
-    defaultProfilePictureUrl,
-  );
-  const [loadedBackgroundImageUrl, setLoadedBackgroundImageUrl] = useState<string>(
-    defaultBackgroundImageUrl,
-  );
-  const [updatedUsername, setUpdatedUsername] = useState<string>("");
-  const [updatedShortBio, setUpdatedShortBio] = useState<string>("");
-  const [updatedUserWebsite, setUpdatedUserWebsite] = useState<string>("");
-  const [updatedUserHashtags, setUpdatedUserHashtags] = useState<string[]>([]);
-  const [updatedUserPreferredPagePrimaryColor, setUpdatedUserPreferredPagePrimaryColor] =
-    useState<Color>(defaultPreferredPagePrimaryColor);
+  const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });
 
-  const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
+  const {
+    username: formUsername,
+    setUsername: setFormUsername,
 
-  const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
+    shortBio: formShortBio,
+    setShortBio: setFormShortBio,
 
-  if (isLoading) {
+    userWebsite: formUserWebsite,
+    setUserWebsite: setFormUserWebsite,
+
+    preferredPagePrimaryColor: formPreferredPagePrimaryColor,
+    setPreferredPagePrimaryColor: setFormPreferredPagePrimaryColor,
+
+    hashTags: formHashtags,
+    setHashTags: setFormHashtags,
+  } = useFormState();
+
+  const { mutateAsync: updateOwnProfilePicture } = useUpdateOwnProfilePicture();
+  const { mutateAsync: updateOwnBackgroundImage } = useUpdateOwnBackgroundImage();
+  const { mutateAsync: updateOwnProfile } = useUpdateOwnProfile();
+  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags({
+    hashtags: formHashtags,
+    username: formUsername,
+  });
+
+  if (error && !isLoading) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !data) {
     return <div>Loading</div>;
   }
 
-  if (!data || !!data.error) {
-    return <div>Error: {data?.error}</div>;
-  }
-
-  const {
-    username,
-    shortBio,
-    userWebsite,
-    profilePictureTemporaryUrl,
-    backgroundImageTemporaryUrl,
-    hashtags,
-    preferredPagePrimaryColor,
-  } = data.success!;
-
-  if (!hasLoaded) {
-    updatedHasLoaded(true);
-
-    setUpdatedUsername(username);
-    setUpdatedShortBio(shortBio || "");
-    setUpdatedUserWebsite(userWebsite || "");
-    setUpdatedUserHashtags(hashtags);
-    setUpdatedUserPreferredPagePrimaryColor(
-      preferredPagePrimaryColor || defaultPreferredPagePrimaryColor,
-    );
-
-    setLoadedProfilePictureUrl(profilePictureTemporaryUrl || defaultProfilePictureUrl);
-    setLoadedBackgroundImageUrl(backgroundImageTemporaryUrl || defaultBackgroundImageUrl);
-  }
-
-  function onClickBackgroundImage(event: MouseEvent<HTMLImageElement>) {
-    event.preventDefault();
-  }
+  const { profilePictureTemporaryUrl, backgroundImageTemporaryUrl, hashtags } = data;
 
   const onChangeProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.currentTarget;
     if (!files?.length) return;
 
     for (const file of files) {
-      Api.updateUserProfilePicture(file).then((response) => {
-        if (response.data.success && !!response.data.success.profilePictureTemporaryUrl) {
-          setLoadedProfilePictureUrl(response.data.success.profilePictureTemporaryUrl);
-        }
-      });
+      updateOwnProfilePicture({ file });
     }
   };
 
@@ -120,35 +60,9 @@ export const ProfileSettings = () => {
     if (!files?.length) return;
 
     for (const file of files) {
-      // const src = URL.createObjectURL(file);
-      Api.updateUserBackgroundImage(file).then((response) => {
-        if (
-          response.data.success &&
-          !!response.data.success.backgroundImageTemporaryUrl
-        ) {
-          setLoadedBackgroundImageUrl(response.data.success.backgroundImageTemporaryUrl);
-        }
-      });
+      updateOwnBackgroundImage({ file });
     }
   };
-
-  function onChangeUsername(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    const newValue = event.currentTarget.value;
-    setUpdatedUsername(newValue);
-  }
-
-  function onChangeShortBio(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    const newValue = event.currentTarget.value;
-    setUpdatedShortBio(newValue);
-  }
-
-  function onChangUserWebsite(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    const newValue = event.currentTarget.value;
-    setUpdatedUserWebsite(newValue);
-  }
 
   function generateOnChangUserHashtag(hashtagIndex: number) {
     function onChangUserHashtag(event: ChangeEvent<HTMLInputElement>) {
@@ -158,10 +72,10 @@ export const ProfileSettings = () => {
         if (index === hashtagIndex) {
           return newValue;
         }
-        return updatedUserHashtags[index];
+        return formHashtags[index];
       });
 
-      setUpdatedUserHashtags(updatedHashtags);
+      setFormHashtags(updatedHashtags);
     }
 
     return onChangUserHashtag;
@@ -169,36 +83,25 @@ export const ProfileSettings = () => {
 
   function onSubmitSettings(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-
-    console.log(
-      "updateUserProfile",
-      updatedUsername,
-      updatedShortBio,
-      updatedUserWebsite,
-      updatedUserPreferredPagePrimaryColor,
-    );
-
-    Api.updateUserProfile({
-      username: updatedUsername,
-      shortBio: updatedShortBio,
-      userWebsite: updatedUserWebsite,
-      preferredPagePrimaryColor: updatedUserPreferredPagePrimaryColor,
+    updateOwnProfile({
+      username: formUsername,
+      shortBio: formShortBio,
+      userWebsite: formUserWebsite,
+      preferredPagePrimaryColor: formPreferredPagePrimaryColor,
     });
 
-    Api.setUserHashtags({
-      hashtags: updatedUserHashtags.filter((hashtag) => !!hashtag),
-    });
+    setOwnHashtags();
   }
 
   const colorPallete = colorOptions.map((colorOption, index) => {
     function onClick(event: MouseEvent<HTMLDivElement>) {
       event.preventDefault();
-      setUpdatedUserPreferredPagePrimaryColor(colorOption);
+      setFormPreferredPagePrimaryColor(colorOption);
     }
     const border =
-      colorOption.red === updatedUserPreferredPagePrimaryColor.red &&
-      colorOption.green === updatedUserPreferredPagePrimaryColor.green &&
-      colorOption.blue === updatedUserPreferredPagePrimaryColor.blue
+      colorOption.red === formPreferredPagePrimaryColor.red &&
+      colorOption.green === formPreferredPagePrimaryColor.green &&
+      colorOption.blue === formPreferredPagePrimaryColor.blue
         ? "1px solid red"
         : "";
 
@@ -218,11 +121,11 @@ export const ProfileSettings = () => {
 
   /* eslint-disable @next/next/no-img-element */
   return (
-    <div>
+    <FormStateProvider renderableUser={data}>
       <div>Your Profile</div>
 
       <div>
-        <Avatar src={loadedProfilePictureUrl} alt="User Avatar" size="$6" />
+        <Avatar src={profilePictureTemporaryUrl} alt="User Avatar" size="$6" />
         Profile Picture
         <form>
           <label>
@@ -237,8 +140,7 @@ export const ProfileSettings = () => {
 
       <div>
         <img
-          onClick={onClickBackgroundImage}
-          src={loadedBackgroundImageUrl}
+          src={backgroundImageTemporaryUrl}
           style={{ height: "60px", width: "120px" }}
         />
         Background Image
@@ -261,17 +163,29 @@ export const ProfileSettings = () => {
 
       <div>
         Username:
-        <input type="text" value={updatedUsername} onChange={onChangeUsername} />
+        <input
+          type="text"
+          value={formUsername}
+          onChange={(e) => setFormUsername(e.currentTarget.value)}
+        />
       </div>
 
       <div>
         Profile Bio:
-        <input type="text" value={updatedShortBio} onChange={onChangeShortBio} />
+        <input
+          type="text"
+          value={formShortBio}
+          onChange={(e) => setFormShortBio(e.currentTarget.value)}
+        />
       </div>
 
       <div>
         Website:
-        <input type="text" value={updatedUserWebsite} onChange={onChangUserWebsite} />
+        <input
+          type="text"
+          value={formUserWebsite}
+          onChange={(e) => setFormUserWebsite(e.currentTarget.value)}
+        />
       </div>
 
       <div>Discover</div>
@@ -279,30 +193,15 @@ export const ProfileSettings = () => {
       <div>Profile Hashtags</div>
 
       <div>
-        <input
-          value={updatedUserHashtags[0] || ""}
-          onChange={generateOnChangUserHashtag(0)}
-        />
-        <input
-          value={updatedUserHashtags[1] || ""}
-          onChange={generateOnChangUserHashtag(1)}
-        />
-        <input
-          value={updatedUserHashtags[2] || ""}
-          onChange={generateOnChangUserHashtag(2)}
-        />
-        <input
-          value={updatedUserHashtags[3] || ""}
-          onChange={generateOnChangUserHashtag(3)}
-        />
-        <input
-          value={updatedUserHashtags[4] || ""}
-          onChange={generateOnChangUserHashtag(4)}
-        />
+        <input value={hashtags[0] || ""} onChange={generateOnChangUserHashtag(0)} />
+        <input value={hashtags[1] || ""} onChange={generateOnChangUserHashtag(1)} />
+        <input value={hashtags[2] || ""} onChange={generateOnChangUserHashtag(2)} />
+        <input value={hashtags[3] || ""} onChange={generateOnChangUserHashtag(3)} />
+        <input value={hashtags[4] || ""} onChange={generateOnChangUserHashtag(4)} />
       </div>
 
       <br />
       <button onClick={onSubmitSettings}>Save Settings</button>
-    </div>
+    </FormStateProvider>
   );
 };

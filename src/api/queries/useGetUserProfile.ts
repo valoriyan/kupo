@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api } from "..";
+import { Api, RenderableUser } from "..";
 
 export interface GetUserProfileArgs {
   username?: string;
@@ -8,11 +8,16 @@ export interface GetUserProfileArgs {
 }
 
 export const useGetUserProfile = ({ username, isOwnProfile }: GetUserProfileArgs) => {
-  return useQuery(
+  return useQuery<RenderableUser, Error, RenderableUser, (string | undefined)[]>(
     [CacheKeys.UserProfile, username],
     async () => {
       const res = await Api.getUserProfile({ username }, { noAuth: !!username });
-      return res.data;
+
+      if (!!res.data.success) {
+        const user: RenderableUser = res.data.success;
+        return user;
+      }
+      throw new Error(res.data.error!.reason);
     },
     { enabled: isOwnProfile || !!username },
   );
