@@ -12,7 +12,7 @@ export const useUpdateOwnProfilePicture = () => {
     {
       onSuccess: (data) => {
         if (!!data.data.success) {
-          const cacheKey = [CacheKeys.UserProfile, data.data.success.username];
+          const cacheKey = [CacheKeys.UserProfile, undefined];
           const cachedData: RenderableUser | undefined =
             queryClient.getQueryData(cacheKey);
           if (cachedData) {

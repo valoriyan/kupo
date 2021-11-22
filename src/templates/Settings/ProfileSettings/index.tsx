@@ -7,9 +7,17 @@ import { useUpdateOwnProfile } from "#/api/mutations/profile/updateOwnProfile";
 import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
 import { FormStateProvider, useFormState } from "./FormContext";
 import { colorOptions } from "./config";
+import { RenderableUser } from "#/api";
 
-export const ProfileSettings = () => {
-  const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });
+
+export interface ProfileSettingsInnerProps {
+  renderableUser: RenderableUser;
+}
+
+export const ProfileSettingsInner = (props: ProfileSettingsInnerProps) => {
+  const { renderableUser: {
+    profilePictureTemporaryUrl, backgroundImageTemporaryUrl
+  } } = props;
 
   const {
     username: formUsername,
@@ -31,20 +39,7 @@ export const ProfileSettings = () => {
   const { mutateAsync: updateOwnProfilePicture } = useUpdateOwnProfilePicture();
   const { mutateAsync: updateOwnBackgroundImage } = useUpdateOwnBackgroundImage();
   const { mutateAsync: updateOwnProfile } = useUpdateOwnProfile();
-  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags({
-    hashtags: formHashtags,
-    username: formUsername,
-  });
-
-  if (error && !isLoading) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
-
-  const { profilePictureTemporaryUrl, backgroundImageTemporaryUrl, hashtags } = data;
+  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags({hashtags: formHashtags, username: formUsername});
 
   const onChangeProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.currentTarget;
@@ -66,6 +61,7 @@ export const ProfileSettings = () => {
 
   function generateOnChangUserHashtag(hashtagIndex: number) {
     function onChangUserHashtag(event: ChangeEvent<HTMLInputElement>) {
+      
       event.preventDefault();
       const newValue = event.currentTarget.value;
       const updatedHashtags = [...Array(5).keys()].map((index) => {
@@ -121,7 +117,7 @@ export const ProfileSettings = () => {
 
   /* eslint-disable @next/next/no-img-element */
   return (
-    <FormStateProvider renderableUser={data}>
+    <div>
       <div>Your Profile</div>
 
       <div>
@@ -193,15 +189,34 @@ export const ProfileSettings = () => {
       <div>Profile Hashtags</div>
 
       <div>
-        <input value={hashtags[0] || ""} onChange={generateOnChangUserHashtag(0)} />
-        <input value={hashtags[1] || ""} onChange={generateOnChangUserHashtag(1)} />
-        <input value={hashtags[2] || ""} onChange={generateOnChangUserHashtag(2)} />
-        <input value={hashtags[3] || ""} onChange={generateOnChangUserHashtag(3)} />
-        <input value={hashtags[4] || ""} onChange={generateOnChangUserHashtag(4)} />
+        <input value={formHashtags[0] || ""} onChange={generateOnChangUserHashtag(0)} />
+        <input value={formHashtags[1] || ""} onChange={generateOnChangUserHashtag(1)} />
+        <input value={formHashtags[2] || ""} onChange={generateOnChangUserHashtag(2)} />
+        <input value={formHashtags[3] || ""} onChange={generateOnChangUserHashtag(3)} />
+        <input value={formHashtags[4] || ""} onChange={generateOnChangUserHashtag(4)} />
       </div>
 
       <br />
       <button onClick={onSubmitSettings}>Save Settings</button>
+    </div>
+  );
+};
+
+
+export const ProfileSettings = () => {
+  const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });
+
+  if (error && !isLoading) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !data) {
+    return <div>Loading</div>;
+  }
+
+  return (
+    <FormStateProvider renderableUser={data}>
+      <ProfileSettingsInner renderableUser={data} />
     </FormStateProvider>
   );
 };

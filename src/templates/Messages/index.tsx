@@ -27,7 +27,6 @@ export const Messages = () => {
     });
 
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
-    console.log("HIT!", chatRoom);
     return <div key={index}>Chat Room: {chatRoom.chatRoomId}</div>;
   });
 

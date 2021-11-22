@@ -1,9 +1,16 @@
-import { ChangeEvent, useState, MouseEvent } from "react";
+import { ChangeEvent, MouseEvent } from "react";
 import { Api } from "#/api";
+import { FormStateProvider, useFormState } from "./FormContext";
 
-export const PasswordSettings = () => {
-  const [newPassword, setNewPassword] = useState<string>("");
-  const [newConfirmedPassword, setNewConfirmedPassword] = useState<string>("");
+export const PasswordSettingsInner = () => {
+
+  const {
+    newPassword,
+    setNewPassword,
+    confirmedNewPassword,
+    setConfirmedNewPassword,
+  } = useFormState();
+
 
   function onChangeNewPassword(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
@@ -12,7 +19,7 @@ export const PasswordSettings = () => {
 
   function onChangeConfirmedNewPassword(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-    setNewConfirmedPassword(event.currentTarget.value);
+    setConfirmedNewPassword(event.currentTarget.value);
   }
 
   function onClickSubmitUpdatedPassword(event: MouseEvent<HTMLButtonElement>) {
@@ -21,7 +28,7 @@ export const PasswordSettings = () => {
   }
 
   return (
-    <div>
+    <FormStateProvider>
       Password
       <div>
         <label>New Password</label>
@@ -29,9 +36,17 @@ export const PasswordSettings = () => {
       </div>
       <div>
         <label>Confirm Password</label>
-        <input onChange={onChangeConfirmedNewPassword} value={newConfirmedPassword} />
+        <input onChange={onChangeConfirmedNewPassword} value={confirmedNewPassword} />
       </div>
       <button onClick={onClickSubmitUpdatedPassword}>Save Settings</button>
-    </div>
+    </FormStateProvider>
+  );
+};
+
+export const PasswordSettings = () => {
+  return (
+    <FormStateProvider>
+      <PasswordSettingsInner />
+    </FormStateProvider>
   );
 };
