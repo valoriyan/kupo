@@ -31,17 +31,19 @@ export async function handleGetUsersByIds({
   requestBody: GetUsersByIdsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-  FailedToGetUsersByIdsResponse,
+    FailedToGetUsersByIdsResponse,
     SuccessfullyGotUsersByIdsRequestBodyResponse
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const {userIds} = requestBody;
+  const { userIds } = requestBody;
 
-
-  const unrenderableUsers = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({userIds});
+  const unrenderableUsers =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+      { userIds },
+    );
 
   const renderableUsers = await constructRenderableUsersFromParts({
     clientUserId,
@@ -53,6 +55,6 @@ export async function handleGetUsersByIds({
   return {
     success: {
       users: renderableUsers,
-    }
+    },
   };
 }

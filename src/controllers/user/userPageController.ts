@@ -28,7 +28,12 @@ import {
   SetUserHashtagsRequestBody,
   SuccessfullySetUserHashtagsResponse,
 } from "./handleSetUserHashtags";
-import { FailedToGetUsersByIdsResponse, GetUsersByIdsRequestBody, handleGetUsersByIds, SuccessfullyGotUsersByIdsRequestBodyResponse } from "./handleGetUsersByIds";
+import {
+  FailedToGetUsersByIdsResponse,
+  GetUsersByIdsRequestBody,
+  handleGetUsersByIds,
+  SuccessfullyGotUsersByIdsRequestBodyResponse,
+} from "./handleGetUsersByIds";
 
 @injectable()
 @Route("user")
@@ -114,9 +119,10 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetUsersByIdsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<  FailedToGetUsersByIdsResponse,
-    SuccessfullyGotUsersByIdsRequestBodyResponse
->
+    SecuredHTTPResponse<
+      FailedToGetUsersByIdsResponse,
+      SuccessfullyGotUsersByIdsRequestBodyResponse
+    >
   > {
     return await handleGetUsersByIds({
       controller: this,
