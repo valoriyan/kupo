@@ -63,10 +63,6 @@ export class HashtagsTableService extends TableService {
       tableName: this.tableName,
     });
 
-    console.log("query");
-    console.log(query.text);
-    console.log(query.values);
-
     await this.datastorePool.query<DBHashtag>(query);
   }
 

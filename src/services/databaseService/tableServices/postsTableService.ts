@@ -88,10 +88,6 @@ export class PostsTableService extends TableService {
       tableName: this.tableName,
     });
 
-    console.log("query.text");
-    console.log(query.text);
-    console.log(query.values);
-
     await this.datastorePool.query(query);
   }
 

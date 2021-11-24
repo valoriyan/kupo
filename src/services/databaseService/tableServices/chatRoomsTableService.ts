@@ -81,6 +81,29 @@ export class ChatRoomsTableService extends TableService {
     await this.datastorePool.query(query);
   }
 
+  public async insertUsersIntoChatRoom({
+    chatRoomId,
+    userIds,
+    joinTimestamp,
+  }: {
+    chatRoomId: string;
+    userIds: string[];
+    joinTimestamp: number;
+  }): Promise<void> {
+    const rowsOfFieldsAndValues = userIds.map((userId) => ([
+      { field: "chat_room_id", value: chatRoomId },
+      { field: "user_id", value: userId },
+      { field: "join_timestamp", value: joinTimestamp },
+    ]));
+
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues: rowsOfFieldsAndValues,
+      tableName: this.tableName,
+    });
+
+    await this.datastorePool.query(query);
+  }
+
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -122,7 +145,14 @@ export class ChatRoomsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id = $1
+          chat_room_id IN (
+            SELECT 
+              chat_room_id
+            FROM
+              ${this.tableName}
+            WHERE
+              user_id = $1
+          )
         ;
       `,
       values: [userId],
@@ -135,6 +165,48 @@ export class ChatRoomsTableService extends TableService {
     const dbChatRoomMemberships = response.rows;
 
     return convertDBChatRoomMembershipsToUnrenderableChatRooms(dbChatRoomMemberships);
+  }
+
+  public async getChatRoomIdWithUserIdMembersExclusive({userIds} : {userIds: string[]}): Promise<string | undefined>  {
+    const parameterizedUsersList = userIds.map((_, index) => `$${index}`).join(", ");
+
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          user_id IN ( ${parameterizedUsersList} )
+        ;
+      `,
+      values: userIds,
+    };
+
+    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+      query,
+    );
+
+    const dbChatRoomMemberships = response.rows;
+
+    const mapOfRoomIdsToMemberUserIds: Map<string, Set<string>> = new Map();
+    dbChatRoomMemberships.forEach((dbChatRoomMembership) => {
+      const {user_id, chat_room_id} = dbChatRoomMembership;
+      const members: Set<string> = mapOfRoomIdsToMemberUserIds.has(chat_room_id) ?
+        mapOfRoomIdsToMemberUserIds.get(chat_room_id)! :
+        new Set();
+
+        members.add(user_id)
+        mapOfRoomIdsToMemberUserIds.set(chat_room_id, members);
+    });
+
+    for (const [roomId, members] of mapOfRoomIdsToMemberUserIds) {
+      if (userIds.every((userId) => members.has(userId))) {
+          return roomId;
+      }
+    }
+
+    return;
   }
 
   //////////////////////////////////////////////////

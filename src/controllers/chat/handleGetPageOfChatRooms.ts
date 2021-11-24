@@ -40,7 +40,6 @@ export async function handleGetPageOfChatRooms({
   >
 > {
   const { pageSize, cursor } = requestBody;
-  console.log(pageSize);
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -97,11 +96,16 @@ export async function handleGetPageOfChatRooms({
     endOfPageCursor,
   );
 
+  const adjustedEndOfPageCursor = renderableChatRooms.length > endOfPageCursor ?
+    endOfPageCursor.toString() : 
+    undefined;
+
+
   return {
     success: {
       chatRooms: pageOfRenderableChatRooms,
       previousPageCursor: cursor,
-      nextPageCursor: endOfPageCursor.toString(),
+      nextPageCursor: adjustedEndOfPageCursor,
     },
   };
 }

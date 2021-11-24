@@ -164,9 +164,6 @@ export class ShopItemsTableService extends TableService {
       tableName: this.tableName,
     });
 
-    console.log(query.text);
-    console.log(query.values);
-
     if (!isQueryEmpty({ query })) {
       await this.datastorePool.query(query);
     }

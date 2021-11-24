@@ -23,6 +23,8 @@ import {
   handleGetPageOfChatRooms,
   SuccessfulGetPageOfChatRoomsResponse,
 } from "./handleGetPageOfChatRooms";
+import { DoesChatRoomExistWithUserIdsRequestBody, FailedtoDetermineIfChatRoomExistsWithUserIds, handleDoesChatRoomExistWithUserIds, SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "./handleDoesChatRoomExistWithUserIds";
+import { CreateChatMessageInNewRoomRequestBody, FailedToCreateChatMessageInNewRoomResponse, handleCreateChatMessageInNewChatRoom, SuccessfullyCreatedChatMessageInNewRoomResponse } from "./handleCreateChatMessageInNewChatRoom";
 
 @injectable()
 @Route("chat")
@@ -85,4 +87,39 @@ export class ChatController extends Controller {
       requestBody,
     });
   }
+
+  @Post("doesChatRoomExistWithUserIds")
+  public async doesChatRoomExistWithUserIds(
+    @Request() request: express.Request,
+    @Body() requestBody: DoesChatRoomExistWithUserIdsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedtoDetermineIfChatRoomExistsWithUserIds,
+    SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+    >
+  > {
+    return await handleDoesChatRoomExistWithUserIds({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("createChatMessageInNewChatRoom")
+  public async createChatMessageInNewChatRoom(
+    @Request() request: express.Request,
+    @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedToCreateChatMessageInNewRoomResponse,
+    SuccessfullyCreatedChatMessageInNewRoomResponse
+    >
+  > {
+    return await handleCreateChatMessageInNewChatRoom({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
 }
