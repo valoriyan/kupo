@@ -6,12 +6,9 @@ export interface ChatRoomContainerProps {
 }
 
 export const ChatRoomContainer = ({ chatRoomId }: ChatRoomContainerProps) => {
-
   if (chatRoomId === "0") {
-    return (
-      <NewChatRoom chatRoomId={chatRoomId} />
-    );
+    return <NewChatRoom chatRoomId={chatRoomId} />;
   }
 
-  return <ChatRoom chatRoomId={chatRoomId}  />;  
+  return <ChatRoom chatRoomId={chatRoomId} />;
 };

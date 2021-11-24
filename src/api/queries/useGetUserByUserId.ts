@@ -20,6 +20,6 @@ export const useGetUserByUserId = ({ userId }: GetUserByUserIdArgs) => {
         throw new Error("Missing user returned from getUsersByIds");
       }
       throw new Error(res.data.error!.reason);
-    }
+    },
   );
 };
