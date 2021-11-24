@@ -37,11 +37,15 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { CreateChatMessageInNewRoomRequestBody } from "../types";
+// @ts-ignore
 import { CreateChatMessageRequestBody } from "../types";
 // @ts-ignore
 import { DeletePostRequestBody } from "../types";
 // @ts-ignore
 import { DeleteShopItemRequestBody } from "../types";
+// @ts-ignore
+import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 // @ts-ignore
 import { FollowUserProfileParams } from "../types";
 // @ts-ignore
@@ -72,6 +76,8 @@ import { RequestPasswordResetParams } from "../types";
 import { SearchUserProfilesByUsernameParams } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse } from "../types";
 // @ts-ignore
@@ -104,6 +110,8 @@ import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateRespon
 import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse } from "../types";
 // @ts-ignore
@@ -166,6 +174,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         createChatMessageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createChatMessageInNewChatRoom: async (
+      createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'createChatMessageInNewRoomRequestBody' is not null or undefined
+      assertParamExists(
+        "createChatMessageInNewChatRoom",
+        "createChatMessageInNewRoomRequestBody",
+        createChatMessageInNewRoomRequestBody,
+      );
+      const localVarPath = `/chat/createChatMessageInNewChatRoom`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createChatMessageInNewRoomRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -449,6 +506,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         deleteShopItemRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    doesChatRoomExistWithUserIds: async (
+      doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'doesChatRoomExistWithUserIdsRequestBody' is not null or undefined
+      assertParamExists(
+        "doesChatRoomExistWithUserIds",
+        "doesChatRoomExistWithUserIdsRequestBody",
+        doesChatRoomExistWithUserIdsRequestBody,
+      );
+      const localVarPath = `/chat/doesChatRoomExistWithUserIds`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        doesChatRoomExistWithUserIdsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1570,6 +1676,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async createChatMessageInNewChatRoom(
+      createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.createChatMessageInNewChatRoom(
+          createChatMessageInNewRoomRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {Array<any>} mediaFiles
      * @param {string} caption
      * @param {string} hashtags
@@ -1698,6 +1831,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         deleteShopItemRequestBody,
         options,
       );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async doesChatRoomExistWithUserIds(
+      doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.doesChatRoomExistWithUserIds(
+          doesChatRoomExistWithUserIdsRequestBody,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -2321,6 +2481,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createChatMessageInNewChatRoom(
+      createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse> {
+      return localVarFp
+        .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {Array<any>} mediaFiles
      * @param {string} caption
      * @param {string} hashtags
@@ -2412,6 +2586,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse> {
       return localVarFp
         .deleteShopItem(deleteShopItemRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    doesChatRoomExistWithUserIds(
+      doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse> {
+      return localVarFp
+        .doesChatRoomExistWithUserIds(doesChatRoomExistWithUserIdsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2769,6 +2957,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createChatMessageInNewChatRoom(
+    createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {Array<any>} mediaFiles
    * @param {string} caption
    * @param {string} hashtags
@@ -2864,6 +3068,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .deleteShopItem(deleteShopItemRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public doesChatRoomExistWithUserIds(
+    doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .doesChatRoomExistWithUserIds(doesChatRoomExistWithUserIdsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

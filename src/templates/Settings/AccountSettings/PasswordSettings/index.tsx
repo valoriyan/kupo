@@ -3,14 +3,8 @@ import { Api } from "#/api";
 import { FormStateProvider, useFormState } from "./FormContext";
 
 export const PasswordSettingsInner = () => {
-
-  const {
-    newPassword,
-    setNewPassword,
-    confirmedNewPassword,
-    setConfirmedNewPassword,
-  } = useFormState();
-
+  const { newPassword, setNewPassword, confirmedNewPassword, setConfirmedNewPassword } =
+    useFormState();
 
   function onChangeNewPassword(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();

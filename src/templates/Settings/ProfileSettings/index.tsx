@@ -9,15 +9,14 @@ import { FormStateProvider, useFormState } from "./FormContext";
 import { colorOptions } from "./config";
 import { RenderableUser } from "#/api";
 
-
 export interface ProfileSettingsInnerProps {
   renderableUser: RenderableUser;
 }
 
 export const ProfileSettingsInner = (props: ProfileSettingsInnerProps) => {
-  const { renderableUser: {
-    profilePictureTemporaryUrl, backgroundImageTemporaryUrl
-  } } = props;
+  const {
+    renderableUser: { profilePictureTemporaryUrl, backgroundImageTemporaryUrl },
+  } = props;
 
   const {
     username: formUsername,
@@ -39,7 +38,10 @@ export const ProfileSettingsInner = (props: ProfileSettingsInnerProps) => {
   const { mutateAsync: updateOwnProfilePicture } = useUpdateOwnProfilePicture();
   const { mutateAsync: updateOwnBackgroundImage } = useUpdateOwnBackgroundImage();
   const { mutateAsync: updateOwnProfile } = useUpdateOwnProfile();
-  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags({hashtags: formHashtags, username: formUsername});
+  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags({
+    hashtags: formHashtags,
+    username: formUsername,
+  });
 
   const onChangeProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.currentTarget;
@@ -61,7 +63,6 @@ export const ProfileSettingsInner = (props: ProfileSettingsInnerProps) => {
 
   function generateOnChangUserHashtag(hashtagIndex: number) {
     function onChangUserHashtag(event: ChangeEvent<HTMLInputElement>) {
-      
       event.preventDefault();
       const newValue = event.currentTarget.value;
       const updatedHashtags = [...Array(5).keys()].map((index) => {
@@ -201,7 +202,6 @@ export const ProfileSettingsInner = (props: ProfileSettingsInnerProps) => {
     </div>
   );
 };
-
 
 export const ProfileSettings = () => {
   const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });

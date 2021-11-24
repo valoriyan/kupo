@@ -1,4 +1,22 @@
+import Link from "next/link";
+import { RenderableChatRoom } from "#/api";
 import { useGetChatRooms } from "#/api/queries/useGetChatRooms";
+
+const ChatRoomListItem = ({ chatRoom }: { chatRoom: RenderableChatRoom }) => {
+  const { chatRoomId, members } = chatRoom;
+
+  console.log("members", members);
+
+  const memberUsernames = members.map((member) => member.username);
+
+  const chatRoomName = memberUsernames.join(", ");
+
+  return (
+    <Link href={`/messages/${chatRoomId}`}>
+      <button>Enter Chat Room with {chatRoomName}</button>
+    </Link>
+  );
+};
 
 export const Messages = () => {
   const {
@@ -11,6 +29,8 @@ export const Messages = () => {
     error,
     isError,
   } = useGetChatRooms({});
+
+  console.log("hasNextPage", hasNextPage);
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
@@ -27,13 +47,30 @@ export const Messages = () => {
     });
 
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
-    return <div key={index}>Chat Room: {chatRoom.chatRoomId}</div>;
+    return <ChatRoomListItem key={index} chatRoom={chatRoom} />;
   });
 
   return (
     <div>
-      {isFetchingChatRooms ? <div>Refreshing...</div> : null}
-      List of Chat Rooms:
+      {isFetchingChatRooms ? (
+        <div>
+          Refreshing...
+          <br />
+        </div>
+      ) : null}
+
+      <h2>List of Chat Rooms:</h2>
+
+      <br />
+      <br />
+
+      <Link href={`/messages/0`}>
+        <button>Create New Room</button>
+      </Link>
+
+      <br />
+      <br />
+
       {renderedChatRooms}
       <button
         onClick={() => {
@@ -41,6 +78,9 @@ export const Messages = () => {
         }}
         disabled={!hasNextPage || isFetchingNextPage}
       >
+        <br />
+        <br />
+
         {isFetchingNextPage
           ? "Loading more..."
           : hasNextPage

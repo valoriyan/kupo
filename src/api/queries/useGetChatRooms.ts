@@ -13,6 +13,9 @@ async function fetchPageOfChatRooms({ pageParam = undefined }) {
 
 export const useGetChatRooms = ({ cursor }: GetChatRoomsArgs) => {
   return useInfiniteQuery([CacheKeys.chatRooms, cursor], fetchPageOfChatRooms, {
-    getNextPageParam: (lastPage) => lastPage.success?.nextPageCursor,
+    getNextPageParam: (lastPage) => {
+      console.log("lastPage", lastPage);
+      return lastPage.success?.nextPageCursor;
+    },
   });
 };

@@ -3,20 +3,14 @@ import create from "zustand";
 import createContext from "zustand/context";
 
 export interface FormState {
-  newPassword: string;
-  setNewPassword: (newPassword: string) => void;
-
-  confirmedNewPassword: string;
-  setConfirmedNewPassword: (confirmedNewPassword: string) => void;
+  usernamesInChatRoom: string[];
+  setUsernamesInChatRoom: (usernames: string[]) => void;
 }
 
 const createFormStateStore = () =>
   create<FormState>((set) => ({
-    newPassword: "",
-    setNewPassword: (newPassword) => set({ newPassword }),
-
-    confirmedNewPassword: "",
-    setConfirmedNewPassword: (confirmedNewPassword) => set({ confirmedNewPassword }),
+    usernamesInChatRoom: [],
+    setUsernamesInChatRoom: (usernames) => set({ usernamesInChatRoom: usernames }),
   }));
 
 const { Provider, useStore } = createContext<FormState>();
