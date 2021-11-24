@@ -96,10 +96,8 @@ export async function handleGetPageOfChatRooms({
     endOfPageCursor,
   );
 
-  const adjustedEndOfPageCursor = renderableChatRooms.length > endOfPageCursor ?
-    endOfPageCursor.toString() : 
-    undefined;
-
+  const adjustedEndOfPageCursor =
+    renderableChatRooms.length > endOfPageCursor ? endOfPageCursor.toString() : undefined;
 
   return {
     success: {

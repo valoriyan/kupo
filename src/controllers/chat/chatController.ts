@@ -23,8 +23,18 @@ import {
   handleGetPageOfChatRooms,
   SuccessfulGetPageOfChatRoomsResponse,
 } from "./handleGetPageOfChatRooms";
-import { DoesChatRoomExistWithUserIdsRequestBody, FailedtoDetermineIfChatRoomExistsWithUserIds, handleDoesChatRoomExistWithUserIds, SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "./handleDoesChatRoomExistWithUserIds";
-import { CreateChatMessageInNewRoomRequestBody, FailedToCreateChatMessageInNewRoomResponse, handleCreateChatMessageInNewChatRoom, SuccessfullyCreatedChatMessageInNewRoomResponse } from "./handleCreateChatMessageInNewChatRoom";
+import {
+  DoesChatRoomExistWithUserIdsRequestBody,
+  FailedtoDetermineIfChatRoomExistsWithUserIds,
+  handleDoesChatRoomExistWithUserIds,
+  SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse,
+} from "./handleDoesChatRoomExistWithUserIds";
+import {
+  CreateChatMessageInNewRoomRequestBody,
+  FailedToCreateChatMessageInNewRoomResponse,
+  handleCreateChatMessageInNewChatRoom,
+  SuccessfullyCreatedChatMessageInNewRoomResponse,
+} from "./handleCreateChatMessageInNewChatRoom";
 
 @injectable()
 @Route("chat")
@@ -94,8 +104,8 @@ export class ChatController extends Controller {
     @Body() requestBody: DoesChatRoomExistWithUserIdsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    FailedtoDetermineIfChatRoomExistsWithUserIds,
-    SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+      FailedtoDetermineIfChatRoomExistsWithUserIds,
+      SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
     >
   > {
     return await handleDoesChatRoomExistWithUserIds({
@@ -111,8 +121,8 @@ export class ChatController extends Controller {
     @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToCreateChatMessageInNewRoomResponse,
-    SuccessfullyCreatedChatMessageInNewRoomResponse
+      FailedToCreateChatMessageInNewRoomResponse,
+      SuccessfullyCreatedChatMessageInNewRoomResponse
     >
   > {
     return await handleCreateChatMessageInNewChatRoom({
@@ -121,5 +131,4 @@ export class ChatController extends Controller {
       requestBody,
     });
   }
-
 }

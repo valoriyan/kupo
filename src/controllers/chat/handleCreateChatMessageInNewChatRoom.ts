@@ -36,28 +36,31 @@ export async function handleCreateChatMessageInNewChatRoom({
     SuccessfullyCreatedChatMessageInNewRoomResponse
   >
 > {
-  const {userIds, chatMessageText} = requestBody;
+  const { userIds, chatMessageText } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   let chatRoomId: string;
 
-  const existingChatRoomId = await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive({userIds});
+  const existingChatRoomId =
+    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive(
+      { userIds },
+    );
 
   if (!!existingChatRoomId) {
     chatRoomId = existingChatRoomId;
   } else {
     chatRoomId = uuidv4();
 
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.insertUsersIntoChatRoom({
-      userIds,
-      joinTimestamp: Date.now(),
-      chatRoomId,
-  });
-
+    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.insertUsersIntoChatRoom(
+      {
+        userIds,
+        joinTimestamp: Date.now(),
+        chatRoomId,
+      },
+    );
   }
-
 
   const chatMessageId: string = uuidv4();
 
@@ -71,7 +74,9 @@ export async function handleCreateChatMessageInNewChatRoom({
     },
   );
 
-  return { success: {
-    chatRoomId,
-  } };
+  return {
+    success: {
+      chatRoomId,
+    },
+  };
 }

@@ -90,11 +90,11 @@ export class ChatRoomsTableService extends TableService {
     userIds: string[];
     joinTimestamp: number;
   }): Promise<void> {
-    const rowsOfFieldsAndValues = userIds.map((userId) => ([
+    const rowsOfFieldsAndValues = userIds.map((userId) => [
       { field: "chat_room_id", value: chatRoomId },
       { field: "user_id", value: userId },
       { field: "join_timestamp", value: joinTimestamp },
-    ]));
+    ]);
 
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: rowsOfFieldsAndValues,
@@ -167,7 +167,11 @@ export class ChatRoomsTableService extends TableService {
     return convertDBChatRoomMembershipsToUnrenderableChatRooms(dbChatRoomMemberships);
   }
 
-  public async getChatRoomIdWithUserIdMembersExclusive({userIds} : {userIds: string[]}): Promise<string | undefined>  {
+  public async getChatRoomIdWithUserIdMembersExclusive({
+    userIds,
+  }: {
+    userIds: string[];
+  }): Promise<string | undefined> {
     const parameterizedUsersList = userIds.map((_, index) => `$${index}`).join(", ");
 
     const query = {
@@ -191,18 +195,18 @@ export class ChatRoomsTableService extends TableService {
 
     const mapOfRoomIdsToMemberUserIds: Map<string, Set<string>> = new Map();
     dbChatRoomMemberships.forEach((dbChatRoomMembership) => {
-      const {user_id, chat_room_id} = dbChatRoomMembership;
-      const members: Set<string> = mapOfRoomIdsToMemberUserIds.has(chat_room_id) ?
-        mapOfRoomIdsToMemberUserIds.get(chat_room_id)! :
-        new Set();
+      const { user_id, chat_room_id } = dbChatRoomMembership;
+      const members: Set<string> = mapOfRoomIdsToMemberUserIds.has(chat_room_id)
+        ? mapOfRoomIdsToMemberUserIds.get(chat_room_id)!
+        : new Set();
 
-        members.add(user_id)
-        mapOfRoomIdsToMemberUserIds.set(chat_room_id, members);
+      members.add(user_id);
+      mapOfRoomIdsToMemberUserIds.set(chat_room_id, members);
     });
 
     for (const [roomId, members] of mapOfRoomIdsToMemberUserIds) {
       if (userIds.every((userId) => members.has(userId))) {
-          return roomId;
+        return roomId;
       }
     }
 
