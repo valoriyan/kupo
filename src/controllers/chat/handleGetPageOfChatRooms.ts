@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromParts } from "../user/utilities";
 import { ChatController } from "./chatController";
-import { RenderableChatRoom } from "./models";
+import { RenderableChatRoomPreview } from "./models";
 
 export interface GetPageOfChatRoomsRequestBody {
   cursor?: string;
@@ -11,7 +11,7 @@ export interface GetPageOfChatRoomsRequestBody {
 }
 
 export interface SuccessfulGetPageOfChatRoomsResponse {
-  chatRooms: RenderableChatRoom[];
+  chatRooms: RenderableChatRoomPreview[];
 
   previousPageCursor?: string;
   nextPageCursor?: string;
@@ -76,7 +76,7 @@ export async function handleGetPageOfChatRooms({
     }),
   );
 
-  const renderableChatRooms: RenderableChatRoom[] = unrenderableChatRooms.map(
+  const renderableChatRooms: RenderableChatRoomPreview[] = unrenderableChatRooms.map(
     ({ memberUserIds, chatRoomId }) => {
       const members = memberUserIds.map(
         (memberUserId) => mapOfUserIdsToRenderableUsers.get(memberUserId)!,

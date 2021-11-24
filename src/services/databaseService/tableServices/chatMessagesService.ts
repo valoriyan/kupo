@@ -11,22 +11,22 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBChatMessage {
-  chatMessageId: string;
+  chat_message_id: string;
   text: string;
-  authorUserId: string;
-  chatRoomId: string;
-  creationTimestamp: number;
+  author_user_id: string;
+  chat_room_id: string;
+  creation_timestamp: number;
 }
 
 function convertDBChatMessageToUnrenderableChatMessage(
   dbChatMessage: DBChatMessage,
 ): UnrenderableChatMessage {
   return {
-    chatMessageId: dbChatMessage.chatMessageId,
+    chatMessageId: dbChatMessage.chat_message_id,
     text: dbChatMessage.text,
-    authorUserId: dbChatMessage.authorUserId,
-    chatRoomId: dbChatMessage.chatRoomId,
-    creationTimestamp: dbChatMessage.creationTimestamp,
+    authorUserId: dbChatMessage.author_user_id,
+    chatRoomId: dbChatMessage.chat_room_id,
+    creationTimestamp: dbChatMessage.creation_timestamp,
   };
 }
 

@@ -54,6 +54,9 @@ export async function handleGetPageOfChatMessages({
     (unrenderableChatMessage) => unrenderableChatMessage,
   );
 
+    console.log("renderableChatMessages");
+    console.log(renderableChatMessages);
+
   return {
     success: {
       chatMessages: renderableChatMessages,

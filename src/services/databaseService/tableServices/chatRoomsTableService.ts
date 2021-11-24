@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderableChatRoom } from "src/controllers/chat/models";
+import { UnrenderableChatRoomPreview } from "src/controllers/chat/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
@@ -14,7 +14,7 @@ interface DBChatRoomMembership {
 
 function convertDBChatRoomMembershipsToUnrenderableChatRooms(
   dbChatRoomMemberships: DBChatRoomMembership[],
-): UnrenderableChatRoom[] {
+): UnrenderableChatRoomPreview[] {
   // const chatRoomIdToUserIdsMap: {[chatRoomId: string]: Set<string>} = {};
   const chatRoomIdToUserIdsMap: Map<string, Set<string>> = new Map();
 
@@ -137,7 +137,7 @@ export class ChatRoomsTableService extends TableService {
     userId,
   }: {
     userId: string;
-  }): Promise<UnrenderableChatRoom[]> {
+  }): Promise<UnrenderableChatRoomPreview[]> {
     const query = {
       text: `
         SELECT

@@ -16,12 +16,12 @@ export interface RenderableChatMessage {
   creationTimestamp: number;
 }
 
-export interface UnrenderableChatRoom {
+export interface UnrenderableChatRoomPreview {
   chatRoomId: string;
   memberUserIds: string[];
 }
 
-export interface RenderableChatRoom {
+export interface RenderableChatRoomPreview {
   chatRoomId: string;
   members: RenderableUser[];
 }
