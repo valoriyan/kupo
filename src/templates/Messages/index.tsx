@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { RenderableChatRoom } from "#/api";
-import { useGetChatRooms } from "#/api/queries/useGetChatRooms";
+import { useGetPageOfChatRooms } from "#/api/queries/useGetPageOfChatRooms";
+import { RenderableChatRoom } from "#/api/generated/types/renderable-chat-room";
 
 const ChatRoomListItem = ({ chatRoom }: { chatRoom: RenderableChatRoom }) => {
   const { chatRoomId, members } = chatRoom;
-
-  console.log("members", members);
 
   const memberUsernames = members.map((member) => member.username);
 
@@ -28,9 +26,7 @@ export const Messages = () => {
     isFetchingNextPage,
     error,
     isError,
-  } = useGetChatRooms({});
-
-  console.log("hasNextPage", hasNextPage);
+  } = useGetPageOfChatRooms({});
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;

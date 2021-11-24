@@ -1,13 +1,17 @@
-import { FormStateProvider } from "./FormContext";
+import { ChatRoom } from "./ChatRoom";
 import { NewChatRoom } from "./NewChatRoom";
 
-export interface ChatRoomProps {
-  chatRoomId?: string;
+export interface ChatRoomContainerProps {
+  chatRoomId: string;
 }
 
-export const ChatRoom = ({ chatRoomId }: ChatRoomProps) => {
-  const contents =
-    chatRoomId === "0" ? <NewChatRoom chatRoomId={chatRoomId} /> : <span>Chat Room</span>;
+export const ChatRoomContainer = ({ chatRoomId }: ChatRoomContainerProps) => {
 
-  return <FormStateProvider>{contents}</FormStateProvider>;
+  if (chatRoomId === "0") {
+    return (
+      <NewChatRoom chatRoomId={chatRoomId} />
+    );
+  }
+
+  return <ChatRoom chatRoomId={chatRoomId}  />;  
 };

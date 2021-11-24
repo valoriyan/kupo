@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { RenderableChatRoom } from "./renderable-chat-room";
+import { RenderableChatRoomPreview } from "./renderable-chat-room-preview";
 
 /**
  *
@@ -22,10 +22,10 @@ import { RenderableChatRoom } from "./renderable-chat-room";
 export interface SuccessfulGetPageOfChatRoomsResponse {
   /**
    *
-   * @type {Array<RenderableChatRoom>}
+   * @type {Array<RenderableChatRoomPreview>}
    * @memberof SuccessfulGetPageOfChatRoomsResponse
    */
-  chatRooms: Array<RenderableChatRoom>;
+  chatRooms: Array<RenderableChatRoomPreview>;
   /**
    *
    * @type {string}

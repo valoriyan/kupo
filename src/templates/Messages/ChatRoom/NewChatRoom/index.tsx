@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
-import { useFormState } from "./FormContext";
+import { FormStateProvider, useFormState } from "./FormContext";
 
 export interface NewChatRoomProps {
   chatRoomId?: string;
@@ -34,13 +34,13 @@ export const NewChatRoom = ({ chatRoomId }: NewChatRoomProps) => {
   }
 
   return (
-    <div>
+    <FormStateProvider>
       {chatRoomId}
       <br />
       <br />
       Users: {renderedUsersInChatRoom}
       <br />
       <input onChange={onChangUsernamesInChatRoom} type="text" />
-    </div>
+    </FormStateProvider>
   );
 };

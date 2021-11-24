@@ -63,6 +63,8 @@ import { GetPostsScheduledByUserParams } from "../types";
 // @ts-ignore
 import { GetUserProfileParams } from "../types";
 // @ts-ignore
+import { GetUsersByIdsRequestBody } from "../types";
+// @ts-ignore
 import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
@@ -96,6 +98,8 @@ import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSucc
 import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
 // @ts-ignore
@@ -939,6 +943,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByIds: async (
+      getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getUsersByIdsRequestBody' is not null or undefined
+      assertParamExists(
+        "getUsersByIds",
+        "getUsersByIdsRequestBody",
+        getUsersByIdsRequestBody,
+      );
+      const localVarPath = `/user/getUsersByIds`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getUsersByIdsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2077,6 +2130,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getUsersByIds(
+      getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByIds(
+        getUsersByIdsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {LoginUserParams} loginUserParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2716,6 +2795,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByIds(
+      getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse> {
+      return localVarFp
+        .getUsersByIds(getUsersByIdsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {LoginUserParams} loginUserParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3206,6 +3299,22 @@ export class DefaultApi extends BaseAPI {
   public getUserProfile(getUserProfileParams: GetUserProfileParams, options?: any) {
     return DefaultApiFp(this.configuration)
       .getUserProfile(getUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getUsersByIds(
+    getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getUsersByIds(getUsersByIdsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
