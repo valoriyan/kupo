@@ -1,6 +1,9 @@
 import { RenderableChatMessage } from "#/api";
+import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/useGetPageOfChatMessagesFromChatRoomId";
 import { useGetUserByUserId } from "#/api/queries/useGetUserByUserId";
+import { ChangeEvent } from "react";
+import { FormStateProvider, useFormState } from "./FormContext";
 
 const ChatRoomMessage = ({ message }: { message: RenderableChatMessage }) => {
   const { authorUserId, text, creationTimestamp } = message;
@@ -26,10 +29,14 @@ const ChatRoomMessage = ({ message }: { message: RenderableChatMessage }) => {
   );
 };
 
-export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
-  const { data, isError, isLoading, error } = useGetPageOfChatMessagesFromChatRoomId({
+const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
+  const { newChatMessage, setNewChatMessage } = useFormState();
+
+  const { data, isError, isLoading, error, isFetching: isFetchingChatMessages, fetchPreviousPage, hasPreviousPage, isFetchingPreviousPage  } = useGetPageOfChatMessagesFromChatRoomId({
     chatRoomId,
   });
+
+  const {mutateAsync: createNewChatMessage} = useCreateNewChatMessage()
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
@@ -38,6 +45,7 @@ export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
   if (isLoading || !data) {
     return <div>Loading</div>;
   }
+
 
   const messages = data.pages
     .filter((page) => !!page.success)
@@ -49,6 +57,21 @@ export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
     <ChatRoomMessage key={message.chatMessageId} message={message} />
   ));
 
+  async function onChangeNewChatMessage(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+
+    setNewChatMessage(event.currentTarget.value);
+  }
+
+  async function onSubmitNewChatMessage(event: React.FormEvent) {
+    event.preventDefault();
+    createNewChatMessage({
+      chatRoomId,
+      chatMessageText: newChatMessage,
+    })
+  }
+
+
   return (
     <div>
       Chat Room: {chatRoomId}
@@ -56,12 +79,49 @@ export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
       <br />
       <br />
       <br />
-      <input type="text" />
+      {isFetchingChatMessages ? (
+        <div>
+          Refreshing...
+          <br />
+        </div>
+      ) : null}
+
+
+      <form onSubmit={onSubmitNewChatMessage}>
+        <input value={newChatMessage} onChange={onChangeNewChatMessage} type="text" />
+      </form>
       <br />
       <br />
       <br />
       <br />
+
+      <button
+        onClick={() => {
+          fetchPreviousPage();
+        }}
+        disabled={!hasPreviousPage || isFetchingPreviousPage}      
+      >
+        {isFetchingPreviousPage
+          ? "Loading more..."
+          : hasPreviousPage
+          ? <h3>LOAD PREVIOUS</h3>
+          : "Nothing more to load"}
+
+
+      </button>
+      <br/>
+      <br/>
+
       {renderedMessages}
     </div>
+  );
+};
+
+export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
+
+  return (
+    <FormStateProvider>
+      <ChatRoomInner  chatRoomId={chatRoomId} />
+    </FormStateProvider>
   );
 };

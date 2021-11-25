@@ -26,7 +26,7 @@ export const NewChatRoom = ({ chatRoomId }: NewChatRoomProps) => {
     </span>
   ));
 
-  async function onChangUsernamesInChatRoom(event: ChangeEvent<HTMLInputElement>) {
+  async function onChangeUsernamesInChatRoom(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     const updatedUsersInChatRoom = event.currentTarget.value.split(", ");
 
@@ -40,7 +40,7 @@ export const NewChatRoom = ({ chatRoomId }: NewChatRoomProps) => {
       <br />
       Users: {renderedUsersInChatRoom}
       <br />
-      <input onChange={onChangUsernamesInChatRoom} type="text" />
+      <input onChange={onChangeUsernamesInChatRoom} type="text" />
     </FormStateProvider>
   );
 };

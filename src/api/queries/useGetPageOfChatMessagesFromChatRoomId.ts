@@ -32,9 +32,7 @@ export const useGetPageOfChatMessagesFromChatRoomId = ({
     [CacheKeys.chatRoomMessages, chatRoomId, cursor],
     ({ pageParam }) => fetchPageOfChatMessagesFromChatRoomId({ chatRoomId, pageParam }),
     {
-      getNextPageParam: (lastPage) => {
-        return lastPage.success?.nextPageCursor;
-      },
+      getPreviousPageParam: (lastPage) => lastPage.success?.nextPageCursor,
     },
   );
 };
