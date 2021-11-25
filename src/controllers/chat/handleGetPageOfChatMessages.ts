@@ -40,26 +40,37 @@ export async function handleGetPageOfChatMessages({
     SuccessfulGetPageOfChatMessagesResponse
   >
 > {
-  const { chatRoomId } = requestBody;
+  const { chatRoomId, pageSize, cursor } = requestBody;
+
+  const endOfPageTimestamp = cursor ? +cursor : Date.now() + 1;
 
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const unrenderableChatMessages =
     await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.getChatMessagesByChatRoomId(
-      { chatRoomId },
+      { chatRoomId, beforeTimestamp: endOfPageTimestamp },
     );
 
   const renderableChatMessages = unrenderableChatMessages.map(
     (unrenderableChatMessage) => unrenderableChatMessage,
   );
 
-  console.log("renderableChatMessages");
-  console.log(renderableChatMessages);
+  console.log("pageSize", pageSize);
+  console.log("cursor", cursor);
+
+  const pageOfRenderableChatMessages = renderableChatMessages.slice(-pageSize);
+  
+  const startOfPageTimestamp = renderableChatMessages.length > pageSize ?
+    pageOfRenderableChatMessages[0].creationTimestamp : 1
+
+
 
   return {
     success: {
-      chatMessages: renderableChatMessages,
+      chatMessages: pageOfRenderableChatMessages,
+      previousPageCursor: cursor,
+      nextPageCursor: startOfPageTimestamp.toString(),
     },
   };
 }

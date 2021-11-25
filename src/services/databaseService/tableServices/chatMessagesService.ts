@@ -92,9 +92,19 @@ export class ChatMessagesTableService extends TableService {
 
   public async getChatMessagesByChatRoomId({
     chatRoomId,
+    beforeTimestamp,
   }: {
     chatRoomId: string;
+    beforeTimestamp?: number,
   }): Promise<UnrenderableChatMessage[]> {
+    const values: (string | number)[] = [chatRoomId];
+
+    let beforeTimestampCondition: string = "";
+    if (!!beforeTimestamp) {
+      beforeTimestampCondition = `AND creation_timestamp <  $2`;
+      values.push(beforeTimestamp)
+    }
+
     const query = {
       text: `
         SELECT
@@ -103,9 +113,12 @@ export class ChatMessagesTableService extends TableService {
           ${this.tableName}
         WHERE
             chat_room_id = $1
+            ${beforeTimestampCondition}
+        ORDER BY
+          creation_timestamp
         ;
       `,
-      values: [chatRoomId],
+      values,
     };
 
     const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
