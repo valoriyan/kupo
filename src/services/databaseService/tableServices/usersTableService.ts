@@ -304,6 +304,37 @@ export class UsersTableService extends TableService {
     return map(rows, convertDBUserToUnrenderableUser);
   }
 
+  public async selectUserByEmail({
+    email,
+  }: {
+    email: string;
+  }): Promise<UnrenderableUser | undefined> {
+    const queryString = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          email = $1
+        LIMIT
+          1
+        ;
+      `,
+      values: [email],
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
+  }
+
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////

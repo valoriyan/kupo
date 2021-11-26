@@ -6,7 +6,7 @@ import {
   generateRefreshToken,
   REFRESH_TOKEN_EXPIRATION_TIME,
 } from ".";
-import { FailedAuthResponse, SuccessfulAuthResponse } from "../authController";
+import { FailedAuthResponse, SuccessfulAuthResponse } from "../models";
 
 export function grantNewAccessToken({
   controller,

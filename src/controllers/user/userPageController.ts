@@ -51,6 +51,83 @@ export class UserPageController extends Controller {
     super();
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  @Post("GetUserProfile")
+  public async getUserProfile(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUserProfileParams,
+  ): Promise<
+    SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
+  > {
+    return await handleGetUserProfile({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getUsersByIds")
+  public async getUsersByIds(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUsersByIdsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetUsersByIdsResponse,
+      SuccessfullyGotUsersByIdsRequestBodyResponse
+    >
+  > {
+    return await handleGetUsersByIds({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }  
+
+  @Post("getUsersByUsernames")
+  public async getUsersByUsernames(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUsersByUsernamesRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetUsersByUsernamesResponse,
+      SuccessfullyGotUsersByUsernamesRequestBodyResponse
+    >
+  > {
+    return await handleGetUsersByUsernames({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("SearchUserProfilesByUsername")
+  public async searchUserProfilesByUsername(
+    @Request() request: express.Request,
+    @Body() requestBody: SearchUserProfilesByUsernameParams,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToSearchUserProfilesByUsernameResponse,
+      SuccessfulSearchUserProfilesByUsernameResponse
+    >
+  > {
+    return await handleSearchUserProfilesByUsername({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }  
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   @Post("UpdateUserProfile")
   public async updateUserProfile(
     @Request() request: express.Request,
@@ -106,70 +183,7 @@ export class UserPageController extends Controller {
     });
   }
 
-  @Post("GetUserProfile")
-  public async getUserProfile(
-    @Request() request: express.Request,
-    @Body() requestBody: GetUserProfileParams,
-  ): Promise<
-    SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
-  > {
-    return await handleGetUserProfile({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
 
-  @Post("getUsersByIds")
-  public async getUsersByIds(
-    @Request() request: express.Request,
-    @Body() requestBody: GetUsersByIdsRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToGetUsersByIdsResponse,
-      SuccessfullyGotUsersByIdsRequestBodyResponse
-    >
-  > {
-    return await handleGetUsersByIds({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
-  @Post("getUsersByUsernames")
-  public async getUsersByUsernames(
-    @Request() request: express.Request,
-    @Body() requestBody: GetUsersByUsernamesRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToGetUsersByUsernamesResponse,
-      SuccessfullyGotUsersByUsernamesRequestBodyResponse
-    >
-  > {
-    return await handleGetUsersByUsernames({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
-  @Post("SearchUserProfilesByUsername")
-  public async searchUserProfilesByUsername(
-    @Request() request: express.Request,
-    @Body() requestBody: SearchUserProfilesByUsernameParams,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToSearchUserProfilesByUsernameResponse,
-      SuccessfulSearchUserProfilesByUsernameResponse
-    >
-  > {
-    return await handleSearchUserProfilesByUsername({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
 
   @Post("SetUserHashtags")
   public async setUserHashtags(
@@ -187,4 +201,10 @@ export class UserPageController extends Controller {
       requestBody,
     });
   }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////  
+
+
 }

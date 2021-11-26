@@ -59,6 +59,10 @@ export class ChatController extends Controller {
     super();
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   @Post("create")
   public async createChatMessage(
     @Request() request: express.Request,
@@ -75,6 +79,28 @@ export class ChatController extends Controller {
       requestBody,
     });
   }
+
+  @Post("createChatMessageInNewChatRoom")
+  public async createChatMessageInNewChatRoom(
+    @Request() request: express.Request,
+    @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToCreateChatMessageInNewRoomResponse,
+      SuccessfullyCreatedChatMessageInNewRoomResponse
+    >
+  > {
+    return await handleCreateChatMessageInNewChatRoom({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Post("getPageOfChatMessages")
   public async getPageOfChatMessages(
@@ -142,24 +168,15 @@ export class ChatController extends Controller {
       request,
       requestBody,
     });
-  }
+  }  
 
-  @Post("createChatMessageInNewChatRoom")
-  public async createChatMessageInNewChatRoom(
-    @Request() request: express.Request,
-    @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToCreateChatMessageInNewRoomResponse,
-      SuccessfullyCreatedChatMessageInNewRoomResponse
-    >
-  > {
-    return await handleCreateChatMessageInNewChatRoom({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////  
 
   @Post("deleteChatMessage")
   public async deleteChatMessage(

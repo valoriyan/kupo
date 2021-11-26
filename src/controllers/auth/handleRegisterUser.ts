@@ -3,11 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { encryptPassword } from "./utilities";
 import {
   AuthController,
-  AuthFailureReason,
-  FailedAuthResponse,
-  SuccessfulAuthResponse,
 } from "./authController";
 import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
+import { AuthFailureReason, FailedAuthResponse, SuccessfulAuthResponse } from "./models";
 
 export interface RegisterUserRequestBody {
   email: string;
