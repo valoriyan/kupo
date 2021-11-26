@@ -15,19 +15,8 @@
 /**
  *
  * @export
- * @interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+ * @enum {string}
  */
-export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
-   */
-  doesChatRoomExist: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
-   */
-  chatRoomId?: string;
+export enum FailedtoGetChatRoomByIdResponseReason {
+  UnknownCause = "Unknown Cause",
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { FormEventHandler, useState } from "react";
-import { useRegisterUser } from "#/api/mutations/registerUser";
+import { useRegisterUser } from "#/api/mutations/users/registerUser";
 import { AuthFormLayout } from "#/components/AuthFormLayout";
 import { Button } from "#/components/Button";
 import { Input } from "#/components/Input";

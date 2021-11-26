@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { styled } from "#/styling";
 import { formatStat } from "#/utils/formatStat";
 import { Avatar } from "../Avatar";

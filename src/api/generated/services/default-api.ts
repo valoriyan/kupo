@@ -51,6 +51,8 @@ import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 // @ts-ignore
 import { FollowUserProfileParams } from "../types";
 // @ts-ignore
+import { GetChatRoomByIdRequestBody } from "../types";
+// @ts-ignore
 import { GetPageOfChatMessagesRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfChatRoomsRequestBody } from "../types";
@@ -66,6 +68,8 @@ import { GetPostsScheduledByUserParams } from "../types";
 import { GetUserProfileParams } from "../types";
 // @ts-ignore
 import { GetUsersByIdsRequestBody } from "../types";
+// @ts-ignore
+import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
 import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
 // @ts-ignore
@@ -105,6 +109,8 @@ import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGet
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse } from "../types";
@@ -120,6 +126,8 @@ import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpda
 import { SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse } from "../types";
 // @ts-ignore
@@ -668,6 +676,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getChatRoomById: async (
+      getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getChatRoomByIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getChatRoomById",
+        "getChatRoomByIdRequestBody",
+        getChatRoomByIdRequestBody,
+      );
+      const localVarPath = `/chat/getChatRoomById`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getChatRoomByIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1045,6 +1102,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getUsersByIdsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByUsernames: async (
+      getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getUsersByUsernamesRequestBody' is not null or undefined
+      assertParamExists(
+        "getUsersByUsernames",
+        "getUsersByUsernamesRequestBody",
+        getUsersByUsernamesRequestBody,
+      );
+      const localVarPath = `/user/getUsersByUsernames`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getUsersByUsernamesRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2025,6 +2131,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getChatRoomById(
+      getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getChatRoomById(
+        getChatRoomByIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2224,6 +2356,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByIds(
         getUsersByIdsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getUsersByUsernames(
+      getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByUsernames(
+        getUsersByUsernamesRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2790,6 +2948,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getChatRoomById(
+      getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse> {
+      return localVarFp
+        .getChatRoomById(getChatRoomByIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2898,6 +3070,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse> {
       return localVarFp
         .getUsersByIds(getUsersByIdsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByUsernames(
+      getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse> {
+      return localVarFp
+        .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3304,6 +3490,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getChatRoomById(
+    getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getChatRoomById(getChatRoomByIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -3424,6 +3626,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getUsersByIds(getUsersByIdsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getUsersByUsernames(
+    getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

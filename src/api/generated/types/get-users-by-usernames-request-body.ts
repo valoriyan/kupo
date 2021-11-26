@@ -15,19 +15,13 @@
 /**
  *
  * @export
- * @interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+ * @interface GetUsersByUsernamesRequestBody
  */
-export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
+export interface GetUsersByUsernamesRequestBody {
   /**
    *
-   * @type {boolean}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+   * @type {Array<string>}
+   * @memberof GetUsersByUsernamesRequestBody
    */
-  doesChatRoomExist: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
-   */
-  chatRoomId?: string;
+  usernames: Array<string>;
 }

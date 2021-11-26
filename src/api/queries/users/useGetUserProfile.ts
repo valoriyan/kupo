@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, RenderableUser } from "..";
+import { Api, RenderableUser } from "../..";
 
 export interface GetUserProfileArgs {
   username?: string;

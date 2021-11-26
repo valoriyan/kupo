@@ -12,22 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { RenderableUser } from "./renderable-user";
+
 /**
  *
  * @export
- * @interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+ * @interface SuccessfullyGotUsersByUsernamesRequestBodyResponse
  */
-export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
+export interface SuccessfullyGotUsersByUsernamesRequestBodyResponse {
   /**
    *
-   * @type {boolean}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+   * @type {Array<RenderableUser>}
+   * @memberof SuccessfullyGotUsersByUsernamesRequestBodyResponse
    */
-  doesChatRoomExist: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
-   */
-  chatRoomId?: string;
+  users: Array<RenderableUser>;
 }

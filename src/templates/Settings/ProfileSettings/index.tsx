@@ -1,5 +1,5 @@
 import { ChangeEvent, MouseEvent } from "react";
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { useUpdateOwnProfilePicture } from "#/api/mutations/profile/updateOwnProfilePicture";
 import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";

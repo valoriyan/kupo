@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useGetPageOfChatRooms } from "#/api/queries/useGetPageOfChatRooms";
+import { useGetPageOfChatRooms } from "#/api/queries/chat/useGetPageOfChatRooms";
 import { RenderableChatRoom } from "#/api/generated/types/renderable-chat-room";
 
 const ChatRoomListItem = ({ chatRoom }: { chatRoom: RenderableChatRoom }) => {

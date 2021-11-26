@@ -22,7 +22,7 @@ export const useDeleteChatMessage = ({ chatRoomId }: { chatRoomId: string }) => 
     {
       onSuccess: (deletedChatMessageId) => {
         queryClient.setQueryData<InfiniteData<SuccessfulGetPageOfChatMessagesResponse>>(
-          [CacheKeys.chatRoomMessagePages, chatRoomId],
+          [CacheKeys.ChatRoomMessagePages, chatRoomId],
           (queriedData): InfiniteData<SuccessfulGetPageOfChatMessagesResponse> => {
             if (!!queriedData) {
               const updatedPages = queriedData.pages.map((page) => {

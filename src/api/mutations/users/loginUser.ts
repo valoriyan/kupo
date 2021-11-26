@@ -1,12 +1,12 @@
-import Router from "next/router";
 import { useMutation } from "react-query";
+import Router from "next/router";
 import { setAccessToken } from "#/contexts/auth";
-import { Api, RegisterUserRequestBody } from "..";
+import { Api, LoginUserParams } from "../..";
 
-export const useRegisterUser = () => {
+export const useLoginUser = () => {
   return useMutation(
-    async (args: RegisterUserRequestBody) => {
-      return await Api.registerUser(args);
+    async (args: LoginUserParams) => {
+      return await Api.loginUser(args);
     },
     {
       onSuccess: (data) => {

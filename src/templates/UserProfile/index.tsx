@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";

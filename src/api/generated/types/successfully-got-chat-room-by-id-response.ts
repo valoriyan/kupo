@@ -12,22 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { RenderableChatRoomPreview } from "./renderable-chat-room-preview";
+
 /**
  *
  * @export
- * @interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+ * @interface SuccessfullyGotChatRoomByIdResponse
  */
-export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
+export interface SuccessfullyGotChatRoomByIdResponse {
   /**
    *
-   * @type {boolean}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+   * @type {RenderableChatRoomPreview}
+   * @memberof SuccessfullyGotChatRoomByIdResponse
    */
-  doesChatRoomExist: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
-   */
-  chatRoomId?: string;
+  chatRoom: RenderableChatRoomPreview;
 }

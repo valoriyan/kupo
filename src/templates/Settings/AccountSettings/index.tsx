@@ -1,6 +1,6 @@
 import { ChangeEvent, MouseEvent, useState } from "react";
 
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Api } from "#/api";
 import { SettingsScreen } from "..";
 import { styled } from "#/styling";

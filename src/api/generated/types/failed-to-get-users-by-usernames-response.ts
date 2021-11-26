@@ -12,22 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { FailedToGetUsersByUsernamesResponseReason } from "./failed-to-get-users-by-usernames-response-reason";
+
 /**
  *
  * @export
- * @interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+ * @interface FailedToGetUsersByUsernamesResponse
  */
-export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
+export interface FailedToGetUsersByUsernamesResponse {
   /**
    *
-   * @type {boolean}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+   * @type {FailedToGetUsersByUsernamesResponseReason}
+   * @memberof FailedToGetUsersByUsernamesResponse
    */
-  doesChatRoomExist: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
-   */
-  chatRoomId?: string;
+  reason: FailedToGetUsersByUsernamesResponseReason;
 }

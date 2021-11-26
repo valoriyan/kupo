@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FormEventHandler, useState } from "react";
-import { useLoginUser } from "#/api/mutations/loginUser";
+import { useLoginUser } from "#/api/mutations/users/loginUser";
 import { AuthFormLayout } from "#/components/AuthFormLayout";
 import { Button } from "#/components/Button";
 import { Input } from "#/components/Input";

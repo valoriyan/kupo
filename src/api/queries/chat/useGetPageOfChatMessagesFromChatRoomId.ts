@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api } from "..";
+import { Api } from "../..";
 
 export interface GetPageOfChatRoomsMessagesFromChatRoomIdArgs {
   chatRoomId: string;
@@ -31,10 +31,11 @@ export const useGetPageOfChatMessagesFromChatRoomId = ({
   chatRoomId,
 }: GetPageOfChatRoomsMessagesFromChatRoomIdArgs) => {
   return useInfiniteQuery(
-    [CacheKeys.chatRoomMessagePages, chatRoomId],
+    [CacheKeys.ChatRoomMessagePages, chatRoomId],
     ({ pageParam }) => fetchPageOfChatMessagesFromChatRoomId({ chatRoomId, pageParam }),
     {
       getPreviousPageParam: (lastPage) => lastPage.nextPageCursor,
+      enabled: !!chatRoomId,
     },
   );
 };

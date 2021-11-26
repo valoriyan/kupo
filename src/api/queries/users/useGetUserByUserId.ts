@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, RenderableUser } from "..";
+import { Api, RenderableUser } from "../..";
 
 export interface GetUserByUserIdArgs {
   userId: string;
@@ -21,5 +21,6 @@ export const useGetUserByUserId = ({ userId }: GetUserByUserIdArgs) => {
       }
       throw new Error(res.data.error!.reason);
     },
+    { enabled: !!userId },
   );
 };

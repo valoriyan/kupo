@@ -1,5 +1,5 @@
 import { ChatRoom } from "./ChatRoom";
-import { NewChatRoom } from "./NewChatRoom";
+import { CreateNewChatRoom } from "./CreateNewChatRoom";
 
 export interface ChatRoomContainerProps {
   chatRoomId: string;
@@ -7,7 +7,7 @@ export interface ChatRoomContainerProps {
 
 export const ChatRoomContainer = ({ chatRoomId }: ChatRoomContainerProps) => {
   if (chatRoomId === "0") {
-    return <NewChatRoom chatRoomId={chatRoomId} />;
+    return <CreateNewChatRoom />;
   }
 
   return <ChatRoom chatRoomId={chatRoomId} />;

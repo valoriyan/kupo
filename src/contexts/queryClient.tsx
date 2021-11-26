@@ -8,10 +8,10 @@ import { QueryClient, QueryClientProvider as BaseQueryClientProvider } from "rea
 export enum CacheKeys {
   User = "user",
   UserProfile = "userProfile",
-  chatRooms = "chatRooms",
-  chatRoomMessagePages = "chatRoomMessagePages",
-  newlyReceivedChatRoomMessages = "newlyReceivedChatRoomMessages",
-  chatRoomIds = "chatRoomIds",
+  ChatRoomsPages = "ChatRoomsPages",
+  ChatRoomMessagePages = "ChatRoomMessagePages",
+  ChatRoomMembers = "ChatRoomMembers",
+  ChatRoomFromId = "ChatRoomFromId",
 }
 
 export const queryClient = new QueryClient({

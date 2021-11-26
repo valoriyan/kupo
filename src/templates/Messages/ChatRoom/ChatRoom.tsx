@@ -1,11 +1,14 @@
-import { ChangeEvent, useEffect, MouseEvent } from "react";
+import { useEffect, MouseEvent } from "react";
 import { RenderableChatMessage } from "#/api";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
-import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/useGetPageOfChatMessagesFromChatRoomId";
-import { useGetUserByUserId } from "#/api/queries/useGetUserByUserId";
+import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGetPageOfChatMessagesFromChatRoomId";
+import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { FormStateProvider, useFormState } from "./FormContext";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
 import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
+import { NewMessageFormInput } from "./NewMessageFormInput";
+import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
+import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
 const DELETED_CHAT_MESSAGE_EVENT_NAME = "DELETED_CHAT_MESSAGE_EVENT_NAME";
@@ -48,12 +51,7 @@ const ChatRoomMessage = ({ message }: { message: RenderableChatMessage }) => {
 };
 
 const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
-  const {
-    newChatMessage,
-    setNewChatMessage,
-    receivedChatMessages,
-    receiveNewChatMessage,
-  } = useFormState();
+  const { newChatMessage, receivedChatMessages, receiveNewChatMessage } = useFormState();
   const { socket } = useWebsocketState();
 
   const {
@@ -69,6 +67,12 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
     chatRoomId,
   });
 
+  const { data: chatRoomData } = useGetChatRoomById({ chatRoomId });
+  const chatRoomUserIds = !!chatRoomData
+    ? chatRoomData.members.map((member) => member.userId)
+    : [];
+
+  const { data: chatRoomMembers } = useGetUsersByUserIds({ userIds: chatRoomUserIds });
   const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
   const { mutateAsync: deleteChatMessage } = useDeleteChatMessage({
     chatRoomId,
@@ -126,12 +130,6 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
     <ChatRoomMessage key={message.chatMessageId} message={message} />
   ));
 
-  async function onChangeNewChatMessage(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-
-    setNewChatMessage(event.currentTarget.value);
-  }
-
   async function onSubmitNewChatMessage(event: React.FormEvent) {
     event.preventDefault();
     createNewChatMessage({
@@ -140,11 +138,19 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
     });
   }
 
+  const memberNames = !!chatRoomMembers
+    ? chatRoomMembers
+        .filter((chatRoomMember) => !!chatRoomMember)
+        .map((chatRoomMember) => chatRoomMember!.username)
+        .join(", ")
+    : "";
+
   return (
     <div>
       Chat Room: {chatRoomId}
       <br />
       <br />
+      Members: {memberNames}
       <br />
       <br />
       {isFetchingChatMessages ? (
@@ -154,7 +160,7 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
         </div>
       ) : null}
       <form onSubmit={onSubmitNewChatMessage}>
-        <input value={newChatMessage} onChange={onChangeNewChatMessage} type="text" />
+        <NewMessageFormInput />
       </form>
       <br />
       <br />
