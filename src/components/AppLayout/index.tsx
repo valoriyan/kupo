@@ -1,21 +1,36 @@
 import { useRouter } from "next/router";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { Box, Flex, Grid } from "#/components/Layout";
-import { useIsAuthenticated } from "#/contexts/auth";
+import { getAccessToken, useIsAuthenticated } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { TransitionArea } from "../TransitionArea";
 import { Footer } from "./Footer";
 import { NoAuthFooter } from "./NoAuthFooter";
 import { NoAuthSidePanel } from "./NoAuthSidePanel";
 import { SidePanel } from "./SidePanel";
+import { useWebsocketState, WebsocketStateProvider } from "./WebsocketContext";
 
-export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
+const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
 
   const pageTransition = router.pathname.includes("add-content")
     ? slideUpFromBottom
     : slideInFromRight;
+
+  const { generateSocket } = useWebsocketState();
+
+  const onMount = async () => {
+    getAccessToken().then((accessToken) => {
+      if (!!accessToken) {
+        generateSocket({ accessToken });
+      }
+    });
+  };
+
+  useEffect(() => {
+    onMount();
+  });
 
   return (
     <Wrapper>
@@ -37,6 +52,16 @@ export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
         )}
       </Box>
     </Wrapper>
+  );
+};
+
+export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
+  return (
+    <WebsocketStateProvider>
+      <AppLayoutInner>
+        {children}
+      </AppLayoutInner>
+    </WebsocketStateProvider>
   );
 };
 

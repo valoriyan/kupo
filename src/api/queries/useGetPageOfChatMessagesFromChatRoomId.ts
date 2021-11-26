@@ -29,7 +29,7 @@ export const useGetPageOfChatMessagesFromChatRoomId = ({
   cursor,
 }: GetPageOfChatRoomsMessagesFromChatRoomIdArgs) => {
   return useInfiniteQuery(
-    [CacheKeys.chatRoomMessages, chatRoomId, cursor],
+    [CacheKeys.chatRoomMessagePages, chatRoomId, cursor],
     ({ pageParam }) => fetchPageOfChatMessagesFromChatRoomId({ chatRoomId, pageParam }),
     {
       getPreviousPageParam: (lastPage) => lastPage.success?.nextPageCursor,

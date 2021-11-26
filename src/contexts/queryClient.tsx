@@ -9,7 +9,8 @@ export enum CacheKeys {
   User = "user",
   UserProfile = "userProfile",
   chatRooms = "chatRooms",
-  chatRoomMessages = "chatRoomMessages",
+  chatRoomMessagePages = "chatRoomMessagePages",
+  newlyReceivedChatRoomMessages = "newlyReceivedChatRoomMessages",
   chatRoomIds = "chatRoomIds",
 }
 

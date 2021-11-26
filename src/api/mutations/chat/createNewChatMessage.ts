@@ -2,7 +2,6 @@ import { useMutation } from "react-query";
 import { Api } from "#/api";
 
 export const useCreateNewChatMessage = () => {
-
   return useMutation(
     async ({
       chatMessageText,
@@ -11,12 +10,10 @@ export const useCreateNewChatMessage = () => {
       chatMessageText: string;
       chatRoomId: string;
     }) => {
-      return await Api.createChatMessage(
-        {
-          chatMessageText,
-          chatRoomId,
-        },
-      );
+      return await Api.createChatMessage({
+        chatMessageText,
+        chatRoomId,
+      });
     },
     {
       onSuccess: (data) => {
