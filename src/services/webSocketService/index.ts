@@ -1,15 +1,13 @@
 import { Server } from "socket.io";
 import { Server as httpServer } from "http";
 import { validateTokenAndGetUserId } from "../../controllers/auth/utilities";
-import {
-  NewChatNotification,
-  NEW_POST_NOTIFICATION_EVENT_NAME,
-} from "./eventsConfig";
+import { NewChatNotification, NEW_POST_NOTIFICATION_EVENT_NAME } from "./eventsConfig";
 import { notifyUserIdsOfNewChatMessage } from "./notifyUserIdsOfNewChatMessage";
 import { singleton } from "tsyringe";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { RenderableChatMessage } from "src/controllers/chat/models";
+import { notifyUserIdsOfDeletedChatMessage } from "./notifyUserIdsOfDeletedChatMessage";
 
 @singleton()
 export class WebSocketService {
@@ -75,13 +73,27 @@ export class WebSocketService {
     chatMessage: RenderableChatMessage;
     userIds: string[];
   }) {
-    console.log("chatMessage");
-    console.log(chatMessage);
-
     await BluebirdPromise.map(userIds, async (userId) => {
       await notifyUserIdsOfNewChatMessage({
         io: WebSocketService.io,
         chatMessage,
+        userId,
+      });
+    });
+  }
+
+  public async notifyUserIdsOfDeletedChatMessage({
+    deletedChatMessageId,
+    userIds,
+  }: {
+    deletedChatMessageId: string;
+    userIds: string[];
+  }) {
+
+    await BluebirdPromise.map(userIds, async (userId) => {
+      await notifyUserIdsOfDeletedChatMessage({
+        io: WebSocketService.io,
+        deletedChatMessageId,
         userId,
       });
     });

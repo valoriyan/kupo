@@ -35,6 +35,7 @@ import {
   handleCreateChatMessageInNewChatRoom,
   SuccessfullyCreatedChatMessageInNewRoomResponse,
 } from "./handleCreateChatMessageInNewChatRoom";
+import { DeleteChatMessageRequestBody, FailedToDeleteChatMessageResponse, handleDeleteChatMessage, SuccessfullyDeletedChatMessageResponse } from "./handleDeleteChatMessage";
 
 @injectable()
 @Route("chat")
@@ -126,6 +127,23 @@ export class ChatController extends Controller {
     >
   > {
     return await handleCreateChatMessageInNewChatRoom({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("deleteChatMessage")
+  public async deleteChatMessage(
+    @Request() request: express.Request,
+    @Body() requestBody: DeleteChatMessageRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedToDeleteChatMessageResponse,
+    SuccessfullyDeletedChatMessageResponse
+      >
+  > {
+    return await handleDeleteChatMessage({
       controller: this,
       request,
       requestBody,

@@ -157,16 +157,28 @@ export class ChatMessagesTableService extends TableService {
 
   public async deleteChatMessage({
     chatMessageId,
+    userId,
   }: {
     chatMessageId: string;
-  }): Promise<void> {
+    userId: string,
+  }): Promise<UnrenderableChatMessage> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "chat_message_id", value: chatMessageId },
+        { field: "author_user_id", value: userId },
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(query);
+    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (!!rows.length) {
+      const row = response.rows[0];
+      return convertDBChatMessageToUnrenderableChatMessage(row);
+    }
+
+    throw new Error("No rows deleted");
   }
 }
