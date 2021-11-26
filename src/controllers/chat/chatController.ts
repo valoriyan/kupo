@@ -35,7 +35,13 @@ import {
   handleCreateChatMessageInNewChatRoom,
   SuccessfullyCreatedChatMessageInNewRoomResponse,
 } from "./handleCreateChatMessageInNewChatRoom";
-import { DeleteChatMessageRequestBody, FailedToDeleteChatMessageResponse, handleDeleteChatMessage, SuccessfullyDeletedChatMessageResponse } from "./handleDeleteChatMessage";
+import {
+  DeleteChatMessageRequestBody,
+  FailedToDeleteChatMessageResponse,
+  handleDeleteChatMessage,
+  SuccessfullyDeletedChatMessageResponse,
+} from "./handleDeleteChatMessage";
+import { FailedtoGetChatRoomByIdResponse, GetChatRoomByIdRequestBody, handleGetChatRoomById, SuccessfullyGotChatRoomByIdResponse } from "./handleGetChatRoomById";
 
 @injectable()
 @Route("chat")
@@ -76,6 +82,23 @@ export class ChatController extends Controller {
     >
   > {
     return await handleGetPageOfChatMessages({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getChatRoomById")
+  public async getChatRoomById(
+    @Request() request: express.Request,
+    @Body() requestBody: GetChatRoomByIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedtoGetChatRoomByIdResponse,
+    SuccessfullyGotChatRoomByIdResponse
+    >
+  > {
+    return await handleGetChatRoomById({
       controller: this,
       request,
       requestBody,
@@ -139,9 +162,9 @@ export class ChatController extends Controller {
     @Body() requestBody: DeleteChatMessageRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToDeleteChatMessageResponse,
-    SuccessfullyDeletedChatMessageResponse
-      >
+      FailedToDeleteChatMessageResponse,
+      SuccessfullyDeletedChatMessageResponse
+    >
   > {
     return await handleDeleteChatMessage({
       controller: this,

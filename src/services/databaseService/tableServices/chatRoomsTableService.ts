@@ -108,6 +108,36 @@ export class ChatRoomsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async getChatRoomById({
+    chatRoomId,
+  }: {
+    chatRoomId: string;
+  }): Promise<UnrenderableChatRoomPreview> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          chat_room_id = $1
+        ;
+      `,
+      values: [chatRoomId],
+    };
+
+    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+      query,
+    );
+
+    const unrenderableChatRoomPreviews = convertDBChatRoomMembershipsToUnrenderableChatRooms(response.rows);
+    if (unrenderableChatRoomPreviews.length === 0) {
+      throw new Error("Missing chat room");
+    }
+
+    return unrenderableChatRoomPreviews[0];
+  }
+
   public async getUserIdsJoinedToChatRoomId({
     chatRoomId,
   }: {
@@ -172,7 +202,7 @@ export class ChatRoomsTableService extends TableService {
   }: {
     userIds: string[];
   }): Promise<string | undefined> {
-    const parameterizedUsersList = userIds.map((_, index) => `$${index}`).join(", ");
+    const parameterizedUsersList = userIds.map((_, index) => `$${index + 1}`).join(", ");
 
     const query = {
       text: `

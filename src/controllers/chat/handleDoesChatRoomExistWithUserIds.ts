@@ -1,6 +1,6 @@
 import express from "express";
-import { v4 as uuidv4 } from "uuid";
-import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { areSetsEqual } from "../../utilities/checkSetEquality";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
@@ -9,6 +9,7 @@ export interface DoesChatRoomExistWithUserIdsRequestBody {
 }
 
 export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
+  doesChatRoomExist: boolean;
   chatRoomId?: string;
 }
 
@@ -51,27 +52,17 @@ export async function handleDoesChatRoomExistWithUserIds({
       { userIds },
     );
 
-  if (!!chatRoomId) {
-    return {
-      success: {
-        chatRoomId,
-      },
-    };
+  let doesChatRoomExist = false;
+  if (chatRoomId) {
+
+    const userIdsInChatRoom = await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId({chatRoomId});
+    doesChatRoomExist = areSetsEqual(new Set(userIdsInChatRoom), new Set(userIds))
   }
-
-  const newChatRoomId: string = uuidv4();
-
-  await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.insertUsersIntoChatRoom(
-    {
-      userIds,
-      joinTimestamp: Date.now(),
-      chatRoomId: newChatRoomId,
-    },
-  );
 
   return {
     success: {
-      chatRoomId: newChatRoomId,
+      doesChatRoomExist,
+      chatRoomId: doesChatRoomExist ? chatRoomId : undefined,
     },
   };
 }

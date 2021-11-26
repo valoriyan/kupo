@@ -18,7 +18,7 @@ export interface FailedToGetUsersByIdsResponse {
 }
 
 export interface SuccessfullyGotUsersByIdsRequestBodyResponse {
-  users: RenderableUser[];
+  users: ((RenderableUser | null))[];
 }
 
 export async function handleGetUsersByIds({
@@ -52,9 +52,15 @@ export async function handleGetUsersByIds({
     databaseService: controller.databaseService,
   });
 
+  const foundUsers = userIds.map((userId) => {
+    const foundUser = renderableUsers.find((renderableUser) => renderableUser.userId === userId);
+    return !!foundUser ? foundUser : null;
+
+  })
+
   return {
     success: {
-      users: renderableUsers,
+      users: foundUsers,
     },
   };
 }

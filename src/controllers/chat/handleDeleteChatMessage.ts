@@ -28,8 +28,8 @@ export async function handleDeleteChatMessage({
   requestBody: DeleteChatMessageRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-  FailedToDeleteChatMessageResponse,
-  SuccessfullyDeletedChatMessageResponse
+    FailedToDeleteChatMessageResponse,
+    SuccessfullyDeletedChatMessageResponse
   >
 > {
   const { chatMessageId } = requestBody;
@@ -37,16 +37,15 @@ export async function handleDeleteChatMessage({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-
-  const deletedChatMessage = await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.deleteChatMessage(
-    {
+  const deletedChatMessage =
+    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.deleteChatMessage(
+      {
         chatMessageId,
-        userId: clientUserId,    
-    },
-  );
+        userId: clientUserId,
+      },
+    );
 
   const chatRoomId = deletedChatMessage.chatRoomId;
-
 
   const userIds =
     await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(

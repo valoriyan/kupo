@@ -205,6 +205,45 @@ export class UsersTableService extends TableService {
     return;
   }
 
+
+  public async selectUsersByUsernames({
+    usernames,
+  }: {
+    usernames: string[];
+  }): Promise<UnrenderableUser[]> {
+
+    if (usernames.length === 0) {
+      return [];
+    }
+
+    const usernamesQueryText = usernames
+      .map((_, index) => {
+        return `$${index + 1}`;
+      })
+      .join(", ");
+
+
+    const queryString = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          username IN ( ${usernamesQueryText} )
+        ;
+      `,
+      values: usernames,
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    return map(rows, convertDBUserToUnrenderableUser);
+  }
+
+
   public async selectUsersByUsernameMatchingSubstring({
     usernameSubstring,
   }: {

@@ -160,7 +160,7 @@ export class ChatMessagesTableService extends TableService {
     userId,
   }: {
     chatMessageId: string;
-    userId: string,
+    userId: string;
   }): Promise<UnrenderableChatMessage> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [

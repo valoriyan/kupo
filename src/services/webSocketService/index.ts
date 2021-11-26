@@ -89,7 +89,6 @@ export class WebSocketService {
     deletedChatMessageId: string;
     userIds: string[];
   }) {
-
     await BluebirdPromise.map(userIds, async (userId) => {
       await notifyUserIdsOfDeletedChatMessage({
         io: WebSocketService.io,

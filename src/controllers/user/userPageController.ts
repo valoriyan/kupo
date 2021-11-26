@@ -34,6 +34,7 @@ import {
   handleGetUsersByIds,
   SuccessfullyGotUsersByIdsRequestBodyResponse,
 } from "./handleGetUsersByIds";
+import { FailedToGetUsersByUsernamesResponse, GetUsersByUsernamesRequestBody, handleGetUsersByUsernames, SuccessfullyGotUsersByUsernamesRequestBodyResponse } from "./handleGetUsersByUsernames";
 
 @injectable()
 @Route("user")
@@ -125,6 +126,23 @@ export class UserPageController extends Controller {
     >
   > {
     return await handleGetUsersByIds({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getUsersByUsernames")
+  public async getUsersByUsernames(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUsersByUsernamesRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedToGetUsersByUsernamesResponse,
+    SuccessfullyGotUsersByUsernamesRequestBodyResponse
+      >
+  > {
+    return await handleGetUsersByUsernames({
       controller: this,
       request,
       requestBody,
