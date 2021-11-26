@@ -30,9 +30,9 @@ export const CreateNewChatRoomInner = ({ user }: { user: RenderableUser }) => {
         .concat([user.userId])
     : [user.userId];
 
-  const {
-    data: doesChatRoomExistData,
-  } = useGetChatRoomIdWithUserIds({ userIds: new Set(userIds) });
+  const { data: doesChatRoomExistData } = useGetChatRoomIdWithUserIds({
+    userIds: new Set(userIds),
+  });
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;

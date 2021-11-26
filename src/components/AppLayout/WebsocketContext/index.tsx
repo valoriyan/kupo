@@ -1,14 +1,24 @@
 import { PropsWithChildren } from "react";
 import { io, Socket } from "socket.io-client";
-import create from "zustand";
+import create, { GetState, SetState } from "zustand";
 import createContext from "zustand/context";
 
 export interface WebsocketState {
   socket: Socket | undefined;
   generateSocket: ({ accessToken }: { accessToken: string }) => void;
+
+  notificationsReceived: string[];
 }
 
-const generateSocket = ({ accessToken }: { accessToken: string }) => {
+const generateSocket = ({
+  accessToken,
+  set,
+  get,
+}: {
+  accessToken: string;
+  set: SetState<WebsocketState>;
+  get: GetState<WebsocketState>;
+}) => {
   const newSocket = io("ws://localhost:4000", {
     auth: {
       accessToken,
@@ -16,6 +26,8 @@ const generateSocket = ({ accessToken }: { accessToken: string }) => {
   });
 
   newSocket.on("connect", () => {
+    const notificationsReceived = get().notificationsReceived;
+    set({ notificationsReceived: [...notificationsReceived, "CONNECTED"] });
     console.log("CONNECTED!");
   });
 
@@ -28,10 +40,11 @@ const createFormStateStore = () =>
     generateSocket: ({ accessToken }: { accessToken: string }) => {
       const existingSocket = get().socket;
       if (!existingSocket) {
-        const socket = generateSocket({ accessToken });
+        const socket = generateSocket({ accessToken, get, set });
         set({ socket });
       }
     },
+    notificationsReceived: [],
   }));
 
 const { Provider, useStore } = createContext<WebsocketState>();
