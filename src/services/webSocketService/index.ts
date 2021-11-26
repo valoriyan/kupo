@@ -2,14 +2,14 @@ import { Server } from "socket.io";
 import { Server as httpServer } from "http";
 import { validateTokenAndGetUserId } from "../../controllers/auth/utilities";
 import {
-  ChatMessage,
   NewChatNotification,
-  NEW_CHAT_MESSAGE_EVENT_NAME,
   NEW_POST_NOTIFICATION_EVENT_NAME,
 } from "./eventsConfig";
-import { handleNewChatMessage } from "./handleNewChatMessage";
+import { notifyUserIdsOfNewChatMessage } from "./notifyUserIdsOfNewChatMessage";
 import { singleton } from "tsyringe";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
+import { Promise as BluebirdPromise } from "bluebird";
+import { RenderableChatMessage } from "src/controllers/chat/models";
 
 @singleton()
 export class WebSocketService {
@@ -38,16 +38,10 @@ export class WebSocketService {
         const rooms = [generatePrivateUserWebSocketRoomName({ userId })];
         socket.join(rooms);
 
-        socket.on(NEW_CHAT_MESSAGE_EVENT_NAME, (incomingMessage: ChatMessage) => {
-          console.log("MESSAGE CAME IN!");
-          console.log(incomingMessage);
-
-          handleNewChatMessage({
-            io,
-            incomingMessage,
-            incomingUserId: userId,
-          });
-        });
+        // socket.on(NEW_CHAT_MESSAGE_EVENT_NAME, (incomingMessage: ChatMessage) => {
+        //   console.log("MESSAGE CAME IN!");
+        //   console.log(incomingMessage);
+        // });
       } catch (error) {
         console.log(error);
         socket.disconnect();
@@ -72,5 +66,24 @@ export class WebSocketService {
     const roomName = generatePrivateUserWebSocketRoomName({ userId: recipientUserId });
 
     WebSocketService.io.to([roomName]).emit(NEW_POST_NOTIFICATION_EVENT_NAME, message);
+  }
+
+  public async notifyUserIdsOfNewChatMessage({
+    chatMessage,
+    userIds,
+  }: {
+    chatMessage: RenderableChatMessage;
+    userIds: string[];
+  }) {
+    console.log("chatMessage");
+    console.log(chatMessage);
+
+    await BluebirdPromise.map(userIds, async (userId) => {
+      await notifyUserIdsOfNewChatMessage({
+        io: WebSocketService.io,
+        chatMessage,
+        userId,
+      });
+    });
   }
 }

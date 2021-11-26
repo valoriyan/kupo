@@ -56,15 +56,12 @@ export async function handleGetPageOfChatMessages({
     (unrenderableChatMessage) => unrenderableChatMessage,
   );
 
-  console.log("pageSize", pageSize);
-  console.log("cursor", cursor);
-
   const pageOfRenderableChatMessages = renderableChatMessages.slice(-pageSize);
-  
-  const startOfPageTimestamp = renderableChatMessages.length > pageSize ?
-    pageOfRenderableChatMessages[0].creationTimestamp : 1
 
-
+  const startOfPageTimestamp =
+    renderableChatMessages.length > pageSize
+      ? pageOfRenderableChatMessages[0].creationTimestamp
+      : 1;
 
   return {
     success: {

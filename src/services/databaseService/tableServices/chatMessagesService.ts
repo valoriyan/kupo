@@ -95,14 +95,14 @@ export class ChatMessagesTableService extends TableService {
     beforeTimestamp,
   }: {
     chatRoomId: string;
-    beforeTimestamp?: number,
+    beforeTimestamp?: number;
   }): Promise<UnrenderableChatMessage[]> {
     const values: (string | number)[] = [chatRoomId];
 
-    let beforeTimestampCondition: string = "";
+    let beforeTimestampCondition = "";
     if (!!beforeTimestamp) {
       beforeTimestampCondition = `AND creation_timestamp <  $2`;
-      values.push(beforeTimestamp)
+      values.push(beforeTimestamp);
     }
 
     const query = {
