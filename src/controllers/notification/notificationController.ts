@@ -23,8 +23,8 @@ export class NotificationController extends Controller {
     super();
   }
 
-  @Post("getPageOfPostsPagination")
-  public async getPageOfPostsPagination(
+  @Post("getPageOfNotifications")
+  public async getPageOfNotifications(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfNotificationsRequestBody,
   ): Promise<
