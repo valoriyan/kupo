@@ -205,13 +205,11 @@ export class UsersTableService extends TableService {
     return;
   }
 
-
   public async selectUsersByUsernames({
     usernames,
   }: {
     usernames: string[];
   }): Promise<UnrenderableUser[]> {
-
     if (usernames.length === 0) {
       return [];
     }
@@ -221,7 +219,6 @@ export class UsersTableService extends TableService {
         return `$${index + 1}`;
       })
       .join(", ");
-
 
     const queryString = {
       text: `
@@ -242,7 +239,6 @@ export class UsersTableService extends TableService {
 
     return map(rows, convertDBUserToUnrenderableUser);
   }
-
 
   public async selectUsersByUsernameMatchingSubstring({
     usernameSubstring,

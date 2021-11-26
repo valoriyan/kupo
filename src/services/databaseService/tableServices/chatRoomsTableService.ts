@@ -130,7 +130,8 @@ export class ChatRoomsTableService extends TableService {
       query,
     );
 
-    const unrenderableChatRoomPreviews = convertDBChatRoomMembershipsToUnrenderableChatRooms(response.rows);
+    const unrenderableChatRoomPreviews =
+      convertDBChatRoomMembershipsToUnrenderableChatRooms(response.rows);
     if (unrenderableChatRoomPreviews.length === 0) {
       throw new Error("Missing chat room");
     }

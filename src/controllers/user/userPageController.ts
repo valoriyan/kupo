@@ -34,7 +34,12 @@ import {
   handleGetUsersByIds,
   SuccessfullyGotUsersByIdsRequestBodyResponse,
 } from "./handleGetUsersByIds";
-import { FailedToGetUsersByUsernamesResponse, GetUsersByUsernamesRequestBody, handleGetUsersByUsernames, SuccessfullyGotUsersByUsernamesRequestBodyResponse } from "./handleGetUsersByUsernames";
+import {
+  FailedToGetUsersByUsernamesResponse,
+  GetUsersByUsernamesRequestBody,
+  handleGetUsersByUsernames,
+  SuccessfullyGotUsersByUsernamesRequestBodyResponse,
+} from "./handleGetUsersByUsernames";
 
 @injectable()
 @Route("user")
@@ -138,9 +143,9 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetUsersByUsernamesRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToGetUsersByUsernamesResponse,
-    SuccessfullyGotUsersByUsernamesRequestBodyResponse
-      >
+      FailedToGetUsersByUsernamesResponse,
+      SuccessfullyGotUsersByUsernamesRequestBodyResponse
+    >
   > {
     return await handleGetUsersByUsernames({
       controller: this,

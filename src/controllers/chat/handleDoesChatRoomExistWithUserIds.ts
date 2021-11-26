@@ -54,9 +54,11 @@ export async function handleDoesChatRoomExistWithUserIds({
 
   let doesChatRoomExist = false;
   if (chatRoomId) {
-
-    const userIdsInChatRoom = await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId({chatRoomId});
-    doesChatRoomExist = areSetsEqual(new Set(userIdsInChatRoom), new Set(userIds))
+    const userIdsInChatRoom =
+      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
+        { chatRoomId },
+      );
+    doesChatRoomExist = areSetsEqual(new Set(userIdsInChatRoom), new Set(userIds));
   }
 
   return {

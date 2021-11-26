@@ -41,7 +41,12 @@ import {
   handleDeleteChatMessage,
   SuccessfullyDeletedChatMessageResponse,
 } from "./handleDeleteChatMessage";
-import { FailedtoGetChatRoomByIdResponse, GetChatRoomByIdRequestBody, handleGetChatRoomById, SuccessfullyGotChatRoomByIdResponse } from "./handleGetChatRoomById";
+import {
+  FailedtoGetChatRoomByIdResponse,
+  GetChatRoomByIdRequestBody,
+  handleGetChatRoomById,
+  SuccessfullyGotChatRoomByIdResponse,
+} from "./handleGetChatRoomById";
 
 @injectable()
 @Route("chat")
@@ -94,8 +99,8 @@ export class ChatController extends Controller {
     @Body() requestBody: GetChatRoomByIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    FailedtoGetChatRoomByIdResponse,
-    SuccessfullyGotChatRoomByIdResponse
+      FailedtoGetChatRoomByIdResponse,
+      SuccessfullyGotChatRoomByIdResponse
     >
   > {
     return await handleGetChatRoomById({

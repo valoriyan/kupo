@@ -31,8 +31,8 @@ export async function handleGetUsersByUsernames({
   requestBody: GetUsersByUsernamesRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-  FailedToGetUsersByUsernamesResponse,
-  SuccessfullyGotUsersByUsernamesRequestBodyResponse
+    FailedToGetUsersByUsernamesResponse,
+    SuccessfullyGotUsersByUsernamesRequestBodyResponse
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -43,7 +43,7 @@ export async function handleGetUsersByUsernames({
   const unrenderableUsers =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
       { usernames },
-    );  
+    );
 
   const renderableUsers = await constructRenderableUsersFromParts({
     clientUserId,
@@ -52,15 +52,16 @@ export async function handleGetUsersByUsernames({
     databaseService: controller.databaseService,
   });
 
-  const usernameToUserMap = new Map(renderableUsers.map((renderableUser) => [renderableUser.username, renderableUser]))
+  const usernameToUserMap = new Map(
+    renderableUsers.map((renderableUser) => [renderableUser.username, renderableUser]),
+  );
 
-  const foundUsers = usernames.map(username => {
+  const foundUsers = usernames.map((username) => {
     if (usernameToUserMap.has(username)) {
       return usernameToUserMap.get(username)!;
     }
     return null;
   });
-
 
   return {
     success: {

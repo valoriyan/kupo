@@ -31,7 +31,7 @@ export async function handleGetChatRoomById({
   requestBody: GetChatRoomByIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-  FailedtoGetChatRoomByIdResponse,
+    FailedtoGetChatRoomByIdResponse,
     SuccessfullyGotChatRoomByIdResponse
   >
 > {
@@ -49,7 +49,7 @@ export async function handleGetChatRoomById({
   unrenderableChatRoom.memberUserIds.forEach((memberUserId) => {
     setOfUserIds.add(memberUserId);
   });
-  
+
   const unrenderableUsers =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
       {
@@ -74,12 +74,10 @@ export async function handleGetChatRoomById({
     (memberUserId) => mapOfUserIdsToRenderableUsers.get(memberUserId)!,
   );
 
-
   const renderableChatRoom = {
     chatRoomId,
     members: chatRoomMembers,
-  }
-
+  };
 
   return {
     success: {
