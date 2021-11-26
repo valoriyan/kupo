@@ -13,6 +13,7 @@ export interface FormState {
   }: {
     chatMessage: RenderableChatMessage;
   }) => void;
+  deleteChatMessage: ({ deletedChatMessageId }: { deletedChatMessageId: string }) => void;
 }
 
 const createFormStateStore = () =>
@@ -23,6 +24,13 @@ const createFormStateStore = () =>
     receiveNewChatMessage: ({ chatMessage }) => {
       const chatMessages = get().receivedChatMessages;
       const updatedReceivedChatMessages = [...chatMessages, chatMessage];
+      set({ receivedChatMessages: updatedReceivedChatMessages });
+    },
+    deleteChatMessage: ({ deletedChatMessageId }) => {
+      const chatMessages = get().receivedChatMessages;
+      const updatedReceivedChatMessages = chatMessages.filter(
+        (chatMessage) => chatMessage.chatMessageId !== deletedChatMessageId,
+      );
       set({ receivedChatMessages: updatedReceivedChatMessages });
     },
   }));

@@ -2,21 +2,17 @@ import { ChangeEvent } from "react";
 import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
 import { FormStateProvider, useFormState } from "./FormContext";
 
-export interface NewChatRoomProps {
-  chatRoomId?: string;
-}
-
 const NewChatRoomUsernameListItem = ({ username }: { username: string }) => {
   const { data } = useGetUserProfile({ username });
 
   if (!!data) {
-    return <span style={{ color: "red" }}>{data.username}</span>;
+    return <span style={{ color: "green" }}>{data.username}</span>;
   } else {
     return <span>{username}</span>;
   }
 };
 
-export const NewChatRoom = ({ chatRoomId }: NewChatRoomProps) => {
+export const NewChatRoomInner = () => {
   const { usernamesInChatRoom, setUsernamesInChatRoom } = useFormState();
 
   const renderedUsersInChatRoom = usernamesInChatRoom.map((username, index) => (
@@ -34,13 +30,20 @@ export const NewChatRoom = ({ chatRoomId }: NewChatRoomProps) => {
   }
 
   return (
-    <FormStateProvider>
-      {chatRoomId}
+    <div>
       <br />
       <br />
       Users: {renderedUsersInChatRoom}
       <br />
       <input onChange={onChangeUsernamesInChatRoom} type="text" />
+    </div>
+  );
+};
+
+export const NewChatRoom = () => {
+  return (
+    <FormStateProvider>
+      <NewChatRoomInner />
     </FormStateProvider>
   );
 };

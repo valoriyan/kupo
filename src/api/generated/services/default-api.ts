@@ -41,6 +41,8 @@ import { CreateChatMessageInNewRoomRequestBody } from "../types";
 // @ts-ignore
 import { CreateChatMessageRequestBody } from "../types";
 // @ts-ignore
+import { DeleteChatMessageRequestBody } from "../types";
+// @ts-ignore
 import { DeletePostRequestBody } from "../types";
 // @ts-ignore
 import { DeleteShopItemRequestBody } from "../types";
@@ -86,6 +88,8 @@ import { SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessa
 import { SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse } from "../types";
 // @ts-ignore
@@ -419,6 +423,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteChatMessage: async (
+      deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'deleteChatMessageRequestBody' is not null or undefined
+      assertParamExists(
+        "deleteChatMessage",
+        "deleteChatMessageRequestBody",
+        deleteChatMessageRequestBody,
+      );
+      const localVarPath = `/chat/deleteChatMessage`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        deleteChatMessageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1841,6 +1894,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deleteChatMessage(
+      deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deleteChatMessage(
+        deleteChatMessageRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2641,6 +2720,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteChatMessage(
+      deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse> {
+      return localVarFp
+        .deleteChatMessage(deleteChatMessageRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3132,6 +3225,22 @@ export class DefaultApi extends BaseAPI {
         expirationTimestamp,
         options,
       )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteChatMessage(
+    deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .deleteChatMessage(deleteChatMessageRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

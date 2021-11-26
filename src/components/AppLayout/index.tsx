@@ -58,9 +58,7 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
 export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
   return (
     <WebsocketStateProvider>
-      <AppLayoutInner>
-        {children}
-      </AppLayoutInner>
+      <AppLayoutInner>{children}</AppLayoutInner>
     </WebsocketStateProvider>
   );
 };

@@ -1,18 +1,24 @@
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, MouseEvent } from "react";
 import { RenderableChatMessage } from "#/api";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/useGetPageOfChatMessagesFromChatRoomId";
 import { useGetUserByUserId } from "#/api/queries/useGetUserByUserId";
 import { FormStateProvider, useFormState } from "./FormContext";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
+import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
+const DELETED_CHAT_MESSAGE_EVENT_NAME = "DELETED_CHAT_MESSAGE_EVENT_NAME";
 
 const ChatRoomMessage = ({ message }: { message: RenderableChatMessage }) => {
   const { authorUserId, text, creationTimestamp } = message;
 
   const { data, isLoading, isError, error } = useGetUserByUserId({
     userId: authorUserId,
+  });
+
+  const { mutateAsync: deleteChatMessage } = useDeleteChatMessage({
+    chatRoomId: message.chatRoomId,
   });
 
   if (isError && !isLoading) {
@@ -25,9 +31,18 @@ const ChatRoomMessage = ({ message }: { message: RenderableChatMessage }) => {
 
   const { username } = data;
 
+  const onClickDelete = async (event: MouseEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    await deleteChatMessage({
+      chatMessageId: message.chatMessageId,
+      isInformedByWebsocketMessage: false,
+    });
+  };
+
   return (
     <div>
-      {username}: {text} @ {creationTimestamp}
+      {username}: {text} @ {creationTimestamp}{" "}
+      <span onClick={onClickDelete}> | delete | </span>
     </div>
   );
 };
@@ -55,6 +70,9 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
   });
 
   const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
+  const { mutateAsync: deleteChatMessage } = useDeleteChatMessage({
+    chatRoomId,
+  });
 
   const onMount = () => {
     if (!!socket) {
@@ -66,10 +84,20 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
         });
       }
 
+      function handleDeleteChatMessage(chatMessageId: string) {
+        console.log("RECEIEVED");
+        deleteChatMessage({
+          chatMessageId,
+          isInformedByWebsocketMessage: true,
+        });
+      }
+
       socket.on(NEW_CHAT_MESSAGE_EVENT_NAME, handleNewChatMessage);
+      socket.on(DELETED_CHAT_MESSAGE_EVENT_NAME, handleDeleteChatMessage);
 
       return function cleanup() {
         socket.off(NEW_CHAT_MESSAGE_EVENT_NAME, handleNewChatMessage);
+        socket.off(DELETED_CHAT_MESSAGE_EVENT_NAME, handleDeleteChatMessage);
       };
     }
 
@@ -89,9 +117,8 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
   }
 
   const messages = data.pages
-    .filter((page) => !!page.success)
     .flatMap((page) => {
-      return page.success!.chatMessages;
+      return page.chatMessages;
     })
     .concat(receivedChatMessages);
 

@@ -5,7 +5,6 @@ import { CacheKeys } from "#/contexts/queryClient";
 import { Api } from "..";
 
 export interface GetPageOfChatRoomsMessagesFromChatRoomIdArgs {
-  cursor?: string;
   chatRoomId: string;
 }
 
@@ -21,18 +20,21 @@ async function fetchPageOfChatMessagesFromChatRoomId({
     cursor: pageParam,
     pageSize: 5,
   });
-  return res.data;
+  if (res.data && res.data.success) {
+    return res.data.success;
+  }
+
+  throw new Error(res.data.error?.reason);
 }
 
 export const useGetPageOfChatMessagesFromChatRoomId = ({
   chatRoomId,
-  cursor,
 }: GetPageOfChatRoomsMessagesFromChatRoomIdArgs) => {
   return useInfiniteQuery(
-    [CacheKeys.chatRoomMessagePages, chatRoomId, cursor],
+    [CacheKeys.chatRoomMessagePages, chatRoomId],
     ({ pageParam }) => fetchPageOfChatMessagesFromChatRoomId({ chatRoomId, pageParam }),
     {
-      getPreviousPageParam: (lastPage) => lastPage.success?.nextPageCursor,
+      getPreviousPageParam: (lastPage) => lastPage.nextPageCursor,
     },
   );
 };
