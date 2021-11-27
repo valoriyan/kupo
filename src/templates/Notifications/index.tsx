@@ -14,7 +14,7 @@ export const Notifications = () => {
     fetchPreviousPage,
     hasPreviousPage,
     isFetchingPreviousPage,
-  } = useGetPageOfOldNotifications({});
+  } = useGetPageOfOldNotifications();
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
