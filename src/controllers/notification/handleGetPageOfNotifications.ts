@@ -2,7 +2,11 @@ import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromParts } from "../user/utilities";
-import { NotificationType, RenderableNewFollowerNotification, RenderableNotification } from "./models";
+import {
+  NotificationType,
+  RenderableNewFollowerNotification,
+  RenderableNotification,
+} from "./models";
 import { NotificationController } from "./notificationController";
 
 export interface GetPageOfNotificationsRequestBody {
@@ -44,11 +48,19 @@ export async function handleGetPageOfNotifications({
 
   console.log(requestBody);
 
-  const unrenderableUserFollows = await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId({userIdBeingFollowed: clientUserId})
+  const unrenderableUserFollows =
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
+      { userIdBeingFollowed: clientUserId },
+    );
 
-  const userIdsDoingFollowing = unrenderableUserFollows.map((follow) => follow.userIdDoingFollowing);
+  const userIdsDoingFollowing = unrenderableUserFollows.map(
+    (follow) => follow.userIdDoingFollowing,
+  );
 
-  const unrenderableUsersDoingFollowing =  await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({userIds: userIdsDoingFollowing});
+  const unrenderableUsersDoingFollowing =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+      { userIds: userIdsDoingFollowing },
+    );
 
   const renderableUsers = await constructRenderableUsersFromParts({
     clientUserId,
@@ -57,22 +69,26 @@ export async function handleGetPageOfNotifications({
     databaseService: controller.databaseService,
   });
 
-  const mapOfUserIdsToUsers = new Map(renderableUsers.map(renderableUser => [renderableUser.userId, renderableUser]));
+  const mapOfUserIdsToUsers = new Map(
+    renderableUsers.map((renderableUser) => [renderableUser.userId, renderableUser]),
+  );
 
-  const newFollowerNotifications = unrenderableUserFollows.map((unrenderableUserFollow) => {
-    const notification: RenderableNewFollowerNotification = {
-      type: NotificationType.NEW_FOLLOWER,
-      timestamp: unrenderableUserFollow.timestamp,
-      userDoingFollowing: mapOfUserIdsToUsers.get(unrenderableUserFollow.userIdDoingFollowing)!,
-    };
-    return notification;
-  })
+  const newFollowerNotifications = unrenderableUserFollows.map(
+    (unrenderableUserFollow) => {
+      const notification: RenderableNewFollowerNotification = {
+        type: NotificationType.NEW_FOLLOWER,
+        timestamp: unrenderableUserFollow.timestamp,
+        userDoingFollowing: mapOfUserIdsToUsers.get(
+          unrenderableUserFollow.userIdDoingFollowing,
+        )!,
+      };
+      return notification;
+    },
+  );
 
   return {
     success: {
-      notifications: [
-        ...newFollowerNotifications,
-      ],
+      notifications: [...newFollowerNotifications],
     },
   };
 }

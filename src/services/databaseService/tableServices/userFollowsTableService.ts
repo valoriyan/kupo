@@ -98,7 +98,6 @@ export class UserFollowsTableService extends TableService {
     return rows.map(convertDBUserFollowToUnrenderableUserFollow);
   }
 
-
   public async getUserIdsFollowedByUserId({
     userIdDoingFollowing,
   }: {

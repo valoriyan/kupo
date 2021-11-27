@@ -17,5 +17,4 @@ export interface RenderableNewFollowerNotification extends BaseNotification {
   userDoingFollowing: RenderableUser;
 }
 
-
 export type RenderableNotification = RenderableNewFollowerNotification;

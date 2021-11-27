@@ -1,5 +1,5 @@
 export interface UnrenderableUserFollow {
-    userIdDoingFollowing: string;
-    userIdBeingFollowed: string;
-    timestamp: number;
-  }
+  userIdDoingFollowing: string;
+  userIdBeingFollowed: string;
+  timestamp: number;
+}
