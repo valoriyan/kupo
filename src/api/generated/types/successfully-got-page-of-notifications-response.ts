@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
+
 /**
  *
  * @export
@@ -20,8 +22,20 @@
 export interface SuccessfullyGotPageOfNotificationsResponse {
   /**
    *
-   * @type {Array<string>}
+   * @type {Array<RenderableNewFollowerNotification>}
    * @memberof SuccessfullyGotPageOfNotificationsResponse
    */
-  messages: Array<string>;
+  notifications: Array<RenderableNewFollowerNotification>;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   */
+  previousPageCursor?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   */
+  nextPageCursor?: string;
 }

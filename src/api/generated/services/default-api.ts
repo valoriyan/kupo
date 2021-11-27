@@ -57,6 +57,8 @@ import { GetPageOfChatMessagesRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfChatRoomsRequestBody } from "../types";
 // @ts-ignore
+import { GetPageOfNotificationsRequestBody } from "../types";
+// @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedUsersParams } from "../types";
@@ -71,15 +73,15 @@ import { GetUsersByIdsRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
-import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
-// @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
-import { LoginUserParams } from "../types";
+import { HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse } from "../types";
+// @ts-ignore
+import { LoginUserRequestBody } from "../types";
 // @ts-ignore
 import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
-import { RequestPasswordResetParams } from "../types";
+import { ResetPasswordRequestBody } from "../types";
 // @ts-ignore
 import { SearchUserProfilesByUsernameParams } from "../types";
 // @ts-ignore
@@ -825,16 +827,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {object} body
+     * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPageOfNotifications: async (
-      body: object,
+      getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'body' is not null or undefined
-      assertParamExists("getPageOfNotifications", "body", body);
+      // verify required parameter 'getPageOfNotificationsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfNotifications",
+        "getPageOfNotificationsRequestBody",
+        getPageOfNotificationsRequestBody,
+      );
       const localVarPath = `/notification/getPageOfNotifications`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -858,7 +864,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        body,
+        getPageOfNotificationsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1209,16 +1215,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {LoginUserParams} loginUserParams
+     * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginUser: async (
-      loginUserParams: LoginUserParams,
+      loginUserRequestBody: LoginUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'loginUserParams' is not null or undefined
-      assertParamExists("loginUser", "loginUserParams", loginUserParams);
+      // verify required parameter 'loginUserRequestBody' is not null or undefined
+      assertParamExists("loginUser", "loginUserRequestBody", loginUserRequestBody);
       const localVarPath = `/auth/login`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1242,7 +1248,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        loginUserParams,
+        loginUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1367,19 +1373,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {RequestPasswordResetParams} requestPasswordResetParams
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestPasswordReset: async (
-      requestPasswordResetParams: RequestPasswordResetParams,
+      resetPasswordRequestBody: ResetPasswordRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'requestPasswordResetParams' is not null or undefined
+      // verify required parameter 'resetPasswordRequestBody' is not null or undefined
       assertParamExists(
         "requestPasswordReset",
-        "requestPasswordResetParams",
-        requestPasswordResetParams,
+        "resetPasswordRequestBody",
+        resetPasswordRequestBody,
       );
       const localVarPath = `/auth/resetPassword`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1404,7 +1410,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        requestPasswordResetParams,
+        resetPasswordRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2256,12 +2262,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {object} body
+     * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPageOfNotifications(
-      body: object,
+      getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
       options?: any,
     ): Promise<
       (
@@ -2270,7 +2276,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfNotifications(
-        body,
+        getPageOfNotificationsRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2466,12 +2472,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {LoginUserParams} loginUserParams
+     * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async loginUser(
-      loginUserParams: LoginUserParams,
+      loginUserRequestBody: LoginUserRequestBody,
       options?: any,
     ): Promise<
       (
@@ -2480,7 +2486,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.loginUser(
-        loginUserParams,
+        loginUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2557,21 +2563,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RequestPasswordResetParams} requestPasswordResetParams
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async requestPasswordReset(
-      requestPasswordResetParams: RequestPasswordResetParams,
+      resetPasswordRequestBody: ResetPasswordRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse>
+      ) => AxiosPromise<HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.requestPasswordReset(
-        requestPasswordResetParams,
+        resetPasswordRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3063,16 +3069,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {object} body
+     * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPageOfNotifications(
-      body: object,
+      getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse> {
       return localVarFp
-        .getPageOfNotifications(body, options)
+        .getPageOfNotifications(getPageOfNotificationsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3175,16 +3181,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {LoginUserParams} loginUserParams
+     * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginUser(
-      loginUserParams: LoginUserParams,
+      loginUserRequestBody: LoginUserRequestBody,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
       return localVarFp
-        .loginUser(loginUserParams, options)
+        .loginUser(loginUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3223,16 +3229,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {RequestPasswordResetParams} requestPasswordResetParams
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestPasswordReset(
-      requestPasswordResetParams: RequestPasswordResetParams,
+      resetPasswordRequestBody: ResetPasswordRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse> {
+    ): AxiosPromise<HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse> {
       return localVarFp
-        .requestPasswordReset(requestPasswordResetParams, options)
+        .requestPasswordReset(resetPasswordRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3625,14 +3631,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {object} body
+   * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getPageOfNotifications(body: object, options?: any) {
+  public getPageOfNotifications(
+    getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .getPageOfNotifications(body, options)
+      .getPageOfNotifications(getPageOfNotificationsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -3747,14 +3756,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {LoginUserParams} loginUserParams
+   * @param {LoginUserRequestBody} loginUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public loginUser(loginUserParams: LoginUserParams, options?: any) {
+  public loginUser(loginUserRequestBody: LoginUserRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .loginUser(loginUserParams, options)
+      .loginUser(loginUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -3797,17 +3806,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {RequestPasswordResetParams} requestPasswordResetParams
+   * @param {ResetPasswordRequestBody} resetPasswordRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public requestPasswordReset(
-    requestPasswordResetParams: RequestPasswordResetParams,
+    resetPasswordRequestBody: ResetPasswordRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .requestPasswordReset(requestPasswordResetParams, options)
+      .requestPasswordReset(resetPasswordRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
