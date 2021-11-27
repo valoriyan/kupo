@@ -10,6 +10,7 @@ export enum CacheKeys {
   UserProfile = "userProfile",
   ChatRoomsPages = "ChatRoomsPages",
   ChatRoomMessagePages = "ChatRoomMessagePages",
+  OldNotificationPages = "OldNotificationPages",
   ChatRoomMembers = "ChatRoomMembers",
   ChatRoomFromId = "ChatRoomFromId",
 }
