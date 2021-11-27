@@ -88,7 +88,7 @@ export class UserPageController extends Controller {
       request,
       requestBody,
     });
-  }  
+  }
 
   @Post("getUsersByUsernames")
   public async getUsersByUsernames(
@@ -122,7 +122,7 @@ export class UserPageController extends Controller {
       request,
       requestBody,
     });
-  }  
+  }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
@@ -183,8 +183,6 @@ export class UserPageController extends Controller {
     });
   }
 
-
-
   @Post("SetUserHashtags")
   public async setUserHashtags(
     @Request() request: express.Request,
@@ -204,7 +202,5 @@ export class UserPageController extends Controller {
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
-  //////////////////////////////////////////////////  
-
-
+  //////////////////////////////////////////////////
 }

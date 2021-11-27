@@ -1,9 +1,7 @@
 import { HTTPResponse } from "src/types/httpResponse";
 import { v4 as uuidv4 } from "uuid";
 import { encryptPassword } from "./utilities";
-import {
-  AuthController,
-} from "./authController";
+import { AuthController } from "./authController";
 import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
 import { AuthFailureReason, FailedAuthResponse, SuccessfulAuthResponse } from "./models";
 

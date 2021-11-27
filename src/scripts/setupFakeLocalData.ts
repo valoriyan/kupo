@@ -5,6 +5,9 @@ import "reflect-metadata";
 import { DatabaseService } from "../services/databaseService";
 
 async function run() {
+  console.log("");
+  console.log("Setting up Fake Local Data");
+
   const databaseService = new DatabaseService();
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
     userId: "1001",

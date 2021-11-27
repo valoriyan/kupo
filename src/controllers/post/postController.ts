@@ -125,7 +125,7 @@ export class PostController extends Controller {
       request,
       requestBody,
     });
-  }  
+  }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////

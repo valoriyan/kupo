@@ -14,10 +14,13 @@ import {
 import { FailedAuthResponse, SuccessfulAuthResponse } from "./models";
 import { handleLoginUser, LoginUserRequestBody } from "./handleLoginUser";
 import { handleRefreshAccessToken } from "./handleRefreshAccessToken";
-import { FailedToResetPasswordResponse, handleResetPassword, ResetPasswordRequestBody, SuccessfullyResetPasswordResponse } from "./handleResetPassword";
+import {
+  FailedToResetPasswordResponse,
+  handleResetPassword,
+  ResetPasswordRequestBody,
+  SuccessfullyResetPasswordResponse,
+} from "./handleResetPassword";
 import { handleLogout } from "./handleLogout";
-
-
 
 @injectable()
 @Route("auth")
@@ -48,7 +51,7 @@ export class AuthController extends Controller {
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
     return await handleLoginUser({
       controller: this,
-      requestBody,  
+      requestBody,
     });
   }
 
@@ -73,11 +76,13 @@ export class AuthController extends Controller {
   @Post("resetPassword")
   public async requestPasswordReset(
     @Body() requestBody: ResetPasswordRequestBody,
-  ): Promise<HTTPResponse<FailedToResetPasswordResponse, SuccessfullyResetPasswordResponse>> {
+  ): Promise<
+    HTTPResponse<FailedToResetPasswordResponse, SuccessfullyResetPasswordResponse>
+  > {
     return await handleResetPassword({
       controller: this,
       requestBody,
-    })
+    });
   }
 
   @Post("updatePassword")
@@ -99,10 +104,10 @@ export class AuthController extends Controller {
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
-  //////////////////////////////////////////////////  
+  //////////////////////////////////////////////////
 
   @Get("logout")
   public async logout(): Promise<void> {
-    return await handleLogout({controller: this});
+    return await handleLogout({ controller: this });
   }
 }
