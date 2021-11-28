@@ -1,26 +1,24 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api } from "../..";
+import { Api, SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../..";
 
 export interface GetChatRoomIdArgs {
   userIds: Set<string>;
 }
 
 export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
-  return useQuery(
+  return useQuery<SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse, Error>(
     [CacheKeys.ChatRoomMembers, userIds],
     async () => {
       const res = await Api.doesChatRoomExistWithUserIds({
         userIds: Array.from(userIds),
       });
 
-      console.log("res.data");
-      console.log(res.data);
-      if (!!res.data.success) {
+      if (res.data.success) {
         return res.data.success;
       }
-      throw new Error(res.data.error!.reason);
+      throw new Error(res.data.error?.reason ?? "Failed to look up chat room");
     },
-    { enabled: !!userIds && userIds.size > 0 },
+    { enabled: !!userIds.size },
   );
 };

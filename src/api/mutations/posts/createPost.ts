@@ -1,7 +1,7 @@
 import { useMutation } from "react-query";
 import Router from "next/router";
 import { useFormState } from "#/templates/AddContent/FormContext";
-import { Api } from "..";
+import { Api } from "../..";
 
 export const useCreatePost = () => {
   const formState = useFormState();

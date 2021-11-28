@@ -7,19 +7,19 @@ export interface GetUserByUserIdArgs {
 }
 
 export const useGetUserByUserId = ({ userId }: GetUserByUserIdArgs) => {
-  return useQuery<RenderableUser, Error, RenderableUser, (string | undefined)[]>(
+  return useQuery<RenderableUser, Error>(
     [CacheKeys.User, userId],
     async () => {
       const res = await Api.getUsersByIds({ userIds: [userId] });
 
-      if (!!res.data.success) {
-        const users: RenderableUser[] = res.data.success.users;
+      if (res.data.success) {
+        const users = res.data.success.users;
         if (users.length === 1) {
           return users[0];
         }
-        throw new Error("Missing user returned from getUsersByIds");
+        throw new Error("No user found");
       }
-      throw new Error(res.data.error!.reason);
+      throw new Error(res.data.error?.reason ?? "Failed to fetch user");
     },
     { enabled: !!userId },
   );

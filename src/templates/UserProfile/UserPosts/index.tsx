@@ -1,4 +1,4 @@
-import { useGetPostsByUserId } from "#/api/queries/useGetPostsByUserId";
+import { useGetPostsByUserId } from "#/api/queries/users/useGetPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
@@ -13,13 +13,12 @@ export interface UserPostsProps {
 
 export const UserPosts = (props: UserPostsProps) => {
   const { data, isLoading, error } = useGetPostsByUserId({ userId: props.userId });
-  console.log(data);
 
   if (error && !isLoading) {
-    return <ErrorMessage>{JSON.stringify(error)}</ErrorMessage>;
+    return <ErrorMessage>{error.message}</ErrorMessage>;
   }
 
-  if (isLoading || !data?.success) {
+  if (isLoading || !data) {
     return (
       <Stack css={{ pt: "$9" }}>
         <Spinner size="lg" />
@@ -27,7 +26,7 @@ export const UserPosts = (props: UserPostsProps) => {
     );
   }
 
-  const posts = data.success.renderablePosts;
+  const posts = data.renderablePosts;
 
   return (
     <Wrapper>

@@ -3,23 +3,16 @@ import { CacheKeys } from "#/contexts/queryClient";
 import { Api, RenderableUser } from "../..";
 
 export const useGetUsersByUsernames = ({ usernames }: { usernames: string[] }) => {
-  return useQuery<
-    (RenderableUser | null)[],
-    Error,
-    (RenderableUser | null)[],
-    (string | undefined)[]
-  >(
+  return useQuery<(RenderableUser | null)[], Error>(
     [CacheKeys.User, ...usernames.slice().sort()],
     async () => {
       const res = await Api.getUsersByUsernames({ usernames });
 
-      if (!!res.data.success) {
-        const users: (RenderableUser | null)[] = res.data.success.users;
-        return users;
-        throw new Error("Missing user returned from getUsersByUsernames");
+      if (res.data.success) {
+        return res.data.success.users;
       }
-      throw new Error(res.data.error!.reason);
+      throw new Error(res.data.error?.reason ?? "Failed to fetch users");
     },
-    { enabled: !!usernames && usernames.length > 0 },
+    { enabled: !!usernames.length },
   );
 };

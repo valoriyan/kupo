@@ -1,5 +1,3 @@
-// useGetPageOfChatMessagesFromChatRoomId
-
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api } from "../..";
@@ -7,6 +5,19 @@ import { Api } from "../..";
 export interface GetPageOfChatRoomsMessagesFromChatRoomIdArgs {
   chatRoomId: string;
 }
+
+export const useGetPageOfChatMessagesFromChatRoomId = ({
+  chatRoomId,
+}: GetPageOfChatRoomsMessagesFromChatRoomIdArgs) => {
+  return useInfiniteQuery(
+    [CacheKeys.ChatRoomMessagePages, chatRoomId],
+    ({ pageParam }) => fetchPageOfChatMessagesFromChatRoomId({ chatRoomId, pageParam }),
+    {
+      getPreviousPageParam: (lastPage) => lastPage.nextPageCursor,
+      enabled: !!chatRoomId,
+    },
+  );
+};
 
 async function fetchPageOfChatMessagesFromChatRoomId({
   chatRoomId,
@@ -26,16 +37,3 @@ async function fetchPageOfChatMessagesFromChatRoomId({
 
   throw new Error(res.data.error?.reason);
 }
-
-export const useGetPageOfChatMessagesFromChatRoomId = ({
-  chatRoomId,
-}: GetPageOfChatRoomsMessagesFromChatRoomIdArgs) => {
-  return useInfiniteQuery(
-    [CacheKeys.ChatRoomMessagePages, chatRoomId],
-    ({ pageParam }) => fetchPageOfChatMessagesFromChatRoomId({ chatRoomId, pageParam }),
-    {
-      getPreviousPageParam: (lastPage) => lastPage.nextPageCursor,
-      enabled: !!chatRoomId,
-    },
-  );
-};

@@ -3,23 +3,17 @@ import { CacheKeys } from "#/contexts/queryClient";
 import { Api, RenderableUser } from "../..";
 
 export const useGetUsersByUserIds = ({ userIds }: { userIds: string[] }) => {
-  return useQuery<
-    (RenderableUser | null)[],
-    Error,
-    (RenderableUser | null)[],
-    (string | undefined)[]
-  >(
+  return useQuery<(RenderableUser | null)[], Error>(
     [CacheKeys.User, ...userIds.slice().sort()],
     async () => {
       const res = await Api.getUsersByIds({ userIds });
 
-      if (!!res.data.success) {
+      if (res.data.success) {
         const users: (RenderableUser | null)[] = res.data.success.users;
         return users;
-        throw new Error("Missing user returned from getUsersByIds");
       }
-      throw new Error(res.data.error!.reason);
+      throw new Error(res.data.error?.reason ?? "Failed to fetch users");
     },
-    { enabled: !!userIds && userIds.length > 0 },
+    { enabled: !!userIds.length },
   );
 };

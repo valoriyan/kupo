@@ -1,5 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider as BaseQueryClientProvider } from "react-query";
+// import { ReactQueryDevtools } from "react-query/devtools";
 
 /**
  * An enum containing all of the cache keys that get passed to
@@ -29,6 +30,7 @@ export const queryClient = new QueryClient({
 export const QueryClientProvider = (props: React.PropsWithChildren<unknown>) => {
   return (
     <BaseQueryClientProvider client={queryClient}>
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       {props.children}
     </BaseQueryClientProvider>
   );

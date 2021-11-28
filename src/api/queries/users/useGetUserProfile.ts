@@ -8,16 +8,15 @@ export interface GetUserProfileArgs {
 }
 
 export const useGetUserProfile = ({ username, isOwnProfile }: GetUserProfileArgs) => {
-  return useQuery<RenderableUser, Error, RenderableUser, (string | undefined)[]>(
+  return useQuery<RenderableUser, Error>(
     [CacheKeys.UserProfile, username],
     async () => {
       const res = await Api.getUserProfile({ username }, { noAuth: !!username });
 
-      if (!!res.data.success) {
-        const user: RenderableUser = res.data.success;
-        return user;
+      if (res.data.success) {
+        return res.data.success;
       }
-      throw new Error(res.data.error!.reason);
+      throw new Error(res.data.error?.reason ?? "Failed to fetch user");
     },
     { enabled: isOwnProfile || !!username },
   );

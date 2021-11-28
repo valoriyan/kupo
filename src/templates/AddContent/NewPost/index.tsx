@@ -8,7 +8,7 @@ import { HashTags } from "./HashTags";
 import { useFormState } from "../FormContext";
 import { AdditionalScreen } from "..";
 import { DateTimePicker } from "#/components/DateTimePicker";
-import { useCreatePost } from "#/api/mutations/createPost";
+import { useCreatePost } from "#/api/mutations/posts/createPost";
 
 export interface NewPostProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;

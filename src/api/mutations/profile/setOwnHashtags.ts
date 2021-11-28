@@ -14,12 +14,12 @@ export const useSetOwnHashtags = ({
   return useMutation(
     async () => {
       return Api.setUserHashtags({
-        hashtags: hashtags.filter((hashtag) => !!hashtag),
+        hashtags: hashtags.filter(Boolean),
       });
     },
     {
       onSuccess: (data) => {
-        if (!!data.data.success) {
+        if (data.data.success) {
           const cacheKey = [CacheKeys.UserProfile, username];
           const cachedData: RenderableUser | undefined =
             queryClient.getQueryData(cacheKey);
