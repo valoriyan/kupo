@@ -21,7 +21,7 @@ Template.args = {
     hashtags: ["test", "placeholder", "newPost"],
     likes: {
       count: 10,
-    }
+    },
   },
   authorUserName: "blake",
   authorUserAvatar: "https://via.placeholder.com/450x300.png?text=:D",
