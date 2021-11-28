@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { Color } from "./color";
 import { ProfilePrivacySetting } from "./profile-privacy-setting";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
@@ -53,10 +54,22 @@ export interface RenderableUser {
   userWebsite?: string;
   /**
    *
+   * @type {string}
+   * @memberof RenderableUser
+   */
+  phoneNumber?: string;
+  /**
+   *
    * @type {ProfilePrivacySetting}
    * @memberof RenderableUser
    */
   profilePrivacySetting: ProfilePrivacySetting;
+  /**
+   *
+   * @type {Color}
+   * @memberof RenderableUser
+   */
+  preferredPagePrimaryColor?: Color;
   /**
    *
    * @type {string}
@@ -87,4 +100,10 @@ export interface RenderableUser {
    * @memberof RenderableUser
    */
   clientCanViewContent: boolean;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof RenderableUser
+   */
+  hashtags: Array<string>;
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";
@@ -22,12 +22,12 @@ export interface UserProfileProps {
 export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
   const { data, isLoading, error } = useGetUserProfile({ username, isOwnProfile });
 
-  return !isLoading && (error || data?.error) ? (
-    <ErrorArea>{data?.error?.reason || "An Unexpected Error Occurred"}</ErrorArea>
-  ) : isLoading || !data?.success ? (
+  return !isLoading && error ? (
+    <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
+  ) : isLoading || !data ? (
     <LoadingArea size="lg" />
   ) : (
-    <ProfileBody isOwnProfile={isOwnProfile} user={data.success} />
+    <ProfileBody isOwnProfile={isOwnProfile} user={data} />
   );
 };
 

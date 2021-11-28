@@ -1,150 +1,222 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
-import { useQuery } from "react-query";
-import { Api } from "#/api";
+import { ChangeEvent, MouseEvent } from "react";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { Avatar } from "#/components/Avatar";
+import { useUpdateOwnProfilePicture } from "#/api/mutations/profile/updateOwnProfilePicture";
+import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";
+import { useUpdateOwnProfile } from "#/api/mutations/profile/updateOwnProfile";
+import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
+import { FormStateProvider, useFormState } from "./FormContext";
+import { colorOptions } from "./config";
+import { RenderableUser } from "#/api";
 
-const defaultProfilePictureUrl =
-  "https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-1024.png";
-const defaultBackgroundImageUrl = "https://i.redd.it/1lrfl5fk5j951.png";
+export interface ProfileSettingsInnerProps {
+  renderableUser: RenderableUser;
+}
 
-export const ProfileSettings = () => {
-  const [loadedProfilePictureUrl, setLoadedProfilePictureUrl] = useState<string>(
-    defaultProfilePictureUrl,
-  );
-  const [loadedBackgroundImageUrl, setLoadedBackgroundImageUrl] = useState<string>(
-    defaultBackgroundImageUrl,
-  );
+export const ProfileSettingsInner = (props: ProfileSettingsInnerProps) => {
+  const {
+    renderableUser: { profilePictureTemporaryUrl, backgroundImageTemporaryUrl },
+  } = props;
 
-  const { isLoading, data } = useQuery("userData123", async () => {
-    const res = await Api.getUserProfile({ username: "trajanson" });
-    return res.data;
+  const {
+    username: formUsername,
+    setUsername: setFormUsername,
+
+    shortBio: formShortBio,
+    setShortBio: setFormShortBio,
+
+    userWebsite: formUserWebsite,
+    setUserWebsite: setFormUserWebsite,
+
+    preferredPagePrimaryColor: formPreferredPagePrimaryColor,
+    setPreferredPagePrimaryColor: setFormPreferredPagePrimaryColor,
+
+    hashTags: formHashtags,
+    setHashTags: setFormHashtags,
+  } = useFormState();
+
+  const { mutateAsync: updateOwnProfilePicture } = useUpdateOwnProfilePicture();
+  const { mutateAsync: updateOwnBackgroundImage } = useUpdateOwnBackgroundImage();
+  const { mutateAsync: updateOwnProfile } = useUpdateOwnProfile();
+  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags({
+    hashtags: formHashtags,
+    username: formUsername,
   });
 
-  if (!!isLoading) {
+  const onChangeProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.currentTarget;
+    if (!files?.length) return;
+
+    for (const file of files) {
+      updateOwnProfilePicture({ file });
+    }
+  };
+
+  const onChangeBackgroundImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.currentTarget;
+    if (!files?.length) return;
+
+    for (const file of files) {
+      updateOwnBackgroundImage({ file });
+    }
+  };
+
+  function generateOnChangUserHashtag(hashtagIndex: number) {
+    function onChangUserHashtag(event: ChangeEvent<HTMLInputElement>) {
+      event.preventDefault();
+      const newValue = event.currentTarget.value;
+      const updatedHashtags = [...Array(5).keys()].map((index) => {
+        if (index === hashtagIndex) {
+          return newValue;
+        }
+        return formHashtags[index];
+      });
+
+      setFormHashtags(updatedHashtags);
+    }
+
+    return onChangUserHashtag;
+  }
+
+  function onSubmitSettings(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    updateOwnProfile({
+      username: formUsername,
+      shortBio: formShortBio,
+      userWebsite: formUserWebsite,
+      preferredPagePrimaryColor: formPreferredPagePrimaryColor,
+    });
+
+    setOwnHashtags();
+  }
+
+  const colorPallete = colorOptions.map((colorOption, index) => {
+    function onClick(event: MouseEvent<HTMLDivElement>) {
+      event.preventDefault();
+      setFormPreferredPagePrimaryColor(colorOption);
+    }
+    const border =
+      colorOption.red === formPreferredPagePrimaryColor.red &&
+      colorOption.green === formPreferredPagePrimaryColor.green &&
+      colorOption.blue === formPreferredPagePrimaryColor.blue
+        ? "1px solid red"
+        : "";
+
+    return (
+      <div
+        key={index}
+        onClick={onClick}
+        style={{
+          width: "15px",
+          height: "15px",
+          backgroundColor: `rgb(${colorOption.red} ${colorOption.green} ${colorOption.blue})`,
+          border,
+        }}
+      />
+    );
+  });
+
+  /* eslint-disable @next/next/no-img-element */
+  return (
+    <div>
+      <div>Your Profile</div>
+
+      <div>
+        <Avatar src={profilePictureTemporaryUrl} alt="User Avatar" size="$6" />
+        Profile Picture
+        <form>
+          <label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, video/mp4"
+              onChange={onChangeProfilePicture}
+            />
+          </label>
+        </form>
+      </div>
+
+      <div>
+        <img
+          src={backgroundImageTemporaryUrl}
+          style={{ height: "60px", width: "120px" }}
+        />
+        Background Image
+        <form>
+          <label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, video/mp4"
+              onChange={onChangeBackgroundImage}
+            />
+          </label>
+        </form>
+      </div>
+
+      <div>Page Color</div>
+
+      {colorPallete}
+
+      <br />
+
+      <div>
+        Username:
+        <input
+          type="text"
+          value={formUsername}
+          onChange={(e) => setFormUsername(e.currentTarget.value)}
+        />
+      </div>
+
+      <div>
+        Profile Bio:
+        <input
+          type="text"
+          value={formShortBio}
+          onChange={(e) => setFormShortBio(e.currentTarget.value)}
+        />
+      </div>
+
+      <div>
+        Website:
+        <input
+          type="text"
+          value={formUserWebsite}
+          onChange={(e) => setFormUserWebsite(e.currentTarget.value)}
+        />
+      </div>
+
+      <div>Discover</div>
+
+      <div>Profile Hashtags</div>
+
+      <div>
+        <input value={formHashtags[0] || ""} onChange={generateOnChangUserHashtag(0)} />
+        <input value={formHashtags[1] || ""} onChange={generateOnChangUserHashtag(1)} />
+        <input value={formHashtags[2] || ""} onChange={generateOnChangUserHashtag(2)} />
+        <input value={formHashtags[3] || ""} onChange={generateOnChangUserHashtag(3)} />
+        <input value={formHashtags[4] || ""} onChange={generateOnChangUserHashtag(4)} />
+      </div>
+
+      <br />
+      <button onClick={onSubmitSettings}>Save Settings</button>
+    </div>
+  );
+};
+
+export const ProfileSettings = () => {
+  const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });
+
+  if (error && !isLoading) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !data) {
     return <div>Loading</div>;
   }
 
-  if (data && data.success) {
-    const {
-      username,
-      shortBio,
-      userWebsite,
-      profilePictureTemporaryUrl,
-      backgroundImageTemporaryUrl,
-    } = data.success!;
-
-    if (
-      loadedProfilePictureUrl === defaultProfilePictureUrl &&
-      !!profilePictureTemporaryUrl
-    ) {
-      setLoadedProfilePictureUrl(profilePictureTemporaryUrl);
-    }
-    if (
-      loadedBackgroundImageUrl === defaultBackgroundImageUrl &&
-      !!backgroundImageTemporaryUrl
-    ) {
-      setLoadedBackgroundImageUrl(backgroundImageTemporaryUrl);
-    }
-
-    function onClickProfilePicture(event: MouseEvent<HTMLImageElement>) {
-      event.preventDefault();
-    }
-
-    function onClickBackgroundImage(event: MouseEvent<HTMLImageElement>) {
-      event.preventDefault();
-    }
-
-    const onChangeProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.currentTarget;
-      if (!files?.length) return;
-
-      for (const file of files) {
-        // const src = URL.createObjectURL(file);
-
-        Api.updateUserProfilePicture(file).then((response) => {
-          if (
-            response.data.success &&
-            !!response.data.success.profilePictureTemporaryUrl
-          ) {
-            setLoadedProfilePictureUrl(response.data.success.profilePictureTemporaryUrl);
-          }
-        });
-      }
-    };
-
-    const onChangeBackgroundImage = (e: ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.currentTarget;
-      if (!files?.length) return;
-
-      for (const file of files) {
-        // const src = URL.createObjectURL(file);
-        Api.updateUserBackgroundImage(file).then((response) => {
-          if (
-            response.data.success &&
-            !!response.data.success.backgroundImageTemporaryUrl
-          ) {
-            setLoadedBackgroundImageUrl(
-              response.data.success.backgroundImageTemporaryUrl,
-            );
-          }
-        });
-      }
-    };
-
-    /* eslint-disable @next/next/no-img-element */
-    return (
-      <div>
-        <div>Your Profile</div>
-
-        <div>
-          <img
-            onClick={onClickProfilePicture}
-            src={loadedProfilePictureUrl}
-            style={{ height: "30px", width: "30px" }}
-          />
-          Profile Picture
-          <form>
-            <label>
-              <input
-                type="file"
-                accept="image/png, image/jpeg, video/mp4"
-                onChange={onChangeProfilePicture}
-              />
-            </label>
-          </form>
-        </div>
-
-        <div>
-          <img
-            onClick={onClickBackgroundImage}
-            src={loadedBackgroundImageUrl}
-            style={{ height: "60px", width: "120px" }}
-          />
-          Background Image
-          <form>
-            <label>
-              <input
-                type="file"
-                accept="image/png, image/jpeg, video/mp4"
-                onChange={onChangeBackgroundImage}
-              />
-            </label>
-          </form>
-        </div>
-
-        <div>Page Color</div>
-
-        <div>Username: {username}</div>
-
-        <div>Profile Bio: {shortBio}</div>
-
-        <div>Website: {userWebsite}</div>
-
-        <div>Discover</div>
-
-        <div>Profile Hashtags</div>
-      </div>
-    );
-
-    return <div></div>;
-  }
+  return (
+    <FormStateProvider renderableUser={data}>
+      <ProfileSettingsInner renderableUser={data} />
+    </FormStateProvider>
+  );
 };

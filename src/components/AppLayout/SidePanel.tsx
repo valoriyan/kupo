@@ -16,8 +16,14 @@ import {
 import { Stack } from "../Layout";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
+import { useWebsocketState } from "./WebsocketContext";
 
 export const SidePanel = () => {
+  const { notificationsReceived } = useWebsocketState();
+
+  const notificationsIndicator =
+    notificationsReceived.length === 0 ? "" : ` (${notificationsReceived.length})`;
+
   return (
     <SidePanelWrapper>
       <Stack css={{ gap: "$4" }}>
@@ -31,7 +37,11 @@ export const SidePanel = () => {
       <Stack css={{ gap: "$8", height: "100%", overflow: "auto" }}>
         <Stack css={{ gap: "$5" }}>
           <NavLink href="/" Icon={Home} label="Home" />
-          <NavLink href="/notifications" Icon={Bell} label="Notifications" />
+          <NavLink
+            href="/notifications"
+            Icon={Bell}
+            label={`Notifications${notificationsIndicator}`}
+          />
           <NavLink href="/messages" Icon={Mail} label="Messages" />
           <NavLink href="/profile" Icon={Girl} label="My Profile" />
           <NavLink href="/lists" Icon={List} label="My Lists" />

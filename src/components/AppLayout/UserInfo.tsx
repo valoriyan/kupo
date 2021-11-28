@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/useGetUserProfile";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { styled } from "#/styling";
 import { formatStat } from "#/utils/formatStat";
 import { Avatar } from "../Avatar";
@@ -16,19 +16,19 @@ export const UserInfo = (props: UserInfoProps) => {
 
   return (
     <>
-      <Avatar alt="User Avatar" />
-      {isLoading ? (
+      <Avatar alt="User Avatar" src={data?.profilePictureTemporaryUrl} />
+      {isLoading || !data ? (
         <UserStatsPlaceholder>
           <LoadingArea size="md" />
         </UserStatsPlaceholder>
       ) : (
         <Flex css={{ gap: "$2", flexDirection: "column" }}>
           <Link href="/profile" passHref>
-            <a onClick={props.onUsernameClick}>@{data?.success?.username}</a>
+            <a onClick={props.onUsernameClick}>@{data.username}</a>
           </Link>
           <Flex css={{ flexDirection: "column" }}>
-            <UserStat>{formatStat(data?.success?.followers.count)} followers</UserStat>
-            <UserStat>{formatStat(data?.success?.follows.count)} following</UserStat>
+            <UserStat>{formatStat(data.followers.count)} followers</UserStat>
+            <UserStat>{formatStat(data.follows.count)} following</UserStat>
           </Flex>
         </Flex>
       )}

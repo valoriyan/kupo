@@ -10,17 +10,21 @@ import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
 import { Close } from "#/components/Icons";
 import { ProfileSettings } from "./ProfileSettings";
+import { AccountSettings } from "./AccountSettings";
+import { PasswordSettings } from "./AccountSettings/PasswordSettings";
 
 export enum SettingsScreen {
   Initial = "Initial",
   Profile = "Profile",
   Account = "Account",
+  Password = "Password",
 }
 
 const screenToHeading = {
   [SettingsScreen.Initial]: "Settings",
   [SettingsScreen.Profile]: "Profile",
   [SettingsScreen.Account]: "Account",
+  [SettingsScreen.Password]: "Password",
 };
 
 export const Settings = () => {
@@ -41,12 +45,12 @@ export const Settings = () => {
       break;
     case SettingsScreen.Profile:
       bodyNode = <ProfileSettings />;
-      // bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
     case SettingsScreen.Account:
-      bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
-
-      // bodyNode = <NewShopItem />;
+      bodyNode = <AccountSettings setCurrentScreen={setCurrentScreen} />;
+      break;
+    case SettingsScreen.Password:
+      bodyNode = <PasswordSettings />;
       break;
     default:
       assertUnreachable(currentScreen, "Unknown screen received");

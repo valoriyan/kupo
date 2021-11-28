@@ -6,8 +6,14 @@ import { QueryClient, QueryClientProvider as BaseQueryClientProvider } from "rea
  * `react-query`'s `useQuery` hook.
  */
 export enum CacheKeys {
+  User = "user",
   UserProfile = "userProfile",
   UserPosts = "userPosts",
+  ChatRoomsPages = "ChatRoomsPages",
+  ChatRoomMessagePages = "ChatRoomMessagePages",
+  OldNotificationPages = "OldNotificationPages",
+  ChatRoomMembers = "ChatRoomMembers",
+  ChatRoomFromId = "ChatRoomFromId",
 }
 
 export const queryClient = new QueryClient({

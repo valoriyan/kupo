@@ -37,15 +37,27 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { CreateChatMessageInNewRoomRequestBody } from "../types";
+// @ts-ignore
 import { CreateChatMessageRequestBody } from "../types";
+// @ts-ignore
+import { DeleteChatMessageRequestBody } from "../types";
 // @ts-ignore
 import { DeletePostRequestBody } from "../types";
 // @ts-ignore
 import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
+import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
+// @ts-ignore
 import { FollowUserProfileParams } from "../types";
 // @ts-ignore
+import { GetChatRoomByIdRequestBody } from "../types";
+// @ts-ignore
 import { GetPageOfChatMessagesRequestBody } from "../types";
+// @ts-ignore
+import { GetPageOfChatRoomsRequestBody } from "../types";
+// @ts-ignore
+import { GetPageOfNotificationsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
 // @ts-ignore
@@ -57,25 +69,33 @@ import { GetPostsScheduledByUserParams } from "../types";
 // @ts-ignore
 import { GetUserProfileParams } from "../types";
 // @ts-ignore
-import { HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse } from "../types";
+import { GetUsersByIdsRequestBody } from "../types";
+// @ts-ignore
+import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
-import { LoginUserParams } from "../types";
+import { HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse } from "../types";
 // @ts-ignore
-import { RegisterUserParams } from "../types";
+import { LoginUserRequestBody } from "../types";
 // @ts-ignore
-import { RequestPasswordResetParams } from "../types";
+import { RegisterUserRequestBody } from "../types";
+// @ts-ignore
+import { ResetPasswordRequestBody } from "../types";
 // @ts-ignore
 import { SearchUserProfilesByUsernameParams } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse } from "../types";
 // @ts-ignore
@@ -89,9 +109,17 @@ import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSucces
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse } from "../types";
 // @ts-ignore
@@ -99,13 +127,27 @@ import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpda
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
+import { SetUserHashtagsRequestBody } from "../types";
+// @ts-ignore
 import { UnfollowUserProfileParams } from "../types";
 // @ts-ignore
+import { UpdatePasswordRequestBody } from "../types";
+// @ts-ignore
 import { UpdatePostParams } from "../types";
+// @ts-ignore
+import { UpdateUserProfileRequestBody } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -152,6 +194,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         createChatMessageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createChatMessageInNewChatRoom: async (
+      createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'createChatMessageInNewRoomRequestBody' is not null or undefined
+      assertParamExists(
+        "createChatMessageInNewChatRoom",
+        "createChatMessageInNewRoomRequestBody",
+        createChatMessageInNewRoomRequestBody,
+      );
+      const localVarPath = `/chat/createChatMessageInNewChatRoom`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createChatMessageInNewRoomRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -352,6 +443,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteChatMessage: async (
+      deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'deleteChatMessageRequestBody' is not null or undefined
+      assertParamExists(
+        "deleteChatMessage",
+        "deleteChatMessageRequestBody",
+        deleteChatMessageRequestBody,
+      );
+      const localVarPath = `/chat/deleteChatMessage`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        deleteChatMessageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -446,6 +586,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    doesChatRoomExistWithUserIds: async (
+      doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'doesChatRoomExistWithUserIdsRequestBody' is not null or undefined
+      assertParamExists(
+        "doesChatRoomExistWithUserIds",
+        "doesChatRoomExistWithUserIdsRequestBody",
+        doesChatRoomExistWithUserIdsRequestBody,
+      );
+      const localVarPath = `/chat/doesChatRoomExistWithUserIds`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        doesChatRoomExistWithUserIdsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {FollowUserProfileParams} followUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -491,6 +680,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getChatRoomById: async (
+      getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getChatRoomByIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getChatRoomById",
+        "getChatRoomByIdRequestBody",
+        getChatRoomByIdRequestBody,
+      );
+      const localVarPath = `/chat/getChatRoomById`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getChatRoomByIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -505,7 +743,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         "getPageOfChatMessagesRequestBody",
         getPageOfChatMessagesRequestBody,
       );
-      const localVarPath = `/chat/getPage`;
+      const localVarPath = `/chat/getPageOfChatMessages`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -529,6 +767,104 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPageOfChatMessagesRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfChatRooms: async (
+      getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfChatRoomsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfChatRooms",
+        "getPageOfChatRoomsRequestBody",
+        getPageOfChatRoomsRequestBody,
+      );
+      const localVarPath = `/chat/getPageOfChatRooms`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfChatRoomsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfNotifications: async (
+      getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfNotificationsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfNotifications",
+        "getPageOfNotificationsRequestBody",
+        getPageOfNotificationsRequestBody,
+      );
+      const localVarPath = `/notification/getPageOfNotifications`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfNotificationsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -781,16 +1117,114 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {LoginUserParams} loginUserParams
+     * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByIds: async (
+      getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getUsersByIdsRequestBody' is not null or undefined
+      assertParamExists(
+        "getUsersByIds",
+        "getUsersByIdsRequestBody",
+        getUsersByIdsRequestBody,
+      );
+      const localVarPath = `/user/getUsersByIds`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getUsersByIdsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByUsernames: async (
+      getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getUsersByUsernamesRequestBody' is not null or undefined
+      assertParamExists(
+        "getUsersByUsernames",
+        "getUsersByUsernamesRequestBody",
+        getUsersByUsernamesRequestBody,
+      );
+      const localVarPath = `/user/getUsersByUsernames`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getUsersByUsernamesRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginUser: async (
-      loginUserParams: LoginUserParams,
+      loginUserRequestBody: LoginUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'loginUserParams' is not null or undefined
-      assertParamExists("loginUser", "loginUserParams", loginUserParams);
+      // verify required parameter 'loginUserRequestBody' is not null or undefined
+      assertParamExists("loginUser", "loginUserRequestBody", loginUserRequestBody);
       const localVarPath = `/auth/login`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -814,7 +1248,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        loginUserParams,
+        loginUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -890,16 +1324,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {RegisterUserParams} registerUserParams
+     * @param {RegisterUserRequestBody} registerUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     registerUser: async (
-      registerUserParams: RegisterUserParams,
+      registerUserRequestBody: RegisterUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'registerUserParams' is not null or undefined
-      assertParamExists("registerUser", "registerUserParams", registerUserParams);
+      // verify required parameter 'registerUserRequestBody' is not null or undefined
+      assertParamExists(
+        "registerUser",
+        "registerUserRequestBody",
+        registerUserRequestBody,
+      );
       const localVarPath = `/auth/register`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -923,7 +1361,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        registerUserParams,
+        registerUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -935,19 +1373,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {RequestPasswordResetParams} requestPasswordResetParams
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestPasswordReset: async (
-      requestPasswordResetParams: RequestPasswordResetParams,
+      resetPasswordRequestBody: ResetPasswordRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'requestPasswordResetParams' is not null or undefined
+      // verify required parameter 'resetPasswordRequestBody' is not null or undefined
       assertParamExists(
         "requestPasswordReset",
-        "requestPasswordResetParams",
-        requestPasswordResetParams,
+        "resetPasswordRequestBody",
+        resetPasswordRequestBody,
       );
       const localVarPath = `/auth/resetPassword`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -972,7 +1410,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        requestPasswordResetParams,
+        resetPasswordRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1033,6 +1471,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserHashtags: async (
+      setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'setUserHashtagsRequestBody' is not null or undefined
+      assertParamExists(
+        "setUserHashtags",
+        "setUserHashtagsRequestBody",
+        setUserHashtagsRequestBody,
+      );
+      const localVarPath = `/user/SetUserHashtags`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        setUserHashtagsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1071,6 +1558,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         unfollowUserProfileParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePassword: async (
+      updatePasswordRequestBody: UpdatePasswordRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'updatePasswordRequestBody' is not null or undefined
+      assertParamExists(
+        "updatePassword",
+        "updatePasswordRequestBody",
+        updatePasswordRequestBody,
+      );
+      const localVarPath = `/auth/updatePassword`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updatePasswordRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1273,20 +1809,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} [username]
-     * @param {string} [shortBio]
-     * @param {string} [userWebsite]
-     * @param {string} [profileVisibility]
+     * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfile: async (
-      username?: string,
-      shortBio?: string,
-      userWebsite?: string,
-      profileVisibility?: string,
+      updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'updateUserProfileRequestBody' is not null or undefined
+      assertParamExists(
+        "updateUserProfile",
+        "updateUserProfileRequestBody",
+        updateUserProfileRequestBody,
+      );
       const localVarPath = `/user/UpdateUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1298,26 +1834,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (username !== undefined) {
-        localVarFormParams.append("username", username as any);
-      }
-
-      if (shortBio !== undefined) {
-        localVarFormParams.append("shortBio", shortBio as any);
-      }
-
-      if (userWebsite !== undefined) {
-        localVarFormParams.append("userWebsite", userWebsite as any);
-      }
-
-      if (profileVisibility !== undefined) {
-        localVarFormParams.append("profileVisibility", profileVisibility as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -1327,7 +1845,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateUserProfileRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1410,6 +1932,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         createChatMessageRequestBody,
         options,
       );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async createChatMessageInNewChatRoom(
+      createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.createChatMessageInNewChatRoom(
+          createChatMessageInNewRoomRequestBody,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -1504,6 +2053,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deleteChatMessage(
+      deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deleteChatMessage(
+        deleteChatMessageRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1556,6 +2131,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async doesChatRoomExistWithUserIds(
+      doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.doesChatRoomExistWithUserIds(
+          doesChatRoomExistWithUserIdsRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {FollowUserProfileParams} followUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1582,6 +2184,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getChatRoomById(
+      getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getChatRoomById(
+        getChatRoomByIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1597,6 +2225,58 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatMessages(
         getPageOfChatMessagesRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfChatRooms(
+      getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatRooms(
+        getPageOfChatRoomsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfNotifications(
+      getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfNotifications(
+        getPageOfNotificationsRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1740,12 +2420,64 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {LoginUserParams} loginUserParams
+     * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getUsersByIds(
+      getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByIds(
+        getUsersByIdsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getUsersByUsernames(
+      getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByUsernames(
+        getUsersByUsernamesRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async loginUser(
-      loginUserParams: LoginUserParams,
+      loginUserRequestBody: LoginUserRequestBody,
       options?: any,
     ): Promise<
       (
@@ -1754,7 +2486,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.loginUser(
-        loginUserParams,
+        loginUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1805,12 +2537,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RegisterUserParams} registerUserParams
+     * @param {RegisterUserRequestBody} registerUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async registerUser(
-      registerUserParams: RegisterUserParams,
+      registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
     ): Promise<
       (
@@ -1819,7 +2551,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(
-        registerUserParams,
+        registerUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1831,21 +2563,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RequestPasswordResetParams} requestPasswordResetParams
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async requestPasswordReset(
-      requestPasswordResetParams: RequestPasswordResetParams,
+      resetPasswordRequestBody: ResetPasswordRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse>
+      ) => AxiosPromise<HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.requestPasswordReset(
-        requestPasswordResetParams,
+        resetPasswordRequestBody,
         options,
       );
       return createRequestFunction(
@@ -1884,6 +2616,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async setUserHashtags(
+      setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.setUserHashtags(
+        setUserHashtagsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1899,6 +2657,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.unfollowUser(
         unfollowUserProfileParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updatePassword(
+      updatePasswordRequestBody: UpdatePasswordRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.updatePassword(
+        updatePasswordRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2012,18 +2796,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} [username]
-     * @param {string} [shortBio]
-     * @param {string} [userWebsite]
-     * @param {string} [profileVisibility]
+     * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateUserProfile(
-      username?: string,
-      shortBio?: string,
-      userWebsite?: string,
-      profileVisibility?: string,
+      updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options?: any,
     ): Promise<
       (
@@ -2032,10 +2810,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
-        username,
-        shortBio,
-        userWebsite,
-        profileVisibility,
+        updateUserProfileRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2097,6 +2872,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse> {
       return localVarFp
         .createChatMessage(createChatMessageRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createChatMessageInNewChatRoom(
+      createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse> {
+      return localVarFp
+        .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2168,6 +2957,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteChatMessage(
+      deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse> {
+      return localVarFp
+        .deleteChatMessage(deleteChatMessageRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2196,6 +2999,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    doesChatRoomExistWithUserIds(
+      doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse> {
+      return localVarFp
+        .doesChatRoomExistWithUserIds(doesChatRoomExistWithUserIdsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {FollowUserProfileParams} followUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2210,6 +3027,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getChatRoomById(
+      getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse> {
+      return localVarFp
+        .getChatRoomById(getChatRoomByIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2220,6 +3051,34 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse> {
       return localVarFp
         .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfChatRooms(
+      getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse> {
+      return localVarFp
+        .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfNotifications(
+      getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse> {
+      return localVarFp
+        .getPageOfNotifications(getPageOfNotificationsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2294,16 +3153,44 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {LoginUserParams} loginUserParams
+     * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByIds(
+      getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse> {
+      return localVarFp
+        .getUsersByIds(getUsersByIdsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUsersByUsernames(
+      getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse> {
+      return localVarFp
+        .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginUser(
-      loginUserParams: LoginUserParams,
+      loginUserRequestBody: LoginUserRequestBody,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
       return localVarFp
-        .loginUser(loginUserParams, options)
+        .loginUser(loginUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2328,30 +3215,30 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {RegisterUserParams} registerUserParams
+     * @param {RegisterUserRequestBody} registerUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     registerUser(
-      registerUserParams: RegisterUserParams,
+      registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
     ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
       return localVarFp
-        .registerUser(registerUserParams, options)
+        .registerUser(registerUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {RequestPasswordResetParams} requestPasswordResetParams
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestPasswordReset(
-      requestPasswordResetParams: RequestPasswordResetParams,
+      resetPasswordRequestBody: ResetPasswordRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseDeniedPasswordResetResponseSuccessfulPasswordResetResponse> {
+    ): AxiosPromise<HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse> {
       return localVarFp
-        .requestPasswordReset(requestPasswordResetParams, options)
+        .requestPasswordReset(resetPasswordRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2370,6 +3257,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserHashtags(
+      setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse> {
+      return localVarFp
+        .setUserHashtags(setUserHashtagsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {UnfollowUserProfileParams} unfollowUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2380,6 +3281,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse> {
       return localVarFp
         .unfollowUser(unfollowUserProfileParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePassword(
+      updatePasswordRequestBody: UpdatePasswordRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse> {
+      return localVarFp
+        .updatePassword(updatePasswordRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2453,22 +3368,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} [username]
-     * @param {string} [shortBio]
-     * @param {string} [userWebsite]
-     * @param {string} [profileVisibility]
+     * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfile(
-      username?: string,
-      shortBio?: string,
-      userWebsite?: string,
-      profileVisibility?: string,
+      updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
       return localVarFp
-        .updateUserProfile(username, shortBio, userWebsite, profileVisibility, options)
+        .updateUserProfile(updateUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2508,6 +3417,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .createChatMessage(createChatMessageRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {CreateChatMessageInNewRoomRequestBody} createChatMessageInNewRoomRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createChatMessageInNewChatRoom(
+    createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2584,6 +3509,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {DeleteChatMessageRequestBody} deleteChatMessageRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteChatMessage(
+    deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .deleteChatMessage(deleteChatMessageRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {DeletePostRequestBody} deletePostRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2613,6 +3554,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {DoesChatRoomExistWithUserIdsRequestBody} doesChatRoomExistWithUserIdsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public doesChatRoomExistWithUserIds(
+    doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .doesChatRoomExistWithUserIds(doesChatRoomExistWithUserIdsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {FollowUserProfileParams} followUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2621,6 +3578,22 @@ export class DefaultApi extends BaseAPI {
   public followUser(followUserProfileParams: FollowUserProfileParams, options?: any) {
     return DefaultApiFp(this.configuration)
       .followUser(followUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetChatRoomByIdRequestBody} getChatRoomByIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getChatRoomById(
+    getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getChatRoomById(getChatRoomByIdRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2637,6 +3610,38 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfChatRoomsRequestBody} getPageOfChatRoomsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfChatRooms(
+    getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfNotifications(
+    getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfNotifications(getPageOfNotificationsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2719,14 +3724,46 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {LoginUserParams} loginUserParams
+   * @param {GetUsersByIdsRequestBody} getUsersByIdsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public loginUser(loginUserParams: LoginUserParams, options?: any) {
+  public getUsersByIds(
+    getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .loginUser(loginUserParams, options)
+      .getUsersByIds(getUsersByIdsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetUsersByUsernamesRequestBody} getUsersByUsernamesRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getUsersByUsernames(
+    getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {LoginUserRequestBody} loginUserRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public loginUser(loginUserRequestBody: LoginUserRequestBody, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .loginUser(loginUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2756,30 +3793,30 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {RegisterUserParams} registerUserParams
+   * @param {RegisterUserRequestBody} registerUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public registerUser(registerUserParams: RegisterUserParams, options?: any) {
+  public registerUser(registerUserRequestBody: RegisterUserRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .registerUser(registerUserParams, options)
+      .registerUser(registerUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {RequestPasswordResetParams} requestPasswordResetParams
+   * @param {ResetPasswordRequestBody} resetPasswordRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public requestPasswordReset(
-    requestPasswordResetParams: RequestPasswordResetParams,
+    resetPasswordRequestBody: ResetPasswordRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .requestPasswordReset(requestPasswordResetParams, options)
+      .requestPasswordReset(resetPasswordRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2801,6 +3838,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {SetUserHashtagsRequestBody} setUserHashtagsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public setUserHashtags(
+    setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .setUserHashtags(setUserHashtagsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {UnfollowUserProfileParams} unfollowUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2812,6 +3865,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .unfollowUser(unfollowUserProfileParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {UpdatePasswordRequestBody} updatePasswordRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updatePassword(
+    updatePasswordRequestBody: UpdatePasswordRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updatePassword(updatePasswordRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -2886,23 +3955,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} [username]
-   * @param {string} [shortBio]
-   * @param {string} [userWebsite]
-   * @param {string} [profileVisibility]
+   * @param {UpdateUserProfileRequestBody} updateUserProfileRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public updateUserProfile(
-    username?: string,
-    shortBio?: string,
-    userWebsite?: string,
-    profileVisibility?: string,
+    updateUserProfileRequestBody: UpdateUserProfileRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .updateUserProfile(username, shortBio, userWebsite, profileVisibility, options)
+      .updateUserProfile(updateUserProfileRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
