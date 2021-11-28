@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { RenderableUserFollowers } from "./renderable-user-followers";
+
 /**
  *
  * @export
@@ -29,7 +31,7 @@ export interface RenderablePost {
    * @type {string}
    * @memberof RenderablePost
    */
-  postAuthorUserId: string;
+  authorUserId: string;
   /**
    *
    * @type {string}
@@ -60,4 +62,10 @@ export interface RenderablePost {
    * @memberof RenderablePost
    */
   hashtags: Array<string>;
+  /**
+   *
+   * @type {RenderableUserFollowers}
+   * @memberof RenderablePost
+   */
+  likes: RenderableUserFollowers;
 }

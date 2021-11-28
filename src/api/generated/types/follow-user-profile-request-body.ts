@@ -15,9 +15,13 @@
 /**
  *
  * @export
- * @enum {string}
+ * @interface FollowUserProfileRequestBody
  */
-export enum FailedtoGetPageOfPostsPaginationResponseReason {
-  UnknownCause = "Unknown Cause",
-  ThisUsersPostsArePrivate = "This User's Posts Are Private",
+export interface FollowUserProfileRequestBody {
+  /**
+   *
+   * @type {string}
+   * @memberof FollowUserProfileRequestBody
+   */
+  userIdBeingFollowed: string;
 }

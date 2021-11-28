@@ -15,9 +15,13 @@
 /**
  *
  * @export
- * @enum {string}
+ * @interface RemoveUserLikeFromPostRequestBody
  */
-export enum FailedtoGetPageOfPostsPaginationResponseReason {
-  UnknownCause = "Unknown Cause",
-  ThisUsersPostsArePrivate = "This User's Posts Are Private",
+export interface RemoveUserLikeFromPostRequestBody {
+  /**
+   *
+   * @type {string}
+   * @memberof RemoveUserLikeFromPostRequestBody
+   */
+  postId: string;
 }
