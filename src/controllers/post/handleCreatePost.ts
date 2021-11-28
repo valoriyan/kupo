@@ -116,7 +116,7 @@ export async function handleCreatePost({
         renderablePost: {
           contentElementTemporaryUrls,
           postId,
-          postAuthorUserId: clientUserId,
+          authorUserId: clientUserId,
           caption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
           hashtags,
