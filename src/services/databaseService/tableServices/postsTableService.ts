@@ -23,7 +23,7 @@ function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
 ): UnrenderablePostWithoutElementsOrHashtags {
   return {
     postId: dbPost.post_id,
-    postAuthorUserId: dbPost.author_user_id,
+    authorUserId: dbPost.author_user_id,
     caption: dbPost.caption,
     scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
     expirationTimestamp: dbPost.expiration_timestamp,

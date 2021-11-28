@@ -1,6 +1,6 @@
 export interface BaseUnrenderablePost {
   postId: string;
-  postAuthorUserId: string;
+  authorUserId: string;
   caption: string;
 }
 

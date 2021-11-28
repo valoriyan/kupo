@@ -23,6 +23,7 @@ export interface SuccessfulGetPageOfPostsPaginationResponse {
 
 export enum FailedtoGetPageOfPostsPaginationResponseReason {
   UnknownCause = "Unknown Cause",
+  UserPrivate = "This User's Posts Are Private",
 }
 
 export interface FailedtoGetPageOfPostsPaginationResponse {
@@ -43,16 +44,7 @@ export async function handleGetPageOfPostsPagination({
     SuccessfulGetPageOfPostsPaginationResponse
   >
 > {
-  // check if requesting user is allowed to view posts - 403
-  const { clientUserId, error } = await checkAuthorization(controller, request);
-
-  if (error) {
-    return {
-      error: {
-        reason: FailedtoGetPageOfPostsPaginationResponseReason.UnknownCause,
-      },
-    };
-  }
+  const { clientUserId } = await checkAuthorization(controller, request);
 
   const canViewContent = await canUserViewUserContentByUserId({
     clientUserId,
@@ -62,9 +54,7 @@ export async function handleGetPageOfPostsPagination({
 
   if (!canViewContent) {
     return {
-      error: {
-        reason: FailedtoGetPageOfPostsPaginationResponseReason.UnknownCause,
-      },
+      error: { reason: FailedtoGetPageOfPostsPaginationResponseReason.UserPrivate },
     };
   }
 
