@@ -33,7 +33,7 @@ export const FullScreenErrorArea = (props: PropsWithChildren<unknown>) => {
   );
 };
 
-const ErrorMessage = styled(MainTitle, {
+export const ErrorMessage = styled(MainTitle, {
   textAlign: "center",
   p: "$5",
 });

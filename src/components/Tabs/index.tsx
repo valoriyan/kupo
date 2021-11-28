@@ -16,7 +16,7 @@ export interface TabsProps {
 
 export const Tabs = (props: TabsProps) => {
   return (
-    <TabsPrimitive.Root defaultValue={props.tabs[0].id} orientation="horizontal">
+    <TabRoot defaultValue={props.tabs[0].id} orientation="horizontal">
       <TabList aria-label={props.ariaLabel}>
         {props.tabs.map((tab) => (
           <Trigger key={tab.id} value={tab.id}>
@@ -29,9 +29,16 @@ export const Tabs = (props: TabsProps) => {
           {tab.content}
         </TabsPrimitive.Content>
       ))}
-    </TabsPrimitive.Root>
+    </TabRoot>
   );
 };
+
+const TabRoot = styled(TabsPrimitive.Root, {
+  height: "100%",
+  overflow: "auto",
+  display: "grid",
+  gridTemplateRows: "auto minmax(0, 1fr)",
+});
 
 const TabList = styled(TabsPrimitive.TabsList, {
   display: "flex",

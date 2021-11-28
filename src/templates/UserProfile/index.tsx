@@ -12,6 +12,7 @@ import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { Subtext, subtextStyles } from "#/components/Typography";
 import { RenderableUser } from "#/api";
+import { UserPosts } from "./UserPosts";
 
 export interface UserProfileProps {
   isOwnProfile?: boolean;
@@ -75,7 +76,13 @@ const ProfileBody = (props: ProfileBodyProps) => {
           {
             id: "posts",
             trigger: "Posts",
-            content: <Stack css={{ p: "$4" }}>User Posts Go Here</Stack>,
+            content: (
+              <UserPosts
+                userId={props.user.userId}
+                username={props.user.username}
+                userAvatar={props.user.profilePictureTemporaryUrl}
+              />
+            ),
           },
           {
             id: "shop",

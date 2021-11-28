@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider as BaseQueryClientProvider } from "rea
  */
 export enum CacheKeys {
   UserProfile = "userProfile",
+  UserPosts = "userPosts",
 }
 
 export const queryClient = new QueryClient({
