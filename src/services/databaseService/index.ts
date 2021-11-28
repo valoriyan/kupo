@@ -6,6 +6,7 @@ import { ChatMessagesTableService } from "./tableServices/chatMessagesService";
 import { ChatRoomsTableService } from "./tableServices/chatRoomsTableService";
 import { HashtagsTableService } from "./tableServices/hashtagsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
+import { PostLikesTableService } from "./tableServices/postLikesTableService";
 import { PostsTableService } from "./tableServices/postsTableService";
 import { ShopItemMediaElementsTableService } from "./tableServices/shopItemMediaElementsTableService";
 import { ShopItemsTableService } from "./tableServices/shopItemsTableService";
@@ -33,6 +34,7 @@ export class DatabaseService {
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
     chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
     userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
+    postLikesTableService: new PostLikesTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

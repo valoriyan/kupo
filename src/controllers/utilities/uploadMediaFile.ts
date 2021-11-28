@@ -1,4 +1,4 @@
-import { BlobStorageService } from "../services/blobStorageService";
+import { BlobStorageService } from "../../services/blobStorageService";
 
 export async function uploadMediaFile({
   file,

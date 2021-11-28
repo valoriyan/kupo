@@ -6,14 +6,28 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import {
   FailedToFollowUserProfileResponse,
-  FailedToUnfollowUserProfileResponse,
-  FollowUserProfileParams,
+  FollowUserProfileRequestBody,
   handleFollowUser,
-  handleUnfollowUser,
-  SuccessfulFollowOfUserProfileResponse,
-  SuccessfulUnfollowOfUserProfileResponse,
-  UnfollowUserProfileParams,
+  SuccessfullyFollowedUserProfileResponse,
 } from "./handleFollowUserProfile";
+import {
+  FailedToUnfollowUserProfileResponse,
+  handleUnfollowUser,
+  SuccessfullyUnfollowedUserProfileResponse,
+  UnfollowUserRequestBody,
+} from "./handleUnfollowUserProfile";
+import {
+  FailedToLikePostByUserResponse,
+  handleUserLikesPost,
+  SuccessfulUserLikesPostResponse,
+  UserLikesPostRequestBody,
+} from "./handleUserLikesPost";
+import {
+  FailedToRemoveUserLikeFromPostResponse,
+  handleRemoveUserLikeFromPost,
+  RemoveUserLikeFromPostRequestBody,
+  SuccessfullyRemovedUserLikeFromPostResponse,
+} from "./handleRemoveUserLikeFromPost";
 
 @injectable()
 @Route("userInteractions")
@@ -29,17 +43,31 @@ export class UserInteractionController extends Controller {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("FollowUser")
+  @Post("followUser")
   public async followUser(
     @Request() request: express.Request,
-    @Body() requestBody: FollowUserProfileParams,
+    @Body() requestBody: FollowUserProfileRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       FailedToFollowUserProfileResponse,
-      SuccessfulFollowOfUserProfileResponse
+      SuccessfullyFollowedUserProfileResponse
     >
   > {
     return await handleFollowUser({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("userLikesPost")
+  public async userLikesPost(
+    @Request() request: express.Request,
+    @Body() requestBody: UserLikesPostRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<FailedToLikePostByUserResponse, SuccessfulUserLikesPostResponse>
+  > {
+    return await handleUserLikesPost({
       controller: this,
       request,
       requestBody,
@@ -58,17 +86,34 @@ export class UserInteractionController extends Controller {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Delete("UnfollowUser")
+  @Delete("unfollowUser")
   public async unfollowUser(
     @Request() request: express.Request,
-    @Body() requestBody: UnfollowUserProfileParams,
+    @Body() requestBody: UnfollowUserRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       FailedToUnfollowUserProfileResponse,
-      SuccessfulUnfollowOfUserProfileResponse
+      SuccessfullyUnfollowedUserProfileResponse
     >
   > {
     return await handleUnfollowUser({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Delete("removeUserLikeFromPost")
+  public async removeUserLikeFromPost(
+    @Request() request: express.Request,
+    @Body() requestBody: RemoveUserLikeFromPostRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToRemoveUserLikeFromPostResponse,
+      SuccessfullyRemovedUserLikeFromPostResponse
+    >
+  > {
+    return await handleRemoveUserLikeFromPost({
       controller: this,
       request,
       requestBody,

@@ -3,35 +3,40 @@ import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 
-export interface FollowUserProfileRequestBody {
-  userIdBeingFollowed: string;
+export interface RemoveUserLikeFromPostRequestBody {
+  postId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyFollowedUserProfileResponse {}
+export interface SuccessfullyRemovedUserLikeFromPostResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToFollowUserProfileResponse {}
+export interface FailedToRemoveUserLikeFromPostResponse {}
 
-export async function handleFollowUser({
+export async function handleRemoveUserLikeFromPost({
   controller,
   request,
   requestBody,
 }: {
   controller: UserInteractionController;
   request: express.Request;
-  requestBody: FollowUserProfileRequestBody;
+  requestBody: RemoveUserLikeFromPostRequestBody;
 }): Promise<
-  HTTPResponse<FailedToFollowUserProfileResponse, SuccessfullyFollowedUserProfileResponse>
+  HTTPResponse<
+    FailedToRemoveUserLikeFromPostResponse,
+    SuccessfullyRemovedUserLikeFromPostResponse
+  >
 > {
+  const { postId } = requestBody;
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
+  await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
     {
-      userIdDoingFollowing: clientUserId,
-      userIdBeingFollowed: requestBody.userIdBeingFollowed,
-      timestamp: Date.now(),
+      postId,
+      userId: clientUserId,
     },
   );
+
   return {};
 }

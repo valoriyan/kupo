@@ -8,7 +8,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBUserFollow {
   user_id_doing_following: string;
   user_id_being_followed: string;
-  creation_timestamp: number;
+  timestamp: number;
 }
 
 function convertDBUserFollowToUnrenderableUserFollow(
@@ -17,7 +17,7 @@ function convertDBUserFollowToUnrenderableUserFollow(
   return {
     userIdDoingFollowing: dbUserFollow.user_id_doing_following,
     userIdBeingFollowed: dbUserFollow.user_id_being_followed,
-    timestamp: dbUserFollow.creation_timestamp,
+    timestamp: dbUserFollow.timestamp,
   };
 }
 
@@ -34,7 +34,7 @@ export class UserFollowsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         user_id_doing_following VARCHAR(64) NOT NULL,
         user_id_being_followed VARCHAR(64) NOT NULL,
-        creation_timestamp BIGINT NOT NULL,
+        timestamp BIGINT NOT NULL,
         PRIMARY KEY (user_id_doing_following, user_id_being_followed)
       )
       ;
@@ -50,18 +50,18 @@ export class UserFollowsTableService extends TableService {
   public async createUserFollow({
     userIdDoingFollowing,
     userIdBeingFollowed,
-    creationTimestamp,
+    timestamp,
   }: {
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
-    creationTimestamp: number;
+    timestamp: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
           { field: "user_id_doing_following", value: userIdDoingFollowing },
           { field: "user_id_being_followed", value: userIdBeingFollowed },
-          { field: "creation_timestamp", value: creationTimestamp },
+          { field: "timestamp", value: timestamp },
         ],
       ],
       tableName: this.tableName,
@@ -172,6 +172,7 @@ export class UserFollowsTableService extends TableService {
 
     return response.rows[0].count;
   }
+
   public async isUserIdFollowingUserId({
     userIdDoingFollowing,
     userIdBeingFollowed,
@@ -182,7 +183,7 @@ export class UserFollowsTableService extends TableService {
     const query = {
       text: `
         SELECT
-          COUNT(*)
+          *
         FROM
           ${this.tableName}
         WHERE

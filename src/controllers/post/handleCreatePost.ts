@@ -5,7 +5,7 @@ import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "./models";
-import { uploadMediaFile } from "../../utilities/uploadMediaFile";
+import { uploadMediaFile } from "../utilities/uploadMediaFile";
 
 export enum CreatePostFailureReasons {
   UnknownCause = "Unknown Cause",
@@ -111,6 +111,13 @@ export async function handleCreatePost({
       username: unrenderableUser!.username,
     });
 
+    const countOfLikesOnPost =
+      await controller.databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
+        {
+          postId,
+        },
+      );
+
     return {
       success: {
         renderablePost: {
@@ -121,6 +128,9 @@ export async function handleCreatePost({
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
           hashtags,
           expirationTimestamp,
+          likes: {
+            count: countOfLikesOnPost,
+          },
         },
       },
     };

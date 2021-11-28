@@ -12,4 +12,7 @@ export interface UnrenderablePostWithoutElementsOrHashtags extends BaseUnrendera
 export interface RenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
   contentElementTemporaryUrls: string[];
   hashtags: string[];
+  likes: {
+    count: number;
+  };
 }

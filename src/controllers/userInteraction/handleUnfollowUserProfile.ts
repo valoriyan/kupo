@@ -3,34 +3,36 @@ import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 
-export interface FollowUserProfileRequestBody {
-  userIdBeingFollowed: string;
+export interface UnfollowUserRequestBody {
+  userIdBeingUnfollowed: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyFollowedUserProfileResponse {}
+export interface SuccessfullyUnfollowedUserProfileResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToFollowUserProfileResponse {}
+export interface FailedToUnfollowUserProfileResponse {}
 
-export async function handleFollowUser({
+export async function handleUnfollowUser({
   controller,
   request,
   requestBody,
 }: {
   controller: UserInteractionController;
   request: express.Request;
-  requestBody: FollowUserProfileRequestBody;
+  requestBody: UnfollowUserRequestBody;
 }): Promise<
-  HTTPResponse<FailedToFollowUserProfileResponse, SuccessfullyFollowedUserProfileResponse>
+  HTTPResponse<
+    FailedToUnfollowUserProfileResponse,
+    SuccessfullyUnfollowedUserProfileResponse
+  >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
+  await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
     {
-      userIdDoingFollowing: clientUserId,
-      userIdBeingFollowed: requestBody.userIdBeingFollowed,
-      timestamp: Date.now(),
+      userIdDoingUnfollowing: clientUserId,
+      userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,
     },
   );
   return {};

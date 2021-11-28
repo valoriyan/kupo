@@ -67,6 +67,13 @@ export async function constructRenderablePostFromParts({
       { postId },
     );
 
+  const countOfLikesOnPost =
+    await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
+      {
+        postId,
+      },
+    );
+
   return {
     postId,
     authorUserId,
@@ -75,5 +82,8 @@ export async function constructRenderablePostFromParts({
     expirationTimestamp,
     contentElementTemporaryUrls,
     hashtags,
+    likes: {
+      count: countOfLikesOnPost,
+    },
   };
 }
