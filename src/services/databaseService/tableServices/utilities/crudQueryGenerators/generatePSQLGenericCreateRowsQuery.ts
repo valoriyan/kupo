@@ -8,7 +8,7 @@ export function generatePSQLGenericCreateRowsQuery<T>({
   rowsOfFieldsAndValues: PSQLFieldAndValue<T>[][];
   tableName: string;
 }): QueryConfig {
-  const queryValues: (T | undefined)[] = [];
+  const queryValues: (T | string | undefined)[] = [];
   let queryValueIndex = 0;
 
   const setOfFields = new Set();
@@ -28,10 +28,14 @@ export function generatePSQLGenericCreateRowsQuery<T>({
     rowOfFieldsAndValues.map(({ value }) => {
       queryValueIndex += 1;
       rowOfParameterizedValues.push(`$${queryValueIndex}`);
-      queryValues.push(value);
+      if (typeof value === "number") {
+        queryValues.push(value.toString());
+      } else {
+        queryValues.push(value);
+      }
     });
 
-    const rowOfParameterizedValuesString = `(${rowOfParameterizedValues.join(", ")})`;
+    const rowOfParameterizedValuesString = `( ${rowOfParameterizedValues.join(" , ")} )`;
 
     rowsOfParameterizedValues.push(rowOfParameterizedValuesString);
   });

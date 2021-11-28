@@ -30,9 +30,19 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
   fieldUsedToIdentifyUpdatedRow: PSQLFieldAndValue<T>;
   tableName: string;
 }): QueryConfig {
-  const filteredUpdatedFields = updatedFields.filter(({ value }) => {
-    return !!value;
-  });
+  const filteredUpdatedFields = updatedFields
+    .map((updatedField) => {
+      if (typeof updatedField.value === "number") {
+        return {
+          ...updatedField,
+          value: updatedField.value.toString(),
+        };
+      }
+      return updatedField;
+    })
+    .filter(({ value }) => {
+      return !!value;
+    });
 
   if (filteredUpdatedFields.length === 0) {
     return {
@@ -43,7 +53,7 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
 
   const queryValues: (T | string | undefined)[] = filteredUpdatedFields.map(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ({ value }) => value!,
+    ({ value }) => value,
   );
   let queryValueIndex = 0;
 
@@ -65,6 +75,8 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       ${updateString}
     WHERE
       ${fieldUsedToIdentifyUpdatedRow.field} = $${queryValueIndex + 1}
+    RETURNING
+      *
     ;
   `;
 

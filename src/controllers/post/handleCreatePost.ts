@@ -97,10 +97,12 @@ export async function handleCreatePost({
       },
     );
 
-    const unrenderableUser =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-        { userId: clientUserId },
+    const unrenderableUsers =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+        { userIds: [clientUserId] },
       );
+
+    const unrenderableUser = unrenderableUsers[0];
 
     await controller.webSocketService.notifyOfNewPost({
       recipientUserId: clientUserId,

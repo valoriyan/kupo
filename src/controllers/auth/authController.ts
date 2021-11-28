@@ -1,217 +1,113 @@
 import express from "express";
-import { DateTime } from "luxon";
 import { DatabaseService } from "../../services/databaseService";
 import { Body, Controller, Get, Post, Request, Route } from "tsoa";
-import {
-  encryptPassword,
-  generateAccessToken,
-  generateRefreshToken,
-  REFRESH_TOKEN_EXPIRATION_TIME,
-  validateTokenAndGetUserId,
-} from "./utilities";
-import { v4 as uuidv4 } from "uuid";
-import { HTTPResponse } from "../../types/httpResponse";
+import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
 import { LocalEmailService } from "../../services/emailService";
 import { injectable } from "tsyringe";
-
-interface RegisterUserParams {
-  email: string;
-  password: string;
-  username: string;
-}
-
-interface LoginUserParams {
-  username: string;
-  password: string;
-}
-
-interface RequestPasswordResetParams {
-  email: string;
-}
-
-interface SuccessfulAuthResponse {
-  accessToken: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface SuccessfulPasswordResetResponse {}
-
-export enum AuthFailureReason {
-  WrongPassword = "Wrong Password",
-  UnknownCause = "Unknown Cause",
-  NoRefreshToken = "No Refresh Token Found",
-  InvalidToken = "Failed To Validate Token",
-  TokenGenerationFailed = "Failed To Generate Access Token",
-  AuthorizationError = "You Must Be Logged In",
-}
-
-export interface FailedAuthResponse {
-  reason: AuthFailureReason;
-}
-
-enum DeniedPasswordResetResponseReason {
-  TooManyAttempts = "Too Many Attempts",
-}
-
-interface DeniedPasswordResetResponse {
-  reason: DeniedPasswordResetResponseReason;
-}
+import { handleRegisterUser, RegisterUserRequestBody } from "./handleRegisterUser";
+import {
+  FailedToUpdatePasswordResponse,
+  handleUpdatePassword,
+  SuccessfullyUpdatedPasswordResponse,
+  UpdatePasswordRequestBody,
+} from "./handleUpdatePassword";
+import { FailedAuthResponse, SuccessfulAuthResponse } from "./models";
+import { handleLoginUser, LoginUserRequestBody } from "./handleLoginUser";
+import { handleRefreshAccessToken } from "./handleRefreshAccessToken";
+import {
+  FailedToResetPasswordResponse,
+  handleResetPassword,
+  ResetPasswordRequestBody,
+  SuccessfullyResetPasswordResponse,
+} from "./handleResetPassword";
+import { handleLogout } from "./handleLogout";
 
 @injectable()
 @Route("auth")
 export class AuthController extends Controller {
   constructor(
-    private localEmailService: LocalEmailService,
-    private databaseService: DatabaseService,
+    public localEmailService: LocalEmailService,
+    public databaseService: DatabaseService,
   ) {
     super();
   }
 
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
   @Post("register")
   public async registerUser(
-    @Body() requestBody: RegisterUserParams,
+    @Body() requestBody: RegisterUserRequestBody,
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
-    const userId = uuidv4();
-    const { email, username, password } = requestBody;
-
-    const encryptedPassword = encryptPassword({ password });
-
-    try {
-      await this.databaseService.tableNameToServicesMap.usersTableService.createUser({
-        userId,
-        email,
-        username,
-        encryptedPassword,
-      });
-
-      return grantNewAccessToken({
-        controller: this,
-        userId,
-        jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
-        successStatusCode: 201,
-      });
-    } catch (error) {
-      console.log("error", error);
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.UnknownCause } };
-    }
+    return await handleRegisterUser({
+      controller: this,
+      requestBody,
+    });
   }
 
   @Post("login")
   public async loginUser(
-    @Body() requestBody: LoginUserParams,
+    @Body() requestBody: LoginUserRequestBody,
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
-    const { username, password } = requestBody;
-    const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
-
-    try {
-      const user_WITH_PASSWORD =
-        await this.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByUsername(
-          {
-            username,
-          },
-        );
-      if (!!user_WITH_PASSWORD) {
-        const hasMatchedPassword =
-          encryptPassword({ password }) === user_WITH_PASSWORD.encryptedPassword;
-        if (hasMatchedPassword) {
-          const userId = user_WITH_PASSWORD.userId;
-          return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
-        }
-      }
-
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.WrongPassword } };
-    } catch (error) {
-      console.log("error", error);
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.UnknownCause } };
-    }
+    return await handleLoginUser({
+      controller: this,
+      requestBody,
+    });
   }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Get("refresh-access-token")
   public async refreshAccessToken(
     @Request() request: express.Request,
   ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
-    const refreshToken = request.cookies.refreshToken as string | undefined;
-    const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
-
-    if (!refreshToken) {
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.NoRefreshToken } };
-    }
-
-    let userId: string;
-
-    try {
-      userId = validateTokenAndGetUserId({
-        token: refreshToken,
-        jwtPrivateKey,
-      });
-    } catch {
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.InvalidToken } };
-    }
-
-    try {
-      return grantNewAccessToken({ controller: this, userId, jwtPrivateKey });
-    } catch {
-      this.setStatus(401);
-      return { error: { reason: AuthFailureReason.TokenGenerationFailed } };
-    }
+    return await handleRefreshAccessToken({
+      controller: this,
+      request,
+    });
   }
 
   @Post("resetPassword")
   public async requestPasswordReset(
-    @Body() requestBody: RequestPasswordResetParams,
-  ): Promise<HTTPResponse<DeniedPasswordResetResponse, SuccessfulPasswordResetResponse>> {
-    this.localEmailService.sendResetPasswordEmail({ userId: requestBody.email });
-    return {
-      success: {},
-    };
+    @Body() requestBody: ResetPasswordRequestBody,
+  ): Promise<
+    HTTPResponse<FailedToResetPasswordResponse, SuccessfullyResetPasswordResponse>
+  > {
+    return await handleResetPassword({
+      controller: this,
+      requestBody,
+    });
   }
+
+  @Post("updatePassword")
+  public async updatePassword(
+    @Request() request: express.Request,
+    @Body() requestBody: UpdatePasswordRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToUpdatePasswordResponse,
+      SuccessfullyUpdatedPasswordResponse
+    >
+  > {
+    return await handleUpdatePassword({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Get("logout")
   public async logout(): Promise<void> {
-    this.setHeader(
-      "Set-Cookie",
-      `refreshToken=deleted; HttpOnly; Secure; Expires=${new Date(0).toUTCString()};`,
-    );
-
-    this.setStatus(200);
+    return await handleLogout({ controller: this });
   }
-}
-
-function grantNewAccessToken({
-  controller,
-  userId,
-  jwtPrivateKey,
-  successStatusCode = 200,
-}: {
-  controller: Controller;
-  userId: string;
-  jwtPrivateKey: string;
-  successStatusCode?: number;
-}): HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse> {
-  const accessToken = generateAccessToken({
-    userId,
-    jwtPrivateKey,
-  });
-  const refreshToken = generateRefreshToken({
-    userId,
-    jwtPrivateKey,
-  });
-
-  const tokenExpirationTime = DateTime.now()
-    .plus(REFRESH_TOKEN_EXPIRATION_TIME * 1000)
-    .toJSDate()
-    .toUTCString();
-
-  controller.setHeader(
-    "Set-Cookie",
-    `refreshToken=${refreshToken}; HttpOnly; Secure; Expires=${tokenExpirationTime}`,
-  );
-
-  controller.setStatus(successStatusCode);
-  return { success: { accessToken } };
 }

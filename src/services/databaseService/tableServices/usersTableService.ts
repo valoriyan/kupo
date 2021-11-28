@@ -1,4 +1,6 @@
+import { map } from "bluebird";
 import { Pool, QueryConfig, QueryResult } from "pg";
+import { Color } from "src/types/color";
 import {
   ProfilePrivacySetting,
   UnrenderableUser,
@@ -18,24 +20,48 @@ interface DBUser {
   username: string;
   short_bio?: string;
   user_website?: string;
+  phone_number?: string;
   encrypted_password?: string;
 
   profile_privacy_setting: ProfilePrivacySetting;
 
   background_image_blob_file_key?: string;
   profile_picture_blob_file_key?: string;
+
+  preferred_page_primary_color_red?: number;
+  preferred_page_primary_color_green?: number;
+  preferred_page_primary_color_blue?: number;
 }
 
 function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
+  let preferredPagePrimaryColor: Color | undefined = undefined;
+
+  if (
+    dbUser.preferred_page_primary_color_red !== undefined &&
+    dbUser.preferred_page_primary_color_red !== null &&
+    dbUser.preferred_page_primary_color_green !== undefined &&
+    dbUser.preferred_page_primary_color_red !== null &&
+    dbUser.preferred_page_primary_color_blue !== undefined &&
+    dbUser.preferred_page_primary_color_red !== null
+  ) {
+    preferredPagePrimaryColor = {
+      red: dbUser.preferred_page_primary_color_red,
+      green: dbUser.preferred_page_primary_color_green,
+      blue: dbUser.preferred_page_primary_color_blue,
+    };
+  }
+
   return {
     userId: dbUser.user_id,
     email: dbUser.email,
     username: dbUser.username,
     shortBio: dbUser.short_bio,
     userWebsite: dbUser.user_website,
+    phoneNumber: dbUser.phone_number,
     profilePrivacySetting: dbUser.profile_privacy_setting,
     backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
     profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
+    preferredPagePrimaryColor,
   };
 }
 
@@ -43,14 +69,7 @@ function convertDBUserToUnrenderableUserWITHPASSWORD(
   dbUser: DBUser,
 ): UnrenderableUser_WITH_PASSWORD {
   return {
-    userId: dbUser.user_id,
-    email: dbUser.email,
-    username: dbUser.username,
-    shortBio: dbUser.short_bio,
-    userWebsite: dbUser.user_website,
-    profilePrivacySetting: dbUser.profile_privacy_setting,
-    backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
-    profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
+    ...convertDBUserToUnrenderableUser(dbUser),
     encryptedPassword: dbUser.encrypted_password,
   };
 }
@@ -79,7 +98,11 @@ export class UsersTableService extends TableService {
         encrypted_password VARCHAR(64) NOT NULL,
         profile_privacy_setting enumerated_profile_privacy_setting,
         background_image_blob_file_key VARCHAR(64) UNIQUE,
-        profile_picture_blob_file_key VARCHAR(64) UNIQUE
+        profile_picture_blob_file_key VARCHAR(64) UNIQUE,
+        
+        preferred_page_primary_color_red SMALLINT,
+        preferred_page_primary_color_green SMALLINT,
+        preferred_page_primary_color_blue SMALLINT
       )
       ;
     `;
@@ -142,10 +165,6 @@ export class UsersTableService extends TableService {
       values: [username],
     };
 
-    console.log("query");
-    console.log(query.text);
-    console.log(query.values);
-
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
@@ -186,6 +205,41 @@ export class UsersTableService extends TableService {
     return;
   }
 
+  public async selectUsersByUsernames({
+    usernames,
+  }: {
+    usernames: string[];
+  }): Promise<UnrenderableUser[]> {
+    if (usernames.length === 0) {
+      return [];
+    }
+
+    const usernamesQueryText = usernames
+      .map((_, index) => {
+        return `$${index + 1}`;
+      })
+      .join(", ");
+
+    const queryString = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          username IN ( ${usernamesQueryText} )
+        ;
+      `,
+      values: usernames,
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    return map(rows, convertDBUserToUnrenderableUser);
+  }
+
   public async selectUsersByUsernameMatchingSubstring({
     usernameSubstring,
   }: {
@@ -204,9 +258,6 @@ export class UsersTableService extends TableService {
       values: [usernameSubstring],
     };
 
-    console.log(query.text);
-    console.log(query.values);
-
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
@@ -214,12 +265,24 @@ export class UsersTableService extends TableService {
     return rows.map(convertDBUserToUnrenderableUser);
   }
 
-  public async selectUserByUserId({
-    userId,
+  public async selectUsersByUserIds({
+    userIds,
   }: {
-    userId: string;
-  }): Promise<UnrenderableUser | undefined> {
-    console.log(`${this.tableName} | selectUserByUserId`);
+    userIds: string[];
+  }): Promise<UnrenderableUser[]> {
+    console.log(`${this.tableName} | selectUsersByUserIds`);
+
+    const filteredUserIds = userIds.filter((userId) => !!userId);
+
+    if (filteredUserIds.length === 0) {
+      return [];
+    }
+
+    const userIdsQueryText = filteredUserIds
+      .map((_, index) => {
+        return `$${index + 1}`;
+      })
+      .join(", ");
 
     const query = {
       text: `
@@ -228,22 +291,44 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          user_id = $1
-        LIMIT
-          1
+          user_id IN ( ${userIdsQueryText} )
         ;
       `,
-      values: [userId],
+      values: filteredUserIds,
     };
-
-    console.log(query.text);
-    console.log(query.values);
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 
-    if (!!rows[0]) {
+    return map(rows, convertDBUserToUnrenderableUser);
+  }
+
+  public async selectUserByEmail({
+    email,
+  }: {
+    email: string;
+  }): Promise<UnrenderableUser | undefined> {
+    const queryString = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          email = $1
+        LIMIT
+          1
+        ;
+      `,
+      values: [email],
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
       return convertDBUserToUnrenderableUser(rows[0]);
     }
     return;
@@ -253,37 +338,15 @@ export class UsersTableService extends TableService {
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async updateUserByUserId({
+  public async updateUserPassword({
     userId,
-
-    username,
-    shortBio,
-    userWebsite,
-    profilePrivacySetting,
-    backgroundImageBlobFileKey,
-    profilePictureBlobFileKey,
+    encryptedPassword,
   }: {
     userId: string;
-
-    username?: string;
-    shortBio?: string;
-    userWebsite?: string;
-    profilePrivacySetting?: ProfilePrivacySetting;
-    backgroundImageBlobFileKey?: string;
-    profilePictureBlobFileKey?: string;
+    encryptedPassword: string;
   }): Promise<void> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [
-        { field: "username", value: username },
-        { field: "short_bio", value: shortBio },
-        {
-          field: "user_website",
-          value: userWebsite,
-        },
-        { field: "profile_privacy_setting", value: profilePrivacySetting },
-        { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
-        { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
-      ],
+      updatedFields: [{ field: "encrypted_password", value: encryptedPassword }],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
         value: userId,
@@ -292,6 +355,80 @@ export class UsersTableService extends TableService {
     });
 
     await this.datastorePool.query(query);
+  }
+
+  public async updateUserByUserId({
+    userId,
+
+    username,
+    shortBio,
+    userWebsite,
+    email,
+    phoneNumber,
+    profilePrivacySetting,
+    backgroundImageBlobFileKey,
+    profilePictureBlobFileKey,
+    preferredPagePrimaryColor,
+  }: {
+    userId: string;
+
+    username?: string;
+    shortBio?: string;
+    userWebsite?: string;
+    email?: string;
+    phoneNumber?: string;
+    profilePrivacySetting?: ProfilePrivacySetting;
+    backgroundImageBlobFileKey?: string;
+    profilePictureBlobFileKey?: string;
+    preferredPagePrimaryColor?: Color;
+  }): Promise<UnrenderableUser | undefined> {
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "username", value: username },
+        { field: "short_bio", value: shortBio },
+        {
+          field: "user_website",
+          value: userWebsite,
+        },
+        {
+          field: "email",
+          value: email,
+        },
+        {
+          field: "phone_number",
+          value: phoneNumber,
+        },
+        { field: "profile_privacy_setting", value: profilePrivacySetting },
+        { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
+        { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
+        {
+          field: "preferred_page_primary_color_red",
+          value: preferredPagePrimaryColor?.red,
+        },
+        {
+          field: "preferred_page_primary_color_green",
+          value: preferredPagePrimaryColor?.green,
+        },
+        {
+          field: "preferred_page_primary_color_blue",
+          value: preferredPagePrimaryColor?.blue,
+        },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "user_id",
+        value: userId,
+      },
+      tableName: this.tableName,
+    });
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
   }
 
   //////////////////////////////////////////////////

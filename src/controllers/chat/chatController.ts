@@ -17,6 +17,36 @@ import {
   handleGetPageOfChatMessages,
   SuccessfulGetPageOfChatMessagesResponse,
 } from "./handleGetPageOfChatMessages";
+import {
+  FailedtoGetPageOfChatRoomsResponse,
+  GetPageOfChatRoomsRequestBody,
+  handleGetPageOfChatRooms,
+  SuccessfulGetPageOfChatRoomsResponse,
+} from "./handleGetPageOfChatRooms";
+import {
+  DoesChatRoomExistWithUserIdsRequestBody,
+  FailedtoDetermineIfChatRoomExistsWithUserIds,
+  handleDoesChatRoomExistWithUserIds,
+  SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse,
+} from "./handleDoesChatRoomExistWithUserIds";
+import {
+  CreateChatMessageInNewRoomRequestBody,
+  FailedToCreateChatMessageInNewRoomResponse,
+  handleCreateChatMessageInNewChatRoom,
+  SuccessfullyCreatedChatMessageInNewRoomResponse,
+} from "./handleCreateChatMessageInNewChatRoom";
+import {
+  DeleteChatMessageRequestBody,
+  FailedToDeleteChatMessageResponse,
+  handleDeleteChatMessage,
+  SuccessfullyDeletedChatMessageResponse,
+} from "./handleDeleteChatMessage";
+import {
+  FailedtoGetChatRoomByIdResponse,
+  GetChatRoomByIdRequestBody,
+  handleGetChatRoomById,
+  SuccessfullyGotChatRoomByIdResponse,
+} from "./handleGetChatRoomById";
 
 @injectable()
 @Route("chat")
@@ -28,6 +58,10 @@ export class ChatController extends Controller {
   ) {
     super();
   }
+
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Post("create")
   public async createChatMessage(
@@ -46,7 +80,28 @@ export class ChatController extends Controller {
     });
   }
 
-  @Post("getPage")
+  @Post("createChatMessageInNewChatRoom")
+  public async createChatMessageInNewChatRoom(
+    @Request() request: express.Request,
+    @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToCreateChatMessageInNewRoomResponse,
+      SuccessfullyCreatedChatMessageInNewRoomResponse
+    >
+  > {
+    return await handleCreateChatMessageInNewChatRoom({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  @Post("getPageOfChatMessages")
   public async getPageOfChatMessages(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
@@ -57,6 +112,82 @@ export class ChatController extends Controller {
     >
   > {
     return await handleGetPageOfChatMessages({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getChatRoomById")
+  public async getChatRoomById(
+    @Request() request: express.Request,
+    @Body() requestBody: GetChatRoomByIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedtoGetChatRoomByIdResponse,
+      SuccessfullyGotChatRoomByIdResponse
+    >
+  > {
+    return await handleGetChatRoomById({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPageOfChatRooms")
+  public async getPageOfChatRooms(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfChatRoomsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedtoGetPageOfChatRoomsResponse,
+      SuccessfulGetPageOfChatRoomsResponse
+    >
+  > {
+    return await handleGetPageOfChatRooms({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("doesChatRoomExistWithUserIds")
+  public async doesChatRoomExistWithUserIds(
+    @Request() request: express.Request,
+    @Body() requestBody: DoesChatRoomExistWithUserIdsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedtoDetermineIfChatRoomExistsWithUserIds,
+      SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+    >
+  > {
+    return await handleDoesChatRoomExistWithUserIds({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  @Post("deleteChatMessage")
+  public async deleteChatMessage(
+    @Request() request: express.Request,
+    @Body() requestBody: DeleteChatMessageRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToDeleteChatMessageResponse,
+      SuccessfullyDeletedChatMessageResponse
+    >
+  > {
+    return await handleDeleteChatMessage({
       controller: this,
       request,
       requestBody,

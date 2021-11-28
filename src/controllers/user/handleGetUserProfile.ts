@@ -46,10 +46,11 @@ export async function handleGetUserProfile({
   } else {
     // Fetch user profile by own userId
     if (error) return error;
-    unrenderableUser =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-        { userId: clientUserId },
+    const unrenderableUsers =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+        { userIds: [clientUserId] },
       );
+    unrenderableUser = unrenderableUsers[0];
   }
 
   if (!unrenderableUser) {

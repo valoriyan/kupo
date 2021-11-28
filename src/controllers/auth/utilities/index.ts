@@ -1,8 +1,8 @@
 import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
-import { AuthFailureReason, FailedAuthResponse } from "../authController";
 import { MD5 } from "crypto-js";
+import { AuthFailureReason, FailedAuthResponse } from "../models";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes

@@ -1,9 +1,9 @@
 import express from "express";
 import { LocalBlobStorageService } from "../../services/blobStorageService";
-import { Body, Controller, FormField, Post, Request, Route, UploadedFile } from "tsoa";
+import { Body, Controller, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
-import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
   GetUserProfileParams,
   SuccessfulGetUserProfileResponse,
@@ -14,14 +14,32 @@ import {
   FailedToUpdateUserProfileResponse,
   handleUpdateUserProfile,
   SuccessfulUpdateToUserProfileResponse,
+  UpdateUserProfileRequestBody,
 } from "./handleUpdateUserProfile";
-import { ProfilePrivacySetting } from "./models";
 import {
   FailedToSearchUserProfilesByUsernameResponse,
   handleSearchUserProfilesByUsername,
   SearchUserProfilesByUsernameParams,
   SuccessfulSearchUserProfilesByUsernameResponse,
 } from "./handleSearchUserProfilesByUsername";
+import {
+  FailedToSetUserHashtagsResponse,
+  handleSetUserHashtags,
+  SetUserHashtagsRequestBody,
+  SuccessfullySetUserHashtagsResponse,
+} from "./handleSetUserHashtags";
+import {
+  FailedToGetUsersByIdsResponse,
+  GetUsersByIdsRequestBody,
+  handleGetUsersByIds,
+  SuccessfullyGotUsersByIdsRequestBodyResponse,
+} from "./handleGetUsersByIds";
+import {
+  FailedToGetUsersByUsernamesResponse,
+  GetUsersByUsernamesRequestBody,
+  handleGetUsersByUsernames,
+  SuccessfullyGotUsersByUsernamesRequestBodyResponse,
+} from "./handleGetUsersByUsernames";
 
 @injectable()
 @Route("user")
@@ -33,59 +51,13 @@ export class UserPageController extends Controller {
     super();
   }
 
-  @Post("UpdateUserProfile")
-  public async updateUserProfile(
-    @Request() request: express.Request,
-    @FormField() username?: string,
-    @FormField() shortBio?: string,
-    @FormField() userWebsite?: string,
-    @FormField() profileVisibility?: ProfilePrivacySetting,
-  ): Promise<
-    HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
-  > {
-    return await handleUpdateUserProfile({
-      controller: this,
-      request,
-      requestBody: {
-        username,
-        shortBio,
-        userWebsite,
-        profileVisibility,
-      },
-    });
-  }
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
-  @Post("UpdateUserProfilePicture")
-  public async updateUserProfilePicture(
-    @Request() request: express.Request,
-    @UploadedFile("profilePicture") profilePicture?: Express.Multer.File,
-  ): Promise<
-    HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
-  > {
-    return await handleUpdateUserProfile({
-      controller: this,
-      request,
-      requestBody: {
-        profilePicture,
-      },
-    });
-  }
-
-  @Post("UpdateUserBackgroundImage")
-  public async updateUserBackgroundImage(
-    @Request() request: express.Request,
-    @UploadedFile("backgroundImage") backgroundImage?: Express.Multer.File,
-  ): Promise<
-    HTTPResponse<FailedToUpdateUserProfileResponse, SuccessfulUpdateToUserProfileResponse>
-  > {
-    return await handleUpdateUserProfile({
-      controller: this,
-      request,
-      requestBody: {
-        backgroundImage,
-      },
-    });
-  }
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Post("GetUserProfile")
   public async getUserProfile(
@@ -95,6 +67,40 @@ export class UserPageController extends Controller {
     SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
   > {
     return await handleGetUserProfile({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getUsersByIds")
+  public async getUsersByIds(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUsersByIdsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetUsersByIdsResponse,
+      SuccessfullyGotUsersByIdsRequestBodyResponse
+    >
+  > {
+    return await handleGetUsersByIds({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getUsersByUsernames")
+  public async getUsersByUsernames(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUsersByUsernamesRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetUsersByUsernamesResponse,
+      SuccessfullyGotUsersByUsernamesRequestBodyResponse
+    >
+  > {
+    return await handleGetUsersByUsernames({
       controller: this,
       request,
       requestBody,
@@ -117,4 +123,84 @@ export class UserPageController extends Controller {
       requestBody,
     });
   }
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  @Post("UpdateUserProfile")
+  public async updateUserProfile(
+    @Request() request: express.Request,
+    @Body() requestBody: UpdateUserProfileRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToUpdateUserProfileResponse,
+      SuccessfulUpdateToUserProfileResponse
+    >
+  > {
+    return await handleUpdateUserProfile({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("UpdateUserProfilePicture")
+  public async updateUserProfilePicture(
+    @Request() request: express.Request,
+    @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToUpdateUserProfileResponse,
+      SuccessfulUpdateToUserProfileResponse
+    >
+  > {
+    return await handleUpdateUserProfile({
+      controller: this,
+      request,
+      requestBody: {
+        profilePicture,
+      },
+    });
+  }
+
+  @Post("UpdateUserBackgroundImage")
+  public async updateUserBackgroundImage(
+    @Request() request: express.Request,
+    @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToUpdateUserProfileResponse,
+      SuccessfulUpdateToUserProfileResponse
+    >
+  > {
+    return await handleUpdateUserProfile({
+      controller: this,
+      request,
+      requestBody: {
+        backgroundImage,
+      },
+    });
+  }
+
+  @Post("SetUserHashtags")
+  public async setUserHashtags(
+    @Request() request: express.Request,
+    @Body() requestBody: SetUserHashtagsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToSetUserHashtagsResponse,
+      SuccessfullySetUserHashtagsResponse
+    >
+  > {
+    return await handleSetUserHashtags({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 }

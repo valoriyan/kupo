@@ -11,22 +11,22 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBChatMessage {
-  chatMessageId: string;
+  chat_message_id: string;
   text: string;
-  authorUserId: string;
-  chatRoomId: string;
-  creationTimestamp: number;
+  author_user_id: string;
+  chat_room_id: string;
+  creation_timestamp: number;
 }
 
 function convertDBChatMessageToUnrenderableChatMessage(
   dbChatMessage: DBChatMessage,
 ): UnrenderableChatMessage {
   return {
-    chatMessageId: dbChatMessage.chatMessageId,
+    chatMessageId: dbChatMessage.chat_message_id,
     text: dbChatMessage.text,
-    authorUserId: dbChatMessage.authorUserId,
-    chatRoomId: dbChatMessage.chatRoomId,
-    creationTimestamp: dbChatMessage.creationTimestamp,
+    authorUserId: dbChatMessage.author_user_id,
+    chatRoomId: dbChatMessage.chat_room_id,
+    creationTimestamp: dbChatMessage.creation_timestamp,
   };
 }
 
@@ -92,9 +92,19 @@ export class ChatMessagesTableService extends TableService {
 
   public async getChatMessagesByChatRoomId({
     chatRoomId,
+    beforeTimestamp,
   }: {
     chatRoomId: string;
+    beforeTimestamp?: number;
   }): Promise<UnrenderableChatMessage[]> {
+    const values: (string | number)[] = [chatRoomId];
+
+    let beforeTimestampCondition = "";
+    if (!!beforeTimestamp) {
+      beforeTimestampCondition = `AND creation_timestamp <  $2`;
+      values.push(beforeTimestamp);
+    }
+
     const query = {
       text: `
         SELECT
@@ -103,9 +113,12 @@ export class ChatMessagesTableService extends TableService {
           ${this.tableName}
         WHERE
             chat_room_id = $1
+            ${beforeTimestampCondition}
+        ORDER BY
+          creation_timestamp
         ;
       `,
-      values: [chatRoomId],
+      values,
     };
 
     const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
@@ -144,16 +157,28 @@ export class ChatMessagesTableService extends TableService {
 
   public async deleteChatMessage({
     chatMessageId,
+    userId,
   }: {
     chatMessageId: string;
-  }): Promise<void> {
+    userId: string;
+  }): Promise<UnrenderableChatMessage> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "chat_message_id", value: chatMessageId },
+        { field: "author_user_id", value: userId },
       ],
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(query);
+    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (!!rows.length) {
+      const row = response.rows[0];
+      return convertDBChatMessageToUnrenderableChatMessage(row);
+    }
+
+    throw new Error("No rows deleted");
   }
 }

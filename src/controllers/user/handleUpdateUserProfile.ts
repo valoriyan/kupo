@@ -1,14 +1,32 @@
 import express from "express";
+import { Color } from "src/types/color";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import { ProfilePrivacySetting } from "./models";
+import { ProfilePrivacySetting, RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
+import { constructRenderableUserFromParts } from "./utilities";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToUpdateUserProfileResponse {}
+export enum FailedToUpdateUserProfileResponseReason {
+  Unknown = "Unknown",
+}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulUpdateToUserProfileResponse {}
+export interface FailedToUpdateUserProfileResponse {
+  reason: FailedToUpdateUserProfileResponseReason;
+}
+
+export type SuccessfulUpdateToUserProfileResponse = RenderableUser;
+
+export interface UpdateUserProfileRequestBody {
+  username?: string;
+  shortBio?: string;
+  userWebsite?: string;
+  userEmail?: string;
+  phoneNumber?: string;
+  preferredPagePrimaryColor?: Color;
+  profileVisibility?: ProfilePrivacySetting;
+  backgroundImage?: Express.Multer.File;
+  profilePicture?: Express.Multer.File;
+}
 
 export async function handleUpdateUserProfile({
   controller,
@@ -17,23 +35,13 @@ export async function handleUpdateUserProfile({
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: {
-    username?: string;
-    shortBio?: string;
-    userWebsite?: string;
-    profileVisibility?: ProfilePrivacySetting;
-    backgroundImage?: Express.Multer.File;
-    profilePicture?: Express.Multer.File;
-  };
+  requestBody: UpdateUserProfileRequestBody;
 }): Promise<
   SecuredHTTPResponse<
     FailedToUpdateUserProfileResponse,
     SuccessfulUpdateToUserProfileResponse
   >
 > {
-  console.log("requestBody");
-  console.log(requestBody);
-
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
@@ -48,18 +56,35 @@ export async function handleUpdateUserProfile({
       })
     : null;
 
-  await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
-    {
-      userId: clientUserId,
+  const updatedUnrenderableUser =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
+      {
+        userId: clientUserId,
 
-      username: requestBody.username,
-      shortBio: requestBody.shortBio,
-      userWebsite: requestBody.userWebsite,
-      profilePrivacySetting: requestBody.profileVisibility,
-      backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
-      profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
-    },
-  );
+        username: requestBody.username,
+        shortBio: requestBody.shortBio,
+        userWebsite: requestBody.userWebsite,
+        profilePrivacySetting: requestBody.profileVisibility,
+        email: requestBody.userEmail,
+        backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
+        profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+        preferredPagePrimaryColor: requestBody.preferredPagePrimaryColor,
+      },
+    );
 
-  return {};
+  if (!updatedUnrenderableUser) {
+    controller.setStatus(404);
+    return { error: { reason: FailedToUpdateUserProfileResponseReason.Unknown } };
+  }
+
+  const renderableUser = await constructRenderableUserFromParts({
+    clientUserId,
+    unrenderableUser: updatedUnrenderableUser,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+  });
+
+  return {
+    success: renderableUser,
+  };
 }

@@ -50,9 +50,6 @@ export async function handleSearchUserProfilesByUsername({
       },
     );
 
-  console.log("222HITTT2222");
-  console.log("unrenderableUsers", unrenderableUsers);
-
   if (unrenderableUsers.length === 0) {
     controller.setStatus(404);
     return {

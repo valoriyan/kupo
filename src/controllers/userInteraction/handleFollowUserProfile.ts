@@ -39,6 +39,7 @@ export async function handleFollowUser({
     {
       userIdDoingFollowing: clientUserId,
       userIdBeingFollowed: requestBody.userIdBeingFollowed,
+      creationTimestamp: Date.now(),
     },
   );
   return {};

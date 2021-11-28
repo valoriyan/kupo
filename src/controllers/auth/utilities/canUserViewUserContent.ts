@@ -34,10 +34,12 @@ export async function canUserViewUserContentByUserId({
   targetUserId: string;
   databaseService: DatabaseService;
 }): Promise<boolean> {
-  const targetUser =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      userId: targetUserId,
+  const targetUsers =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
+      userIds: [targetUserId],
     });
+
+  const targetUser = targetUsers[0];
 
   if (!targetUser) {
     throw new Error("Missing user");
