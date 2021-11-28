@@ -10,7 +10,7 @@ export const Template: Story<PostProps> = (args) => <Post {...args} />;
 Template.args = {
   post: {
     postId: "1",
-    postAuthorUserId: "123456",
+    authorUserId: "blake",
     caption:
       "This is a test post with enough text that it will truncate. This is a test post with enough text that it will truncate. This is a test post with enough text that it will truncate.",
     scheduledPublicationTimestamp: Date.now() - 1000 * 60 * 60 * 24 * 3,
@@ -19,6 +19,9 @@ Template.args = {
       "https://via.placeholder.com/450x300.png?text=Placeholder+2",
     ],
     hashtags: ["test", "placeholder", "newPost"],
+    likes: {
+      count: 10,
+    },
   },
   authorUserName: "blake",
   authorUserAvatar: "https://via.placeholder.com/450x300.png?text=:D",

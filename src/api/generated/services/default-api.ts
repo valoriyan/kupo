@@ -49,7 +49,7 @@ import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
 import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 // @ts-ignore
-import { FollowUserProfileParams } from "../types";
+import { FollowUserProfileRequestBody } from "../types";
 // @ts-ignore
 import { GetChatRoomByIdRequestBody } from "../types";
 // @ts-ignore
@@ -81,6 +81,8 @@ import { LoginUserRequestBody } from "../types";
 // @ts-ignore
 import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
+import { RemoveUserLikeFromPostRequestBody } from "../types";
+// @ts-ignore
 import { ResetPasswordRequestBody } from "../types";
 // @ts-ignore
 import { SearchUserProfilesByUsernameParams } from "../types";
@@ -101,7 +103,7 @@ import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResp
 // @ts-ignore
 import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse } from "../types";
+import { SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfullyFollowedUserProfileResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse } from "../types";
 // @ts-ignore
@@ -113,11 +115,15 @@ import { SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByI
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPostResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse } from "../types";
+import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse } from "../types";
 // @ts-ignore
@@ -141,13 +147,15 @@ import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGe
 // @ts-ignore
 import { SetUserHashtagsRequestBody } from "../types";
 // @ts-ignore
-import { UnfollowUserProfileParams } from "../types";
+import { UnfollowUserRequestBody } from "../types";
 // @ts-ignore
 import { UpdatePasswordRequestBody } from "../types";
 // @ts-ignore
 import { UpdatePostParams } from "../types";
 // @ts-ignore
 import { UpdateUserProfileRequestBody } from "../types";
+// @ts-ignore
+import { UserLikesPostRequestBody } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -635,17 +643,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {FollowUserProfileParams} followUserProfileParams
+     * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     followUser: async (
-      followUserProfileParams: FollowUserProfileParams,
+      followUserProfileRequestBody: FollowUserProfileRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'followUserProfileParams' is not null or undefined
-      assertParamExists("followUser", "followUserProfileParams", followUserProfileParams);
-      const localVarPath = `/userInteractions/FollowUser`;
+      // verify required parameter 'followUserProfileRequestBody' is not null or undefined
+      assertParamExists(
+        "followUser",
+        "followUserProfileRequestBody",
+        followUserProfileRequestBody,
+      );
+      const localVarPath = `/userInteractions/followUser`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -668,7 +680,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        followUserProfileParams,
+        followUserProfileRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1373,6 +1385,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserLikeFromPost: async (
+      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'removeUserLikeFromPostRequestBody' is not null or undefined
+      assertParamExists(
+        "removeUserLikeFromPost",
+        "removeUserLikeFromPostRequestBody",
+        removeUserLikeFromPostRequestBody,
+      );
+      const localVarPath = `/userInteractions/removeUserLikeFromPost`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        removeUserLikeFromPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1520,21 +1581,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+     * @param {UnfollowUserRequestBody} unfollowUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     unfollowUser: async (
-      unfollowUserProfileParams: UnfollowUserProfileParams,
+      unfollowUserRequestBody: UnfollowUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'unfollowUserProfileParams' is not null or undefined
+      // verify required parameter 'unfollowUserRequestBody' is not null or undefined
       assertParamExists(
         "unfollowUser",
-        "unfollowUserProfileParams",
-        unfollowUserProfileParams,
+        "unfollowUserRequestBody",
+        unfollowUserRequestBody,
       );
-      const localVarPath = `/userInteractions/UnfollowUser`;
+      const localVarPath = `/userInteractions/unfollowUser`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1557,7 +1618,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        unfollowUserProfileParams,
+        unfollowUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1903,6 +1964,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userLikesPost: async (
+      userLikesPostRequestBody: UserLikesPostRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'userLikesPostRequestBody' is not null or undefined
+      assertParamExists(
+        "userLikesPost",
+        "userLikesPostRequestBody",
+        userLikesPostRequestBody,
+      );
+      const localVarPath = `/userInteractions/userLikesPost`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        userLikesPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -2158,21 +2268,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {FollowUserProfileParams} followUserProfileParams
+     * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async followUser(
-      followUserProfileParams: FollowUserProfileParams,
+      followUserProfileRequestBody: FollowUserProfileRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfullyFollowedUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
-        followUserProfileParams,
+        followUserProfileRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2563,6 +2673,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async removeUserLikeFromPost(
+      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserLikeFromPost(
+        removeUserLikeFromPostRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2642,21 +2778,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+     * @param {UnfollowUserRequestBody} unfollowUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async unfollowUser(
-      unfollowUserProfileParams: UnfollowUserProfileParams,
+      unfollowUserRequestBody: UnfollowUserRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.unfollowUser(
-        unfollowUserProfileParams,
+        unfollowUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2846,6 +2982,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         configuration,
       );
     },
+    /**
+     *
+     * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userLikesPost(
+      userLikesPostRequestBody: UserLikesPostRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPostResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userLikesPost(
+        userLikesPostRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
   };
 };
 
@@ -3013,16 +3175,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {FollowUserProfileParams} followUserProfileParams
+     * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     followUser(
-      followUserProfileParams: FollowUserProfileParams,
+      followUserProfileRequestBody: FollowUserProfileRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfulFollowOfUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfullyFollowedUserProfileResponse> {
       return localVarFp
-        .followUser(followUserProfileParams, options)
+        .followUser(followUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3229,6 +3391,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserLikeFromPost(
+      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse> {
+      return localVarFp
+        .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {ResetPasswordRequestBody} resetPasswordRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3271,16 +3447,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+     * @param {UnfollowUserRequestBody} unfollowUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     unfollowUser(
-      unfollowUserProfileParams: UnfollowUserProfileParams,
+      unfollowUserRequestBody: UnfollowUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfulUnfollowOfUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse> {
       return localVarFp
-        .unfollowUser(unfollowUserProfileParams, options)
+        .unfollowUser(unfollowUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3392,6 +3568,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
       return localVarFp
         .updateUserProfilePicture(profilePicture, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userLikesPost(
+      userLikesPostRequestBody: UserLikesPostRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPostResponse> {
+      return localVarFp
+        .userLikesPost(userLikesPostRequestBody, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -3570,14 +3760,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {FollowUserProfileParams} followUserProfileParams
+   * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public followUser(followUserProfileParams: FollowUserProfileParams, options?: any) {
+  public followUser(
+    followUserProfileRequestBody: FollowUserProfileRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .followUser(followUserProfileParams, options)
+      .followUser(followUserProfileRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -3806,6 +3999,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public removeUserLikeFromPost(
+    removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {ResetPasswordRequestBody} resetPasswordRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -3854,17 +4063,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {UnfollowUserProfileParams} unfollowUserProfileParams
+   * @param {UnfollowUserRequestBody} unfollowUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public unfollowUser(
-    unfollowUserProfileParams: UnfollowUserProfileParams,
-    options?: any,
-  ) {
+  public unfollowUser(unfollowUserRequestBody: UnfollowUserRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .unfollowUser(unfollowUserProfileParams, options)
+      .unfollowUser(unfollowUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -3979,6 +4185,22 @@ export class DefaultApi extends BaseAPI {
   public updateUserProfilePicture(profilePicture: any, options?: any) {
     return DefaultApiFp(this.configuration)
       .updateUserProfilePicture(profilePicture, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public userLikesPost(
+    userLikesPostRequestBody: UserLikesPostRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .userLikesPost(userLikesPostRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }
