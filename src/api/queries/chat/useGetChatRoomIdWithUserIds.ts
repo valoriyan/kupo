@@ -10,9 +10,6 @@ export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
   return useQuery<SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse, Error>(
     [CacheKeys.ChatRoomMembers, userIds],
     async () => {
-      console.log("CALLING FUNCTION");
-      console.log("userIds", userIds);
-
       const res = await Api.doesChatRoomExistWithUserIds({
         userIds,
       });
