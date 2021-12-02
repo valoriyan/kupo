@@ -43,10 +43,10 @@ export async function handleGetPageOfNotifications({
     SuccessfullyGotPageOfNotificationsResponse
   >
 > {
+  console.log(requestBody);
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
-
-  console.log(requestBody);
 
   const unrenderableUserFollows =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
