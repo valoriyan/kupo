@@ -1,6 +1,6 @@
-import { useFormState } from "./FormContext";
+import { useFormState } from "../FormContext";
 
-export const NewMessageFormInput = () => {
+export const NewMessageInNewChatRoomFormInput = () => {
   const { newChatMessage, setNewChatMessage } = useFormState();
 
   async function onChangeNewChatMessage(event: React.ChangeEvent<HTMLInputElement>) {

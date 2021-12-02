@@ -60,7 +60,7 @@ export const Messages = () => {
       <br />
       <br />
 
-      <Link href={`/messages/0`}>
+      <Link href={`/messages/new`}>
         <button>Create New Room</button>
       </Link>
 

@@ -6,7 +6,7 @@ import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { FormStateProvider, useFormState } from "./FormContext";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
 import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
-import { NewMessageFormInput } from "./NewMessageFormInput";
+import { NewMessageInNewChatRoomFormInput } from "./NewChatRoom/NewMessageInNewChatRoomFormInput";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
 import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
 
@@ -160,7 +160,7 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
         </div>
       ) : null}
       <form onSubmit={onSubmitNewChatMessage}>
-        <NewMessageFormInput />
+        <NewMessageInNewChatRoomFormInput />
       </form>
       <br />
       <br />
