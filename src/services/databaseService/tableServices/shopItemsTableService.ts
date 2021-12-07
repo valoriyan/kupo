@@ -29,7 +29,9 @@ function convertDBShopItemToUnrenderableShopItemPreview(
     title: dbShopItem.title,
     price: dbShopItem.price,
     scheduledPublicationTimestamp: parseInt(dbShopItem.scheduled_publication_timestamp),
-    expirationTimestamp: !!dbShopItem.expiration_timestamp ? parseInt(dbShopItem.expiration_timestamp) : undefined,
+    expirationTimestamp: !!dbShopItem.expiration_timestamp
+      ? parseInt(dbShopItem.expiration_timestamp)
+      : undefined,
   };
 }
 

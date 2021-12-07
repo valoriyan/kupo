@@ -73,7 +73,9 @@ export async function handleCreateChatMessage({
     chatMessage,
   });
 
-  return { success: {
-    chatMessage,
-  } };
+  return {
+    success: {
+      chatMessage,
+    },
+  };
 }

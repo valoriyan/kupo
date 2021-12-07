@@ -26,7 +26,9 @@ function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
     authorUserId: dbPost.author_user_id,
     caption: dbPost.caption,
     scheduledPublicationTimestamp: parseInt(dbPost.scheduled_publication_timestamp),
-    expirationTimestamp: !!dbPost.expiration_timestamp ? parseInt(dbPost.expiration_timestamp) : undefined,
+    expirationTimestamp: !!dbPost.expiration_timestamp
+      ? parseInt(dbPost.expiration_timestamp)
+      : undefined,
   };
 }
 

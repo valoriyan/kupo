@@ -58,16 +58,16 @@ export async function handleGetPageOfChatMessages({
 
   const pageOfRenderableChatMessages = renderableChatMessages.slice(-pageSize);
 
-  const startOfPageTimestamp =
+  const previousPageCursor =
     renderableChatMessages.length > pageSize
-      ? pageOfRenderableChatMessages[0].creationTimestamp
-      : 1;
+      ? pageOfRenderableChatMessages[0].creationTimestamp.toString()
+      : undefined;
 
   return {
     success: {
       chatMessages: pageOfRenderableChatMessages,
-      previousPageCursor: cursor,
-      nextPageCursor: startOfPageTimestamp.toString(),
+      previousPageCursor: previousPageCursor,
+      nextPageCursor: cursor,
     },
   };
 }
