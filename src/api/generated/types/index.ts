@@ -102,6 +102,7 @@ export * from "./secured-httpresponse-failedto-get-page-of-notifications-respons
 export * from "./secured-httpresponse-failedto-get-page-of-posts-pagination-response-successful-get-page-of-posts-pagination-response";
 export * from "./set-user-hashtags-request-body";
 export * from "./successful-auth-response";
+export * from "./successful-chat-message-creation-response";
 export * from "./successful-get-page-of-chat-messages-response";
 export * from "./successful-get-page-of-chat-rooms-response";
 export * from "./successful-get-page-of-post-from-followed-hashtag-response";

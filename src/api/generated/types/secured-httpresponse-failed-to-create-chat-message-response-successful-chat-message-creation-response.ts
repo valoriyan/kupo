@@ -14,6 +14,7 @@
 
 import { FailedAuthResponse } from "./failed-auth-response";
 import { FailedToCreateChatMessageResponse } from "./failed-to-create-chat-message-response";
+import { SuccessfulChatMessageCreationResponse } from "./successful-chat-message-creation-response";
 
 /**
  *
@@ -29,8 +30,8 @@ export interface SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulC
   error?: FailedToCreateChatMessageResponse | FailedAuthResponse;
   /**
    *
-   * @type {object}
+   * @type {SuccessfulChatMessageCreationResponse}
    * @memberof SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse
    */
-  success?: object;
+  success?: SuccessfulChatMessageCreationResponse;
 }

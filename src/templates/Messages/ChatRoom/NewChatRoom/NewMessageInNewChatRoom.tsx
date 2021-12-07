@@ -1,7 +1,7 @@
 import Router from "next/router";
 import { useCreateNewChatMessageInNewChatRoom } from "#/api/mutations/chat/createNewChatMessageInNewChatRoom";
 import { FormStateProvider, useFormState } from "../FormContext";
-import { NewMessageInNewChatRoomFormInput } from "./NewMessageInNewChatRoomFormInput";
+import { NewMessageInput } from "../NewMessageInput";
 
 const NewMessageInNewChatRoomInner = ({ userIds }: { userIds: string[] }) => {
   const { newChatMessage } = useFormState();
@@ -26,9 +26,7 @@ const NewMessageInNewChatRoomInner = ({ userIds }: { userIds: string[] }) => {
       <br />
       <h3>New Message:</h3>
       <br />
-      <form onSubmit={onSubmitNewChatMessage}>
-        <NewMessageInNewChatRoomFormInput />
-      </form>
+      <NewMessageInput onSubmitNewChatMessage={onSubmitNewChatMessage} />
     </>
   );
 };
