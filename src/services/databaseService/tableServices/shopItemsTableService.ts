@@ -15,8 +15,8 @@ interface DBShopItem {
   caption: string;
   title: string;
   price: number;
-  scheduled_publication_timestamp: number;
-  expiration_timestamp?: number;
+  scheduled_publication_timestamp: string;
+  expiration_timestamp?: string;
 }
 
 function convertDBShopItemToUnrenderableShopItemPreview(
@@ -28,8 +28,8 @@ function convertDBShopItemToUnrenderableShopItemPreview(
     caption: dbShopItem.caption,
     title: dbShopItem.title,
     price: dbShopItem.price,
-    scheduledPublicationTimestamp: dbShopItem.scheduled_publication_timestamp,
-    expirationTimestamp: dbShopItem.expiration_timestamp,
+    scheduledPublicationTimestamp: parseInt(dbShopItem.scheduled_publication_timestamp),
+    expirationTimestamp: !!dbShopItem.expiration_timestamp ? parseInt(dbShopItem.expiration_timestamp) : undefined,
   };
 }
 

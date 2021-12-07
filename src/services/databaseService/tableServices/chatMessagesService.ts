@@ -15,7 +15,7 @@ interface DBChatMessage {
   text: string;
   author_user_id: string;
   chat_room_id: string;
-  creation_timestamp: number;
+  creation_timestamp: string;
 }
 
 function convertDBChatMessageToUnrenderableChatMessage(
@@ -26,7 +26,7 @@ function convertDBChatMessageToUnrenderableChatMessage(
     text: dbChatMessage.text,
     authorUserId: dbChatMessage.author_user_id,
     chatRoomId: dbChatMessage.chat_room_id,
-    creationTimestamp: dbChatMessage.creation_timestamp,
+    creationTimestamp: parseInt(dbChatMessage.creation_timestamp),
   };
 }
 

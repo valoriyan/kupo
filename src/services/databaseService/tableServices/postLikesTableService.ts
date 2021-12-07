@@ -7,7 +7,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBPostLike {
   post_id: string;
   user_id: string;
-  timestamp: number;
+  timestamp: string;
 }
 
 export class PostLikesTableService extends TableService {

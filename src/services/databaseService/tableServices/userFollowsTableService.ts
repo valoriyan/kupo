@@ -8,7 +8,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBUserFollow {
   user_id_doing_following: string;
   user_id_being_followed: string;
-  timestamp: number;
+  timestamp: string;
 }
 
 function convertDBUserFollowToUnrenderableUserFollow(
@@ -17,7 +17,7 @@ function convertDBUserFollowToUnrenderableUserFollow(
   return {
     userIdDoingFollowing: dbUserFollow.user_id_doing_following,
     userIdBeingFollowed: dbUserFollow.user_id_being_followed,
-    timestamp: dbUserFollow.timestamp,
+    timestamp: parseInt(dbUserFollow.timestamp),
   };
 }
 

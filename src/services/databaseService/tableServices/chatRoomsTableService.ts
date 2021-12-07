@@ -9,7 +9,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBChatRoomMembership {
   chat_room_id: string;
   user_id: string;
-  join_timestamp: number;
+  join_timestamp: string;
 }
 
 function convertDBChatRoomMembershipsToUnrenderableChatRooms(

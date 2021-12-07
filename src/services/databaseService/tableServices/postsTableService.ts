@@ -14,8 +14,8 @@ interface DBPost {
   post_id: string;
   author_user_id: string;
   caption: string;
-  scheduled_publication_timestamp: number;
-  expiration_timestamp?: number;
+  scheduled_publication_timestamp: string;
+  expiration_timestamp?: string;
 }
 
 function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
@@ -25,8 +25,8 @@ function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
     postId: dbPost.post_id,
     authorUserId: dbPost.author_user_id,
     caption: dbPost.caption,
-    scheduledPublicationTimestamp: dbPost.scheduled_publication_timestamp,
-    expirationTimestamp: dbPost.expiration_timestamp,
+    scheduledPublicationTimestamp: parseInt(dbPost.scheduled_publication_timestamp),
+    expirationTimestamp: !!dbPost.expiration_timestamp ? parseInt(dbPost.expiration_timestamp) : undefined,
   };
 }
 

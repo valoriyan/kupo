@@ -13,8 +13,9 @@ export interface FailedToCreateChatMessageResponse {
   reason: CreateChatMessageFailureReasons;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulChatMessageCreationResponse {}
+export interface SuccessfulChatMessageCreationResponse {
+  chatMessage: RenderableChatMessage;
+}
 
 export interface CreateChatMessageRequestBody {
   chatMessageText: string;
@@ -72,5 +73,7 @@ export async function handleCreateChatMessage({
     chatMessage,
   });
 
-  return { success: {} };
+  return { success: {
+    chatMessage,
+  } };
 }
