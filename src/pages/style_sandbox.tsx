@@ -1,7 +1,7 @@
+import Image from "next/image";
 import { Stack } from "#/components/Layout";
 import { BrandTitle, headingStyles } from "#/components/Typography";
 import { ProtectedPage } from "#/contexts/auth";
-import Image from 'next/image'
 
 import { styled } from "#/styling";
 

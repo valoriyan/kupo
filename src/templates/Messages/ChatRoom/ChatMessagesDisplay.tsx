@@ -26,6 +26,9 @@ export const ChatMessagesDisplay = ({
     isFetchingPreviousPage,
   } = infiniteQueryResultOfFetchingPageOfChatMessages;
 
+  console.log("hasPreviousPage");
+  console.log(hasPreviousPage);
+
   {
     isFetchingPageOfChatMessages ? (
       <div>
@@ -46,22 +49,26 @@ export const ChatMessagesDisplay = ({
     );
   });
 
-  return (
-    <Wrapper>
+  console.log(hasPreviousPage);
+
+  const loadPreviousPageItem = isFetchingPreviousPage ?
+    "Loading more..." :
+    hasPreviousPage ? (
       <button
         onClick={() => {
           fetchPreviousPage();
         }}
         disabled={!hasPreviousPage || isFetchingPreviousPage}
       >
-        {isFetchingPreviousPage ? (
-          "Loading more..."
-        ) : hasPreviousPage ? (
-          <h3>LOAD PREVIOUS</h3>
-        ) : (
-          "Nothing more to load"
-        )}
+        <h3>LOAD PREVIOUS</h3>
       </button>
+    ) : (
+      "Nothing more to load"
+    );
+
+  return (
+    <Wrapper>
+      {loadPreviousPageItem}
 
       {renderedMessages}
     </Wrapper>

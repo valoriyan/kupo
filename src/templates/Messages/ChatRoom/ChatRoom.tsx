@@ -63,7 +63,9 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
         if (
           pagesOfChatMessageData &&
           !pagesOfChatMessageData.pages.some((page) => {
-            const chatMessageIds = page.chatMessages.map((existingChatMessage) => existingChatMessage.chatMessageId);
+            const chatMessageIds = page.chatMessages.map(
+              (existingChatMessage) => existingChatMessage.chatMessageId,
+            );
             return chatMessageIds.includes(chatMessage.chatMessageId);
           })
         ) {
