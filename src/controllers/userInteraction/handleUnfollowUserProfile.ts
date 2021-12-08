@@ -35,5 +35,7 @@ export async function handleUnfollowUser({
       userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,
     },
   );
-  return {};
+  return {
+    success: {},
+  };
 }

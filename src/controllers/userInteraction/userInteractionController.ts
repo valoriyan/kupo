@@ -5,10 +5,10 @@ import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import {
-  FailedToFollowUserProfileResponse,
-  FollowUserProfileRequestBody,
+  FailedToFollowUserResponse,
+  FollowUserRequestBody,
   handleFollowUser,
-  SuccessfullyFollowedUserProfileResponse,
+  SuccessfullyFollowedUserResponse,
 } from "./handleFollowUserProfile";
 import {
   FailedToUnfollowUserProfileResponse,
@@ -46,11 +46,11 @@ export class UserInteractionController extends Controller {
   @Post("followUser")
   public async followUser(
     @Request() request: express.Request,
-    @Body() requestBody: FollowUserProfileRequestBody,
+    @Body() requestBody: FollowUserRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToFollowUserProfileResponse,
-      SuccessfullyFollowedUserProfileResponse
+      FailedToFollowUserResponse,
+      SuccessfullyFollowedUserResponse
     >
   > {
     return await handleFollowUser({

@@ -93,6 +93,11 @@ export async function constructRenderableUserFromParts({
       { userId },
     );
 
+    const isBeingFollowedByClient = await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId({
+      userIdDoingFollowing: clientUserId,
+      userIdBeingFollowed: userId,
+    });
+
   return {
     backgroundImageTemporaryUrl,
     profilePictureTemporaryUrl,
@@ -111,5 +116,6 @@ export async function constructRenderableUserFromParts({
     shortBio,
     hashtags: userHashtags,
     preferredPagePrimaryColor,
+    isBeingFollowedByClient,
   };
 }

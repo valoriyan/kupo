@@ -36,4 +36,5 @@ export interface RenderableUser extends BaseUnrenderableUser {
   };
   clientCanViewContent: boolean;
   hashtags: string[];
+  isBeingFollowedByClient: boolean;
 }

@@ -3,14 +3,14 @@ import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 
-export interface FollowUserProfileRequestBody {
+export interface FollowUserRequestBody {
   userIdBeingFollowed: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyFollowedUserProfileResponse {}
+export interface SuccessfullyFollowedUserResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToFollowUserProfileResponse {}
+export interface FailedToFollowUserResponse {}
 
 export async function handleFollowUser({
   controller,
@@ -19,9 +19,9 @@ export async function handleFollowUser({
 }: {
   controller: UserInteractionController;
   request: express.Request;
-  requestBody: FollowUserProfileRequestBody;
+  requestBody: FollowUserRequestBody;
 }): Promise<
-  HTTPResponse<FailedToFollowUserProfileResponse, SuccessfullyFollowedUserProfileResponse>
+  HTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -33,5 +33,7 @@ export async function handleFollowUser({
       timestamp: Date.now(),
     },
   );
-  return {};
+  return {
+    success: {},
+  };
 }
