@@ -11,12 +11,19 @@ export interface GetPageOfPostFromFollowedUsersParams {
   pageSize: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfPostFromFollowedUsersResponse {}
+export enum FailedToGetPageOfPostFromFollowedUsersResponseReason {
+  UnknownCause = "Unknown Cause",
+}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface FailedToGetPageOfPostFromFollowedUsersResponse {
+  reason: FailedToGetPageOfPostFromFollowedUsersResponseReason;
+}
+
 export interface SuccessfulGetPageOfPostFromFollowedUsersResponse {
   posts: RenderablePost[];
+
+  previousPageCursor?: string;
+  nextPageCursor?: string;
 }
 
 export async function handleGetPageOfPostFromFollowedUsers({
@@ -33,6 +40,8 @@ export async function handleGetPageOfPostFromFollowedUsers({
     SuccessfulGetPageOfPostFromFollowedUsersResponse
   >
 > {
+  const { pageSize, cursor } = requestBody;
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
@@ -48,7 +57,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
     unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: requestBody.cursor,
+    encodedCursor: cursor,
     pageSize: requestBody.pageSize,
   });
 
@@ -58,9 +67,13 @@ export async function handleGetPageOfPostFromFollowedUsers({
     posts: filteredUnrenderablePostsWithoutElements,
   });
 
+  console.log("page size", pageSize);
+
   return {
     success: {
       posts: renderablePosts,
+      previousPageCursor: undefined,
+      nextPageCursor: cursor,
     },
   };
 }
