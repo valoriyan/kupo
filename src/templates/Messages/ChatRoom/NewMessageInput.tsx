@@ -22,7 +22,7 @@ export const NewMessageInput = ({
   }
 
   return (
-    <div>
+    <Wrapper>
       <ChatMessageInputForm onSubmit={onSubmitNewChatMessage}>
         <ChatMessageInput
           onKeyDown={onKeyPress}
@@ -30,11 +30,15 @@ export const NewMessageInput = ({
           value={newChatMessage}
           onChange={onUpdateNewChatMessage}
         />
-        <SendButton>Send</SendButton>
       </ChatMessageInputForm>
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled("div", {
+  borderTop: "1px solid #c4c4c4",
+  borderBottom: "1px solid #c4c4c4",
+});
 
 const ChatMessageInputForm = styled("form", {
   width: "100%",
@@ -49,11 +53,4 @@ const ChatMessageInput = styled("textarea", {
   resize: "none",
   display: "inline-block",
   border: "none",
-});
-
-const SendButton = styled("button", {
-  backgroundColor: "$secondary",
-  border: "none",
-  padding: "$3",
-  float: "right",
 });

@@ -1,88 +1,50 @@
-import Link from "next/link";
 import { useGetPageOfChatRooms } from "#/api/queries/chat/useGetPageOfChatRooms";
-import { RenderableChatRoom } from "#/api/generated/types/renderable-chat-room";
+import { styled } from "#/styling";
+import { ChatRoomsListSearchBar } from "./ChatRoomsListSearchBar";
+import { ChatRoomsListFilterBar } from "./ChatRoomsListFilterBar";
+import { ChatRoomsList } from "./ChatRoomList";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 
-const ChatRoomListItem = ({ chatRoom }: { chatRoom: RenderableChatRoom }) => {
-  const { chatRoomId, members } = chatRoom;
 
-  const memberUsernames = members.map((member) => member.username);
-
-  const chatRoomName = memberUsernames.join(", ");
-
-  return (
-    <Link href={`/messages/${chatRoomId}`}>
-      <button>Enter Chat Room with {chatRoomName}</button>
-    </Link>
-  );
-};
 
 export const Messages = () => {
+  const infiniteQueryResultOfFetchingPageOfChatRooms = useGetPageOfChatRooms({});
   const {
     data,
     isLoading,
-    isFetching: isFetchingChatRooms,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
     error,
     isError,
-  } = useGetPageOfChatRooms({});
+  } = infiniteQueryResultOfFetchingPageOfChatRooms;
 
-  if (isError && !isLoading) {
+  const {
+    data: clientUserData,
+    isError: isErrorAcquiringClientUserData,
+    isLoading: isLoadingClientUserData,
+  } = useGetUserProfile({ isOwnProfile: true });
+
+
+  if ((isError && !isLoading) || (isErrorAcquiringClientUserData && !isLoadingClientUserData)) {
     return <div>Error: {(error as Error).message}</div>;
   }
 
-  if (isLoading || !data) {
+  if ((isLoading || !data) || (isLoadingClientUserData || !clientUserData)) {
     return <div>Loading</div>;
   }
 
-  const chatRooms = data.pages
-    .filter((chatRoomDataPage) => !!chatRoomDataPage.success)
-    .flatMap((chatRoomDataPage) => {
-      return chatRoomDataPage.success!.chatRooms;
-    });
 
-  const renderedChatRooms = chatRooms.map((chatRoom, index) => {
-    return <ChatRoomListItem key={index} chatRoom={chatRoom} />;
-  });
 
   return (
-    <div>
-      {isFetchingChatRooms ? (
-        <div>
-          Refreshing...
-          <br />
-        </div>
-      ) : null}
-
-      <h2>List of Chat Rooms:</h2>
-
-      <br />
-      <br />
-
-      <Link href={`/messages/new`}>
-        <button>Create New Room</button>
-      </Link>
-
-      <br />
-      <br />
-
-      {renderedChatRooms}
-      <button
-        onClick={() => {
-          fetchNextPage();
-        }}
-        disabled={!hasNextPage || isFetchingNextPage}
-      >
-        <br />
-        <br />
-
-        {isFetchingNextPage
-          ? "Loading more..."
-          : hasNextPage
-          ? "Load More"
-          : "Nothing more to load"}
-      </button>
-    </div>
+    <Grid>
+      <ChatRoomsListSearchBar />
+      <ChatRoomsListFilterBar />
+      <ChatRoomsList clientUserData={clientUserData} infiniteQueryResultOfFetchingPageOfChatRooms={infiniteQueryResultOfFetchingPageOfChatRooms} />
+    </Grid>
   );
 };
+
+const Grid = styled("div", {
+  display: "grid",
+  gridTemplateRows: "5% 5% 90%",
+  height: "100%",
+  width: "100%",
+});

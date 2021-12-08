@@ -12,6 +12,7 @@ import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 import { ChatMessagesDisplay } from "./ChatMessagesDisplay";
 import { NewMessageInput } from "./NewMessageInput";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
+import { ChatMessageActionRow } from "./ChatMessageActionRow";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
 const DELETED_CHAT_MESSAGE_EVENT_NAME = "DELETED_CHAT_MESSAGE_EVENT_NAME";
@@ -149,6 +150,7 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
         }
       />
       <NewMessageInput onSubmitNewChatMessage={onSubmitNewChatMessage} />
+      <ChatMessageActionRow onSubmitNewChatMessage={onSubmitNewChatMessage} />
     </Grid>
   );
 };
@@ -163,6 +165,6 @@ export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
 
 const Grid = styled("div", {
   display: "grid",
-  gridTemplateRows: "10% 70% 20%",
+  gridTemplateRows: "10% 65% 20% 5%",
   height: "100%",
 });

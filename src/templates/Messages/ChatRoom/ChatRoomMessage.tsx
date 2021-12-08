@@ -53,15 +53,27 @@ export const ChatRoomMessage = ({
   );
 
   return (
-    <div>
-      {text}
+    <Wrapper>
+      <MessageText>
+
+        {text}
+      </MessageText>
       <div>
         <Timestamp>{formattedTimestamp}</Timestamp>
         <DeletePostButton>{deleteButton}</DeletePostButton>
       </div>
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled("div", {
+});
+
+const MessageText = styled("div", {
+  marginBottom: "$4",
+});
+
+
 
 const Timestamp = styled("span", {
   fontSize: "$1",

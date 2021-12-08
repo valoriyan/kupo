@@ -1,13 +1,13 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api } from "../..";
+import { Api, SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse } from "../..";
 
 export interface GetChatRoomsArgs {
   cursor?: string;
 }
 
 export const useGetPageOfChatRooms = ({ cursor }: GetChatRoomsArgs) => {
-  return useInfiniteQuery([CacheKeys.ChatRoomsPages, cursor], fetchPageOfChatRooms, {
+  return useInfiniteQuery<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse, Error, SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse, (string | undefined)[]>([CacheKeys.ChatRoomsPages, cursor], fetchPageOfChatRooms, {
     getNextPageParam: (lastPage) => {
       return lastPage.success?.nextPageCursor;
     },

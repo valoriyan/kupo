@@ -51,20 +51,20 @@ export const ChatMessagesDisplay = ({
 
   console.log(hasPreviousPage);
 
-  const loadPreviousPageItem = isFetchingPreviousPage ?
-    "Loading more..." :
-    hasPreviousPage ? (
-      <button
-        onClick={() => {
-          fetchPreviousPage();
-        }}
-        disabled={!hasPreviousPage || isFetchingPreviousPage}
-      >
-        <h3>LOAD PREVIOUS</h3>
-      </button>
-    ) : (
-      "Nothing more to load"
-    );
+  const loadPreviousPageItem = isFetchingPreviousPage ? (
+    "Loading more..."
+  ) : hasPreviousPage ? (
+    <button
+      onClick={() => {
+        fetchPreviousPage();
+      }}
+      disabled={!hasPreviousPage || isFetchingPreviousPage}
+    >
+      <h3>LOAD PREVIOUS</h3>
+    </button>
+  ) : (
+    "Nothing more to load"
+  );
 
   return (
     <Wrapper>
@@ -90,11 +90,11 @@ const ClientUserMessage = styled("div", {
   marginTop: "$4",
 
   borderRadius: "$4",
+
 });
 
 const OtherUserMessage = styled("div", {
   marginRight: "30%",
-
   backgroundColor: "$primary",
   color: "$text",
   padding: "$3",
