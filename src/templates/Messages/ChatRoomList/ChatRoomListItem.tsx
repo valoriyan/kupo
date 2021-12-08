@@ -1,26 +1,38 @@
+import Link from "next/link";
 import { RenderableUser } from "#/api";
 import { RenderableChatRoom } from "#/api/generated/types/renderable-chat-room";
 import { Avatar } from "#/components/Avatar";
 import { Flex } from "#/components/Layout";
 import { styled } from "#/styling";
-import Link from "next/link";
 
-export const ChatRoomListItem = ({ chatRoom, clientUserData }: { chatRoom: RenderableChatRoom; clientUserData: RenderableUser; }) => {
+export const ChatRoomListItem = ({
+  chatRoom,
+  clientUserData,
+}: {
+  chatRoom: RenderableChatRoom;
+  clientUserData: RenderableUser;
+}) => {
   const { chatRoomId, members } = chatRoom;
 
-  const memberUserProfilePictures = members.map((member) => member.profilePictureTemporaryUrl);
+  const memberUserProfilePictures = members.map(
+    (member) => member.profilePictureTemporaryUrl,
+  );
 
-  const firstMemberUserProfilePicture = memberUserProfilePictures.length > 0 ? memberUserProfilePictures[0] : undefined;
+  const firstMemberUserProfilePicture =
+    memberUserProfilePictures.length > 0 ? memberUserProfilePictures[0] : undefined;
 
-  const nonClientChatRoomMembers = members.filter(member => member.userId !== clientUserData.userId);
+  const nonClientChatRoomMembers = members.filter(
+    (member) => member.userId !== clientUserData.userId,
+  );
 
   const chatRoomMembersDisplay = nonClientChatRoomMembers.map((member, index, lst) => {
     return (
       <Username key={member.userId}>
-        @{member.username}{index < lst.length - 1 ? "," : null}
+        @{member.username}
+        {index < lst.length - 1 ? "," : null}
       </Username>
     );
-  })
+  });
 
   return (
     <FlexWrapperContainer>
@@ -30,10 +42,7 @@ export const ChatRoomListItem = ({ chatRoom, clientUserData }: { chatRoom: Rende
         </div>
       </Link>
 
-      <Usernames>
-        {chatRoomMembersDisplay}
-      </Usernames>
-
+      <Usernames>{chatRoomMembersDisplay}</Usernames>
     </FlexWrapperContainer>
   );
 };
@@ -48,7 +57,6 @@ const FlexWrapperContainer = styled(Flex, {
 const Usernames = styled("div", {
   paddingLeft: "$4",
 });
-
 
 const Username = styled("span", {
   paddingLeft: "$2",

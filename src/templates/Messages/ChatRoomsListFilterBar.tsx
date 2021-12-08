@@ -4,23 +4,16 @@ import { styled } from "#/styling";
 export const ChatRoomsListFilterBar = () => {
   return (
     <FlexWrapper>
-
       <FriendsListSelected>
-        <ListName>
-          All
-        </ListName>
+        <ListName>All</ListName>
       </FriendsListSelected>
 
-      <FriendsList>
-        Followers
-      </FriendsList>
+      <FriendsList>Followers</FriendsList>
 
-      <FriendsList>
-        Friends
-      </FriendsList>
+      <FriendsList>Friends</FriendsList>
     </FlexWrapper>
   );
-}
+};
 
 const FlexWrapper = styled(Flex, {
   padding: "$4",
@@ -43,9 +36,7 @@ const FriendsListSelected = styled(Flex, {
 
   justifyContent: "center",
   alignContent: "center",
-
 });
-
 
 const FriendsList = styled("div", {
   textAlign: "center",
@@ -58,5 +49,4 @@ const FriendsList = styled("div", {
   margin: "$3",
 });
 
-const ListName = styled("div", {
-});
+const ListName = styled("div", {});

@@ -1,16 +1,21 @@
-import { RenderableUser, SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse } from "#/api";
-import { styled } from "#/styling";
 import Link from "next/link";
 import { UseInfiniteQueryResult } from "react-query";
+import {
+  RenderableUser,
+  SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse,
+} from "#/api";
+import { styled } from "#/styling";
 import { ChatRoomListItem } from "./ChatRoomListItem";
-
 
 export const ChatRoomsList = ({
   clientUserData,
   infiniteQueryResultOfFetchingPageOfChatRooms,
 }: {
-  clientUserData: RenderableUser,
-  infiniteQueryResultOfFetchingPageOfChatRooms: UseInfiniteQueryResult<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse, Error>;
+  clientUserData: RenderableUser;
+  infiniteQueryResultOfFetchingPageOfChatRooms: UseInfiniteQueryResult<
+    SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse,
+    Error
+  >;
 }) => {
   const {
     data,
@@ -38,26 +43,24 @@ export const ChatRoomsList = ({
     });
 
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
-    return <ChatRoomListItem key={index} chatRoom={chatRoom} clientUserData={clientUserData} />;
+    return (
+      <ChatRoomListItem key={index} chatRoom={chatRoom} clientUserData={clientUserData} />
+    );
   });
-
 
   return (
     <div>
-
       {isFetchingChatRooms ? (
         <div>
           Refreshing...
           <br />
         </div>
       ) : null}
-      
+
       <Link href={`/messages/new`}>
-        <CreateNewChatRoomButton>
-          Create New Room
-        </CreateNewChatRoomButton>
+        <CreateNewChatRoomButton>Create New Room</CreateNewChatRoomButton>
       </Link>
-        <br />
+      <br />
 
       {renderedChatRooms}
 
@@ -76,11 +79,9 @@ export const ChatRoomsList = ({
           ? "Load More"
           : "Nothing more chat rooms to load"}
       </button>
-
-
     </div>
-  )
-}
+  );
+};
 
 const CreateNewChatRoomButton = styled("button", {
   padding: "$2",

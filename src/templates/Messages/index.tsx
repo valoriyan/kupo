@@ -5,16 +5,10 @@ import { ChatRoomsListFilterBar } from "./ChatRoomsListFilterBar";
 import { ChatRoomsList } from "./ChatRoomList";
 import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 
-
-
 export const Messages = () => {
   const infiniteQueryResultOfFetchingPageOfChatRooms = useGetPageOfChatRooms({});
-  const {
-    data,
-    isLoading,
-    error,
-    isError,
-  } = infiniteQueryResultOfFetchingPageOfChatRooms;
+  const { data, isLoading, error, isError } =
+    infiniteQueryResultOfFetchingPageOfChatRooms;
 
   const {
     data: clientUserData,
@@ -22,22 +16,27 @@ export const Messages = () => {
     isLoading: isLoadingClientUserData,
   } = useGetUserProfile({ isOwnProfile: true });
 
-
-  if ((isError && !isLoading) || (isErrorAcquiringClientUserData && !isLoadingClientUserData)) {
+  if (
+    (isError && !isLoading) ||
+    (isErrorAcquiringClientUserData && !isLoadingClientUserData)
+  ) {
     return <div>Error: {(error as Error).message}</div>;
   }
 
-  if ((isLoading || !data) || (isLoadingClientUserData || !clientUserData)) {
+  if (isLoading || !data || isLoadingClientUserData || !clientUserData) {
     return <div>Loading</div>;
   }
-
-
 
   return (
     <Grid>
       <ChatRoomsListSearchBar />
       <ChatRoomsListFilterBar />
-      <ChatRoomsList clientUserData={clientUserData} infiniteQueryResultOfFetchingPageOfChatRooms={infiniteQueryResultOfFetchingPageOfChatRooms} />
+      <ChatRoomsList
+        clientUserData={clientUserData}
+        infiniteQueryResultOfFetchingPageOfChatRooms={
+          infiniteQueryResultOfFetchingPageOfChatRooms
+        }
+      />
     </Grid>
   );
 };

@@ -6,12 +6,12 @@ export const ChatRoomsListSearchBar = () => {
   return (
     <FlexWrapper>
       <SearchBox placeholder="Search..." type="text" />
-      <Flex css={{gap: "$4"}}>
+      <Flex css={{ gap: "$4" }}>
         <Search />
         <Options />
       </Flex>
     </FlexWrapper>
-  )
+  );
 };
 
 const FlexWrapper = styled(Flex, {
@@ -20,9 +20,8 @@ const FlexWrapper = styled(Flex, {
   textAlign: "center",
   alignContent: "center",
   padding: "$4",
-  borderBottom: "1px solid $background3"
+  borderBottom: "1px solid $background3",
 });
-
 
 const SearchBox = styled("input", {
   width: "100%",

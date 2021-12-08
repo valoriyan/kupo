@@ -90,7 +90,6 @@ const ClientUserMessage = styled("div", {
   marginTop: "$4",
 
   borderRadius: "$4",
-
 });
 
 const OtherUserMessage = styled("div", {

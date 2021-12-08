@@ -7,21 +7,17 @@ export const ChatMessageActionRow = ({
 }: {
   onSubmitNewChatMessage(event: React.FormEvent): Promise<void>;
 }) => {
-  
-
-  return <Flex css={{ p: "$3", alignItems: "center", justifyContent: "space-between"}}>
-    <Flex css={{gap: "$4"}}>
-      <Dollar />
-      <Image />
-      <Folder />
+  return (
+    <Flex css={{ p: "$3", alignItems: "center", justifyContent: "space-between" }}>
+      <Flex css={{ gap: "$4" }}>
+        <Dollar />
+        <Image />
+        <Folder />
+      </Flex>
+      <SendButton onClick={onSubmitNewChatMessage}>Send</SendButton>
     </Flex>
-    <SendButton onClick={onSubmitNewChatMessage}>
-      Send
-    </SendButton>
-  </Flex>
-}
-
-
+  );
+};
 
 const SendButton = styled("button", {
   backgroundColor: "$primary",
