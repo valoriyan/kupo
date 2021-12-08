@@ -1,4 +1,4 @@
-import { useGetPostsByUserId } from "#/api/queries/users/useGetPostsByUserId";
+import { useGetPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";

@@ -13,6 +13,7 @@
  */
 
 import { FailedAuthResponse } from "./failed-auth-response";
+import { FailedToGetPageOfPostFromFollowedUsersResponse } from "./failed-to-get-page-of-post-from-followed-users-response";
 import { SuccessfulGetPageOfPostFromFollowedUsersResponse } from "./successful-get-page-of-post-from-followed-users-response";
 
 /**
@@ -23,10 +24,10 @@ import { SuccessfulGetPageOfPostFromFollowedUsersResponse } from "./successful-g
 export interface SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse {
   /**
    *
-   * @type {object | FailedAuthResponse}
+   * @type {FailedToGetPageOfPostFromFollowedUsersResponse | FailedAuthResponse}
    * @memberof SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse
    */
-  error?: object | FailedAuthResponse;
+  error?: FailedToGetPageOfPostFromFollowedUsersResponse | FailedAuthResponse;
   /**
    *
    * @type {SuccessfulGetPageOfPostFromFollowedUsersResponse}

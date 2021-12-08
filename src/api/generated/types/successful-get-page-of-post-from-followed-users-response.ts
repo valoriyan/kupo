@@ -26,4 +26,16 @@ export interface SuccessfulGetPageOfPostFromFollowedUsersResponse {
    * @memberof SuccessfulGetPageOfPostFromFollowedUsersResponse
    */
   posts: Array<RenderablePost>;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfulGetPageOfPostFromFollowedUsersResponse
+   */
+  previousPageCursor?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessfulGetPageOfPostFromFollowedUsersResponse
+   */
+  nextPageCursor?: string;
 }
