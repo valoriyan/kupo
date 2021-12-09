@@ -52,6 +52,7 @@ export async function handleGetPostsScheduledByUser({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags,
+    clientUserId,
   });
 
   return {

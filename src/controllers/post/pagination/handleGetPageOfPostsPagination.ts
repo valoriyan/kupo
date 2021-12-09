@@ -15,7 +15,7 @@ export interface GetPageOfPostsPaginationParams {
 }
 
 export interface SuccessfulGetPageOfPostsPaginationResponse {
-  renderablePosts: RenderablePost[];
+  posts: RenderablePost[];
 
   previousPageCursor?: string;
   nextPageCursor?: string;
@@ -72,15 +72,16 @@ export async function handleGetPageOfPostsPagination({
     pageSize: requestBody.pageSize,
   });
 
-  const renderablePosts = await constructRenderablePostsFromParts({
+  const posts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: filteredUnrenderablePostsWithoutElements,
+    clientUserId,
   });
 
   return {
     success: {
-      renderablePosts,
+      posts,
       previousPageCursor: requestBody.cursor,
       nextPageCursor: getEncodedNextPageCursor({
         posts: filteredUnrenderablePostsWithoutElements,

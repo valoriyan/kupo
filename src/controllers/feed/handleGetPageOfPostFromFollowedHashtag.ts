@@ -34,7 +34,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     SuccessfulGetPageOfPostFromFollowedHashtagResponse
   >
 > {
-  const { error } = await checkAuthorization(controller, request);
+  const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const postIdsWithHashtag =
@@ -57,6 +57,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: filteredUnrenderablePostsWithoutElements,
+    clientUserId,
   });
 
   return {

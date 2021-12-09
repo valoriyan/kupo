@@ -52,7 +52,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
 
   const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserIds(
-      { creatorUserIds: userIdsBeingFollowed },
+      { creatorUserIds: [...userIdsBeingFollowed, clientUserId] },
     );
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
@@ -65,6 +65,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
     posts: filteredUnrenderablePostsWithoutElements,
+    clientUserId,
   });
 
   console.log("page size", pageSize);

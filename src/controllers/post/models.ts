@@ -15,4 +15,5 @@ export interface RenderablePost extends UnrenderablePostWithoutElementsOrHashtag
   likes: {
     count: number;
   };
+  isLikedByClient: boolean;
 }

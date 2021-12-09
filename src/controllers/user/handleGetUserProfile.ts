@@ -43,7 +43,6 @@ export async function handleGetUserProfile({
           username: requestBody.username,
         },
       );
-
   } else {
     // Fetch user profile by own userId
     if (error) return error;

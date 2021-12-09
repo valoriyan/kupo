@@ -48,10 +48,7 @@ export class UserInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: FollowUserRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      FailedToFollowUserResponse,
-      SuccessfullyFollowedUserResponse
-    >
+    SecuredHTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>
   > {
     return await handleFollowUser({
       controller: this,

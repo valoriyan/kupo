@@ -7,10 +7,12 @@ export async function constructRenderablePostsFromParts({
   blobStorageService,
   databaseService,
   posts,
+  clientUserId,
 }: {
   blobStorageService: LocalBlobStorageService;
   databaseService: DatabaseService;
   posts: UnrenderablePostWithoutElementsOrHashtags[];
+  clientUserId: string;
 }): Promise<RenderablePost[]> {
   const renderablePosts = await BluebirdPromise.map(
     posts,
@@ -19,6 +21,7 @@ export async function constructRenderablePostsFromParts({
         blobStorageService,
         databaseService,
         unrenderablePostWithoutElementsOrHashtags,
+        clientUserId,
       }),
   );
 
@@ -29,10 +32,12 @@ export async function constructRenderablePostFromParts({
   blobStorageService,
   databaseService,
   unrenderablePostWithoutElementsOrHashtags,
+  clientUserId,
 }: {
   blobStorageService: LocalBlobStorageService;
   databaseService: DatabaseService;
   unrenderablePostWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags;
+  clientUserId: string;
 }): Promise<RenderablePost> {
   const {
     postId,
@@ -74,6 +79,14 @@ export async function constructRenderablePostFromParts({
       },
     );
 
+  const isLikedByClient =
+    await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
+      {
+        userId: clientUserId,
+        postId,
+      },
+    );
+
   return {
     postId,
     authorUserId,
@@ -85,5 +98,6 @@ export async function constructRenderablePostFromParts({
     likes: {
       count: countOfLikesOnPost,
     },
+    isLikedByClient,
   };
 }

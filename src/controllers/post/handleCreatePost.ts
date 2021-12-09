@@ -131,6 +131,7 @@ export async function handleCreatePost({
           likes: {
             count: countOfLikesOnPost,
           },
+          isLikedByClient: false,
         },
       },
     };

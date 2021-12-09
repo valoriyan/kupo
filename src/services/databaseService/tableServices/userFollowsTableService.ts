@@ -197,7 +197,6 @@ export class UserFollowsTableService extends TableService {
       values: [userIdDoingFollowing, userIdBeingFollowed],
     };
 
-
     const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
 
     return response.rows.length > 0;

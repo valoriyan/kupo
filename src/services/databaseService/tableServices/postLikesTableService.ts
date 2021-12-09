@@ -127,10 +127,10 @@ export class PostLikesTableService extends TableService {
     };
 
     const response: QueryResult<{
-      count: number;
+      count: string;
     }> = await this.datastorePool.query(query);
 
-    return response.rows[0].count === 1;
+    return parseInt(response.rows[0].count) === 1;
   }
 
   //////////////////////////////////////////////////

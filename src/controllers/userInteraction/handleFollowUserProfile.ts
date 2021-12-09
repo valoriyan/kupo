@@ -20,9 +20,7 @@ export async function handleFollowUser({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: FollowUserRequestBody;
-}): Promise<
-  HTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>
-> {
+}): Promise<HTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
