@@ -2,7 +2,10 @@ import { InfiniteData, QueryKey, useMutation, useQueryClient } from "react-query
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
 
-export const useLikePost = ({ postId }: { postId: string }) => {
+export const useLikePost = ({ postId,
+  authorUserId }: { postId: string;
+    authorUserId: string;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -23,10 +26,12 @@ export const useLikePost = ({ postId }: { postId: string }) => {
                 const updatedPages = queriedData.pages.map((page) => {
                   const updatedRenderablePosts = page.posts.map((post) => {
                     if (post.postId === postId) {
-                      console.log("HIT!!!");
                       return {
                         ...post,
                         isLikedByClient: true,
+                        likes: {
+                          count: post.likes.count + 1,
+                        }
                       };
                     }
                     return post;
@@ -54,7 +59,7 @@ export const useLikePost = ({ postId }: { postId: string }) => {
         }
 
         updateCache([CacheKeys.ContentFeed]);
-        // updateCache([CacheKeys.UserPostPages, authorUserId]);
+        updateCache([CacheKeys.UserPostPages, authorUserId]);
       },
     },
   );

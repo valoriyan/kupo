@@ -15,11 +15,15 @@ export interface PostProps {
   handleClickOfLikeButton: () => void;
 }
 
-
-
 export const Post = (props: PostProps) => {
-  const { post, handleClickOfLikeButton, authorUserName, authorUserAvatar, postRelativeTimestamp } = props;
-  const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags } = post;
+  const {
+    post,
+    handleClickOfLikeButton,
+    authorUserName,
+    authorUserAvatar,
+    postRelativeTimestamp,
+  } = props;
+  const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags, likes } = post;
 
   return (
     <Grid>
@@ -33,10 +37,8 @@ export const Post = (props: PostProps) => {
           <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
 
-        <Flex css={{marginLeft: "auto", gap: "$4"}}>
-          <Timestamp>
-            {postRelativeTimestamp ? postRelativeTimestamp : ""}
-          </Timestamp>
+        <Flex css={{ marginLeft: "auto", gap: "$4" }}>
+          <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
           <MoreVerticalAlt />
         </Flex>
       </Flex>
@@ -52,6 +54,7 @@ export const Post = (props: PostProps) => {
           Icon={Heart}
           isSelected={isLikedByClient}
           onClick={handleClickOfLikeButton}
+          metric={likes.count}
         />
         <PostAction Icon={Comment} />
         <PostAction Icon={MailForward} />
@@ -60,7 +63,6 @@ export const Post = (props: PostProps) => {
     </Grid>
   );
 };
-
 
 const Timestamp = styled("div", {
   color: "$secondaryText",

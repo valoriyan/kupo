@@ -16,6 +16,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
 
   const { mutateAsync: likePost } = useLikePost({
     postId,
+    authorUserId,
   });
   const { mutateAsync: unlikePost } = useUnlikePost({
     postId,
