@@ -26,18 +26,21 @@ export const useUnlikePost = ({
             queryKey,
             (queriedData): InfiniteData<SuccessfulGetPageOfPostsPaginationResponse> => {
               if (!!queriedData) {
-
                 const updatedPages = queriedData.pages.map((page) => {
                   const updatedRenderablePosts = page.posts.map((post) => {
                     if (post.postId === postId) {
-                      console.log("post.likes.count", post.likes.count, typeof post.likes.count);
-                      
+                      console.log(
+                        "post.likes.count",
+                        post.likes.count,
+                        typeof post.likes.count,
+                      );
+
                       return {
                         ...post,
                         isLikedByClient: false,
                         likes: {
                           count: post.likes.count - 1,
-                        }
+                        },
                       };
                     }
                     return post;

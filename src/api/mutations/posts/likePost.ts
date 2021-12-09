@@ -2,9 +2,12 @@ import { InfiniteData, QueryKey, useMutation, useQueryClient } from "react-query
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
 
-export const useLikePost = ({ postId,
-  authorUserId }: { postId: string;
-    authorUserId: string;
+export const useLikePost = ({
+  postId,
+  authorUserId,
+}: {
+  postId: string;
+  authorUserId: string;
 }) => {
   const queryClient = useQueryClient();
 
@@ -31,7 +34,7 @@ export const useLikePost = ({ postId,
                         isLikedByClient: true,
                         likes: {
                           count: post.likes.count + 1,
-                        }
+                        },
                       };
                     }
                     return post;
