@@ -99,23 +99,31 @@ const EditProfileButton = () => {
 
 const ProfileBody = (props: ProfileBodyProps) => {
   const { user, isOwnProfile } = props;
-  const { userId, isBeingFollowedByClient } = user;
+  const {
+    userId,
+    isBeingFollowedByClient,
+    shortBio,
+    username,
+    followers,
+    follows,
+    userWebsite,
+    profilePictureTemporaryUrl,
+  } = user;
 
   return (
     <Stack>
       <Stack css={{ height: "100%", px: "$5", pt: "$5", pb: "$4" }}>
-        <Avatar alt="User Profile Picture" />
+        <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
         <Stack css={{ mt: "$4", gap: "$3" }}>
-          <Link href={`/profile/${props.user.username}`} passHref>
-            <a>@{props.user.username}</a>
+          <Link href={`/profile/${username}`} passHref>
+            <a>@{username}</a>
           </Link>
           <Subtext>
-            {formatStat(props.user.followers.count)} followers |{" "}
-            {formatStat(props.user.follows.count)} followed
+            {formatStat(followers.count)} followers | {formatStat(follows.count)} followed
           </Subtext>
-          <Description>{props.user.shortBio}</Description>
+          <Description>{shortBio}</Description>
           <ExternalLink target="_blank" rel="noopener noreferrer">
-            {props.user.userWebsite}
+            {userWebsite}
           </ExternalLink>
         </Stack>
         <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
@@ -131,7 +139,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
             size="md"
             variant="primary"
             onClick={() => {
-              const link = `${location.origin}/profile/${props.user.username}`;
+              const link = `${location.origin}/profile/${username}`;
               copyTextToClipboard(link, "Link");
             }}
           >
@@ -147,9 +155,9 @@ const ProfileBody = (props: ProfileBodyProps) => {
             trigger: "Posts",
             content: (
               <UserPosts
-                userId={props.user.userId}
-                username={props.user.username}
-                userAvatar={props.user.profilePictureTemporaryUrl}
+                userId={userId}
+                username={username}
+                userAvatar={profilePictureTemporaryUrl}
               />
             ),
           },

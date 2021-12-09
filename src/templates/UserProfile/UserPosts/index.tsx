@@ -2,6 +2,7 @@ import { RenderablePost } from "#/api";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
+import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
@@ -16,6 +17,12 @@ export interface UserPostsProps {
 
 const PostWrapper = ({ post }: { post: RenderablePost }) => {
   const { isLikedByClient, postId, authorUserId } = post;
+  const {
+    data: user,
+    isLoading,
+    error,
+    isError,
+  } = useGetUserByUserId({ userId: authorUserId });
 
   const { mutateAsync: likePost } = useLikePost({
     postId,
@@ -24,6 +31,14 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
     postId,
     authorUserId,
   });
+
+  if (isError && !isLoading) {
+    return <div>Error: {(error as Error).message}</div>;
+  }
+
+  if (isLoading || !user) {
+    return <div>Loading</div>;
+  }
 
   async function handleClickOfLikeButton() {
     if (isLikedByClient) {
@@ -37,8 +52,8 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
     <Post
       key={post.postId}
       post={post}
-      authorUserName={post.authorUserId}
-      authorUserAvatar={undefined}
+      authorUserName={user.username}
+      authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
     />
   );
