@@ -32,6 +32,7 @@ const ICONS_TO_GENERATE = [
   "mail-forward",
   "menu",
   "math-plus",
+  "more-vertical-alt",
   "play-button-o",
   "remove",
   "search",

@@ -3,19 +3,22 @@ import { ComponentType } from "react";
 import { RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
-import { Bookmark, Comment, Heart, MailForward } from "../Icons";
+import { Bookmark, Comment, Heart, MailForward, MoreVerticalAlt } from "../Icons";
 import { Flex, Grid } from "../Layout";
 import { Body } from "../Typography";
 
 export interface PostProps {
   post: RenderablePost;
+  postRelativeTimestamp: string;
   authorUserName?: string;
   authorUserAvatar?: string;
   handleClickOfLikeButton: () => void;
 }
 
+
+
 export const Post = (props: PostProps) => {
-  const { post, handleClickOfLikeButton, authorUserName, authorUserAvatar } = props;
+  const { post, handleClickOfLikeButton, authorUserName, authorUserAvatar, postRelativeTimestamp } = props;
   const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags } = post;
 
   return (
@@ -29,6 +32,13 @@ export const Post = (props: PostProps) => {
         <Link href="/profile" passHref>
           <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
+
+        <Flex css={{marginLeft: "auto", gap: "$4"}}>
+          <Timestamp>
+            {postRelativeTimestamp ? postRelativeTimestamp : ""}
+          </Timestamp>
+          <MoreVerticalAlt />
+        </Flex>
       </Flex>
       <Body css={{ px: "$3", py: "$2" }}>{caption}</Body>
       <PostImage alt="Post Media" src={contentElementTemporaryUrls[0]} />
@@ -50,6 +60,11 @@ export const Post = (props: PostProps) => {
     </Grid>
   );
 };
+
+
+const Timestamp = styled("div", {
+  color: "$secondaryText",
+});
 
 const PostImage = styled("img", {
   py: "$3",

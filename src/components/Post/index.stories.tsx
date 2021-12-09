@@ -10,6 +10,7 @@ export const Template: Story<PostProps> = (args) => <Post {...args} />;
 Template.args = {
   post: {
     postId: "1",
+    creationTimestamp: Date.now() - 1000 * 60 * 60 * 3,
     authorUserId: "blake",
     caption:
       "This is a test post with enough text that it will truncate. This is a test post with enough text that it will truncate. This is a test post with enough text that it will truncate.",

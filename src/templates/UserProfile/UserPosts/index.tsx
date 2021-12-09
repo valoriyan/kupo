@@ -8,6 +8,7 @@ import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
 import { styled } from "#/styling";
+import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
 export interface UserPostsProps {
   userId: string;
@@ -51,6 +52,7 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
   return (
     <Post
       key={post.postId}
+      postRelativeTimestamp={getRelativeTimestamp(post.creationTimestamp)}
       post={post}
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}

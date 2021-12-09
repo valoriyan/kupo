@@ -15,8 +15,6 @@ export const ContentFeedControlBar = () => {
       event.preventDefault();
       setContentFeedFilter(contentFilter);
 
-      // queryClient.resetQueries([CacheKeys.ContentFeed], { exact: true });
-
       clearFeedCache();
     }
 

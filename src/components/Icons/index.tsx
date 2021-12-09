@@ -25,6 +25,7 @@ export * from "./generated/Mail";
 export * from "./generated/MailForward";
 export * from "./generated/Menu";
 export * from "./generated/MathPlus";
+export * from "./generated/MoreVerticalAlt";
 export * from "./generated/PlayButtonO";
 export * from "./generated/Remove";
 export * from "./generated/Search";

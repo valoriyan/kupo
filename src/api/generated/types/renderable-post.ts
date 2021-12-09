@@ -43,6 +43,12 @@ export interface RenderablePost {
    * @type {number}
    * @memberof RenderablePost
    */
+  creationTimestamp: number;
+  /**
+   *
+   * @type {number}
+   * @memberof RenderablePost
+   */
   scheduledPublicationTimestamp: number;
   /**
    *

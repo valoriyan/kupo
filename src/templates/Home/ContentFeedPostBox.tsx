@@ -3,6 +3,7 @@ import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { Post } from "#/components/Post";
+import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
 export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
   const { isLikedByClient, postId, authorUserId } = post;
@@ -40,6 +41,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
   return (
     <Post
       key={post.postId}
+      postRelativeTimestamp={getRelativeTimestamp(post.creationTimestamp)}
       post={post}
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
