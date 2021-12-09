@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MouseEvent } from "react";
 import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
@@ -13,14 +14,23 @@ import { formatStat } from "#/utils/formatStat";
 import { Subtext, subtextStyles } from "#/components/Typography";
 import { RenderableUser } from "#/api";
 import { UserPosts } from "./UserPosts";
-
+import { useFollowUser } from "#/api/mutations/users/followUser";
+import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
+import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 export interface UserProfileProps {
   isOwnProfile?: boolean;
   username?: string;
 }
 
-export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
-  const { data, isLoading, error } = useGetUserProfile({ username, isOwnProfile });
+const UserProfileInner = ({
+  isOwnProfile,
+  user,
+}: {
+  isOwnProfile?: boolean;
+  user: RenderableUser;
+}) => {
+  const { userId } = user;
+  const { data, isLoading, error } = useGetUserByUserId({ userId });
 
   return !isLoading && error ? (
     <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
@@ -31,12 +41,66 @@ export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
   );
 };
 
+export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
+  const { data, isLoading, error } = useGetUserProfile({ username, isOwnProfile });
+
+  return !isLoading && error ? (
+    <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
+  ) : isLoading || !data ? (
+    <LoadingArea size="lg" />
+  ) : (
+    <UserProfileInner isOwnProfile={isOwnProfile} user={data} />
+  );
+};
 interface ProfileBodyProps {
   isOwnProfile?: boolean;
   user: RenderableUser;
 }
 
+const FollowButton = ({
+  userId,
+  isBeingFollowedByClient,
+}: {
+  userId: string;
+  isBeingFollowedByClient: boolean;
+}) => {
+  const { mutateAsync: followUser } = useFollowUser({
+    userIdBeingFollowed: userId,
+  });
+
+  const { mutateAsync: unfollowUser } = useUnfollowUser({
+    userIdBeingUnfollowed: userId,
+  });
+
+  function handleClick(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    if (isBeingFollowedByClient) {
+      unfollowUser();
+    } else {
+      followUser();
+    }
+  }
+
+  return (
+    <PrimaryButton onClick={handleClick} size="md" variant="primary">
+      {isBeingFollowedByClient ? "Unfollow" : "Follow"}
+    </PrimaryButton>
+  );
+};
+
+const EditProfileButton = () => {
+  return (
+    <PrimaryButton size="md" variant="primary">
+      Edit Profile
+    </PrimaryButton>
+  );
+};
+
 const ProfileBody = (props: ProfileBodyProps) => {
+  const { user, isOwnProfile } = props;
+  const { userId, isBeingFollowedByClient } = user;
+
   return (
     <Stack>
       <Stack css={{ height: "100%", px: "$5", pt: "$5", pb: "$4" }}>
@@ -55,9 +119,14 @@ const ProfileBody = (props: ProfileBodyProps) => {
           </ExternalLink>
         </Stack>
         <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
-          <Button size="md" variant="primary" css={{ flex: 1 }}>
-            {props.isOwnProfile ? "Edit Profile" : "Follow"}
-          </Button>
+          {isOwnProfile ? (
+            <EditProfileButton />
+          ) : (
+            <FollowButton
+              userId={userId}
+              isBeingFollowedByClient={isBeingFollowedByClient}
+            />
+          )}
           <Button
             size="md"
             variant="primary"
@@ -98,3 +167,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
 const Description = styled(Subtext, { fontWeight: "$light" });
 
 const ExternalLink = styled("a", subtextStyles);
+
+const PrimaryButton = styled(Button, {
+  flex: 1,
+});

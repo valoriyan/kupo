@@ -49,7 +49,7 @@ import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
 import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 // @ts-ignore
-import { FollowUserProfileRequestBody } from "../types";
+import { FollowUserRequestBody } from "../types";
 // @ts-ignore
 import { GetChatRoomByIdRequestBody } from "../types";
 // @ts-ignore
@@ -103,7 +103,7 @@ import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResp
 // @ts-ignore
 import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfullyFollowedUserProfileResponse } from "../types";
+import { SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse } from "../types";
 // @ts-ignore
@@ -643,20 +643,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
+     * @param {FollowUserRequestBody} followUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     followUser: async (
-      followUserProfileRequestBody: FollowUserProfileRequestBody,
+      followUserRequestBody: FollowUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'followUserProfileRequestBody' is not null or undefined
-      assertParamExists(
-        "followUser",
-        "followUserProfileRequestBody",
-        followUserProfileRequestBody,
-      );
+      // verify required parameter 'followUserRequestBody' is not null or undefined
+      assertParamExists("followUser", "followUserRequestBody", followUserRequestBody);
       const localVarPath = `/userInteractions/followUser`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -680,7 +676,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        followUserProfileRequestBody,
+        followUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2268,21 +2264,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
+     * @param {FollowUserRequestBody} followUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async followUser(
-      followUserProfileRequestBody: FollowUserProfileRequestBody,
+      followUserRequestBody: FollowUserRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfullyFollowedUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
-        followUserProfileRequestBody,
+        followUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3175,16 +3171,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
+     * @param {FollowUserRequestBody} followUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     followUser(
-      followUserProfileRequestBody: FollowUserProfileRequestBody,
+      followUserRequestBody: FollowUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserProfileResponseSuccessfullyFollowedUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse> {
       return localVarFp
-        .followUser(followUserProfileRequestBody, options)
+        .followUser(followUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3760,17 +3756,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {FollowUserProfileRequestBody} followUserProfileRequestBody
+   * @param {FollowUserRequestBody} followUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public followUser(
-    followUserProfileRequestBody: FollowUserProfileRequestBody,
-    options?: any,
-  ) {
+  public followUser(followUserRequestBody: FollowUserRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .followUser(followUserProfileRequestBody, options)
+      .followUser(followUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

@@ -22,6 +22,7 @@ Template.args = {
     likes: {
       count: 10,
     },
+    isLikedByClient: true,
   },
   authorUserName: "blake",
   authorUserAvatar: "https://via.placeholder.com/450x300.png?text=:D",

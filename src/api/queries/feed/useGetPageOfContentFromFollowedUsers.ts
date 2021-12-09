@@ -2,8 +2,6 @@ import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api, SuccessfulGetPageOfPostFromFollowedUsersResponse } from "../..";
 
-const followedUsersFeedKey = "FollowedUsers";
-
 export const useGetPageOfContentFromFollowedUsers = () => {
   return useInfiniteQuery<
     SuccessfulGetPageOfPostFromFollowedUsersResponse,
@@ -11,7 +9,7 @@ export const useGetPageOfContentFromFollowedUsers = () => {
     SuccessfulGetPageOfPostFromFollowedUsersResponse,
     string[]
   >(
-    [CacheKeys.ContentFeed, followedUsersFeedKey],
+    [CacheKeys.ContentFeed],
     ({ pageParam }) => fetchPageOfContentFromFromFollowedUsers({ pageParam }),
     {
       getPreviousPageParam: (lastPage) => lastPage.previousPageCursor,

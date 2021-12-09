@@ -68,4 +68,10 @@ export interface RenderablePost {
    * @memberof RenderablePost
    */
   likes: RenderableUserFollowers;
+  /**
+   *
+   * @type {boolean}
+   * @memberof RenderablePost
+   */
+  isLikedByClient: boolean;
 }

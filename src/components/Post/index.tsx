@@ -11,30 +11,38 @@ export interface PostProps {
   post: RenderablePost;
   authorUserName?: string;
   authorUserAvatar?: string;
+  handleClickOfLikeButton: () => void;
 }
 
 export const Post = (props: PostProps) => {
+  const { post, handleClickOfLikeButton, authorUserName, authorUserAvatar } = props;
+  const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags } = post;
+
   return (
     <Grid>
       <Flex css={{ p: "$3", gap: "$3", alignItems: "center" }}>
         <Avatar
-          alt={`@${props.authorUserName}'s profile picture`}
-          src={props.authorUserAvatar}
+          alt={`@${authorUserName}'s profile picture`}
+          src={authorUserAvatar}
           size="$6"
         />
         <Link href="/profile" passHref>
-          <a>{props.authorUserName ? `@${props.authorUserName}` : "User"}</a>
+          <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
       </Flex>
-      <Body css={{ px: "$3", py: "$2" }}>{props.post.caption}</Body>
-      <PostImage alt="Post Media" src={props.post.contentElementTemporaryUrls[0]} />
+      <Body css={{ px: "$3", py: "$2" }}>{caption}</Body>
+      <PostImage alt="Post Media" src={contentElementTemporaryUrls[0]} />
       <Flex css={{ gap: "$3", px: "$3", py: "$2", width: "100%", overflow: "auto" }}>
-        {props.post.hashtags.map((tag) => (
+        {hashtags.map((tag) => (
           <HashTag key={tag}>#{tag}</HashTag>
         ))}
       </Flex>
       <Flex css={{ justifyContent: "space-between", px: "$4", py: "$4" }}>
-        <PostAction Icon={Heart} />
+        <PostAction
+          Icon={Heart}
+          isSelected={isLikedByClient}
+          onClick={handleClickOfLikeButton}
+        />
         <PostAction Icon={Comment} />
         <PostAction Icon={MailForward} />
         <PostAction Icon={Bookmark} />
@@ -61,16 +69,17 @@ interface PostActionProps {
   Icon: ComponentType;
   metric?: number;
   onClick?: () => void;
+  isSelected?: boolean;
 }
 
-const PostAction = ({ Icon, metric, onClick }: PostActionProps) => {
+const PostAction = ({ Icon, metric, onClick, isSelected }: PostActionProps) => {
   return (
     <Flex
       as="button"
       css={{
         alignItems: "center",
         gap: "$1",
-        color: "$secondaryText",
+        color: isSelected ? "$primary" : "$secondaryText",
         cursor: "pointer",
       }}
       onClick={onClick}

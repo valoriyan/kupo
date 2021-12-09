@@ -1,12 +1,46 @@
+import { RenderablePost } from "#/api";
+import { useLikePost } from "#/api/mutations/posts/likePost";
+import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfContentFromFollowedUsers } from "#/api/queries/feed/useGetPageOfContentFromFollowedUsers";
 import { Box, Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
 import { styled } from "#/styling";
 import { ContentFeedControlBar } from "./ContentFeedControlBar";
 
+const PostWrapper = ({ post }: { post: RenderablePost }) => {
+  const { isLikedByClient, postId, authorUserId } = post;
+
+  const { mutateAsync: likePost } = useLikePost({
+    postId,
+  });
+  const { mutateAsync: unlikePost } = useUnlikePost({
+    postId,
+    authorUserId,
+  });
+
+  async function handleClickOfLikeButton() {
+    if (isLikedByClient) {
+      unlikePost();
+    } else {
+      likePost();
+    }
+  }
+
+  return (
+    <Post
+      key={post.postId}
+      post={post}
+      authorUserName={post.authorUserId}
+      authorUserAvatar={undefined}
+      handleClickOfLikeButton={handleClickOfLikeButton}
+    />
+  );
+};
+
 export const Home = () => {
-  const infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers = useGetPageOfContentFromFollowedUsers();
-  
+  const infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers =
+    useGetPageOfContentFromFollowedUsers();
+
   const {
     data: pagesOfContentFromFrollowedUsers,
     isError: isErrorAcquiringPagesOfContentFromFrollowedUsers,
@@ -15,15 +49,17 @@ export const Home = () => {
   } = infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers;
 
   if (
-    (isErrorAcquiringPagesOfContentFromFrollowedUsers && !isLoadingPagesOfContentFromFrollowedUsers)
+    isErrorAcquiringPagesOfContentFromFrollowedUsers &&
+    !isLoadingPagesOfContentFromFrollowedUsers
   ) {
-    return <div>Error: {(errorAcquiringPagesOfContentFromFrollowedUsers as Error).message}</div>;
+    return (
+      <div>
+        Error: {(errorAcquiringPagesOfContentFromFrollowedUsers as Error).message}
+      </div>
+    );
   }
 
-  if (
-    isLoadingPagesOfContentFromFrollowedUsers ||
-    !pagesOfContentFromFrollowedUsers
-  ) {
+  if (isLoadingPagesOfContentFromFrollowedUsers || !pagesOfContentFromFrollowedUsers) {
     return <div>Loading</div>;
   }
 
@@ -32,28 +68,25 @@ export const Home = () => {
   });
 
   const renderedPosts = posts.map((post) => {
-    return (
-      <Post
-      key={post.postId}
-      post={post}
-      authorUserName={post.authorUserId}
-      authorUserAvatar={undefined}
-    />
-    )
+    return <PostWrapper key={post.postId} post={post} />;
   });
+
+  const placeholders =
+    renderedPosts.length === 0 ? (
+      <>
+        <PlaceholderItem />
+        <PlaceholderItem />
+        <PlaceholderItem />
+      </>
+    ) : null;
 
   return (
     <Grid>
       <ContentFeedControlBar />
-      
+
       <ContentItemsList>
         {renderedPosts}
-        <PlaceholderItem />
-        <PlaceholderItem />
-        <PlaceholderItem />
-        <PlaceholderItem />
-        <PlaceholderItem />
-        <PlaceholderItem />
+        {placeholders}
       </ContentItemsList>
     </Grid>
   );
@@ -65,7 +98,6 @@ const Grid = styled("div", {
   height: "100%",
   width: "100%",
 });
-
 
 const PlaceholderItem = () => {
   return <Box css={{ width: "100%", minHeight: "$14", bg: "$background3" }} />;

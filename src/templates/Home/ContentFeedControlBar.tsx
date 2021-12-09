@@ -2,36 +2,27 @@ import { Add, Search } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 
-const ContentFeedTopic = ({topicName}: {topicName: string;}) => {
-  return (
-    <div>
-      {topicName}
-    </div>
-  );
-}
+const ContentFeedTopic = ({ topicName }: { topicName: string }) => {
+  return <div>{topicName}</div>;
+};
 
 export const ContentFeedControlBar = () => {
   const topics = ["Following"];
 
   const renderedTopics = topics.map((topic) => {
-    return (
-      <ContentFeedTopic topicName={topic} key={topic} />
-    );
+    return <ContentFeedTopic topicName={topic} key={topic} />;
   });
 
   return (
     <FlexWrapper>
-      <div>
-        {renderedTopics}
-      </div>
+      <div>{renderedTopics}</div>
       <FlexIcons css={{ gap: "$4", marginLeft: "auto" }}>
         <Add />
         <Search />
       </FlexIcons>
     </FlexWrapper>
-  )
+  );
 };
-
 
 const FlexWrapper = styled(Flex, {
   padding: "$4",
@@ -46,5 +37,4 @@ const FlexWrapper = styled(Flex, {
 const FlexIcons = styled(Flex, {
   gap: "$4",
   marginLeft: "auto",
-
 });

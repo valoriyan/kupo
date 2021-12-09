@@ -46,7 +46,7 @@ export * from "./failedto-get-page-of-notifications-response";
 export * from "./failedto-get-page-of-notifications-response-reason";
 export * from "./failedto-get-page-of-posts-pagination-response";
 export * from "./failedto-get-page-of-posts-pagination-response-reason";
-export * from "./follow-user-profile-request-body";
+export * from "./follow-user-request-body";
 export * from "./get-chat-room-by-id-request-body";
 export * from "./get-page-of-chat-messages-request-body";
 export * from "./get-page-of-chat-rooms-request-body";
@@ -81,7 +81,7 @@ export * from "./secured-httpresponse-failed-to-create-shop-item-response-succes
 export * from "./secured-httpresponse-failed-to-delete-chat-message-response-successfully-deleted-chat-message-response";
 export * from "./secured-httpresponse-failed-to-delete-post-response-successful-post-deletion-response";
 export * from "./secured-httpresponse-failed-to-delete-shop-item-response-successful-shop-item-deletion-response";
-export * from "./secured-httpresponse-failed-to-follow-user-profile-response-successfully-followed-user-profile-response";
+export * from "./secured-httpresponse-failed-to-follow-user-response-successfully-followed-user-response";
 export * from "./secured-httpresponse-failed-to-get-page-of-post-from-followed-hashtag-response-successful-get-page-of-post-from-followed-hashtag-response";
 export * from "./secured-httpresponse-failed-to-get-page-of-post-from-followed-users-response-successful-get-page-of-post-from-followed-users-response";
 export * from "./secured-httpresponse-failed-to-get-posts-scheduled-by-user-response-successful-get-posts-scheduled-by-user-response";

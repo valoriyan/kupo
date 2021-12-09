@@ -25,7 +25,7 @@ export interface SuccessfulGetPageOfPostsPaginationResponse {
    * @type {Array<RenderablePost>}
    * @memberof SuccessfulGetPageOfPostsPaginationResponse
    */
-  renderablePosts: Array<RenderablePost>;
+  posts: Array<RenderablePost>;
   /**
    *
    * @type {string}

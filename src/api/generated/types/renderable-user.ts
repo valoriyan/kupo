@@ -106,4 +106,10 @@ export interface RenderableUser {
    * @memberof RenderableUser
    */
   hashtags: Array<string>;
+  /**
+   *
+   * @type {boolean}
+   * @memberof RenderableUser
+   */
+  isBeingFollowedByClient: boolean;
 }

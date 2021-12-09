@@ -1,4 +1,7 @@
-import { useGetPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
+import { RenderablePost } from "#/api";
+import { useLikePost } from "#/api/mutations/posts/likePost";
+import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
+import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
@@ -11,8 +14,38 @@ export interface UserPostsProps {
   userAvatar?: string;
 }
 
+const PostWrapper = ({ post }: { post: RenderablePost }) => {
+  const { isLikedByClient, postId, authorUserId } = post;
+
+  const { mutateAsync: likePost } = useLikePost({
+    postId,
+  });
+  const { mutateAsync: unlikePost } = useUnlikePost({
+    postId,
+    authorUserId,
+  });
+
+  async function handleClickOfLikeButton() {
+    if (isLikedByClient) {
+      unlikePost();
+    } else {
+      likePost();
+    }
+  }
+
+  return (
+    <Post
+      key={post.postId}
+      post={post}
+      authorUserName={post.authorUserId}
+      authorUserAvatar={undefined}
+      handleClickOfLikeButton={handleClickOfLikeButton}
+    />
+  );
+};
+
 export const UserPosts = (props: UserPostsProps) => {
-  const { data, isLoading, error } = useGetPostsByUserId({ userId: props.userId });
+  const { data, isLoading, error } = useGetPageOfPostsByUserId({ userId: props.userId });
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;
@@ -26,17 +59,14 @@ export const UserPosts = (props: UserPostsProps) => {
     );
   }
 
-  const posts = data.renderablePosts;
+  const posts = data.pages.flatMap((page) => {
+    return page.posts;
+  });
 
   return (
     <Wrapper>
       {posts.map((post) => (
-        <Post
-          key={post.postId}
-          post={post}
-          authorUserName={props.username}
-          authorUserAvatar={props.userAvatar}
-        />
+        <PostWrapper key={post.postId} post={post} />
       ))}
     </Wrapper>
   );
