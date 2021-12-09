@@ -2,6 +2,7 @@ export interface BaseUnrenderablePost {
   postId: string;
   authorUserId: string;
   caption: string;
+  creationTimestamp: number;
 }
 
 export interface UnrenderablePostWithoutElementsOrHashtags extends BaseUnrenderablePost {

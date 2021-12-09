@@ -41,6 +41,7 @@ export async function constructRenderablePostFromParts({
 }): Promise<RenderablePost> {
   const {
     postId,
+    creationTimestamp,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,
@@ -89,6 +90,7 @@ export async function constructRenderablePostFromParts({
 
   return {
     postId,
+    creationTimestamp,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,

@@ -14,6 +14,7 @@ interface DBPost {
   post_id: string;
   author_user_id: string;
   caption: string;
+  creation_timestamp: string;
   scheduled_publication_timestamp: string;
   expiration_timestamp?: string;
 }
@@ -25,6 +26,7 @@ function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
     postId: dbPost.post_id,
     authorUserId: dbPost.author_user_id,
     caption: dbPost.caption,
+    creationTimestamp: parseInt(dbPost.creation_timestamp),
     scheduledPublicationTimestamp: parseInt(dbPost.scheduled_publication_timestamp),
     expirationTimestamp: !!dbPost.expiration_timestamp
       ? parseInt(dbPost.expiration_timestamp)
@@ -44,6 +46,7 @@ export class PostsTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         post_id VARCHAR(64) UNIQUE NOT NULL,
+        creation_timestamp BIGINT,
         author_user_id VARCHAR(64) NOT NULL,
         caption VARCHAR(256) NOT NULL,
         scheduled_publication_timestamp BIGINT NOT NULL,
@@ -61,12 +64,14 @@ export class PostsTableService extends TableService {
 
   public async createPost({
     postId,
+    creationTimestamp,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
   }: {
     postId: string;
+    creationTimestamp: number;
     authorUserId: string;
     caption: string;
     scheduledPublicationTimestamp: number;
@@ -78,6 +83,7 @@ export class PostsTableService extends TableService {
       rowsOfFieldsAndValues: [
         [
           { field: "post_id", value: postId },
+          { field: "creation_timestamp", value: creationTimestamp },
           { field: "author_user_id", value: authorUserId },
           { field: "caption", value: caption },
           {

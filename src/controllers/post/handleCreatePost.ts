@@ -54,9 +54,12 @@ export async function handleCreatePost({
   const postId: string = uuidv4();
   const now = Date.now();
 
+  const creationTimestamp = now;
+
   try {
     await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
+      creationTimestamp,
       authorUserId: clientUserId,
       caption,
       scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
@@ -121,8 +124,9 @@ export async function handleCreatePost({
     return {
       success: {
         renderablePost: {
-          contentElementTemporaryUrls,
           postId,
+          creationTimestamp,
+          contentElementTemporaryUrls,
           authorUserId: clientUserId,
           caption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
