@@ -2,11 +2,7 @@ import { InfiniteData, QueryKey, useMutation, useQueryClient } from "react-query
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
 
-export const useLikePost = ({
-  postId,
-}: {
-  postId: string;
-}) => {
+export const useLikePost = ({ postId }: { postId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation(
