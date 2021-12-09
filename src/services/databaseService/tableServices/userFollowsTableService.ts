@@ -142,10 +142,10 @@ export class UserFollowsTableService extends TableService {
     };
 
     const response: QueryResult<{
-      count: number;
+      count: string;
     }> = await this.datastorePool.query(query);
 
-    return response.rows[0].count;
+    return parseInt(response.rows[0].count);
   }
 
   public async countFollowsOfUserId({
@@ -167,10 +167,10 @@ export class UserFollowsTableService extends TableService {
     };
 
     const response: QueryResult<{
-      count: number;
+      count: string;
     }> = await this.datastorePool.query(query);
 
-    return response.rows[0].count;
+    return parseInt(response.rows[0].count);
   }
 
   public async isUserIdFollowingUserId({
