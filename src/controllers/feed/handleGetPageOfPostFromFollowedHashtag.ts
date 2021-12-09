@@ -12,8 +12,14 @@ export interface GetPageOfPostFromFollowedHashtagParams {
   pageSize: number;
 }
 
+export enum FailedToGetPageOfPostFromFollowedHashtagResponseReason {
+  UnknownCause = "Unknown Cause",
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfPostFromFollowedHashtagResponse {}
+export interface FailedToGetPageOfPostFromFollowedHashtagResponse {
+  reason: FailedToGetPageOfPostFromFollowedHashtagResponseReason;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulGetPageOfPostFromFollowedHashtagResponse {
@@ -42,10 +48,13 @@ export async function handleGetPageOfPostFromFollowedHashtag({
       { hashtag: requestBody.hashtag },
     );
 
+
+
   const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
       { postIds: postIdsWithHashtag },
     );
+
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
     unrenderablePostsWithoutElementsOrHashtags,

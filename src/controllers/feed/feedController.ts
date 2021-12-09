@@ -7,6 +7,7 @@ import { injectable } from "tsyringe";
 import {
   FailedToGetPageOfPostFromFollowedHashtagResponse,
   GetPageOfPostFromFollowedHashtagParams,
+  handleGetPageOfPostFromFollowedHashtag,
   SuccessfulGetPageOfPostFromFollowedHashtagResponse,
 } from "./handleGetPageOfPostFromFollowedHashtag";
 import {
@@ -61,7 +62,7 @@ export class FeedController extends Controller {
       SuccessfulGetPageOfPostFromFollowedHashtagResponse
     >
   > {
-    return await handleGetPageOfPostFromFollowedUsers({
+    return await handleGetPageOfPostFromFollowedHashtag({
       controller: this,
       request,
       requestBody,

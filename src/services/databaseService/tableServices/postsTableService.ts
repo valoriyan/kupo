@@ -220,9 +220,9 @@ export class PostsTableService extends TableService {
   }: {
     postIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    const postIdsQueryString = `(${postIds
-      .map((_, index) => `'$${index + 1}'`)
-      .join(", ")})`;
+    const postIdsQueryString = `( ${postIds
+      .map((_, index) => `$${index + 1}`)
+      .join(", ")} )`;
 
     const query = {
       text: `
@@ -231,7 +231,7 @@ export class PostsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          postId IN ${postIdsQueryString}
+          post_id IN ${postIdsQueryString}
         ;
       `,
       values: postIds,
