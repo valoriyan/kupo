@@ -48,13 +48,10 @@ export async function handleGetPageOfPostFromFollowedHashtag({
       { hashtag: requestBody.hashtag },
     );
 
-
-
   const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
       { postIds: postIdsWithHashtag },
     );
-
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
     unrenderablePostsWithoutElementsOrHashtags,
