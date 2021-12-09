@@ -1,21 +1,45 @@
+import { MouseEvent } from "react";
 import { Add, Search } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { styled } from "#/styling";
-
-const ContentFeedTopic = ({ topicName }: { topicName: string }) => {
-  return <div>{topicName}</div>;
-};
+import { useContentFeedState } from "./ContentFeedContext";
+import { useClearFeedCache } from "#/api/mutations/feed/useClearFeedCache";
 
 export const ContentFeedControlBar = () => {
-  const topics = ["Following"];
+  const { contentFilters, selectedContentFilter, setContentFeedFilter } =
+    useContentFeedState();
+  const { mutateAsync: clearFeedCache } = useClearFeedCache();
 
-  const renderedTopics = topics.map((topic) => {
-    return <ContentFeedTopic topicName={topic} key={topic} />;
+  const renderedTopics = contentFilters.map((contentFilter) => {
+    function handleClickUpdateContentFeedFilter(event: MouseEvent<HTMLDivElement>) {
+      event.preventDefault();
+      setContentFeedFilter(contentFilter);
+
+      // queryClient.resetQueries([CacheKeys.ContentFeed], { exact: true });
+
+      clearFeedCache();
+    }
+
+    if (contentFilter === selectedContentFilter) {
+      return (
+        <SelectedContentFeedFilter key={contentFilter.displayValue}>
+          {contentFilter.displayValue}
+        </SelectedContentFeedFilter>
+      );
+    }
+    return (
+      <UnselectedContentFeedFilter
+        key={contentFilter.displayValue}
+        onClick={handleClickUpdateContentFeedFilter}
+      >
+        {contentFilter.displayValue}
+      </UnselectedContentFeedFilter>
+    );
   });
 
   return (
     <FlexWrapper>
-      <div>{renderedTopics}</div>
+      <Flex>{renderedTopics}</Flex>
       <FlexIcons css={{ gap: "$4", marginLeft: "auto" }}>
         <Add />
         <Search />
@@ -37,4 +61,13 @@ const FlexWrapper = styled(Flex, {
 const FlexIcons = styled(Flex, {
   gap: "$4",
   marginLeft: "auto",
+});
+
+const UnselectedContentFeedFilter = styled("div", {
+  paddingLeft: "$4",
+});
+
+const SelectedContentFeedFilter = styled(UnselectedContentFeedFilter, {
+  borderBottom: "12px solid $link",
+  color: "$link",
 });

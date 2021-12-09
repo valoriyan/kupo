@@ -1,45 +1,21 @@
-import { RenderablePost } from "#/api";
-import { useLikePost } from "#/api/mutations/posts/likePost";
-import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
-import { useGetPageOfContentFromFollowedUsers } from "#/api/queries/feed/useGetPageOfContentFromFollowedUsers";
+import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { Box, Stack } from "#/components/Layout";
-import { Post } from "#/components/Post";
 import { styled } from "#/styling";
+import {
+  ContentFeedFilter,
+  ContentFeedStateProvider,
+  useContentFeedState,
+} from "./ContentFeedContext";
 import { ContentFeedControlBar } from "./ContentFeedControlBar";
+import { ContentFeedPostBox } from "./ContentFeedPostBox";
 
-const PostWrapper = ({ post }: { post: RenderablePost }) => {
-  const { isLikedByClient, postId, authorUserId } = post;
-
-  const { mutateAsync: likePost } = useLikePost({
-    postId,
-  });
-  const { mutateAsync: unlikePost } = useUnlikePost({
-    postId,
-    authorUserId,
-  });
-
-  async function handleClickOfLikeButton() {
-    if (isLikedByClient) {
-      unlikePost();
-    } else {
-      likePost();
-    }
-  }
-
-  return (
-    <Post
-      key={post.postId}
-      post={post}
-      authorUserName={post.authorUserId}
-      authorUserAvatar={undefined}
-      handleClickOfLikeButton={handleClickOfLikeButton}
-    />
-  );
-};
-
-export const Home = () => {
+export const HomeDoubleInner = ({
+  selectedContentFilter,
+}: {
+  selectedContentFilter: ContentFeedFilter;
+}) => {
   const infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers =
-    useGetPageOfContentFromFollowedUsers();
+    useGetPageOfContentFeed({ contentFeedFilter: selectedContentFilter });
 
   const {
     data: pagesOfContentFromFrollowedUsers,
@@ -68,7 +44,7 @@ export const Home = () => {
   });
 
   const renderedPosts = posts.map((post) => {
-    return <PostWrapper key={post.postId} post={post} />;
+    return <ContentFeedPostBox key={post.postId} post={post} />;
   });
 
   const placeholders =
@@ -92,6 +68,12 @@ export const Home = () => {
   );
 };
 
+export const HomeInner = () => {
+  const { selectedContentFilter } = useContentFeedState();
+
+  return <HomeDoubleInner selectedContentFilter={selectedContentFilter} />;
+};
+
 const Grid = styled("div", {
   display: "grid",
   gridTemplateRows: "5% 95%",
@@ -112,3 +94,11 @@ const ContentItemsList = styled(Stack, {
     borderBottom: "solid $borderWidths$1 $border",
   },
 });
+
+export const Home = () => {
+  return (
+    <ContentFeedStateProvider>
+      <HomeInner />
+    </ContentFeedStateProvider>
+  );
+};

@@ -13,6 +13,7 @@
  */
 
 import { FailedAuthResponse } from "./failed-auth-response";
+import { FailedToGetPageOfPostFromFollowedHashtagResponse } from "./failed-to-get-page-of-post-from-followed-hashtag-response";
 import { SuccessfulGetPageOfPostFromFollowedHashtagResponse } from "./successful-get-page-of-post-from-followed-hashtag-response";
 
 /**
@@ -23,10 +24,10 @@ import { SuccessfulGetPageOfPostFromFollowedHashtagResponse } from "./successful
 export interface SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse {
   /**
    *
-   * @type {object | FailedAuthResponse}
+   * @type {FailedToGetPageOfPostFromFollowedHashtagResponse | FailedAuthResponse}
    * @memberof SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse
    */
-  error?: object | FailedAuthResponse;
+  error?: FailedToGetPageOfPostFromFollowedHashtagResponse | FailedAuthResponse;
   /**
    *
    * @type {SuccessfulGetPageOfPostFromFollowedHashtagResponse}

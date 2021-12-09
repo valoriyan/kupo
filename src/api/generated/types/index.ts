@@ -18,6 +18,8 @@ export * from "./failed-to-create-chat-message-response";
 export * from "./failed-to-create-post-response";
 export * from "./failed-to-delete-chat-message-response";
 export * from "./failed-to-delete-chat-message-response-reasons";
+export * from "./failed-to-get-page-of-post-from-followed-hashtag-response";
+export * from "./failed-to-get-page-of-post-from-followed-hashtag-response-reason";
 export * from "./failed-to-get-page-of-post-from-followed-users-response";
 export * from "./failed-to-get-page-of-post-from-followed-users-response-reason";
 export * from "./failed-to-get-users-by-ids-response";
