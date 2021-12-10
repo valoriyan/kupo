@@ -2,6 +2,7 @@ import { RenderablePost } from "#/api";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
+import { Heart } from "#/components/Icons";
 import { Post } from "#/components/Post";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
@@ -39,6 +40,14 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
     }
   }
 
+  const firstMenuOption = {
+    Icon: Heart,
+    label: "Delete Post",
+    onClick: () => {
+      console.log("Yay Blake is great!");
+    },
+  };
+
   return (
     <Post
       key={post.postId}
@@ -47,6 +56,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
+      menuOptions={[firstMenuOption]}
     />
   );
 };
