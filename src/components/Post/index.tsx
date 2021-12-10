@@ -4,8 +4,15 @@ import { RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
 import { Bookmark, Comment, Heart, MailForward, MoreVerticalAlt } from "../Icons";
-import { Flex, Grid } from "../Layout";
+import { Flex, Grid, Stack } from "../Layout";
 import { Body } from "../Typography";
+import { Popover } from "../Popover";
+
+export interface PostMenuOption {
+  Icon: ComponentType;
+  label: string;
+  onClick: () => void;
+}
 
 export interface PostProps {
   post: RenderablePost;
@@ -13,6 +20,7 @@ export interface PostProps {
   authorUserName?: string;
   authorUserAvatar?: string;
   handleClickOfLikeButton: () => void;
+  menuOptions: PostMenuOption[];
 }
 
 export const Post = (props: PostProps) => {
@@ -37,9 +45,26 @@ export const Post = (props: PostProps) => {
           <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
 
-        <Flex css={{ marginLeft: "auto", gap: "$4" }}>
+        <Flex css={{ marginLeft: "auto", gap: "$4", alignItems: "center" }}>
           <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
-          <MoreVerticalAlt />
+          <Popover trigger={<MoreVerticalAlt />}>
+            {({ hide }) => (
+              <Stack>
+                {props.menuOptions.map(({ Icon, label, onClick }) => (
+                  <MenuOption
+                    key={label}
+                    onClick={() => {
+                      onClick();
+                      hide();
+                    }}
+                  >
+                    <Icon />
+                    <Body>{label}</Body>
+                  </MenuOption>
+                ))}
+              </Stack>
+            )}
+          </Popover>
         </Flex>
       </Flex>
       <Body css={{ px: "$3", py: "$2" }}>{caption}</Body>
@@ -106,3 +131,10 @@ const PostAction = ({ Icon, metric, onClick, isSelected }: PostActionProps) => {
     </Flex>
   );
 };
+
+const MenuOption = styled("button", {
+  display: "flex",
+  gap: "$3",
+  p: "$3",
+  color: "$secondaryText",
+});

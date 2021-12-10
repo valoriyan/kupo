@@ -4,9 +4,11 @@ import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
+import { Heart } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
+import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
@@ -50,6 +52,24 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
     }
   }
 
+  const firstMenuOption = {
+    Icon: Heart,
+    label: "Delete Post",
+    onClick: () => {
+      console.log("Yay Blake is great!");
+    },
+  };
+
+  const secondMenuOption = {
+    Icon: Heart,
+    label: "Oh nooooess!",
+    onClick: () => {
+      console.log(
+        "Yay Blake screwed up! (but it was something that needed to be screwed up.",
+      );
+    },
+  };
+
   return (
     <Post
       key={post.postId}
@@ -58,12 +78,16 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
+      menuOptions={[firstMenuOption, secondMenuOption]}
     />
   );
 };
 
 export const UserPosts = (props: UserPostsProps) => {
   const { data, isLoading, error } = useGetPageOfPostsByUserId({ userId: props.userId });
+
+  const userId = useCurrentUserId();
+  console.log("userId", userId);
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;

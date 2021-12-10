@@ -5,6 +5,10 @@ import { LocalStorageItem } from "#/utils/storage";
 import { Api } from "#/api";
 import { FullScreenLoadingArea } from "#/components/LoadingArea";
 
+export interface AccessTokenPayload {
+  userId: string;
+}
+
 const storedAccessToken = LocalStorageItem<string>("accessToken");
 
 export const getAccessToken = async () => {
@@ -128,4 +132,30 @@ export const useIsAuthenticated = () => {
   }, []);
 
   return isAuthenticated;
+};
+
+export const useCurrentUserId = () => {
+  const [userId, setUserId] = useState<string>();
+
+  useEffect(() => {
+    const accessToken = storedAccessToken.get();
+    setUserId(accessTokenToUserId(accessToken));
+    const callback = () => setUserId(accessTokenToUserId(storedAccessToken.get()));
+    window.addEventListener("storage", callback);
+    return () => {
+      window.removeEventListener("storage", callback);
+    };
+  }, []);
+
+  return userId;
+};
+
+const accessTokenToUserId = (accessToken: string | null) => {
+  if (accessToken) {
+    const decodedToken = jwt.decode(accessToken);
+    if (typeof decodedToken === "object") {
+      return (decodedToken?.data as AccessTokenPayload).userId;
+    }
+  }
+  return undefined;
 };
