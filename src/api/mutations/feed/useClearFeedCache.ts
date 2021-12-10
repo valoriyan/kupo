@@ -1,5 +1,5 @@
-import { CacheKeys } from "#/contexts/queryClient";
 import { useMutation, useQueryClient } from "react-query";
+import { CacheKeys } from "#/contexts/queryClient";
 
 export const useClearFeedCache = () => {
   const queryClient = useQueryClient();
@@ -10,6 +10,6 @@ export const useClearFeedCache = () => {
       queryClient.resetQueries([CacheKeys.ContentFeed], { exact: true });
       queryClient.removeQueries([CacheKeys.ContentFeed], { exact: true });
       queryClient.cancelQueries([CacheKeys.ContentFeed], { exact: true });
-    }
-  })
-}
+    },
+  });
+};
