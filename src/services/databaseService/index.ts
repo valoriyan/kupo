@@ -39,12 +39,12 @@ export class DatabaseService {
 
   static async start(): Promise<void> {
     const connectionString = process.env.DATABASE_URL || undefined;
-    const ssl = !!connectionString;
-    const database = !!connectionString ? undefined : DATABASE_NAME;
-    console.log(`STARTING DATABASE SERVICE @ '${connectionString}'`);
+    const ssl = !!connectionString ? { rejectUnauthorized: false } : undefined ;
+    // const database = !!connectionString ? undefined : DATABASE_NAME;
+    console.log(`STARTING DATABASE SERVICE @ '${connectionString}' | ${ssl}`);
 
     DatabaseService.datastorePool = new Pool({
-      database,
+      // database,
       connectionString,
       ssl,
     });
