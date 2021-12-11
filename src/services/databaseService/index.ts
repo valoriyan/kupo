@@ -60,10 +60,12 @@ export class DatabaseService {
         `STARTING DATABASE SERVICE @ '${connectionString}' | ${JSON.stringify(ssl)}`,
       );
 
-      const poolConfig: PoolConfig = !!connectionString ? {
-        connectionString,
-        ssl,
-      } : { database };
+      const poolConfig: PoolConfig = !!connectionString
+        ? {
+            connectionString,
+            ssl,
+          }
+        : { database };
 
       DatabaseService.datastorePool = new Pool(poolConfig);
     }
