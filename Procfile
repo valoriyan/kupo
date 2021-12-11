@@ -1,1 +1,1 @@
-web: yarn run dev -p $PORT
+web: node build/src/server.js -p $PORT
