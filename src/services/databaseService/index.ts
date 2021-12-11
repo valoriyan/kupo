@@ -40,10 +40,11 @@ export class DatabaseService {
   static async start(): Promise<void> {
     const connectionString = process.env.DATABASE_URL || undefined;
     const ssl = !!connectionString;
+    const database = !!connectionString ? undefined : DATABASE_NAME;
     console.log(`STARTING DATABASE SERVICE @ '${connectionString}'`);
 
     DatabaseService.datastorePool = new Pool({
-      database: DATABASE_NAME,
+      database,
       connectionString,
       ssl,
     });
