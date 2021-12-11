@@ -226,6 +226,10 @@ export class PostsTableService extends TableService {
   }: {
     postIds: string[];
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    if (postIds.length === 0) {
+      return [];
+    }
+
     const postIdsQueryString = `( ${postIds
       .map((_, index) => `$${index + 1}`)
       .join(", ")} )`;
