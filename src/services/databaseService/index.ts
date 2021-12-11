@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, PoolConfig } from "pg";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
@@ -38,16 +38,7 @@ export class DatabaseService {
   };
 
   static async start(): Promise<void> {
-    const connectionString = process.env.DATABASE_URL || undefined;
-    const ssl = !!connectionString ? { rejectUnauthorized: false } : undefined ;
-    // const database = !!connectionString ? undefined : DATABASE_NAME;
-    console.log(`STARTING DATABASE SERVICE @ '${connectionString}' | ${ssl}`);
-
-    DatabaseService.datastorePool = new Pool({
-      // database,
-      connectionString,
-      ssl,
-    });
+    DatabaseService.get();
   }
 
   public async setupDatabaseService(): Promise<void> {
@@ -62,9 +53,19 @@ export class DatabaseService {
 
   static async get(): Promise<Pool> {
     if (!DatabaseService.datastorePool) {
-      DatabaseService.datastorePool = new Pool({
-        database: DATABASE_NAME,
-      });
+      const connectionString = process.env.DATABASE_URL || undefined;
+      const ssl = !!connectionString ? { rejectUnauthorized: false } : undefined;
+      const database = !!connectionString ? undefined : DATABASE_NAME;
+      console.log(
+        `STARTING DATABASE SERVICE @ '${connectionString}' | ${JSON.stringify(ssl)}`,
+      );
+
+      const poolConfig: PoolConfig = !!connectionString ? {
+        connectionString,
+        ssl,
+      } : { database };
+
+      DatabaseService.datastorePool = new Pool(poolConfig);
     }
 
     return this.datastorePool;
