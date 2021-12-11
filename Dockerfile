@@ -11,4 +11,4 @@ COPY . .
 RUN yarn install
 RUN yarn build
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]
