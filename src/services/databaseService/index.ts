@@ -41,6 +41,7 @@ export class DatabaseService {
     console.log("STARTING DATABASE SERVICE");
     DatabaseService.datastorePool = new Pool({
       database: DATABASE_NAME,
+      connectionString: process.env.DATABASE_URL || undefined,
     });
   }
 
