@@ -3,12 +3,12 @@ FROM node:14.17.3
 WORKDIR /app
 
 COPY package.json package.json
+COPY yarn.lock yarn.lock
 RUN yarn install
 
 COPY . .
 
 
-RUN yarn install
-RUN yarn build
+RUN API_BASE_URL="http://localhost:4000" yarn build
 
 CMD [ "npm", "run", "dev" ]
