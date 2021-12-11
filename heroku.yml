@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: yarn run dev -p $PORT
+  web: yarn run start -p $PORT
