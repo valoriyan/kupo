@@ -11,4 +11,4 @@ COPY . .
 
 RUN API_BASE_URL="http://localhost:4000" yarn build
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "start" ]
