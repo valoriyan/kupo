@@ -7,7 +7,8 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn build
+RUN npx tsoa spec-and-routes
+RUN npx tsc
 
 
 CMD [ "npm", "run", "dev" ]
