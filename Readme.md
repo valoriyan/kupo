@@ -5,3 +5,8 @@ To Do
 
 
 - add image validation
+
+
+
+docker build -t valoriyan/kupono-backend-alpha .
+docker run --rm -it valoriyan/kupono-backend-alpha bash
