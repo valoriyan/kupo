@@ -38,10 +38,12 @@ export class DatabaseService {
   };
 
   static async start(): Promise<void> {
-    console.log("STARTING DATABASE SERVICE");
+    const connectionString = process.env.DATABASE_URL || undefined;
+    console.log(`STARTING DATABASE SERVICE @ '${connectionString}'`);
+    
     DatabaseService.datastorePool = new Pool({
       database: DATABASE_NAME,
-      connectionString: process.env.DATABASE_URL || undefined,
+      connectionString,
     });
   }
 
