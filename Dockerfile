@@ -7,4 +7,7 @@ RUN yarn install
 
 COPY . .
 
+RUN yarn build
+
+
 CMD [ "npm", "run", "dev" ]
