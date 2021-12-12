@@ -251,6 +251,8 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           post_id IN ${postIdsQueryString}
+        ORDER BY
+          scheduled_publication_timestamp DESC
         ;
       `,
       values: postIds,
