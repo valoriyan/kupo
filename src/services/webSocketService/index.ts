@@ -8,6 +8,7 @@ import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { RenderableChatMessage } from "src/controllers/chat/models";
 import { notifyUserIdsOfDeletedChatMessage } from "./notifyUserIdsOfDeletedChatMessage";
+import { readFileSync } from "fs";
 
 @singleton()
 export class WebSocketService {
@@ -15,6 +16,13 @@ export class WebSocketService {
 
   static async start(httpServer: httpServer): Promise<void> {
     const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+
+    try {
+      const key = readFileSync("/tmp/key.pem");
+      console.log("key", key);  
+    } catch {
+      console.log("NO PEM KEY FOUND");
+    }
 
     const io = new Server(httpServer, {
       cors: {
