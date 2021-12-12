@@ -132,6 +132,8 @@ export class PostsTableService extends TableService {
             OR
               expiration_timestamp > $3
           )
+        ORDER BY
+          creation_timestamp DESC
       `;
     }
 
@@ -144,6 +146,8 @@ export class PostsTableService extends TableService {
         WHERE
           author_user_id = $1
         ${filteringWhereClause}
+        ORDER BY
+          creation_timestamp DESC    
         ;
       `,
       values: queryValues,
@@ -211,6 +215,8 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           author_user_id IN (${creatorUserIdsQueryString})
+        ORDER BY
+          creation_timestamp DESC
         ;
       `,
       values: creatorUserIds,
