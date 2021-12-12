@@ -1,6 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { Body, Controller, Post, Request, Route } from "tsoa";
+import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 
@@ -17,6 +17,7 @@ import {
   handleGetPageOfCommentsByPostId,
   SuccessfullyGotPageOfCommentsByPostIdResponse,
 } from "./handleGetPageOfCommentsByPostId";
+import { DeleteCommentFromPostRequestBody, FailedToDeleteCommentFromPostResponse, handleDeleteCommentFromPost, SuccessfullyDeletedCommentFromPostResponse } from "./handleDeleteCommentFromPost";
 
 @injectable()
 @Route("PostComment")
@@ -53,8 +54,8 @@ export class PostCommentController extends Controller {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("handleGetPageOfCommentsByPostId")
-  public async handleGetPageOfCommentsByPostId(
+  @Post("getPageOfCommentsByPostId")
+  public async getPageOfCommentsByPostId(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfCommentsByPostIdRequestBody,
   ): Promise<
@@ -77,4 +78,21 @@ export class PostCommentController extends Controller {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
+  
+  @Delete("deleteCommentFromPost")
+  public async deleteCommentFromPost(
+    @Request() request: express.Request,
+    @Body() requestBody: DeleteCommentFromPostRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedToDeleteCommentFromPostResponse, SuccessfullyDeletedCommentFromPostResponse    >
+  > {
+    return await handleDeleteCommentFromPost({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+
 }

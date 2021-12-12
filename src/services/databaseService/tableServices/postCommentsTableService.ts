@@ -157,15 +157,15 @@ export class PostCommentsTableService extends TableService {
 
   public async deletePostComment({
     postCommentId,
-    userId,
+    authorUserId,
   }: {
     postCommentId: string;
-    userId: string;
+    authorUserId: string;
   }): Promise<UnrenderablePostComment> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "post_comment_id", value: postCommentId },
-        { field: "author_user_id", value: userId },
+        { field: "author_user_id", value: authorUserId },
       ],
       tableName: this.tableName,
     });
