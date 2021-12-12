@@ -2,9 +2,10 @@ import { Pool, PoolConfig } from "pg";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
-import { ChatMessagesTableService } from "./tableServices/chatMessagesService";
+import { ChatMessagesTableService } from "./tableServices/chatMessagesTableService";
 import { ChatRoomsTableService } from "./tableServices/chatRoomsTableService";
 import { HashtagsTableService } from "./tableServices/hashtagsTableService";
+import { PostCommentsTableService } from "./tableServices/postCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PostLikesTableService } from "./tableServices/postLikesTableService";
 import { PostsTableService } from "./tableServices/postsTableService";
@@ -35,6 +36,7 @@ export class DatabaseService {
     chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
     userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
     postLikesTableService: new PostLikesTableService(DatabaseService.datastorePool),
+    postCommentsTableService: new PostCommentsTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

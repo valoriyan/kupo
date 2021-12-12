@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderableChatMessage } from "src/controllers/chat/models";
+import { UnrenderablePostComment } from "../../../controllers/postComment/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
@@ -10,29 +10,29 @@ import {
 } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
-interface DBChatMessage {
-  chat_message_id: string;
+interface DBPostComment {
+  post_comment_id: string;
+  post_id: string;
   text: string;
   author_user_id: string;
-  chat_room_id: string;
   creation_timestamp: string;
 }
 
-function convertDBChatMessageToUnrenderableChatMessage(
-  dbChatMessage: DBChatMessage,
-): UnrenderableChatMessage {
+function convertDBPostCommentToUnrenderablePostComment(
+  dbChatMessage: DBPostComment,
+): UnrenderablePostComment {
   return {
-    chatMessageId: dbChatMessage.chat_message_id,
+    postCommentId: dbChatMessage.post_comment_id,
+    postId: dbChatMessage.post_id,
     text: dbChatMessage.text,
     authorUserId: dbChatMessage.author_user_id,
-    chatRoomId: dbChatMessage.chat_room_id,
     creationTimestamp: parseInt(dbChatMessage.creation_timestamp),
   };
 }
 
-export class ChatMessagesTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_chat_messages`;
-  public readonly tableName = ChatMessagesTableService.tableName;
+export class PostCommentsTableService extends TableService {
+  public static readonly tableName = `${TABLE_NAME_PREFIX}_post_comments`;
+  public readonly tableName = PostCommentsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
@@ -41,10 +41,10 @@ export class ChatMessagesTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        chat_message_id VARCHAR(64) UNIQUE NOT NULL,
+        post_comment_id VARCHAR(64) UNIQUE NOT NULL,
+        post_id VARCHAR(64) NOT NULL,
         text VARCHAR(64) NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
-        chat_room_id VARCHAR(64) NOT NULL,
         creation_timestamp BIGINT NOT NULL
       )
       ;
@@ -57,26 +57,26 @@ export class ChatMessagesTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async createChatMessage({
-    chatMessageId,
+  public async createPostComment({
+    postCommentId,
+    postId,
     text,
     authorUserId,
-    chatRoomId,
     creationTimestamp,
   }: {
-    chatMessageId: string;
+    postCommentId: string;
+    postId: string;
     text: string;
     authorUserId: string;
-    chatRoomId: string;
     creationTimestamp: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
-          { field: "chat_message_id", value: chatMessageId },
+          { field: "post_comment_id", value: postCommentId },
+          { field: "post_id", value: postId },
           { field: "text", value: text },
           { field: "author_user_id", value: authorUserId },
-          { field: "chat_room_id", value: chatRoomId },
           { field: "creation_timestamp", value: creationTimestamp },
         ],
       ],
@@ -90,14 +90,14 @@ export class ChatMessagesTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getChatMessagesByChatRoomId({
-    chatRoomId,
+  public async getPostCommentsByPostId({
+    postId,
     beforeTimestamp,
   }: {
-    chatRoomId: string;
+    postId: string;
     beforeTimestamp?: number;
-  }): Promise<UnrenderableChatMessage[]> {
-    const values: (string | number)[] = [chatRoomId];
+  }): Promise<UnrenderablePostComment[]> {
+    const values: (string | number)[] = [postId];
 
     let beforeTimestampCondition = "";
     if (!!beforeTimestamp) {
@@ -112,8 +112,8 @@ export class ChatMessagesTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-            chat_room_id = $1
-            ${beforeTimestampCondition}
+          post_id = $1
+          ${beforeTimestampCondition}
         ORDER BY
           creation_timestamp
         ;
@@ -121,27 +121,27 @@ export class ChatMessagesTableService extends TableService {
       values,
     };
 
-    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBChatMessageToUnrenderableChatMessage);
+    return response.rows.map(convertDBPostCommentToUnrenderablePostComment);
   }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async updatePost({
-    chatMessageId,
+  public async updatePostComment({
+    postCommentId,
     text,
   }: {
-    chatMessageId: string;
+    postCommentId: string;
     text: string;
   }): Promise<void> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [{ field: "text", value: text }],
       fieldUsedToIdentifyUpdatedRow: {
-        field: "chat_message_id",
-        value: chatMessageId,
+        field: "post_comment_id",
+        value: postCommentId,
       },
       tableName: this.tableName,
     });
@@ -155,28 +155,28 @@ export class ChatMessagesTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deleteChatMessage({
-    chatMessageId,
+  public async deletePostComment({
+    postCommentId,
     userId,
   }: {
-    chatMessageId: string;
+    postCommentId: string;
     userId: string;
-  }): Promise<UnrenderableChatMessage> {
+  }): Promise<UnrenderablePostComment> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
-        { field: "chat_message_id", value: chatMessageId },
+        { field: "post_comment_id", value: postCommentId },
         { field: "author_user_id", value: userId },
       ],
       tableName: this.tableName,
     });
 
-    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 
     if (!!rows.length) {
       const row = response.rows[0];
-      return convertDBChatMessageToUnrenderableChatMessage(row);
+      return convertDBPostCommentToUnrenderablePostComment(row);
     }
 
     throw new Error("No rows deleted");

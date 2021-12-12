@@ -265,6 +265,36 @@ export class UsersTableService extends TableService {
     return rows.map(convertDBUserToUnrenderableUser);
   }
 
+  public async selectUserByUserId({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UnrenderableUser | undefined> {
+    console.log(`${this.tableName} | selectUsersByUserIds`);
+
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          user_id = $1
+        ;
+      `,
+      values: [userId],
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
+  }
+
   public async selectUsersByUserIds({
     userIds,
   }: {
