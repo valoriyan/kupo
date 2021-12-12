@@ -68,8 +68,11 @@ export async function handleGetPageOfPostFromFollowedUsers({
     clientUserId,
   });
 
+  console.log("renderablePosts");
+  console.log([1,2,3].at(-1));
+
   const nextPageCursor =
-    renderablePosts.length > 0
+    (renderablePosts.length > 0)
       ? encodeCursor({ timestamp: renderablePosts.at(-1)!.scheduledPublicationTimestamp })
       : undefined;
 
