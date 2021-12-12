@@ -8,6 +8,7 @@ module.exports = {
   reactStrictMode: true,
   publicRuntimeConfig: {
     API_BASE_URL: process.env.API_BASE_URL,
+    API_WEBSOCKET_URL: process.env.API_WEBSOCKET_URL,
   },
   images: {
     domains: ["localhost", "kupono.io"],

@@ -2,6 +2,7 @@ import { PropsWithChildren } from "react";
 import { io, Socket } from "socket.io-client";
 import create, { GetState, SetState } from "zustand";
 import createContext from "zustand/context";
+import getConfig from "next/config";
 
 export interface WebsocketState {
   socket: Socket | undefined;
@@ -19,7 +20,11 @@ const generateSocket = ({
   set: SetState<WebsocketState>;
   get: GetState<WebsocketState>;
 }) => {
-  const newSocket = io("ws://localhost:4000", {
+  const { publicRuntimeConfig } = getConfig();
+
+  const websocketUrl = publicRuntimeConfig.API_WEBSOCKET_URL;
+
+  const newSocket = io(websocketUrl, {
     auth: {
       accessToken,
     },

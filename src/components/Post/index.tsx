@@ -7,6 +7,7 @@ import { Bookmark, Comment, Heart, MailForward, MoreVerticalAlt } from "../Icons
 import { Flex, Grid, Stack } from "../Layout";
 import { Body } from "../Typography";
 import { Popover } from "../Popover";
+import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
 
 export interface PostMenuOption {
   Icon: ComponentType;
@@ -41,7 +42,10 @@ export const Post = (props: PostProps) => {
           src={authorUserAvatar}
           size="$6"
         />
-        <Link href="/profile" passHref>
+        <Link
+          href={generateUserProfilePageUrl({ username: authorUserName || "" })}
+          passHref
+        >
           <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
 
