@@ -2,7 +2,7 @@ import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import { getPageOfPosts } from "../post/pagination/utilities";
+import { getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
@@ -53,7 +53,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
       { postIds: postIdsWithHashtag },
     );
 
-  const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
+  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
     unrenderablePostsWithoutElementsOrHashtags,
     encodedCursor: requestBody.cursor,
     pageSize: requestBody.pageSize,

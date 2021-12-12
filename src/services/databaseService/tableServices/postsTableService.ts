@@ -194,8 +194,10 @@ export class PostsTableService extends TableService {
 
   public async getPostsByCreatorUserIds({
     creatorUserIds,
+    count,
   }: {
     creatorUserIds: string[];
+    count?: number;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     if (creatorUserIds.length === 0) {
       return [];
@@ -204,6 +206,8 @@ export class PostsTableService extends TableService {
     const creatorUserIdsQueryString = creatorUserIds
       .map((_, index) => `$${index + 1}`)
       .join(", ");
+
+    const limitQueryClause = !!count ? `LIMIT ${count}` : "";
 
     const query = {
       text: `
@@ -215,6 +219,7 @@ export class PostsTableService extends TableService {
           author_user_id IN (${creatorUserIdsQueryString})
         ORDER BY
           creation_timestamp DESC
+        ${ limitQueryClause }
         ;
       `,
       values: creatorUserIds,

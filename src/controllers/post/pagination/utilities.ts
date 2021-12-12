@@ -1,19 +1,20 @@
 import { UnrenderablePostWithoutElementsOrHashtags } from "../models";
 
-export function getEncodedNextPageCursor({
+export function getNextPageOfPostsEncodedCursor({
   posts,
 }: {
   posts: UnrenderablePostWithoutElementsOrHashtags[];
 }): string | undefined {
-  const encodedNextPageCursor =
-    posts.length > 0
-      ? Buffer.from(
-          String(posts[posts.length - 1]?.scheduledPublicationTimestamp),
-          "binary",
-        ).toString("base64")
-      : undefined;
+  if (posts.length > 0) {
+    const timestamp = posts[posts.length - 1]!.scheduledPublicationTimestamp;
+    return encodeCursor({timestamp});
+  }
 
-  return encodedNextPageCursor;
+  return undefined;
+}
+
+export function encodeCursor({timestamp}: {timestamp: number}) {
+  return Buffer.from(String(timestamp), "binary").toString("base64");
 }
 
 export function decodeCursor({ encodedCursor }: { encodedCursor: string }): number {
@@ -21,7 +22,7 @@ export function decodeCursor({ encodedCursor }: { encodedCursor: string }): numb
   return decodedCursor;
 }
 
-export function getPageOfPosts({
+export function getPageOfPostsFromAllPosts({
   unrenderablePostsWithoutElementsOrHashtags,
   encodedCursor,
   pageSize,
@@ -30,18 +31,15 @@ export function getPageOfPosts({
   encodedCursor?: string;
   pageSize: number;
 }): UnrenderablePostWithoutElementsOrHashtags[] {
-  // For simplicity, we are returning posts ordered by timestamp
-  // However, we will want to return posts with the highest clickthrough rate (or some other criterion)
-
   if (!!encodedCursor) {
-    const decodedCursor = decodeCursor({ encodedCursor });
+    const timestamp = decodeCursor({ encodedCursor });
 
     const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
       unrenderablePostsWithoutElementsOrHashtags
-        .filter((unrenderablePostsWithoutElementsOrHashtags) => {
+        .filter((unrenderablePostWithoutElementsOrHashtags) => {
+          const { scheduledPublicationTimestamp} = unrenderablePostWithoutElementsOrHashtags;
           return (
-            unrenderablePostsWithoutElementsOrHashtags.scheduledPublicationTimestamp >
-            decodedCursor
+            scheduledPublicationTimestamp < timestamp
           );
         })
         .slice(-pageSize);

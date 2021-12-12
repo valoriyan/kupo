@@ -2,7 +2,7 @@ import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import { getPageOfPosts } from "../post/pagination/utilities";
+import { encodeCursor, getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
@@ -40,7 +40,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
     SuccessfulGetPageOfPostFromFollowedUsersResponse
   >
 > {
-  const { pageSize, cursor } = requestBody;
+  const { cursor } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -55,7 +55,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
       { creatorUserIds: [...userIdsBeingFollowed, clientUserId] },
     );
 
-  const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
+  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
     unrenderablePostsWithoutElementsOrHashtags,
     encodedCursor: cursor,
     pageSize: requestBody.pageSize,
@@ -68,13 +68,13 @@ export async function handleGetPageOfPostFromFollowedUsers({
     clientUserId,
   });
 
-  console.log("page size", pageSize);
+  const nextPageCursor = renderablePosts.length > 0 ? encodeCursor({timestamp: renderablePosts.at(-1)!.scheduledPublicationTimestamp}) : undefined;
 
   return {
     success: {
       posts: renderablePosts,
-      previousPageCursor: undefined,
-      nextPageCursor: cursor,
+      previousPageCursor: cursor,
+      nextPageCursor,
     },
   };
 }

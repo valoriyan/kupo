@@ -4,7 +4,7 @@ import { PostController } from "../postController";
 import { HTTPResponse } from "../../../types/httpResponse";
 import { checkAuthorization } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
-import { getEncodedNextPageCursor, getPageOfPosts } from "./utilities";
+import { getNextPageOfPostsEncodedCursor, getPageOfPostsFromAllPosts } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
 
 export interface GetPageOfPostsPaginationParams {
@@ -66,7 +66,7 @@ export async function handleGetPageOfPostsPagination({
       },
     );
 
-  const filteredUnrenderablePostsWithoutElements = getPageOfPosts({
+  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
     unrenderablePostsWithoutElementsOrHashtags,
     encodedCursor: requestBody.cursor,
     pageSize: requestBody.pageSize,
@@ -83,7 +83,7 @@ export async function handleGetPageOfPostsPagination({
     success: {
       posts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getEncodedNextPageCursor({
+      nextPageCursor: getNextPageOfPostsEncodedCursor({
         posts: filteredUnrenderablePostsWithoutElements,
       }),
     },
