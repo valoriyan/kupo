@@ -1,4 +1,5 @@
 import { RenderablePost } from "#/api";
+import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
@@ -36,6 +37,11 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
     authorUserId,
   });
 
+  const { mutateAsync: deletePost } = useDeletePost({
+    postId,
+    authorUserId,
+  });
+
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
   }
@@ -56,7 +62,7 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
     Icon: Heart,
     label: "Delete Post",
     onClick: () => {
-      console.log("Yay Blake is great!");
+      deletePost();
     },
   };
 

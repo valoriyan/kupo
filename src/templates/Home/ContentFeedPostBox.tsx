@@ -1,4 +1,5 @@
 import { RenderablePost } from "#/api";
+import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
@@ -23,6 +24,10 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
     postId,
     authorUserId,
   });
+  const { mutateAsync: deletePost } = useDeletePost({
+    postId,
+    authorUserId,
+  });
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
@@ -44,7 +49,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
     Icon: Heart,
     label: "Delete Post",
     onClick: () => {
-      console.log("Yay Blake is great!");
+      deletePost();
     },
   };
 
