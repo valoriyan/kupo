@@ -72,8 +72,6 @@ export class WasabiBlobStorageService extends BlobStorageService {
       },
     );
 
-    console.log("temporaryUrl", temporaryUrl);
-
     return temporaryUrl;
   }
 
