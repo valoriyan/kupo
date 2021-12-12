@@ -42,7 +42,7 @@ export const useGetPageOfContentFeed = ({
         return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag });
       },
       {
-        getPreviousPageParam: (lastPage) => lastPage.previousPageCursor,
+        getNextPageParam: (lastPage) => lastPage.nextPageCursor,
       },
     );
   }

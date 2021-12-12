@@ -33,7 +33,7 @@ export const useGetPageOfPostsByUserId = ({ userId }: GetPostsByUserIdArgs) => {
     [CacheKeys.UserPostPages, userId],
     ({ pageParam }) => fetchPageOfPostsByUserId({ pageParam, userId }),
     {
-      getPreviousPageParam: (lastPage) => lastPage.previousPageCursor,
+      getNextPageParam: (lastPage) => lastPage.nextPageCursor,
       enabled: !!userId,
     },
   );
