@@ -8,7 +8,7 @@ async function fetchPageOfCommentsByPostId({
   postId: string;
   pageParam: string | undefined;
 }) {
-  const res = await Api.handleGetPageOfCommentsByPostId({
+  const res = await Api.getPageOfCommentsByPostId({
     postId,
     pageSize: 25,
   });

@@ -31,11 +31,11 @@ export const useDeletePost = ({
                     (post) => post.postId !== postId,
                   );
 
-                  const updatedPages: SuccessfulGetPageOfPostsPaginationResponse = {
+                  const updatedPage: SuccessfulGetPageOfPostsPaginationResponse = {
                     ...page,
                     posts: updatedRenderablePosts,
                   };
-                  return updatedPages;
+                  return updatedPage;
                 });
 
                 return {

@@ -7,6 +7,7 @@ export * from "./create-chat-message-in-new-room-request-body";
 export * from "./create-chat-message-request-body";
 export * from "./create-post-failure-reasons";
 export * from "./delete-chat-message-request-body";
+export * from "./delete-comment-from-post-request-body";
 export * from "./delete-post-request-body";
 export * from "./delete-shop-item-request-body";
 export * from "./denied-get-user-profile-response";
@@ -87,6 +88,7 @@ export * from "./secured-httpresponse-failed-to-create-chat-message-response-suc
 export * from "./secured-httpresponse-failed-to-create-post-response-successful-post-creation-response";
 export * from "./secured-httpresponse-failed-to-create-shop-item-response-successful-shop-item-creation-response";
 export * from "./secured-httpresponse-failed-to-delete-chat-message-response-successfully-deleted-chat-message-response";
+export * from "./secured-httpresponse-failed-to-delete-comment-from-post-response-successfully-deleted-comment-from-post-response";
 export * from "./secured-httpresponse-failed-to-delete-post-response-successful-post-deletion-response";
 export * from "./secured-httpresponse-failed-to-delete-shop-item-response-successful-shop-item-deletion-response";
 export * from "./secured-httpresponse-failed-to-follow-user-response-successfully-followed-user-response";

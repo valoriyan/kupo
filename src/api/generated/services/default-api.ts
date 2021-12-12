@@ -45,6 +45,8 @@ import { CreateChatMessageRequestBody } from "../types";
 // @ts-ignore
 import { DeleteChatMessageRequestBody } from "../types";
 // @ts-ignore
+import { DeleteCommentFromPostRequestBody } from "../types";
+// @ts-ignore
 import { DeletePostRequestBody } from "../types";
 // @ts-ignore
 import { DeleteShopItemRequestBody } from "../types";
@@ -104,6 +106,8 @@ import { SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResp
 import { SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToDeleteCommentFromPostResponseSuccessfullyDeletedCommentFromPostResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse } from "../types";
 // @ts-ignore
@@ -557,6 +561,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {DeleteCommentFromPostRequestBody} deleteCommentFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteCommentFromPost: async (
+      deleteCommentFromPostRequestBody: DeleteCommentFromPostRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'deleteCommentFromPostRequestBody' is not null or undefined
+      assertParamExists(
+        "deleteCommentFromPost",
+        "deleteCommentFromPostRequestBody",
+        deleteCommentFromPostRequestBody,
+      );
+      const localVarPath = `/PostComment/deleteCommentFromPost`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        deleteCommentFromPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -881,6 +934,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPageOfChatRoomsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfCommentsByPostId: async (
+      getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfCommentsByPostIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfCommentsByPostId",
+        "getPageOfCommentsByPostIdRequestBody",
+        getPageOfCommentsByPostIdRequestBody,
+      );
+      const localVarPath = `/PostComment/getPageOfCommentsByPostId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfCommentsByPostIdRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1269,55 +1371,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getUsersByUsernamesRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    handleGetPageOfCommentsByPostId: async (
-      getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfCommentsByPostIdRequestBody' is not null or undefined
-      assertParamExists(
-        "handleGetPageOfCommentsByPostId",
-        "getPageOfCommentsByPostIdRequestBody",
-        getPageOfCommentsByPostIdRequestBody,
-      );
-      const localVarPath = `/PostComment/handleGetPageOfCommentsByPostId`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfCommentsByPostIdRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2317,6 +2370,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {DeleteCommentFromPostRequestBody} deleteCommentFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deleteCommentFromPost(
+      deleteCommentFromPostRequestBody: DeleteCommentFromPostRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteCommentFromPostResponseSuccessfullyDeletedCommentFromPostResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCommentFromPost(
+        deleteCommentFromPostRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2489,6 +2568,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatRooms(
         getPageOfChatRoomsRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfCommentsByPostId(
+      getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfCommentsByPostId(
+        getPageOfCommentsByPostIdRequestBody,
         options,
       );
       return createRequestFunction(
@@ -2701,33 +2806,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         getUsersByUsernamesRequestBody,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async handleGetPageOfCommentsByPostId(
-      getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.handleGetPageOfCommentsByPostId(
-          getPageOfCommentsByPostIdRequestBody,
-          options,
-        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -3302,6 +3380,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {DeleteCommentFromPostRequestBody} deleteCommentFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteCommentFromPost(
+      deleteCommentFromPostRequestBody: DeleteCommentFromPostRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteCommentFromPostResponseSuccessfullyDeletedCommentFromPostResponse> {
+      return localVarFp
+        .deleteCommentFromPost(deleteCommentFromPostRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {DeletePostRequestBody} deletePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3396,6 +3488,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse> {
       return localVarFp
         .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfCommentsByPostId(
+      getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse> {
+      return localVarFp
+        .getPageOfCommentsByPostId(getPageOfCommentsByPostIdRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3508,20 +3614,6 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse> {
       return localVarFp
         .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    handleGetPageOfCommentsByPostId(
-      getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse> {
-      return localVarFp
-        .handleGetPageOfCommentsByPostId(getPageOfCommentsByPostIdRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -3914,6 +4006,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {DeleteCommentFromPostRequestBody} deleteCommentFromPostRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deleteCommentFromPost(
+    deleteCommentFromPostRequestBody: DeleteCommentFromPostRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .deleteCommentFromPost(deleteCommentFromPostRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {DeletePostRequestBody} deletePostRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4015,6 +4123,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfCommentsByPostId(
+    getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfCommentsByPostId(getPageOfCommentsByPostIdRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -4140,22 +4264,6 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPageOfCommentsByPostIdRequestBody} getPageOfCommentsByPostIdRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public handleGetPageOfCommentsByPostId(
-    getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .handleGetPageOfCommentsByPostId(getPageOfCommentsByPostIdRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
