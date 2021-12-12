@@ -17,6 +17,7 @@ import { UserPosts } from "./UserPosts";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
+import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
 export interface UserProfileProps {
   isOwnProfile?: boolean;
   username?: string;
@@ -115,7 +116,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
       <Stack css={{ height: "100%", px: "$5", pt: "$5", pb: "$4" }}>
         <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
         <Stack css={{ mt: "$4", gap: "$3" }}>
-          <Link href={`/profile/${username}`} passHref>
+          <Link href={generateUserProfilePageUrl({ username })} passHref>
             <a>@{username}</a>
           </Link>
           <Subtext>
@@ -139,7 +140,9 @@ const ProfileBody = (props: ProfileBodyProps) => {
             size="md"
             variant="primary"
             onClick={() => {
-              const link = `${location.origin}/profile/${username}`;
+              const link = `${location.origin}${generateUserProfilePageUrl({
+                username,
+              })}`;
               copyTextToClipboard(link, "Link");
             }}
           >
