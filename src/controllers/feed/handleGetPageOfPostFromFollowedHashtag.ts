@@ -2,7 +2,7 @@ import express from "express";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import { getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
+import { encodeCursor, getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
@@ -24,6 +24,8 @@ export interface FailedToGetPageOfPostFromFollowedHashtagResponse {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfulGetPageOfPostFromFollowedHashtagResponse {
   posts: RenderablePost[];
+  previousPageCursor?: string;
+  nextPageCursor?: string;
 }
 
 export async function handleGetPageOfPostFromFollowedHashtag({
@@ -42,6 +44,8 @@ export async function handleGetPageOfPostFromFollowedHashtag({
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
+
+  const { cursor } = requestBody;
 
   const postIdsWithHashtag =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtagId(
@@ -66,9 +70,18 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     clientUserId,
   });
 
+  const nextPageCursor =
+    renderablePosts.length > 0
+      ? encodeCursor({ timestamp: renderablePosts.at(-1)!.scheduledPublicationTimestamp })
+      : undefined;
+
+
+
   return {
     success: {
       posts: renderablePosts,
+      previousPageCursor: cursor,
+      nextPageCursor,
     },
   };
 }

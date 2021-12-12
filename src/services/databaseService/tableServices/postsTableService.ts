@@ -219,7 +219,7 @@ export class PostsTableService extends TableService {
           author_user_id IN (${creatorUserIdsQueryString})
         ORDER BY
           creation_timestamp DESC
-        ${ limitQueryClause }
+        ${limitQueryClause}
         ;
       `,
       values: creatorUserIds,

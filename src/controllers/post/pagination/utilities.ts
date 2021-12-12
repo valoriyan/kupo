@@ -7,13 +7,13 @@ export function getNextPageOfPostsEncodedCursor({
 }): string | undefined {
   if (posts.length > 0) {
     const timestamp = posts[posts.length - 1]!.scheduledPublicationTimestamp;
-    return encodeCursor({timestamp});
+    return encodeCursor({ timestamp });
   }
 
   return undefined;
 }
 
-export function encodeCursor({timestamp}: {timestamp: number}) {
+export function encodeCursor({ timestamp }: { timestamp: number }) {
   return Buffer.from(String(timestamp), "binary").toString("base64");
 }
 
@@ -37,10 +37,9 @@ export function getPageOfPostsFromAllPosts({
     const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
       unrenderablePostsWithoutElementsOrHashtags
         .filter((unrenderablePostWithoutElementsOrHashtags) => {
-          const { scheduledPublicationTimestamp} = unrenderablePostWithoutElementsOrHashtags;
-          return (
-            scheduledPublicationTimestamp < timestamp
-          );
+          const { scheduledPublicationTimestamp } =
+            unrenderablePostWithoutElementsOrHashtags;
+          return scheduledPublicationTimestamp < timestamp;
         })
         .slice(-pageSize);
 

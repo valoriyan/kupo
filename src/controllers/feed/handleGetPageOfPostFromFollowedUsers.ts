@@ -68,7 +68,10 @@ export async function handleGetPageOfPostFromFollowedUsers({
     clientUserId,
   });
 
-  const nextPageCursor = renderablePosts.length > 0 ? encodeCursor({timestamp: renderablePosts.at(-1)!.scheduledPublicationTimestamp}) : undefined;
+  const nextPageCursor =
+    renderablePosts.length > 0
+      ? encodeCursor({ timestamp: renderablePosts.at(-1)!.scheduledPublicationTimestamp })
+      : undefined;
 
   return {
     success: {
