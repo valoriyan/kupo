@@ -132,8 +132,6 @@ export class PostsTableService extends TableService {
             OR
               expiration_timestamp > $3
           )
-        ORDER BY
-          creation_timestamp DESC
       `;
     }
 
