@@ -10,7 +10,6 @@ import {
 } from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
 import express from "express";
 import {
@@ -29,12 +28,13 @@ import {
   handleDeleteShopItem,
   SuccessfulShopItemDeletionResponse,
 } from "./handleDeleteShopItem";
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 
 @injectable()
 @Route("shopitem")
 export class ShopItemController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

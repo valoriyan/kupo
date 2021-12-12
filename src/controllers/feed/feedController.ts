@@ -1,5 +1,4 @@
 import express from "express";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Controller, Route, Request, Body, Post } from "tsoa";
@@ -16,12 +15,13 @@ import {
   handleGetPageOfPostFromFollowedUsers,
   SuccessfulGetPageOfPostFromFollowedUsersResponse,
 } from "./handleGetPageOfPostFromFollowedUsers";
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 
 @injectable()
 @Route("feed")
 export class FeedController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

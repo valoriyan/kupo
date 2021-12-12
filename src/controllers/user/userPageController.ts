@@ -1,5 +1,4 @@
 import express from "express";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { Body, Controller, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
@@ -40,12 +39,13 @@ import {
   handleGetUsersByUsernames,
   SuccessfullyGotUsersByUsernamesRequestBodyResponse,
 } from "./handleGetUsersByUsernames";
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 
 @injectable()
 @Route("user")
 export class UserPageController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

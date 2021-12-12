@@ -10,7 +10,6 @@ import {
 } from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
 import {
   FailedToCreatePostResponse,
@@ -43,12 +42,13 @@ import {
   SuccessfulGetPostsScheduledByUserResponse,
 } from "./handleGetPostsScheduledByUser";
 import { WebSocketService } from "../../services/webSocketService";
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 
 @injectable()
 @Route("post")
 export class PostController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
     public webSocketService: WebSocketService,
   ) {

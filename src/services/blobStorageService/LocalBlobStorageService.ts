@@ -1,29 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { singleton } from "tsyringe";
-
 import { writeFileSync, unlinkSync, mkdirSync } from "fs";
 import { getEnvironmentVariable } from "../../utilities";
 import { Promise as BluebirdPromise } from "bluebird";
-
-export interface BlobItemPointer {
-  fileKey: string;
-}
-
-export abstract class BlobStorageService {
-  abstract saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer>;
-
-  abstract getTemporaryImageUrl({
-    blobItemPointer,
-  }: {
-    blobItemPointer: BlobItemPointer;
-  }): Promise<string>;
-
-  abstract deleteImages({
-    blobPointers,
-  }: {
-    blobPointers: BlobItemPointer[];
-  }): Promise<void>;
-}
+import { BlobStorageService, BlobItemPointer } from "./models";
 
 @singleton()
 export class LocalBlobStorageService extends BlobStorageService {

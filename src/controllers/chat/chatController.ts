@@ -1,7 +1,6 @@
 import { Controller, Post, Route, Request, Body } from "tsoa";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
 import express from "express";
 import { WebSocketService } from "../../services/webSocketService";
@@ -47,12 +46,13 @@ import {
   handleGetChatRoomById,
   SuccessfullyGotChatRoomByIdResponse,
 } from "./handleGetChatRoomById";
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 
 @injectable()
 @Route("chat")
 export class ChatController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
     public webSocketService: WebSocketService,
   ) {

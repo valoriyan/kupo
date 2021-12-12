@@ -9,11 +9,11 @@ import { DatabaseService } from "./services/databaseService";
 export const app = express();
 
 const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
-console.log(`ORIGIN: ${origin}`);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 app.use(cookieParser());
+
 app.use(cors({ origin, credentials: true }));
 
 app.use("/docs", swaggerUi.serve, async (req: Request, res: Response) => {

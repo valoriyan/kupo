@@ -1,5 +1,4 @@
 import express from "express";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
@@ -28,12 +27,12 @@ import {
   RemoveUserLikeFromPostRequestBody,
   SuccessfullyRemovedUserLikeFromPostResponse,
 } from "./handleRemoveUserLikeFromPost";
-
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

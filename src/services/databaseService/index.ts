@@ -56,16 +56,22 @@ export class DatabaseService {
       const connectionString = process.env.DATABASE_URL || undefined;
       const ssl = !!connectionString ? { rejectUnauthorized: false } : undefined;
       const database = !!connectionString ? undefined : DATABASE_NAME;
-      console.log(
-        `STARTING DATABASE SERVICE @ '${connectionString}' | ${JSON.stringify(ssl)}`,
-      );
 
-      const poolConfig: PoolConfig = !!connectionString
-        ? {
-            connectionString,
-            ssl,
-          }
-        : { database };
+      let poolConfig: PoolConfig;
+      if (!!connectionString) {
+        poolConfig = {
+          connectionString,
+          ssl,
+        };
+        console.log(
+          `STARTING DATABASE SERVICE @ '${connectionString}' | ${JSON.stringify(ssl)}`,
+        );
+      } else {
+        poolConfig = {
+          database,
+        };
+        console.log(`STARTING DATABASE SERVICE @ '${database}'`);
+      }
 
       DatabaseService.datastorePool = new Pool(poolConfig);
     }

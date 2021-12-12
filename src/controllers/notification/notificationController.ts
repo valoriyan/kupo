@@ -2,7 +2,6 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Controller, Post, Route, Request, Body } from "tsoa";
 import { injectable } from "tsyringe";
-import { LocalBlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
 import { WebSocketService } from "../../services/webSocketService";
 import {
@@ -11,12 +10,13 @@ import {
   handleGetPageOfNotifications,
   SuccessfullyGotPageOfNotificationsResponse,
 } from "./handleGetPageOfNotifications";
+import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 
 @injectable()
 @Route("notification")
 export class NotificationController extends Controller {
   constructor(
-    public blobStorageService: LocalBlobStorageService,
+    public blobStorageService: WasabiBlobStorageService,
     public databaseService: DatabaseService,
     public webSocketService: WebSocketService,
   ) {
