@@ -22,7 +22,7 @@ const generateSocket = ({
 }) => {
   const { publicRuntimeConfig } = getConfig();
 
-  const websocketUrl = publicRuntimeConfig.API_WEBSOCKET_URL;
+  const websocketUrl = publicRuntimeConfig.API_BASE_URL;
 
   const newSocket = io(websocketUrl, {
     auth: {
