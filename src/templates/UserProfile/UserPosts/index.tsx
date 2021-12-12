@@ -2,7 +2,7 @@ import { RenderablePost } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
-import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPostsByUserId";
+import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Heart } from "#/components/Icons";

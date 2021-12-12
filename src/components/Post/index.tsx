@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ComponentType } from "react";
-import { RenderablePost } from "#/api";
+import { ComponentType, useState } from "react";
+import { RenderablePost, RenderablePostComment } from "#/api";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
 import { Bookmark, Comment, Heart, MailForward, MoreVerticalAlt } from "../Icons";
@@ -22,15 +22,55 @@ export interface PostProps {
   authorUserAvatar?: string;
   handleClickOfLikeButton: () => void;
   menuOptions: PostMenuOption[];
+  postComments?: RenderablePostComment[];
 }
 
+const CommentContainer = ({
+  postComments,
+}: {
+  postComments?: RenderablePostComment[];
+}) => {
+  return (
+    <div>
+      {postComments?.map((postComment) => (
+        <div key={postComment.postCommentId}>
+          {postComment.user.username}: {postComment.text}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Comments = ({ postComments }: { postComments?: RenderablePostComment[] }) => {
+  return (
+    <div>
+      <CommentInput type="textarea" placeholder="Add comment" />
+      <CommentContainer postComments={postComments} />
+    </div>
+  );
+};
+
+const CommentInput = styled("input", {
+  width: "100%",
+  height: "$9",
+});
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
 export const Post = (props: PostProps) => {
+  const [displayComments, setDisplayComments] = useState(false);
+
   const {
     post,
     handleClickOfLikeButton,
     authorUserName,
     authorUserAvatar,
     postRelativeTimestamp,
+    postComments,
   } = props;
   const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags, likes } = post;
 
@@ -85,10 +125,11 @@ export const Post = (props: PostProps) => {
           onClick={handleClickOfLikeButton}
           metric={likes.count}
         />
-        <PostAction Icon={Comment} />
+        <PostAction Icon={Comment} onClick={() => setDisplayComments(!displayComments)} />
         <PostAction Icon={MailForward} />
         <PostAction Icon={Bookmark} />
       </Flex>
+      {displayComments ? <Comments postComments={postComments} /> : null}
     </Grid>
   );
 };
