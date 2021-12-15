@@ -27,4 +27,5 @@ const SearchBox = styled("input", {
   width: "100%",
   background: "transparent",
   border: "none",
+  p: "$3",
 });
