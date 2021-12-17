@@ -17,7 +17,12 @@ import {
   handleGetPageOfCommentsByPostId,
   SuccessfullyGotPageOfCommentsByPostIdResponse,
 } from "./handleGetPageOfCommentsByPostId";
-import { DeleteCommentFromPostRequestBody, FailedToDeleteCommentFromPostResponse, handleDeleteCommentFromPost, SuccessfullyDeletedCommentFromPostResponse } from "./handleDeleteCommentFromPost";
+import {
+  DeleteCommentFromPostRequestBody,
+  FailedToDeleteCommentFromPostResponse,
+  handleDeleteCommentFromPost,
+  SuccessfullyDeletedCommentFromPostResponse,
+} from "./handleDeleteCommentFromPost";
 
 @injectable()
 @Route("PostComment")
@@ -78,14 +83,16 @@ export class PostCommentController extends Controller {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
-  
+
   @Delete("deleteCommentFromPost")
   public async deleteCommentFromPost(
     @Request() request: express.Request,
     @Body() requestBody: DeleteCommentFromPostRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToDeleteCommentFromPostResponse, SuccessfullyDeletedCommentFromPostResponse    >
+      FailedToDeleteCommentFromPostResponse,
+      SuccessfullyDeletedCommentFromPostResponse
+    >
   > {
     return await handleDeleteCommentFromPost({
       controller: this,
@@ -93,6 +100,4 @@ export class PostCommentController extends Controller {
       requestBody,
     });
   }
-
-
 }

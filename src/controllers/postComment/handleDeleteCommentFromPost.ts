@@ -22,7 +22,10 @@ export async function handleDeleteCommentFromPost({
   request: express.Request;
   requestBody: DeleteCommentFromPostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToDeleteCommentFromPostResponse, SuccessfullyDeletedCommentFromPostResponse>
+  SecuredHTTPResponse<
+    FailedToDeleteCommentFromPostResponse,
+    SuccessfullyDeletedCommentFromPostResponse
+  >
 > {
   const { postCommentId } = requestBody;
 
@@ -37,6 +40,6 @@ export async function handleDeleteCommentFromPost({
   );
 
   return {
-    success: {  },
+    success: {},
   };
 }
