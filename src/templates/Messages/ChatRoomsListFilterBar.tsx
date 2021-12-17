@@ -16,23 +16,22 @@ export const ChatRoomsListFilterBar = () => {
 };
 
 const FlexWrapper = styled(Flex, {
-  padding: "$4",
+  p: "$3",
   borderBottom: "1px solid $background3",
-
   justifyContent: "flex-start",
   alignItems: "center",
   width: "100%",
   height: "100%",
+  gap: "$3",
 });
 
 const FriendsListSelected = styled(Flex, {
-  padding: "$3",
+  p: "$3",
   borderRadius: "$3",
   borderWidth: "$1",
   borderColor: "$primaryTranslucent",
   backgroundColor: "$primaryTranslucent",
   borderStyle: "solid",
-  margin: "$3",
 
   justifyContent: "center",
   alignContent: "center",
@@ -41,12 +40,11 @@ const FriendsListSelected = styled(Flex, {
 const FriendsList = styled("div", {
   textAlign: "center",
   alignContent: "center",
-  padding: "$3",
+  p: "$3",
   borderRadius: "$3",
   borderWidth: "$1",
   borderColor: "$background3",
   borderStyle: "solid",
-  margin: "$3",
 });
 
 const ListName = styled("div", {});

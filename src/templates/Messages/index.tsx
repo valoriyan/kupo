@@ -43,7 +43,7 @@ export const Messages = () => {
 
 const Grid = styled("div", {
   display: "grid",
-  gridTemplateRows: "5% 5% 90%",
+  gridTemplateRows: "auto auto 1fr",
   height: "100%",
   width: "100%",
 });

@@ -18,8 +18,8 @@ const FlexWrapper = styled(Flex, {
   height: "100%",
   width: "100%",
   textAlign: "center",
-  alignContent: "center",
-  padding: "$4",
+  alignItems: "center",
+  p: "$3",
   borderBottom: "1px solid $background3",
 });
 
