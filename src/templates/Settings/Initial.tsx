@@ -1,4 +1,4 @@
-import { Duplicate, Tag } from "#/components/Icons";
+import { DuplicateIcon, TagIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -12,10 +12,10 @@ export const Initial = (props: InitialProps) => {
   return (
     <Stack>
       <NewItemButton onClick={() => props.setCurrentScreen(SettingsScreen.Profile)}>
-        <Duplicate /> Profile
+        <DuplicateIcon /> Profile
       </NewItemButton>
       <NewItemButton onClick={() => props.setCurrentScreen(SettingsScreen.Account)}>
-        <Tag /> Account
+        <TagIcon /> Account
       </NewItemButton>
     </Stack>
   );

@@ -8,7 +8,7 @@ import { Stack } from "#/components/Layout";
 import { FormStateProvider } from "../AddContent/FormContext";
 import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
-import { Close } from "#/components/Icons";
+import { CloseIcon } from "#/components/Icons";
 import { AccountSettings } from "./AccountSettings";
 import { PasswordSettings } from "./AccountSettings/PasswordSettings";
 import EditProfilePage from "#/pages/edit-profile";
@@ -64,7 +64,7 @@ export const Settings = () => {
             <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
           ) : (
             <CloseButton onClick={() => Router.back()}>
-              <Close />
+              <CloseIcon />
             </CloseButton>
           )}
           <MainTitle as="h1">

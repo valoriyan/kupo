@@ -2,16 +2,16 @@ import Link from "next/link";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
 import {
-  Bell,
-  Bookmark,
-  Box,
-  Girl,
-  Home,
-  List,
-  LogOut,
-  Mail,
-  Options,
-  Support,
+  BellIcon,
+  BookmarkIcon,
+  BoxIcon,
+  GirlIcon,
+  HomeIcon,
+  ListIcon,
+  LogOutIcon,
+  MailIcon,
+  OptionsIcon,
+  SupportIcon,
 } from "../Icons";
 import { Stack } from "../Layout";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
@@ -49,27 +49,27 @@ export const SidePanel = () => {
       </Stack>
       <Stack css={{ gap: "$8", height: "100%", overflow: "auto" }}>
         <Stack css={{ gap: "$5" }}>
-          <NavLink href="/" Icon={Home} label="Home" />
+          <NavLink href="/" Icon={HomeIcon} label="Home" />
           <NavLink
             href="/notifications"
-            Icon={Bell}
+            Icon={BellIcon}
             label={`Notifications${notificationsIndicator}`}
           />
-          <NavLink href="/messages" Icon={Mail} label="Messages" />
+          <NavLink href="/messages" Icon={MailIcon} label="Messages" />
           <NavLink
             href={generateUserProfilePageUrl({ username })}
-            Icon={Girl}
+            Icon={GirlIcon}
             label="My Profile"
           />
-          <NavLink href="/lists" Icon={List} label="My Lists" />
-          <NavLink href="/saved" Icon={Bookmark} label="Saved Posts" />
-          <NavLink href="/purchases" Icon={Box} label="Purchases" />
-          <NavLink href="/settings" Icon={Options} label="Settings" />
+          <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
+          <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
+          <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
+          <NavLink href="/settings" Icon={OptionsIcon} label="Settings" />
         </Stack>
         <Stack css={{ gap: "$5" }}>
-          <NavLink href="/support" Icon={Support} label="Support" />
+          <NavLink href="/support" Icon={SupportIcon} label="Support" />
           <NavItem as="button" css={{ color: "$link", pb: "$7" }} onClick={logout}>
-            <LogOut />
+            <LogOutIcon />
             <div>Log Out</div>
           </NavItem>
         </Stack>

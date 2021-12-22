@@ -1,5 +1,5 @@
 import { Calendar, CalendarState, CALENDAR_HEIGHT } from "#/components/Calendar";
-import { Add, Remove } from "#/components/Icons";
+import { AddIcon, RemoveIcon } from "#/components/Icons";
 import { Box, Stack } from "#/components/Layout";
 import { Body, MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -35,11 +35,11 @@ export const PostSchedule = (props: PostScheduleProps) => {
         <MainTitle>Summary</MainTitle>
         <Stack css={{ gap: "$3" }}>
           <SummaryText variant="addition">
-            <Add />
+            <AddIcon />
             You have {datesWithAdditions.length} scheduled posts this month
           </SummaryText>
           <SummaryText variant="removal">
-            <Remove />
+            <RemoveIcon />
             You have {datesWithRemovals.length} posts expiring this month
           </SummaryText>
         </Stack>

@@ -4,7 +4,7 @@ import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";
-import { Share } from "#/components/Icons";
+import { ShareIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
@@ -109,7 +109,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
               copyTextToClipboard(link, "Link");
             }}
           >
-            <Share />
+            <ShareIcon />
           </Button>
         </Flex>
       </Stack>

@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { Add, Search } from "#/components/Icons";
+import { AddIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 import { useContentFeedState } from "./ContentFeedContext";
@@ -39,8 +39,8 @@ export const ContentFeedControlBar = () => {
     <FlexWrapper>
       <Flex>{renderedTopics}</Flex>
       <FlexIcons css={{ gap: "$4", marginLeft: "auto" }}>
-        <Add />
-        <Search />
+        <AddIcon />
+        <SearchIcon />
       </FlexIcons>
     </FlexWrapper>
   );

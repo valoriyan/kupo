@@ -1,6 +1,6 @@
 import { styled } from "#/styling";
 import { Flex } from "#/components/Layout";
-import { Dollar, Folder, Image } from "#/components/Icons";
+import { DollarIcon, FolderIcon, ImageIcon } from "#/components/Icons";
 
 export const ChatMessageActionRow = ({
   onSubmitNewChatMessage,
@@ -10,9 +10,9 @@ export const ChatMessageActionRow = ({
   return (
     <Flex css={{ p: "$3", alignItems: "center", justifyContent: "space-between" }}>
       <Flex css={{ gap: "$4" }}>
-        <Dollar />
-        <Image />
-        <Folder />
+        <DollarIcon />
+        <ImageIcon />
+        <FolderIcon />
       </Flex>
       <SendButton onClick={onSubmitNewChatMessage}>Send</SendButton>
     </Flex>

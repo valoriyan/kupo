@@ -3,7 +3,13 @@ import { ComponentType, useState } from "react";
 import { RenderablePost, RenderablePostComment } from "#/api";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
-import { Bookmark, Comment, Heart, MailForward, MoreVerticalAlt } from "../Icons";
+import {
+  BookmarkIcon,
+  CommentIcon,
+  HeartIcon,
+  MailForwardIcon,
+  MoreVerticalAltIcon,
+} from "../Icons";
 import { Flex, Grid, Stack } from "../Layout";
 import { Body } from "../Typography";
 import { Popover } from "../Popover";
@@ -91,7 +97,7 @@ export const Post = (props: PostProps) => {
 
         <Flex css={{ marginLeft: "auto", gap: "$4", alignItems: "center" }}>
           <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
-          <Popover trigger={<MoreVerticalAlt />}>
+          <Popover trigger={<MoreVerticalAltIcon />}>
             {({ hide }) => (
               <Stack>
                 {props.menuOptions.map(({ Icon, label, onClick }) => (
@@ -120,14 +126,17 @@ export const Post = (props: PostProps) => {
       </Flex>
       <Flex css={{ justifyContent: "space-between", px: "$4", py: "$4" }}>
         <PostAction
-          Icon={Heart}
+          Icon={HeartIcon}
           isSelected={isLikedByClient}
           onClick={handleClickOfLikeButton}
           metric={likes.count}
         />
-        <PostAction Icon={Comment} onClick={() => setDisplayComments(!displayComments)} />
-        <PostAction Icon={MailForward} />
-        <PostAction Icon={Bookmark} />
+        <PostAction
+          Icon={CommentIcon}
+          onClick={() => setDisplayComments(!displayComments)}
+        />
+        <PostAction Icon={MailForwardIcon} />
+        <PostAction Icon={BookmarkIcon} />
       </Flex>
       {displayComments ? <Comments postComments={postComments} /> : null}
     </Grid>

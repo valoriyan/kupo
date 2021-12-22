@@ -1,5 +1,10 @@
 import { MouseEventHandler } from "react";
-import { ChevronDownR, ChevronUpR, PlayButtonO, Trash } from "#/components/Icons";
+import {
+  ChevronDownRIcon,
+  ChevronUpRIcon,
+  PlayButtonOIcon,
+  TrashIcon,
+} from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { css, styled } from "#/styling";
 import { Media } from "../FormContext";
@@ -34,20 +39,20 @@ export const PreviewImage = (props: PreviewImageProps) => {
         </Video>
       )}
       {(props.overlayText || (props.media.file.type.includes("video") && !props.id)) && (
-        <Overlay>{props.overlayText || <PlayButtonO />}</Overlay>
+        <Overlay>{props.overlayText || <PlayButtonOIcon />}</Overlay>
       )}
       {props.actions && (
         <ActionsBanner>
           <Flex css={{ gap: "$3" }}>
             <IconButton onClick={actionHandler(props.actions.moveUp)}>
-              <ChevronUpR />
+              <ChevronUpRIcon />
             </IconButton>
             <IconButton onClick={actionHandler(props.actions.moveDown)}>
-              <ChevronDownR />
+              <ChevronDownRIcon />
             </IconButton>
           </Flex>
           <IconButton onClick={actionHandler(props.actions.delete)}>
-            <Trash />
+            <TrashIcon />
           </IconButton>
         </ActionsBanner>
       )}

@@ -2,7 +2,7 @@ import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 import { ReactNode, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { styled } from "#/styling";
-import { ChevronDown } from "../Icons";
+import { ChevronDownIcon } from "../Icons";
 import { Body, bodyStyles } from "../Typography";
 
 export interface DropdownMenuItem<T extends string> {
@@ -24,7 +24,7 @@ export const DropdownMenu = <T extends string>(props: DropdownMenuProps<T>) => {
     <RadixDropdown.Root open={open} onOpenChange={setOpen}>
       <Trigger>
         <Body>{props.trigger}</Body>
-        <ChevronDown />
+        <ChevronDownIcon />
       </Trigger>
       <AnimatePresence initial={false}>
         {open ? (

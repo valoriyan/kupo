@@ -1,6 +1,6 @@
 import Router from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { Close } from "#/components/Icons";
+import { CloseIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { TransitionArea } from "#/components/TransitionArea";
 import { styled } from "#/styling";
@@ -81,7 +81,7 @@ export const AddContent = () => {
             <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
           ) : (
             <CloseButton onClick={() => Router.back()}>
-              <Close />
+              <CloseIcon />
             </CloseButton>
           )}
           <MainTitle as="h1">

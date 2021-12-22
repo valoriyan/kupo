@@ -1,5 +1,5 @@
 import { styled, css, ThemeScale } from "#/styling";
-import { User } from "../Icons";
+import { UserIcon } from "../Icons";
 
 export interface AvatarProps {
   alt: string;
@@ -33,4 +33,4 @@ const Img = styled("img", baseStyles, {
 
 const Fallback = styled("div", baseStyles);
 
-const FallBackIcon = styled(User, { minHeight: "50%", minWidth: "50%" });
+const FallBackIcon = styled(UserIcon, { minHeight: "50%", minWidth: "50%" });

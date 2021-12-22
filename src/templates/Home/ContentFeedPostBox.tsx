@@ -5,7 +5,7 @@ import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostCommentsByPostId } from "#/api/queries/posts/useGetPageOfPostCommentsByPostId";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { Heart } from "#/components/Icons";
+import { HeartIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
@@ -58,7 +58,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
   }
 
   const firstMenuOption = {
-    Icon: Heart,
+    Icon: HeartIcon,
     label: "Delete Post",
     onClick: () => {
       deletePost();
@@ -66,7 +66,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
   };
 
   const secondMenuOption = {
-    Icon: Heart,
+    Icon: HeartIcon,
     label: "Post I Like This",
     onClick: () => {
       commentOnPost({

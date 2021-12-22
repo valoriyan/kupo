@@ -3,7 +3,7 @@ import { PropsWithChildren } from "react";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
 import { Drawer } from "../Drawer";
-import { Bell, Home, Mail, MathPlus } from "../Icons";
+import { BellIcon, HomeIcon, MailIcon, MathPlusIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadLink } from "./shared";
@@ -25,18 +25,18 @@ export const Footer = () => {
   return (
     <Wrapper>
       <IconLink href="/">
-        <Home />
+        <HomeIcon />
       </IconLink>
       <IconLink href="/notifications">
-        <Bell />
+        <BellIcon />
       </IconLink>
       <Link href="/add-content" passHref>
         <UploadLink>
-          <MathPlus />
+          <MathPlusIcon />
         </UploadLink>
       </Link>
       <IconLink href="/messages">
-        <Mail />
+        <MailIcon />
       </IconLink>
       <Drawer
         trigger={<Avatar src="" alt="User Avatar" size="$6" />}

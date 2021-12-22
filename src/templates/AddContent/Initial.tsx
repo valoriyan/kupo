@@ -1,4 +1,4 @@
-import { Calendar, Duplicate, Tag } from "#/components/Icons";
+import { CalendarIcon, DuplicateIcon, TagIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -12,15 +12,15 @@ export const Initial = (props: InitialProps) => {
   return (
     <Stack>
       <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.Post)}>
-        <Duplicate /> New Post
+        <DuplicateIcon /> New Post
       </NewItemButton>
       <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.ShopItem)}>
-        <Tag /> New Shop Item
+        <TagIcon /> New Shop Item
       </NewItemButton>
       <NewItemButton
         onClick={() => props.setCurrentScreen(AddContentScreen.PostSchedule)}
       >
-        <Calendar /> View Post Schedule
+        <CalendarIcon /> View Post Schedule
       </NewItemButton>
     </Stack>
   );

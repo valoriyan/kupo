@@ -5,7 +5,7 @@ import {
   SHORT_MONTHS,
   useCalendarState,
 } from "../Calendar";
-import { ChevronDown } from "../Icons";
+import { ChevronDownIcon } from "../Icons";
 import { Box, Flex, Stack } from "../Layout";
 import { Popover } from "../Popover";
 import { getAmPm, TimePicker } from "../TimePicker";
@@ -25,7 +25,7 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
           <Body css={{ color: props.dateTime ? "$primary" : "$text" }}>
             {props.dateTime ? formatDateTime(props.dateTime) : props.placeholder}
           </Body>
-          <ChevronDown />
+          <ChevronDownIcon />
         </Flex>
       }
     >

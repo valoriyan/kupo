@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "../Button";
-import { Support } from "../Icons";
+import { SupportIcon } from "../Icons";
 import { Stack } from "../Layout";
 import { MainTitle } from "../Typography";
 import { NavLink, SidePanelWrapper } from "./shared";
@@ -26,7 +26,7 @@ export const NoAuthSidePanel = () => {
         </Link>
       </Stack>
       <Stack css={{ gap: "$5" }}>
-        <NavLink href="/support" Icon={Support} label="Support" />
+        <NavLink href="/support" Icon={SupportIcon} label="Support" />
       </Stack>
     </SidePanelWrapper>
   );

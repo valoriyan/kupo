@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Stack } from "#/components/Layout";
 import { PreviewImage } from "./PreviewImage";
 import { Button } from "#/components/Button";
-import { Duplicate } from "#/components/Icons";
+import { DuplicateIcon } from "#/components/Icons";
 import { useFormState } from "../FormContext";
 
 export * from "./PreviewImage";
@@ -27,7 +27,7 @@ export const MediaPreview = (props: MediaPreviewProps) => {
   return (
     <Stack ref={ref} css={{ gap: "$3", height: "100%", overflow: "auto" }}>
       <Button size="lg" variant="secondary" css={{ gap: "$3", m: "$4" }}>
-        <Duplicate /> Add Media
+        <DuplicateIcon /> Add Media
       </Button>
       {mediaFiles.map((media) => (
         <PreviewImage

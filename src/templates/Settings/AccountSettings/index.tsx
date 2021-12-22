@@ -5,7 +5,7 @@ import { Api } from "#/api";
 import { SettingsScreen } from "..";
 import { styled } from "#/styling";
 import { mainTitleStyles } from "#/components/Typography";
-import { Duplicate } from "#/components/Icons";
+import { DuplicateIcon } from "#/components/Icons";
 
 export interface InitialProps {
   setCurrentScreen: (newScreen: SettingsScreen) => void;
@@ -59,7 +59,7 @@ export const AccountSettings = (props: InitialProps) => {
 
       <div>
         <NewItemButton onClick={() => props.setCurrentScreen(SettingsScreen.Password)}>
-          <Duplicate /> Password
+          <DuplicateIcon /> Password
         </NewItemButton>
       </div>
     </div>

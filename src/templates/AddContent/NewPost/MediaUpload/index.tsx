@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { HiddenInput } from "#/components/HiddenInput";
-import { Duplicate } from "#/components/Icons";
+import { DuplicateIcon } from "#/components/Icons";
 import { styled } from "#/styling";
 import { PreviewImage, MediaPreview } from "../../MediaPreview";
 import { useFormState } from "../../FormContext";
@@ -54,7 +54,7 @@ export const MediaUpload = (props: MediaUploadProps) => {
             />
           ))}
           <AddMedia>
-            <Duplicate />
+            <DuplicateIcon />
             {input}
           </AddMedia>
         </>
@@ -83,7 +83,7 @@ export const MediaUpload = (props: MediaUploadProps) => {
               }
             />
             <AddMedia>
-              <Duplicate />
+              <DuplicateIcon />
               {input}
             </AddMedia>
           </WithMoreGrid>

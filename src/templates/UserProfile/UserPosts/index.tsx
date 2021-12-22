@@ -5,7 +5,7 @@ import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { Heart } from "#/components/Icons";
+import { HeartIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
@@ -58,7 +58,7 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
   }
 
   const firstMenuOption = {
-    Icon: Heart,
+    Icon: HeartIcon,
     label: "Delete Post",
     onClick: () => {
       deletePost();
@@ -66,7 +66,7 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
   };
 
   const secondMenuOption = {
-    Icon: Heart,
+    Icon: HeartIcon,
     label: "Oh nooooess!",
     onClick: () => {
       console.log(

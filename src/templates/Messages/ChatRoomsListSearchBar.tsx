@@ -1,4 +1,4 @@
-import { Options, Search } from "#/components/Icons";
+import { OptionsIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 
@@ -7,8 +7,8 @@ export const ChatRoomsListSearchBar = () => {
     <FlexWrapper>
       <SearchBox placeholder="Search..." type="text" />
       <Flex css={{ gap: "$4" }}>
-        <Search />
-        <Options />
+        <SearchIcon />
+        <OptionsIcon />
       </Flex>
     </FlexWrapper>
   );

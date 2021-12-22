@@ -57,7 +57,7 @@ async function generateIcons() {
   const svgPromises = ICONS_TO_GENERATE.map(async (icon) => {
     const response = await axios.get<string>(getIconUrl(icon));
     const markup = response.data;
-    const componentName = kebabToPascalCase(icon);
+    const componentName = kebabToPascalCase(icon) + "Icon";
     return { name: icon, componentName, markup };
   });
 

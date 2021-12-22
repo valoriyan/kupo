@@ -6,7 +6,7 @@ import { Input } from "#/components/Input";
 import { TextArea } from "#/components/TextArea";
 import { Avatar } from "#/components/Avatar";
 import { styled } from "#/styling";
-import { Pen } from "#/components/Icons";
+import { PenIcon } from "#/components/Icons";
 import { HiddenInput } from "#/components/HiddenInput";
 
 export interface ProfileSettingsProps {
@@ -152,7 +152,7 @@ const Darken = styled("div", {
   filter: "brightness(0.9)",
 });
 
-const EditIcon = styled(Pen, {
+const EditIcon = styled(PenIcon, {
   position: "absolute",
   top: "50%",
   left: "50%",

@@ -2,7 +2,7 @@ import { useCreatePost } from "#/api/mutations/posts/createPost";
 import { Button } from "#/components/Button";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
-import { AddR } from "#/components/Icons";
+import { AddRIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -51,7 +51,7 @@ export const NewPost = (props: NewPostProps) => {
         </SectionWrapper>
         <SectionWrapper>
           <LinkItem>
-            <AddR />
+            <AddRIcon />
             Link Shop Item
           </LinkItem>
         </SectionWrapper>
