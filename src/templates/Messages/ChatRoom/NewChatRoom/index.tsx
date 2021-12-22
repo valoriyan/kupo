@@ -5,6 +5,7 @@ import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernam
 import { RenderableUser } from "#/api";
 import { useGetChatRoomIdWithUserIds } from "#/api/queries/chat/useGetChatRoomIdWithUserIds";
 import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { NewMessageInNewChatRoom } from "./NewMessageInNewChatRoom";
 
 const NewChatRoomUsernameListItem = ({ user }: { user: RenderableUser | null }) => {
   if (!!user) {
@@ -14,7 +15,7 @@ const NewChatRoomUsernameListItem = ({ user }: { user: RenderableUser | null }) 
   }
 };
 
-export const CreateNewChatRoomInner = ({ user }: { user: RenderableUser }) => {
+export const NewChatRoomInner = ({ clientUser }: { clientUser: RenderableUser }) => {
   const { usernamesInChatRoom, setUsernamesInChatRoom } = useFormState();
 
   const {
@@ -23,15 +24,16 @@ export const CreateNewChatRoomInner = ({ user }: { user: RenderableUser }) => {
     isError,
     error,
   } = useGetUsersByUsernames({ usernames: usernamesInChatRoom });
+
   const userIds = !!users
     ? users
         .filter((user) => !!user)
         .map((user) => user!.userId)
-        .concat([user.userId])
-    : [user.userId];
+        .concat([clientUser.userId])
+    : [clientUser.userId];
 
   const { data: doesChatRoomExistData } = useGetChatRoomIdWithUserIds({
-    userIds: new Set(userIds),
+    userIds,
   });
 
   if (isError && !isLoading) {
@@ -60,7 +62,6 @@ export const CreateNewChatRoomInner = ({ user }: { user: RenderableUser }) => {
   const isCompleteUserList = !!users && users.every((user) => !!user);
 
   const handleClickSubmit = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log("HIT");
     console.log(doesChatRoomExistData);
     event.preventDefault();
     if (!!doesChatRoomExistData) {
@@ -68,7 +69,7 @@ export const CreateNewChatRoomInner = ({ user }: { user: RenderableUser }) => {
         Router.push(`/messages/${doesChatRoomExistData.chatRoomId}`);
       } else {
         Router.push({
-          pathname: `/messages/new-chat-room`,
+          pathname: `/messages/new`,
           query: { userIds },
         });
       }
@@ -96,8 +97,12 @@ export const CreateNewChatRoomInner = ({ user }: { user: RenderableUser }) => {
   );
 };
 
-export const CreateNewChatRoom = () => {
+export const NewChatRoom = ({ userIds }: { userIds?: string[] }) => {
   const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });
+
+  if (!!userIds) {
+    return <NewMessageInNewChatRoom userIds={userIds} />;
+  }
 
   if (error && !isLoading) {
     return <div>Error: {error.message}</div>;
@@ -109,7 +114,7 @@ export const CreateNewChatRoom = () => {
 
   return (
     <FormStateProvider>
-      <CreateNewChatRoomInner user={data} />
+      <NewChatRoomInner clientUser={data} />
     </FormStateProvider>
   );
 };

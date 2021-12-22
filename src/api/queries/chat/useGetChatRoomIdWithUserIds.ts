@@ -3,7 +3,7 @@ import { CacheKeys } from "#/contexts/queryClient";
 import { Api, SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../..";
 
 export interface GetChatRoomIdArgs {
-  userIds: Set<string>;
+  userIds: string[];
 }
 
 export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
@@ -11,7 +11,7 @@ export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
     [CacheKeys.ChatRoomMembers, userIds],
     async () => {
       const res = await Api.doesChatRoomExistWithUserIds({
-        userIds: Array.from(userIds),
+        userIds,
       });
 
       if (res.data.success) {
@@ -19,6 +19,6 @@ export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
       }
       throw new Error(res.data.error?.reason ?? "Failed to look up chat room");
     },
-    { enabled: !!userIds.size },
+    { enabled: !!userIds.length },
   );
 };

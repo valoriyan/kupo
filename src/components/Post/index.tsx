@@ -1,47 +1,142 @@
 import Link from "next/link";
-import { ComponentType } from "react";
-import { RenderablePost } from "#/api";
+import { ComponentType, useState } from "react";
+import { RenderablePost, RenderablePostComment } from "#/api";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
-import { Bookmark, Comment, Heart, MailForward } from "../Icons";
-import { Flex, Grid } from "../Layout";
+import { Bookmark, Comment, Heart, MailForward, MoreVerticalAlt } from "../Icons";
+import { Flex, Grid, Stack } from "../Layout";
 import { Body } from "../Typography";
+import { Popover } from "../Popover";
+import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
+
+export interface PostMenuOption {
+  Icon: ComponentType;
+  label: string;
+  onClick: () => void;
+}
 
 export interface PostProps {
   post: RenderablePost;
+  postRelativeTimestamp: string;
   authorUserName?: string;
   authorUserAvatar?: string;
+  handleClickOfLikeButton: () => void;
+  menuOptions: PostMenuOption[];
+  postComments?: RenderablePostComment[];
 }
 
+const CommentContainer = ({
+  postComments,
+}: {
+  postComments?: RenderablePostComment[];
+}) => {
+  return (
+    <div>
+      {postComments?.map((postComment) => (
+        <div key={postComment.postCommentId}>
+          {postComment.user.username}: {postComment.text}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Comments = ({ postComments }: { postComments?: RenderablePostComment[] }) => {
+  return (
+    <div>
+      <CommentInput type="textarea" placeholder="Add comment" />
+      <CommentContainer postComments={postComments} />
+    </div>
+  );
+};
+
+const CommentInput = styled("input", {
+  width: "100%",
+  height: "$9",
+});
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
 export const Post = (props: PostProps) => {
+  const [displayComments, setDisplayComments] = useState(false);
+
+  const {
+    post,
+    handleClickOfLikeButton,
+    authorUserName,
+    authorUserAvatar,
+    postRelativeTimestamp,
+    postComments,
+  } = props;
+  const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags, likes } = post;
+
   return (
     <Grid>
       <Flex css={{ p: "$3", gap: "$3", alignItems: "center" }}>
         <Avatar
-          alt={`@${props.authorUserName}'s profile picture`}
-          src={props.authorUserAvatar}
+          alt={`@${authorUserName}'s profile picture`}
+          src={authorUserAvatar}
           size="$6"
         />
-        <Link href="/profile" passHref>
-          <a>{props.authorUserName ? `@${props.authorUserName}` : "User"}</a>
+        <Link
+          href={generateUserProfilePageUrl({ username: authorUserName || "" })}
+          passHref
+        >
+          <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
+
+        <Flex css={{ marginLeft: "auto", gap: "$4", alignItems: "center" }}>
+          <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
+          <Popover trigger={<MoreVerticalAlt />}>
+            {({ hide }) => (
+              <Stack>
+                {props.menuOptions.map(({ Icon, label, onClick }) => (
+                  <MenuOption
+                    key={label}
+                    onClick={() => {
+                      onClick();
+                      hide();
+                    }}
+                  >
+                    <Icon />
+                    <Body>{label}</Body>
+                  </MenuOption>
+                ))}
+              </Stack>
+            )}
+          </Popover>
+        </Flex>
       </Flex>
-      <Body css={{ px: "$3", py: "$2" }}>{props.post.caption}</Body>
-      <PostImage alt="Post Media" src={props.post.contentElementTemporaryUrls[0]} />
+      <Body css={{ px: "$3", py: "$2" }}>{caption}</Body>
+      <PostImage alt="Post Media" src={contentElementTemporaryUrls[0]} />
       <Flex css={{ gap: "$3", px: "$3", py: "$2", width: "100%", overflow: "auto" }}>
-        {props.post.hashtags.map((tag) => (
+        {hashtags.map((tag) => (
           <HashTag key={tag}>#{tag}</HashTag>
         ))}
       </Flex>
       <Flex css={{ justifyContent: "space-between", px: "$4", py: "$4" }}>
-        <PostAction Icon={Heart} />
-        <PostAction Icon={Comment} />
+        <PostAction
+          Icon={Heart}
+          isSelected={isLikedByClient}
+          onClick={handleClickOfLikeButton}
+          metric={likes.count}
+        />
+        <PostAction Icon={Comment} onClick={() => setDisplayComments(!displayComments)} />
         <PostAction Icon={MailForward} />
         <PostAction Icon={Bookmark} />
       </Flex>
+      {displayComments ? <Comments postComments={postComments} /> : null}
     </Grid>
   );
 };
+
+const Timestamp = styled("div", {
+  color: "$secondaryText",
+});
 
 const PostImage = styled("img", {
   py: "$3",
@@ -61,16 +156,17 @@ interface PostActionProps {
   Icon: ComponentType;
   metric?: number;
   onClick?: () => void;
+  isSelected?: boolean;
 }
 
-const PostAction = ({ Icon, metric, onClick }: PostActionProps) => {
+const PostAction = ({ Icon, metric, onClick, isSelected }: PostActionProps) => {
   return (
     <Flex
       as="button"
       css={{
         alignItems: "center",
         gap: "$1",
-        color: "$secondaryText",
+        color: isSelected ? "$primary" : "$secondaryText",
         cursor: "pointer",
       }}
       onClick={onClick}
@@ -80,3 +176,10 @@ const PostAction = ({ Icon, metric, onClick }: PostActionProps) => {
     </Flex>
   );
 };
+
+const MenuOption = styled("button", {
+  display: "flex",
+  gap: "$3",
+  p: "$3",
+  color: "$secondaryText",
+});

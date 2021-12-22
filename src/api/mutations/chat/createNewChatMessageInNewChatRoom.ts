@@ -22,6 +22,7 @@ export const useCreateNewChatMessageInNewChatRoom = () => {
       if (res.data.success) {
         return res.data.success.chatRoomId;
       }
+
       throw new Error(res.data.error?.reason ?? "Failed to send message");
     },
   );

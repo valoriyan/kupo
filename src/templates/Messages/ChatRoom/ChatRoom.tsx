@@ -1,79 +1,57 @@
-import { useEffect, MouseEvent } from "react";
+import { useEffect } from "react";
 import { RenderableChatMessage } from "#/api";
-import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGetPageOfChatMessagesFromChatRoomId";
-import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { FormStateProvider, useFormState } from "./FormContext";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
 import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
-import { NewMessageFormInput } from "./NewMessageFormInput";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
 import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
+import { styled } from "#/styling";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
+import { ChatMessagesDisplay } from "./ChatMessagesDisplay";
+import { NewMessageInput } from "./NewMessageInput";
+import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
+import { ChatMessageActionRow } from "./ChatMessageActionRow";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
 const DELETED_CHAT_MESSAGE_EVENT_NAME = "DELETED_CHAT_MESSAGE_EVENT_NAME";
 
-const ChatRoomMessage = ({ message }: { message: RenderableChatMessage }) => {
-  const { authorUserId, text, creationTimestamp } = message;
-
-  const { data, isLoading, isError, error } = useGetUserByUserId({
-    userId: authorUserId,
-  });
-
-  const { mutateAsync: deleteChatMessage } = useDeleteChatMessage({
-    chatRoomId: message.chatRoomId,
-  });
-
-  if (isError && !isLoading) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
-
-  if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
-
-  const { username } = data;
-
-  const onClickDelete = async (event: MouseEvent<HTMLSpanElement>) => {
-    event.preventDefault();
-    await deleteChatMessage({
-      chatMessageId: message.chatMessageId,
-      isInformedByWebsocketMessage: false,
-    });
-  };
-
-  return (
-    <div>
-      {username}: {text} @ {creationTimestamp}{" "}
-      <span onClick={onClickDelete}> | delete | </span>
-    </div>
-  );
-};
-
 const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
-  const { newChatMessage, receivedChatMessages, receiveNewChatMessage } = useFormState();
+  const { receivedChatMessages, receiveNewChatMessage } = useFormState();
   const { socket } = useWebsocketState();
 
+  const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
+  const { newChatMessage, setNewChatMessage } = useFormState();
+
   const {
-    data,
-    isError,
-    isLoading,
-    error,
-    isFetching: isFetchingChatMessages,
-    fetchPreviousPage,
-    hasPreviousPage,
-    isFetchingPreviousPage,
-  } = useGetPageOfChatMessagesFromChatRoomId({
-    chatRoomId,
-  });
+    data: clientUserData,
+    isError: isErrorAcquiringClientUserData,
+    isLoading: isLoadingClientUserData,
+  } = useGetUserProfile({ isOwnProfile: true });
+
+  const infiniteQueryResultOfFetchingPageOfChatMessages =
+    useGetPageOfChatMessagesFromChatRoomId({
+      chatRoomId,
+    });
+
+  const {
+    data: pagesOfChatMessageData,
+    isError: isErrorAcquiringChatMessageData,
+    isLoading: isLoadingChatMessageData,
+    error: errorFromAcquiringChatMessageData,
+  } = infiniteQueryResultOfFetchingPageOfChatMessages;
 
   const { data: chatRoomData } = useGetChatRoomById({ chatRoomId });
   const chatRoomUserIds = !!chatRoomData
     ? chatRoomData.members.map((member) => member.userId)
     : [];
 
-  const { data: chatRoomMembers } = useGetUsersByUserIds({ userIds: chatRoomUserIds });
-  const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
+  const {
+    data: chatRoomMembersData,
+    isError: isErrorAcquiringChatRoomMembersData,
+    isLoading: isLoadingChatRoomMembersData,
+  } = useGetUsersByUserIds({ userIds: chatRoomUserIds });
   const { mutateAsync: deleteChatMessage } = useDeleteChatMessage({
     chatRoomId,
   });
@@ -83,13 +61,23 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
       console.log("MOUNTING SOCKET!");
 
       function handleNewChatMessage(chatMessage: RenderableChatMessage) {
-        receiveNewChatMessage({
-          chatMessage,
-        });
+        if (
+          pagesOfChatMessageData &&
+          !pagesOfChatMessageData.pages.some((page) => {
+            const chatMessageIds = page.chatMessages.map(
+              (existingChatMessage) => existingChatMessage.chatMessageId,
+            );
+            return chatMessageIds.includes(chatMessage.chatMessageId);
+          })
+        ) {
+          receiveNewChatMessage({
+            chatMessage,
+          });
+        }
       }
 
       function handleDeleteChatMessage(chatMessageId: string) {
-        console.log("RECEIEVED");
+        console.log("RECEIEVED", chatMessageId);
         deleteChatMessage({
           chatMessageId,
           isInformedByWebsocketMessage: true,
@@ -112,23 +100,30 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
     return onMount();
   }, [socket]);
 
-  if (isError && !isLoading) {
-    return <div>Error: {(error as Error).message}</div>;
+  if (
+    (isErrorAcquiringChatMessageData && !isLoadingChatMessageData) ||
+    (isErrorAcquiringClientUserData && !isLoadingClientUserData) ||
+    (isErrorAcquiringChatRoomMembersData && !isLoadingChatRoomMembersData)
+  ) {
+    return <div>Error: {(errorFromAcquiringChatMessageData as Error).message}</div>;
   }
 
-  if (isLoading || !data) {
+  if (
+    isLoadingChatMessageData ||
+    !pagesOfChatMessageData ||
+    isLoadingClientUserData ||
+    !clientUserData ||
+    isLoadingChatRoomMembersData ||
+    !chatRoomMembersData
+  ) {
     return <div>Loading</div>;
   }
 
-  const messages = data.pages
+  const chatMessages = pagesOfChatMessageData.pages
     .flatMap((page) => {
       return page.chatMessages;
     })
     .concat(receivedChatMessages);
-
-  const renderedMessages = messages.map((message) => (
-    <ChatRoomMessage key={message.chatMessageId} message={message} />
-  ));
 
   async function onSubmitNewChatMessage(event: React.FormEvent) {
     event.preventDefault();
@@ -136,54 +131,27 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
       chatRoomId,
       chatMessageText: newChatMessage,
     });
+
+    setNewChatMessage("");
   }
 
-  const memberNames = !!chatRoomMembers
-    ? chatRoomMembers
-        .filter((chatRoomMember) => !!chatRoomMember)
-        .map((chatRoomMember) => chatRoomMember!.username)
-        .join(", ")
-    : "";
-
   return (
-    <div>
-      Chat Room: {chatRoomId}
-      <br />
-      <br />
-      Members: {memberNames}
-      <br />
-      <br />
-      {isFetchingChatMessages ? (
-        <div>
-          Refreshing...
-          <br />
-        </div>
-      ) : null}
-      <form onSubmit={onSubmitNewChatMessage}>
-        <NewMessageFormInput />
-      </form>
-      <br />
-      <br />
-      <br />
-      <br />
-      <button
-        onClick={() => {
-          fetchPreviousPage();
-        }}
-        disabled={!hasPreviousPage || isFetchingPreviousPage}
-      >
-        {isFetchingPreviousPage ? (
-          "Loading more..."
-        ) : hasPreviousPage ? (
-          <h3>LOAD PREVIOUS</h3>
-        ) : (
-          "Nothing more to load"
-        )}
-      </button>
-      <br />
-      <br />
-      {renderedMessages}
-    </div>
+    <Grid>
+      <ChatRoomMembersDisplay
+        chatRoomMembers={chatRoomMembersData}
+        clientUser={clientUserData}
+      />
+
+      <ChatMessagesDisplay
+        chatMessages={chatMessages}
+        clientUser={clientUserData}
+        infiniteQueryResultOfFetchingPageOfChatMessages={
+          infiniteQueryResultOfFetchingPageOfChatMessages
+        }
+      />
+      <NewMessageInput onSubmitNewChatMessage={onSubmitNewChatMessage} />
+      <ChatMessageActionRow onSubmitNewChatMessage={onSubmitNewChatMessage} />
+    </Grid>
   );
 };
 
@@ -194,3 +162,9 @@ export const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
     </FormStateProvider>
   );
 };
+
+const Grid = styled("div", {
+  display: "grid",
+  gridTemplateRows: "10% 65% 20% 5%",
+  height: "100%",
+});

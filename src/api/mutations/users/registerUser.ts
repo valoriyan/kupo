@@ -10,6 +10,8 @@ export const useRegisterUser = () => {
     },
     {
       onSuccess: (data) => {
+        console.log("DATA");
+        console.log(data);
         if (data.data.success) {
           setAccessToken(data.data.success.accessToken);
           Router.push("/");

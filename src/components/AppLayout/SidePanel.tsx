@@ -17,12 +17,25 @@ import { Stack } from "../Layout";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 import { useWebsocketState } from "./WebsocketContext";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
 
 export const SidePanel = () => {
+  const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
   const { notificationsReceived } = useWebsocketState();
 
   const notificationsIndicator =
     notificationsReceived.length === 0 ? "" : ` (${notificationsReceived.length})`;
+
+  if (error && !isLoading) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !data) {
+    return <div>Loading</div>;
+  }
+
+  const { username } = data;
 
   return (
     <SidePanelWrapper>
@@ -43,7 +56,11 @@ export const SidePanel = () => {
             label={`Notifications${notificationsIndicator}`}
           />
           <NavLink href="/messages" Icon={Mail} label="Messages" />
-          <NavLink href="/profile" Icon={Girl} label="My Profile" />
+          <NavLink
+            href={generateUserProfilePageUrl({ username })}
+            Icon={Girl}
+            label="My Profile"
+          />
           <NavLink href="/lists" Icon={List} label="My Lists" />
           <NavLink href="/saved" Icon={Bookmark} label="Saved Posts" />
           <NavLink href="/purchases" Icon={Box} label="Purchases" />
