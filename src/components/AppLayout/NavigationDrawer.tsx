@@ -24,7 +24,7 @@ export const NavigationDrawer = ({ hide, username }: NavigationDrawerProps) => {
   return (
     <Wrapper>
       <UserInfoWrapper>
-        <UserInfo />
+        <UserInfo onUsernameClick={hide} />
         <Flex as="button" onClick={hide}>
           <CloseIcon />
         </Flex>

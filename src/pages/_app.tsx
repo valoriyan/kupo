@@ -7,7 +7,7 @@ import { globalStyles } from "#/styling/globalStyles";
 import { ThemeProvider } from "#/styling/ThemeProvider";
 import "#/styling/modernNormalize.css";
 
-const ScriburApp = ({ Component, pageProps }: AppProps) => {
+const KuponoApp = ({ Component, pageProps }: AppProps) => {
   globalStyles();
   const router = useRouter();
 
@@ -33,4 +33,4 @@ const ScriburApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default ScriburApp;
+export default KuponoApp;

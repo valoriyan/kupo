@@ -22,7 +22,7 @@ export const AuthFormLayout = (props: AuthFormLayoutProps) => {
           maxWidth: "500px",
         }}
       >
-        <BrandTitle>scribur</BrandTitle>
+        <BrandTitle>kupono</BrandTitle>
         <Slogan css={{ mt: "$3" }}>create. support. love</Slogan>
         <MainTitle css={{ alignSelf: "flex-start", mt: "$8" }}>{props.title}</MainTitle>
         <Box css={{ mt: "$5", mb: "$9", width: "100%" }}>{props.children}</Box>
