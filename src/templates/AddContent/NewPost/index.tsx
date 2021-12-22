@@ -1,22 +1,29 @@
+import { useCreatePost } from "#/api/mutations/posts/createPost";
 import { Button } from "#/components/Button";
+import { DateTimePicker } from "#/components/DateTimePicker";
+import { HashTags } from "#/components/HashTags";
 import { AddR } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
-import { MediaUpload } from "./MediaUpload";
-import { HashTags } from "./HashTags";
-import { useFormState } from "../FormContext";
 import { AdditionalScreen } from "..";
-import { DateTimePicker } from "#/components/DateTimePicker";
-import { useCreatePost } from "#/api/mutations/posts/createPost";
+import { useFormState } from "../FormContext";
+import { MediaUpload } from "./MediaUpload";
 
 export interface NewPostProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
 }
 
 export const NewPost = (props: NewPostProps) => {
-  const { caption, setCaption, mediaFiles, expirationDate, setExpirationDate } =
-    useFormState();
+  const {
+    caption,
+    setCaption,
+    mediaFiles,
+    hashTags,
+    setHashTags,
+    expirationDate,
+    setExpirationDate,
+  } = useFormState();
   const { mutateAsync: createPost } = useCreatePost();
 
   const canSubmit = !!caption || !!mediaFiles.length;
@@ -35,7 +42,12 @@ export const NewPost = (props: NewPostProps) => {
           />
         </SectionWrapper>
         <SectionWrapper>
-          <HashTags />
+          <HashTags
+            hashTags={hashTags}
+            setHashTags={setHashTags}
+            limit={10}
+            placeholder="add hashtags (limit 10)"
+          />
         </SectionWrapper>
         <SectionWrapper>
           <LinkItem>

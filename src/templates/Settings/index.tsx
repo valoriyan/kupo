@@ -9,9 +9,9 @@ import { FormStateProvider } from "../AddContent/FormContext";
 import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
 import { Close } from "#/components/Icons";
-import { ProfileSettings } from "./ProfileSettings";
 import { AccountSettings } from "./AccountSettings";
 import { PasswordSettings } from "./AccountSettings/PasswordSettings";
+import EditProfilePage from "#/pages/edit-profile";
 
 export enum SettingsScreen {
   Initial = "Initial",
@@ -22,9 +22,9 @@ export enum SettingsScreen {
 
 const screenToHeading = {
   [SettingsScreen.Initial]: "Settings",
-  [SettingsScreen.Profile]: "Profile",
-  [SettingsScreen.Account]: "Account",
-  [SettingsScreen.Password]: "Password",
+  [SettingsScreen.Profile]: "Settings - Profile",
+  [SettingsScreen.Account]: "Settings - Account",
+  [SettingsScreen.Password]: "Settings - Account - Password",
 };
 
 export const Settings = () => {
@@ -44,7 +44,7 @@ export const Settings = () => {
       bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
       break;
     case SettingsScreen.Profile:
-      bodyNode = <ProfileSettings />;
+      bodyNode = <EditProfilePage />;
       break;
     case SettingsScreen.Account:
       bodyNode = <AccountSettings setCurrentScreen={setCurrentScreen} />;

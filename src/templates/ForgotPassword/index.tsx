@@ -10,7 +10,7 @@ export const ForgotPassword = () => {
   return (
     <AuthFormLayout title="Forgot Password" onSubmit={onSubmit}>
       <Stack css={{ gap: "$4" }}>
-        <Input placeholder="email" />
+        <Input size="lg" placeholder="email" />
         <Button size="lg" variant="secondary">
           Reset Password
         </Button>

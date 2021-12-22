@@ -23,12 +23,14 @@ export const Login = () => {
     <AuthFormLayout title="Log into existing account" onSubmit={onSubmit}>
       <Stack css={{ gap: "$4" }}>
         <Input
+          size="lg"
           required
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value)}
         />
         <Input
+          size="lg"
           required
           type="password"
           placeholder="password"

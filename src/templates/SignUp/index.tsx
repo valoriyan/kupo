@@ -23,12 +23,14 @@ export const SignUp = () => {
     <AuthFormLayout title="Create a new account" onSubmit={onSubmit}>
       <Stack css={{ gap: "$4" }}>
         <Input
+          size="lg"
           required
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value)}
         />
         <Input
+          size="lg"
           required
           type="password"
           placeholder="password"
@@ -36,6 +38,7 @@ export const SignUp = () => {
           onChange={(e) => setPassword(e.currentTarget.value)}
         />
         <Input
+          size="lg"
           required
           type="email"
           placeholder="email"

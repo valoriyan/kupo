@@ -55,9 +55,17 @@ const ProfileBody = (props: ProfileBodyProps) => {
           </ExternalLink>
         </Stack>
         <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
-          <Button size="md" variant="primary" css={{ flex: 1 }}>
-            {props.isOwnProfile ? "Edit Profile" : "Follow"}
-          </Button>
+          {props.isOwnProfile ? (
+            <Link href="/edit-profile" passHref>
+              <Button as="a" size="md" variant="primary" css={{ flex: 1 }}>
+                Edit Profile
+              </Button>
+            </Link>
+          ) : (
+            <Button size="md" variant="primary" css={{ flex: 1 }}>
+              Follow
+            </Button>
+          )}
           <Button
             size="md"
             variant="primary"

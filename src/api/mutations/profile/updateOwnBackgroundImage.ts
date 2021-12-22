@@ -6,7 +6,7 @@ export const useUpdateOwnBackgroundImage = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ file }: { file: File }) => {
+    async (file: File) => {
       return await Api.updateUserBackgroundImage(file);
     },
     {

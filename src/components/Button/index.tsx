@@ -11,6 +11,7 @@ export const Button = styled("button", {
   fontWeight: "$bold",
   textDecoration: "none",
   textAlign: "center",
+  transition: "background-color $1 ease",
 
   "&:disabled": {
     bg: "$disabled",

@@ -2,23 +2,17 @@ import { useMutation, useQueryClient } from "react-query";
 import { Api, RenderableUser } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
-export const useSetOwnHashtags = ({
-  hashtags,
-  username,
-}: {
-  hashtags: string[];
-  username: string;
-}) => {
+export const useSetOwnHashtags = (username: string) => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async () => {
+    async (hashtags: string[]) => {
       return Api.setUserHashtags({
         hashtags: hashtags.filter(Boolean),
       });
     },
     {
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
         if (data.data.success) {
           const cacheKey = [CacheKeys.UserProfile, username];
           const cachedData: RenderableUser | undefined =
@@ -27,7 +21,7 @@ export const useSetOwnHashtags = ({
           if (cachedData) {
             queryClient.setQueryData(cacheKey, {
               ...cachedData,
-              hashtags,
+              hashtags: variables,
             });
           }
         }
