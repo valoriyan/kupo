@@ -11,7 +11,7 @@
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",
     "type-check": "tsc",
     "prettier:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx}'",
-    "prettier:fix": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "prettier:fix": "prettier --write -l 'src/**/*.{js,jsx,ts,tsx}'",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "prepare": "husky install"
