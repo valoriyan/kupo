@@ -2,7 +2,7 @@ import express from "express";
 import { RenderablePost } from "../models";
 import { PostController } from "../postController";
 import { HTTPResponse } from "../../../types/httpResponse";
-import { checkAuthorization } from "../../auth/utilities";
+import { getClientUserId } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
 import { getNextPageOfPostsEncodedCursor, getPageOfPostsFromAllPosts } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
@@ -44,7 +44,7 @@ export async function handleGetPageOfPostsPagination({
     SuccessfulGetPageOfPostsPaginationResponse
   >
 > {
-  const { clientUserId } = await checkAuthorization(controller, request);
+  const clientUserId = await getClientUserId(request);
 
   const canViewContent = await canUserViewUserContentByUserId({
     clientUserId,

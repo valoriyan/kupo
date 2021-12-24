@@ -35,7 +35,7 @@ export async function constructRenderableUserFromParts({
   blobStorageService,
   databaseService,
 }: {
-  clientUserId: string;
+  clientUserId: string | undefined;
   unrenderableUser: UnrenderableUser;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
@@ -94,12 +94,13 @@ export async function constructRenderableUserFromParts({
     );
 
   const isBeingFollowedByClient =
-    await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
+    !!clientUserId &&
+    (await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
       {
         userIdDoingFollowing: clientUserId,
         userIdBeingFollowed: userId,
       },
-    );
+    ));
 
   return {
     backgroundImageTemporaryUrl,

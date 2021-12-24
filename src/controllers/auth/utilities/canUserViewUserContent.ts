@@ -9,13 +9,12 @@ export async function canUserViewUserContent({
   targetUser,
   databaseService,
 }: {
-  clientUserId: string;
+  clientUserId: string | undefined;
   targetUser: UnrenderableUser;
   databaseService: DatabaseService;
 }): Promise<boolean> {
-  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public) {
-    return true;
-  }
+  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public) return true;
+  if (!clientUserId) return false;
 
   return await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
     {
@@ -30,7 +29,7 @@ export async function canUserViewUserContentByUserId({
   targetUserId,
   databaseService,
 }: {
-  clientUserId: string;
+  clientUserId: string | undefined;
   targetUserId: string;
   databaseService: DatabaseService;
 }): Promise<boolean> {

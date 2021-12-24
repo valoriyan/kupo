@@ -86,3 +86,21 @@ export async function checkAuthorization(
     };
   }
 }
+
+/**
+ * Attempts to read a JWT from the request, decode it, and return a userId from its data.
+ * If no JWT or userId is found, undefined will be returned.
+ */
+export async function getClientUserId(request: Request): Promise<string | undefined> {
+  const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
+  try {
+    const token =
+      (request.query.token as string) || (request.headers["x-access-token"] as string);
+
+    if (!token) return undefined;
+
+    return validateTokenAndGetUserId({ token, jwtPrivateKey });
+  } catch {
+    return undefined;
+  }
+}

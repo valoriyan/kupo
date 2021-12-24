@@ -1,6 +1,7 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
+import { AuthFailureReason } from "../auth/models";
+import { getClientUserId } from "../auth/utilities";
 import { RenderableUser, UnrenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities";
@@ -32,20 +33,18 @@ export async function handleGetUserProfile({
 > {
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const clientUserId = await getClientUserId(request);
 
   let unrenderableUser: UnrenderableUser | undefined;
   if (requestBody.username) {
     // Fetch user profile by given username
     unrenderableUser =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
-        {
-          username: requestBody.username,
-        },
+        { username: requestBody.username },
       );
   } else {
     // Fetch user profile by own userId
-    if (error) return error;
+    if (!clientUserId) return { error: { reason: AuthFailureReason.AuthorizationError } };
     const unrenderableUsers =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
         { userIds: [clientUserId] },
