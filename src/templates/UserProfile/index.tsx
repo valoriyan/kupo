@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { MouseEvent } from "react";
+import { RenderableUser } from "#/api";
+import { useFollowUser } from "#/api/mutations/users/followUser";
+import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
@@ -8,30 +11,23 @@ import { ShareIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
+import { Subtext, subtextStyles } from "#/components/Typography";
+import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
-import { Subtext, subtextStyles } from "#/components/Typography";
-import { RenderableUser } from "#/api";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { UserPosts } from "./UserPosts";
-import { useFollowUser } from "#/api/mutations/users/followUser";
-import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
-import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
+
 export interface UserProfileProps {
-  isOwnProfile?: boolean;
   username?: string;
 }
 
-const UserProfileInner = ({
-  isOwnProfile,
-  user,
-}: {
-  isOwnProfile?: boolean;
-  user: RenderableUser;
-}) => {
-  const { userId } = user;
-  const { data, isLoading, error } = useGetUserByUserId({ userId });
+export const UserProfile = ({ username }: UserProfileProps) => {
+  const { data, isLoading, error } = useGetUserProfile({ username });
+  const clientUserId = useCurrentUserId();
+
+  const isOwnProfile = data && clientUserId === data?.userId;
 
   return !isLoading && error ? (
     <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
@@ -39,18 +35,6 @@ const UserProfileInner = ({
     <LoadingArea size="lg" />
   ) : (
     <ProfileBody isOwnProfile={isOwnProfile} user={data} />
-  );
-};
-
-export const UserProfile = ({ isOwnProfile, username }: UserProfileProps) => {
-  const { data, isLoading, error } = useGetUserProfile({ username, isOwnProfile });
-
-  return !isLoading && error ? (
-    <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
-  ) : isLoading || !data ? (
-    <LoadingArea size="lg" />
-  ) : (
-    <UserProfileInner isOwnProfile={isOwnProfile} user={data} />
   );
 };
 interface ProfileBodyProps {
@@ -75,7 +59,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
       <Stack css={{ height: "100%", px: "$6", pt: "$6", pb: "$5" }}>
         <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
         <Stack css={{ mt: "$5", gap: "$3" }}>
-          <Link href={generateUserProfilePageUrl({ username })} passHref>
+          <Link href={getProfilePageUrl({ username })} passHref>
             <a>@{username}</a>
           </Link>
           <Subtext>
@@ -103,9 +87,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
             size="md"
             variant="primary"
             onClick={() => {
-              const link = `${location.origin}${generateUserProfilePageUrl({
-                username,
-              })}`;
+              const link = `${location.origin}${getProfilePageUrl({ username })}`;
               copyTextToClipboard(link, "Link");
             }}
           >

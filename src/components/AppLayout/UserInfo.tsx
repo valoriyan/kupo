@@ -6,7 +6,7 @@ import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
 import { Subtext } from "../Typography";
-import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 
 export interface UserInfoProps {
   onUsernameClick?: () => void;
@@ -24,7 +24,7 @@ export const UserInfo = (props: UserInfoProps) => {
         </UserStatsPlaceholder>
       ) : (
         <Flex css={{ gap: "$2", flexDirection: "column" }}>
-          <Link href={generateUserProfilePageUrl({ username: data.username })} passHref>
+          <Link href={getProfilePageUrl({ username: data.username })} passHref>
             <a onClick={props.onUsernameClick}>@{data.username}</a>
           </Link>
           <Flex css={{ flexDirection: "column" }}>

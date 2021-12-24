@@ -18,7 +18,7 @@ import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 import { useWebsocketState } from "./WebsocketContext";
 import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
-import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
@@ -57,7 +57,7 @@ export const SidePanel = () => {
           />
           <NavLink href="/messages" Icon={MailIcon} label="Messages" />
           <NavLink
-            href={generateUserProfilePageUrl({ username })}
+            href={getProfilePageUrl({ username })}
             Icon={GirlIcon}
             label="My Profile"
           />

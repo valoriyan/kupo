@@ -1,6 +1,6 @@
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { generateUserProfilePageUrl } from "#/utils/generateLinkUrls";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import {
   BookmarkIcon,
   BoxIcon,
@@ -32,7 +32,7 @@ export const NavigationDrawer = ({ hide, username }: NavigationDrawerProps) => {
       <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
         <Stack css={{ gap: "$6" }}>
           <NavLink
-            href={generateUserProfilePageUrl({ username })}
+            href={getProfilePageUrl({ username })}
             Icon={GirlIcon}
             label="My Profile"
             onClick={hide}

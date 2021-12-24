@@ -13,7 +13,7 @@ export const useGetUserProfile = ({ username, isOwnProfile }: GetUserProfileArgs
   return useQuery<RenderableUser, Error>(
     [CacheKeys.UserProfile, username],
     async () => {
-      const res = await Api.getUserProfile({ username });
+      const res = await Api.getUserProfile({ username }, { authStrat: "tryToken" });
 
       if (res.data.success) {
         return res.data.success;

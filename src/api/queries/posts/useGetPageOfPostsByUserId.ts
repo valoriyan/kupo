@@ -12,10 +12,13 @@ async function fetchPageOfPostsByUserId({
   userId: string;
   pageParam: string | undefined;
 }) {
-  const res = await Api.getPageOfPostsPagination({
-    userId,
-    pageSize: 25,
-  });
+  const res = await Api.getPageOfPostsPagination(
+    {
+      userId,
+      pageSize: 25,
+    },
+    { authStrat: "tryToken" },
+  );
   if (res.data && res.data.success) {
     return res.data.success;
   }

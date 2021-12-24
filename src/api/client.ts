@@ -20,11 +20,12 @@ export const client: AxiosInstance = axios.create({
   },
 });
 client.interceptors.request.use(async (request) => {
-  if (request.noAuth) return request;
+  const authStrat = request.authStrat || "requireToken";
+  if (authStrat === "noToken") return request;
 
   const accessToken = await getAccessToken();
 
-  if (!accessToken) {
+  if (!accessToken && authStrat === "requireToken") {
     Router.push("/login");
   } else {
     request.headers["x-access-token"] = accessToken;

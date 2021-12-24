@@ -10,7 +10,10 @@ export const useGetUserByUserId = ({ userId }: GetUserByUserIdArgs) => {
   return useQuery<RenderableUser, Error>(
     [CacheKeys.User, userId],
     async () => {
-      const res = await Api.getUsersByIds({ userIds: [userId] });
+      const res = await Api.getUsersByIds(
+        { userIds: [userId] },
+        { authStrat: "tryToken" },
+      );
 
       if (res.data.success) {
         const users = res.data.success.users;

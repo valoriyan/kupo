@@ -1,2 +1,2 @@
-export const generateUserProfilePageUrl = ({ username }: { username: string }) =>
+export const getProfilePageUrl = ({ username }: { username: string }) =>
   `/profile/${username}`;

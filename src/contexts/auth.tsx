@@ -19,7 +19,7 @@ export const getAccessToken = async () => {
 
     if (expiresSoon) {
       try {
-        const newTokenResponse = await Api.refreshAccessToken({ noAuth: true });
+        const newTokenResponse = await Api.refreshAccessToken({ authStrat: "noToken" });
 
         const newTokenError = newTokenResponse.data.error;
         if (newTokenError) {
