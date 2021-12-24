@@ -8,7 +8,7 @@ export const NoAuthFooter = () => {
   return (
     <Wrapper>
       <MainTitle>Experience the full site</MainTitle>
-      <Flex css={{ gap: "$5" }}>
+      <Flex css={{ gap: "$6" }}>
         <Link href="/login" passHref>
           <Button as="a" size="lg" variant="primary">
             Log In
@@ -26,9 +26,9 @@ export const NoAuthFooter = () => {
 
 const Wrapper = styled(Stack, {
   bg: "$background1",
-  px: "$6",
-  py: "$4",
-  gap: "$4",
+  px: "$7",
+  py: "$5",
+  gap: "$5",
   alignItems: "center",
   borderTopStyle: "solid",
   borderTopWidth: "$1",

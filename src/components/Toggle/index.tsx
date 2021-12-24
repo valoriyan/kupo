@@ -22,8 +22,8 @@ const ToggleInput = styled("input", {
   position: "relative",
   appearance: "none",
   m: 0,
-  width: "$7",
-  height: "$5",
+  width: "$8",
+  height: "$6",
   borderRadius: "$4",
   bg: "$border",
   cursor: "pointer",
@@ -32,9 +32,9 @@ const ToggleInput = styled("input", {
     content: "",
     display: "block",
     position: "absolute",
-    width: "$4",
-    height: "$4",
-    top: "calc(($5 / 2) - ($4 / 2))",
+    width: "$5",
+    height: "$5",
+    top: "calc(($6 / 2) - ($5 / 2))",
     left: "$2",
     borderRadius: "$round",
     bg: "$background1",
@@ -44,7 +44,7 @@ const ToggleInput = styled("input", {
   "&:checked": {
     bg: "$primary",
     "&:before": {
-      transform: "translateX($space$4)",
+      transform: "translateX($space$5)",
     },
   },
 });

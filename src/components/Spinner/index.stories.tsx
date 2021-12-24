@@ -15,7 +15,7 @@ Template.args = {
 
 export const AllSizes = () => {
   return (
-    <Flex css={{ gap: "$4", justifyContent: "space-around", alignItems: "center" }}>
+    <Flex css={{ gap: "$5", justifyContent: "space-around", alignItems: "center" }}>
       <Spinner size="xs" text="xs" />
       <Spinner size="sm" text="sm" />
       <Spinner size="md" text="md" />
@@ -26,7 +26,7 @@ export const AllSizes = () => {
 
 export const WithAndWithoutText = () => {
   return (
-    <Flex css={{ gap: "$4", justifyContent: "space-around", alignItems: "center" }}>
+    <Flex css={{ gap: "$5", justifyContent: "space-around", alignItems: "center" }}>
       <Spinner size="md" text="Loading..." />
       <Spinner size="md" />
     </Flex>

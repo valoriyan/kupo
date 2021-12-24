@@ -7,4 +7,4 @@ export default {
 };
 
 export const Template: Story<AvatarProps> = (args) => <Avatar {...args} />;
-Template.args = { size: "$6" };
+Template.args = { size: "$7" };

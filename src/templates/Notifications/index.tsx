@@ -33,7 +33,7 @@ export const Notifications = () => {
 
       return (
         <div key={`${timestamp}+${type}`}>
-          <Avatar src={profilePictureTemporaryUrl} alt="User Avatar" size="$6" />
+          <Avatar src={profilePictureTemporaryUrl} alt="User Avatar" size="$7" />
 
           <span>
             {username} followed you. @ {timestamp}

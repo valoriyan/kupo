@@ -66,7 +66,7 @@ export const ChatRoomMessage = ({
 const Wrapper = styled("div", {});
 
 const MessageText = styled("div", {
-  marginBottom: "$4",
+  marginBottom: "$5",
 });
 
 const Timestamp = styled("span", {

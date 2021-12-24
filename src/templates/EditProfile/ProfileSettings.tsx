@@ -55,12 +55,12 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
   );
 
   return (
-    <Stack css={{ gap: "$5", p: "$5" }}>
+    <Stack css={{ gap: "$6", p: "$6" }}>
       <MainTitle as="h2">Your Profile</MainTitle>
       <Grid
         css={{
           gridTemplateColumns: "auto minmax(0, 1fr)",
-          columnGap: "$4",
+          columnGap: "$5",
         }}
       >
         <Stack css={{ alignItems: "center", gap: "$3" }}>
@@ -70,7 +70,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
               <Avatar
                 src={props.profilePictureUrl}
                 alt="Current Profile Picture"
-                size="$10"
+                size="$11"
               />
             </Darken>
             <EditIcon />
@@ -92,8 +92,8 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
         css={{
           gridTemplateColumns: "auto minmax(0, 1fr)",
           gridTemplateRows: "auto auto auto",
-          columnGap: "$4",
-          rowGap: "$4",
+          columnGap: "$5",
+          rowGap: "$5",
         }}
       >
         <label htmlFor={usernameId}>Username</label>

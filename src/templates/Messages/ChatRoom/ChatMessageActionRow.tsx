@@ -9,7 +9,7 @@ export const ChatMessageActionRow = ({
 }) => {
   return (
     <Flex css={{ p: "$3", alignItems: "center", justifyContent: "space-between" }}>
-      <Flex css={{ gap: "$4" }}>
+      <Flex css={{ gap: "$5" }}>
         <DollarIcon />
         <ImageIcon />
         <FolderIcon />
@@ -24,8 +24,8 @@ const SendButton = styled("button", {
   color: "$inverseText",
   border: "none",
   padding: "$3",
-  paddingLeft: "$4",
-  paddingRight: "$4",
+  paddingLeft: "$5",
+  paddingRight: "$5",
   float: "right",
   borderRadius: "$4",
 });

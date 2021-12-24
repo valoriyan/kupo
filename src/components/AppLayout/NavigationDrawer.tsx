@@ -29,8 +29,8 @@ export const NavigationDrawer = ({ hide, username }: NavigationDrawerProps) => {
           <CloseIcon />
         </Flex>
       </UserInfoWrapper>
-      <Stack css={{ gap: "$8", px: "$7", py: "$7" }}>
-        <Stack css={{ gap: "$5" }}>
+      <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
+        <Stack css={{ gap: "$6" }}>
           <NavLink
             href={generateUserProfilePageUrl({ username })}
             Icon={GirlIcon}
@@ -42,7 +42,7 @@ export const NavigationDrawer = ({ hide, username }: NavigationDrawerProps) => {
           <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" onClick={hide} />
           <NavLink href="/settings" Icon={OptionsIcon} label="Settings" onClick={hide} />
         </Stack>
-        <Stack css={{ gap: "$5" }}>
+        <Stack css={{ gap: "$6" }}>
           <NavLink href="/support" Icon={SupportIcon} label="Support" onClick={hide} />
           <NavItem
             as="button"
@@ -71,8 +71,8 @@ const UserInfoWrapper = styled("div", {
   display: "grid",
   gridTemplateColumns: "auto auto auto",
   alignItems: "start",
-  columnGap: "$4",
-  p: "$4",
+  columnGap: "$5",
+  p: "$5",
   borderBottomStyle: "solid",
   borderBottomColor: "$text",
   borderBottomWidth: "1px",

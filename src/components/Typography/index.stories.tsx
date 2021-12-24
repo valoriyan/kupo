@@ -8,7 +8,7 @@ export default {
 };
 
 export const Template: Story<PropsWithChildren<unknown>> = (args) => (
-  <Stack css={{ gap: "$4" }}>
+  <Stack css={{ gap: "$5" }}>
     <BrandTitle>Brand Title - {args.children}</BrandTitle>
     <Slogan>Slogan - {args.children}</Slogan>
     <MainTitle>Main Title - {args.children}</MainTitle>

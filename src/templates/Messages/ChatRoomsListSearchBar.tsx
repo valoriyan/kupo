@@ -6,7 +6,7 @@ export const ChatRoomsListSearchBar = () => {
   return (
     <FlexWrapper>
       <SearchBox placeholder="Search..." type="text" />
-      <Flex css={{ gap: "$4" }}>
+      <Flex css={{ gap: "$5" }}>
         <SearchIcon />
         <OptionsIcon />
       </Flex>

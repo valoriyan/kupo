@@ -37,6 +37,6 @@ export const UserInfo = (props: UserInfoProps) => {
   );
 };
 
-const UserStatsPlaceholder = styled("div", { alignSelf: "center", width: "$10" });
+const UserStatsPlaceholder = styled("div", { alignSelf: "center", width: "$11" });
 
 const UserStat = styled(Subtext, { whiteSace: "nowrap" });

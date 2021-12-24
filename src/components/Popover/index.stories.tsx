@@ -10,14 +10,14 @@ export default {
 };
 
 export const Template: Story<PopoverProps> = (args) => (
-  <Box css={{ p: "$4" }}>
+  <Box css={{ p: "$5" }}>
     <Popover {...args} />
   </Box>
 );
 Template.args = {
   trigger: <Button as="div">Open Popover</Button>,
   children: (
-    <Stack css={{ gap: "$4", p: "$3" }}>
+    <Stack css={{ gap: "$5", p: "$3" }}>
       <MainTitle>Popover Example</MainTitle>
       <Body>This is a popover</Body>
     </Stack>

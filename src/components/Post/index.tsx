@@ -58,7 +58,7 @@ const Comments = ({ postComments }: { postComments?: RenderablePostComment[] }) 
 
 const CommentInput = styled("input", {
   width: "100%",
-  height: "$9",
+  height: "$10",
 });
 
 //////////////////////////////////////////////////
@@ -86,7 +86,7 @@ export const Post = (props: PostProps) => {
         <Avatar
           alt={`@${authorUserName}'s profile picture`}
           src={authorUserAvatar}
-          size="$6"
+          size="$7"
         />
         <Link
           href={generateUserProfilePageUrl({ username: authorUserName || "" })}
@@ -95,7 +95,7 @@ export const Post = (props: PostProps) => {
           <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
 
-        <Flex css={{ marginLeft: "auto", gap: "$4", alignItems: "center" }}>
+        <Flex css={{ marginLeft: "auto", gap: "$5", alignItems: "center" }}>
           <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
           <Popover trigger={<MoreVerticalAltIcon />}>
             {({ hide }) => (
@@ -124,7 +124,7 @@ export const Post = (props: PostProps) => {
           <HashTag key={tag}>#{tag}</HashTag>
         ))}
       </Flex>
-      <Flex css={{ justifyContent: "space-between", px: "$4", py: "$4" }}>
+      <Flex css={{ justifyContent: "space-between", px: "$5", py: "$5" }}>
         <PostAction
           Icon={HeartIcon}
           isSelected={isLikedByClient}

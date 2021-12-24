@@ -72,9 +72,9 @@ const ProfileBody = (props: ProfileBodyProps) => {
 
   return (
     <Stack>
-      <Stack css={{ height: "100%", px: "$5", pt: "$5", pb: "$4" }}>
+      <Stack css={{ height: "100%", px: "$6", pt: "$6", pb: "$5" }}>
         <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
-        <Stack css={{ mt: "$4", gap: "$3" }}>
+        <Stack css={{ mt: "$5", gap: "$3" }}>
           <Link href={generateUserProfilePageUrl({ username })} passHref>
             <a>@{username}</a>
           </Link>
@@ -86,7 +86,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
             {userWebsite}
           </ExternalLink>
         </Stack>
-        <Flex css={{ gap: "$3", pt: "$5", pb: "$3" }}>
+        <Flex css={{ gap: "$3", pt: "$6", pb: "$3" }}>
           {props.isOwnProfile ? (
             <Link href="/edit-profile" passHref>
               <Button as="a" size="md" variant="primary" css={{ flex: 1 }}>
@@ -130,7 +130,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
           {
             id: "shop",
             trigger: "Shop",
-            content: <Stack css={{ p: "$4" }}>User Shop Items Go Here</Stack>,
+            content: <Stack css={{ p: "$5" }}>User Shop Items Go Here</Stack>,
           },
         ]}
       />

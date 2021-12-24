@@ -35,15 +35,15 @@ export const ScheduleByDay = (props: ScheduleByDayProps) => {
 };
 
 const PostWrapper = styled("div", {
-  p: "$5",
+  p: "$6",
   borderBottom: "solid $borderWidths$1 $border",
   display: "grid",
   gridTemplateColumns: "auto minmax(0, 1fr)",
-  columnGap: "$4",
+  columnGap: "$5",
 });
 
 const PostImage = styled("div", {
-  size: "$11",
+  size: "$12",
   bg: "$border",
 });
 

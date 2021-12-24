@@ -26,7 +26,7 @@ export const MediaPreview = (props: MediaPreviewProps) => {
 
   return (
     <Stack ref={ref} css={{ gap: "$3", height: "100%", overflow: "auto" }}>
-      <Button size="lg" variant="secondary" css={{ gap: "$3", m: "$4" }}>
+      <Button size="lg" variant="secondary" css={{ gap: "$3", m: "$5" }}>
         <DuplicateIcon /> Add Media
       </Button>
       {mediaFiles.map((media) => (

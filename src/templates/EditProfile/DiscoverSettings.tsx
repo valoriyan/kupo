@@ -14,9 +14,9 @@ export const DiscoverSettings = (props: DiscoverSettingsProps) => {
   const hashTagsId = useId();
 
   return (
-    <Stack css={{ gap: "$5", p: "$5" }}>
+    <Stack css={{ gap: "$6", p: "$6" }}>
       <MainTitle as="h2">Discover</MainTitle>
-      <Stack css={{ gap: "$4" }}>
+      <Stack css={{ gap: "$5" }}>
         <label htmlFor={hashTagsId}>Profile Hashtags (Limit 5)</label>
         <HashTagsWrapper>
           <HashTags

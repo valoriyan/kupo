@@ -105,7 +105,7 @@ const Wrapper = styled("div", {
   gap: "$3",
   lineHeight: 1.25,
   fontSize: "$3",
-  minHeight: "calc($5 + $1)",
+  minHeight: "calc($6 + $1)",
   width: "100%",
 });
 

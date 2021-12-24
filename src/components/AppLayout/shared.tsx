@@ -25,7 +25,7 @@ export const NavLink = (props: NavLinkProps) => {
 export const NavItem = styled("a", headingStyles, {
   display: "flex",
   alignItems: "center",
-  gap: "$4",
+  gap: "$5",
   color: "$text",
 });
 
@@ -36,13 +36,13 @@ export const SidePanelWrapper = ({ children }: PropsWithChildren<unknown>) => {
         justifyItems: "end",
         gridTemplateRows: "minmax(0, 1fr)",
         height: "100%",
-        px: "$7",
-        pt: "$5",
+        px: "$8",
+        pt: "$6",
         borderRight: "solid $borderWidths$1 $border",
       }}
     >
       <Grid
-        css={{ height: "100%", gridTemplateRows: "auto minmax(0, 1fr)", rowGap: "$8" }}
+        css={{ height: "100%", gridTemplateRows: "auto minmax(0, 1fr)", rowGap: "$9" }}
       >
         {children}
       </Grid>
@@ -56,7 +56,7 @@ export const UploadLink = styled("a", mainTitleStyles, {
   alignItems: "center",
   color: "$accentText",
   borderRadius: "$5",
-  px: "$5",
+  px: "$6",
   py: "$3",
   background: "linear-gradient(180deg, $primary 0%, #8913FF 100%)",
 });

@@ -86,6 +86,6 @@ export const ChatRoomsList = ({
 const CreateNewChatRoomButton = styled("button", {
   padding: "$2",
   backgroundColor: "$background3",
-  margin: "$4",
+  margin: "$5",
   borderRadius: "$3",
 });

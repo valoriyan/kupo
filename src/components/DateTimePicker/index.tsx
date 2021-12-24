@@ -55,11 +55,11 @@ const DateTimePickerBody = (
   });
 
   return (
-    <Stack css={{ width: "320px", maxWidth: "100vw", gap: "$4", pb: "$4" }}>
+    <Stack css={{ width: "320px", maxWidth: "100vw", gap: "$5", pb: "$5" }}>
       <Box css={{ height: COMPACT_CALENDAR_HEIGHT }}>
         <Calendar calendarState={calendarState} compact />
       </Box>
-      <Flex css={{ alignItems: "center", justifyContent: "space-between", px: "$4" }}>
+      <Flex css={{ alignItems: "center", justifyContent: "space-between", px: "$5" }}>
         <Flex css={{ alignItems: "center", gap: "$3" }}>
           @ <TimePicker time={props.dateTime} setTime={props.setDateTime} />
         </Flex>

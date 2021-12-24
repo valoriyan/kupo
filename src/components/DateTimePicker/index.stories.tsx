@@ -13,7 +13,7 @@ export const Template: Story<DateTimePickerProps> = (args) => {
   const [dateTime, setDateTime] = useState<Date>();
 
   return (
-    <Box css={{ p: "$4" }}>
+    <Box css={{ p: "$5" }}>
       <DateTimePicker
         dateTime={dateTime}
         setDateTime={(newDateTime) => {

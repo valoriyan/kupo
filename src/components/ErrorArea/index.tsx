@@ -35,5 +35,5 @@ export const FullScreenErrorArea = (props: PropsWithChildren<unknown>) => {
 
 export const ErrorMessage = styled(MainTitle, {
   textAlign: "center",
-  p: "$5",
+  p: "$6",
 });

@@ -21,7 +21,7 @@ const baseStyles = css({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  size: "$9",
+  size: "$10",
   borderRadius: "$round",
   bg: "$border",
   color: "$inverseText",

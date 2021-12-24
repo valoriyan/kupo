@@ -23,7 +23,7 @@ export const PostSchedule = (props: PostScheduleProps) => {
   ];
 
   return (
-    <Stack css={{ "@md": { px: "$3", pt: "$3" }, gap: "$4", height: "100%" }}>
+    <Stack css={{ "@md": { px: "$3", pt: "$3" }, gap: "$5", height: "100%" }}>
       <Box css={{ height: CALENDAR_HEIGHT }}>
         <Calendar
           calendarState={props.calendarState}
@@ -31,7 +31,7 @@ export const PostSchedule = (props: PostScheduleProps) => {
           datesWithRemovals={datesWithRemovals}
         />
       </Box>
-      <Stack css={{ gap: "$4", px: "$3" }}>
+      <Stack css={{ gap: "$5", px: "$3" }}>
         <MainTitle>Summary</MainTitle>
         <Stack css={{ gap: "$3" }}>
           <SummaryText variant="addition">

@@ -14,12 +14,12 @@ Template.args = {
     {
       id: "posts",
       trigger: "Posts",
-      content: <Stack css={{ p: "$4" }}>User Posts Go Here</Stack>,
+      content: <Stack css={{ p: "$5" }}>User Posts Go Here</Stack>,
     },
     {
       id: "shop",
       trigger: "Shop",
-      content: <Stack css={{ p: "$4" }}>User Shop Items Go Here</Stack>,
+      content: <Stack css={{ p: "$5" }}>User Shop Items Go Here</Stack>,
     },
   ],
 };

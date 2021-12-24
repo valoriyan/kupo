@@ -48,14 +48,14 @@ export const ChatRoomListItem = ({
 };
 
 const FlexWrapperContainer = styled(Flex, {
-  padding: "$4",
+  padding: "$5",
   alignItems: "center",
   borderTop: "1px solid $primaryTranslucent",
   borderBottom: "1px solid $primaryTranslucent",
 });
 
 const Usernames = styled("div", {
-  paddingLeft: "$4",
+  paddingLeft: "$5",
 });
 
 const Username = styled("span", {

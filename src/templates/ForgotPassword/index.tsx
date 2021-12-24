@@ -9,13 +9,13 @@ export const ForgotPassword = () => {
 
   return (
     <AuthFormLayout title="Forgot Password" onSubmit={onSubmit}>
-      <Stack css={{ gap: "$4" }}>
+      <Stack css={{ gap: "$5" }}>
         <Input size="lg" placeholder="email" />
         <Button size="lg" variant="secondary">
           Reset Password
         </Button>
       </Stack>
-      <Stack css={{ gap: "$4", pt: "$9" }}>
+      <Stack css={{ gap: "$5", pt: "$10" }}>
         <Link href="/sign-up" passHref>
           <Button as="a" size="lg" variant="primary">
             Sign Up

@@ -137,7 +137,7 @@ export const EditProfile = ({ user }: EditProfileProps) => {
       <Box css={{ height: "1px", bg: "$border" }} />
       <DiscoverSettings hashtags={hashtags} setHashtags={setHashtags} />
       <Button
-        css={{ mt: "$3", mb: "$5", mx: "$5" }}
+        css={{ mt: "$3", mb: "$6", mx: "$6" }}
         disabled={!isAnyTouched}
         onClick={saveProfileSettings}
       >

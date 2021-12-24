@@ -6,7 +6,7 @@ export const Button = styled("button", {
   alignItems: "center",
   color: "$accentText",
   bg: "$primary",
-  px: "$5",
+  px: "$6",
   py: "$3",
   fontWeight: "$bold",
   textDecoration: "none",

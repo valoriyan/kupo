@@ -16,7 +16,7 @@ export const CalendarHeader = (props: CalendarHeaderProps) => {
 
   return (
     <Flex
-      css={{ justifyContent: "space-between", alignItems: "center", p: "$4", gap: "$2" }}
+      css={{ justifyContent: "space-between", alignItems: "center", p: "$5", gap: "$2" }}
     >
       <DropdownMenu
         trigger={<MainTitle>{props.year}</MainTitle>}

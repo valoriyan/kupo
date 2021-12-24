@@ -13,14 +13,14 @@ export const PrivacySettings = (props: PrivacySettingsProps) => {
   const privacySettingId = useId();
 
   return (
-    <Stack css={{ gap: "$5", p: "$5" }}>
+    <Stack css={{ gap: "$6", p: "$6" }}>
       <MainTitle as="h2">Privacy</MainTitle>
       <Grid
         css={{
           gridTemplateColumns: "auto minmax(0, 1fr)",
           gridTemplateRows: "auto",
-          columnGap: "$4",
-          rowGap: "$4",
+          columnGap: "$5",
+          rowGap: "$5",
           alignItems: "center",
           "> input": { justifySelf: "end" },
         }}

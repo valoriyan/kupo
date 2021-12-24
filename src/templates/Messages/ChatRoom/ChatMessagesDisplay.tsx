@@ -78,7 +78,7 @@ export const ChatMessagesDisplay = ({
 const Wrapper = styled("div", {
   display: "flex",
   flexDirection: "column",
-  padding: "$4",
+  padding: "$5",
   overflowY: "scroll",
 });
 
@@ -87,7 +87,7 @@ const ClientUserMessage = styled("div", {
   padding: "$3",
   backgroundColor: "$primaryTranslucent",
   color: "$text",
-  marginTop: "$4",
+  marginTop: "$5",
 
   borderRadius: "$4",
 });
@@ -98,5 +98,5 @@ const OtherUserMessage = styled("div", {
   color: "$text",
   padding: "$3",
   borderRadius: "$4",
-  marginTop: "$4",
+  marginTop: "$5",
 });

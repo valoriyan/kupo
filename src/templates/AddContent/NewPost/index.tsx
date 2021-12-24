@@ -68,7 +68,7 @@ export const NewPost = (props: NewPostProps) => {
           </Flex>
         </SectionWrapper>
       </Stack>
-      <Stack css={{ gap: "$3", px: "$4" }}>
+      <Stack css={{ gap: "$3", px: "$5" }}>
         <Button
           size="lg"
           variant="secondary"
@@ -88,14 +88,14 @@ export const NewPost = (props: NewPostProps) => {
 const Wrapper = styled("div", {
   display: "grid",
   gridTemplateRows: "minmax(0, 1fr) auto",
-  rowGap: "$4",
+  rowGap: "$5",
   height: "100%",
-  pb: "$5",
+  pb: "$6",
 });
 
 const SectionWrapper = styled("div", {
-  px: "$4",
-  py: "$4",
+  px: "$5",
+  py: "$5",
   borderBottomStyle: "solid",
   borderBottomColor: "$border",
   borderBottomWidth: "$1",
@@ -118,7 +118,7 @@ const Caption = styled("textarea", {
 const LinkItem = styled("button", {
   display: "flex",
   alignItems: "center",
-  gap: "$4",
+  gap: "$5",
   fontSize: "$4",
   fontWeight: "$bold",
 });

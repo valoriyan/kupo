@@ -39,7 +39,7 @@ export const Footer = () => {
         <MailIcon />
       </IconLink>
       <Drawer
-        trigger={<Avatar src="" alt="User Avatar" size="$6" />}
+        trigger={<Avatar src="" alt="User Avatar" size="$7" />}
         position={{ top: "0", bottom: "57px" /* Top of Footer */ }}
       >
         {({ hide }) => <NavigationDrawer hide={hide} username={username} />}
@@ -50,7 +50,7 @@ export const Footer = () => {
 
 const Wrapper = styled(Flex, {
   bg: "$background1",
-  px: "$7",
+  px: "$8",
   py: "$3",
   justifyContent: "space-between",
   alignItems: "center",

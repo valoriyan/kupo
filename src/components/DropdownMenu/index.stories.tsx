@@ -13,7 +13,7 @@ export const Template: Story = () => {
   const [selectedItem, selectItem] = useState<typeof MONTHS[number]>(MONTHS[0]);
 
   return (
-    <Box css={{ p: "$4" }}>
+    <Box css={{ p: "$5" }}>
       <DropdownMenu
         trigger={selectedItem}
         items={MONTHS.map((month) => ({ label: month, value: month }))}

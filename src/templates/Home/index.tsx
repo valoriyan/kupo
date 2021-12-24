@@ -82,14 +82,14 @@ const Grid = styled("div", {
 });
 
 const PlaceholderItem = () => {
-  return <Box css={{ width: "100%", minHeight: "$14", bg: "$background3" }} />;
+  return <Box css={{ width: "100%", minHeight: "$15", bg: "$background3" }} />;
 };
 
 const ContentItemsList = styled(Stack, {
   height: "100%",
   overflow: "auto",
-  gap: "$4",
-  p: "$4",
+  gap: "$5",
+  p: "$5",
   "> *:not(:last-child)": {
     borderBottom: "solid $borderWidths$1 $border",
   },

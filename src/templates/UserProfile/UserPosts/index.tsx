@@ -97,7 +97,7 @@ export const UserPosts = (props: UserPostsProps) => {
 
   if (isLoading || !data) {
     return (
-      <Stack css={{ pt: "$9" }}>
+      <Stack css={{ pt: "$10" }}>
         <Spinner size="lg" />
       </Stack>
     );

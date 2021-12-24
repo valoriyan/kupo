@@ -38,7 +38,7 @@ export const ContentFeedControlBar = () => {
   return (
     <FlexWrapper>
       <Flex>{renderedTopics}</Flex>
-      <FlexIcons css={{ gap: "$4", marginLeft: "auto" }}>
+      <FlexIcons css={{ gap: "$5", marginLeft: "auto" }}>
         <AddIcon />
         <SearchIcon />
       </FlexIcons>
@@ -47,7 +47,7 @@ export const ContentFeedControlBar = () => {
 };
 
 const FlexWrapper = styled(Flex, {
-  padding: "$4",
+  padding: "$5",
   borderBottom: "1px solid $background3",
 
   justifyContent: "flex-start",
@@ -57,12 +57,12 @@ const FlexWrapper = styled(Flex, {
 });
 
 const FlexIcons = styled(Flex, {
-  gap: "$4",
+  gap: "$5",
   marginLeft: "auto",
 });
 
 const UnselectedContentFeedFilter = styled("div", {
-  paddingLeft: "$4",
+  paddingLeft: "$5",
 });
 
 const SelectedContentFeedFilter = styled(UnselectedContentFeedFilter, {

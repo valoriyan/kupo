@@ -15,8 +15,8 @@ export const AuthFormLayout = (props: AuthFormLayoutProps) => {
     <Flex css={{ justifyContent: "center" }} as="form" onSubmit={props.onSubmit}>
       <Stack
         css={{
-          mt: "$9",
-          mx: "$6",
+          mt: "$10",
+          mx: "$7",
           alignItems: "center",
           width: "100%",
           maxWidth: "500px",
@@ -24,13 +24,13 @@ export const AuthFormLayout = (props: AuthFormLayoutProps) => {
       >
         <BrandTitle>kupono</BrandTitle>
         <Slogan css={{ mt: "$3" }}>create. support. love</Slogan>
-        <MainTitle css={{ alignSelf: "flex-start", mt: "$8" }}>{props.title}</MainTitle>
-        <Box css={{ mt: "$5", mb: "$9", width: "100%" }}>{props.children}</Box>
+        <MainTitle css={{ alignSelf: "flex-start", mt: "$9" }}>{props.title}</MainTitle>
+        <Box css={{ mt: "$6", mb: "$10", width: "100%" }}>{props.children}</Box>
         <Link href="/help-center" passHref>
           <StyledLink>Help Center</StyledLink>
         </Link>
         <Link href="/faq" passHref>
-          <StyledLink css={{ mt: "$4" }}>FAQ</StyledLink>
+          <StyledLink css={{ mt: "$5" }}>FAQ</StyledLink>
         </Link>
       </Stack>
     </Flex>

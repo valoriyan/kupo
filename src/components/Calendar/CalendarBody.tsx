@@ -41,7 +41,7 @@ export const CalendarBody = (props: CalendarBodyProps) => {
                 isSelectedDate={props.selectedDate && isSameDay(date, props.selectedDate)}
                 isToday={isSameDay(date, new Date())}
                 onClick={() => props.selectDate(date)}
-                css={{ size: props.compact ? "$6" : "$7" }}
+                css={{ size: props.compact ? "$7" : "$8" }}
               >
                 {(hasAdditions || hasRemovals) && (
                   <NotificationWrapper double={hasAdditions && hasRemovals}>
@@ -61,11 +61,11 @@ export const CalendarBody = (props: CalendarBodyProps) => {
 
 const Wrapper = styled(Grid, {
   gridTemplateRows: "repeat(7, 1fr)",
-  px: "$4",
+  px: "$5",
 });
 
 const Row = styled(Grid, {
-  gridTemplateColumns: "repeat(7, $sizes$6)",
+  gridTemplateColumns: "repeat(7, $sizes$7)",
   justifyContent: "space-between",
 });
 

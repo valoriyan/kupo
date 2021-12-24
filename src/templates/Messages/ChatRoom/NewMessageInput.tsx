@@ -49,7 +49,7 @@ const ChatMessageInputForm = styled("form", {
 const ChatMessageInput = styled("textarea", {
   width: "100%",
   height: "100%",
-  padding: "$4",
+  padding: "$5",
   resize: "none",
   display: "inline-block",
   border: "none",

@@ -17,7 +17,7 @@ export const Input = styled("input", {
       },
       lg: {
         fontSize: "$4",
-        px: "$4",
+        px: "$5",
         py: "$3",
       },
     },

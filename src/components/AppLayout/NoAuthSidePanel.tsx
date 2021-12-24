@@ -8,7 +8,7 @@ import { NavLink, SidePanelWrapper } from "./shared";
 export const NoAuthSidePanel = () => {
   return (
     <SidePanelWrapper>
-      <Stack css={{ gap: "$4" }}>
+      <Stack css={{ gap: "$5" }}>
         <MainTitle css={{ textAlign: "center", mb: "$2" }}>
           Experience
           <br />
@@ -25,7 +25,7 @@ export const NoAuthSidePanel = () => {
           </Button>
         </Link>
       </Stack>
-      <Stack css={{ gap: "$5" }}>
+      <Stack css={{ gap: "$6" }}>
         <NavLink href="/support" Icon={SupportIcon} label="Support" />
       </Stack>
     </SidePanelWrapper>

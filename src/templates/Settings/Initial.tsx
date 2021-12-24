@@ -24,9 +24,9 @@ export const Initial = (props: InitialProps) => {
 const NewItemButton = styled("button", mainTitleStyles, {
   display: "flex",
   alignItems: "center",
-  gap: "$5",
-  px: "$8",
-  py: "$6",
+  gap: "$6",
+  px: "$9",
+  py: "$7",
   fontSize: "$3",
   fontWeight: "$bold",
   borderBottomStyle: "solid",

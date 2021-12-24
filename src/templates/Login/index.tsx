@@ -21,7 +21,7 @@ export const Login = () => {
 
   return (
     <AuthFormLayout title="Log into existing account" onSubmit={onSubmit}>
-      <Stack css={{ gap: "$4" }}>
+      <Stack css={{ gap: "$5" }}>
         <Input
           size="lg"
           required
@@ -38,10 +38,10 @@ export const Login = () => {
           onChange={(e) => setPassword(e.currentTarget.value)}
         />
         <Link href="/forgot-password" passHref>
-          <StyledLink css={{ ml: "$4" }}>forgot password</StyledLink>
+          <StyledLink css={{ ml: "$5" }}>forgot password</StyledLink>
         </Link>
       </Stack>
-      <Stack css={{ gap: "$4", pt: "$9" }}>
+      <Stack css={{ gap: "$5", pt: "$10" }}>
         <Button size="lg" variant="primary" disabled={isLoading} type="submit">
           <TextOrSpinner isLoading={isLoading}>Log In</TextOrSpinner>
         </Button>

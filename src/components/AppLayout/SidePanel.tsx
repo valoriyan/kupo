@@ -39,7 +39,7 @@ export const SidePanel = () => {
 
   return (
     <SidePanelWrapper>
-      <Stack css={{ gap: "$4" }}>
+      <Stack css={{ gap: "$5" }}>
         <UserInfoWrapper>
           <UserInfo />
         </UserInfoWrapper>
@@ -47,8 +47,8 @@ export const SidePanel = () => {
           <UploadLink>Create</UploadLink>
         </Link>
       </Stack>
-      <Stack css={{ gap: "$8", height: "100%", overflow: "auto" }}>
-        <Stack css={{ gap: "$5" }}>
+      <Stack css={{ gap: "$9", height: "100%", overflow: "auto" }}>
+        <Stack css={{ gap: "$6" }}>
           <NavLink href="/" Icon={HomeIcon} label="Home" />
           <NavLink
             href="/notifications"
@@ -66,9 +66,9 @@ export const SidePanel = () => {
           <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
           <NavLink href="/settings" Icon={OptionsIcon} label="Settings" />
         </Stack>
-        <Stack css={{ gap: "$5" }}>
+        <Stack css={{ gap: "$6" }}>
           <NavLink href="/support" Icon={SupportIcon} label="Support" />
-          <NavItem as="button" css={{ color: "$link", pb: "$7" }} onClick={logout}>
+          <NavItem as="button" css={{ color: "$link", pb: "$8" }} onClick={logout}>
             <LogOutIcon />
             <div>Log Out</div>
           </NavItem>
@@ -82,5 +82,5 @@ const UserInfoWrapper = styled("div", {
   display: "grid",
   gridTemplateColumns: "auto auto",
   alignItems: "start",
-  columnGap: "$4",
+  columnGap: "$5",
 });

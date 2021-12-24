@@ -35,21 +35,21 @@ export const ChatRoomMembersDisplay = ({
 
   return (
     <Wrapper>
-      <Avatar src={chatRoomAvatarImage} alt="Chat Room Avatar Image" size="$7" />
+      <Avatar src={chatRoomAvatarImage} alt="Chat Room Avatar Image" size="$8" />
       <Usernames>{chatRoomMemberUsernames}</Usernames>
     </Wrapper>
   );
 };
 
 const Wrapper = styled("div", {
-  padding: "$4",
+  padding: "$5",
   display: "flex",
   alignItems: "center",
   borderBottom: "3px solid $primaryTranslucent",
 });
 
 const Usernames = styled("div", {
-  paddingLeft: "$4",
+  paddingLeft: "$5",
 });
 
 const Username = styled("span", {

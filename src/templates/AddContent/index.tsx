@@ -113,9 +113,9 @@ const Wrapper = styled("div", {
 });
 
 const Header = styled(Stack, {
-  px: "$5",
-  py: "$4",
-  gap: "$4",
+  px: "$6",
+  py: "$5",
+  gap: "$5",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
   borderBottomColor: "$text",
@@ -125,7 +125,7 @@ const CloseButton = styled("button", {
   alignSelf: "flex-end",
   fontWeight: "$bold",
   fontSize: "$4",
-  height: "$5",
+  height: "$6",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",

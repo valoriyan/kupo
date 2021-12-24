@@ -21,7 +21,7 @@ export const SignUp = () => {
 
   return (
     <AuthFormLayout title="Create a new account" onSubmit={onSubmit}>
-      <Stack css={{ gap: "$4" }}>
+      <Stack css={{ gap: "$5" }}>
         <Input
           size="lg"
           required
@@ -46,7 +46,7 @@ export const SignUp = () => {
           onChange={(e) => setEmail(e.currentTarget.value)}
         />
       </Stack>
-      <Stack css={{ gap: "$4", pt: "$8" }}>
+      <Stack css={{ gap: "$5", pt: "$9" }}>
         <Button size="lg" variant="primary" disabled={isLoading} type="submit">
           <TextOrSpinner isLoading={isLoading}>Complete Sign Up</TextOrSpinner>
         </Button>
