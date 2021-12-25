@@ -10,9 +10,7 @@ export const NoAuthSidePanel = () => {
     <SidePanelWrapper>
       <Stack css={{ gap: "$5" }}>
         <MainTitle css={{ textAlign: "center", mb: "$2" }}>
-          Experience
-          <br />
-          the full site
+          Experience the full site
         </MainTitle>
         <Link href="/login" passHref>
           <Button as="a" size="lg" variant="primary">

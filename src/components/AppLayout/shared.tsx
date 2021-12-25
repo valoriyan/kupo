@@ -44,7 +44,6 @@ export const SidePanelWrapper = ({ children }: PropsWithChildren<unknown>) => {
       <Grid
         css={{
           height: "100%",
-          width: "100%",
           gridTemplateRows: "auto minmax(0, 1fr)",
           rowGap: "$9",
         }}

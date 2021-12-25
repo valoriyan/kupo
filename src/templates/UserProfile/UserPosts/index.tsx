@@ -1,9 +1,8 @@
-import { RenderablePost } from "#/api";
+import { RenderablePost, RenderableUser } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
-import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { HeartIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
@@ -13,49 +12,48 @@ import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
 export interface UserPostsProps {
-  userId: string;
-  username: string;
-  userAvatar?: string;
+  user: RenderableUser;
 }
 
-const PostWrapper = ({ post }: { post: RenderablePost }) => {
+export const UserPosts = ({ user }: UserPostsProps) => {
+  const { data, isLoading, error } = useGetPageOfPostsByUserId({ userId: user.userId });
+
+  if (error && !isLoading) {
+    return <ErrorMessage>{error.message}</ErrorMessage>;
+  }
+
+  if (isLoading || !data) {
+    return (
+      <Stack css={{ pt: "$10" }}>
+        <Spinner size="lg" />
+      </Stack>
+    );
+  }
+
+  const posts = data.pages.flatMap((page) => {
+    return page.posts;
+  });
+
+  return (
+    <Wrapper>
+      {posts.map((post) => (
+        <PostWrapper key={post.postId} post={post} user={user} />
+      ))}
+    </Wrapper>
+  );
+};
+
+const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUser }) => {
   const { isLikedByClient, postId, authorUserId } = post;
-  const {
-    data: user,
-    isLoading,
-    error,
-    isError,
-  } = useGetUserByUserId({ userId: authorUserId });
 
-  const { mutateAsync: likePost } = useLikePost({
-    postId,
-    authorUserId,
-  });
-  const { mutateAsync: unlikePost } = useUnlikePost({
-    postId,
-    authorUserId,
-  });
+  const { mutateAsync: likePost } = useLikePost({ postId, authorUserId });
+  const { mutateAsync: unlikePost } = useUnlikePost({ postId, authorUserId });
+  const { mutateAsync: deletePost } = useDeletePost({ postId, authorUserId });
 
-  const { mutateAsync: deletePost } = useDeletePost({
-    postId,
-    authorUserId,
-  });
-
-  if (isError && !isLoading) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
-
-  if (isLoading || !user) {
-    return <div>Loading</div>;
-  }
-
-  async function handleClickOfLikeButton() {
-    if (isLikedByClient) {
-      unlikePost();
-    } else {
-      likePost();
-    }
-  }
+  const handleClickOfLikeButton = () => {
+    if (isLikedByClient) unlikePost();
+    else likePost();
+  };
 
   const firstMenuOption = {
     Icon: HeartIcon,
@@ -85,34 +83,6 @@ const PostWrapper = ({ post }: { post: RenderablePost }) => {
       handleClickOfLikeButton={handleClickOfLikeButton}
       menuOptions={[firstMenuOption, secondMenuOption]}
     />
-  );
-};
-
-export const UserPosts = (props: UserPostsProps) => {
-  const { data, isLoading, error } = useGetPageOfPostsByUserId({ userId: props.userId });
-
-  if (error && !isLoading) {
-    return <ErrorMessage>{error.message}</ErrorMessage>;
-  }
-
-  if (isLoading || !data) {
-    return (
-      <Stack css={{ pt: "$10" }}>
-        <Spinner size="lg" />
-      </Stack>
-    );
-  }
-
-  const posts = data.pages.flatMap((page) => {
-    return page.posts;
-  });
-
-  return (
-    <Wrapper>
-      {posts.map((post) => (
-        <PostWrapper key={post.postId} post={post} />
-      ))}
-    </Wrapper>
   );
 };
 

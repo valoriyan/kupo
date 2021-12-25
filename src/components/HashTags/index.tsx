@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler, KeyboardEventHandler, useState } from "react";
 import { styled } from "#/styling";
-import { HashTag } from "./HashTag";
+import { AnimatedHashTag } from "./HashTag";
 
 export * from "./HashTag";
 
@@ -82,7 +82,7 @@ export const HashTags = (props: HashTagsProps) => {
   return (
     <Wrapper>
       {props.hashTags.map((tag) => (
-        <HashTag key={tag} tag={tag} />
+        <AnimatedHashTag key={tag} tag={tag} />
       ))}
       <Input
         id={props.id}

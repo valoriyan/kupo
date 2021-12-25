@@ -1,5 +1,6 @@
 import { SetStateAction, useState } from "react";
 import isEqual from "react-fast-compare";
+import { toast } from "react-toastify";
 import { RenderableUser } from "#/api";
 import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
 import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";
@@ -8,6 +9,7 @@ import { useUpdateOwnProfilePicture } from "#/api/mutations/profile/updateOwnPro
 import { Button } from "#/components/Button";
 import { Box, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
 import { ProfileSettings } from "./ProfileSettings";
@@ -25,7 +27,7 @@ export const EditProfile = ({ user }: EditProfileProps) => {
     user.userWebsite,
   );
   const [hashtags, setHashtags, isHashtagsTouched, setIsHashtagsTouched] = useFormField(
-    user.hashtags,
+    user.hashtags.filter((x) => x),
   );
   const [
     privacySetting,
@@ -67,7 +69,7 @@ export const EditProfile = ({ user }: EditProfileProps) => {
 
   const saveProfileSettings = async () => {
     setIsProfileUpdating(true);
-    const promises: Array<Promise<unknown>> = [];
+    const promises = [];
 
     if (isProfilePictureUrlTouched && profilePictureFile) {
       promises.push(updateOwnProfilePicture(profilePictureFile));
@@ -78,40 +80,45 @@ export const EditProfile = ({ user }: EditProfileProps) => {
     if (isHashtagsTouched) {
       promises.push(setOwnHashtags(hashtags));
     }
-    if (isUsernameTouched || isBioTouched || isWebsiteTouched) {
+    if (
+      isUsernameTouched ||
+      isBioTouched ||
+      isWebsiteTouched ||
+      isPrivacySettingTouched
+    ) {
       promises.push(
         updateOwnProfile({
           username,
           shortBio: bio,
           userWebsite: website,
+          profileVisibility: privacySetting,
         }),
       );
     }
 
     try {
-      await Promise.all(promises);
-      setIsProfileUpdating(false);
-      setIsUsernameTouched(false);
-      setIsBioTouched(false);
-      setIsWebsiteTouched(false);
-      setIsHashtagsTouched(false);
-      setIsPrivacySettingTouched(false);
-      setIsProfilePictureUrlTouched(false);
-      setIsBackgroundImageUrlTouched(false);
+      const result = await Promise.all(promises);
+      const success = result.every((res) => isSuccessfulStatus(res.status));
+
+      if (success) {
+        setIsProfileUpdating(false);
+        setIsUsernameTouched(false);
+        setIsBioTouched(false);
+        setIsWebsiteTouched(false);
+        setIsHashtagsTouched(false);
+        setIsPrivacySettingTouched(false);
+        setIsProfilePictureUrlTouched(false);
+        setIsBackgroundImageUrlTouched(false);
+        toast.success("Profile updated successfully");
+      } else {
+        setIsProfileUpdating(false);
+        toast.error("Failed to update profile");
+      }
     } catch {
       setIsProfileUpdating(false);
+      toast.error("Failed to update profile");
     }
   };
-
-  console.log({
-    username,
-    bio,
-    website,
-    hashtags,
-    privacySetting,
-    profilePictureUrl,
-    backgroundImageUrl,
-  });
 
   return (
     <Stack css={{ gap: "$3" }}>

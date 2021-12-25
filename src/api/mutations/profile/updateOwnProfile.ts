@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, Color, RenderableUser } from "#/api";
+import { Api, Color, ProfilePrivacySetting, RenderableUser } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useUpdateOwnProfile = () => {
@@ -11,17 +11,21 @@ export const useUpdateOwnProfile = () => {
       shortBio,
       userWebsite,
       preferredPagePrimaryColor,
+      profileVisibility,
     }: {
       username?: string;
       shortBio?: string;
       userWebsite?: string;
       preferredPagePrimaryColor?: Color;
+      profileVisibility?: ProfilePrivacySetting;
     }) => {
       return await Api.updateUserProfile({
-        username,
-        shortBio,
-        userWebsite,
-        preferredPagePrimaryColor,
+        username: username ?? undefined,
+        shortBio: shortBio ?? undefined,
+        userWebsite: userWebsite ?? undefined,
+        phoneNumber: undefined,
+        preferredPagePrimaryColor: preferredPagePrimaryColor ?? undefined,
+        profileVisibility: profileVisibility ?? undefined,
       });
     },
     {

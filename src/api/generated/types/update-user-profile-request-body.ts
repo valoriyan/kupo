@@ -13,7 +13,6 @@
  */
 
 import { Color } from "./color";
-import { ExpressMulterFile } from "./express-multer-file";
 import { ProfilePrivacySetting } from "./profile-privacy-setting";
 
 /**
@@ -64,16 +63,4 @@ export interface UpdateUserProfileRequestBody {
    * @memberof UpdateUserProfileRequestBody
    */
   profileVisibility?: ProfilePrivacySetting;
-  /**
-   *
-   * @type {ExpressMulterFile}
-   * @memberof UpdateUserProfileRequestBody
-   */
-  backgroundImage?: ExpressMulterFile;
-  /**
-   *
-   * @type {ExpressMulterFile}
-   * @memberof UpdateUserProfileRequestBody
-   */
-  profilePicture?: ExpressMulterFile;
 }

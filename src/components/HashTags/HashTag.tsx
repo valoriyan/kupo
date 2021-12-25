@@ -1,10 +1,28 @@
 import { css, keyframes, styled } from "#/styling";
 
-export interface HashTagProps {
+export const HashTag = styled("div", {
+  borderRadius: "$round",
+  py: "$1",
+  px: "$3",
+  color: "$accentText",
+  bg: "$primary",
+  border: "solid $borderWidths$1 $primary",
+
+  variants: {
+    outlined: {
+      true: {
+        color: "$primary",
+        bg: "$transparent",
+      },
+    },
+  },
+});
+
+export interface AnimatedHashTagProps {
   tag: string;
 }
 
-export const HashTag = ({ tag }: HashTagProps) => {
+export const AnimatedHashTag = ({ tag }: AnimatedHashTagProps) => {
   return (
     <Wrapper>
       #{tag}

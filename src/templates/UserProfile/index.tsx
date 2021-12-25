@@ -18,6 +18,7 @@ import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { UserPosts } from "./UserPosts";
+import { HashTag } from "#/components/HashTags";
 
 export interface UserProfileProps {
   username?: string;
@@ -54,21 +55,34 @@ const ProfileBody = (props: ProfileBodyProps) => {
     profilePictureTemporaryUrl,
   } = props.user;
 
+  const hashtags = props.user.hashtags.filter((x) => x);
+
   return (
     <Stack>
       <Stack css={{ height: "100%", px: "$6", pt: "$6", pb: "$5" }}>
         <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
-        <Stack css={{ mt: "$5", gap: "$3" }}>
+        <Stack css={{ mt: "$5", gap: "$4" }}>
           <Link href={getProfilePageUrl({ username })} passHref>
             <a>@{username}</a>
           </Link>
           <Subtext>
             {formatStat(followers.count)} followers | {formatStat(follows.count)} followed
           </Subtext>
-          <Description>{shortBio}</Description>
-          <ExternalLink target="_blank" rel="noopener noreferrer">
-            {userWebsite}
-          </ExternalLink>
+          {!!shortBio && <Description>{shortBio}</Description>}
+          {!!userWebsite && (
+            <ExternalLink target="_blank" rel="noopener noreferrer" href={userWebsite}>
+              {userWebsite}
+            </ExternalLink>
+          )}
+          {!!hashtags.length && (
+            <Flex css={{ gap: "$3" }}>
+              {hashtags.map((hashtag) => (
+                <HashTag key={hashtag} outlined>
+                  #{hashtag}
+                </HashTag>
+              ))}
+            </Flex>
+          )}
         </Stack>
         <Flex css={{ gap: "$3", pt: "$6", pb: "$3" }}>
           {props.isOwnProfile ? (
@@ -101,13 +115,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
           {
             id: "posts",
             trigger: "Posts",
-            content: (
-              <UserPosts
-                userId={userId}
-                username={username}
-                userAvatar={profilePictureTemporaryUrl}
-              />
-            ),
+            content: <UserPosts user={props.user} />,
           },
           {
             id: "shop",
@@ -122,7 +130,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
 
 const Description = styled(Subtext, { fontWeight: "$light" });
 
-const ExternalLink = styled("a", subtextStyles);
+const ExternalLink = styled("a", subtextStyles, { cursor: "pointer" });
 
 const PrimaryButton = styled(Button, {
   flex: 1,

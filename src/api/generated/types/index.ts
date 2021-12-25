@@ -13,7 +13,6 @@ export * from "./delete-shop-item-request-body";
 export * from "./denied-get-user-profile-response";
 export * from "./denied-get-user-profile-response-reason";
 export * from "./does-chat-room-exist-with-user-ids-request-body";
-export * from "./express-multer-file";
 export * from "./failed-auth-response";
 export * from "./failed-to-create-chat-message-in-new-room-response";
 export * from "./failed-to-create-chat-message-response";

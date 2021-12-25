@@ -130,11 +130,13 @@ const BackgroundImage = (props: { src?: string }) => {
 
 const BgImg = styled("img", {
   size: "100%",
+  maxHeight: "$11",
   objectFit: "cover",
 });
 
 const BgImgFallback = styled("div", {
   size: "100%",
+  maxHeight: "$11",
   bg: "$border",
 });
 

@@ -68,7 +68,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
 
   return (
     <ThemeContext.Provider value={value}>
-      <ToastContainer position="top-center" transition={Slide} />
+      <ToastContainer position="top-right" transition={Slide} />
       {children}
     </ThemeContext.Provider>
   );
