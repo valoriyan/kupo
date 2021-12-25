@@ -11,7 +11,7 @@ import { TableService } from "./models";
 import {
   generatePostgreSQLCreateEnumTypeQueryString,
   generatePSQLGenericUpdateRowQueryString,
-} from "./utilities";
+} from "./utilities/index";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUser {

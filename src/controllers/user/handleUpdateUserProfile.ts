@@ -24,8 +24,6 @@ export interface UpdateUserProfileRequestBody {
   phoneNumber?: string;
   preferredPagePrimaryColor?: Color;
   profileVisibility?: ProfilePrivacySetting;
-  backgroundImage?: Express.Multer.File;
-  profilePicture?: Express.Multer.File;
 }
 
 export async function handleUpdateUserProfile({
@@ -35,7 +33,10 @@ export async function handleUpdateUserProfile({
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: UpdateUserProfileRequestBody;
+  requestBody: UpdateUserProfileRequestBody & {
+    backgroundImage?: Express.Multer.File;
+    profilePicture?: Express.Multer.File;
+  };
 }): Promise<
   SecuredHTTPResponse<
     FailedToUpdateUserProfileResponse,
