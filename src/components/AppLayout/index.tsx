@@ -13,24 +13,19 @@ import { useWebsocketState, WebsocketStateProvider } from "./WebsocketContext";
 const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
+  const generateSocket = useWebsocketState((state) => state.generateSocket);
+  const hasAccessToken = isAuthenticated === true;
 
   const pageTransition = router.pathname.includes("add-content")
     ? slideUpFromBottom
     : slideInFromRight;
 
-  const { generateSocket } = useWebsocketState();
-
-  const onMount = async () => {
-    getAccessToken().then((accessToken) => {
-      if (!!accessToken) {
-        generateSocket({ accessToken });
-      }
-    });
-  };
-
   useEffect(() => {
-    onMount();
-  });
+    getAccessToken().then((accessToken) => {
+      if (!accessToken) return;
+      generateSocket({ accessToken });
+    });
+  }, [generateSocket, hasAccessToken]);
 
   return (
     <Wrapper>

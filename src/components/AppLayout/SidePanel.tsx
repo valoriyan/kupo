@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { ErrorMessage } from "../ErrorArea";
 import {
   BellIcon,
   BookmarkIcon,
@@ -14,11 +17,10 @@ import {
   SupportIcon,
 } from "../Icons";
 import { Stack } from "../Layout";
+import { LoadingArea } from "../LoadingArea";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 import { useWebsocketState } from "./WebsocketContext";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
@@ -28,11 +30,11 @@ export const SidePanel = () => {
     notificationsReceived.length === 0 ? "" : ` (${notificationsReceived.length})`;
 
   if (error && !isLoading) {
-    return <div>Error: {error.message}</div>;
+    return <ErrorMessage>{error.message}</ErrorMessage>;
   }
 
   if (isLoading || !data) {
-    return <div>Loading</div>;
+    return <LoadingArea size="lg" />;
   }
 
   const { username } = data;

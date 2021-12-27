@@ -1,19 +1,54 @@
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
-import { Box, Stack } from "#/components/Layout";
+import { ErrorMessage } from "#/components/ErrorArea";
+import { ChevronDownIcon, SearchIcon } from "#/components/Icons";
+import { Flex, Stack } from "#/components/Layout";
+import { LoadingArea } from "#/components/LoadingArea";
+import { Tabs } from "#/components/Tabs";
 import { styled } from "#/styling";
-import {
-  ContentFeedFilter,
-  ContentFeedStateProvider,
-  useContentFeedState,
-} from "./ContentFeedContext";
-import { ContentFeedControlBar } from "./ContentFeedControlBar";
 import { ContentFeedPostBox } from "./ContentFeedPostBox";
 
-export const HomeDoubleInner = ({
-  selectedContentFilter,
-}: {
-  selectedContentFilter: ContentFeedFilter;
-}) => {
+export enum ContentFilterType {
+  FollowingUsers = "Following",
+  Hashtag = "#",
+}
+
+export interface ContentFilter {
+  id: string;
+  type: ContentFilterType;
+  value: string;
+}
+
+export const Home = () => {
+  // Eventually turn into hook that fetches filters from server
+  const contentFilters: ContentFilter[] = [
+    { id: "following", type: ContentFilterType.FollowingUsers, value: "" },
+    { id: "cute", type: ContentFilterType.Hashtag, value: "cute" },
+    { id: "ugly", type: ContentFilterType.Hashtag, value: "ugly" },
+  ];
+
+  return (
+    <Tabs
+      ariaLabel="Content Filters"
+      tabs={contentFilters.map((filter) => ({
+        id: filter.id,
+        trigger: filter.type + filter.value,
+        content: <ContentFeed selectedContentFilter={filter} />,
+      }))}
+      headerRightContent={
+        <Flex css={{ gap: "$5", px: "$3", alignItems: "center" }}>
+          <ChevronDownIcon />
+          <SearchIcon />
+        </Flex>
+      }
+    />
+  );
+};
+
+interface ContentFeedProps {
+  selectedContentFilter: ContentFilter;
+}
+
+const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
   const infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers =
     useGetPageOfContentFeed({ contentFeedFilter: selectedContentFilter });
 
@@ -29,76 +64,50 @@ export const HomeDoubleInner = ({
     !isLoadingPagesOfContentFromFrollowedUsers
   ) {
     return (
-      <div>
-        Error: {(errorAcquiringPagesOfContentFromFrollowedUsers as Error).message}
-      </div>
+      <ErrorMessage>
+        Error:{" "}
+        {errorAcquiringPagesOfContentFromFrollowedUsers?.message ?? "Unknown Error"}
+      </ErrorMessage>
     );
   }
 
   if (isLoadingPagesOfContentFromFrollowedUsers || !pagesOfContentFromFrollowedUsers) {
-    return <div>Loading</div>;
+    return <LoadingArea size="lg" />;
   }
 
   const posts = pagesOfContentFromFrollowedUsers.pages.flatMap((page) => {
     return page.posts;
   });
 
-  const renderedPosts = posts.map((post) => {
-    return <ContentFeedPostBox key={post.postId} post={post} />;
-  });
-
-  const placeholders =
-    renderedPosts.length === 0 ? (
-      <>
-        <PlaceholderItem />
-        <PlaceholderItem />
-        <PlaceholderItem />
-      </>
-    ) : null;
+  const renderedPosts =
+    posts.length === 0 ? (
+      <ErrorMessage>No Posts Found</ErrorMessage>
+    ) : (
+      posts.map((post) => {
+        return <ContentFeedPostBox key={post.postId} post={post} />;
+      })
+    );
 
   return (
     <Grid>
-      <ContentFeedControlBar />
-
-      <ContentItemsList>
-        {renderedPosts}
-        {placeholders}
-      </ContentItemsList>
+      <ContentItemsList>{renderedPosts}</ContentItemsList>
     </Grid>
   );
 };
 
-export const HomeInner = () => {
-  const { selectedContentFilter } = useContentFeedState();
-
-  return <HomeDoubleInner selectedContentFilter={selectedContentFilter} />;
-};
-
 const Grid = styled("div", {
   display: "grid",
-  gridTemplateRows: "5% 95%",
+  gridTemplateRows: "auto minmax(0, 1fr)",
   height: "100%",
   width: "100%",
 });
 
-const PlaceholderItem = () => {
-  return <Box css={{ width: "100%", minHeight: "$15", bg: "$background3" }} />;
-};
-
 const ContentItemsList = styled(Stack, {
   height: "100%",
   overflow: "auto",
-  gap: "$5",
-  p: "$5",
+  gap: "$2",
+  py: "$2",
   "> *:not(:last-child)": {
     borderBottom: "solid $borderWidths$1 $border",
   },
 });
-
-export const Home = () => {
-  return (
-    <ContentFeedStateProvider>
-      <HomeInner />
-    </ContentFeedStateProvider>
-  );
-};

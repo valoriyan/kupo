@@ -22,4 +22,5 @@ Template.args = {
       content: <Stack css={{ p: "$5" }}>User Shop Items Go Here</Stack>,
     },
   ],
+  stretchTabs: false,
 };

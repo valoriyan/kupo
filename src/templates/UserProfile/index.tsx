@@ -111,6 +111,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
       </Stack>
       <Tabs
         ariaLabel="User Content Categories"
+        stretchTabs
         tabs={[
           {
             id: "posts",

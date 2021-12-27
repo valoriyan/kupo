@@ -1,7 +1,8 @@
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { styled } from "#/styling";
 import { mainTitleStyles } from "../Typography";
+import { Flex } from "../Layout";
 
 export interface Tab {
   id: string;
@@ -12,23 +13,33 @@ export interface Tab {
 export interface TabsProps {
   ariaLabel: string;
   tabs: Tab[];
+  headerRightContent?: ReactNode;
+  stretchTabs?: boolean;
 }
 
 export const Tabs = (props: TabsProps) => {
+  const [selectedTab, setTab] = useState(props.tabs[0].id);
+
   return (
-    <TabRoot defaultValue={props.tabs[0].id} orientation="horizontal">
-      <TabList aria-label={props.ariaLabel}>
-        {props.tabs.map((tab) => (
-          <Trigger key={tab.id} value={tab.id}>
-            {tab.trigger}
-          </Trigger>
-        ))}
+    <TabRoot value={selectedTab} onValueChange={setTab} orientation="horizontal">
+      <TabList aria-label={props.ariaLabel} hasRightContent={!!props.headerRightContent}>
+        <Flex css={{ flex: 1, overflow: "auto" }}>
+          {props.tabs.map((tab) => (
+            <Trigger key={tab.id} value={tab.id} stretchTabs={props.stretchTabs}>
+              {tab.trigger}
+            </Trigger>
+          ))}
+        </Flex>
+        {props.headerRightContent ?? null}
       </TabList>
-      {props.tabs.map((tab) => (
-        <TabsPrimitive.Content key={tab.id} value={tab.id}>
-          {tab.content}
-        </TabsPrimitive.Content>
-      ))}
+      {props.tabs.map(
+        (tab) =>
+          tab.id === selectedTab && (
+            <TabsPrimitive.Content key={tab.id} value={tab.id}>
+              {tab.content}
+            </TabsPrimitive.Content>
+          ),
+      )}
     </TabRoot>
   );
 };
@@ -41,18 +52,21 @@ const TabRoot = styled(TabsPrimitive.Root, {
 });
 
 const TabList = styled(TabsPrimitive.TabsList, {
-  display: "flex",
-  flexShrink: 0,
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr) auto",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
   borderBottomColor: "$border",
+
+  variants: {
+    hasRightContent: { true: { justifyContent: "space-between" } },
+  },
 });
 
 const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  flex: 1,
   height: "$8",
   px: "$5",
   fontWeight: "$regular",
@@ -66,5 +80,9 @@ const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
     fontWeight: "$bold",
     color: "$primary",
     boxShadow: "inset 0 -3px 0 0 currentColor, 0 1px 0 0 currentColor",
+  },
+
+  variants: {
+    stretchTabs: { true: { flex: 1 } },
   },
 });

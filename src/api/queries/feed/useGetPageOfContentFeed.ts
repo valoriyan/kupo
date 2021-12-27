@@ -1,51 +1,33 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
+import { ContentFilter, ContentFilterType } from "#/templates/Home";
 import { Api, SuccessfulGetPageOfPostFromFollowedUsersResponse } from "../..";
-import {
-  ContentFeedFilter,
-  ContentFeedFilterType,
-} from "#/templates/Home/ContentFeedContext";
 
 export const useGetPageOfContentFeed = ({
   contentFeedFilter,
 }: {
-  contentFeedFilter: ContentFeedFilter;
+  contentFeedFilter: ContentFilter;
 }) => {
-  if (contentFeedFilter.type === ContentFeedFilterType.FOLLOWING_USERS) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useInfiniteQuery<
-      SuccessfulGetPageOfPostFromFollowedUsersResponse,
-      Error,
-      SuccessfulGetPageOfPostFromFollowedUsersResponse,
-      string[]
-    >(
-      [CacheKeys.ContentFeed],
-      ({ pageParam }) => {
+  const { type: filterType, value: hashtag } = contentFeedFilter;
+  return useInfiniteQuery<
+    SuccessfulGetPageOfPostFromFollowedUsersResponse,
+    Error,
+    SuccessfulGetPageOfPostFromFollowedUsersResponse,
+    string[]
+  >(
+    [CacheKeys.ContentFeed, filterType, hashtag],
+    ({ pageParam }) => {
+      if (filterType === ContentFilterType.FollowingUsers) {
         return fetchPageOfContentFromFromFollowedUsers({ pageParam });
-      },
-      {
-        getPreviousPageParam: (lastPage) => lastPage.previousPageCursor,
-      },
-    );
-  } else {
-    const hashtag = contentFeedFilter.displayValue;
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useInfiniteQuery<
-      SuccessfulGetPageOfPostFromFollowedUsersResponse,
-      Error,
-      SuccessfulGetPageOfPostFromFollowedUsersResponse,
-      string[]
-    >(
-      [CacheKeys.ContentFeed],
-      ({ pageParam }) => {
+      } else {
         return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag });
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextPageCursor,
-      },
-    );
-  }
+      }
+    },
+    {
+      getPreviousPageParam: (lastPage) => lastPage.previousPageCursor,
+      getNextPageParam: (lastPage) => lastPage.nextPageCursor,
+    },
+  );
 };
 
 async function fetchPageOfContentFromFromFollowedUsers({
@@ -57,11 +39,9 @@ async function fetchPageOfContentFromFromFollowedUsers({
     cursor: pageParam,
     pageSize: 5,
   });
-  if (res.data && res.data.success) {
-    return res.data.success;
-  }
 
-  throw new Error(res.data.error?.reason);
+  if (res.data.success) return res.data.success;
+  throw new Error(res.data.error?.reason ?? "Unknown Error");
 }
 
 async function fetchPageOfContentFromFromFollowedHashtag({
@@ -76,10 +56,7 @@ async function fetchPageOfContentFromFromFollowedHashtag({
     cursor: pageParam,
     pageSize: 5,
   });
-  if (res.data && res.data.success) {
-    const data = res.data.success;
-    return data;
-  }
 
-  throw new Error(res.data.error?.reason);
+  if (res.data.success) return res.data.success;
+  throw new Error(res.data.error?.reason ?? "Unknown Error");
 }

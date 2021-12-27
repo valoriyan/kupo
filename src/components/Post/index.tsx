@@ -82,7 +82,7 @@ export const Post = (props: PostProps) => {
 
   return (
     <Grid>
-      <Flex css={{ p: "$3", gap: "$3", alignItems: "center" }}>
+      <Flex css={{ px: "$4", py: "$3", gap: "$3", alignItems: "center" }}>
         <Avatar
           alt={`@${authorUserName}'s profile picture`}
           src={authorUserAvatar}
@@ -94,7 +94,7 @@ export const Post = (props: PostProps) => {
 
         <Flex css={{ marginLeft: "auto", gap: "$5", alignItems: "center" }}>
           <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
-          <Popover trigger={<MoreVerticalAltIcon />}>
+          <Popover trigger={<Flex as={MoreVerticalAltIcon} />}>
             {({ hide }) => (
               <Stack>
                 {props.menuOptions.map(({ Icon, label, onClick }) => (
@@ -114,9 +114,9 @@ export const Post = (props: PostProps) => {
           </Popover>
         </Flex>
       </Flex>
-      <Body css={{ px: "$3", py: "$2" }}>{caption}</Body>
+      <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
       <PostImage alt="Post Media" src={contentElementTemporaryUrls[0]} />
-      <Flex css={{ gap: "$3", px: "$3", py: "$2", width: "100%", overflow: "auto" }}>
+      <Flex css={{ gap: "$3", px: "$4", py: "$2", width: "100%", overflow: "auto" }}>
         {hashtags.map((tag) => (
           <HashTag key={tag}>#{tag}</HashTag>
         ))}
