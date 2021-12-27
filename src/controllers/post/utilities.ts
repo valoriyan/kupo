@@ -1,4 +1,4 @@
-import { BlobStorageService } from "src/services/blobStorageService/models";
+import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
 import { DatabaseService } from "src/services/databaseService";
 import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -9,7 +9,7 @@ export async function constructRenderablePostsFromParts({
   posts,
   clientUserId,
 }: {
-  blobStorageService: BlobStorageService;
+  blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   posts: UnrenderablePostWithoutElementsOrHashtags[];
   clientUserId: string | undefined;
@@ -34,7 +34,7 @@ export async function constructRenderablePostFromParts({
   unrenderablePostWithoutElementsOrHashtags,
   clientUserId,
 }: {
-  blobStorageService: BlobStorageService;
+  blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   unrenderablePostWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags;
   clientUserId: string | undefined;

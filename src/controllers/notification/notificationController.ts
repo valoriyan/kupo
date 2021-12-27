@@ -10,13 +10,13 @@ import {
   handleGetPageOfNotifications,
   SuccessfullyGotPageOfNotificationsResponse,
 } from "./handleGetPageOfNotifications";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "./../../services/blobStorageService";
 
 @injectable()
 @Route("notification")
 export class NotificationController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
     public webSocketService: WebSocketService,
   ) {

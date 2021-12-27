@@ -46,13 +46,13 @@ import {
   handleGetChatRoomById,
   SuccessfullyGotChatRoomByIdResponse,
 } from "./handleGetChatRoomById";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "../../services/blobStorageService";
 
 @injectable()
 @Route("chat")
 export class ChatController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
     public webSocketService: WebSocketService,
   ) {

@@ -1,13 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
-import { singleton } from "tsyringe";
 import { writeFileSync, unlinkSync, mkdirSync } from "fs";
 import { getEnvironmentVariable } from "../../utilities";
 import { Promise as BluebirdPromise } from "bluebird";
-import { BlobStorageService, BlobItemPointer } from "./models";
+import { BlobStorageServiceInterface, BlobItemPointer } from "./models";
 
-@singleton()
-export class LocalBlobStorageService extends BlobStorageService {
-  private localBlobStorageDirectory: string = getEnvironmentVariable(
+export class LocalBlobStorageService extends BlobStorageServiceInterface {
+  static localBlobStorageDirectory: string = getEnvironmentVariable(
     "LOCAL_BLOB_STORAGE_DIRECTORY",
   );
 
@@ -16,11 +14,17 @@ export class LocalBlobStorageService extends BlobStorageService {
   }
 
   async saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer> {
+    console.log("\n\n\n\n\n\nHIT!\n\n\n\n\n\n");
+    console.log(this);
+
     const fileKey = uuidv4();
-    const fileWritePath = this.localBlobStorageDirectory + "/" + fileKey;
+    const fileWritePath =
+      LocalBlobStorageService.localBlobStorageDirectory + "/" + fileKey;
     console.log(`Writing file to ${fileWritePath}`);
 
-    await mkdirSync(this.localBlobStorageDirectory, { recursive: true });
+    await mkdirSync(LocalBlobStorageService.localBlobStorageDirectory, {
+      recursive: true,
+    });
     await writeFileSync(fileWritePath, image);
 
     return {
@@ -35,7 +39,7 @@ export class LocalBlobStorageService extends BlobStorageService {
   }): Promise<string> {
     const fileReadPath =
       "http://localhost:4000/" +
-      this.localBlobStorageDirectory +
+      LocalBlobStorageService.localBlobStorageDirectory +
       "/" +
       blobItemPointer.fileKey;
     return fileReadPath;
@@ -47,7 +51,8 @@ export class LocalBlobStorageService extends BlobStorageService {
     blobPointers: BlobItemPointer[];
   }): Promise<void> {
     await BluebirdPromise.map(blobPointers, async (blobPointer) => {
-      const filePath = this.localBlobStorageDirectory + "/" + blobPointer.fileKey;
+      const filePath =
+        LocalBlobStorageService.localBlobStorageDirectory + "/" + blobPointer.fileKey;
       await unlinkSync(filePath);
     });
 

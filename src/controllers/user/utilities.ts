@@ -1,4 +1,4 @@
-import { BlobStorageService } from "../../services/blobStorageService/models";
+import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
 import { DatabaseService } from "../../services/databaseService";
 import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent";
 import { RenderableUser, UnrenderableUser } from "./models";
@@ -12,7 +12,7 @@ export async function constructRenderableUsersFromParts({
 }: {
   clientUserId: string;
   unrenderableUsers: UnrenderableUser[];
-  blobStorageService: BlobStorageService;
+  blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
 }): Promise<RenderableUser[]> {
   const renderableUsers = await BluebirdPromise.map(
@@ -37,7 +37,7 @@ export async function constructRenderableUserFromParts({
 }: {
   clientUserId: string | undefined;
   unrenderableUser: UnrenderableUser;
-  blobStorageService: BlobStorageService;
+  blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
 }): Promise<RenderableUser> {
   const {

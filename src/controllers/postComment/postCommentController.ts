@@ -4,7 +4,6 @@ import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
 import {
   CommentOnPostRequestBody,
   FailedToCommentOnPostResponse,
@@ -23,12 +22,13 @@ import {
   handleDeleteCommentFromPost,
   SuccessfullyDeletedCommentFromPostResponse,
 } from "./handleDeleteCommentFromPost";
+import { BlobStorageService } from "./../../services/blobStorageService";
 
 @injectable()
 @Route("PostComment")
 export class PostCommentController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

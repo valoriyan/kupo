@@ -39,13 +39,13 @@ import {
   handleGetUsersByUsernames,
   SuccessfullyGotUsersByUsernamesRequestBodyResponse,
 } from "./handleGetUsersByUsernames";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "./../../services/blobStorageService";
 
 @injectable()
 @Route("user")
 export class UserPageController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

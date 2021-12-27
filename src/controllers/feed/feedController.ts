@@ -15,13 +15,13 @@ import {
   handleGetPageOfPostFromFollowedUsers,
   SuccessfulGetPageOfPostFromFollowedUsersResponse,
 } from "./handleGetPageOfPostFromFollowedUsers";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "../../services/blobStorageService";
 
 @injectable()
 @Route("feed")
 export class FeedController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

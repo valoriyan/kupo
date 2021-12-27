@@ -1,11 +1,11 @@
-import { BlobStorageService } from "../../services/blobStorageService/models";
+import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
 
 export async function uploadMediaFile({
   file,
   blobStorageService,
 }: {
   file: Express.Multer.File;
-  blobStorageService: BlobStorageService;
+  blobStorageService: BlobStorageServiceInterface;
 }): Promise<{
   blobFileKey: string;
   fileTemporaryUrl: string;

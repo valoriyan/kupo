@@ -42,13 +42,13 @@ import {
   SuccessfulGetPostsScheduledByUserResponse,
 } from "./handleGetPostsScheduledByUser";
 import { WebSocketService } from "../../services/webSocketService";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "../../services/blobStorageService";
 
 @injectable()
 @Route("post")
 export class PostController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
     public webSocketService: WebSocketService,
   ) {

@@ -28,13 +28,13 @@ import {
   handleDeleteShopItem,
   SuccessfulShopItemDeletionResponse,
 } from "./handleDeleteShopItem";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "./../../services/blobStorageService";
 
 @injectable()
 @Route("shopitem")
 export class ShopItemController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

@@ -1,13 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
-import { singleton } from "tsyringe";
 import { getEnvironmentVariable } from "../../utilities";
 import { Promise as BluebirdPromise } from "bluebird";
-import { BlobStorageService, BlobItemPointer } from "./models";
+import { BlobStorageServiceInterface, BlobItemPointer } from "./models";
 import { Endpoint, S3 } from "aws-sdk";
 import { PutObjectRequest, ManagedUpload, DeleteObjectRequest } from "aws-sdk/clients/s3";
 
-@singleton()
-export class WasabiBlobStorageService extends BlobStorageService {
+export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   static connection: S3;
   static bucket: string = getEnvironmentVariable("WASABI_BUCKET");
   static accessKey: string = getEnvironmentVariable("WASABI_ACCESS_KEY");
@@ -94,5 +92,3 @@ export class WasabiBlobStorageService extends BlobStorageService {
     return;
   }
 }
-
-WasabiBlobStorageService.get();

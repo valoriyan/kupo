@@ -27,12 +27,12 @@ import {
   RemoveUserLikeFromPostRequestBody,
   SuccessfullyRemovedUserLikeFromPostResponse,
 } from "./handleRemoveUserLikeFromPost";
-import { WasabiBlobStorageService } from "../../services/blobStorageService/WasabiBlobStorageService";
+import { BlobStorageService } from "./../../services/blobStorageService";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
   constructor(
-    public blobStorageService: WasabiBlobStorageService,
+    public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
   ) {
     super();

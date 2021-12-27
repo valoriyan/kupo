@@ -2,7 +2,12 @@ export interface BlobItemPointer {
   fileKey: string;
 }
 
-export abstract class BlobStorageService {
+export enum BlobStorageType {
+  WASABI = "wasabi",
+  LOCAL = "local",
+}
+
+export abstract class BlobStorageServiceInterface {
   abstract saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer>;
 
   abstract getTemporaryImageUrl({
