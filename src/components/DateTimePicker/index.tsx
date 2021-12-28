@@ -20,6 +20,7 @@ export interface DateTimePickerProps {
 export const DateTimePicker = (props: DateTimePickerProps) => {
   return (
     <Popover
+      align="end"
       trigger={
         <Flex css={{ alignItems: "center", gap: "$2" }}>
           <Body css={{ color: props.dateTime ? "$primary" : "$text" }}>

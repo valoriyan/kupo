@@ -16,9 +16,10 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
   const generateSocket = useWebsocketState((state) => state.generateSocket);
   const hasAccessToken = isAuthenticated === true;
 
-  const pageTransition = router.pathname.includes("add-content")
-    ? slideUpFromBottom
-    : slideInFromRight;
+  const pageTransition =
+    router.pathname.includes("add-content") || router.pathname.includes("settings")
+      ? slideUpFromBottom
+      : fadeInAndOut;
 
   useEffect(() => {
     getAccessToken().then((accessToken) => {
@@ -77,14 +78,16 @@ const SidePanelWrapper = styled(Flex, {
   "@md": { display: "block" },
 });
 
-const slideInFromRight = {
-  initial: { translateX: "100%" },
-  animate: { translateX: 0 },
-  exit: { translateX: "100%" },
+const fadeInAndOut = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  duration: 0.25,
 };
 
 const slideUpFromBottom = {
   initial: { translateY: "100%" },
   animate: { translateY: 0 },
   exit: { translateY: "100%" },
+  duration: 0.3,
 };

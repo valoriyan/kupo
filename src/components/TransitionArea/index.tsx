@@ -1,8 +1,10 @@
 import { Key, ReactNode } from "react";
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { AnimatePresence, motion, Variant, Variants } from "framer-motion";
 import { CSS, styled, usePrefersMotion } from "#/styling";
 
-export type Transition = Record<"initial" | "animate" | "exit", Variants[string]>;
+export type Transition = Record<"initial" | "animate" | "exit", Variant> & {
+  duration?: number;
+};
 
 export interface TransitionAreaProps {
   transitionKey: Key;
@@ -16,16 +18,17 @@ export interface TransitionAreaProps {
 
 export const TransitionArea = (props: TransitionAreaProps) => {
   const prefersMotion = usePrefersMotion();
-  const transitionAnimation = !prefersMotion ? noAnimation : props.animation;
+  const { duration, ...animation } = props.animation;
+  const transitionAnimation = !prefersMotion ? noAnimation : animation;
 
   return (
     <ContentArea css={props.css as Record<string, string>}>
       <AnimatePresence initial={false} custom={props.custom}>
         <TransitionWrapper
           key={props.transitionKey}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: duration ?? 0.3 }}
           custom={props.custom}
-          variants={transitionAnimation}
+          variants={transitionAnimation as unknown as Variants}
           initial="initial"
           animate="animate"
           exit="exit"

@@ -10,6 +10,7 @@ export interface PopoverRenderProps {
 export interface PopoverProps {
   trigger: ReactNode;
   children: ReactNode | ((renderProps: PopoverRenderProps) => ReactNode);
+  align?: "start" | "center" | "end" | undefined;
 }
 
 export const Popover = (props: PopoverProps) => {
@@ -21,7 +22,7 @@ export const Popover = (props: PopoverProps) => {
       <Trigger>{props.trigger}</Trigger>
       <AnimatePresence initial={false}>
         {open ? (
-          <Content sideOffset={8} align="start" forceMount>
+          <Content sideOffset={8} align={props.align ?? "start"} forceMount>
             <ContentBody
               transition={{ duration: 0.25 }}
               initial={{ scale: 0, opacity: 0.5 }}
