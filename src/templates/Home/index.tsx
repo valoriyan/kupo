@@ -10,6 +10,7 @@ import { ContentFeedPostBox } from "./ContentFeedPostBox";
 export enum ContentFilterType {
   FollowingUsers = "Following",
   Hashtag = "#",
+  User = "@",
 }
 
 export interface ContentFilter {

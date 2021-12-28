@@ -5,10 +5,12 @@ import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
+import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";
+import { HashTag } from "#/components/HashTags";
 import { ShareIcon } from "#/components/Icons";
-import { Flex, Stack } from "#/components/Layout";
+import { Box, Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
 import { Subtext, subtextStyles } from "#/components/Typography";
@@ -18,7 +20,6 @@ import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { UserPosts } from "./UserPosts";
-import { HashTag } from "#/components/HashTags";
 
 export interface UserProfileProps {
   username?: string;
@@ -53,18 +54,34 @@ const ProfileBody = (props: ProfileBodyProps) => {
     follows,
     userWebsite,
     profilePictureTemporaryUrl,
+    backgroundImageTemporaryUrl,
   } = props.user;
 
   const hashtags = props.user.hashtags.filter((x) => x);
 
   return (
     <Stack>
-      <Stack css={{ height: "100%", px: "$6", pt: "$6", pb: "$5" }}>
-        <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
-        <Stack css={{ mt: "$5", gap: "$4" }}>
-          <Link href={getProfilePageUrl({ username })} passHref>
-            <a>@{username}</a>
-          </Link>
+      <Stack>
+        <ProfileHeader>
+          <BackgroundImage
+            src={backgroundImageTemporaryUrl}
+            alt="User Background Image"
+          />
+          <AvatarAndName>
+            <Box
+              css={{
+                border: "solid $borderWidths$2 $background1",
+                borderRadius: "$round",
+              }}
+            >
+              <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
+            </Box>
+            <Link href={getProfilePageUrl({ username })} passHref>
+              <a>@{username}</a>
+            </Link>
+          </AvatarAndName>
+        </ProfileHeader>
+        <Stack css={{ mt: "$10", pt: "$4", px: "$6", gap: "$4" }}>
           <Subtext>
             {formatStat(followers.count)} followers | {formatStat(follows.count)} followed
           </Subtext>
@@ -84,7 +101,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
             </Flex>
           )}
         </Stack>
-        <Flex css={{ gap: "$3", pt: "$6", pb: "$3" }}>
+        <Flex css={{ gap: "$3", px: "$6", pt: "$6", pb: "$3" }}>
           {props.isOwnProfile ? (
             <Link href="/edit-profile" passHref>
               <Button as="a" size="md" variant="primary" css={{ flex: 1 }}>
@@ -128,6 +145,18 @@ const ProfileBody = (props: ProfileBodyProps) => {
     </Stack>
   );
 };
+
+const ProfileHeader = styled(Flex, {
+  position: "relative",
+});
+
+const AvatarAndName = styled(Stack, {
+  position: "absolute",
+  bottom: "-60px", // Magic number
+  alignItems: "flex-start",
+  gap: "$5",
+  px: "$6",
+});
 
 const Description = styled(Subtext, { fontWeight: "$light" });
 
