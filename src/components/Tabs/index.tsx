@@ -45,7 +45,7 @@ export const Tabs = (props: TabsProps) => {
 };
 
 const TabRoot = styled(TabsPrimitive.Root, {
-  height: "100%",
+  size: "100%",
   overflow: "auto",
   display: "grid",
   gridTemplateRows: "auto minmax(0, 1fr)",

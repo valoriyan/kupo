@@ -145,9 +145,10 @@ const Timestamp = styled("div", {
 });
 
 const PostImage = styled("img", {
-  py: "$3",
+  my: "$3",
   width: "100%",
   height: "auto",
+  bg: "$background3",
 });
 
 const HashTag = styled(Body, {

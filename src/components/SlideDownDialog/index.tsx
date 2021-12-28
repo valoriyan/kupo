@@ -2,51 +2,49 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { ReactNode, useState } from "react";
 import { styled, keyframes, prefersMotionSelector } from "#/styling";
 
-export interface DrawerProps {
+export interface SlideDownDialogProps {
   trigger: ReactNode;
-  position?: { top?: string; bottom?: string };
+  position?: { top?: string; bottom?: string; left?: string; right?: string };
   children: (renderProps: { hide: () => void }) => ReactNode;
 }
 
-export const Drawer = (props: DrawerProps) => {
+export const SlideDownDialog = (props: SlideDownDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const hide = () => setIsOpen(false);
 
   const position = {
     top: props.position?.top ?? 0,
-    bottom: props.position?.bottom ?? 0,
-    left: "unset",
-    right: 0,
+    bottom: props.position?.bottom ?? "unset",
+    left: props.position?.left ?? 0,
+    right: props.position?.right ?? "unset",
   };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger>{props.trigger}</Dialog.Trigger>
-      <Dialog.Portal>
-        <DialogOverlay css={{ ...position, left: "0" }} />
-        <DialogContent css={position}>{props.children({ hide })}</DialogContent>
-      </Dialog.Portal>
+      <DialogOverlay />
+      <DialogContent css={position}>{props.children({ hide })}</DialogContent>
     </Dialog.Root>
   );
 };
 
-const slideInFromRight = keyframes({
-  "0%": { transform: "translateX(100%)" },
+const slideInFromTop = keyframes({
+  "0%": { transform: "translateY(-100%)" },
   "100%": { transform: "translateX(0%)" },
 });
-const slideOutToRight = keyframes({
-  "0%": { transform: "translateX(0%)" },
-  "100%": { transform: "translateX(100%)" },
+const slideOutToTop = keyframes({
+  "0%": { transform: "translateY(0%)" },
+  "100%": { transform: "translateY(-100%)" },
 });
 
 const DialogContent = styled(Dialog.Content, {
-  position: "fixed",
+  position: "absolute",
   [prefersMotionSelector]: {
     "&[data-state='open']": {
-      animation: `${slideInFromRight} $2 ease`,
+      animation: `${slideInFromTop} $2 ease`,
     },
     "&[data-state='closed']": {
-      animation: `${slideOutToRight} $2 ease`,
+      animation: `${slideOutToTop} $2 ease`,
     },
   },
 });
@@ -62,7 +60,7 @@ const fadeOut = keyframes({
 
 const DialogOverlay = styled(Dialog.Overlay, {
   bg: "$overlay",
-  position: "fixed",
+  position: "absolute",
   inset: 0,
   [prefersMotionSelector]: {
     "&[data-state='open']": {

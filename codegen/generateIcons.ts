@@ -15,6 +15,7 @@ const ICONS_TO_GENERATE = [
   "chevron-down-r",
   "chevron-left",
   "chevron-right",
+  "chevron-up",
   "chevron-up-r",
   "close",
   "comment",

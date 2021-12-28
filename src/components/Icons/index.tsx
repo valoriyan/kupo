@@ -8,6 +8,7 @@ export * from "./generated/ChevronDownIcon";
 export * from "./generated/ChevronDownRIcon";
 export * from "./generated/ChevronLeftIcon";
 export * from "./generated/ChevronRightIcon";
+export * from "./generated/ChevronUpIcon";
 export * from "./generated/ChevronUpRIcon";
 export * from "./generated/CloseIcon";
 export * from "./generated/CommentIcon";

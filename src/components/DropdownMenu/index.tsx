@@ -32,10 +32,7 @@ export const DropdownMenu = <T extends string>(props: DropdownMenuProps<T>) => {
             <ContentBody
               transition={{ duration: 0.25 }}
               initial={{ scale: 0, opacity: 0.5 }}
-              animate={{
-                scale: 1,
-                opacity: 1,
-              }}
+              animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0.5 }}
             >
               <RadixDropdown.RadioGroup
