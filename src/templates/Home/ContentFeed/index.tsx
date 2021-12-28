@@ -1,9 +1,9 @@
+import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { styled } from "#/styling";
-import { ContentFilter } from "..";
 import { ContentFeedPostBox } from "./ContentFeedPostBox";
 
 export interface ContentFeedProps {

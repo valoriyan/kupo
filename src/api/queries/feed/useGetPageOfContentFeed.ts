@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { ContentFilter, ContentFilterType } from "#/templates/Home";
 import { Api, SuccessfulGetPageOfPostFromFollowedUsersResponse } from "../..";
+import { ContentFilter, ContentFilterType } from "./useGetContentFilters";
 
 export const useGetPageOfContentFeed = ({
   contentFeedFilter,

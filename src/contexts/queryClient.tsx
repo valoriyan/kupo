@@ -17,6 +17,7 @@ export enum CacheKeys {
   ChatRoomFromId = "ChatRoomFromId",
   ContentFeed = "ContentFeed",
   PostComments = "PostComments",
+  ContentFilters = "ContentFilters",
 }
 
 export const queryClient = new QueryClient({

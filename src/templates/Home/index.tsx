@@ -1,3 +1,5 @@
+import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
+import { useGetContentFilters } from "#/api/queries/feed/useGetContentFilters";
 import { ChevronDownIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { SlideDownDialog } from "#/components/SlideDownDialog";
@@ -5,25 +7,9 @@ import { Tabs } from "#/components/Tabs";
 import { ContentFeed } from "./ContentFeed";
 import { FeedListEditor } from "./FeedListEditor";
 
-export enum ContentFilterType {
-  FollowingUsers = "Following",
-  Hashtag = "#",
-  User = "@",
-}
-
-export interface ContentFilter {
-  id: string;
-  type: ContentFilterType;
-  value: string;
-}
-
 export const Home = () => {
-  // Eventually turn into hook that fetches filters from server
-  const contentFilters: ContentFilter[] = [
-    { id: "following", type: ContentFilterType.FollowingUsers, value: "" },
-    { id: "cute", type: ContentFilterType.Hashtag, value: "cute" },
-    { id: "ugly", type: ContentFilterType.Hashtag, value: "ugly" },
-  ];
+  const { data: contentFilters } = useGetContentFilters();
+  const { mutateAsync: updateContentFilters } = useUpdateContentFilters();
 
   return (
     <Flex css={{ position: "relative", height: "100%" }}>
@@ -45,7 +31,11 @@ export const Home = () => {
               }
             >
               {({ hide }) => (
-                <FeedListEditor hide={hide} contentFilters={contentFilters} />
+                <FeedListEditor
+                  hide={hide}
+                  contentFilters={contentFilters}
+                  updateContentFilters={updateContentFilters}
+                />
               )}
             </SlideDownDialog>
             <SearchIcon />
