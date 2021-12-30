@@ -49,10 +49,12 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
     const isHashTag = newFilterText.includes("#");
     const value = newFilterText.split(isHashTag ? "#" : "@")[1];
     const type = isHashTag ? ContentFilterType.Hashtag : ContentFilterType.User;
-    const newFilters = [
-      ...props.contentFilters.splice(1),
-      { id: type + value, type, value },
-    ];
+    const id = type + value;
+    if (props.contentFilters.some((filter) => filter.id === id)) {
+      setNewFilterText("");
+      return;
+    }
+    const newFilters = [...props.contentFilters.splice(1), { id, type, value }];
     props.updateContentFilters(newFilters);
     setNewFilterText("");
   };
