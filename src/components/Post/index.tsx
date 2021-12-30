@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ComponentType, useState } from "react";
 import { RenderablePost, RenderablePostComment } from "#/api";
 import { styled } from "#/styling";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { Avatar } from "../Avatar";
 import {
   BookmarkIcon,
@@ -10,10 +12,10 @@ import {
   MailForwardIcon,
   MoreVerticalAltIcon,
 } from "../Icons";
-import { Flex, Grid, Stack } from "../Layout";
-import { Body } from "../Typography";
+import { Box, Flex, Grid, Stack } from "../Layout";
 import { Popover } from "../Popover";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { Body } from "../Typography";
+import { Comments } from "./Comments";
 
 export interface PostMenuOption {
   Icon: ComponentType;
@@ -30,42 +32,6 @@ export interface PostProps {
   menuOptions: PostMenuOption[];
   postComments?: RenderablePostComment[];
 }
-
-const CommentContainer = ({
-  postComments,
-}: {
-  postComments?: RenderablePostComment[];
-}) => {
-  return (
-    <div>
-      {postComments?.map((postComment) => (
-        <div key={postComment.postCommentId}>
-          {postComment.user.username}: {postComment.text}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const Comments = ({ postComments }: { postComments?: RenderablePostComment[] }) => {
-  return (
-    <div>
-      <CommentInput type="textarea" placeholder="Add comment" />
-      <CommentContainer postComments={postComments} />
-    </div>
-  );
-};
-
-const CommentInput = styled("input", {
-  width: "100%",
-  height: "$10",
-});
-
-//////////////////////////////////////////////////
-//////////////////////////////////////////////////
-
-//////////////////////////////////////////////////
-//////////////////////////////////////////////////
 
 export const Post = (props: PostProps) => {
   const [displayComments, setDisplayComments] = useState(false);
@@ -115,7 +81,23 @@ export const Post = (props: PostProps) => {
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
-      <PostImage alt="Post Media" src={contentElementTemporaryUrls[0]} />
+      <ImageWrapper>
+        <BlurredImage
+          alt="Blurred Post Media"
+          src={contentElementTemporaryUrls[0]}
+          layout="fill"
+          unoptimized // Optimization caching is broken because signed urls aren't stable
+          priority
+        />
+        <Image
+          alt="Post Media"
+          src={contentElementTemporaryUrls[0]}
+          layout="fill"
+          objectFit="contain"
+          unoptimized // Optimization caching is broken because signed urls aren't stable
+          priority
+        />
+      </ImageWrapper>
       <Flex css={{ gap: "$3", px: "$4", py: "$2", width: "100%", overflow: "auto" }}>
         {hashtags.map((tag) => (
           <HashTag key={tag}>#{tag}</HashTag>
@@ -144,11 +126,17 @@ const Timestamp = styled("div", {
   color: "$secondaryText",
 });
 
-const PostImage = styled("img", {
-  my: "$3",
+const ImageWrapper = styled(Box, {
+  position: "relative",
   width: "100%",
-  height: "auto",
+  height: "62vh",
+  my: "$3",
   bg: "$background3",
+});
+
+const BlurredImage = styled(Image, {
+  filter: "blur(20px)",
+  opacity: 0.9,
 });
 
 const HashTag = styled(Body, {

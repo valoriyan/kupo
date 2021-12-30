@@ -8,7 +8,7 @@ export type Transition = Record<"initial" | "animate" | "exit", Variant> & {
 
 export interface TransitionAreaProps {
   transitionKey: Key;
-  animation: Transition;
+  animation: Transition | undefined;
   children: ReactNode;
   css?: CSS;
   // custom is defined as being any by framer-motion
@@ -18,7 +18,7 @@ export interface TransitionAreaProps {
 
 export const TransitionArea = (props: TransitionAreaProps) => {
   const prefersMotion = usePrefersMotion();
-  const { duration, ...animation } = props.animation;
+  const { duration, ...animation } = props.animation ?? noAnimation;
   const transitionAnimation = !prefersMotion ? noAnimation : animation;
 
   return (
@@ -65,7 +65,7 @@ const CurrentContent = styled("div", {
   bg: "$background1",
 });
 
-const noAnimation = {
+const noAnimation: Transition = {
   initial: { translateX: 0, translateY: 0 },
   animate: { translateX: 0, translateY: 0 },
   exit: { translateX: 0, translateY: 0 },

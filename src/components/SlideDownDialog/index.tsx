@@ -39,7 +39,7 @@ const slideOutToTop = keyframes({
 
 const DialogContent = styled(Dialog.Content, {
   position: "absolute",
-  boxShadow: "$1",
+  zIndex: "$dialog",
   [prefersMotionSelector]: {
     "&[data-state='open']": {
       animation: `${slideInFromTop} $2 ease`,

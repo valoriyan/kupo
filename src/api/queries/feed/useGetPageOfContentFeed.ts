@@ -8,19 +8,22 @@ export const useGetPageOfContentFeed = ({
 }: {
   contentFeedFilter: ContentFilter;
 }) => {
-  const { type: filterType, value: hashtag } = contentFeedFilter;
+  const { type: filterType, value } = contentFeedFilter;
   return useInfiniteQuery<
     SuccessfulGetPageOfPostFromFollowedUsersResponse,
     Error,
     SuccessfulGetPageOfPostFromFollowedUsersResponse,
     string[]
   >(
-    [CacheKeys.ContentFeed, filterType, hashtag],
+    [CacheKeys.ContentFeed, filterType, value],
     ({ pageParam }) => {
       if (filterType === ContentFilterType.FollowingUsers) {
         return fetchPageOfContentFromFromFollowedUsers({ pageParam });
+      } else if (filterType === ContentFilterType.Hashtag) {
+        return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag: value });
       } else {
-        return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag });
+        // TODO: replace with posts by username
+        return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag: value });
       }
     },
     {

@@ -6,8 +6,9 @@ export interface GetPostsByUserIdArgs {
   userId: string;
 }
 
-async function fetchPageOfPostsByUserId({
+export async function fetchPageOfPostsByUserId({
   userId,
+  pageParam,
 }: {
   userId: string;
   pageParam: string | undefined;
@@ -16,6 +17,7 @@ async function fetchPageOfPostsByUserId({
     {
       userId,
       pageSize: 25,
+      cursor: pageParam,
     },
     { authStrat: "tryToken" },
   );

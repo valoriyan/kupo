@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
+import { motion } from "framer-motion";
 import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
 import {
   ContentFilter,
@@ -42,7 +43,8 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
     );
   };
 
-  const addFilter = () => {
+  const addFilter: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
     if (!isFilterValid(newFilterText)) return;
     const isHashTag = newFilterText.includes("#");
     const value = newFilterText.split(isHashTag ? "#" : "@")[1];
@@ -62,8 +64,15 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   };
 
   return (
-    <Stack css={{ bg: "$background1" }}>
+    <Stack
+      as={motion.div}
+      layout
+      transition={{ duration: 0.2 }}
+      css={{ bg: "$background1", boxShadow: "$1" }}
+    >
       <Flex
+        as={motion.div}
+        layout
         css={{
           gap: "$2",
           p: "$3",
@@ -94,13 +103,17 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           }
         />
       ))}
-      <Grid css={{ gridTemplateColumns: "minmax(0, 1fr) auto" }}>
+      <Grid
+        as="form"
+        onSubmit={addFilter}
+        css={{ gridTemplateColumns: "minmax(0, 1fr) auto" }}
+      >
         <FilterInput
           placeholder="@username, #hashtag"
           value={newFilterText}
           onChange={(e) => setNewFilterText(e.currentTarget.value)}
         />
-        <AddButton onClick={addFilter} disabled={!isFilterValid(newFilterText)}>
+        <AddButton type="submit" disabled={!isFilterValid(newFilterText)}>
           <MathPlusIcon />
         </AddButton>
       </Grid>
@@ -113,6 +126,7 @@ const FilterInput = styled("input", bodyStyles, {
   border: "none",
   p: "$5",
   borderTop: "solid $borderWidths$1 $border",
+  marginTop: "-1px",
 });
 
 const AddButton = styled("button", {
@@ -143,7 +157,7 @@ interface FilterRowProps {
 
 const FilterRow = ({ filter, actions }: FilterRowProps) => {
   return (
-    <FilterRowWrapper>
+    <FilterRowWrapper layout transition={{ duration: 0.2 }}>
       <Body>{filter.type + filter.value}</Body>
       {actions && (
         <Flex css={{ gap: "$3" }}>
@@ -168,10 +182,14 @@ const FilterRow = ({ filter, actions }: FilterRowProps) => {
   );
 };
 
-const FilterRowWrapper = styled(Flex, {
+const FilterRowWrapper = styled(motion.div, {
+  display: "flex",
   borderTop: "solid $borderWidths$1 $border",
+  borderBottom: "solid $borderWidths$1 $border",
   p: "$5",
   justifyContent: "space-between",
+  bg: "$background1",
+  marginTop: "-1px",
 });
 
 const IconButton = styled("button", { lineHeight: 0 });

@@ -10,6 +10,6 @@ module.exports = {
     API_BASE_URL: process.env.API_BASE_URL,
   },
   images: {
-    domains: ["localhost", "kupono.io"],
+    domains: ["localhost", "kupono.io", "kupono-dev.s3.wasabisys.com"],
   },
 };

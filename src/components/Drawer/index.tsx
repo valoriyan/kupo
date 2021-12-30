@@ -42,6 +42,7 @@ const slideOutToRight = keyframes({
 const DialogContent = styled(Dialog.Content, {
   position: "fixed",
   boxShadow: "$1",
+  zIndex: "$dialog",
   [prefersMotionSelector]: {
     "&[data-state='open']": {
       animation: `${slideInFromRight} $2 ease`,
