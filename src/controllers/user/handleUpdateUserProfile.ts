@@ -1,5 +1,5 @@
 import express from "express";
-import { Color } from "src/types/color";
+import { Color } from "../../types/color";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { ProfilePrivacySetting, RenderableUser } from "./models";

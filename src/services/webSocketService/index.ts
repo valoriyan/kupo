@@ -6,7 +6,7 @@ import { notifyUserIdsOfNewChatMessage } from "./notifyUserIdsOfNewChatMessage";
 import { singleton } from "tsyringe";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
-import { RenderableChatMessage } from "src/controllers/chat/models";
+import { RenderableChatMessage } from "../../controllers/chat/models";
 import { notifyUserIdsOfDeletedChatMessage } from "./notifyUserIdsOfDeletedChatMessage";
 
 @singleton()

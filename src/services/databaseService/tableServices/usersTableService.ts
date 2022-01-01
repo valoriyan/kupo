@@ -1,6 +1,6 @@
 import { map } from "bluebird";
 import { Pool, QueryConfig, QueryResult } from "pg";
-import { Color } from "src/types/color";
+import { Color } from "../../../types/color";
 import {
   ProfilePrivacySetting,
   UnrenderableUser,

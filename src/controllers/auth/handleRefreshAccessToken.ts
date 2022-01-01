@@ -1,5 +1,5 @@
 import express from "express";
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 import { AuthController } from "./authController";
 import { AuthFailureReason, FailedAuthResponse, SuccessfulAuthResponse } from "./models";
 import { validateTokenAndGetUserId } from "./utilities";

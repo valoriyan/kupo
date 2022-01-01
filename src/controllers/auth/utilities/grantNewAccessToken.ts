@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../../types/httpResponse";
 import { Controller } from "tsoa";
 import {
   generateAccessToken,

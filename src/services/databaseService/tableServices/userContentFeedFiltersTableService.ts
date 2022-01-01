@@ -2,7 +2,7 @@ import { Pool, QueryResult } from "pg";
 import {
   UserContentFeedFilter,
   UserContentFeedFilterType,
-} from "src/controllers/feed/models";
+} from "../../../controllers/feed/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";

@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "src/types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";

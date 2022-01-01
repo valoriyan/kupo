@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderableChatRoomPreview } from "src/controllers/chat/models";
+import { UnrenderableChatRoomPreview } from "../../../controllers/chat/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";

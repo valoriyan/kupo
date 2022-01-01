@@ -1,5 +1,5 @@
 import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
-import { DatabaseService } from "src/services/databaseService";
+import { DatabaseService } from "../../services/databaseService";
 import { UnrenderableUser } from "../user/models";
 import {
   constructRenderableUserFromParts,

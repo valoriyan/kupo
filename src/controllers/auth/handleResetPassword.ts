@@ -1,4 +1,4 @@
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 import { AuthController } from "./authController";
 
 export interface ResetPasswordRequestBody {

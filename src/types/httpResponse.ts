@@ -1,4 +1,4 @@
-import { FailedAuthResponse } from "src/controllers/auth/models";
+import { FailedAuthResponse } from "../controllers/auth/models";
 
 export interface HTTPResponse<ErrorType, SuccessType> {
   error?: ErrorType;

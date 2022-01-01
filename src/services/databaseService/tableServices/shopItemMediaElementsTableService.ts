@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { ShopItemMediaElement } from "src/controllers/shopItem/models";
+import { ShopItemMediaElement } from "../../../controllers/shopItem/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";

@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderablePostWithoutElementsOrHashtags } from "src/controllers/post/models";
+import { UnrenderablePostWithoutElementsOrHashtags } from "../../../controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {

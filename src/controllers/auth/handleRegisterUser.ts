@@ -1,4 +1,4 @@
-import { HTTPResponse } from "src/types/httpResponse";
+import { HTTPResponse } from "../../types/httpResponse";
 import { v4 as uuidv4 } from "uuid";
 import { encryptPassword } from "./utilities";
 import { AuthController } from "./authController";

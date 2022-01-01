@@ -1,5 +1,5 @@
 import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
-import { DatabaseService } from "src/services/databaseService";
+import { DatabaseService } from "../../services/databaseService";
 import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 

@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderableUserFollow } from "src/controllers/userInteraction/models";
+import { UnrenderableUserFollow } from "../../../controllers/userInteraction/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";

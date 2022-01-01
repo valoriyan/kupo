@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { RenderableChatMessage } from "src/controllers/chat/models";
+import { RenderableChatMessage } from "../../controllers/chat/models";
 import { NEW_CHAT_MESSAGE_EVENT_NAME } from "./eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 
