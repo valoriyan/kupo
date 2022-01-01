@@ -24,13 +24,14 @@ export async function handleDeletePost({
 }): Promise<
   SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
 > {
-  const { error } = await checkAuthorization(controller, request);
+  const { error, clientUserId } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { postId } = requestBody;
 
   await controller.databaseService.tableNameToServicesMap.postsTableService.deletePost({
     postId,
+    authorUserId: clientUserId,
   });
   const blobPointers =
     await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(

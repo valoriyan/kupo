@@ -16,6 +16,18 @@ import {
   SuccessfulGetPageOfPostFromFollowedUsersResponse,
 } from "./handleGetPageOfPostFromFollowedUsers";
 import { BlobStorageService } from "../../services/blobStorageService";
+import {
+  FailedToGetUserContentFeedFiltersResponse,
+  GetUserContentFeedFiltersRequestBody,
+  handleGetUserContentFeedFilters,
+  SuccessfullyGotUserContentFeedFiltersResponse,
+} from "./handleGetUserContentFeedFilters";
+import {
+  FailedToSetUserContentFeedFiltersResponse,
+  handleSetUserContentFeedFilters,
+  SetUserContentFeedFiltersRequestBody,
+  SuccessfullySetUserContentFeedFiltersResponse,
+} from "./handleSetUserContentFeedFilters";
 
 @injectable()
 @Route("feed")
@@ -69,9 +81,43 @@ export class FeedController extends Controller {
     });
   }
 
+  @Post("getUserContentFeedFilters")
+  public async getUserContentFeedFilters(
+    @Request() request: express.Request,
+    @Body() requestBody: GetUserContentFeedFiltersRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToGetUserContentFeedFiltersResponse,
+      SuccessfullyGotUserContentFeedFiltersResponse
+    >
+  > {
+    return await handleGetUserContentFeedFilters({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  @Post("setUserContentFeedFilters")
+  public async setUserContentFeedFilters(
+    @Request() request: express.Request,
+    @Body() requestBody: SetUserContentFeedFiltersRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToSetUserContentFeedFiltersResponse,
+      SuccessfullySetUserContentFeedFiltersResponse
+    >
+  > {
+    return await handleSetUserContentFeedFilters({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////

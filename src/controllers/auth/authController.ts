@@ -4,7 +4,11 @@ import { Body, Controller, Get, Post, Request, Route } from "tsoa";
 import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
 import { LocalEmailService } from "../../services/emailService";
 import { injectable } from "tsyringe";
-import { handleRegisterUser, RegisterUserRequestBody } from "./handleRegisterUser";
+import {
+  FailedToRegisterUserResponse,
+  handleRegisterUser,
+  RegisterUserRequestBody,
+} from "./handleRegisterUser";
 import {
   FailedToUpdatePasswordResponse,
   handleUpdatePassword,
@@ -38,7 +42,7 @@ export class AuthController extends Controller {
   @Post("register")
   public async registerUser(
     @Body() requestBody: RegisterUserRequestBody,
-  ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
+  ): Promise<HTTPResponse<FailedToRegisterUserResponse, SuccessfulAuthResponse>> {
     return await handleRegisterUser({
       controller: this,
       requestBody,

@@ -306,9 +306,18 @@ export class PostsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deletePost({ postId }: { postId: string }): Promise<void> {
+  public async deletePost({
+    postId,
+    authorUserId,
+  }: {
+    postId: string;
+    authorUserId: string;
+  }): Promise<void> {
     const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "post_id", value: postId },
+        { field: "author_user_id", value: authorUserId },
+      ],
       tableName: this.tableName,
     });
 
