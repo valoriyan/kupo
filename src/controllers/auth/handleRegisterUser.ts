@@ -30,13 +30,13 @@ export async function handleRegisterUser({
   const userId = uuidv4();
   const { email, username, password } = requestBody;
 
-  const usernameErrorReason = validateUsername({username});
+  const usernameErrorReason = validateUsername({ username });
   if (!!usernameErrorReason) {
     return {
       error: {
         reason: usernameErrorReason,
-      }
-    }
+      },
+    };
   }
 
   const encryptedPassword = encryptPassword({ password });
