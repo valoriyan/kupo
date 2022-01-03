@@ -56,8 +56,8 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
     chatRoomId,
   });
 
-  const onMount = () => {
-    if (!!socket) {
+  useEffect(() => {
+    if (socket) {
       console.log("MOUNTING SOCKET!");
 
       function handleNewChatMessage(chatMessage: RenderableChatMessage) {
@@ -92,12 +92,7 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
         socket.off(DELETED_CHAT_MESSAGE_EVENT_NAME, handleDeleteChatMessage);
       };
     }
-
-    return function emptyCleanup() {};
-  };
-
-  useEffect(() => {
-    return onMount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   if (

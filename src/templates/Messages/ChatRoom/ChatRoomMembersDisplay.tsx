@@ -19,17 +19,18 @@ export const ChatRoomMembersDisplay = ({
       ? nonClientChatRoomMembersWithData[0]?.profilePictureTemporaryUrl
       : undefined;
 
-  const chatRoomMemberUsernames = nonClientChatRoomMembersWithData.map(
+  const chatRoomMemberUsernames = nonClientChatRoomMembersWithData.flatMap(
     (chatRoomMember, index) => {
-      const { username, userId } = chatRoomMember!;
-      return (
-        <Link key={userId} href={`/user/${userId}`}>
-          <Username>
+      if (!chatRoomMember) return [];
+      const { username, userId } = chatRoomMember;
+      return [
+        <Link key={userId} href={`/profile/${username}`} passHref>
+          <Username as="a">
             @{username}
             {index < nonClientChatRoomMembersWithData.length - 1 ? "," : null}
           </Username>
-        </Link>
-      );
+        </Link>,
+      ];
     },
   );
 
@@ -57,4 +58,5 @@ const Username = styled("span", {
   color: "$link",
   fontSize: "$4",
   cursor: "pointer",
+  textDecoration: "none",
 });

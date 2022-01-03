@@ -26,10 +26,7 @@ export const NewChatRoomInner = ({ clientUser }: { clientUser: RenderableUser })
   } = useGetUsersByUsernames({ usernames: usernamesInChatRoom });
 
   const userIds = !!users
-    ? users
-        .filter((user) => !!user)
-        .map((user) => user!.userId)
-        .concat([clientUser.userId])
+    ? users.flatMap((user) => (user ? [user.userId] : [])).concat([clientUser.userId])
     : [clientUser.userId];
 
   const { data: doesChatRoomExistData } = useGetChatRoomIdWithUserIds({

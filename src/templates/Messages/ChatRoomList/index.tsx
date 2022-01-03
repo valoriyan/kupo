@@ -36,11 +36,10 @@ export const ChatRoomsList = ({
     return <div>Loading</div>;
   }
 
-  const chatRooms = data.pages
-    .filter((chatRoomDataPage) => !!chatRoomDataPage.success)
-    .flatMap((chatRoomDataPage) => {
-      return chatRoomDataPage.success!.chatRooms;
-    });
+  const chatRooms = data.pages.flatMap((chatRoomDataPage) => {
+    if (!chatRoomDataPage.success) return [];
+    return chatRoomDataPage.success.chatRooms;
+  });
 
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
     return (
@@ -57,7 +56,7 @@ export const ChatRoomsList = ({
         </div>
       ) : null}
 
-      <Link href={`/messages/new`}>
+      <Link href={`/messages/new`} passHref>
         <CreateNewChatRoomButton>Create New Room</CreateNewChatRoomButton>
       </Link>
       <br />
@@ -83,9 +82,12 @@ export const ChatRoomsList = ({
   );
 };
 
-const CreateNewChatRoomButton = styled("button", {
+const CreateNewChatRoomButton = styled("a", {
+  display: "inline-block",
   padding: "$2",
-  backgroundColor: "$background3",
+  bg: "$background3",
+  color: "$text",
   margin: "$5",
   borderRadius: "$3",
+  textDecoration: "none",
 });

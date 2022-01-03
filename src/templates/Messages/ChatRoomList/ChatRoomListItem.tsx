@@ -36,10 +36,10 @@ export const ChatRoomListItem = ({
 
   return (
     <FlexWrapperContainer>
-      <Link href={`/messages/${chatRoomId}`}>
-        <div>
+      <Link href={`/messages/${chatRoomId}`} passHref>
+        <a>
           <Avatar src={firstMemberUserProfilePicture} alt="Chat Room Avatar Image" />
-        </div>
+        </a>
       </Link>
 
       <Usernames>{chatRoomMembersDisplay}</Usernames>
@@ -50,8 +50,9 @@ export const ChatRoomListItem = ({
 const FlexWrapperContainer = styled(Flex, {
   padding: "$5",
   alignItems: "center",
-  borderTop: "1px solid $primaryTranslucent",
-  borderBottom: "1px solid $primaryTranslucent",
+  borderWidth: "$1",
+  borderTop: "solid $primaryTranslucent",
+  borderBottom: "solid $primaryTranslucent",
 });
 
 const Usernames = styled("div", {
