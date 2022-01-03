@@ -81,6 +81,8 @@ import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
+import { HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse } from "../types";
+// @ts-ignore
 import { HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse } from "../types";
 // @ts-ignore
 import { LoginUserRequestBody } from "../types";
@@ -123,6 +125,8 @@ import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSucces
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseFailedToGetUserContentFeedFiltersResponseSuccessfullyGotUserContentFeedFiltersResponse } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse } from "../types";
@@ -132,6 +136,8 @@ import { SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPos
 import { SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToSetUserContentFeedFiltersResponseSuccessfullySetUserContentFeedFiltersResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse } from "../types";
 // @ts-ignore
@@ -156,6 +162,8 @@ import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageO
 import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
+// @ts-ignore
+import { SetUserContentFeedFiltersRequestBody } from "../types";
 // @ts-ignore
 import { SetUserHashtagsRequestBody } from "../types";
 // @ts-ignore
@@ -1239,6 +1247,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserContentFeedFilters: async (
+      body: object,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists("getUserContentFeedFilters", "body", body);
+      const localVarPath = `/feed/getUserContentFeedFilters`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {GetUserProfileParams} getUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1676,6 +1729,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         searchUserProfilesByUsernameParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserContentFeedFilters: async (
+      setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'setUserContentFeedFiltersRequestBody' is not null or undefined
+      assertParamExists(
+        "setUserContentFeedFilters",
+        "setUserContentFeedFiltersRequestBody",
+        setUserContentFeedFiltersRequestBody,
+      );
+      const localVarPath = `/feed/setUserContentFeedFilters`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        setUserContentFeedFiltersRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2737,6 +2839,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getUserContentFeedFilters(
+      body: object,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUserContentFeedFiltersResponseSuccessfullyGotUserContentFeedFiltersResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getUserContentFeedFilters(
+        body,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetUserProfileParams} getUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2891,7 +3019,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
+      ) => AxiosPromise<HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(
         registerUserRequestBody,
@@ -2976,6 +3104,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
           searchUserProfilesByUsernameParams,
           options,
         );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async setUserContentFeedFilters(
+      setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToSetUserContentFeedFiltersResponseSuccessfullySetUserContentFeedFiltersResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.setUserContentFeedFilters(
+        setUserContentFeedFiltersRequestBody,
+        options,
+      );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -3576,6 +3730,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserContentFeedFilters(
+      body: object,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetUserContentFeedFiltersResponseSuccessfullyGotUserContentFeedFiltersResponse> {
+      return localVarFp
+        .getUserContentFeedFilters(body, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetUserProfileParams} getUserProfileParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3659,7 +3827,7 @@ export const DefaultApiFactory = function (
     registerUser(
       registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
+    ): AxiosPromise<HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse> {
       return localVarFp
         .registerUser(registerUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -3704,6 +3872,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse> {
       return localVarFp
         .searchUserProfilesByUsername(searchUserProfilesByUsernameParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserContentFeedFilters(
+      setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToSetUserContentFeedFiltersResponseSuccessfullySetUserContentFeedFiltersResponse> {
+      return localVarFp
+        .setUserContentFeedFilters(setUserContentFeedFiltersRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4224,6 +4406,19 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getUserContentFeedFilters(body: object, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getUserContentFeedFilters(body, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {GetUserProfileParams} getUserProfileParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4362,6 +4557,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .searchUserProfilesByUsername(searchUserProfilesByUsernameParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public setUserContentFeedFilters(
+    setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .setUserContentFeedFilters(setUserContentFeedFiltersRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
