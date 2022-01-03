@@ -21,7 +21,7 @@ export const storageFactory = (
   },
 ) => {
   const StorageSingleton = {
-    getItem: <T extends unknown>(
+    getItem: <T>(
       key: string,
       reviver?: (this: unknown, key: string, value: unknown) => unknown,
     ): T | null => {
@@ -33,7 +33,7 @@ export const storageFactory = (
       return JSON.parse(strItem, reviver) as T;
     },
 
-    setItem: <T extends unknown>(
+    setItem: <T>(
       key: string,
       value: T,
       replacer?: (this: unknown, key: string, value: unknown) => unknown,
@@ -74,7 +74,7 @@ export const storageFactory = (
     },
   };
 
-  const StorageItem = function <T extends unknown>(
+  const StorageItem = function <T>(
     name: string,
     options?: {
       reviver?: (this: unknown, key: string, value: unknown) => unknown;

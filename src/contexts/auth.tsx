@@ -67,7 +67,7 @@ const doesTokenExpireSoon = (token: string) => {
   return expiresSoon;
 };
 
-export const ProtectedPage = <T extends unknown>(Component: ComponentType<T>) => {
+export const ProtectedPage = <T,>(Component: ComponentType<T>) => {
   const ProtectedComponent = (props: T) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -91,7 +91,7 @@ export const ProtectedPage = <T extends unknown>(Component: ComponentType<T>) =>
   return ProtectedComponent;
 };
 
-export const RedirectAfterAuth = <T extends unknown>(Component: ComponentType<T>) => {
+export const RedirectAfterAuth = <T,>(Component: ComponentType<T>) => {
   const ProtectedComponent = (props: T) => {
     const [isAuthenticated, setIsAuthenticated] = useState<"unset" | boolean>("unset");
 

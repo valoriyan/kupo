@@ -154,7 +154,7 @@ export const EditProfile = ({ user }: EditProfileProps) => {
   );
 };
 
-const useFormField = <T extends unknown>(initialValue: T) => {
+const useFormField = <T,>(initialValue: T) => {
   const [value, setValue] = useState(initialValue);
   const [isTouched, setIsTouched] = useState(false);
 
