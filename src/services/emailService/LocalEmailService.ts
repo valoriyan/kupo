@@ -11,7 +11,7 @@ export class LocalEmailService extends EmailServiceInterface {
   }
 
   async sendResetPasswordEmail({ user }: { user: UnrenderableUser }): Promise<void> {
-    const {userId} = user;
+    const { userId } = user;
     const resetPasswordToken = generateResetPasswordToken({
       userId,
       jwtPrivateKey: LocalEmailService.jwtPrivateKey,
@@ -24,4 +24,3 @@ export class LocalEmailService extends EmailServiceInterface {
     return;
   }
 }
-

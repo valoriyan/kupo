@@ -5,15 +5,12 @@ export enum EmailServiceType {
   LOCAL = "LOCAL",
 }
 
-
 export abstract class EmailServiceInterface {
   abstract sendResetPasswordEmail({ user }: { user: UnrenderableUser }): Promise<void>;
 }
-
 
 export interface ResetPasswordJWTData {
   resetPasswordData: {
     userId: string;
   };
 }
-

@@ -6,29 +6,29 @@ import { LocalEmailService } from "./LocalEmailService";
 
 @singleton()
 export class EmailService extends EmailServiceInterface {
+  static implementation: EmailServiceInterface =
+    EmailService.selectEmailServiceImplementation();
 
-    static implementation: EmailServiceInterface = EmailService.selectEmailServiceImplementation();
+  constructor() {
+    super();
+  }
 
+  sendResetPasswordEmail = EmailService.implementation.sendResetPasswordEmail;
 
-    constructor() {
-        super();
-      }
+  static selectEmailServiceImplementation(): EmailServiceInterface {
+    const implementedBlobStorageServiceType: string = getEnvironmentVariable(
+      "IMPLEMENTED_EMAIL_SERVICE_TYPE",
+    );
 
-      sendResetPasswordEmail = EmailService.implementation.sendResetPasswordEmail;
-    
-
-      static selectEmailServiceImplementation(): EmailServiceInterface {
-        const implementedBlobStorageServiceType: string = getEnvironmentVariable("IMPLEMENTED_EMAIL_SERVICE_TYPE");
-    
-        if (implementedBlobStorageServiceType === EmailServiceType.LOCAL) {
-          return new LocalEmailService();
-        } else if (implementedBlobStorageServiceType === EmailServiceType.SEND_GRID) {
-          SendGridEmailService.get();
-          return new SendGridEmailService();
-        } else {
-          throw new Error(`Failed to initialize blob storage of type "${implementedBlobStorageServiceType}"`);
-        }
-      }
-
-
+    if (implementedBlobStorageServiceType === EmailServiceType.LOCAL) {
+      return new LocalEmailService();
+    } else if (implementedBlobStorageServiceType === EmailServiceType.SEND_GRID) {
+      SendGridEmailService.get();
+      return new SendGridEmailService();
+    } else {
+      throw new Error(
+        `Failed to initialize blob storage of type "${implementedBlobStorageServiceType}"`,
+      );
+    }
+  }
 }

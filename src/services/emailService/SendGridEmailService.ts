@@ -13,11 +13,11 @@ export class SendGridEmailService extends EmailServiceInterface {
   }
 
   static async get() {
-    SendgridMailer.setApiKey(SendGridEmailService.SENDGRID_API_KEY)
+    SendgridMailer.setApiKey(SendGridEmailService.SENDGRID_API_KEY);
   }
 
   async sendResetPasswordEmail({ user }: { user: UnrenderableUser }): Promise<void> {
-    const {userId, email} = user; 
+    const { userId, email } = user;
 
     const resetPasswordToken = generateResetPasswordToken({
       userId,
@@ -27,23 +27,20 @@ export class SendGridEmailService extends EmailServiceInterface {
     const message = {
       to: email,
       from: "help@kupono.io",
-      subject: 'Password Reset',
+      subject: "Password Reset",
       html: `
         <strong>Here is your reset password token: ${resetPasswordToken}</strong>
       `,
     };
 
-    SendgridMailer
-      .send(message)
+    SendgridMailer.send(message)
       .then(() => {
-        console.log('Email sent')
+        console.log("Email sent");
       })
       .catch((error: Error) => {
-        console.error(error)
-      })
-
+        console.error(error);
+      });
 
     return;
   }
 }
-

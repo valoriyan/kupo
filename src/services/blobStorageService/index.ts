@@ -6,7 +6,6 @@ import { WasabiBlobStorageService } from "./WasabiBlobStorageService";
 
 @singleton()
 export class BlobStorageService extends BlobStorageServiceInterface {
-
   static implementation: BlobStorageServiceInterface =
     BlobStorageService.selectBlobStorageServiceImplementation();
 
@@ -19,7 +18,9 @@ export class BlobStorageService extends BlobStorageServiceInterface {
   deleteImages = BlobStorageService.implementation.deleteImages;
 
   static selectBlobStorageServiceImplementation(): BlobStorageServiceInterface {
-    const implementedBlobStorageServiceType: string = getEnvironmentVariable("IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE");
+    const implementedBlobStorageServiceType: string = getEnvironmentVariable(
+      "IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE",
+    );
 
     if (implementedBlobStorageServiceType === BlobStorageServiceType.LOCAL) {
       return new LocalBlobStorageService();
@@ -27,7 +28,9 @@ export class BlobStorageService extends BlobStorageServiceInterface {
       WasabiBlobStorageService.get();
       return new WasabiBlobStorageService();
     } else {
-      throw new Error(`Failed to initialize blob storage of type "${implementedBlobStorageServiceType}"`);
+      throw new Error(
+        `Failed to initialize blob storage of type "${implementedBlobStorageServiceType}"`,
+      );
     }
   }
 }
