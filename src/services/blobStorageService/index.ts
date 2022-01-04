@@ -1,34 +1,33 @@
 import { singleton } from "tsyringe";
 import { getEnvironmentVariable } from "../../utilities";
 import { LocalBlobStorageService } from "./LocalBlobStorageService";
-import { BlobStorageServiceInterface, BlobStorageType } from "./models";
+import { BlobStorageServiceInterface, BlobStorageServiceType } from "./models";
 import { WasabiBlobStorageService } from "./WasabiBlobStorageService";
 
 @singleton()
 export class BlobStorageService extends BlobStorageServiceInterface {
-  static blobStorageType: string = getEnvironmentVariable("BLOB_STORAGE_TYPE");
 
-  static blobStorageService: BlobStorageServiceInterface =
-    BlobStorageService.selectBlobStorageService();
+  static implementation: BlobStorageServiceInterface =
+    BlobStorageService.selectBlobStorageServiceImplementation();
 
   constructor() {
     super();
   }
 
-  saveImage = BlobStorageService.blobStorageService.saveImage;
-  getTemporaryImageUrl = BlobStorageService.blobStorageService.getTemporaryImageUrl;
-  deleteImages = BlobStorageService.blobStorageService.deleteImages;
+  saveImage = BlobStorageService.implementation.saveImage;
+  getTemporaryImageUrl = BlobStorageService.implementation.getTemporaryImageUrl;
+  deleteImages = BlobStorageService.implementation.deleteImages;
 
-  static selectBlobStorageService(): BlobStorageServiceInterface {
-    const blobStorageType: string = getEnvironmentVariable("BLOB_STORAGE_TYPE");
+  static selectBlobStorageServiceImplementation(): BlobStorageServiceInterface {
+    const implementedBlobStorageServiceType: string = getEnvironmentVariable("IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE");
 
-    if (blobStorageType === BlobStorageType.LOCAL) {
+    if (implementedBlobStorageServiceType === BlobStorageServiceType.LOCAL) {
       return new LocalBlobStorageService();
-    } else if (blobStorageType === BlobStorageType.WASABI) {
+    } else if (implementedBlobStorageServiceType === BlobStorageServiceType.WASABI) {
       WasabiBlobStorageService.get();
       return new WasabiBlobStorageService();
     } else {
-      throw new Error(`Failed to initialize blob storage of type "${blobStorageType}"`);
+      throw new Error(`Failed to initialize blob storage of type "${implementedBlobStorageServiceType}"`);
     }
   }
 }

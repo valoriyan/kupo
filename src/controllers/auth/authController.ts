@@ -2,7 +2,6 @@ import express from "express";
 import { DatabaseService } from "../../services/databaseService";
 import { Body, Controller, Get, Post, Request, Route } from "tsoa";
 import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
-import { LocalEmailService } from "../../services/emailService";
 import { injectable } from "tsyringe";
 import {
   FailedToRegisterUserResponse,
@@ -25,12 +24,13 @@ import {
   SuccessfullyResetPasswordResponse,
 } from "./handleResetPassword";
 import { handleLogout } from "./handleLogout";
+import { EmailService } from "../../services/emailService";
 
 @injectable()
 @Route("auth")
 export class AuthController extends Controller {
   constructor(
-    public localEmailService: LocalEmailService,
+    public emailService: EmailService,
     public databaseService: DatabaseService,
   ) {
     super();

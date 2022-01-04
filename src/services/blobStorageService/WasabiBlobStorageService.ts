@@ -15,10 +15,6 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
     super();
   }
 
-  static async start(): Promise<void> {
-    WasabiBlobStorageService.get();
-  }
-
   static async get(): Promise<S3> {
     if (!WasabiBlobStorageService.connection) {
       WasabiBlobStorageService.connection = new S3({

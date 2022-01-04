@@ -33,7 +33,7 @@ export async function handleResetPassword({
     );
 
   if (!!user) {
-    controller.localEmailService.sendResetPasswordEmail({ userId: user.userId });
+    controller.emailService.sendResetPasswordEmail({ user });
   }
 
   return {

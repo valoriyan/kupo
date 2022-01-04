@@ -1,55 +1,34 @@
-import { sign } from "jsonwebtoken";
 import { getEnvironmentVariable } from "../../utilities";
 import { singleton } from "tsyringe";
-
-export abstract class EmailService {
-  abstract sendResetPasswordEmail({ userId }: { userId: string }): Promise<void>;
-}
-
-const RESET_PASSWORD_TOKEN_EXPIRATION_TIME = 60 * 60 * 2; // one week
-
-export interface ResetPasswordJWTData {
-  resetPasswordData: {
-    userId: string;
-  };
-}
-
-function generateResetPasswordToken({
-  userId,
-  jwtPrivateKey,
-}: {
-  userId: string;
-  jwtPrivateKey: string;
-}): string {
-  const expiresIn = RESET_PASSWORD_TOKEN_EXPIRATION_TIME;
-
-  const jwtData: ResetPasswordJWTData = {
-    resetPasswordData: {
-      userId,
-    },
-  };
-
-  return sign({ data: jwtData }, jwtPrivateKey, { expiresIn });
-}
+import { EmailServiceInterface, EmailServiceType } from "./models";
+import { SendGridEmailService } from "./SendGridEmailService";
+import { LocalEmailService } from "./LocalEmailService";
 
 @singleton()
-export class LocalEmailService extends EmailService {
-  private jwtPrivateKey: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
+export class EmailService extends EmailServiceInterface {
 
-  constructor() {
-    super();
-  }
+    static implementation: EmailServiceInterface = EmailService.selectEmailServiceImplementation();
 
-  async sendResetPasswordEmail({ userId }: { userId: string }): Promise<void> {
-    const resetPasswordToken = generateResetPasswordToken({
-      userId,
-      jwtPrivateKey: this.jwtPrivateKey,
-    });
 
-    console.log(`
-      To reset password, go to http://localhost:6006/resetpassword?token=${resetPasswordToken}
-    `);
+    constructor() {
+        super();
+      }
 
-    return;
-  }
+      sendResetPasswordEmail = EmailService.implementation.sendResetPasswordEmail;
+    
+
+      static selectEmailServiceImplementation(): EmailServiceInterface {
+        const implementedBlobStorageServiceType: string = getEnvironmentVariable("IMPLEMENTED_EMAIL_SERVICE_TYPE");
+    
+        if (implementedBlobStorageServiceType === EmailServiceType.LOCAL) {
+          return new LocalEmailService();
+        } else if (implementedBlobStorageServiceType === EmailServiceType.SEND_GRID) {
+          SendGridEmailService.get();
+          return new SendGridEmailService();
+        } else {
+          throw new Error(`Failed to initialize blob storage of type "${implementedBlobStorageServiceType}"`);
+        }
+      }
+
+
 }

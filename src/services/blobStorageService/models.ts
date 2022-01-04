@@ -2,9 +2,9 @@ export interface BlobItemPointer {
   fileKey: string;
 }
 
-export enum BlobStorageType {
-  WASABI = "wasabi",
-  LOCAL = "local",
+export enum BlobStorageServiceType {
+  WASABI = "WASABI",
+  LOCAL = "LOCAL",
 }
 
 export abstract class BlobStorageServiceInterface {
