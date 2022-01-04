@@ -15,6 +15,7 @@ export class WebSocketService {
 
   static async start(httpServer: httpServer): Promise<void> {
     const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+    console.log(`origin: ${origin}`)
 
     const io = new Server(httpServer, {
       cors: {
