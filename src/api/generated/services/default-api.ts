@@ -71,6 +71,8 @@ import { GetPageOfPostFromFollowedUsersParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostsPaginationParams } from "../types";
 // @ts-ignore
+import { GetPasswordResetEmailRequestBody } from "../types";
+// @ts-ignore
 import { GetPostsScheduledByUserParams } from "../types";
 // @ts-ignore
 import { GetUserProfileParams } from "../types";
@@ -81,17 +83,15 @@ import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
 import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse } from "../types";
+import { HTTPResponseFailedToGetPasswordResetEmailResponseSuccessfullyGotPasswordResetEmailResponse } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse } from "../types";
+import { HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse } from "../types";
 // @ts-ignore
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
 import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
 import { RemoveUserLikeFromPostRequestBody } from "../types";
-// @ts-ignore
-import { ResetPasswordRequestBody } from "../types";
 // @ts-ignore
 import { SearchUserProfilesByUsernameParams } from "../types";
 // @ts-ignore
@@ -1198,6 +1198,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {GetPasswordResetEmailRequestBody} getPasswordResetEmailRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPasswordResetEmail: async (
+      getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPasswordResetEmailRequestBody' is not null or undefined
+      assertParamExists(
+        "getPasswordResetEmail",
+        "getPasswordResetEmailRequestBody",
+        getPasswordResetEmailRequestBody,
+      );
+      const localVarPath = `/auth/getPasswordResetEmail`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPasswordResetEmailRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1631,55 +1680,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         removeUserLikeFromPostRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    requestPasswordReset: async (
-      resetPasswordRequestBody: ResetPasswordRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'resetPasswordRequestBody' is not null or undefined
-      assertParamExists(
-        "requestPasswordReset",
-        "resetPasswordRequestBody",
-        resetPasswordRequestBody,
-      );
-      const localVarPath = `/auth/resetPassword`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        resetPasswordRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2813,6 +2813,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetPasswordResetEmailRequestBody} getPasswordResetEmailRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPasswordResetEmail(
+      getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<HTTPResponseFailedToGetPasswordResetEmailResponseSuccessfullyGotPasswordResetEmailResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPasswordResetEmail(
+        getPasswordResetEmailRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3049,32 +3075,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserLikeFromPost(
         removeUserLikeFromPostRequestBody,
-        options,
-      );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async requestPasswordReset(
-      resetPasswordRequestBody: ResetPasswordRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.requestPasswordReset(
-        resetPasswordRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3716,6 +3716,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetPasswordResetEmailRequestBody} getPasswordResetEmailRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPasswordResetEmail(
+      getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
+      options?: any,
+    ): AxiosPromise<HTTPResponseFailedToGetPasswordResetEmailResponseSuccessfullyGotPasswordResetEmailResponse> {
+      return localVarFp
+        .getPasswordResetEmail(getPasswordResetEmailRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3844,20 +3858,6 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse> {
       return localVarFp
         .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    requestPasswordReset(
-      resetPasswordRequestBody: ResetPasswordRequestBody,
-      options?: any,
-    ): AxiosPromise<HTTPResponseFailedToResetPasswordResponseSuccessfullyResetPasswordResponse> {
-      return localVarFp
-        .requestPasswordReset(resetPasswordRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4390,6 +4390,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {GetPasswordResetEmailRequestBody} getPasswordResetEmailRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPasswordResetEmail(
+    getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPasswordResetEmail(getPasswordResetEmailRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4525,22 +4541,6 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {ResetPasswordRequestBody} resetPasswordRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public requestPasswordReset(
-    resetPasswordRequestBody: ResetPasswordRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .requestPasswordReset(resetPasswordRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

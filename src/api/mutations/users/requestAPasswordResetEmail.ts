@@ -3,6 +3,6 @@ import { Api } from "../..";
 
 export const useRequestAPasswordResetEmail = () => {
   return useMutation(async ({ email }: { email: string }) => {
-    return await Api.requestPasswordReset({ email });
+    return await Api.getPasswordResetEmail({ email });
   }, {});
 };
