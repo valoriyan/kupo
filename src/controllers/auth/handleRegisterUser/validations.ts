@@ -5,7 +5,7 @@ export function validateUsername({
 }: {
   username: string;
 }): null | FailedToRegisterUserResponseReason {
-  if (! /^[0-9a-z]+$/.test(username)) {
+  if (!/^[0-9a-z]+$/.test(username)) {
     return FailedToRegisterUserResponseReason.AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits;
   }
 

@@ -1,4 +1,4 @@
-export function generateWelcomeEmailHtml() {
+export function generateWelcomeEmailHtml({homepageUrl}: {homepageUrl: string}) {
   return `
   <!doctype html>
   <html>
@@ -334,7 +334,7 @@ export function generateWelcomeEmailHtml() {
       </style>
     </head>
     <body class="">
-      <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+      <span class="preheader">Welcome to kupono.io</span>
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
         <tr>
           <td>&nbsp;</td>
@@ -350,7 +350,7 @@ export function generateWelcomeEmailHtml() {
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td>
-                          <p>Welcome to kupono.io</p>
+                          <p>Welcome to <a href="${homepageUrl}" target="_blank">kupono.io</a></p>
                           <p>Your account has successfully been created. Make your profile stand out by filling our your profile </p>
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                             <tbody>
@@ -359,7 +359,7 @@ export function generateWelcomeEmailHtml() {
                                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                     <tbody>
                                       <tr>
-                                        <td> <a href="http://htmlemail.io" target="_blank">Go to Profile</a> </td>
+                                        <td> <a href="${homepageUrl}" target="_blank">Go to Profile</a> </td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -384,11 +384,6 @@ export function generateWelcomeEmailHtml() {
                   <tr>
                     <td class="content-block">
                       <span class="apple-link">Kupono.io</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="content-block powered-by">
-                      Powered by <a href="http://htmlemail.io">HTMLemail</a>.
                     </td>
                   </tr>
                 </table>
