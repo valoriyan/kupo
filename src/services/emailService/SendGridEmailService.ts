@@ -26,14 +26,13 @@ export class SendGridEmailService extends EmailServiceInterface {
       jwtPrivateKey: SendGridEmailService.JWT_PRIVATE_KEY,
     });
 
-    
     const resetPasswordUrlWithToken = `${SendGridEmailService.FRONTEND_BASE_URL}/reset-password?token=${resetPasswordToken}`;
 
     const message = {
       to: email,
       from: "help@kupono.io",
       subject: "Password Reset",
-      html: generateForgotPasswordEmailHtml({resetPasswordUrlWithToken}),
+      html: generateForgotPasswordEmailHtml({ resetPasswordUrlWithToken }),
     };
 
     await SendgridMailer.send(message)

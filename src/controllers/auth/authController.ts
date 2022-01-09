@@ -81,7 +81,10 @@ export class AuthController extends Controller {
   public async getPasswordResetEmail(
     @Body() requestBody: GetPasswordResetEmailRequestBody,
   ): Promise<
-    HTTPResponse<FailedToGetPasswordResetEmailResponse, SuccessfullyGotPasswordResetEmailResponse>
+    HTTPResponse<
+      FailedToGetPasswordResetEmailResponse,
+      SuccessfullyGotPasswordResetEmailResponse
+    >
   > {
     return await handleGetPasswordResetEmail({
       controller: this,

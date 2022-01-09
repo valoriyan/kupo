@@ -1,4 +1,8 @@
-export function generateForgotPasswordEmailHtml({resetPasswordUrlWithToken}: {resetPasswordUrlWithToken: string;}) {
+export function generateForgotPasswordEmailHtml({
+  resetPasswordUrlWithToken,
+}: {
+  resetPasswordUrlWithToken: string;
+}) {
   return `
   <!doctype html>
   <html>
@@ -403,5 +407,4 @@ export function generateForgotPasswordEmailHtml({resetPasswordUrlWithToken}: {re
     </body>
   </html>
   `;
-
 }
