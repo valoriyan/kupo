@@ -18,11 +18,11 @@ import { FailedAuthResponse, SuccessfulAuthResponse } from "./models";
 import { handleLoginUser, LoginUserRequestBody } from "./handleLoginUser";
 import { handleRefreshAccessToken } from "./handleRefreshAccessToken";
 import {
-  FailedToResetPasswordResponse,
-  handleResetPassword,
-  ResetPasswordRequestBody,
-  SuccessfullyResetPasswordResponse,
-} from "./handleResetPassword";
+  FailedToGetPasswordResetEmailResponse,
+  handleGetPasswordResetEmail,
+  GetPasswordResetEmailRequestBody,
+  SuccessfullyGotPasswordResetEmailResponse,
+} from "./handleGetPasswordResetEmail";
 import { handleLogout } from "./handleLogout";
 import { EmailService } from "../../services/emailService";
 
@@ -77,13 +77,13 @@ export class AuthController extends Controller {
     });
   }
 
-  @Post("resetPassword")
-  public async requestPasswordReset(
-    @Body() requestBody: ResetPasswordRequestBody,
+  @Post("getPasswordResetEmail")
+  public async getPasswordResetEmail(
+    @Body() requestBody: GetPasswordResetEmailRequestBody,
   ): Promise<
-    HTTPResponse<FailedToResetPasswordResponse, SuccessfullyResetPasswordResponse>
+    HTTPResponse<FailedToGetPasswordResetEmailResponse, SuccessfullyGotPasswordResetEmailResponse>
   > {
-    return await handleResetPassword({
+    return await handleGetPasswordResetEmail({
       controller: this,
       requestBody,
     });

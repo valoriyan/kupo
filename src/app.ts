@@ -5,10 +5,11 @@ import express, { Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "../build/routes";
 import { DatabaseService } from "./services/databaseService";
+import { getEnvironmentVariable } from "./utilities";
 
 export const app = express();
 
-const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+const origin = getEnvironmentVariable("FRONTEND_BASE_URL") || "http://localhost:3000";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads

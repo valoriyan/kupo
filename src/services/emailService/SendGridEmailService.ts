@@ -3,10 +3,12 @@ import { EmailServiceInterface } from "./models";
 import { generateResetPasswordToken } from "./utilities";
 import SendgridMailer from "@sendgrid/mail";
 import { UnrenderableUser } from "../../controllers/user/models";
+import { generateForgotPasswordEmailHtml } from "./templates/generateForgotPasswordEmailHtml";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
-  private static jwtPrivateKey: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
+  private static JWT_PRIVATE_KEY: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
+  private static FRONTEND_BASE_URL: string = getEnvironmentVariable("FRONTEND_BASE_URL");
 
   constructor() {
     super();
@@ -21,19 +23,20 @@ export class SendGridEmailService extends EmailServiceInterface {
 
     const resetPasswordToken = generateResetPasswordToken({
       userId,
-      jwtPrivateKey: SendGridEmailService.jwtPrivateKey,
+      jwtPrivateKey: SendGridEmailService.JWT_PRIVATE_KEY,
     });
+
+    
+    const resetPasswordUrlWithToken = `${SendGridEmailService.FRONTEND_BASE_URL}/reset-password?token=${resetPasswordToken}`;
 
     const message = {
       to: email,
       from: "help@kupono.io",
       subject: "Password Reset",
-      html: `
-        <strong>Here is your reset password token: ${resetPasswordToken}</strong>
-      `,
+      html: generateForgotPasswordEmailHtml({resetPasswordUrlWithToken}),
     };
 
-    SendgridMailer.send(message)
+    await SendgridMailer.send(message)
       .then(() => {
         console.log("Email sent");
       })

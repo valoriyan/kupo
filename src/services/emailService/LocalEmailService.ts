@@ -4,7 +4,7 @@ import { EmailServiceInterface } from "./models";
 import { generateResetPasswordToken } from "./utilities";
 
 export class LocalEmailService extends EmailServiceInterface {
-  private static jwtPrivateKey: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
+  private static JWT_PRIVATE_KEY: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   constructor() {
     super();
@@ -14,7 +14,7 @@ export class LocalEmailService extends EmailServiceInterface {
     const { userId } = user;
     const resetPasswordToken = generateResetPasswordToken({
       userId,
-      jwtPrivateKey: LocalEmailService.jwtPrivateKey,
+      jwtPrivateKey: LocalEmailService.JWT_PRIVATE_KEY,
     });
 
     console.log(`

@@ -1,3 +1,4 @@
+import { getEnvironmentVariable } from "../../utilities";
 import { AuthController } from "./authController";
 import { AuthFailureReason } from "./models";
 import { encryptPassword } from "./utilities";
@@ -16,7 +17,7 @@ export async function handleLoginUser({
   requestBody: LoginUserRequestBody;
 }) {
   const { username, password } = requestBody;
-  const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
+  const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   try {
     const user_WITH_PASSWORD =

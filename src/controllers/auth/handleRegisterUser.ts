@@ -4,6 +4,7 @@ import { encryptPassword } from "./utilities";
 import { AuthController } from "./authController";
 import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
 import { SuccessfulAuthResponse } from "./models";
+import { getEnvironmentVariable } from "../../utilities";
 
 export interface RegisterUserRequestBody {
   email: string;
@@ -52,7 +53,7 @@ export async function handleRegisterUser({
     const newAccessTokenResponse = grantNewAccessToken({
       controller,
       userId,
-      jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+      jwtPrivateKey: getEnvironmentVariable("JWT_PRIVATE_KEY"),
       successStatusCode: 201,
     });
 

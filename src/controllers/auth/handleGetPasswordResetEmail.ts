@@ -1,29 +1,29 @@
 import { HTTPResponse } from "../../types/httpResponse";
 import { AuthController } from "./authController";
 
-export interface ResetPasswordRequestBody {
+export interface GetPasswordResetEmailRequestBody {
   email: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyResetPasswordResponse {}
+export interface SuccessfullyGotPasswordResetEmailResponse {}
 
-export enum FailedToResetPasswordResponseReason {
+export enum FailedToGetPasswordResetEmailResponseReason {
   TooManyAttempts = "Too Many Attempts",
 }
 
-export interface FailedToResetPasswordResponse {
-  reason: FailedToResetPasswordResponseReason;
+export interface FailedToGetPasswordResetEmailResponse {
+  reason: FailedToGetPasswordResetEmailResponseReason;
 }
 
-export async function handleResetPassword({
+export async function handleGetPasswordResetEmail({
   controller,
   requestBody,
 }: {
   controller: AuthController;
-  requestBody: ResetPasswordRequestBody;
+  requestBody: GetPasswordResetEmailRequestBody;
 }): Promise<
-  HTTPResponse<FailedToResetPasswordResponse, SuccessfullyResetPasswordResponse>
+  HTTPResponse<FailedToGetPasswordResetEmailResponse, SuccessfullyGotPasswordResetEmailResponse>
 > {
   const { email } = requestBody;
 

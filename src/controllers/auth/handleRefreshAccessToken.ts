@@ -1,4 +1,5 @@
 import express from "express";
+import { getEnvironmentVariable } from "../../utilities";
 import { HTTPResponse } from "../../types/httpResponse";
 import { AuthController } from "./authController";
 import { AuthFailureReason, FailedAuthResponse, SuccessfulAuthResponse } from "./models";
@@ -13,7 +14,7 @@ export async function handleRefreshAccessToken({
   request: express.Request;
 }): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
   const refreshToken = request.cookies.refreshToken as string | undefined;
-  const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
+  const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   if (!refreshToken) {
     controller.setStatus(401);

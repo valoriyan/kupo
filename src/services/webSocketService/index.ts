@@ -8,14 +8,15 @@ import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { RenderableChatMessage } from "../../controllers/chat/models";
 import { notifyUserIdsOfDeletedChatMessage } from "./notifyUserIdsOfDeletedChatMessage";
+import { getEnvironmentVariable } from "../../utilities";
 
 @singleton()
 export class WebSocketService {
   static io: Server;
 
   static async start(httpServer: httpServer): Promise<void> {
-    const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
-    console.log(`origin: ${origin}`)
+    const origin = getEnvironmentVariable("FRONTEND_BASE_URL", "http://localhost:3000");
+    console.log(`origin: ${origin}`);
 
     const io = new Server(httpServer, {
       cors: {
@@ -33,7 +34,7 @@ export class WebSocketService {
       try {
         const userId = validateTokenAndGetUserId({
           token: accessToken,
-          jwtPrivateKey: process.env.JWT_PRIVATE_KEY as string,
+          jwtPrivateKey: getEnvironmentVariable("JWT_PRIVATE_KEY"),
         });
 
         const rooms = [generatePrivateUserWebSocketRoomName({ userId })];

@@ -3,6 +3,7 @@ import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
 import { MD5 } from "crypto-js";
 import { AuthFailureReason, FailedAuthResponse } from "../models";
+import { getEnvironmentVariable } from "../../../utilities";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
@@ -12,7 +13,7 @@ export interface JWTData {
 }
 
 export function encryptPassword({ password }: { password: string }): string {
-  const salt = process.env.SALT;
+  const salt = getEnvironmentVariable("SALT");
   return MD5(salt + password).toString();
 }
 
@@ -70,7 +71,7 @@ export async function checkAuthorization(
   controller: Controller,
   request: Request,
 ): Promise<{ clientUserId: string; error?: { error: FailedAuthResponse } }> {
-  const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
+  const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {
     const token =
       (request.query.token as string) || (request.headers["x-access-token"] as string);
@@ -92,7 +93,7 @@ export async function checkAuthorization(
  * If no JWT or userId is found, undefined will be returned.
  */
 export async function getClientUserId(request: Request): Promise<string | undefined> {
-  const jwtPrivateKey = process.env.JWT_PRIVATE_KEY as string;
+  const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {
     const token =
       (request.query.token as string) || (request.headers["x-access-token"] as string);

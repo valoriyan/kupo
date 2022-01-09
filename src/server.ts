@@ -6,8 +6,9 @@ import "reflect-metadata";
 
 import { app } from "./app";
 import { WebSocketService } from "./services/webSocketService";
+import { getEnvironmentVariable } from "./utilities";
 
-const port = process.env.PORT || 4000;
+const port = getEnvironmentVariable("PORT", "4000");
 
 const httpServer = createServer(app);
 
