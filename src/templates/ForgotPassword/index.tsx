@@ -1,10 +1,10 @@
 import Link from "next/link";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { AuthFormLayout } from "#/components/AuthFormLayout";
 import { Button } from "#/components/Button";
 import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 import { useRequestAPasswordResetEmail } from "#/api/mutations/users/requestAPasswordResetEmail";
-import { ChangeEvent, FormEvent, useState } from "react";
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
