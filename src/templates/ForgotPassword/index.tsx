@@ -3,14 +3,27 @@ import { AuthFormLayout } from "#/components/AuthFormLayout";
 import { Button } from "#/components/Button";
 import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
+import { useRequestAPasswordResetEmail } from "#/api/mutations/users/requestAPasswordResetEmail";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 export const ForgotPassword = () => {
-  const onSubmit = () => {};
+  const [email, setEmail] = useState("");
+  const { mutateAsync: requestAPasswordResetEmail } = useRequestAPasswordResetEmail();
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await requestAPasswordResetEmail({ email });
+  };
+
+  const onChangeEmail = async (event: ChangeEvent<HTMLInputElement>) => {
+    const updatedEmail = event.currentTarget.value;
+    setEmail(updatedEmail);
+  };
 
   return (
     <AuthFormLayout title="Forgot Password" onSubmit={onSubmit}>
       <Stack css={{ gap: "$5" }}>
-        <Input size="lg" placeholder="email" />
+        <Input size="lg" placeholder="email" onChange={onChangeEmail} />
         <Button size="lg" variant="secondary">
           Reset Password
         </Button>
