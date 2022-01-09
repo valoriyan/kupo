@@ -54,7 +54,9 @@ export class SendGridEmailService extends EmailServiceInterface {
       to: email,
       from: "welcome@kupono.io",
       subject: "Welcome to Kupono.io",
-      html: generateWelcomeEmailHtml({homepageUrl: SendGridEmailService.FRONTEND_BASE_URL}),
+      html: generateWelcomeEmailHtml({
+        homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,
+      }),
     };
 
     await SendgridMailer.send(message)

@@ -1,4 +1,4 @@
-export function generateWelcomeEmailHtml({homepageUrl}: {homepageUrl: string}) {
+export function generateWelcomeEmailHtml({ homepageUrl }: { homepageUrl: string }) {
   return `
   <!doctype html>
   <html>
@@ -334,7 +334,7 @@ export function generateWelcomeEmailHtml({homepageUrl}: {homepageUrl: string}) {
       </style>
     </head>
     <body class="">
-      <span class="preheader">Welcome to kupono.io</span>
+      <span class="preheader">Welcome to <a href="${homepageUrl}" target="_blank">kupono.io</a></span>
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
         <tr>
           <td>&nbsp;</td>
