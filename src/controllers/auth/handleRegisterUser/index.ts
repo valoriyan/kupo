@@ -32,8 +32,11 @@ export async function handleRegisterUser({
   const userId = uuidv4();
   const { email, username, password } = requestBody;
 
+  console.log(`Creating user ${username}`)
+
   const usernameErrorReason = validateUsername({ username });
   if (!!usernameErrorReason) {
+    console.log(`Not creating user ${username} due to failure to validateUsername`)
     return {
       error: {
         reason: usernameErrorReason,
@@ -75,12 +78,15 @@ export async function handleRegisterUser({
         success: newAccessTokenResponse.success,
       };
     }
+
+    console.log(`Failed to create user ${username} | UnknownCause`)
     return {
       error: {
         reason: FailedToRegisterUserResponseReason.UnknownCause,
       },
     };
   } catch (error) {
+    console.log(`Failed to create user ${username} | UnknownCause`)
     console.log("error", error);
     controller.setStatus(401);
     return { error: { reason: FailedToRegisterUserResponseReason.UnknownCause } };
