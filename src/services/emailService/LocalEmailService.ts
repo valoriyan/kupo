@@ -23,4 +23,14 @@ export class LocalEmailService extends EmailServiceInterface {
 
     return;
   }
+
+  async sendWelcomeEmail({ user }: { user: UnrenderableUser }): Promise<void> {
+    const { username } = user;
+
+    console.log(`
+      Hi ${username}!
+    `);
+
+    return;
+  }
 }

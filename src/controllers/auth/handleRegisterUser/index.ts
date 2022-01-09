@@ -1,10 +1,11 @@
-import { HTTPResponse } from "../../types/httpResponse";
+import { HTTPResponse } from "../../../types/httpResponse";
 import { v4 as uuidv4 } from "uuid";
-import { encryptPassword } from "./utilities";
-import { AuthController } from "./authController";
-import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
-import { SuccessfulAuthResponse } from "./models";
-import { getEnvironmentVariable } from "../../utilities";
+import { encryptPassword } from "../utilities";
+import { AuthController } from "../authController";
+import { grantNewAccessToken } from "../utilities/grantNewAccessToken";
+import { SuccessfulAuthResponse } from "../models";
+import { getEnvironmentVariable } from "../../../utilities";
+import { validateUsername } from "./validations";
 
 export interface RegisterUserRequestBody {
   email: string;
@@ -58,6 +59,18 @@ export async function handleRegisterUser({
     });
 
     if (newAccessTokenResponse.success) {
+      try {
+        const user =
+          await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+            { userId },
+          );
+        if (!!user) {
+          controller.emailService.sendWelcomeEmail({ user });
+        }
+      } catch (error) {
+        console.log(`FAILED TO SEND WELCOME EMAIL | ${error}`);
+      }
+
       return {
         success: newAccessTokenResponse.success,
       };
@@ -72,16 +85,4 @@ export async function handleRegisterUser({
     controller.setStatus(401);
     return { error: { reason: FailedToRegisterUserResponseReason.UnknownCause } };
   }
-}
-
-function validateUsername({
-  username,
-}: {
-  username: string;
-}): null | FailedToRegisterUserResponseReason {
-  if (/^[0-9a-z]+$/.test(username)) {
-    return FailedToRegisterUserResponseReason.AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits;
-  }
-
-  return null;
 }

@@ -7,6 +7,7 @@ export enum EmailServiceType {
 
 export abstract class EmailServiceInterface {
   abstract sendResetPasswordEmail({ user }: { user: UnrenderableUser }): Promise<void>;
+  abstract sendWelcomeEmail({ user }: { user: UnrenderableUser }): Promise<void>;
 }
 
 export interface ResetPasswordJWTData {

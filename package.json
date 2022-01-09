@@ -8,7 +8,7 @@
     "setupFakeLocalData": "tsc && yarn run resetDatabase && node build/src/scripts/setupFakeLocalData.js",
     "dev": "yarn run killRunningDev && sleep 4 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "setupAlphaDatabase": "tsc && DATABASE_URL='postgres://csopmrylomgtaj:c9b76fa9ac20f73fb8f9c5a0d5a00db9c490ffcda30438f9d2581e5f9251c8f5@ec2-23-23-133-10.compute-1.amazonaws.com:5432/df8br9he9qkh1s' node build/src/scripts/teardown.js && sleep 3 && DATABASE_URL='postgres://csopmrylomgtaj:c9b76fa9ac20f73fb8f9c5a0d5a00db9c490ffcda30438f9d2581e5f9251c8f5@ec2-23-23-133-10.compute-1.amazonaws.com:5432/df8br9he9qkh1s' node build/src/scripts/setup.js",
-    "deploy": "git add -A; git commit -m 'deploy'; git push heroku main",
+    "deploy": "git add -A; git commit -m 'deploy'; git push heroku main --force",
     "killRunningDev": "lsof -i:4000 -Fp | head -n 1 | sed 's/^p//' | xargs kill",
     "build": "yarn run clear && tsoa spec-and-routes && tsc",
     "start": "node build/src/server.js",

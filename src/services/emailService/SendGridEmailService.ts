@@ -4,6 +4,7 @@ import { generateResetPasswordToken } from "./utilities";
 import SendgridMailer from "@sendgrid/mail";
 import { UnrenderableUser } from "../../controllers/user/models";
 import { generateForgotPasswordEmailHtml } from "./templates/generateForgotPasswordEmailHtml";
+import { generateWelcomeEmailHtml } from "./templates/generateWelcomeEmailHtml";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
@@ -33,6 +34,27 @@ export class SendGridEmailService extends EmailServiceInterface {
       from: "help@kupono.io",
       subject: "Password Reset",
       html: generateForgotPasswordEmailHtml({ resetPasswordUrlWithToken }),
+    };
+
+    await SendgridMailer.send(message)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error: Error) => {
+        console.error(error);
+      });
+
+    return;
+  }
+
+  async sendWelcomeEmail({ user }: { user: UnrenderableUser }): Promise<void> {
+    const { email } = user;
+
+    const message = {
+      to: email,
+      from: "welcome@kupono.io",
+      subject: "Welcome to Kupono.io",
+      html: generateWelcomeEmailHtml(),
     };
 
     await SendgridMailer.send(message)

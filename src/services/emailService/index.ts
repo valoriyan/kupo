@@ -14,6 +14,7 @@ export class EmailService extends EmailServiceInterface {
   }
 
   sendResetPasswordEmail = EmailService.implementation.sendResetPasswordEmail;
+  sendWelcomeEmail = EmailService.implementation.sendWelcomeEmail;
 
   static selectEmailServiceImplementation(): EmailServiceInterface {
     const implementedBlobStorageServiceType: string = getEnvironmentVariable(
