@@ -386,13 +386,13 @@ export function generateForgotPasswordEmailHtml({
               <div class="footer">
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td class="content-block">
-                      <span class="apple-link">Kupono.io</span>
+                    <td class="content-block powered-by">
+                    This is an automatically generated message. Please do not reply to this email.
                     </td>
                   </tr>
                   <tr>
-                    <td class="content-block powered-by">
-                      Powered by <a href="http://htmlemail.io">HTMLemail</a>.
+                    <td class="content-block">
+                      <span class="apple-link">Kupono.io</span>
                     </td>
                   </tr>
                 </table>
