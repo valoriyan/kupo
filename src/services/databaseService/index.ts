@@ -1,4 +1,5 @@
 import { Pool, PoolConfig } from "pg";
+import { getEnvironmentVariable } from "../../utilities";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
@@ -16,10 +17,12 @@ import { UserFollowsTableService } from "./tableServices/userFollowsTableService
 import { UserHashtagsTableService } from "./tableServices/userHashtagsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseServive } from "./teardown";
+import { DatabaseServiceType } from "./models";
 
 @singleton()
 export class DatabaseService {
   static datastorePool: Pool;
+  static IMPLEMENTED_DATABASE_SERVICE_TYPE = getEnvironmentVariable("IMPLEMENTED_DATABASE_SERVICE_TYPE");
 
   public tableNameToServicesMap = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
@@ -64,7 +67,7 @@ export class DatabaseService {
       const database = !!connectionString ? undefined : DATABASE_NAME;
 
       let poolConfig: PoolConfig;
-      if (!!connectionString) {
+      if (DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE === DatabaseServiceType.REMOTE_POSTGRES) {
         poolConfig = {
           connectionString,
           ssl,
@@ -72,11 +75,13 @@ export class DatabaseService {
         console.log(
           `STARTING DATABASE SERVICE @ '${connectionString}' | ${JSON.stringify(ssl)}`,
         );
-      } else {
+      } else if (DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE === DatabaseServiceType.LOCAL_POSTGRES) {
         poolConfig = {
           database,
         };
         console.log(`STARTING DATABASE SERVICE @ '${database}'`);
+      } else {
+        throw new Error(`Unrecognized IMPLEMENTED_DATABASE_SERVICE_TYPE: "${DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE}"`);
       }
 
       DatabaseService.datastorePool = new Pool(poolConfig);
