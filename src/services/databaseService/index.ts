@@ -22,7 +22,9 @@ import { DatabaseServiceType } from "./models";
 @singleton()
 export class DatabaseService {
   static datastorePool: Pool;
-  static IMPLEMENTED_DATABASE_SERVICE_TYPE = getEnvironmentVariable("IMPLEMENTED_DATABASE_SERVICE_TYPE");
+  static IMPLEMENTED_DATABASE_SERVICE_TYPE = getEnvironmentVariable(
+    "IMPLEMENTED_DATABASE_SERVICE_TYPE",
+  );
 
   public tableNameToServicesMap = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
@@ -67,7 +69,10 @@ export class DatabaseService {
       const database = !!connectionString ? undefined : DATABASE_NAME;
 
       let poolConfig: PoolConfig;
-      if (DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE === DatabaseServiceType.REMOTE_POSTGRES) {
+      if (
+        DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE ===
+        DatabaseServiceType.REMOTE_POSTGRES
+      ) {
         poolConfig = {
           connectionString,
           ssl,
@@ -75,13 +80,18 @@ export class DatabaseService {
         console.log(
           `STARTING DATABASE SERVICE @ '${connectionString}' | ${JSON.stringify(ssl)}`,
         );
-      } else if (DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE === DatabaseServiceType.LOCAL_POSTGRES) {
+      } else if (
+        DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE ===
+        DatabaseServiceType.LOCAL_POSTGRES
+      ) {
         poolConfig = {
           database,
         };
         console.log(`STARTING DATABASE SERVICE @ '${database}'`);
       } else {
-        throw new Error(`Unrecognized IMPLEMENTED_DATABASE_SERVICE_TYPE: "${DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE}"`);
+        throw new Error(
+          `Unrecognized IMPLEMENTED_DATABASE_SERVICE_TYPE: "${DatabaseService.IMPLEMENTED_DATABASE_SERVICE_TYPE}"`,
+        );
       }
 
       DatabaseService.datastorePool = new Pool(poolConfig);
