@@ -5,11 +5,16 @@ import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostCommentsByPostId } from "#/api/queries/posts/useGetPageOfPostCommentsByPostId";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { HeartIcon } from "#/components/Icons";
+import { HeartIcon, InfoIcon, TrashIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
+import { useCurrentUserId } from "#/contexts/auth";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
-export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
+export interface PostWrapperProps {
+  post: RenderablePost;
+}
+
+export const PostWrapper = ({ post }: PostWrapperProps) => {
   const { isLikedByClient, postId, authorUserId, creationTimestamp } = post;
   const {
     data: user,
@@ -17,6 +22,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
     error,
     isError,
   } = useGetUserByUserId({ userId: authorUserId });
+  const userId = useCurrentUserId();
 
   const {
     data: pagesOfPostComments,
@@ -57,25 +63,34 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
     }
   }
 
-  const firstMenuOption = {
-    Icon: HeartIcon,
-    label: "Delete Post",
-    onClick: () => {
-      deletePost();
+  const menuOptions = [
+    {
+      Icon: HeartIcon,
+      label: "Comment I Like This",
+      onClick: () => {
+        commentOnPost({
+          text: "Oooh, I like this!",
+          postId,
+        });
+      },
     },
-  };
+  ];
 
-  const secondMenuOption = {
-    Icon: HeartIcon,
-    label: "Post I Like This",
-    onClick: () => {
-      commentOnPost({
-        text: "Oooh, I like this!",
-        postId,
-      });
-      // deletePost();
-    },
-  };
+  if (userId === authorUserId) {
+    menuOptions.push({
+      Icon: TrashIcon,
+      label: "Delete Post",
+      onClick: () => {
+        deletePost();
+      },
+    });
+  }
+
+  menuOptions.push({
+    Icon: InfoIcon,
+    label: "More To Come...",
+    onClick: () => {},
+  });
 
   return (
     <Post
@@ -85,7 +100,7 @@ export const ContentFeedPostBox = ({ post }: { post: RenderablePost }) => {
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
-      menuOptions={[firstMenuOption, secondMenuOption]}
+      menuOptions={menuOptions}
       postComments={postComments}
     />
   );

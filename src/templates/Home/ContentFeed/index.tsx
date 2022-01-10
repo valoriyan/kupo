@@ -4,7 +4,7 @@ import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { styled } from "#/styling";
-import { ContentFeedPostBox } from "./ContentFeedPostBox";
+import { PostWrapper } from "./PostWrapper";
 
 export interface ContentFeedProps {
   selectedContentFilter: ContentFilter;
@@ -46,7 +46,7 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
       <ErrorMessage>No Posts Found</ErrorMessage>
     ) : (
       posts.map((post) => {
-        return <ContentFeedPostBox key={post.postId} post={post} />;
+        return <PostWrapper key={post.postId} post={post} />;
       })
     );
 

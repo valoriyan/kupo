@@ -174,6 +174,7 @@ const PostAction = ({ Icon, metric, onClick, isSelected }: PostActionProps) => {
 
 const MenuOption = styled("button", {
   display: "flex",
+  alignItems: "center",
   gap: "$3",
   p: "$3",
   color: "$secondaryText",

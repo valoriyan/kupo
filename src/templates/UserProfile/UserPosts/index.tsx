@@ -4,10 +4,11 @@ import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { HeartIcon } from "#/components/Icons";
+import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
+import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
@@ -45,6 +46,7 @@ export const UserPosts = ({ user }: UserPostsProps) => {
 
 const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUser }) => {
   const { isLikedByClient, postId, authorUserId } = post;
+  const userId = useCurrentUserId();
 
   const { mutateAsync: likePost } = useLikePost({ postId, authorUserId });
   const { mutateAsync: unlikePost } = useUnlikePost({ postId, authorUserId });
@@ -55,23 +57,23 @@ const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUse
     else likePost();
   };
 
-  const firstMenuOption = {
-    Icon: HeartIcon,
-    label: "Delete Post",
-    onClick: () => {
-      deletePost();
-    },
-  };
+  const menuOptions = [];
 
-  const secondMenuOption = {
-    Icon: HeartIcon,
-    label: "Oh nooooess!",
-    onClick: () => {
-      console.log(
-        "Yay Blake screwed up! (but it was something that needed to be screwed up.",
-      );
-    },
-  };
+  if (userId === authorUserId) {
+    menuOptions.push({
+      Icon: TrashIcon,
+      label: "Delete Post",
+      onClick: () => {
+        deletePost();
+      },
+    });
+  }
+
+  menuOptions.push({
+    Icon: InfoIcon,
+    label: "More To Come...",
+    onClick: () => {},
+  });
 
   return (
     <Post
@@ -81,7 +83,7 @@ const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUse
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
-      menuOptions={[firstMenuOption, secondMenuOption]}
+      menuOptions={menuOptions}
     />
   );
 };
