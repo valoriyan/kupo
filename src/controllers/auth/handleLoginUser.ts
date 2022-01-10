@@ -22,9 +22,7 @@ export async function handleLoginUser({
   try {
     const user_WITH_PASSWORD =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByUsername(
-        {
-          username,
-        },
+        { username },
       );
     if (!!user_WITH_PASSWORD) {
       const hasMatchedPassword =
