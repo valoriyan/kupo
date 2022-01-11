@@ -10,7 +10,6 @@ import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
 export interface UserPostsProps {
   user: RenderableUser;
@@ -57,10 +56,10 @@ const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUse
     else likePost();
   };
 
-  const menuOptions = [];
+  const menuActions = [];
 
   if (userId === authorUserId) {
-    menuOptions.push({
+    menuActions.push({
       Icon: TrashIcon,
       label: "Delete Post",
       onClick: () => {
@@ -69,7 +68,7 @@ const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUse
     });
   }
 
-  menuOptions.push({
+  menuActions.push({
     Icon: InfoIcon,
     label: "More To Come...",
     onClick: () => {},
@@ -78,12 +77,11 @@ const PostWrapper = ({ post, user }: { post: RenderablePost; user: RenderableUse
   return (
     <Post
       key={post.postId}
-      postRelativeTimestamp={getRelativeTimestamp(post.creationTimestamp)}
       post={post}
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
-      menuOptions={menuOptions}
+      menuActions={menuActions}
     />
   );
 };

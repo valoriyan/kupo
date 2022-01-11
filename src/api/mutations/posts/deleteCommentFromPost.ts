@@ -2,7 +2,7 @@ import { InfiniteData, useMutation, useQueryClient } from "react-query";
 import { Api, SuccessfullyGotPageOfCommentsByPostIdResponse } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
-export const useCommentOnPost = ({
+export const useDeleteCommentFromPost = ({
   postCommentId,
   postId,
 }: {
@@ -13,13 +13,23 @@ export const useCommentOnPost = ({
 
   return useMutation(
     async () => {
-      return await Api.deleteCommentFromPost({
+      const res = await Api.deleteCommentFromPost({
         postCommentId,
       });
+
+      if (res.data.success) return res.data.success;
+      const defaultErrorMessage = "Failed to delete comment";
+      throw new Error(
+        res.data.error
+          ? "reason" in res.data.error
+            ? res.data.error.reason
+            : defaultErrorMessage
+          : defaultErrorMessage,
+      );
     },
     {
       onSuccess: (data) => {
-        if (data.data.success) {
+        if (data) {
           queryClient.setQueryData<
             InfiniteData<SuccessfullyGotPageOfCommentsByPostIdResponse>
           >(

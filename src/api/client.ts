@@ -42,6 +42,10 @@ client.interceptors.response.use(
       toast.error(error.response.data.error.reason);
     }
 
+    if (error?.response?.status === 500) {
+      toast.error("An unexpected error occurred");
+    }
+
     if (error?.response?.status === 401) Router.push("/login");
 
     return error?.response;

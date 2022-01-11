@@ -35,7 +35,7 @@ const themedStitches = createStitches({
       mediaOverlay: "rgba(115, 115, 115, 0.5)",
 
       text: "#000000", // Text that sits on the background colors
-      secondaryText: "#acacac", // Secondary text that sits on background colors
+      secondaryText: "#9a9a9a", // Secondary text that sits on background colors
       accentText: "#ffffff", // Text that sits on primary and secondary accent colors
       inverseText: "#ffffff",
       disabledText: "#454545",
@@ -213,6 +213,14 @@ const themedStitches = createStitches({
     }),
     pl: (value: PropertyValue<"padding">) => ({
       paddingLeft: value,
+    }),
+    borderX: (value: PropertyValue<"border">) => ({
+      borderLeft: value,
+      borderRight: value,
+    }),
+    borderY: (value: PropertyValue<"border">) => ({
+      borderTop: value,
+      borderBottom: value,
     }),
     size: (value: PropertyValue<"height">) => ({
       height: value,

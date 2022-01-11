@@ -1,7 +1,7 @@
 import { Root, Trigger, Content } from "@radix-ui/react-popover";
 import { ReactNode, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { styled } from "#/styling";
+import { styled, usePrefersMotion } from "#/styling";
 
 export interface PopoverRenderProps {
   hide: () => void;
@@ -14,6 +14,7 @@ export interface PopoverProps {
 }
 
 export const Popover = (props: PopoverProps) => {
+  const prefersMotion = usePrefersMotion();
   const [open, setOpen] = useState(false);
   const hide = () => setOpen(false);
 
@@ -24,7 +25,7 @@ export const Popover = (props: PopoverProps) => {
         {open ? (
           <Content sideOffset={8} align={props.align ?? "start"} forceMount>
             <ContentBody
-              transition={{ duration: 0.25 }}
+              transition={{ duration: prefersMotion ? 0.25 : 0 }}
               initial={{ scale: 0, opacity: 0.5 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0.5 }}

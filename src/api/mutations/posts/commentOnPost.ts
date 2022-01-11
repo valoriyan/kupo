@@ -7,15 +7,25 @@ export const useCommentOnPost = () => {
 
   return useMutation(
     async ({ postId, text }: { postId: string; text: string }) => {
-      return await Api.commentOnPost({
+      const res = await Api.commentOnPost({
         postId,
         text,
       });
+
+      if (res.data.success) return res.data.success;
+      const defaultErrorMessage = "Failed to post comment";
+      throw new Error(
+        res.data.error
+          ? "reason" in res.data.error
+            ? res.data.error.reason
+            : defaultErrorMessage
+          : defaultErrorMessage,
+      );
     },
     {
       onSuccess: (data) => {
-        if (data.data.success) {
-          const createdPostComment = data.data.success.postComment;
+        if (data) {
+          const createdPostComment = data.postComment;
           const { postId } = createdPostComment;
 
           queryClient.setQueryData<

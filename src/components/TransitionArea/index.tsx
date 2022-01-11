@@ -19,7 +19,7 @@ export interface TransitionAreaProps {
 export const TransitionArea = (props: TransitionAreaProps) => {
   const prefersMotion = usePrefersMotion();
   const { duration, ...animation } = props.animation ?? noAnimation;
-  const transitionAnimation = !prefersMotion ? noAnimation : animation;
+  const transitionAnimation = prefersMotion ? animation : noAnimation;
 
   return (
     <ContentArea css={props.css as Record<string, string>}>

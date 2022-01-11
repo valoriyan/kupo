@@ -1,35 +1,25 @@
 import { RenderablePost } from "#/api";
-import { useCommentOnPost } from "#/api/mutations/posts/commentOnPost";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
-import { useGetPageOfPostCommentsByPostId } from "#/api/queries/posts/useGetPageOfPostCommentsByPostId";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { HeartIcon, InfoIcon, TrashIcon } from "#/components/Icons";
+import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
 import { useCurrentUserId } from "#/contexts/auth";
-import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
 export interface PostWrapperProps {
   post: RenderablePost;
 }
 
 export const PostWrapper = ({ post }: PostWrapperProps) => {
-  const { isLikedByClient, postId, authorUserId, creationTimestamp } = post;
+  const { isLikedByClient, postId, authorUserId } = post;
+  const userId = useCurrentUserId();
   const {
     data: user,
     isLoading,
     error,
     isError,
   } = useGetUserByUserId({ userId: authorUserId });
-  const userId = useCurrentUserId();
-
-  const {
-    data: pagesOfPostComments,
-    isLoading: isLoadingPostComment,
-    // error: errorLoadingPostComment,
-    isError: isErrorLoadingPostComment,
-  } = useGetPageOfPostCommentsByPostId({ postId });
 
   const { mutateAsync: likePost } = useLikePost({
     postId,
@@ -43,17 +33,14 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
     postId,
     authorUserId,
   });
-  const { mutateAsync: commentOnPost } = useCommentOnPost();
 
-  if ((isError && !isLoading) || (isErrorLoadingPostComment && !isLoadingPostComment)) {
+  if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
   }
 
-  if (isLoading || !user || isLoadingPostComment || !pagesOfPostComments) {
+  if (isLoading || !user) {
     return <div>Loading</div>;
   }
-
-  const postComments = pagesOfPostComments.pages.flatMap((page) => page.postComments);
 
   async function handleClickOfLikeButton() {
     if (isLikedByClient) {
@@ -63,22 +50,12 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
     }
   }
 
-  const menuOptions = [
-    {
-      Icon: HeartIcon,
-      label: "Comment I Like This",
-      onClick: () => {
-        commentOnPost({
-          text: "Oooh, I like this!",
-          postId,
-        });
-      },
-    },
-  ];
+  const menuActions = [];
 
   if (userId === authorUserId) {
-    menuOptions.push({
+    menuActions.push({
       Icon: TrashIcon,
+      iconColor: "$failure",
       label: "Delete Post",
       onClick: () => {
         deletePost();
@@ -86,7 +63,7 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
     });
   }
 
-  menuOptions.push({
+  menuActions.push({
     Icon: InfoIcon,
     label: "More To Come...",
     onClick: () => {},
@@ -95,13 +72,11 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
   return (
     <Post
       key={postId}
-      postRelativeTimestamp={getRelativeTimestamp(creationTimestamp)}
       post={post}
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
-      menuOptions={menuOptions}
-      postComments={postComments}
+      menuActions={menuActions}
     />
   );
 };

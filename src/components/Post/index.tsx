@@ -1,20 +1,16 @@
+import * as Collapsible from "@radix-ui/react-collapsible";
 import Image from "next/image";
 import Link from "next/link";
-import { ComponentType, useState } from "react";
-import { RenderablePost, RenderablePostComment } from "#/api";
-import { styled } from "#/styling";
+import { ComponentType } from "react";
+import { RenderablePost } from "#/api";
+import { keyframes, prefersMotionSelector, styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { Avatar } from "../Avatar";
-import {
-  BookmarkIcon,
-  CommentIcon,
-  HeartIcon,
-  MailForwardIcon,
-  MoreVerticalAltIcon,
-} from "../Icons";
-import { Box, Flex, Grid, Stack } from "../Layout";
-import { Popover } from "../Popover";
+import { BookmarkIcon, CommentIcon, HeartIcon, MailForwardIcon } from "../Icons";
+import { Box, Flex, Grid } from "../Layout";
 import { Body } from "../Typography";
+import { ActionMenu, MenuAction } from "./ActionMenu";
 import { Comments } from "./Comments";
 
 export interface PostMenuOption {
@@ -25,29 +21,24 @@ export interface PostMenuOption {
 
 export interface PostProps {
   post: RenderablePost;
-  postRelativeTimestamp: string;
   authorUserName?: string;
   authorUserAvatar?: string;
   handleClickOfLikeButton: () => void;
-  menuOptions: PostMenuOption[];
-  postComments?: RenderablePostComment[];
+  menuActions: MenuAction[];
 }
 
-export const Post = (props: PostProps) => {
-  const [displayComments, setDisplayComments] = useState(false);
-
-  const {
-    post,
-    handleClickOfLikeButton,
-    authorUserName,
-    authorUserAvatar,
-    postRelativeTimestamp,
-    postComments,
-  } = props;
+export const Post = ({
+  post,
+  handleClickOfLikeButton,
+  authorUserName,
+  authorUserAvatar,
+  menuActions,
+}: PostProps) => {
   const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags, likes } = post;
+  const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
   return (
-    <Grid>
+    <Grid as={Collapsible.Root}>
       <Flex css={{ px: "$4", py: "$3", gap: "$3", alignItems: "center" }}>
         <Avatar
           alt={`@${authorUserName}'s profile picture`}
@@ -57,27 +48,9 @@ export const Post = (props: PostProps) => {
         <Link href={getProfilePageUrl({ username: authorUserName || "" })} passHref>
           <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
         </Link>
-
         <Flex css={{ marginLeft: "auto", gap: "$5", alignItems: "center" }}>
-          <Timestamp>{postRelativeTimestamp ? postRelativeTimestamp : ""}</Timestamp>
-          <Popover trigger={<Flex as={MoreVerticalAltIcon} />}>
-            {({ hide }) => (
-              <Stack>
-                {props.menuOptions.map(({ Icon, label, onClick }) => (
-                  <MenuOption
-                    key={label}
-                    onClick={() => {
-                      onClick();
-                      hide();
-                    }}
-                  >
-                    <Icon />
-                    <Body>{label}</Body>
-                  </MenuOption>
-                ))}
-              </Stack>
-            )}
-          </Popover>
+          <Timestamp>{relativeTimestamp}</Timestamp>
+          <ActionMenu actions={menuActions} />
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
@@ -110,14 +83,13 @@ export const Post = (props: PostProps) => {
           onClick={handleClickOfLikeButton}
           metric={likes.count}
         />
-        <PostAction
-          Icon={CommentIcon}
-          onClick={() => setDisplayComments(!displayComments)}
-        />
+        <PostAction Icon={CommentIcon} as={Collapsible.Trigger} />
         <PostAction Icon={MailForwardIcon} />
         <PostAction Icon={BookmarkIcon} />
       </Flex>
-      {displayComments ? <Comments postComments={postComments} /> : null}
+      <CollapsibleContent>
+        <Comments postId={post.postId} />
+      </CollapsibleContent>
     </Grid>
   );
 };
@@ -152,12 +124,15 @@ interface PostActionProps {
   metric?: number;
   onClick?: () => void;
   isSelected?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  as?: string | ComponentType<any>;
 }
 
-const PostAction = ({ Icon, metric, onClick, isSelected }: PostActionProps) => {
+const PostAction = (props: PostActionProps) => {
+  const { Icon, metric, onClick, isSelected } = props;
   return (
     <Flex
-      as="button"
+      as={props.as ?? "button"}
       css={{
         alignItems: "center",
         gap: "$1",
@@ -172,10 +147,20 @@ const PostAction = ({ Icon, metric, onClick, isSelected }: PostActionProps) => {
   );
 };
 
-const MenuOption = styled("button", {
-  display: "flex",
-  alignItems: "center",
-  gap: "$3",
-  p: "$3",
-  color: "$secondaryText",
+const open = keyframes({
+  from: { height: 0 },
+  to: { height: "var(--radix-collapsible-content-height)" },
+});
+
+const close = keyframes({
+  from: { height: "var(--radix-collapsible-content-height)" },
+  to: { height: 0 },
+});
+
+const CollapsibleContent = styled(Collapsible.Content, {
+  [prefersMotionSelector]: {
+    '&[data-state="open"]': { animation: `${open} $1 ease-out` },
+    '&[data-state="closed"]': { animation: `${close} $1 ease-out` },
+  },
+  overflow: "hidden",
 });
