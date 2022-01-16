@@ -109,6 +109,7 @@ const Comment = ({ comment }: CommentProps) => {
 };
 
 const CommentWrapper = styled(Grid, {
+  bg: "$background2",
   whiteSpace: "pre-wrap",
   borderBottom: "solid $borderWidths$1 $border",
   gridTemplateColumns: "auto minmax(0, 1fr)",

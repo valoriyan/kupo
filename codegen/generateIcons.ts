@@ -31,7 +31,6 @@ const ICONS_TO_GENERATE = [
   "log-out",
   "options",
   "mail",
-  "mail-forward",
   "menu",
   "math-plus",
   "pen",
@@ -97,9 +96,19 @@ async function generateIcons() {
 
   await Promise.all(componentPromises);
 
+  const providedComponents = await fs.readdir(
+    path.resolve(OUTPUT_DIRECTORY, "./provided"),
+  );
+  const providedComponentNames = providedComponents.map((c) => c.split(".")[0]);
+
   const indexCode = svgs
     .map((svg) => `export * from "./generated/${svg.componentName}";`)
-    .join("\n");
+    .join("\n")
+    .concat(
+      providedComponentNames
+        .map((name) => `export * from "./provided/${name}";`)
+        .join("\n"),
+    );
 
   await fs.writeFile(path.resolve(OUTPUT_DIRECTORY, `./index.tsx`), indexCode);
 

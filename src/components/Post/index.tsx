@@ -7,7 +7,7 @@ import { keyframes, prefersMotionSelector, styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { Avatar } from "../Avatar";
-import { BookmarkIcon, CommentIcon, HeartIcon, MailForwardIcon } from "../Icons";
+import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
 import { Box, Flex, Grid } from "../Layout";
 import { Body } from "../Typography";
 import { ActionMenu, MenuAction } from "./ActionMenu";
@@ -86,7 +86,7 @@ export const Post = ({
           metric={likes.count}
         />
         <PostAction Icon={CommentIcon} as={Collapsible.Trigger} />
-        <PostAction Icon={MailForwardIcon} />
+        <PostAction Icon={PaperPlanIcon} />
         <PostAction Icon={BookmarkIcon} />
       </Flex>
       <CollapsibleContent>

@@ -19,6 +19,13 @@ export const Button = styled("button", {
     cursor: "not-allowed",
   },
 
+  "&:hover": {
+    filter: "brightness(0.9)",
+  },
+  "&:active": {
+    filter: "brightness(0.8)",
+  },
+
   variants: {
     variant: {
       primary: {},

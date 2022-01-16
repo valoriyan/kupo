@@ -28,8 +28,8 @@ const themedStitches = createStitches({
        * that the colors should be layered on top of each other.
        */
       background1: "#ffffff", // Base background of app content
-      background2: "#ededed", // Backgrounds that sit on top of background1
-      background3: "#dddddd", // Backgrounds that sit on top of background2
+      background2: "#f5f5f5", // Backgrounds that sit on top of background1
+      background3: "#ebebeb", // Backgrounds that sit on top of background2
       overlay: "rgba(0,0,0,0.25)",
       heavyOverlay: "rgba(0,0,0,0.6)",
       mediaOverlay: "rgba(115, 115, 115, 0.5)",
@@ -257,8 +257,8 @@ export const darkTheme = themedStitches.createTheme("dark", {
     secondary: "#EF5DA8",
 
     background1: "#191919",
-    background2: "#333333",
-    background3: "#4c4c4c",
+    background2: "#202020",
+    background3: "#212121",
     overlay: "rgba(0,0,0,0.25)",
     heavyOverlay: "rgba(0,0,0,0.6)",
     mediaOverlay: "rgba(115, 115, 115, 0.5)",

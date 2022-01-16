@@ -22,10 +22,22 @@ export const globalStyles = globalCss({
     padding: "0",
     cursor: "pointer",
     color: "$text",
+    "&:hover": {
+      filter: "brightness(0.9)",
+    },
+    "&:active": {
+      filter: "brightness(0.8)",
+    },
   },
   a: {
     color: "$link",
     textDecoration: "none",
+    "&:hover": {
+      filter: "brightness(0.9)",
+    },
+    "&:active": {
+      filter: "brightness(0.8)",
+    },
   },
   "[data-radix-portal]": {
     // Lower z-index of portals so that toast messages sit on top
