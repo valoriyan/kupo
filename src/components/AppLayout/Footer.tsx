@@ -24,7 +24,7 @@ export const Footer = () => {
 
   return (
     <Wrapper>
-      <IconLink href="/">
+      <IconLink href="/feed">
         <HomeIcon />
       </IconLink>
       <IconLink href="/notifications">

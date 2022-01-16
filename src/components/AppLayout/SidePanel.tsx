@@ -51,7 +51,7 @@ export const SidePanel = () => {
       </Stack>
       <Stack css={{ gap: "$9", height: "100%", overflow: "auto" }}>
         <Stack css={{ gap: "$6" }}>
-          <NavLink href="/" Icon={HomeIcon} label="Home" />
+          <NavLink href="/feed" Icon={HomeIcon} label="Home" />
           <NavLink
             href="/notifications"
             Icon={BellIcon}

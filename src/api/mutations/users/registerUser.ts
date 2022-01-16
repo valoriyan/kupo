@@ -12,7 +12,7 @@ export const useRegisterUser = () => {
       onSuccess: (data) => {
         if (data.data.success) {
           setAccessToken(data.data.success.accessToken);
-          Router.push("/");
+          Router.push("/feed");
         }
       },
     },

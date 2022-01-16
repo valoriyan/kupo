@@ -100,7 +100,7 @@ export const RedirectAfterAuth = <T,>(Component: ComponentType<T>) => {
         const accessToken = await getAccessToken();
         if (accessToken) {
           setIsAuthenticated(true);
-          Router.replace("/");
+          Router.replace("/feed");
         } else {
           setIsAuthenticated(false);
         }

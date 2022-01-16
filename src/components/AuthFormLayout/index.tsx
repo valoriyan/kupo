@@ -1,8 +1,9 @@
-import React, { FormEventHandler, ReactNode } from "react";
 import Link from "next/link";
+import React, { FormEventHandler, ReactNode } from "react";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { styled } from "#/styling";
-import { BrandTitle, MainTitle, Slogan } from "../Typography";
+import { BrandWithSlogan } from "../BrandWithSlogan";
+import { MainTitle } from "../Typography";
 
 export interface AuthFormLayoutProps {
   title: string;
@@ -22,8 +23,7 @@ export const AuthFormLayout = (props: AuthFormLayoutProps) => {
           maxWidth: "500px",
         }}
       >
-        <BrandTitle>kupono</BrandTitle>
-        <Slogan css={{ mt: "$3" }}>create. support. love</Slogan>
+        <BrandWithSlogan />
         <MainTitle css={{ alignSelf: "flex-start", mt: "$9" }}>{props.title}</MainTitle>
         <Box css={{ mt: "$6", mb: "$10", width: "100%" }}>{props.children}</Box>
         <Link href="/help-center" passHref>

@@ -54,23 +54,25 @@ export const Post = ({
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
-      <ImageWrapper>
-        <BlurredImage
-          alt="Blurred Post Media"
-          src={contentElementTemporaryUrls[0]}
-          layout="fill"
-          unoptimized // Optimization caching is broken because signed urls aren't stable
-          priority
-        />
-        <Image
-          alt="Post Media"
-          src={contentElementTemporaryUrls[0]}
-          layout="fill"
-          objectFit="contain"
-          unoptimized // Optimization caching is broken because signed urls aren't stable
-          priority
-        />
-      </ImageWrapper>
+      {contentElementTemporaryUrls[0] && (
+        <ImageWrapper>
+          <BlurredImage
+            alt="Blurred Post Media"
+            src={contentElementTemporaryUrls[0]}
+            layout="fill"
+            unoptimized // Optimization caching is broken because signed urls aren't stable
+            priority
+          />
+          <Image
+            alt="Post Media"
+            src={contentElementTemporaryUrls[0]}
+            layout="fill"
+            objectFit="contain"
+            unoptimized // Optimization caching is broken because signed urls aren't stable
+            priority
+          />
+        </ImageWrapper>
+      )}
       <Flex css={{ gap: "$3", px: "$4", py: "$2", width: "100%", overflow: "auto" }}>
         {hashtags.map((tag) => (
           <HashTag key={tag}>#{tag}</HashTag>

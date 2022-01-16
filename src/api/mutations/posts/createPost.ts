@@ -19,7 +19,7 @@ export const useCreatePost = () => {
     {
       onSuccess: (data) => {
         if (data.data.success) {
-          Router.push("/");
+          Router.push("/feed");
         }
       },
     },

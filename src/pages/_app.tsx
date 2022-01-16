@@ -12,7 +12,7 @@ const KuponoApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
   /** These routes aren't a part of the app experience and should not include the footer, etc. */
-  const noAppLayout = ["/login", "/sign-up", "/forgot-password"].includes(
+  const noAppLayout = ["/login", "/sign-up", "/forgot-password", "/"].includes(
     router.pathname,
   );
 
