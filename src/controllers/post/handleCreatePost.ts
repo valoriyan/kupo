@@ -114,13 +114,6 @@ export async function handleCreatePost({
       username: unrenderableUser!.username,
     });
 
-    const countOfLikesOnPost =
-      await controller.databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
-        {
-          postId,
-        },
-      );
-
     return {
       success: {
         renderablePost: {
@@ -133,7 +126,10 @@ export async function handleCreatePost({
           hashtags,
           expirationTimestamp,
           likes: {
-            count: countOfLikesOnPost,
+            count: 0,
+          },
+          comments: {
+            count: 0,
           },
           isLikedByClient: false,
         },

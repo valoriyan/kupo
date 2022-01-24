@@ -126,6 +126,27 @@ export class PostCommentsTableService extends TableService {
     return response.rows.map(convertDBPostCommentToUnrenderablePostComment);
   }
 
+  public async countCommentsOnPostId({ postId }: { postId: string }): Promise<number> {
+    const query = {
+      text: `
+          SELECT
+            COUNT(*)
+          FROM
+            ${this.tableName}
+          WHERE
+            post_id = $1
+          ;
+        `,
+      values: [postId],
+    };
+
+    const response: QueryResult<{
+      count: string;
+    }> = await this.datastorePool.query(query);
+
+    return parseInt(response.rows[0].count);
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////

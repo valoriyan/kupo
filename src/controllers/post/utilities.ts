@@ -80,6 +80,13 @@ export async function constructRenderablePostFromParts({
       },
     );
 
+  const countOfCommentsOnPost =
+    await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
+      {
+        postId,
+      },
+    );
+
   const isLikedByClient =
     !!clientUserId &&
     (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
@@ -100,6 +107,9 @@ export async function constructRenderablePostFromParts({
     hashtags,
     likes: {
       count: countOfLikesOnPost,
+    },
+    comments: {
+      count: countOfCommentsOnPost,
     },
     isLikedByClient,
   };
