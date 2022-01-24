@@ -17,6 +17,7 @@ interface DBPost {
   creation_timestamp: string;
   scheduled_publication_timestamp: string;
   expiration_timestamp?: string;
+  shared_post_id?: string;
 }
 
 function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
@@ -48,9 +49,11 @@ export class PostsTableService extends TableService {
         post_id VARCHAR(64) UNIQUE NOT NULL,
         creation_timestamp BIGINT,
         author_user_id VARCHAR(64) NOT NULL,
-        caption VARCHAR(256) NOT NULL,
+        caption VARCHAR(512) NOT NULL,
         scheduled_publication_timestamp BIGINT NOT NULL,
-        expiration_timestamp BIGINT
+        expiration_timestamp BIGINT,
+        
+        shared_post_id VARCHAR(64);
       )
       ;
     `;
@@ -69,6 +72,7 @@ export class PostsTableService extends TableService {
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
+    sharedPostId,
   }: {
     postId: string;
     creationTimestamp: number;
@@ -76,6 +80,7 @@ export class PostsTableService extends TableService {
     caption: string;
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
+    sharedPostId?: string;
   }): Promise<void> {
     console.log(`${this.tableName} | createPost`);
 
@@ -91,6 +96,7 @@ export class PostsTableService extends TableService {
             value: scheduledPublicationTimestamp,
           },
           { field: "expiration_timestamp", value: expirationTimestamp },
+          { field: "shared_post_id", value: sharedPostId },
         ],
       ],
       tableName: this.tableName,
@@ -229,6 +235,34 @@ export class PostsTableService extends TableService {
 
     return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
+
+  public async getPostByPostId({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          post_id = $1
+        ;
+      `,
+      values: [postId],
+    };
+
+    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+
+    if (response.rows.length < 1) {
+      throw new Error("Missing post");
+    }
+
+    return convertDBPostToUnrenderablePostWithoutElementsOrHashtags(response.rows[0]);
+  }
+
 
   public async getPostsByPostIds({
     postIds,

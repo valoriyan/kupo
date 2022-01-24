@@ -1,16 +1,14 @@
-export interface BaseUnrenderablePost {
+export interface UnrenderablePostWithoutElementsOrHashtags {
   postId: string;
   authorUserId: string;
   caption: string;
   creationTimestamp: number;
-}
-
-export interface UnrenderablePostWithoutElementsOrHashtags extends BaseUnrenderablePost {
   scheduledPublicationTimestamp: number;
   expirationTimestamp?: number;
+  shared_post_id?: string;
 }
 
-export interface RenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
+export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
   contentElementTemporaryUrls: string[];
   hashtags: string[];
   likes: {
@@ -20,4 +18,11 @@ export interface RenderablePost extends UnrenderablePostWithoutElementsOrHashtag
     count: number;
   };
   isLikedByClient: boolean;
+}
+
+export interface RenderablePost extends UnrenderablePost {
+  shared?: {
+    type: "post",
+    post: UnrenderablePost;
+  }
 }
