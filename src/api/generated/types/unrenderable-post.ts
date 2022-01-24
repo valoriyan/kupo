@@ -12,91 +12,84 @@
  * Do not edit the class manually.
  */
 
-import { RenderablePostShared } from "./renderable-post-shared";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
 /**
  *
  * @export
- * @interface RenderablePost
+ * @interface UnrenderablePost
  */
-export interface RenderablePost {
+export interface UnrenderablePost {
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   postId: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   authorUserId: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   caption: string;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   creationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   scheduledPublicationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   expirationTimestamp?: number;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   shared_post_id?: string;
   /**
    *
    * @type {Array<string>}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   contentElementTemporaryUrls: Array<string>;
   /**
    *
    * @type {Array<string>}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   hashtags: Array<string>;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   likes: RenderableUserFollowers;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   comments: RenderableUserFollowers;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof UnrenderablePost
    */
   isLikedByClient: boolean;
-  /**
-   *
-   * @type {RenderablePostShared}
-   * @memberof RenderablePost
-   */
-  shared?: RenderablePostShared;
 }

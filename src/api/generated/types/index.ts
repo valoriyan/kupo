@@ -150,6 +150,7 @@ export * from "./successfully-got-users-by-ids-request-body-response";
 export * from "./successfully-got-users-by-usernames-request-body-response";
 export * from "./successfully-set-user-content-feed-filters-response";
 export * from "./unfollow-user-request-body";
+export * from "./unrenderable-post";
 export * from "./update-password-request-body";
 export * from "./update-post-params";
 export * from "./update-user-profile-request-body";

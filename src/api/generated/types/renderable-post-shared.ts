@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { RenderablePost } from "./renderable-post";
+import { UnrenderablePost } from "./unrenderable-post";
 
 /**
  *
@@ -22,10 +22,10 @@ import { RenderablePost } from "./renderable-post";
 export interface RenderablePostShared {
   /**
    *
-   * @type {RenderablePost}
+   * @type {UnrenderablePost}
    * @memberof RenderablePostShared
    */
-  post: RenderablePost;
+  post: UnrenderablePost;
   /**
    *
    * @type {string}
