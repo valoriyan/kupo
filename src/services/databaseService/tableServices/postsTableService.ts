@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from "pg";
+import { Pool, QueryConfig, QueryResult } from "pg";
 import { UnrenderablePostWithoutElementsOrHashtags } from "../../../controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
@@ -261,6 +261,31 @@ export class PostsTableService extends TableService {
     const response: QueryResult<DBPost> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+  }
+
+  public async getPostsByCaptionMatchingSubstring({
+    captionSubstring,
+  }: {
+    captionSubstring: string;
+  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    const query: QueryConfig = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          caption LIKE CONCAT('%', $1::text, '%' )
+        ;
+      `,
+      values: [captionSubstring],
+    };
+
+    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    return rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
   }
 
   //////////////////////////////////////////////////

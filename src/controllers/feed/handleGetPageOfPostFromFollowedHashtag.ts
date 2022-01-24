@@ -48,7 +48,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   const { cursor } = requestBody;
 
   const postIdsWithHashtag =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtagId(
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtag(
       { hashtag: requestBody.hashtag },
     );
 

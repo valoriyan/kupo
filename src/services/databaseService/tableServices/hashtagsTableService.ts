@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from "pg";
+import { Pool, QueryConfig, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -70,7 +70,7 @@ export class HashtagsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostIdsWithHashtagId({
+  public async getPostIdsWithHashtag({
     hashtag,
   }: {
     hashtag: string;
@@ -97,6 +97,39 @@ export class HashtagsTableService extends TableService {
     return postIds;
   }
 
+  public async getPostIdsWithOneOfHashtags({
+    hashtags,
+  }: {
+    hashtags: string[];
+  }): Promise<string[]> {
+    if (hashtags.length === 0) {
+      return [];
+    }
+
+    const hashtagsQueryString = hashtags.map((_, index) => `$${index + 1}`).join(", ");
+
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+            hashtag IN (${hashtagsQueryString})
+          AND
+            post_id IS NOT NULL
+        ;
+      `,
+      values: [hashtags],
+    };
+
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const postIds = response.rows.map((row) => row.post_id!);
+    return postIds;
+  }
+
   public async getHashtagsForPostId({ postId }: { postId: string }): Promise<string[]> {
     const query = {
       text: `
@@ -109,6 +142,30 @@ export class HashtagsTableService extends TableService {
         ;
       `,
       values: [postId],
+    };
+
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+
+    const hashtags = response.rows.map((row) => row.hashtag);
+    return hashtags;
+  }
+
+  public async getHashtagsMatchingSubstring({
+    hashtagSubstring,
+  }: {
+    hashtagSubstring: string;
+  }): Promise<string[]> {
+    const query: QueryConfig = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          username LIKE CONCAT('%', $1::text, '%' )
+        ;
+      `,
+      values: [hashtagSubstring],
     };
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);

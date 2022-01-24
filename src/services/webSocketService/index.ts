@@ -1,14 +1,15 @@
 import { Server } from "socket.io";
 import { Server as httpServer } from "http";
 import { validateTokenAndGetUserId } from "../../controllers/auth/utilities";
-import { NewChatNotification, NEW_POST_NOTIFICATION_EVENT_NAME } from "./eventsConfig";
-import { notifyUserIdsOfNewChatMessage } from "./notifyUserIdsOfNewChatMessage";
+import { notifyUserIdsOfNewChatMessage } from "./chat/notifyUserIdsOfNewChatMessage";
 import { singleton } from "tsyringe";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { RenderableChatMessage } from "../../controllers/chat/models";
-import { notifyUserIdsOfDeletedChatMessage } from "./notifyUserIdsOfDeletedChatMessage";
+import { notifyUserIdsOfDeletedChatMessage } from "./chat/notifyUserIdsOfDeletedChatMessage";
 import { getEnvironmentVariable } from "../../utilities";
+import { NewChatNotification } from "./chat/models";
+import { EVENT_NAMES } from "./eventsConfig";
 
 @singleton()
 export class WebSocketService {
@@ -67,7 +68,7 @@ export class WebSocketService {
 
     const roomName = generatePrivateUserWebSocketRoomName({ userId: recipientUserId });
 
-    WebSocketService.io.to([roomName]).emit(NEW_POST_NOTIFICATION_EVENT_NAME, message);
+    WebSocketService.io.to([roomName]).emit(EVENT_NAMES.NEW_POST, message);
   }
 
   public async notifyUserIdsOfNewChatMessage({
