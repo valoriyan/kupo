@@ -63,6 +63,8 @@ import { GetPageOfChatRoomsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfCommentsByPostIdRequestBody } from "../types";
 // @ts-ignore
+import { GetPageOfDiscoverSearchResultsForPostsParams } from "../types";
+// @ts-ignore
 import { GetPageOfNotificationsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
@@ -118,6 +120,8 @@ import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDele
 import { SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse } from "../types";
 // @ts-ignore
@@ -991,6 +995,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPageOfCommentsByPostIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfDiscoverSearchResultsForPosts: async (
+      getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfDiscoverSearchResultsForPostsParams' is not null or undefined
+      assertParamExists(
+        "getPageOfDiscoverSearchResultsForPosts",
+        "getPageOfDiscoverSearchResultsForPostsParams",
+        getPageOfDiscoverSearchResultsForPostsParams,
+      );
+      const localVarPath = `/discover/getPageOfDiscoverSearchResultsForPosts`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfDiscoverSearchResultsForPostsParams,
         localVarRequestOptions,
         configuration,
       );
@@ -2707,6 +2760,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfDiscoverSearchResultsForPosts(
+      getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPageOfDiscoverSearchResultsForPosts(
+          getPageOfDiscoverSearchResultsForPostsParams,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3660,6 +3740,23 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfDiscoverSearchResultsForPosts(
+      getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse> {
+      return localVarFp
+        .getPageOfDiscoverSearchResultsForPosts(
+          getPageOfDiscoverSearchResultsForPostsParams,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4321,6 +4418,25 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPageOfCommentsByPostId(getPageOfCommentsByPostIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfDiscoverSearchResultsForPosts(
+    getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfDiscoverSearchResultsForPosts(
+        getPageOfDiscoverSearchResultsForPostsParams,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 

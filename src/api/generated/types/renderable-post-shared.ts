@@ -12,12 +12,32 @@
  * Do not edit the class manually.
  */
 
+import { RenderablePost } from "./renderable-post";
+
 /**
  *
  * @export
+ * @interface RenderablePostShared
+ */
+export interface RenderablePostShared {
+  /**
+   *
+   * @type {RenderablePost}
+   * @memberof RenderablePostShared
+   */
+  post: RenderablePost;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderablePostShared
+   */
+  type: RenderablePostSharedTypeEnum;
+}
+
+/**
+ * @export
  * @enum {string}
  */
-export enum FailedToRegisterUserResponseReason {
-  UnknownCause = "Unknown Cause",
-  AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits = "All Username Characters Must Be Lowercase English Letters Or Digits",
+export enum RenderablePostSharedTypeEnum {
+  Post = "post",
 }

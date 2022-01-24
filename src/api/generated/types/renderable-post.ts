@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { RenderablePostShared } from "./renderable-post-shared";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
 /**
@@ -64,6 +65,12 @@ export interface RenderablePost {
   contentElementTemporaryUrls: Array<string>;
   /**
    *
+   * @type {RenderablePostShared}
+   * @memberof RenderablePost
+   */
+  shared?: RenderablePostShared;
+  /**
+   *
    * @type {Array<string>}
    * @memberof RenderablePost
    */
@@ -74,6 +81,12 @@ export interface RenderablePost {
    * @memberof RenderablePost
    */
   likes: RenderableUserFollowers;
+  /**
+   *
+   * @type {RenderableUserFollowers}
+   * @memberof RenderablePost
+   */
+  comments: RenderableUserFollowers;
   /**
    *
    * @type {boolean}

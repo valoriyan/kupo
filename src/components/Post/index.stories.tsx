@@ -23,6 +23,9 @@ Template.args = {
     likes: {
       count: 10,
     },
+    comments: {
+      count: 3,
+    },
     isLikedByClient: true,
   },
   authorUserName: "blake",

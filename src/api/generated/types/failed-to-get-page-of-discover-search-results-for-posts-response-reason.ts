@@ -17,7 +17,6 @@
  * @export
  * @enum {string}
  */
-export enum FailedToRegisterUserResponseReason {
+export enum FailedToGetPageOfDiscoverSearchResultsForPostsResponseReason {
   UnknownCause = "Unknown Cause",
-  AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits = "All Username Characters Must Be Lowercase English Letters Or Digits",
 }
