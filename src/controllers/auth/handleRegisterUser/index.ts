@@ -15,7 +15,7 @@ export interface RegisterUserRequestBody {
 
 export enum FailedToRegisterUserResponseReason {
   UnknownCause = "Unknown Cause",
-  AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits = "AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits",
+  ValidationError = "All Username Characters Must Be Lowercase English Letters Or Digits",
 }
 
 export interface FailedToRegisterUserResponse {
