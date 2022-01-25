@@ -43,6 +43,7 @@ import {
 } from "./handleGetPostsScheduledByUser";
 import { WebSocketService } from "../../services/webSocketService";
 import { BlobStorageService } from "../../services/blobStorageService";
+import { FailedToSharePostResponse, handleSharePost, SharePostRequestBody, SuccessfullySharedPostResponse } from "./handleSharePost";
 
 @injectable()
 @Route("post")
@@ -59,7 +60,7 @@ export class PostController extends Controller {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("create")
+  @Post("createPost")
   public async createPost(
     @Request() request: express.Request,
     @UploadedFiles() mediaFiles: Express.Multer.File[],
@@ -86,6 +87,20 @@ export class PostController extends Controller {
           ? parseInt(expirationTimestamp, 10)
           : undefined,
       },
+    });
+  }
+
+  @Post("sharePost")
+  public async sharePost(
+    @Request() request: express.Request,
+    @Body() requestBody: SharePostRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<FailedToSharePostResponse, SuccessfullySharedPostResponse>
+  > {
+    return await handleSharePost({
+      controller: this,
+      request,
+      requestBody,
     });
   }
 
