@@ -22,7 +22,7 @@ export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHasht
 
 export interface RenderablePost extends UnrenderablePost {
   shared?: {
-    type: "post",
+    type: "post";
     post: UnrenderablePost;
-  }
+  };
 }

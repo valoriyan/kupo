@@ -21,14 +21,12 @@ export interface SuccessfullySharedPostResponse {
 }
 
 export interface SharePostRequestBody {
-    sharedPostId: string;
-    caption: string,
-    hashtags: string[];
-    scheduledPublicationTimestamp?: number;
-    expirationTimestamp?: number;
-  
-  }
-  
+  sharedPostId: string;
+  caption: string;
+  hashtags: string[];
+  scheduledPublicationTimestamp?: number;
+  expirationTimestamp?: number;
+}
 
 export async function handleSharePost({
   controller,
@@ -51,7 +49,6 @@ export async function handleSharePost({
 
   const postId: string = uuidv4();
 
-
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
@@ -59,17 +56,19 @@ export async function handleSharePost({
 
   const creationTimestamp = now;
 
-
   try {
-
-    const unrenderableSharedPostWithoutElementsOrHashtags = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId: sharedPostId});
+    const unrenderableSharedPostWithoutElementsOrHashtags =
+      await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+        { postId: sharedPostId },
+      );
 
     const renderableSharedPost = await constructRenderablePostFromParts({
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-        unrenderablePostWithoutElementsOrHashtags: unrenderableSharedPostWithoutElementsOrHashtags,
-        clientUserId,
-      });  
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      unrenderablePostWithoutElementsOrHashtags:
+        unrenderableSharedPostWithoutElementsOrHashtags,
+      clientUserId,
+    });
 
     await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
@@ -80,7 +79,6 @@ export async function handleSharePost({
       expirationTimestamp,
       sharedPostId,
     });
-
 
     return {
       success: {
@@ -101,9 +99,9 @@ export async function handleSharePost({
           },
           isLikedByClient: false,
           shared: {
-              type: "post",
-              post: renderableSharedPost,
-          }
+            type: "post",
+            post: renderableSharedPost,
+          },
         },
       },
     };

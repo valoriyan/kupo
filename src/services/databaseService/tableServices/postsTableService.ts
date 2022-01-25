@@ -263,7 +263,6 @@ export class PostsTableService extends TableService {
     return convertDBPostToUnrenderablePostWithoutElementsOrHashtags(response.rows[0]);
   }
 
-
   public async getPostsByPostIds({
     postIds,
   }: {
