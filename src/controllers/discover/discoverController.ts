@@ -10,9 +10,24 @@ import {
   handleGetPageOfDiscoverSearchResultsForPosts,
   SuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse,
 } from "./search/handleGetPageOfDiscoverSearchResultsForPosts";
-import { FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse, GetPageOfDiscoverSearchResultsForHashtagsParams, handleGetPageOfDiscoverSearchResultsForHashtags, SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse } from "./search/handleGetPageOfDiscoverSearchResultsForHashtags";
-import { FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse, GetPageOfDiscoverSearchResultsForPostCaptionsParams, handleGetPageOfDiscoverSearchResultsForPostCaptions, SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse } from "./search/handleGetPageOfDiscoverSearchResultsForPostCaptions";
-import { FailedToGetPageOfDiscoverSearchResultsForUsersResponse, GetPageOfDiscoverSearchResultsForUsersParams, handleGetPageOfDiscoverSearchResultsForUsers, SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse } from "./search/handleGetPageOfDiscoverSearchResultsForUsers";
+import {
+  FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse,
+  GetPageOfDiscoverSearchResultsForHashtagsParams,
+  handleGetPageOfDiscoverSearchResultsForHashtags,
+  SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse,
+} from "./search/handleGetPageOfDiscoverSearchResultsForHashtags";
+import {
+  FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse,
+  GetPageOfDiscoverSearchResultsForPostCaptionsParams,
+  handleGetPageOfDiscoverSearchResultsForPostCaptions,
+  SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse,
+} from "./search/handleGetPageOfDiscoverSearchResultsForPostCaptions";
+import {
+  FailedToGetPageOfDiscoverSearchResultsForUsersResponse,
+  GetPageOfDiscoverSearchResultsForUsersParams,
+  handleGetPageOfDiscoverSearchResultsForUsers,
+  SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse,
+} from "./search/handleGetPageOfDiscoverSearchResultsForUsers";
 
 @injectable()
 @Route("discover")
@@ -38,8 +53,8 @@ export class DiscoverController extends Controller {
     @Body() requestBody: GetPageOfDiscoverSearchResultsForHashtagsParams,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse
+      FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse,
+      SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse
     >
   > {
     return await handleGetPageOfDiscoverSearchResultsForHashtags({
@@ -55,8 +70,8 @@ export class DiscoverController extends Controller {
     @Body() requestBody: GetPageOfDiscoverSearchResultsForPostCaptionsParams,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse
+      FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse,
+      SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse
     >
   > {
     return await handleGetPageOfDiscoverSearchResultsForPostCaptions({
@@ -89,8 +104,8 @@ export class DiscoverController extends Controller {
     @Body() requestBody: GetPageOfDiscoverSearchResultsForUsersParams,
   ): Promise<
     SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForUsersResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse
+      FailedToGetPageOfDiscoverSearchResultsForUsersResponse,
+      SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse
     >
   > {
     return await handleGetPageOfDiscoverSearchResultsForUsers({
