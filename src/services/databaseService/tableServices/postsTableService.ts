@@ -53,7 +53,7 @@ export class PostsTableService extends TableService {
         scheduled_publication_timestamp BIGINT NOT NULL,
         expiration_timestamp BIGINT,
         
-        shared_post_id VARCHAR(64);
+        shared_post_id VARCHAR(64)
       )
       ;
     `;
