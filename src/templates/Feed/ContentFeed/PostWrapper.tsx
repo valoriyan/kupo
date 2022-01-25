@@ -50,6 +50,10 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
     }
   }
 
+  async function handleClickOfShareButton() {
+    console.log("SHARING POST!");
+  }
+
   const menuActions = [];
 
   if (userId === authorUserId) {
@@ -76,6 +80,7 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
       authorUserName={user.username}
       authorUserAvatar={user.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
+      handleClickOfShareButton={handleClickOfShareButton}
       menuActions={menuActions}
     />
   );

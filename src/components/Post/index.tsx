@@ -24,12 +24,14 @@ export interface PostProps {
   authorUserName?: string;
   authorUserAvatar?: string;
   handleClickOfLikeButton: () => void;
+  handleClickOfShareButton: () => void;
   menuActions: MenuAction[];
 }
 
 export const Post = ({
   post,
   handleClickOfLikeButton,
+  handleClickOfShareButton,
   authorUserName,
   authorUserAvatar,
   menuActions,
@@ -86,7 +88,7 @@ export const Post = ({
           metric={likes.count}
         />
         <PostAction Icon={CommentIcon} as={Collapsible.Trigger} />
-        <PostAction Icon={PaperPlanIcon} />
+        <PostAction Icon={PaperPlanIcon} onClick={handleClickOfShareButton} />
         <PostAction Icon={BookmarkIcon} />
       </Flex>
       <CollapsibleContent>
