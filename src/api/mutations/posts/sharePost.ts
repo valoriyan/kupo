@@ -2,17 +2,9 @@ import { useMutation } from "react-query";
 import Router from "next/router";
 import { Api } from "../..";
 
-export const useSharePost = ({
-  sharedPostId,
-  caption,
-  hashtags,
-}: {
-  sharedPostId: string;
-  caption: string;
-  hashtags: string[];
-}) => {
+export const useSharePost = ({ sharedPostId }: { sharedPostId: string }) => {
   return useMutation(
-    async () => {
+    async ({ caption, hashtags }: { caption: string; hashtags: string[] }) => {
       return await Api.sharePost({
         sharedPostId,
         caption,

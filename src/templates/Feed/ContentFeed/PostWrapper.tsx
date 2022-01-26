@@ -2,6 +2,7 @@ import { RenderablePost } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
+import { useSharePost } from "#/api/mutations/posts/sharePost";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
@@ -33,6 +34,9 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
     postId,
     authorUserId,
   });
+  const { mutateAsync: sharePost } = useSharePost({
+    sharedPostId: postId,
+  });
 
   if (isError && !isLoading) {
     return <div>Error: {(error as Error).message}</div>;
@@ -51,7 +55,10 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
   }
 
   async function handleClickOfShareButton() {
-    console.log("SHARING POST!");
+    sharePost({
+      caption: "I want to share this!",
+      hashtags: ["shared"],
+    });
   }
 
   const menuActions = [];

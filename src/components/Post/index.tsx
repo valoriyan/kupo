@@ -36,8 +36,24 @@ export const Post = ({
   authorUserAvatar,
   menuActions,
 }: PostProps) => {
-  const { isLikedByClient, caption, contentElementTemporaryUrls, hashtags, likes } = post;
+  const {
+    isLikedByClient,
+    caption,
+    contentElementTemporaryUrls,
+    hashtags,
+    likes,
+    shared,
+  } = post;
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
+
+  let imageUrl;
+  if (shared && shared.type === "post") {
+    imageUrl = shared.post.contentElementTemporaryUrls[0];
+  } else {
+    imageUrl = contentElementTemporaryUrls[0];
+  }
+
+  console.log(post);
 
   return (
     <Grid as={Collapsible.Root}>
@@ -56,18 +72,18 @@ export const Post = ({
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
-      {contentElementTemporaryUrls[0] && (
+      {imageUrl && (
         <ImageWrapper>
           <BlurredImage
             alt="Blurred Post Media"
-            src={contentElementTemporaryUrls[0]}
+            src={imageUrl}
             layout="fill"
             unoptimized // Optimization caching is broken because signed urls aren't stable
             priority
           />
           <Image
             alt="Post Media"
-            src={contentElementTemporaryUrls[0]}
+            src={imageUrl}
             layout="fill"
             objectFit="contain"
             unoptimized // Optimization caching is broken because signed urls aren't stable
