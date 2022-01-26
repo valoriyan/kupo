@@ -144,6 +144,7 @@ export * from "./set-user-content-feed-filters-request-body";
 export * from "./set-user-hashtags-request-body";
 export * from "./share-post-failure-reasons";
 export * from "./share-post-request-body";
+export * from "./shared-post-type";
 export * from "./successful-auth-response";
 export * from "./successful-chat-message-creation-response";
 export * from "./successful-get-page-of-chat-messages-response";

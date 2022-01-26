@@ -1,12 +1,16 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfulGetPageOfPostFromFollowedUsersResponse } from "../..";
-import { ContentFilter, ContentFilterType } from "./useGetContentFilters";
+import {
+  Api,
+  SuccessfulGetPageOfPostFromFollowedUsersResponse,
+  UserContentFeedFilter,
+  UserContentFeedFilterType,
+} from "../..";
 
 export const useGetPageOfContentFeed = ({
   contentFeedFilter,
 }: {
-  contentFeedFilter: ContentFilter;
+  contentFeedFilter: UserContentFeedFilter;
 }) => {
   const { type: filterType, value } = contentFeedFilter;
   return useInfiniteQuery<
@@ -17,13 +21,13 @@ export const useGetPageOfContentFeed = ({
   >(
     [CacheKeys.ContentFeed, filterType, value],
     ({ pageParam }) => {
-      if (filterType === ContentFilterType.FollowingUsers) {
+      if (filterType === UserContentFeedFilterType.FollowingUsers) {
         return fetchPageOfContentFromFromFollowedUsers({ pageParam });
-      } else if (filterType === ContentFilterType.Hashtag) {
+      } else if (filterType === UserContentFeedFilterType.Hashtag) {
         return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag: value });
       } else {
         // TODO: replace with posts by username
-        return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag: value });
+        return fetchPageOfContentFromFromFollowedUsername({ pageParam, userId: value });
       }
     },
     {
@@ -56,6 +60,23 @@ async function fetchPageOfContentFromFromFollowedHashtag({
 }) {
   const res = await Api.getPageOfPostFromFollowedHashtag({
     hashtag,
+    cursor: pageParam,
+    pageSize: 5,
+  });
+
+  if (res.data.success) return res.data.success;
+  throw new Error(res.data.error?.reason ?? "Unknown Error");
+}
+
+async function fetchPageOfContentFromFromFollowedUsername({
+  pageParam = undefined,
+  userId,
+}: {
+  pageParam: string | undefined;
+  userId: string;
+}) {
+  const res = await Api.getPageOfPostsPagination({
+    userId,
     cursor: pageParam,
     pageSize: 5,
   });

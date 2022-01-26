@@ -1,7 +1,6 @@
 import { InfiniteData, QueryClient } from "react-query";
-import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
 import { CacheKeys } from "#/contexts/queryClient";
-import { SuccessfulGetPageOfPostsPaginationResponse } from "../..";
+import { SuccessfulGetPageOfPostsPaginationResponse, UserContentFeedFilter } from "../..";
 
 export type UpdateQueriedPostDataFunction = (
   queriedData: InfiniteData<SuccessfulGetPageOfPostsPaginationResponse> | undefined,
@@ -14,7 +13,7 @@ const updatePostCacheForContentFeed = ({
 }: {
   updateQueriedPostDataFunction: UpdateQueriedPostDataFunction;
   queryClient: QueryClient;
-  contentFilter: ContentFilter;
+  contentFilter: UserContentFeedFilter;
 }) => {
   const queryKey = [CacheKeys.ContentFeed, contentFilter?.type, contentFilter?.value];
 
@@ -50,17 +49,15 @@ export const updateCurrentlyActivePostCacheForUserPosts = ({
   updateQueriedPostDataFunction: UpdateQueriedPostDataFunction;
   queryClient: QueryClient;
   authorUserId: string;
-  contentFilter?: ContentFilter;
+  contentFilter?: UserContentFeedFilter;
 }) => {
   if (!!contentFilter) {
-    console.log("RIGHT ONE WAS HIT");
     updatePostCacheForContentFeed({
       updateQueriedPostDataFunction,
       queryClient,
       contentFilter,
     });
   } else {
-    console.log("WRONG ONE WAS HIT");
     updatePostCacheForUserPosts({
       updateQueriedPostDataFunction,
       queryClient,

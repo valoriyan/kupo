@@ -1,4 +1,4 @@
-import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
+import { UserContentFeedFilter } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { Stack } from "#/components/Layout";
@@ -7,7 +7,7 @@ import { styled } from "#/styling";
 import { PostWrapper } from "./PostWrapper";
 
 export interface ContentFeedProps {
-  selectedContentFilter: ContentFilter;
+  selectedContentFilter: UserContentFeedFilter;
 }
 
 export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {

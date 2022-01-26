@@ -1,4 +1,4 @@
-import { RenderablePost } from "#/api";
+import { RenderablePost, UserContentFeedFilter } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
@@ -7,11 +7,10 @@ import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
 import { useCurrentUserId } from "#/contexts/auth";
-import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
 
 export interface PostWrapperProps {
   post: RenderablePost;
-  contentFilter: ContentFilter;
+  contentFilter: UserContentFeedFilter;
 }
 
 export const PostWrapper = ({ post, contentFilter }: PostWrapperProps) => {

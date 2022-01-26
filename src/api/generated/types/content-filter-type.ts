@@ -12,25 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { SharedPostType } from "./shared-post-type";
-import { UnrenderablePost } from "./unrenderable-post";
-
 /**
  *
  * @export
- * @interface RenderablePostShared
+ * @enum {string}
  */
-export interface RenderablePostShared {
-  /**
-   *
-   * @type {UnrenderablePost}
-   * @memberof RenderablePostShared
-   */
-  post: UnrenderablePost;
-  /**
-   *
-   * @type {SharedPostType}
-   * @memberof RenderablePostShared
-   */
-  type: SharedPostType;
+export enum ContentFilterType {
+  Following = "Following",
+  Hash = "#",
+  At = "@",
 }

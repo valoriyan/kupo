@@ -2,10 +2,6 @@ import { FormEventHandler, useState } from "react";
 import { motion } from "framer-motion";
 import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
 import {
-  ContentFilter,
-  ContentFilterType,
-} from "#/api/queries/feed/useGetContentFilters";
-import {
   ChevronDownRIcon,
   ChevronUpIcon,
   ChevronUpRIcon,
@@ -15,46 +11,73 @@ import {
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { Body, bodyStyles, MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
+import { UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
+import { useCurrentUserId } from "#/contexts/auth";
 
 export interface FeedListEditorProps {
   hide: () => void;
-  contentFilters: ContentFilter[];
+  contentFilters: UserContentFeedFilter[];
   updateContentFilters: ReturnType<typeof useUpdateContentFilters>["mutateAsync"];
 }
 
 export const FeedListEditor = (props: FeedListEditorProps) => {
   const [newFilterText, setNewFilterText] = useState("");
+  const clientUserId = useCurrentUserId();
 
-  const onMoveUp = (id: string) => () => {
+  const onMoveUp = (contentFeedFilterId: string) => () => {
     const newFilters = props.contentFilters.splice(1);
-    const index = newFilters.findIndex((filter) => filter.id === id);
+    const index = newFilters.findIndex(
+      (filter) => filter.contentFeedFilterId === contentFeedFilterId,
+    );
     newFilters[index - 1] = newFilters.splice(index, 1, newFilters[index - 1])[0];
     props.updateContentFilters(newFilters);
   };
-  const onMoveDown = (id: string) => () => {
+
+  const onMoveDown = (contentFeedFilterId: string) => () => {
     const newFilters = props.contentFilters.splice(1);
-    const index = newFilters.findIndex((filter) => filter.id === id);
+    const index = newFilters.findIndex(
+      (filter) => filter.contentFeedFilterId === contentFeedFilterId,
+    );
     newFilters[index + 1] = newFilters.splice(index, 1, newFilters[index + 1])[0];
     props.updateContentFilters(newFilters);
   };
-  const onDelete = (id: string) => () => {
+
+  const onDelete = (contentFeedFilterId: string) => () => {
     props.updateContentFilters(
-      props.contentFilters.splice(1).filter((filter) => filter.id !== id),
+      props.contentFilters
+        .splice(1)
+        .filter((filter) => filter.contentFeedFilterId !== contentFeedFilterId),
     );
   };
 
   const addFilter: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (!isFilterValid(newFilterText)) return;
-    const isHashTag = newFilterText.includes("#");
+    const isHashTag = newFilterText.startsWith("#");
     const value = newFilterText.split(isHashTag ? "#" : "@")[1];
-    const type = isHashTag ? ContentFilterType.Hashtag : ContentFilterType.User;
-    const id = type + value;
-    if (props.contentFilters.some((filter) => filter.id === id)) {
+    const type = isHashTag
+      ? UserContentFeedFilterType.Hashtag
+      : UserContentFeedFilterType.Username;
+
+    const contentFeedFilterId = type + value;
+    if (
+      props.contentFilters.some(
+        (filter) => filter.contentFeedFilterId === contentFeedFilterId,
+      )
+    ) {
       setNewFilterText("");
       return;
     }
-    const newFilters = [...props.contentFilters.splice(1), { id, type, value }];
+    const newFilters = [
+      ...props.contentFilters.splice(1),
+      {
+        contentFeedFilterId,
+        userId: clientUserId ?? "",
+        type,
+        value,
+        creationTimestamp: Date.now(),
+      },
+    ];
     props.updateContentFilters(newFilters);
     setNewFilterText("");
   };
@@ -89,18 +112,18 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
       </Flex>
       {props.contentFilters.map((filter, i) => (
         <FilterRow
-          key={filter.id}
+          key={filter.contentFeedFilterId}
           filter={filter}
           actions={
-            filter.type === ContentFilterType.FollowingUsers
+            filter.type === UserContentFeedFilterType.FollowingUsers
               ? undefined
               : {
-                  moveUp: i === 1 ? undefined : onMoveUp(filter.id),
+                  moveUp: i === 1 ? undefined : onMoveUp(filter.contentFeedFilterId),
                   moveDown:
                     i === props.contentFilters.length - 1
                       ? undefined
-                      : onMoveDown(filter.id),
-                  delete: onDelete(filter.id),
+                      : onMoveDown(filter.contentFeedFilterId),
+                  delete: onDelete(filter.contentFeedFilterId),
                 }
           }
         />
@@ -149,7 +172,7 @@ const AddButton = styled("button", {
 });
 
 interface FilterRowProps {
-  filter: ContentFilter;
+  filter: UserContentFeedFilter;
   actions?: {
     moveUp?: () => void;
     moveDown?: () => void;
@@ -158,9 +181,19 @@ interface FilterRowProps {
 }
 
 const FilterRow = ({ filter, actions }: FilterRowProps) => {
+  let filterDisplayName;
+
+  if (filter.type === UserContentFeedFilterType.Username) {
+    filterDisplayName = `@${filter.value}`;
+  } else if (filter.type === UserContentFeedFilterType.Hashtag) {
+    filterDisplayName = `#${filter.value}`;
+  } else if (filter.type === UserContentFeedFilterType.FollowingUsers) {
+    filterDisplayName = `Following Users`;
+  }
+
   return (
     <FilterRowWrapper layout transition={{ duration: 0.2 }}>
-      <Body>{filter.type + filter.value}</Body>
+      <Body>{filterDisplayName}</Body>
       {actions && (
         <Flex css={{ gap: "$3" }}>
           {actions.moveUp && (

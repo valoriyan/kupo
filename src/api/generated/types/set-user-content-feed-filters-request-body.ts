@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { UserContentFeedFilter } from "./user-content-feed-filter";
+
 /**
  *
  * @export
@@ -20,14 +22,8 @@
 export interface SetUserContentFeedFiltersRequestBody {
   /**
    *
-   * @type {Array<string>}
+   * @type {Array<UserContentFeedFilter>}
    * @memberof SetUserContentFeedFiltersRequestBody
    */
-  hashtags: Array<string>;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof SetUserContentFeedFiltersRequestBody
-   */
-  usernames: Array<string>;
+  requestedContentFeedFilters: Array<UserContentFeedFilter>;
 }

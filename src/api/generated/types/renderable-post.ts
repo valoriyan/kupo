@@ -62,7 +62,7 @@ export interface RenderablePost {
    * @type {string}
    * @memberof RenderablePost
    */
-  shared_post_id?: string;
+  sharedPostId?: string;
   /**
    *
    * @type {Array<string>}

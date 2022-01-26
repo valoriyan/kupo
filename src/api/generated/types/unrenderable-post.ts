@@ -61,7 +61,7 @@ export interface UnrenderablePost {
    * @type {string}
    * @memberof UnrenderablePost
    */
-  shared_post_id?: string;
+  sharedPostId?: string;
   /**
    *
    * @type {Array<string>}

@@ -20,4 +20,5 @@
 export enum UserContentFeedFilterType {
   Hashtag = "HASHTAG",
   Username = "USERNAME",
+  FollowingUsers = "FOLLOWING_USERS",
 }

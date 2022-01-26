@@ -1,6 +1,9 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
-import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
+import {
+  Api,
+  SuccessfulGetPageOfPostsPaginationResponse,
+  UserContentFeedFilter,
+} from "../..";
 import {
   updateCurrentlyActivePostCacheForUserPosts,
   UpdateQueriedPostDataFunction,
@@ -13,7 +16,7 @@ export const useSharePost = ({
 }: {
   sharedPostId: string;
   authorUserId: string;
-  contentFilter?: ContentFilter;
+  contentFilter?: UserContentFeedFilter;
 }) => {
   const queryClient = useQueryClient();
 
@@ -27,8 +30,6 @@ export const useSharePost = ({
     },
     {
       onSuccess: (data) => {
-        console.log("HIT");
-        console.log("data", data);
         if (data.data.success) {
           const sharedPost = data.data.success.renderablePost;
 

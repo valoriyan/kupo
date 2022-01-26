@@ -12,25 +12,24 @@
  * Do not edit the class manually.
  */
 
-import { SharedPostType } from "./shared-post-type";
-import { UnrenderablePost } from "./unrenderable-post";
+import { ContentFilterType } from "./content-filter-type";
 
 /**
  *
  * @export
- * @interface RenderablePostShared
+ * @interface RequestedContentFeedFilter
  */
-export interface RenderablePostShared {
+export interface RequestedContentFeedFilter {
   /**
    *
-   * @type {UnrenderablePost}
-   * @memberof RenderablePostShared
+   * @type {ContentFilterType}
+   * @memberof RequestedContentFeedFilter
    */
-  post: UnrenderablePost;
+  type: ContentFilterType;
   /**
    *
-   * @type {SharedPostType}
-   * @memberof RenderablePostShared
+   * @type {string}
+   * @memberof RequestedContentFeedFilter
    */
-  type: SharedPostType;
+  value: string;
 }

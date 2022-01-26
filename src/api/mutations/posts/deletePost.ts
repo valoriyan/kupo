@@ -1,6 +1,9 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
-import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
+import {
+  Api,
+  SuccessfulGetPageOfPostsPaginationResponse,
+  UserContentFeedFilter,
+} from "../..";
 import {
   updateCurrentlyActivePostCacheForUserPosts,
   UpdateQueriedPostDataFunction,
@@ -13,7 +16,7 @@ export const useDeletePost = ({
 }: {
   postId: string;
   authorUserId: string;
-  contentFilter?: ContentFilter;
+  contentFilter?: UserContentFeedFilter;
 }) => {
   const queryClient = useQueryClient();
 
@@ -33,8 +36,6 @@ export const useDeletePost = ({
           console.log("queriedData", queriedData);
           if (!!queriedData) {
             const updatedPages = queriedData.pages.map((page) => {
-              console.log("page");
-              console.log(page);
               const updatedRenderablePosts = page.posts.filter(
                 (post) => post.postId !== postId,
               );

@@ -1,18 +1,24 @@
 import { useMutation, useQueryClient } from "react-query";
-import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
 import { CacheKeys } from "#/contexts/queryClient";
+import { Api, UserContentFeedFilter } from "#/api";
 
 export const useUpdateContentFilters = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (newContentFilters: ContentFilter[]) => {
+    async (updatedContentFilters: UserContentFeedFilter[]) => {
       // TODO: Send new filters to the backend
-      return newContentFilters;
+
+      return await Api.setUserContentFeedFilters({
+        requestedContentFeedFilters: updatedContentFilters,
+      });
     },
     {
       onMutate: (data) => {
-        queryClient.setQueryData<ContentFilter[]>([CacheKeys.ContentFilters], () => data);
+        queryClient.setQueryData<UserContentFeedFilter[]>(
+          [CacheKeys.ContentFilters],
+          () => data,
+        );
       },
     },
   );
