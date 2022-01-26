@@ -59,8 +59,8 @@ export class DatabaseService {
   }
 
   public async teardownDatabaseService(): Promise<void> {
-    const datastorePool: Pool = await DatabaseService.get();
-    await teardownDatabaseService(datastorePool);
+    // Only works for local
+    await teardownDatabaseService();
   }
 
   static async get(): Promise<Pool> {

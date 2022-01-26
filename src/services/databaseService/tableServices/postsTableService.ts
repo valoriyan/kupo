@@ -32,6 +32,7 @@ function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
     expirationTimestamp: !!dbPost.expiration_timestamp
       ? parseInt(dbPost.expiration_timestamp)
       : undefined,
+    sharedPostId: dbPost.shared_post_id,
   };
 }
 

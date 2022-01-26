@@ -1,3 +1,7 @@
+export enum SharedPostType {
+  post="post",
+}
+
 export interface UnrenderablePostWithoutElementsOrHashtags {
   postId: string;
   authorUserId: string;
@@ -5,7 +9,7 @@ export interface UnrenderablePostWithoutElementsOrHashtags {
   creationTimestamp: number;
   scheduledPublicationTimestamp: number;
   expirationTimestamp?: number;
-  shared_post_id?: string;
+  sharedPostId?: string;
 }
 
 export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
@@ -22,7 +26,7 @@ export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHasht
 
 export interface RenderablePost extends UnrenderablePost {
   shared?: {
-    type: "post";
+    type: SharedPostType;
     post: UnrenderablePost;
   };
 }

@@ -42,7 +42,6 @@ async function setupTables({
 }: {
   tableNameToServicesMap: { [key: string]: TableService };
 }): Promise<void> {
-
   await BluebirdPromise.map(
     Object.entries(tableNameToServicesMap),
     async ([tableName, tableService]) => {
@@ -52,7 +51,6 @@ async function setupTables({
     },
     { concurrency: 1 },
   );
-
 }
 
 export async function setupDatabaseService({

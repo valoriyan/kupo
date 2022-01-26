@@ -42,7 +42,8 @@ async function teardownCustomTypes({ datastorePool }: { datastorePool: Pool }) {
   console.log("Completed Dropping Custom Types\n");
 }
 
-async function teardownDatabase(datastorePool: Pool) {
+async function teardownDatabase() {
+  const datastorePool = new Pool();
   console.log("Dropping Database");
 
   await datastorePool.query(`
@@ -56,7 +57,7 @@ async function teardownDatabase(datastorePool: Pool) {
   await datastorePool.end();
 }
 
-export async function teardownDatabaseService(datastorePool: Pool): Promise<void> {
+export async function teardownDatabaseService(): Promise<void> {
   // await teardownTables({tableServices});
-  await teardownDatabase(datastorePool);
+  await teardownDatabase();
 }

@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "./models";
+import { RenderablePost, SharedPostType } from "./models";
 import { constructRenderablePostFromParts } from "./utilities";
 
 export enum SharePostFailureReasons {
@@ -70,6 +70,9 @@ export async function handleSharePost({
       clientUserId,
     });
 
+    console.log("renderableSharedPost");
+    console.log(renderableSharedPost);
+
     await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
       creationTimestamp,
@@ -99,7 +102,7 @@ export async function handleSharePost({
           },
           isLikedByClient: false,
           shared: {
-            type: "post",
+            type: SharedPostType.post,
             post: renderableSharedPost,
           },
         },
