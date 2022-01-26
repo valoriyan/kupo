@@ -1,6 +1,11 @@
 import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
 import { DatabaseService } from "../../services/databaseService";
-import { RenderablePost, SharedPostType, UnrenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
+import {
+  RenderablePost,
+  SharedPostType,
+  UnrenderablePost,
+  UnrenderablePostWithoutElementsOrHashtags,
+} from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 
 export async function constructRenderablePostsFromParts({
@@ -39,19 +44,23 @@ export async function constructRenderablePostFromParts({
   unrenderablePostWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags;
   clientUserId: string | undefined;
 }): Promise<RenderablePost> {
+  const { sharedPostId } = unrenderablePostWithoutElementsOrHashtags;
 
-  const {
-    sharedPostId,
-  } = unrenderablePostWithoutElementsOrHashtags;
+  const unrenderableSharedPostWithoutElementsOrHashtags = !!sharedPostId
+    ? await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({
+        postId: sharedPostId,
+      })
+    : undefined;
 
-  const unrenderableSharedPostWithoutElementsOrHashtags = !!sharedPostId ? await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId: sharedPostId}) : undefined;
-
-  const sharedPost = !!unrenderableSharedPostWithoutElementsOrHashtags ? await assemblePostComponents({
-    blobStorageService,
-    databaseService,
-    unrenderablePostWithoutElementsOrHashtags: unrenderableSharedPostWithoutElementsOrHashtags,
-    clientUserId,
-  }) : undefined;
+  const sharedPost = !!unrenderableSharedPostWithoutElementsOrHashtags
+    ? await assemblePostComponents({
+        blobStorageService,
+        databaseService,
+        unrenderablePostWithoutElementsOrHashtags:
+          unrenderableSharedPostWithoutElementsOrHashtags,
+        clientUserId,
+      })
+    : undefined;
 
   const post = await assemblePostComponents({
     blobStorageService,
@@ -60,16 +69,17 @@ export async function constructRenderablePostFromParts({
     clientUserId,
   });
 
-  const shared = !!sharedPost ? {
-    type: SharedPostType.post,
-    post: sharedPost
-  } : undefined;
+  const shared = !!sharedPost
+    ? {
+        type: SharedPostType.post,
+        post: sharedPost,
+      }
+    : undefined;
 
   return {
     ...post,
     shared,
-  }
-
+  };
 }
 
 async function assemblePostComponents({

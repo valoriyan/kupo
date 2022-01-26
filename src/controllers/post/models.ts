@@ -1,5 +1,5 @@
 export enum SharedPostType {
-  post="post",
+  post = "post",
 }
 
 export interface UnrenderablePostWithoutElementsOrHashtags {
