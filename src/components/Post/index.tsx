@@ -53,8 +53,6 @@ export const Post = ({
     imageUrl = contentElementTemporaryUrls[0];
   }
 
-  console.log(post);
-
   return (
     <Grid as={Collapsible.Root}>
       <Flex css={{ px: "$4", py: "$3", gap: "$3", alignItems: "center" }}>

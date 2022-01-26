@@ -29,8 +29,6 @@ export const Notifications = () => {
       const { userDoingFollowing, timestamp, type } = notification;
       const { username, profilePictureTemporaryUrl } = userDoingFollowing;
 
-      console.log(profilePictureTemporaryUrl);
-
       return (
         <div key={`${timestamp}+${type}`}>
           <Avatar src={profilePictureTemporaryUrl} alt="User Avatar" size="$7" />

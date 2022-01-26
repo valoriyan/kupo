@@ -46,7 +46,13 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
       <ErrorMessage>No Posts Found</ErrorMessage>
     ) : (
       posts.map((post) => {
-        return <PostWrapper key={post.postId} post={post} />;
+        return (
+          <PostWrapper
+            key={post.postId}
+            post={post}
+            contentFilter={selectedContentFilter}
+          />
+        );
       })
     );
 

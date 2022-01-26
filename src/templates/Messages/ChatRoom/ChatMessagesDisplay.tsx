@@ -26,9 +26,6 @@ export const ChatMessagesDisplay = ({
     isFetchingPreviousPage,
   } = infiniteQueryResultOfFetchingPageOfChatMessages;
 
-  console.log("hasPreviousPage");
-  console.log(hasPreviousPage);
-
   {
     isFetchingPageOfChatMessages ? (
       <div>
@@ -48,8 +45,6 @@ export const ChatMessagesDisplay = ({
       </GridItem>
     );
   });
-
-  console.log(hasPreviousPage);
 
   const loadPreviousPageItem = isFetchingPreviousPage ? (
     "Loading more..."

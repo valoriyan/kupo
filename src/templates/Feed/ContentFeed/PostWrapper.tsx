@@ -7,12 +7,14 @@ import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
 import { useCurrentUserId } from "#/contexts/auth";
+import { ContentFilter } from "#/api/queries/feed/useGetContentFilters";
 
 export interface PostWrapperProps {
   post: RenderablePost;
+  contentFilter: ContentFilter;
 }
 
-export const PostWrapper = ({ post }: PostWrapperProps) => {
+export const PostWrapper = ({ post, contentFilter }: PostWrapperProps) => {
   const { isLikedByClient, postId, authorUserId } = post;
   const userId = useCurrentUserId();
   const {
@@ -33,6 +35,7 @@ export const PostWrapper = ({ post }: PostWrapperProps) => {
   const { mutateAsync: deletePost } = useDeletePost({
     postId,
     authorUserId,
+    contentFilter,
   });
   const { mutateAsync: sharePost } = useSharePost({
     sharedPostId: postId,
