@@ -57,10 +57,18 @@ export async function handleSharePost({
   const creationTimestamp = now;
 
   try {
-    const unrenderableSharedPostWithoutElementsOrHashtags =
+    let unrenderableSharedPostWithoutElementsOrHashtags =
       await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
         { postId: sharedPostId },
       );
+
+    if (!!unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId) {
+      unrenderableSharedPostWithoutElementsOrHashtags =
+      await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+        { postId: unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId },
+      );
+
+    }
 
     const renderableSharedPost = await constructRenderablePostFromParts({
       blobStorageService: controller.blobStorageService,
