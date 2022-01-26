@@ -16,7 +16,7 @@ import { UserContentFeedFiltersTableService } from "./tableServices/userContentF
 import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
 import { UserHashtagsTableService } from "./tableServices/userHashtagsTableService";
 import { UsersTableService } from "./tableServices/usersTableService";
-import { teardownDatabaseServive } from "./teardown";
+import { teardownDatabaseService } from "./teardown";
 import { DatabaseServiceType } from "./models";
 
 @singleton()
@@ -59,7 +59,8 @@ export class DatabaseService {
   }
 
   public async teardownDatabaseService(): Promise<void> {
-    await teardownDatabaseServive();
+    const datastorePool: Pool = await DatabaseService.get();
+    await teardownDatabaseService(datastorePool);
   }
 
   static async get(): Promise<Pool> {
