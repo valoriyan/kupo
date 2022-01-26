@@ -1,6 +1,7 @@
 export enum UserContentFeedFilterType {
   HASHTAG = "HASHTAG",
   USERNAME = "USERNAME",
+  FOLLOWING_USERS = "FOLLOWING_USERS",
 }
 
 export interface UserContentFeedFilter {

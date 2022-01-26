@@ -2,13 +2,12 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { FeedController } from "./feedController";
-import { UserContentFeedFilter, UserContentFeedFilterType } from "./models";
+import { UserContentFeedFilter } from "./models";
 import { v4 as uuidv4 } from "uuid";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SetUserContentFeedFiltersRequestBody {
-  hashtags: string[];
-  usernames: string[];
+  requestedContentFeedFilters: UserContentFeedFilter[];
 }
 
 export enum FailedToSetUserContentFeedFiltersResponseReason {
@@ -37,26 +36,21 @@ export async function handleSetUserContentFeedFilters({
     SuccessfullySetUserContentFeedFiltersResponse
   >
 > {
-  const { hashtags, usernames } = requestBody;
+  const { requestedContentFeedFilters } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const userContentFeedFilters = [
-    ...hashtags.map((hashtag) => ({
-      contentFeedFilterId: uuidv4(),
-      userId: clientUserId,
-      type: UserContentFeedFilterType.HASHTAG,
-      value: hashtag,
-      creationTimestamp: Date.now(),
-    })),
-    ...usernames.map((username) => ({
-      contentFeedFilterId: uuidv4(),
-      userId: clientUserId,
-      type: UserContentFeedFilterType.USERNAME,
-      value: username,
-      creationTimestamp: Date.now(),
-    })),
+  const userContentFeedFilters: UserContentFeedFilter[] = [
+    ...requestedContentFeedFilters.map((requestedContentFeedFilter) => {
+      return {
+        contentFeedFilterId: uuidv4(),
+        userId: clientUserId,
+        type: requestedContentFeedFilter.type,
+        value: requestedContentFeedFilter.value,
+        creationTimestamp: Date.now(),
+      };
+    }),
   ];
 
   const existingUserContentFeedFilters =
@@ -64,7 +58,7 @@ export async function handleSetUserContentFeedFilters({
       { userId: clientUserId },
     );
 
-  if (!!existingUserContentFeedFilters) {
+  if (existingUserContentFeedFilters.length > 0) {
     await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.deleteUserContentFeedFiltersByUserId(
       { userId: clientUserId },
     );

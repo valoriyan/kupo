@@ -60,6 +60,9 @@ export class SendGridEmailService extends EmailServiceInterface {
         email: "hello@kupono.io",
       },
       subject: "Welcome to Kupono.io",
+      dynamic_template_data: {
+        subject: "Welcome to Kupono.io",
+      },
       html: generateWelcomeEmailHtml({
         homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,
       }),

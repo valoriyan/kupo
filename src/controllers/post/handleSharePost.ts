@@ -64,10 +64,9 @@ export async function handleSharePost({
 
     if (!!unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId) {
       unrenderableSharedPostWithoutElementsOrHashtags =
-      await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-        { postId: unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId },
-      );
-
+        await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+          { postId: unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId },
+        );
     }
 
     const renderableSharedPost = await constructRenderablePostFromParts({
