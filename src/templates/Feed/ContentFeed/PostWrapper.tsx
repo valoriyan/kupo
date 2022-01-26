@@ -39,6 +39,8 @@ export const PostWrapper = ({ post, contentFilter }: PostWrapperProps) => {
   });
   const { mutateAsync: sharePost } = useSharePost({
     sharedPostId: postId,
+    authorUserId,
+    contentFilter,
   });
 
   if (isError && !isLoading) {
