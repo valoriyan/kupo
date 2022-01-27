@@ -3,7 +3,7 @@ import { MouseEvent } from "react";
 import { RenderableUser } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { useGetUserByUsername } from "#/api/queries/users/useGetUserProfile";
 import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
@@ -21,12 +21,8 @@ import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { UserPosts } from "./UserPosts";
 
-export interface UserProfileProps {
-  username?: string;
-}
-
-export const UserProfile = ({ username }: UserProfileProps) => {
-  const { data, isLoading, error } = useGetUserProfile({ username });
+export const UserProfile = ({ username }: { username: string }) => {
+  const { data, isLoading, error } = useGetUserByUsername({ username });
   const clientUserId = useCurrentUserId();
 
   const isOwnProfile = data && clientUserId === data?.userId;
@@ -111,6 +107,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
           ) : (
             <FollowButton
               userId={userId}
+              username={username}
               isBeingFollowedByClient={isBeingFollowedByClient}
             />
           )}
@@ -168,17 +165,21 @@ const PrimaryButton = styled(Button, {
 
 const FollowButton = ({
   userId,
+  username,
   isBeingFollowedByClient,
 }: {
   userId: string;
+  username: string;
   isBeingFollowedByClient: boolean;
 }) => {
   const { mutateAsync: followUser } = useFollowUser({
     userIdBeingFollowed: userId,
+    usernameBeingFollowed: username,
   });
 
   const { mutateAsync: unfollowUser } = useUnfollowUser({
     userIdBeingUnfollowed: userId,
+    usernameBeingUnfollowed: username,
   });
 
   function handleClick(event: MouseEvent<HTMLButtonElement>) {

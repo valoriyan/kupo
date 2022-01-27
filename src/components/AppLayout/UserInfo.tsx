@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { styled } from "#/styling";
 import { formatStat } from "#/utils/formatStat";
 import { Avatar } from "../Avatar";
@@ -7,13 +6,14 @@ import { Flex } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
 import { Subtext } from "../Typography";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export interface UserInfoProps {
   onUsernameClick?: () => void;
 }
 
 export const UserInfo = (props: UserInfoProps) => {
-  const { data, isLoading } = useGetUserProfile({ isOwnProfile: true });
+  const { data, isLoading } = useGetClientUserProfile();
 
   return (
     <>

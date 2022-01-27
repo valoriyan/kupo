@@ -1,11 +1,11 @@
 import { ChangeEvent, MouseEvent, useState } from "react";
 
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { Api } from "#/api";
 import { SettingsScreen } from "..";
 import { styled } from "#/styling";
 import { mainTitleStyles } from "#/components/Typography";
 import { DuplicateIcon } from "#/components/Icons";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export interface InitialProps {
   setCurrentScreen: (newScreen: SettingsScreen) => void;
@@ -14,7 +14,7 @@ export interface InitialProps {
 export const AccountSettings = (props: InitialProps) => {
   const [updatedEmail, setUpdatedEmail] = useState<string>("");
 
-  const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
+  const { data, isLoading, error } = useGetClientUserProfile();
 
   const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
 

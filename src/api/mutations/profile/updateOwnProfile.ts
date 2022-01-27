@@ -31,7 +31,7 @@ export const useUpdateOwnProfile = () => {
     {
       onSuccess: (data) => {
         if (!!data.data.success) {
-          const cacheKey = [CacheKeys.UserProfile, data.data.success.username];
+          const cacheKey = [CacheKeys.ClientProfile, data.data.success.username];
           const cachedData: RenderableUser | undefined =
             queryClient.getQueryData(cacheKey);
 

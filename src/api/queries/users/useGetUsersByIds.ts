@@ -4,7 +4,7 @@ import { Api, RenderableUser } from "../..";
 
 export const useGetUsersByUserIds = ({ userIds }: { userIds: string[] }) => {
   return useQuery<(RenderableUser | null)[], Error>(
-    [CacheKeys.User, ...userIds.slice().sort()],
+    [CacheKeys.UserById, ...userIds.slice().sort()],
     async () => {
       const res = await Api.getUsersByIds({ userIds });
 

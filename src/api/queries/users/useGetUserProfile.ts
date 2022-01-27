@@ -2,16 +2,11 @@ import { useQuery, useQueryClient } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
 import { Api, RenderableUser } from "../..";
 
-export interface GetUserProfileArgs {
-  username?: string;
-  isOwnProfile?: boolean;
-}
-
-export const useGetUserProfile = ({ username, isOwnProfile }: GetUserProfileArgs) => {
+export const useGetUserByUsername = ({ username }: { username: string }) => {
   const queryClient = useQueryClient();
 
   return useQuery<RenderableUser, Error>(
-    [CacheKeys.UserProfile, username],
+    [CacheKeys.UserByUsername, username],
     async () => {
       const res = await Api.getUserProfile({ username }, { authStrat: "tryToken" });
 
@@ -21,9 +16,8 @@ export const useGetUserProfile = ({ username, isOwnProfile }: GetUserProfileArgs
       throw new Error(res.data.error?.reason ?? "Failed to fetch user");
     },
     {
-      enabled: isOwnProfile || !!username,
       onSuccess: async (data) => {
-        await queryClient.setQueryData([CacheKeys.User, data.userId], data);
+        await queryClient.setQueryData([CacheKeys.UserById, data.userId], data);
       },
     },
   );

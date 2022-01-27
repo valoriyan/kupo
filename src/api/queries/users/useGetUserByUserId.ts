@@ -8,7 +8,7 @@ export interface GetUserByUserIdArgs {
 
 export const useGetUserByUserId = ({ userId }: GetUserByUserIdArgs) => {
   return useQuery<RenderableUser, Error>(
-    [CacheKeys.User, userId],
+    [CacheKeys.UserById, userId],
     async () => {
       const res = await Api.getUsersByIds({ userIds: [userId] });
 

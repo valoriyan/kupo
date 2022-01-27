@@ -3,7 +3,7 @@ import { styled } from "#/styling";
 import { ChatRoomsListSearchBar } from "./ChatRoomsListSearchBar";
 import { ChatRoomsListFilterBar } from "./ChatRoomsListFilterBar";
 import { ChatRoomsList } from "./ChatRoomList";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export const Messages = () => {
   const infiniteQueryResultOfFetchingPageOfChatRooms = useGetPageOfChatRooms({});
@@ -14,7 +14,7 @@ export const Messages = () => {
     data: clientUserData,
     isError: isErrorAcquiringClientUserData,
     isLoading: isLoadingClientUserData,
-  } = useGetUserProfile({ isOwnProfile: true });
+  } = useGetClientUserProfile();
 
   if (
     (isError && !isLoading) ||

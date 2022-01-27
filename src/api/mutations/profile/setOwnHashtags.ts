@@ -14,7 +14,7 @@ export const useSetOwnHashtags = (username: string) => {
     {
       onSuccess: (data, variables) => {
         if (data.data.success) {
-          const cacheKey = [CacheKeys.UserProfile, username];
+          const cacheKey = [CacheKeys.ClientProfile, username];
           const cachedData: RenderableUser | undefined =
             queryClient.getQueryData(cacheKey);
 

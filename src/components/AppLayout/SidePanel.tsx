@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
@@ -21,9 +20,10 @@ import { LoadingArea } from "../LoadingArea";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 import { useWebsocketState } from "./WebsocketContext";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export const SidePanel = () => {
-  const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
+  const { data, isLoading, error } = useGetClientUserProfile();
   const { notificationsReceived } = useWebsocketState();
 
   const notificationsIndicator =

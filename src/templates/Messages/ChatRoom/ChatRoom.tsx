@@ -7,12 +7,12 @@ import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
 import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
 import { styled } from "#/styling";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 import { ChatMessagesDisplay } from "./ChatMessagesDisplay";
 import { NewMessageInput } from "./NewMessageInput";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { ChatMessageActionRow } from "./ChatMessageActionRow";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
 const DELETED_CHAT_MESSAGE_EVENT_NAME = "DELETED_CHAT_MESSAGE_EVENT_NAME";
@@ -28,7 +28,7 @@ const ChatRoomInner = ({ chatRoomId }: { chatRoomId: string }) => {
     data: clientUserData,
     isError: isErrorAcquiringClientUserData,
     isLoading: isLoadingClientUserData,
-  } = useGetUserProfile({ isOwnProfile: true });
+  } = useGetClientUserProfile();
 
   const infiniteQueryResultOfFetchingPageOfChatMessages =
     useGetPageOfChatMessagesFromChatRoomId({

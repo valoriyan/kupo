@@ -4,8 +4,8 @@ import { FormStateProvider, useFormState } from "./FormContext";
 import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
 import { RenderableUser } from "#/api";
 import { useGetChatRoomIdWithUserIds } from "#/api/queries/chat/useGetChatRoomIdWithUserIds";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
 import { NewMessageInNewChatRoom } from "./NewMessageInNewChatRoom";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 const NewChatRoomUsernameListItem = ({ user }: { user: RenderableUser | null }) => {
   if (!!user) {
@@ -95,7 +95,7 @@ export const NewChatRoomInner = ({ clientUser }: { clientUser: RenderableUser })
 };
 
 export const NewChatRoom = ({ userIds }: { userIds?: string[] }) => {
-  const { data, error, isLoading } = useGetUserProfile({ isOwnProfile: true });
+  const { data, error, isLoading } = useGetClientUserProfile();
 
   if (!!userIds) {
     return <NewMessageInNewChatRoom userIds={userIds} />;

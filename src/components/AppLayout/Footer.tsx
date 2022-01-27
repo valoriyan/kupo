@@ -7,10 +7,10 @@ import { BellIcon, HomeIcon, MailIcon, MathPlusIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadLink } from "./shared";
-import { useGetUserProfile } from "#/api/queries/users/useGetUserProfile";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export const Footer = () => {
-  const { data, isLoading, error } = useGetUserProfile({ isOwnProfile: true });
+  const { data, isLoading, error } = useGetClientUserProfile();
 
   if (error && !isLoading) {
     return <div>Error: {error.message}</div>;
