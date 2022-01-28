@@ -76,7 +76,7 @@ export const ChatRoomsList = ({
           ? "Loading more..."
           : hasNextPage
           ? "Load More"
-          : "Nothing more chat rooms to load"}
+          : "No more chat rooms to load"}
       </button>
     </div>
   );
