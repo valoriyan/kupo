@@ -10,7 +10,7 @@ export function generateContentFeedFilterDisplayName({
   } else if (userContentFeedFilter.type === UserContentFeedFilterType.Hashtag) {
     return `#${userContentFeedFilter.value}`;
   } else if (userContentFeedFilter.type === UserContentFeedFilterType.FollowingUsers) {
-    return `Following Users`;
+    return `Following`;
   } else {
     throw new Error(`Unknown content feed filter type: ${userContentFeedFilter.type}`);
   }

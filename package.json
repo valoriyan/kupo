@@ -24,7 +24,7 @@
     "@radix-ui/react-id": "^0.1.0",
     "@radix-ui/react-popover": "^0.1.1",
     "@radix-ui/react-tabs": "^0.0.16",
-    "@stitches/react": "^1.0.0",
+    "@stitches/react": "^1.2.6",
     "@types/luxon": "^2.0.7",
     "axios": "^0.21.1",
     "framer-motion": "^4.1.17",

@@ -63,14 +63,6 @@ import { GetPageOfChatRoomsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfCommentsByPostIdRequestBody } from "../types";
 // @ts-ignore
-import { GetPageOfDiscoverSearchResultsForHashtagsParams } from "../types";
-// @ts-ignore
-import { GetPageOfDiscoverSearchResultsForPostCaptionsParams } from "../types";
-// @ts-ignore
-import { GetPageOfDiscoverSearchResultsForPostsParams } from "../types";
-// @ts-ignore
-import { GetPageOfDiscoverSearchResultsForUsersParams } from "../types";
-// @ts-ignore
 import { GetPageOfNotificationsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedHashtagParams } from "../types";
@@ -101,6 +93,14 @@ import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
 import { RemoveUserLikeFromPostRequestBody } from "../types";
 // @ts-ignore
+import { SearchForHashtagsParams } from "../types";
+// @ts-ignore
+import { SearchForPostCaptionsParams } from "../types";
+// @ts-ignore
+import { SearchForPostsParams } from "../types";
+// @ts-ignore
+import { SearchForUsersParams } from "../types";
+// @ts-ignore
 import { SearchUserProfilesByUsernameParams } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
@@ -126,14 +126,6 @@ import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDele
 import { SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForHashtagsResponseSuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForUsersResponseSuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse } from "../types";
 // @ts-ignore
@@ -180,6 +172,14 @@ import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageO
 import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSearchForPostCaptionsFailedSearchForPostCaptionsSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSearchForUsersFailedSearchForUsersSuccess } from "../types";
 // @ts-ignore
 import { SetUserContentFeedFiltersRequestBody } from "../types";
 // @ts-ignore
@@ -1022,202 +1022,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPageOfDiscoverSearchResultsForHashtagsParams} getPageOfDiscoverSearchResultsForHashtagsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForHashtags: async (
-      getPageOfDiscoverSearchResultsForHashtagsParams: GetPageOfDiscoverSearchResultsForHashtagsParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfDiscoverSearchResultsForHashtagsParams' is not null or undefined
-      assertParamExists(
-        "getPageOfDiscoverSearchResultsForHashtags",
-        "getPageOfDiscoverSearchResultsForHashtagsParams",
-        getPageOfDiscoverSearchResultsForHashtagsParams,
-      );
-      const localVarPath = `/discover/getPageOfDiscoverSearchResultsForHashtags`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfDiscoverSearchResultsForHashtagsParams,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForPostCaptionsParams} getPageOfDiscoverSearchResultsForPostCaptionsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForPostHashtags: async (
-      getPageOfDiscoverSearchResultsForPostCaptionsParams: GetPageOfDiscoverSearchResultsForPostCaptionsParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfDiscoverSearchResultsForPostCaptionsParams' is not null or undefined
-      assertParamExists(
-        "getPageOfDiscoverSearchResultsForPostHashtags",
-        "getPageOfDiscoverSearchResultsForPostCaptionsParams",
-        getPageOfDiscoverSearchResultsForPostCaptionsParams,
-      );
-      const localVarPath = `/discover/getPageOfDiscoverSearchResultsForPostHashtags`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfDiscoverSearchResultsForPostCaptionsParams,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForPosts: async (
-      getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfDiscoverSearchResultsForPostsParams' is not null or undefined
-      assertParamExists(
-        "getPageOfDiscoverSearchResultsForPosts",
-        "getPageOfDiscoverSearchResultsForPostsParams",
-        getPageOfDiscoverSearchResultsForPostsParams,
-      );
-      const localVarPath = `/discover/getPageOfDiscoverSearchResultsForPosts`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfDiscoverSearchResultsForPostsParams,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForUsersParams} getPageOfDiscoverSearchResultsForUsersParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForUsers: async (
-      getPageOfDiscoverSearchResultsForUsersParams: GetPageOfDiscoverSearchResultsForUsersParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfDiscoverSearchResultsForUsersParams' is not null or undefined
-      assertParamExists(
-        "getPageOfDiscoverSearchResultsForUsers",
-        "getPageOfDiscoverSearchResultsForUsersParams",
-        getPageOfDiscoverSearchResultsForUsersParams,
-      );
-      const localVarPath = `/discover/getPageOfDiscoverSearchResultsForUsers`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfDiscoverSearchResultsForUsersParams,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
      * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1896,6 +1700,194 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         removeUserLikeFromPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {SearchForHashtagsParams} searchForHashtagsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForHashtags: async (
+      searchForHashtagsParams: SearchForHashtagsParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'searchForHashtagsParams' is not null or undefined
+      assertParamExists(
+        "searchForHashtags",
+        "searchForHashtagsParams",
+        searchForHashtagsParams,
+      );
+      const localVarPath = `/discover/searchForHashtags`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        searchForHashtagsParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForPostCaptions: async (
+      searchForPostCaptionsParams: SearchForPostCaptionsParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'searchForPostCaptionsParams' is not null or undefined
+      assertParamExists(
+        "searchForPostCaptions",
+        "searchForPostCaptionsParams",
+        searchForPostCaptionsParams,
+      );
+      const localVarPath = `/discover/searchForPostCaptions`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        searchForPostCaptionsParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {SearchForPostsParams} searchForPostsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForPosts: async (
+      searchForPostsParams: SearchForPostsParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'searchForPostsParams' is not null or undefined
+      assertParamExists("searchForPosts", "searchForPostsParams", searchForPostsParams);
+      const localVarPath = `/discover/searchForPosts`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        searchForPostsParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {SearchForUsersParams} searchForUsersParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForUsers: async (
+      searchForUsersParams: SearchForUsersParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'searchForUsersParams' is not null or undefined
+      assertParamExists("searchForUsers", "searchForUsersParams", searchForUsersParams);
+      const localVarPath = `/discover/searchForUsers`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        searchForUsersParams,
         localVarRequestOptions,
         configuration,
       );
@@ -2968,114 +2960,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPageOfDiscoverSearchResultsForHashtagsParams} getPageOfDiscoverSearchResultsForHashtagsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfDiscoverSearchResultsForHashtags(
-      getPageOfDiscoverSearchResultsForHashtagsParams: GetPageOfDiscoverSearchResultsForHashtagsParams,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForHashtagsResponseSuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getPageOfDiscoverSearchResultsForHashtags(
-          getPageOfDiscoverSearchResultsForHashtagsParams,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForPostCaptionsParams} getPageOfDiscoverSearchResultsForPostCaptionsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfDiscoverSearchResultsForPostHashtags(
-      getPageOfDiscoverSearchResultsForPostCaptionsParams: GetPageOfDiscoverSearchResultsForPostCaptionsParams,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getPageOfDiscoverSearchResultsForPostHashtags(
-          getPageOfDiscoverSearchResultsForPostCaptionsParams,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfDiscoverSearchResultsForPosts(
-      getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getPageOfDiscoverSearchResultsForPosts(
-          getPageOfDiscoverSearchResultsForPostsParams,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForUsersParams} getPageOfDiscoverSearchResultsForUsersParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfDiscoverSearchResultsForUsers(
-      getPageOfDiscoverSearchResultsForUsersParams: GetPageOfDiscoverSearchResultsForUsersParams,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForUsersResponseSuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getPageOfDiscoverSearchResultsForUsers(
-          getPageOfDiscoverSearchResultsForUsersParams,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
      * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3444,6 +3328,110 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserLikeFromPost(
         removeUserLikeFromPostRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {SearchForHashtagsParams} searchForHashtagsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchForHashtags(
+      searchForHashtagsParams: SearchForHashtagsParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForHashtags(
+        searchForHashtagsParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchForPostCaptions(
+      searchForPostCaptionsParams: SearchForPostCaptionsParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseSearchForPostCaptionsFailedSearchForPostCaptionsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForPostCaptions(
+        searchForPostCaptionsParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {SearchForPostsParams} searchForPostsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchForPosts(
+      searchForPostsParams: SearchForPostsParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForPosts(
+        searchForPostsParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {SearchForUsersParams} searchForUsersParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchForUsers(
+      searchForUsersParams: SearchForUsersParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseSearchForUsersFailedSearchForUsersSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForUsers(
+        searchForUsersParams,
         options,
       );
       return createRequestFunction(
@@ -4055,74 +4043,6 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {GetPageOfDiscoverSearchResultsForHashtagsParams} getPageOfDiscoverSearchResultsForHashtagsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForHashtags(
-      getPageOfDiscoverSearchResultsForHashtagsParams: GetPageOfDiscoverSearchResultsForHashtagsParams,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForHashtagsResponseSuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse> {
-      return localVarFp
-        .getPageOfDiscoverSearchResultsForHashtags(
-          getPageOfDiscoverSearchResultsForHashtagsParams,
-          options,
-        )
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForPostCaptionsParams} getPageOfDiscoverSearchResultsForPostCaptionsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForPostHashtags(
-      getPageOfDiscoverSearchResultsForPostCaptionsParams: GetPageOfDiscoverSearchResultsForPostCaptionsParams,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse> {
-      return localVarFp
-        .getPageOfDiscoverSearchResultsForPostHashtags(
-          getPageOfDiscoverSearchResultsForPostCaptionsParams,
-          options,
-        )
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForPosts(
-      getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForPostsResponseSuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse> {
-      return localVarFp
-        .getPageOfDiscoverSearchResultsForPosts(
-          getPageOfDiscoverSearchResultsForPostsParams,
-          options,
-        )
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPageOfDiscoverSearchResultsForUsersParams} getPageOfDiscoverSearchResultsForUsersParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfDiscoverSearchResultsForUsers(
-      getPageOfDiscoverSearchResultsForUsersParams: GetPageOfDiscoverSearchResultsForUsersParams,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfDiscoverSearchResultsForUsersResponseSuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse> {
-      return localVarFp
-        .getPageOfDiscoverSearchResultsForUsers(
-          getPageOfDiscoverSearchResultsForUsersParams,
-          options,
-        )
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
      * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4321,6 +4241,62 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse> {
       return localVarFp
         .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {SearchForHashtagsParams} searchForHashtagsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForHashtags(
+      searchForHashtagsParams: SearchForHashtagsParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess> {
+      return localVarFp
+        .searchForHashtags(searchForHashtagsParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForPostCaptions(
+      searchForPostCaptionsParams: SearchForPostCaptionsParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseSearchForPostCaptionsFailedSearchForPostCaptionsSuccess> {
+      return localVarFp
+        .searchForPostCaptions(searchForPostCaptionsParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {SearchForPostsParams} searchForPostsParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForPosts(
+      searchForPostsParams: SearchForPostsParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess> {
+      return localVarFp
+        .searchForPosts(searchForPostsParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {SearchForUsersParams} searchForUsersParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchForUsers(
+      searchForUsersParams: SearchForUsersParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseSearchForUsersFailedSearchForUsersSuccess> {
+      return localVarFp
+        .searchForUsers(searchForUsersParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4803,82 +4779,6 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPageOfDiscoverSearchResultsForHashtagsParams} getPageOfDiscoverSearchResultsForHashtagsParams
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfDiscoverSearchResultsForHashtags(
-    getPageOfDiscoverSearchResultsForHashtagsParams: GetPageOfDiscoverSearchResultsForHashtagsParams,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfDiscoverSearchResultsForHashtags(
-        getPageOfDiscoverSearchResultsForHashtagsParams,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPageOfDiscoverSearchResultsForPostCaptionsParams} getPageOfDiscoverSearchResultsForPostCaptionsParams
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfDiscoverSearchResultsForPostHashtags(
-    getPageOfDiscoverSearchResultsForPostCaptionsParams: GetPageOfDiscoverSearchResultsForPostCaptionsParams,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfDiscoverSearchResultsForPostHashtags(
-        getPageOfDiscoverSearchResultsForPostCaptionsParams,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPageOfDiscoverSearchResultsForPostsParams} getPageOfDiscoverSearchResultsForPostsParams
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfDiscoverSearchResultsForPosts(
-    getPageOfDiscoverSearchResultsForPostsParams: GetPageOfDiscoverSearchResultsForPostsParams,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfDiscoverSearchResultsForPosts(
-        getPageOfDiscoverSearchResultsForPostsParams,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPageOfDiscoverSearchResultsForUsersParams} getPageOfDiscoverSearchResultsForUsersParams
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfDiscoverSearchResultsForUsers(
-    getPageOfDiscoverSearchResultsForUsersParams: GetPageOfDiscoverSearchResultsForUsersParams,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfDiscoverSearchResultsForUsers(
-        getPageOfDiscoverSearchResultsForUsersParams,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
    * @param {GetPageOfNotificationsRequestBody} getPageOfNotificationsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -5094,6 +4994,64 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {SearchForHashtagsParams} searchForHashtagsParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public searchForHashtags(
+    searchForHashtagsParams: SearchForHashtagsParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .searchForHashtags(searchForHashtagsParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public searchForPostCaptions(
+    searchForPostCaptionsParams: SearchForPostCaptionsParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .searchForPostCaptions(searchForPostCaptionsParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {SearchForPostsParams} searchForPostsParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public searchForPosts(searchForPostsParams: SearchForPostsParams, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .searchForPosts(searchForPostsParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {SearchForUsersParams} searchForUsersParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public searchForUsers(searchForUsersParams: SearchForUsersParams, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .searchForUsers(searchForUsersParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

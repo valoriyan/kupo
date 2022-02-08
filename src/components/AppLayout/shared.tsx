@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { styled } from "#/styling";
 import { Grid } from "../Layout";
 import { headingStyles, mainTitleStyles } from "../Typography";
@@ -7,7 +7,7 @@ import { headingStyles, mainTitleStyles } from "../Typography";
 export interface NavLinkProps {
   href: string;
   Icon: React.ComponentType;
-  label: string;
+  label: ReactNode;
   onClick?: () => void;
 }
 
@@ -36,7 +36,6 @@ export const SidePanelWrapper = ({ children }: PropsWithChildren<unknown>) => {
         justifyItems: "end",
         gridTemplateRows: "minmax(0, 1fr)",
         height: "100%",
-        px: "$8",
         pt: "$6",
         borderRight: "solid $borderWidths$1 $border",
       }}

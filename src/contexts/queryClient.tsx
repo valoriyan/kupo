@@ -19,6 +19,10 @@ export enum CacheKeys {
   ContentFeed = "ContentFeed",
   PostComments = "PostComments",
   ContentFilters = "ContentFilters",
+  SearchForHashtags = "SearchForHashtags",
+  SearchForPosts = "SearchForPosts",
+  SearchForPostCaptions = "SearchForPostCaptions",
+  SearchForUsers = "SearchForUsers",
 }
 
 export const queryClient = new QueryClient({

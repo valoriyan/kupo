@@ -1,5 +1,4 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
-import Image from "next/image";
 import Link from "next/link";
 import { ComponentType } from "react";
 import { RenderablePost } from "#/api";
@@ -8,10 +7,11 @@ import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { Avatar } from "../Avatar";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
-import { Box, Flex, Grid } from "../Layout";
+import { Flex, Grid } from "../Layout";
 import { Body } from "../Typography";
 import { ActionMenu, MenuAction } from "./ActionMenu";
 import { Comments } from "./Comments";
+import { ContentViewer } from "./ContentViewer";
 
 export interface PostMenuOption {
   Icon: ComponentType;
@@ -46,11 +46,11 @@ export const Post = ({
   } = post;
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
-  let imageUrl;
+  let contentUrls;
   if (shared && shared.type === "post") {
-    imageUrl = shared.post.contentElementTemporaryUrls[0];
+    contentUrls = shared.post.contentElementTemporaryUrls;
   } else {
-    imageUrl = contentElementTemporaryUrls[0];
+    contentUrls = contentElementTemporaryUrls;
   }
 
   return (
@@ -70,25 +70,7 @@ export const Post = ({
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
-      {imageUrl && (
-        <ImageWrapper>
-          <BlurredImage
-            alt="Blurred Post Media"
-            src={imageUrl}
-            layout="fill"
-            unoptimized // Optimization caching is broken because signed urls aren't stable
-            priority
-          />
-          <Image
-            alt="Post Media"
-            src={imageUrl}
-            layout="fill"
-            objectFit="contain"
-            unoptimized // Optimization caching is broken because signed urls aren't stable
-            priority
-          />
-        </ImageWrapper>
-      )}
+      {contentUrls?.length && <ContentViewer contentUrls={contentUrls} />}
       <Flex css={{ gap: "$3", px: "$4", py: "$2", width: "100%", overflow: "auto" }}>
         {hashtags.map((tag) => (
           <HashTag key={tag}>#{tag}</HashTag>
@@ -114,19 +96,6 @@ export const Post = ({
 
 const Timestamp = styled("div", {
   color: "$secondaryText",
-});
-
-const ImageWrapper = styled(Box, {
-  position: "relative",
-  width: "100%",
-  height: "62vh",
-  my: "$3",
-  bg: "$background3",
-});
-
-const BlurredImage = styled(Image, {
-  filter: "blur(20px)",
-  opacity: 0.9,
 });
 
 const HashTag = styled(Body, {

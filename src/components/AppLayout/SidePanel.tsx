@@ -15,7 +15,7 @@ import {
   OptionsIcon,
   SupportIcon,
 } from "../Icons";
-import { Stack } from "../Layout";
+import { Flex, Stack } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
@@ -26,8 +26,11 @@ export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
   const { notificationsReceived } = useWebsocketState();
 
-  const notificationsIndicator =
-    notificationsReceived.length === 0 ? "" : ` (${notificationsReceived.length})`;
+  const notificationsIndicator = !notificationsReceived.length ? null : (
+    <NotificationBadge>
+      {notificationsReceived.length > 99 ? "99+" : notificationsReceived.length}
+    </NotificationBadge>
+  );
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;
@@ -41,7 +44,7 @@ export const SidePanel = () => {
 
   return (
     <SidePanelWrapper>
-      <Stack css={{ gap: "$5" }}>
+      <Stack css={{ gap: "$5", px: "$8" }}>
         <UserInfoWrapper>
           <UserInfo />
         </UserInfoWrapper>
@@ -49,13 +52,18 @@ export const SidePanel = () => {
           <UploadLink>Create</UploadLink>
         </Link>
       </Stack>
-      <Stack css={{ gap: "$9", height: "100%", overflow: "auto" }}>
+      <Stack css={{ gap: "$9", px: "$8", height: "100%", overflow: "auto" }}>
         <Stack css={{ gap: "$6" }}>
           <NavLink href="/feed" Icon={HomeIcon} label="Home" />
           <NavLink
             href="/notifications"
             Icon={BellIcon}
-            label={`Notifications${notificationsIndicator}`}
+            label={
+              <Flex css={{ alignItems: "center", gap: "$3" }}>
+                Notifications
+                {notificationsIndicator}
+              </Flex>
+            }
           />
           <NavLink href="/messages" Icon={MailIcon} label="Messages" />
           <NavLink
@@ -85,4 +93,17 @@ const UserInfoWrapper = styled("div", {
   gridTemplateColumns: "auto auto",
   alignItems: "start",
   columnGap: "$5",
+});
+
+const NotificationBadge = styled(Flex, {
+  justifyContent: "center",
+  alignItems: "center",
+  height: "20px",
+  minWidth: "20px",
+  px: "$",
+  fontSize: "$0",
+  fontWeight: "$bold",
+  bg: "$failure",
+  color: "$accentText",
+  borderRadius: "$round",
 });

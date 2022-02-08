@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { LocalStorageItem } from "#/utils/storage";
 import { Api } from "#/api";
 import { FullScreenLoadingArea } from "#/components/LoadingArea";
+import { queryClient } from "./queryClient";
 
 export interface AccessTokenPayload {
   userId: string;
@@ -52,6 +53,7 @@ export const setAccessToken = (accessToken: string) => {
 export const logout = async () => {
   storedAccessToken.remove();
   await Api.logout();
+  queryClient.clear();
   Router.push("/login");
 };
 
