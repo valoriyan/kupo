@@ -1,49 +1,46 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
-import { RenderablePost } from "../../../controllers/post/models";
+import { RenderablePost } from "../../post/models";
 import { DiscoverController } from "../discoverController";
-import { checkAuthorization } from "../../../controllers/auth/utilities";
+import { checkAuthorization } from "../../auth/utilities";
 import {
   encodeCursor,
   getPageOfPostsFromAllPosts,
-} from "../../../controllers/post/pagination/utilities";
-import { constructRenderablePostsFromParts } from "../../../controllers/post/utilities";
+} from "../../post/pagination/utilities";
+import { constructRenderablePostsFromParts } from "../../post/utilities";
 
-export interface GetPageOfDiscoverSearchResultsForPostsParams {
+export interface SearchForPostCaptionsParams {
   query: string;
   cursor?: string;
   pageSize: number;
 }
 
-export enum FailedToGetPageOfDiscoverSearchResultsForPostsResponseReason {
+export enum SearchForPostCaptionsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfDiscoverSearchResultsForPostsResponse {
-  reason: FailedToGetPageOfDiscoverSearchResultsForPostsResponseReason;
+export interface SearchForPostCaptionsFailed {
+  reason: SearchForPostCaptionsFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse {
+export interface SearchForPostCaptionsSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export async function handleGetPageOfDiscoverSearchResultsForPosts({
+export async function handleSearchForPostCaptions({
   controller,
   request,
   requestBody,
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: GetPageOfDiscoverSearchResultsForPostsParams;
+  requestBody: SearchForPostCaptionsParams;
 }): Promise<
-  SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForPostsResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse
-  >
+  SecuredHTTPResponse<SearchForPostCaptionsFailed, SearchForPostCaptionsSuccess>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -51,16 +48,10 @@ export async function handleGetPageOfDiscoverSearchResultsForPosts({
   const { cursor, query } = requestBody;
 
   const trimmedQuery = query.trim();
-  const possibleSubEntries = trimmedQuery.split(" ");
-
-  const postIdsWithPossibleHashtags =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithOneOfHashtags(
-      { hashtags: possibleSubEntries },
-    );
 
   const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
-      { postIds: postIdsWithPossibleHashtags },
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCaptionMatchingSubstring(
+      { captionSubstring: trimmedQuery },
     );
 
   if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {

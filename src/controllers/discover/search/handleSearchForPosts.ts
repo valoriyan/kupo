@@ -9,52 +9,51 @@ import {
 } from "../../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../../post/utilities";
 
-export interface GetPageOfDiscoverSearchResultsForPostCaptionsParams {
+export interface SearchForPostsParams {
   query: string;
   cursor?: string;
   pageSize: number;
 }
 
-export enum FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponseReason {
+export enum SearchForPostsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse {
-  reason: FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponseReason;
+export interface SearchForPostsFailed {
+  reason: SearchForPostsFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse {
+export interface SearchForPostsSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export async function handleGetPageOfDiscoverSearchResultsForPostCaptions({
+export async function handleSearchForPosts({
   controller,
   request,
   requestBody,
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: GetPageOfDiscoverSearchResultsForPostCaptionsParams;
-}): Promise<
-  SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse
-  >
-> {
+  requestBody: SearchForPostsParams;
+}): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { cursor, query } = requestBody;
-
   const trimmedQuery = query.trim();
 
+  const postIdsWithPossibleHashtags =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithOneOfHashtags(
+      { hashtagSubstring: trimmedQuery },
+    );
+
   const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCaptionMatchingSubstring(
-      { captionSubstring: trimmedQuery },
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
+      { postIds: postIdsWithPossibleHashtags },
     );
 
   if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {

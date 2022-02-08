@@ -98,16 +98,10 @@ export class HashtagsTableService extends TableService {
   }
 
   public async getPostIdsWithOneOfHashtags({
-    hashtags,
+    hashtagSubstring,
   }: {
-    hashtags: string[];
+    hashtagSubstring: string;
   }): Promise<string[]> {
-    if (hashtags.length === 0) {
-      return [];
-    }
-
-    const hashtagsQueryString = hashtags.map((_, index) => `$${index + 1}`).join(", ");
-
     const query = {
       text: `
         SELECT
@@ -115,12 +109,12 @@ export class HashtagsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-            hashtag IN (${hashtagsQueryString})
+            hashtag LIKE CONCAT('%', $1::text, '%')
           AND
             post_id IS NOT NULL
         ;
       `,
-      values: [hashtags],
+      values: [hashtagSubstring],
     };
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
@@ -162,7 +156,7 @@ export class HashtagsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          username LIKE CONCAT('%', $1::text, '%' )
+          hashtag LIKE CONCAT('%', $1::text, '%')
         ;
       `,
       values: [hashtagSubstring],

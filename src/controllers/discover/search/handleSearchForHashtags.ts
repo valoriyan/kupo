@@ -3,42 +3,37 @@ import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 
-export interface GetPageOfDiscoverSearchResultsForHashtagsParams {
+export interface SearchForHashtagsParams {
   query: string;
   cursor?: string;
   pageSize: number;
 }
 
-export enum FailedToGetPageOfDiscoverSearchResultsForHashtagsResponseReason {
+export enum SearchForHashtagsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse {
-  reason: FailedToGetPageOfDiscoverSearchResultsForHashtagsResponseReason;
+export interface SearchForHashtagsFailed {
+  reason: SearchForHashtagsFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse {
+export interface SearchForHashtagsSuccess {
   hashtags: string[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export async function handleGetPageOfDiscoverSearchResultsForHashtags({
+export async function handleSearchForHashtags({
   controller,
   request,
   requestBody,
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: GetPageOfDiscoverSearchResultsForHashtagsParams;
-}): Promise<
-  SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse
-  >
-> {
+  requestBody: SearchForHashtagsParams;
+}): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 

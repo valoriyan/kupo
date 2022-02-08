@@ -2,45 +2,40 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
-import { RenderableUser } from "../../../controllers/user/models";
-import { constructRenderableUsersFromParts } from "../../../controllers/user/utilities";
+import { RenderableUser } from "../../user/models";
+import { constructRenderableUsersFromParts } from "../../user/utilities";
 
-export interface GetPageOfDiscoverSearchResultsForUsersParams {
+export interface SearchForUsersParams {
   query: string;
   cursor?: string;
   pageSize: number;
 }
 
-export enum FailedToGetPageOfDiscoverSearchResultsForUsersResponseReason {
+export enum SearchForUsersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfDiscoverSearchResultsForUsersResponse {
-  reason: FailedToGetPageOfDiscoverSearchResultsForUsersResponseReason;
+export interface SearchForUsersFailed {
+  reason: SearchForUsersFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse {
+export interface SearchForUsersSuccess {
   users: RenderableUser[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export async function handleGetPageOfDiscoverSearchResultsForUsers({
+export async function handleSearchForUsers({
   controller,
   request,
   requestBody,
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: GetPageOfDiscoverSearchResultsForUsersParams;
-}): Promise<
-  SecuredHTTPResponse<
-    FailedToGetPageOfDiscoverSearchResultsForUsersResponse,
-    SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse
-  >
-> {
+  requestBody: SearchForUsersParams;
+}): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

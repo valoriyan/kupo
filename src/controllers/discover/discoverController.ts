@@ -1,33 +1,33 @@
 import express from "express";
-import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { Controller, Route, Request, Body, Post } from "tsoa";
+import { Body, Controller, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
+import { DatabaseService } from "../../services/databaseService";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
-  FailedToGetPageOfDiscoverSearchResultsForPostsResponse,
-  GetPageOfDiscoverSearchResultsForPostsParams,
-  handleGetPageOfDiscoverSearchResultsForPosts,
-  SuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse,
-} from "./search/handleGetPageOfDiscoverSearchResultsForPosts";
+  handleSearchForHashtags,
+  SearchForHashtagsFailed,
+  SearchForHashtagsParams,
+  SearchForHashtagsSuccess,
+} from "./search/handleSearchForHashtags";
 import {
-  FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse,
-  GetPageOfDiscoverSearchResultsForHashtagsParams,
-  handleGetPageOfDiscoverSearchResultsForHashtags,
-  SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse,
-} from "./search/handleGetPageOfDiscoverSearchResultsForHashtags";
+  handleSearchForPostCaptions,
+  SearchForPostCaptionsFailed,
+  SearchForPostCaptionsParams,
+  SearchForPostCaptionsSuccess,
+} from "./search/handleSearchForPostCaptions";
 import {
-  FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse,
-  GetPageOfDiscoverSearchResultsForPostCaptionsParams,
-  handleGetPageOfDiscoverSearchResultsForPostCaptions,
-  SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse,
-} from "./search/handleGetPageOfDiscoverSearchResultsForPostCaptions";
+  handleSearchForPosts,
+  SearchForPostsFailed,
+  SearchForPostsParams,
+  SearchForPostsSuccess,
+} from "./search/handleSearchForPosts";
 import {
-  FailedToGetPageOfDiscoverSearchResultsForUsersResponse,
-  GetPageOfDiscoverSearchResultsForUsersParams,
-  handleGetPageOfDiscoverSearchResultsForUsers,
-  SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse,
-} from "./search/handleGetPageOfDiscoverSearchResultsForUsers";
+  handleSearchForUsers,
+  SearchForUsersFailed,
+  SearchForUsersParams,
+  SearchForUsersSuccess,
+} from "./search/handleSearchForUsers";
 
 @injectable()
 @Route("discover")
@@ -47,68 +47,50 @@ export class DiscoverController extends Controller {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("getPageOfDiscoverSearchResultsForHashtags")
-  public async getPageOfDiscoverSearchResultsForHashtags(
+  @Post("searchForHashtags")
+  public async searchForHashtags(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfDiscoverSearchResultsForHashtagsParams,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToGetPageOfDiscoverSearchResultsForHashtagsResponse,
-      SuccessfullyGotPageOfDiscoverSearchResultsForHashtagsResponse
-    >
-  > {
-    return await handleGetPageOfDiscoverSearchResultsForHashtags({
+    @Body() requestBody: SearchForHashtagsParams,
+  ): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
+    return await handleSearchForHashtags({
       controller: this,
       request,
       requestBody,
     });
   }
 
-  @Post("getPageOfDiscoverSearchResultsForPostHashtags")
-  public async getPageOfDiscoverSearchResultsForPostHashtags(
+  @Post("searchForPostCaptions")
+  public async searchForPostCaptions(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfDiscoverSearchResultsForPostCaptionsParams,
+    @Body() requestBody: SearchForPostCaptionsParams,
   ): Promise<
-    SecuredHTTPResponse<
-      FailedToGetPageOfDiscoverSearchResultsForPostCaptionsResponse,
-      SuccessfullyGotPageOfDiscoverSearchResultsForPostCaptionsResponse
-    >
+    SecuredHTTPResponse<SearchForPostCaptionsFailed, SearchForPostCaptionsSuccess>
   > {
-    return await handleGetPageOfDiscoverSearchResultsForPostCaptions({
+    return await handleSearchForPostCaptions({
       controller: this,
       request,
       requestBody,
     });
   }
 
-  @Post("getPageOfDiscoverSearchResultsForPosts")
-  public async getPageOfDiscoverSearchResultsForPosts(
+  @Post("searchForPosts")
+  public async searchForPosts(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfDiscoverSearchResultsForPostsParams,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToGetPageOfDiscoverSearchResultsForPostsResponse,
-      SuccessfullyGotPageOfDiscoverSearchResultsForPostsResponse
-    >
-  > {
-    return await handleGetPageOfDiscoverSearchResultsForPosts({
+    @Body() requestBody: SearchForPostsParams,
+  ): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
+    return await handleSearchForPosts({
       controller: this,
       request,
       requestBody,
     });
   }
 
-  @Post("getPageOfDiscoverSearchResultsForUsers")
-  public async getPageOfDiscoverSearchResultsForUsers(
+  @Post("searchForUsers")
+  public async searchForUsers(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfDiscoverSearchResultsForUsersParams,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToGetPageOfDiscoverSearchResultsForUsersResponse,
-      SuccessfullyGotPageOfDiscoverSearchResultsForUsersResponse
-    >
-  > {
-    return await handleGetPageOfDiscoverSearchResultsForUsers({
+    @Body() requestBody: SearchForUsersParams,
+  ): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
+    return await handleSearchForUsers({
       controller: this,
       request,
       requestBody,
