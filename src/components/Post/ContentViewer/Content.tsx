@@ -1,24 +1,23 @@
 import Image from "next/image";
 import { styled } from "#/styling";
 
-export interface ContentViewerProps {
-  contentUrls: string[];
+export interface ContentProps {
+  contentUrl: string;
 }
 
-export const ContentViewer = ({ contentUrls }: ContentViewerProps) => {
-  const imageUrl = contentUrls[0];
+export const Content = (props: ContentProps) => {
   return (
     <ImageWrapper>
       <BlurredImage
         alt="Blurred Post Media"
-        src={imageUrl}
+        src={props.contentUrl}
         layout="fill"
         unoptimized // Optimization caching is broken because signed urls aren't stable
         priority
       />
       <Image
         alt="Post Media"
-        src={imageUrl}
+        src={props.contentUrl}
         layout="fill"
         objectFit="contain"
         unoptimized // Optimization caching is broken because signed urls aren't stable
@@ -30,9 +29,7 @@ export const ContentViewer = ({ contentUrls }: ContentViewerProps) => {
 
 const ImageWrapper = styled("div", {
   position: "relative",
-  width: "100%",
-  height: "62vh",
-  my: "$3",
+  size: "100%",
   bg: "$background3",
 });
 
