@@ -12,30 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUserNotification } from "./renderable-user-notification";
-
 /**
  *
  * @export
- * @interface SuccessfullyGotPageOfNotificationsResponse
+ * @interface SearchForHashtagsSuccess
  */
-export interface SuccessfullyGotPageOfNotificationsResponse {
+export interface SearchForHashtagsSuccess {
   /**
    *
-   * @type {Array<RenderableUserNotification>}
-   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   * @type {Array<string>}
+   * @memberof SearchForHashtagsSuccess
    */
-  userNotifications: Array<RenderableUserNotification>;
+  hashtags: Array<string>;
   /**
    *
    * @type {string}
-   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   * @memberof SearchForHashtagsSuccess
    */
   previousPageCursor?: string;
   /**
    *
    * @type {string}
-   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   * @memberof SearchForHashtagsSuccess
    */
   nextPageCursor?: string;
 }

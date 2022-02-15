@@ -25,8 +25,11 @@ export const Notifications = () => {
   }
 
   const renderedOldNotifications = data?.pages.flatMap((page) => {
-    return page.notifications.map((notification) => {
-      const { userDoingFollowing, timestamp, type } = notification;
+    return page.userNotifications.map((notification) => {
+      const { userDoingFollowing, type } = notification;
+
+      const timestamp = Date.now();
+
       const { username, profilePictureTemporaryUrl } = userDoingFollowing;
 
       return (

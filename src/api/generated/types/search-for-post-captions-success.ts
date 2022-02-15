@@ -12,30 +12,30 @@
  * Do not edit the class manually.
  */
 
-import { RenderableUserNotification } from "./renderable-user-notification";
+import { RenderablePost } from "./renderable-post";
 
 /**
  *
  * @export
- * @interface SuccessfullyGotPageOfNotificationsResponse
+ * @interface SearchForPostCaptionsSuccess
  */
-export interface SuccessfullyGotPageOfNotificationsResponse {
+export interface SearchForPostCaptionsSuccess {
   /**
    *
-   * @type {Array<RenderableUserNotification>}
-   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   * @type {Array<RenderablePost>}
+   * @memberof SearchForPostCaptionsSuccess
    */
-  userNotifications: Array<RenderableUserNotification>;
+  posts: Array<RenderablePost>;
   /**
    *
    * @type {string}
-   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   * @memberof SearchForPostCaptionsSuccess
    */
   previousPageCursor?: string;
   /**
    *
    * @type {string}
-   * @memberof SuccessfullyGotPageOfNotificationsResponse
+   * @memberof SearchForPostCaptionsSuccess
    */
   nextPageCursor?: string;
 }

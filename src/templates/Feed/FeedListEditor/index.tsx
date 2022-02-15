@@ -188,7 +188,7 @@ const FilterRow = ({ filter, actions }: FilterRowProps) => {
   } else if (filter.type === UserContentFeedFilterType.Hashtag) {
     filterDisplayName = `#${filter.value}`;
   } else if (filter.type === UserContentFeedFilterType.FollowingUsers) {
-    filterDisplayName = `Following Users`;
+    filterDisplayName = `Following`;
   }
 
   return (
