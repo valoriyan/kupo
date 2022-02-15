@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { PostCommentController } from "./postCommentController";
 import { RenderablePostComment } from "./models";
 import { constructRenderablePostCommentFromParts } from "./utilities";
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 
 export interface CommentOnPostRequestBody {
   postId: string;
@@ -58,6 +59,13 @@ export async function handleCommentOnPost({
       creationTimestamp,
     },
     clientUserId,
+  });
+
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification({
+    userNotificationId: uuidv4(),
+    recipientUserId: renderablePostComment.authorUserId,
+    notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+    referenceTableId: postCommentId,
   });
 
   return {

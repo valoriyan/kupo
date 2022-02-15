@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { RenderableUser } from "src/controllers/user/models";
-import { EVENT_NAMES } from "../eventsConfig";
+import { NOTIFICATION_EVENTS } from "../eventsConfig";
 import { NewMentionInPostCommentNotification } from "./models";
 import { generatePrivateUserWebSocketRoomName } from "../utilities";
 import { RenderablePost } from "../../../controllers/post/models";
@@ -27,7 +27,7 @@ export async function notifyUserIdOfNewMentionInPostComment({
 
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
   io.to([roomName]).emit(
-    EVENT_NAMES.NEW_MENTION_IN_POST_COMMENT,
+    NOTIFICATION_EVENTS.NEW_MENTION_IN_POST_COMMENT,
     newMentionInPostCommentNotification,
   );
 }

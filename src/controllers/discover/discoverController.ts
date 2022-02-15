@@ -11,12 +11,6 @@ import {
   SearchForHashtagsSuccess,
 } from "./search/handleSearchForHashtags";
 import {
-  handleSearchForPostCaptions,
-  SearchForPostCaptionsFailed,
-  SearchForPostCaptionsParams,
-  SearchForPostCaptionsSuccess,
-} from "./search/handleSearchForPostCaptions";
-import {
   handleSearchForPosts,
   SearchForPostsFailed,
   SearchForPostsParams,
@@ -53,20 +47,6 @@ export class DiscoverController extends Controller {
     @Body() requestBody: SearchForHashtagsParams,
   ): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
     return await handleSearchForHashtags({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
-  @Post("searchForPostCaptions")
-  public async searchForPostCaptions(
-    @Request() request: express.Request,
-    @Body() requestBody: SearchForPostCaptionsParams,
-  ): Promise<
-    SecuredHTTPResponse<SearchForPostCaptionsFailed, SearchForPostCaptionsSuccess>
-  > {
-    return await handleSearchForPostCaptions({
       controller: this,
       request,
       requestBody,

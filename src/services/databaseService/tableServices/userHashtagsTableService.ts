@@ -97,7 +97,7 @@ export class UserHashtagsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getUserIdsWithHashtagId({
+  public async getUserIdsWithHashtag({
     hashtag,
   }: {
     hashtag: string;

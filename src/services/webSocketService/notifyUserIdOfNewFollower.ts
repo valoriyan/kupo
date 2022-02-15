@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { RenderableUser } from "src/controllers/user/models";
-import { EVENT_NAMES } from "./eventsConfig";
+import { NOTIFICATION_EVENTS } from "./eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 
 export async function notifyUserIdOfNewFollower({
@@ -14,5 +14,5 @@ export async function notifyUserIdOfNewFollower({
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
 
-  io.to([roomName]).emit(EVENT_NAMES.NEW_FOLLOWER, newFollower);
+  io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_FOLLOWER, newFollower);
 }

@@ -9,7 +9,7 @@ import { RenderableChatMessage } from "../../controllers/chat/models";
 import { notifyUserIdsOfDeletedChatMessage } from "./chat/notifyUserIdsOfDeletedChatMessage";
 import { getEnvironmentVariable } from "../../utilities";
 import { NewChatNotification } from "./chat/models";
-import { EVENT_NAMES } from "./eventsConfig";
+import { NOTIFICATION_EVENTS } from "./eventsConfig";
 
 @singleton()
 export class WebSocketService {
@@ -68,7 +68,7 @@ export class WebSocketService {
 
     const roomName = generatePrivateUserWebSocketRoomName({ userId: recipientUserId });
 
-    WebSocketService.io.to([roomName]).emit(EVENT_NAMES.NEW_POST, message);
+    WebSocketService.io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_POST, message);
   }
 
   public async notifyUserIdsOfNewChatMessage({

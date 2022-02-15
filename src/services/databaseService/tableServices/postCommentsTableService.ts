@@ -90,6 +90,31 @@ export class PostCommentsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async getPostCommentById({
+    postCommentId,
+  }: {
+    postCommentId: string;
+  }): Promise<UnrenderablePostComment> {
+
+
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          post_comment_id = $1
+        ;
+      `,
+      values: [postCommentId],
+    };
+
+    const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
+
+    return response.rows.map(convertDBPostCommentToUnrenderablePostComment)[0];
+  }
+
   public async getPostCommentsByPostId({
     postId,
     beforeTimestamp,

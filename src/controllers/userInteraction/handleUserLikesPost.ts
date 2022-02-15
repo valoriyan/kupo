@@ -1,7 +1,9 @@
+import { v4 as uuidv4 } from "uuid";
 import express from "express";
 import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 
 export interface UserLikesPostRequestBody {
   postId: string;
@@ -35,6 +37,32 @@ export async function handleUserLikesPost({
       timestamp: Date.now(),
     },
   );
+
+  const unrenderablePostWithoutElementsOrHashtags =
+  await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+    { postId },
+);
+
+const doesNotificationExist = await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.doesUserNotificationExist({
+  userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+  referenceTableId: postId,
+});
+
+if (doesNotificationExist) {
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.setLastUpdatedTimestamp({
+    userNotificationId: uuidv4(),
+    newUpdateTimestamp: Date.now(),
+  });
+
+} else {
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification({
+    userNotificationId: uuidv4(),
+    recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+    notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+    referenceTableId: postId,
+  });
+}
+
 
   return {};
 }

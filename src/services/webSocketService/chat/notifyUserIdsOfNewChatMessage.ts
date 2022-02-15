@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { RenderableChatMessage } from "../../../controllers/chat/models";
-import { EVENT_NAMES } from "../eventsConfig";
+import { NOTIFICATION_EVENTS } from "../eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "../utilities";
 
 export async function notifyUserIdsOfNewChatMessage({
@@ -14,5 +14,5 @@ export async function notifyUserIdsOfNewChatMessage({
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
 
-  io.to([roomName]).emit(EVENT_NAMES.NEW_CHAT_MESSAGE, chatMessage);
+  io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_CHAT_MESSAGE, chatMessage);
 }

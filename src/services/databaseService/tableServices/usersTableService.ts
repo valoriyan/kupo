@@ -240,6 +240,31 @@ export class UsersTableService extends TableService {
     return map(rows, convertDBUserToUnrenderableUser);
   }
 
+  public async selectUsersByShortBioMatchingSubstring({
+    shortBioSubstring,
+  }: {
+    shortBioSubstring: string;
+  }): Promise<UnrenderableUser[]> {
+    const query: QueryConfig = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          short_bio LIKE CONCAT('%', $1::text, '%' )
+        ;
+      `,
+      values: [shortBioSubstring],
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    return rows.map(convertDBUserToUnrenderableUser);
+  }
+
   public async selectUsersByUsernameMatchingSubstring({
     usernameSubstring,
   }: {

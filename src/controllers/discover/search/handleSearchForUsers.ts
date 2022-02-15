@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderableUser } from "../../user/models";
-import { constructRenderableUsersFromParts } from "../../user/utilities";
+import { constructRenderableUsersFromParts, mergeArraysOfUnrenderableUsers } from "../../user/utilities";
 
 export interface SearchForUsersParams {
   query: string;
@@ -42,12 +42,31 @@ export async function handleSearchForUsers({
   const { cursor, query, pageSize } = requestBody;
   const trimmedQuery = query.trim();
 
-  const unrenderableUsers =
+  const unrenderableUsersMatchingUsername =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
       {
         usernameSubstring: trimmedQuery,
       },
     );
+
+  const unrenderableUsersMatchingBio =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByShortBioMatchingSubstring(
+      {
+        shortBioSubstring: trimmedQuery,
+      },
+    );
+
+
+  const unrenderableUsersIdsMatchingHashtag = await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.getUserIdsWithHashtag({
+    hashtag: trimmedQuery});
+
+  const unrenderableUsersMatchingHashtag = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({userIds: unrenderableUsersIdsMatchingHashtag});
+
+  const unrenderableUsers = mergeArraysOfUnrenderableUsers({arrays: [
+    unrenderableUsersMatchingUsername,
+    unrenderableUsersMatchingHashtag,
+    unrenderableUsersMatchingBio,
+  ]});
 
   if (unrenderableUsers.length === 0) {
     // controller.setStatus(404);

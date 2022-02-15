@@ -1,20 +1,35 @@
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
+import { RenderablePost } from "../post/models";
+import { RenderablePostComment } from "../postComment/models";
 import { RenderableUser } from "../user/models";
 
-export enum NotificationType {
-  NEW_FOLLOWER = "NEW_FOLLOWER",
-  NEW_COMMENT = "NEW_COMMENT",
-  NEW_LIKE_ON_POST = "NEW_LIKE_ON_POST",
-  NEW_CLIENT_PURCHASE = "NEW_CLIENT_PURCHASE",
-  NEW_COLLABORATION = "NEW_COLLABORATION",
-}
 
 export interface BaseNotification {
-  type: NotificationType;
-  timestamp: number;
+  type: NOTIFICATION_EVENTS;
+  timestampSeenByUser?: number;
 }
 
 export interface RenderableNewFollowerNotification extends BaseNotification {
+  type: NOTIFICATION_EVENTS.NEW_FOLLOWER;
   userDoingFollowing: RenderableUser;
 }
 
-export type RenderableNotification = RenderableNewFollowerNotification;
+export interface RenderableNewCommentOnPostNotification extends BaseNotification {
+  type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST;
+  
+  userThatCommented: RenderableUser;
+  post: RenderablePost;
+  postComment: RenderablePostComment;
+}
+
+export interface RenderableNewLikeOnPostNotification extends BaseNotification {
+  type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST;
+  count: number;
+
+  usersThatLikedPost: RenderableUser[];
+  post: RenderablePost;
+}
+
+
+
+export type RenderableUserNotification = RenderableNewFollowerNotification | RenderableNewCommentOnPostNotification | RenderableNewLikeOnPostNotification;

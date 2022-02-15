@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { EVENT_NAMES } from "../eventsConfig";
+import { NOTIFICATION_EVENTS } from "../eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "../utilities";
 
 export async function notifyUserIdsOfDeletedChatMessage({
@@ -13,5 +13,5 @@ export async function notifyUserIdsOfDeletedChatMessage({
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
 
-  io.to([roomName]).emit(EVENT_NAMES.DELETED_CHAT_MESSAGE, deletedChatMessageId);
+  io.to([roomName]).emit(NOTIFICATION_EVENTS.DELETED_CHAT_MESSAGE, deletedChatMessageId);
 }

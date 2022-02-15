@@ -168,3 +168,22 @@ async function assemblePostComponents({
     isLikedByClient,
   };
 }
+
+export function mergeArraysOfUnrenderablePostWithoutElementsOrHashtags({arrays}: {arrays: UnrenderablePostWithoutElementsOrHashtags[][]}) {
+  const mergedArray: UnrenderablePostWithoutElementsOrHashtags[] = [];
+  const setOfIncludedPostIds = new Set();
+
+
+  arrays.forEach((array) => {
+    array.forEach((element) => {
+      const {postId} = element;
+      if (! setOfIncludedPostIds.has(postId)) {
+        setOfIncludedPostIds.add(postId);
+        mergedArray.push(element);
+      };
+
+    });
+  });
+
+  return mergedArray;
+}

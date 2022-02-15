@@ -18,6 +18,7 @@ import { UserHashtagsTableService } from "./tableServices/userHashtagsTableServi
 import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseService } from "./teardown";
 import { DatabaseServiceType } from "./models";
+import { UserNotificationsTableService } from "./tableServices/userNotificationsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -44,6 +45,9 @@ export class DatabaseService {
     postLikesTableService: new PostLikesTableService(DatabaseService.datastorePool),
     postCommentsTableService: new PostCommentsTableService(DatabaseService.datastorePool),
     userContentFeedFiltersTableService: new UserContentFeedFiltersTableService(
+      DatabaseService.datastorePool,
+    ),
+    userNotificationsTableService: new UserNotificationsTableService(
       DatabaseService.datastorePool,
     ),
   };
