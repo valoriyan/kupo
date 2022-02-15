@@ -2,9 +2,7 @@ import express from "express";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { checkAuthorization } from "../../auth/utilities";
-import {
-  RenderableUserNotification,
-} from "../models";
+import { RenderableUserNotification } from "../models";
 import { NotificationController } from "../notificationController";
 import { Promise as BluebirdPromise } from "bluebird";
 import { assembleRenderableNewCommentOnPostNotification } from "./assembleRenderableNewCommentOnPostNotification";
@@ -37,45 +35,47 @@ async function assembleNotifcations({
   clientUserId,
   controller,
 }: {
-  userNotifications: DBUserNotification[]
+  userNotifications: DBUserNotification[];
   clientUserId: string;
   controller: NotificationController;
-}): Promise<RenderableUserNotification[]>{
+}): Promise<RenderableUserNotification[]> {
   const renderableUserNotifications = await BluebirdPromise.map(
     userNotifications,
     async (userNotification): Promise<RenderableUserNotification> => {
-        if (userNotification.notification_type === NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST) {
-          return await assembleRenderableNewCommentOnPostNotification({
-            userNotification,
-            blobStorageService: controller.blobStorageService,
-            databaseService: controller.databaseService,
-            clientUserId,
+      if (
+        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST
+      ) {
+        return await assembleRenderableNewCommentOnPostNotification({
+          userNotification,
+          blobStorageService: controller.blobStorageService,
+          databaseService: controller.databaseService,
+          clientUserId,
         });
-      } else if (userNotification.notification_type === NOTIFICATION_EVENTS.NEW_FOLLOWER) {
+      } else if (
+        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_FOLLOWER
+      ) {
         return await assembleRenderableNewFollowerNotification({
           userNotification,
           blobStorageService: controller.blobStorageService,
           databaseService: controller.databaseService,
           clientUserId,
-      });
-      
-
-      } else if (userNotification.notification_type === NOTIFICATION_EVENTS.NEW_LIKE_ON_POST) {
+        });
+      } else if (
+        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_LIKE_ON_POST
+      ) {
         return await assembleRenderableNewLikeOnPostNotification({
           userNotification,
           blobStorageService: controller.blobStorageService,
           databaseService: controller.databaseService,
           clientUserId,
-      });
-
+        });
       } else {
         throw new Error("Unknown event type");
       }
     },
-  )
+  );
 
   return renderableUserNotifications;
-
 }
 
 export async function handleGetPageOfNotifications({
@@ -97,11 +97,16 @@ export async function handleGetPageOfNotifications({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const userNotifications  = await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId({userId: clientUserId});
+  const userNotifications =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId(
+      { userId: clientUserId },
+    );
 
-
-
-  const renderableUserNotifications = await assembleNotifcations({userNotifications, clientUserId, controller});
+  const renderableUserNotifications = await assembleNotifcations({
+    userNotifications,
+    clientUserId,
+    controller,
+  });
 
   return {
     success: {

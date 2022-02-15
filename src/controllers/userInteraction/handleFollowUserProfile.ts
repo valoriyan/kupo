@@ -23,7 +23,7 @@ export async function handleFollowUser({
   request: express.Request;
   requestBody: FollowUserRequestBody;
 }): Promise<HTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>> {
-  const {userIdBeingFollowed} = requestBody;
+  const { userIdBeingFollowed } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -36,13 +36,14 @@ export async function handleFollowUser({
     },
   );
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification({
-    userNotificationId: uuidv4(),
-    recipientUserId: userIdBeingFollowed,
-    notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-    referenceTableId: clientUserId,
-  })
-
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+    {
+      userNotificationId: uuidv4(),
+      recipientUserId: userIdBeingFollowed,
+      notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+      referenceTableId: clientUserId,
+    },
+  );
 
   return {
     success: {},

@@ -95,8 +95,6 @@ export class PostCommentsTableService extends TableService {
   }: {
     postCommentId: string;
   }): Promise<UnrenderablePostComment> {
-
-
     const query = {
       text: `
         SELECT

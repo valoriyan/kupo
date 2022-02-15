@@ -3,7 +3,6 @@ import { RenderablePost } from "../post/models";
 import { RenderablePostComment } from "../postComment/models";
 import { RenderableUser } from "../user/models";
 
-
 export interface BaseNotification {
   type: NOTIFICATION_EVENTS;
   timestampSeenByUser?: number;
@@ -16,7 +15,7 @@ export interface RenderableNewFollowerNotification extends BaseNotification {
 
 export interface RenderableNewCommentOnPostNotification extends BaseNotification {
   type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST;
-  
+
   userThatCommented: RenderableUser;
   post: RenderablePost;
   postComment: RenderablePostComment;
@@ -30,6 +29,7 @@ export interface RenderableNewLikeOnPostNotification extends BaseNotification {
   post: RenderablePost;
 }
 
-
-
-export type RenderableUserNotification = RenderableNewFollowerNotification | RenderableNewCommentOnPostNotification | RenderableNewLikeOnPostNotification;
+export type RenderableUserNotification =
+  | RenderableNewFollowerNotification
+  | RenderableNewCommentOnPostNotification
+  | RenderableNewLikeOnPostNotification;

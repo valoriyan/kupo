@@ -7,7 +7,10 @@ import {
   encodeCursor,
   getPageOfPostsFromAllPosts,
 } from "../../post/pagination/utilities";
-import { constructRenderablePostsFromParts, mergeArraysOfUnrenderablePostWithoutElementsOrHashtags } from "../../post/utilities";
+import {
+  constructRenderablePostsFromParts,
+  mergeArraysOfUnrenderablePostWithoutElementsOrHashtags,
+} from "../../post/utilities";
 
 export interface SearchForPostsParams {
   query: string;
@@ -57,14 +60,14 @@ export async function handleSearchForPosts({
     );
 
   const unrenderableCaptionMatchingPosts =
-  await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCaptionMatchingSubstring(
-    { captionSubstring: trimmedQuery },
-  );
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCaptionMatchingSubstring(
+      { captionSubstring: trimmedQuery },
+    );
 
-  const unrenderablePostsWithoutElementsOrHashtags = mergeArraysOfUnrenderablePostWithoutElementsOrHashtags({arrays: [
-    unrenderableHashtagMatchingPosts, unrenderableCaptionMatchingPosts
-  ]});
-
+  const unrenderablePostsWithoutElementsOrHashtags =
+    mergeArraysOfUnrenderablePostWithoutElementsOrHashtags({
+      arrays: [unrenderableHashtagMatchingPosts, unrenderableCaptionMatchingPosts],
+    });
 
   if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {
     // controller.setStatus(404);

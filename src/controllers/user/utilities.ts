@@ -124,20 +124,21 @@ export async function constructRenderableUserFromParts({
   };
 }
 
-
-export function mergeArraysOfUnrenderableUsers({arrays}: {arrays: UnrenderableUser[][]}) {
+export function mergeArraysOfUnrenderableUsers({
+  arrays,
+}: {
+  arrays: UnrenderableUser[][];
+}) {
   const mergedArray: UnrenderableUser[] = [];
   const setOfIncludedPostIds = new Set();
 
-
   arrays.forEach((array) => {
     array.forEach((element) => {
-      const {userId} = element;
-      if (! setOfIncludedPostIds.has(userId)) {
+      const { userId } = element;
+      if (!setOfIncludedPostIds.has(userId)) {
         setOfIncludedPostIds.add(userId);
         mergedArray.push(element);
-      };
-
+      }
     });
   });
 

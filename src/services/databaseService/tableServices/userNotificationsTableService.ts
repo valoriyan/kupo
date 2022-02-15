@@ -1,9 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import {
-  generatePSQLGenericUpdateRowQueryString,
-} from "./utilities/index";
+import { generatePSQLGenericUpdateRowQueryString } from "./utilities/index";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 
@@ -15,7 +13,7 @@ export interface DBUserNotification {
 
   timestamp_seen_by_user?: number;
 
-  last_updated_timestamp: number;  
+  last_updated_timestamp: number;
 
   // if type = NEW_FOLLOWER: DBUserFollow [field: id];
   // if type = NEW_POST: DBPost [field: post_id]
@@ -85,7 +83,6 @@ export class UserNotificationsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-
   public async selectUserNotificationsByUserId({
     userId,
   }: {
@@ -106,7 +103,9 @@ export class UserNotificationsTableService extends TableService {
       values: [userId],
     };
 
-    const response: QueryResult<DBUserNotification> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
+      queryString,
+    );
 
     const rows = response.rows;
 
@@ -136,16 +135,17 @@ export class UserNotificationsTableService extends TableService {
           1
         ;
       `,
-      values: [userId,referenceTableId],
+      values: [userId, referenceTableId],
     };
 
-    const response: QueryResult<DBUserNotification> = await this.datastorePool.query(queryString);
+    const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
+      queryString,
+    );
 
     const rows = response.rows;
 
     return rows.length === 1;
   }
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
@@ -189,11 +189,7 @@ export class UserNotificationsTableService extends TableService {
     await this.datastorePool.query(query);
   }
 
-
-
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
-
-
 }

@@ -8,60 +8,62 @@ import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 
 export async function assembleRenderableNewCommentOnPostNotification({
-    userNotification,
-    blobStorageService,
-    databaseService,
-    clientUserId,
+  userNotification,
+  blobStorageService,
+  databaseService,
+  clientUserId,
 }: {
-    userNotification: DBUserNotification; 
-    blobStorageService: BlobStorageServiceInterface;
-    databaseService: DatabaseService;
-    clientUserId: string;  
+  userNotification: DBUserNotification;
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  clientUserId: string;
 }): Promise<RenderableNewCommentOnPostNotification> {
+  const {
+    reference_table_id: postCommentId,
+    timestamp_seen_by_user: timestampSeenByUser,
+  } = userNotification;
 
-    const { reference_table_id: postCommentId, timestamp_seen_by_user: timestampSeenByUser} = userNotification;
-
-    const unrenderablePostComment = await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById({postCommentId})
-
-    const postComment = await constructRenderablePostCommentFromParts({
-        blobStorageService,
-        databaseService,
-        unrenderablePostComment,
-        clientUserId,
-      });
-
-    const unrenderablePostWithoutElementsOrHashtags =
-      await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-        { postId: postComment.postId },
+  const unrenderablePostComment =
+    await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
+      { postCommentId },
     );
 
+  const postComment = await constructRenderablePostCommentFromParts({
+    blobStorageService,
+    databaseService,
+    unrenderablePostComment,
+    clientUserId,
+  });
 
-      const post = await constructRenderablePostFromParts({
-        blobStorageService,
-        databaseService,
-        unrenderablePostWithoutElementsOrHashtags,
-        clientUserId,
-      });
+  const unrenderablePostWithoutElementsOrHashtags =
+    await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({
+      postId: postComment.postId,
+    });
 
-    const unrenderableUserThatCommented =
-      await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-        userId: unrenderablePostComment.authorUserId,
-      });
-  
+  const post = await constructRenderablePostFromParts({
+    blobStorageService,
+    databaseService,
+    unrenderablePostWithoutElementsOrHashtags,
+    clientUserId,
+  });
 
-    const userThatCommented = await constructRenderableUserFromParts({
-        clientUserId,
-        unrenderableUser: unrenderableUserThatCommented!,
-        blobStorageService,
-        databaseService,
-      });
+  const unrenderableUserThatCommented =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId: unrenderablePostComment.authorUserId,
+    });
 
-    return {
-        userThatCommented,
-        post,
-        postComment,
-        timestampSeenByUser,
-        type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-    }
+  const userThatCommented = await constructRenderableUserFromParts({
+    clientUserId,
+    unrenderableUser: unrenderableUserThatCommented!,
+    blobStorageService,
+    databaseService,
+  });
 
+  return {
+    userThatCommented,
+    post,
+    postComment,
+    timestampSeenByUser,
+    type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+  };
 }

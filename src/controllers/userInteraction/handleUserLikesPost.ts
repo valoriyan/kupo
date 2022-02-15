@@ -39,30 +39,35 @@ export async function handleUserLikesPost({
   );
 
   const unrenderablePostWithoutElementsOrHashtags =
-  await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-    { postId },
-);
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+      { postId },
+    );
 
-const doesNotificationExist = await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.doesUserNotificationExist({
-  userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-  referenceTableId: postId,
-});
+  const doesNotificationExist =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.doesUserNotificationExist(
+      {
+        userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+        referenceTableId: postId,
+      },
+    );
 
-if (doesNotificationExist) {
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.setLastUpdatedTimestamp({
-    userNotificationId: uuidv4(),
-    newUpdateTimestamp: Date.now(),
-  });
-
-} else {
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification({
-    userNotificationId: uuidv4(),
-    recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-    notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-    referenceTableId: postId,
-  });
-}
-
+  if (doesNotificationExist) {
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.setLastUpdatedTimestamp(
+      {
+        userNotificationId: uuidv4(),
+        newUpdateTimestamp: Date.now(),
+      },
+    );
+  } else {
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+      {
+        userNotificationId: uuidv4(),
+        recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+        referenceTableId: postId,
+      },
+    );
+  }
 
   return {};
 }

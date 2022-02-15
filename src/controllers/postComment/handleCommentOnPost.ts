@@ -61,12 +61,14 @@ export async function handleCommentOnPost({
     clientUserId,
   });
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification({
-    userNotificationId: uuidv4(),
-    recipientUserId: renderablePostComment.authorUserId,
-    notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-    referenceTableId: postCommentId,
-  });
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+    {
+      userNotificationId: uuidv4(),
+      recipientUserId: renderablePostComment.authorUserId,
+      notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+      referenceTableId: postCommentId,
+    },
+  );
 
   return {
     success: { postComment: renderablePostComment },

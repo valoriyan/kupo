@@ -22,5 +22,8 @@ export async function notifyUserIdOfNewMentionInPost({
   };
 
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
-  io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_MENTION_IN_POST, newMentionInPostNotification);
+  io.to([roomName]).emit(
+    NOTIFICATION_EVENTS.NEW_MENTION_IN_POST,
+    newMentionInPostNotification,
+  );
 }
