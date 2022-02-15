@@ -23,9 +23,8 @@ export interface RenderableNewCommentOnPostNotification extends BaseNotification
 
 export interface RenderableNewLikeOnPostNotification extends BaseNotification {
   type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST;
-  count: number;
 
-  usersThatLikedPost: RenderableUser[];
+  userThatLikedPost: RenderableUser;
   post: RenderablePost;
 }
 

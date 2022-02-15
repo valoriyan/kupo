@@ -5,6 +5,7 @@ import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBPostLike {
+  post_like_id: string;
   post_id: string;
   user_id: string;
   timestamp: string;
@@ -21,6 +22,7 @@ export class PostLikesTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
+          post_like_id VARCHAR(64) UNIQUE NOT NULL,
           post_id VARCHAR(64) NOT NULL,
           user_id VARCHAR(64) NOT NULL,
           timestamp BIGINT NOT NULL,
@@ -37,10 +39,12 @@ export class PostLikesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createPostLikeFromUserId({
+    postLikeId,
     postId,
     userId,
     timestamp,
   }: {
+    postLikeId: string;
     postId: string;
     userId: string;
     timestamp: number;
@@ -48,6 +52,7 @@ export class PostLikesTableService extends TableService {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
+          { field: "post_like_id", value: postLikeId },
           { field: "post_id", value: postId },
           { field: "user_id", value: userId },
           { field: "timestamp", value: timestamp },
@@ -62,6 +67,36 @@ export class PostLikesTableService extends TableService {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async getPostLikeByPostLikeId({
+    postLikeId,
+  }: {
+    postLikeId: string;
+  }): Promise<DBPostLike> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          post_like_id = $1
+        LIMIT
+          1
+        ;
+      `,
+      values: [postLikeId],
+    };
+
+    const response: QueryResult<DBPostLike> = await this.datastorePool.query(query);
+
+    if (response.rows.length < 1) {
+      throw new Error("Missing post like");
+    }
+
+    return response.rows[0];
+  }
+
 
   public async getUserIdsLikingPostId({ postId }: { postId: string }): Promise<string[]> {
     const query = {

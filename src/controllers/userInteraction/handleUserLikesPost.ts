@@ -32,6 +32,7 @@ export async function handleUserLikesPost({
 
   await controller.databaseService.tableNameToServicesMap.postLikesTableService.createPostLikeFromUserId(
     {
+      postLikeId: uuidv4(),
       postId,
       userId: clientUserId,
       timestamp: Date.now(),

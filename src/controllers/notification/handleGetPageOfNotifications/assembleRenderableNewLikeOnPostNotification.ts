@@ -3,7 +3,7 @@ import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { RenderableNewLikeOnPostNotification } from "../models";
 import { constructRenderablePostFromParts } from "../../post/utilities";
-import { constructRenderableUsersFromParts } from "../../user/utilities";
+import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 
 export async function assembleRenderableNewLikeOnPostNotification({
@@ -17,14 +17,15 @@ export async function assembleRenderableNewLikeOnPostNotification({
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<RenderableNewLikeOnPostNotification> {
-  const NUMBER_OF_USERS_TO_SHOW = 5;
-
-  const { reference_table_id: postId, timestamp_seen_by_user: timestampSeenByUser } =
+  const { reference_table_id: postLikeId, timestamp_seen_by_user: timestampSeenByUser } =
     userNotification;
 
-  const userIdsLikingPost =
-    await databaseService.tableNameToServicesMap.postLikesTableService.getUserIdsLikingPostId(
-      { postId },
+  const {
+    post_id: postId,
+    user_id: userLikingPostId,
+  } =
+    await databaseService.tableNameToServicesMap.postLikesTableService.getPostLikeByPostLikeId(
+      { postLikeId },
     );
 
   const unrenderablePostWithoutElementsOrHashtags =
@@ -39,22 +40,25 @@ export async function assembleRenderableNewLikeOnPostNotification({
     clientUserId,
   });
 
-  const unrenderableUsersThatCommented =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
-      userIds: userIdsLikingPost.slice(-NUMBER_OF_USERS_TO_SHOW),
+  const unrenderableUserThatLikedPost =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId: userLikingPostId,
     });
 
-  const usersThatLikedPost = await constructRenderableUsersFromParts({
+  if (!unrenderableUserThatLikedPost) {
+    throw new Error("Missing user that liked post");
+  }
+
+  const userThatLikedPost = await constructRenderableUserFromParts({
     clientUserId,
-    unrenderableUsers: unrenderableUsersThatCommented,
+    unrenderableUser: unrenderableUserThatLikedPost,
     blobStorageService,
     databaseService,
   });
 
   return {
-    usersThatLikedPost,
+    userThatLikedPost,
     post,
-    count: userIdsLikingPost.length,
     timestampSeenByUser,
     type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
   };
