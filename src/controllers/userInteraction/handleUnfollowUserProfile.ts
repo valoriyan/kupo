@@ -1,4 +1,5 @@
 import express from "express";
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
@@ -26,6 +27,8 @@ export async function handleUnfollowUser({
     SuccessfullyUnfollowedUserProfileResponse
   >
 > {
+  const {userIdBeingUnfollowed} = requestBody;
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
@@ -35,6 +38,16 @@ export async function handleUnfollowUser({
       userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,
     },
   );
+
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
+    {
+      notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+      referenceTableId: clientUserId,
+      recipientUserId: userIdBeingUnfollowed
+    },
+  );
+
+
   return {
     success: {},
   };

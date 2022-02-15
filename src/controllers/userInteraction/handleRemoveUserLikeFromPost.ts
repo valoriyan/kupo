@@ -1,4 +1,5 @@
 import express from "express";
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
@@ -31,12 +32,24 @@ export async function handleRemoveUserLikeFromPost({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
+
+  const deletedPostLike = await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
     {
       postId,
       userId: clientUserId,
     },
   );
+
+  const unrenderablePost = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
+    {
+      recipientUserId: unrenderablePost.authorUserId,
+      notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+      referenceTableId: deletedPostLike.post_like_id,
+    },
+  );
+
 
   return {};
 }

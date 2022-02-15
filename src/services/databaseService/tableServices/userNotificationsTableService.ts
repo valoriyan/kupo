@@ -1,7 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericUpdateRowQueryString } from "./utilities/index";
+import { generatePSQLGenericDeleteRowsQueryString, generatePSQLGenericUpdateRowQueryString } from "./utilities/index";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 
@@ -192,4 +192,26 @@ export class UserNotificationsTableService extends TableService {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async deleteUserNotification({
+    referenceTableId,
+    recipientUserId,
+    notificationType,
+  }: {
+    referenceTableId: string;
+    recipientUserId: string;
+    notificationType: string;
+  }): Promise<void> {
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "reference_table_id", value: referenceTableId },
+        { field: "notification_type", value: notificationType },
+        { field: "recipient_user_id", value: recipientUserId },
+      ],
+      tableName: this.tableName,
+    });
+
+    await this.datastorePool.query(query);
+  }
+
 }

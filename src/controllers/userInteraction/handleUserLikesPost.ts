@@ -30,9 +30,11 @@ export async function handleUserLikesPost({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const postLikeId = uuidv4();
+
   await controller.databaseService.tableNameToServicesMap.postLikesTableService.createPostLikeFromUserId(
     {
-      postLikeId: uuidv4(),
+      postLikeId,
       postId,
       userId: clientUserId,
       timestamp: Date.now(),
@@ -65,7 +67,7 @@ export async function handleUserLikesPost({
         userNotificationId: uuidv4(),
         recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
         notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-        referenceTableId: postId,
+        referenceTableId: postLikeId,
       },
     );
   }

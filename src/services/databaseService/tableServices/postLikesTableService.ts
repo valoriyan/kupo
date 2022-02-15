@@ -97,7 +97,6 @@ export class PostLikesTableService extends TableService {
     return response.rows[0];
   }
 
-
   public async getUserIdsLikingPostId({ postId }: { postId: string }): Promise<string[]> {
     const query = {
       text: `
@@ -182,7 +181,7 @@ export class PostLikesTableService extends TableService {
   }: {
     postId: string;
     userId: string;
-  }): Promise<void> {
+  }): Promise<DBPostLike> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "post_id", value: postId },
@@ -191,6 +190,13 @@ export class PostLikesTableService extends TableService {
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(query);
+    const response: QueryResult<DBPostLike> = await this.datastorePool.query(query);
+
+    if (response.rows.length < 1) {
+      throw new Error("Missing post like - none to delete");
+    }
+
+    return response.rows[0];
+
   }
 }

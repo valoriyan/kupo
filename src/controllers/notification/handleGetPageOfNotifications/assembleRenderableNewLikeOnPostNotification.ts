@@ -20,10 +20,7 @@ export async function assembleRenderableNewLikeOnPostNotification({
   const { reference_table_id: postLikeId, timestamp_seen_by_user: timestampSeenByUser } =
     userNotification;
 
-  const {
-    post_id: postId,
-    user_id: userLikingPostId,
-  } =
+  const { post_id: postId, user_id: userLikingPostId } =
     await databaseService.tableNameToServicesMap.postLikesTableService.getPostLikeByPostLikeId(
       { postLikeId },
     );

@@ -1,4 +1,5 @@
 import express from "express";
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { PostCommentController } from "./postCommentController";
@@ -32,12 +33,26 @@ export async function handleDeleteCommentFromPost({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const {postId} = await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById({postCommentId});
+
+  const {authorUserId: postAuthorUserId} = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+
   await controller.databaseService.tableNameToServicesMap.postCommentsTableService.deletePostComment(
     {
       postCommentId,
       authorUserId: clientUserId,
     },
   );
+
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
+    {
+      notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+      referenceTableId: postCommentId,
+      recipientUserId: postAuthorUserId
+    },
+  );
+
+  
 
   return {
     success: {},
