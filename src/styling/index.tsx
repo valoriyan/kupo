@@ -133,12 +133,12 @@ const themedStitches = createStitches({
       round: "9999px", // Completely round (for circles)
     },
     shadows: {
-      0: "0 0 0 rgba(0,0,0,0.12), 0 0 0 rgba(0,0,0,0.12)",
-      1: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-      2: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-      3: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
-      4: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
-      5: "0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)",
+      0: "0 0 0 rgba(0,0,0,0), 0 0 0 rgba(0,0,0,0)",
+      1: "0px 1px 0px rgba(0, 0, 0, 0.05)",
+      2: "0px 2px 1px rgba(0, 0, 0, 0.05), 0px 0px 1px rgba(0, 0, 0, 0.25)",
+      3: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 2px 10px rgba(0, 0, 0, 0.1)",
+      4: "0px 0px 3px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.15)",
+      5: "0px 0px 4px rgba(0, 0, 0, 0.1), 0px 8px 40px rgba(0, 0, 0, 0.2)",
     },
     zIndices: {
       dropdown: 100,

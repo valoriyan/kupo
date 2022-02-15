@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
 import { useGetContentFilters } from "#/api/queries/feed/useGetContentFilters";
 import { ChevronDownIcon, SearchIcon } from "#/components/Icons";
@@ -43,7 +44,11 @@ export const Feed = () => {
                 />
               )}
             </SlideDownDialog>
-            <SearchIcon />
+            <Link href="/discover" passHref>
+              <Flex as="a" css={{ color: "$text" }}>
+                <SearchIcon />
+              </Flex>
+            </Link>
           </Flex>
         }
       />

@@ -5,13 +5,24 @@ export interface AvatarProps {
   alt: string;
   src?: string;
   size?: ThemeScale<"sizes">;
+  onClick?: () => void;
 }
 
 export const Avatar = (props: AvatarProps) => {
   return props.src ? (
-    <Img alt={props.alt} src={props.src} css={{ size: props.size }} />
+    <Img
+      alt={props.alt}
+      src={props.src}
+      css={{ size: props.size, cursor: props.onClick ? "pointer" : "default" }}
+      onClick={props.onClick}
+    />
   ) : (
-    <Fallback role="img" aria-label="Avatar Fallback Icon" css={{ size: props.size }}>
+    <Fallback
+      role="img"
+      aria-label="Avatar Fallback Icon"
+      css={{ size: props.size, cursor: props.onClick ? "pointer" : "default" }}
+      onClick={props.onClick}
+    >
       <FallBackIcon />
     </Fallback>
   );

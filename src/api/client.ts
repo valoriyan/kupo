@@ -39,11 +39,13 @@ client.interceptors.response.use(
   },
   async (error) => {
     if (error?.response?.data?.error?.reason) {
-      toast.error(error.response.data.error.reason);
+      toast.error(error.response.data.error.reason, {
+        toastId: error.response.data.error.reason ?? "unknown-api-error",
+      });
     }
 
     if (error?.response?.status === 500) {
-      toast.error("An unexpected error occurred");
+      toast.error("An internal server error occurred", { toastId: "500-error" });
     }
 
     if (error?.response?.status === 401) Router.push("/login");
