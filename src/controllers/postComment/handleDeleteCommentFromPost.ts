@@ -33,9 +33,15 @@ export async function handleDeleteCommentFromPost({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const {postId} = await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById({postCommentId});
+  const { postId } =
+    await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
+      { postCommentId },
+    );
 
-  const {authorUserId: postAuthorUserId} = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+  const { authorUserId: postAuthorUserId } =
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+      { postId },
+    );
 
   await controller.databaseService.tableNameToServicesMap.postCommentsTableService.deletePostComment(
     {
@@ -48,11 +54,9 @@ export async function handleDeleteCommentFromPost({
     {
       notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
       referenceTableId: postCommentId,
-      recipientUserId: postAuthorUserId
+      recipientUserId: postAuthorUserId,
     },
   );
-
-  
 
   return {
     success: {},

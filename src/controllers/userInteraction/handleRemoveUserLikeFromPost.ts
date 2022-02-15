@@ -32,15 +32,18 @@ export async function handleRemoveUserLikeFromPost({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const deletedPostLike =
+    await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
+      {
+        postId,
+        userId: clientUserId,
+      },
+    );
 
-  const deletedPostLike = await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
-    {
-      postId,
-      userId: clientUserId,
-    },
-  );
-
-  const unrenderablePost = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+  const unrenderablePost =
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+      { postId },
+    );
 
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
     {
@@ -49,7 +52,6 @@ export async function handleRemoveUserLikeFromPost({
       referenceTableId: deletedPostLike.post_like_id,
     },
   );
-
 
   return {};
 }

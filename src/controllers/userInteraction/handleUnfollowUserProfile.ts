@@ -27,7 +27,7 @@ export async function handleUnfollowUser({
     SuccessfullyUnfollowedUserProfileResponse
   >
 > {
-  const {userIdBeingUnfollowed} = requestBody;
+  const { userIdBeingUnfollowed } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -43,10 +43,9 @@ export async function handleUnfollowUser({
     {
       notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
       referenceTableId: clientUserId,
-      recipientUserId: userIdBeingUnfollowed
+      recipientUserId: userIdBeingUnfollowed,
     },
   );
-
 
   return {
     success: {},

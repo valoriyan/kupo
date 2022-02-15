@@ -197,6 +197,5 @@ export class PostLikesTableService extends TableService {
     }
 
     return response.rows[0];
-
   }
 }

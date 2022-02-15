@@ -1,7 +1,10 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericDeleteRowsQueryString, generatePSQLGenericUpdateRowQueryString } from "./utilities/index";
+import {
+  generatePSQLGenericDeleteRowsQueryString,
+  generatePSQLGenericUpdateRowQueryString,
+} from "./utilities/index";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 
@@ -213,5 +216,4 @@ export class UserNotificationsTableService extends TableService {
 
     await this.datastorePool.query(query);
   }
-
 }
