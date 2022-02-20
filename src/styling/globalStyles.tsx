@@ -14,6 +14,7 @@ export const globalStyles = globalCss({
     transition: "background-color $1 ease",
     "-webkit-font-smoothing": "antialiased",
     "-moz-osx-font-smoothing": "grayscale",
+    overflow: "auto",
   },
   "h1, h2, h3, h4, h5, h6, p": { margin: 0 },
   button: {
