@@ -22,7 +22,6 @@ const ICONS_TO_GENERATE = [
   "dollar",
   "duplicate",
   "folder",
-  "girl",
   "heart",
   "home",
   "info",

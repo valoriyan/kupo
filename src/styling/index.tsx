@@ -49,6 +49,9 @@ const themedStitches = createStitches({
       failure: "#EF5D5F", // For error messages
       disabled: "#b0b0b0", // For disabled elements
 
+      scrollBar: "rgb(194, 194, 194)",
+      scrollBarTrack: "rgb(250, 250, 250)",
+
       transparent: "rgba(0,0,0,0)",
     },
     space: {
@@ -240,7 +243,37 @@ const themedStitches = createStitches({
         : { height: value },
     overflow: (value: PropertyValue<"overflow"> | NoInfer<string>) =>
       value === "auto" || value === "scroll"
-        ? { overflow: "auto; -webkit-overflow-scrolling: touch;" }
+        ? {
+            overflow: "auto; -webkit-overflow-scrolling: touch;",
+            "@media(hover: hover)": {
+              "scrollbar-width": "thin",
+              "scrollbar-color": "transparent transparent",
+              "::-webkit-scrollbar": {
+                width: "8px",
+                backgroundColor: "transparent",
+              },
+              "::-webkit-scrollbar-thumb": {
+                borderRadius: "8px",
+                backgroundColor: "transparent",
+              },
+              "::-webkit-scrollbar-track": {
+                backgroundColor: "transparent",
+              },
+              "&:hover": {
+                "scrollbar-color": "$scrollBar transparent",
+                "::-webkit-scrollbar-thumb": {
+                  backgroundColor: "$scrollBar",
+                  padding: "0 1px",
+                  borderLeft: "solid 1px transparent",
+                  borderRight: "solid 1px transparent",
+                  backgroundClip: "padding-box",
+                },
+                "::-webkit-scrollbar-track": {
+                  backgroundColor: "$scrollBarTrack",
+                },
+              },
+            },
+          }
         : { overflow: value },
   },
 });
@@ -261,7 +294,7 @@ export const darkTheme = themedStitches.createTheme("dark", {
     background3: "#212121",
     overlay: "rgba(0,0,0,0.25)",
     heavyOverlay: "rgba(0,0,0,0.6)",
-    mediaOverlay: "rgba(115, 115, 115, 0.5)",
+    mediaOverlay: "rgba(115, 115, 115, 0.7)",
 
     text: "#ffffff",
     secondaryText: "#acacac",
@@ -277,6 +310,9 @@ export const darkTheme = themedStitches.createTheme("dark", {
     warning: "#EFED5D",
     failure: "#EF5D5F",
     disabled: "#a0a0a0",
+
+    scrollBar: "rgba(117, 117, 117)",
+    scrollBarTrack: "rgb(46, 46, 46)",
 
     transparent: "rgba(0,0,0,0)",
   },

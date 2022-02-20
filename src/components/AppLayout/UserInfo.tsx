@@ -1,12 +1,13 @@
 import Link from "next/link";
+import Router from "next/router";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
 import { formatStat } from "#/utils/formatStat";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
 import { Subtext } from "../Typography";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
-import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export interface UserInfoProps {
   onUsernameClick?: () => void;
@@ -17,7 +18,15 @@ export const UserInfo = (props: UserInfoProps) => {
 
   return (
     <>
-      <Avatar alt="User Avatar" src={data?.profilePictureTemporaryUrl} />
+      <Avatar
+        alt="User Avatar"
+        src={data?.profilePictureTemporaryUrl}
+        onClick={
+          data?.username
+            ? () => Router.push(getProfilePageUrl({ username: data.username }))
+            : undefined
+        }
+      />
       {isLoading || !data ? (
         <UserStatsPlaceholder>
           <LoadingArea size="md" />

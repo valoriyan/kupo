@@ -20,8 +20,6 @@ export const Footer = () => {
     return <div>Loading</div>;
   }
 
-  const { username } = data;
-
   return (
     <Wrapper>
       <IconLink href="/feed">
@@ -42,7 +40,7 @@ export const Footer = () => {
         trigger={<Avatar src="" alt="User Avatar" size="$7" />}
         position={{ top: "0", bottom: "57px" /* Top of Footer */ }}
       >
-        {({ hide }) => <NavigationDrawer hide={hide} username={username} />}
+        {({ hide }) => <NavigationDrawer hide={hide} />}
       </Drawer>
     </Wrapper>
   );

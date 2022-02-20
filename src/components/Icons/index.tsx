@@ -15,7 +15,6 @@ export * from "./generated/CommentIcon";
 export * from "./generated/DollarIcon";
 export * from "./generated/DuplicateIcon";
 export * from "./generated/FolderIcon";
-export * from "./generated/GirlIcon";
 export * from "./generated/HeartIcon";
 export * from "./generated/HomeIcon";
 export * from "./generated/InfoIcon";

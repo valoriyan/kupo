@@ -1,11 +1,9 @@
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import {
   BookmarkIcon,
   BoxIcon,
   CloseIcon,
-  GirlIcon,
   ListIcon,
   LogOutIcon,
   OptionsIcon,
@@ -17,10 +15,9 @@ import { UserInfo } from "./UserInfo";
 
 export interface NavigationDrawerProps {
   hide: () => void;
-  username: string;
 }
 
-export const NavigationDrawer = ({ hide, username }: NavigationDrawerProps) => {
+export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
   return (
     <Wrapper>
       <UserInfoWrapper>
@@ -31,12 +28,6 @@ export const NavigationDrawer = ({ hide, username }: NavigationDrawerProps) => {
       </UserInfoWrapper>
       <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
         <Stack css={{ gap: "$6" }}>
-          <NavLink
-            href={getProfilePageUrl({ username })}
-            Icon={GirlIcon}
-            label="My Profile"
-            onClick={hide}
-          />
           <NavLink href="/lists" Icon={ListIcon} label="My Lists" onClick={hide} />
           <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" onClick={hide} />
           <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" onClick={hide} />

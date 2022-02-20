@@ -1,13 +1,12 @@
 import Link from "next/link";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { ErrorMessage } from "../ErrorArea";
 import {
   BellIcon,
   BookmarkIcon,
   BoxIcon,
-  GirlIcon,
   HomeIcon,
   ListIcon,
   LogOutIcon,
@@ -20,7 +19,6 @@ import { LoadingArea } from "../LoadingArea";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 import { useWebsocketState } from "./WebsocketContext";
-import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
@@ -39,8 +37,6 @@ export const SidePanel = () => {
   if (isLoading || !data) {
     return <LoadingArea size="lg" />;
   }
-
-  const { username } = data;
 
   return (
     <SidePanelWrapper>
@@ -66,11 +62,6 @@ export const SidePanel = () => {
             }
           />
           <NavLink href="/messages" Icon={MailIcon} label="Messages" />
-          <NavLink
-            href={getProfilePageUrl({ username })}
-            Icon={GirlIcon}
-            label="My Profile"
-          />
           <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
           <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
           <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
