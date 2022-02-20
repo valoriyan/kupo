@@ -110,6 +110,7 @@ const swipePower = (offset: number, velocity: number) => {
 };
 
 const MotionWrapper = styled("div", {
+  overflow: "hidden",
   position: "relative",
   my: "$3",
   bg: "$background3",

@@ -243,37 +243,7 @@ const themedStitches = createStitches({
         : { height: value },
     overflow: (value: PropertyValue<"overflow"> | NoInfer<string>) =>
       value === "auto" || value === "scroll"
-        ? {
-            overflow: "auto; -webkit-overflow-scrolling: touch;",
-            "@media(hover: hover)": {
-              "scrollbar-width": "thin",
-              "scrollbar-color": "transparent transparent",
-              "::-webkit-scrollbar": {
-                width: "8px",
-                backgroundColor: "transparent",
-              },
-              "::-webkit-scrollbar-thumb": {
-                borderRadius: "8px",
-                backgroundColor: "transparent",
-              },
-              "::-webkit-scrollbar-track": {
-                backgroundColor: "transparent",
-              },
-              "&:hover": {
-                "scrollbar-color": "$scrollBar transparent",
-                "::-webkit-scrollbar-thumb": {
-                  backgroundColor: "$scrollBar",
-                  padding: "0 1px",
-                  borderLeft: "solid 1px transparent",
-                  borderRight: "solid 1px transparent",
-                  backgroundClip: "padding-box",
-                },
-                "::-webkit-scrollbar-track": {
-                  backgroundColor: "$scrollBarTrack",
-                },
-              },
-            },
-          }
+        ? { overflow: "auto; -webkit-overflow-scrolling: touch;" }
         : { overflow: value },
   },
 });

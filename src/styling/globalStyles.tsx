@@ -15,6 +15,34 @@ export const globalStyles = globalCss({
     "-webkit-font-smoothing": "antialiased",
     "-moz-osx-font-smoothing": "grayscale",
     overflow: "auto",
+    "@media(hover: hover)": {
+      "scrollbar-width": "thin",
+      "scrollbar-color": "transparent transparent",
+      "::-webkit-scrollbar": {
+        size: "8px",
+        backgroundColor: "transparent",
+      },
+      "::-webkit-scrollbar-thumb": {
+        borderRadius: "8px",
+        backgroundColor: "transparent",
+      },
+      "::-webkit-scrollbar-track": {
+        backgroundColor: "transparent",
+      },
+      "&:hover": {
+        "scrollbar-color": "$scrollBar transparent",
+        "::-webkit-scrollbar-thumb": {
+          backgroundColor: "$scrollBar",
+          padding: "0 1px",
+          borderLeft: "solid 1px transparent",
+          borderRight: "solid 1px transparent",
+          backgroundClip: "padding-box",
+        },
+        "::-webkit-scrollbar-track": {
+          backgroundColor: "$scrollBarTrack",
+        },
+      },
+    },
   },
   "h1, h2, h3, h4, h5, h6, p": { margin: 0 },
   button: {
