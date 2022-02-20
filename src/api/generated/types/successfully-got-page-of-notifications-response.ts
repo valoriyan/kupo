@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
+import { RenderableUserNotification } from "./renderable-user-notification";
 
 /**
  *
@@ -22,10 +22,10 @@ import { RenderableNewFollowerNotification } from "./renderable-new-follower-not
 export interface SuccessfullyGotPageOfNotificationsResponse {
   /**
    *
-   * @type {Array<RenderableNewFollowerNotification>}
+   * @type {Array<RenderableUserNotification>}
    * @memberof SuccessfullyGotPageOfNotificationsResponse
    */
-  notifications: Array<RenderableNewFollowerNotification>;
+  userNotifications: Array<RenderableUserNotification>;
   /**
    *
    * @type {string}

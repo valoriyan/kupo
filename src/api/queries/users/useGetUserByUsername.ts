@@ -17,7 +17,7 @@ export const useGetUserByUsername = ({ username }: { username: string }) => {
     },
     {
       onSuccess: async (data) => {
-        await queryClient.setQueryData([CacheKeys.UserById, data.userId], data);
+        queryClient.setQueryData([CacheKeys.UserById, data.userId], data);
       },
     },
   );

@@ -3,7 +3,7 @@ import { MouseEvent } from "react";
 import { RenderableUser } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
-import { useGetUserByUsername } from "#/api/queries/users/useGetUserProfile";
+import { useGetUserByUsername } from "#/api/queries/users/useGetUserByUsername";
 import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";

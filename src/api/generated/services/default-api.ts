@@ -95,8 +95,6 @@ import { RemoveUserLikeFromPostRequestBody } from "../types";
 // @ts-ignore
 import { SearchForHashtagsParams } from "../types";
 // @ts-ignore
-import { SearchForPostCaptionsParams } from "../types";
-// @ts-ignore
 import { SearchForPostsParams } from "../types";
 // @ts-ignore
 import { SearchForUsersParams } from "../types";
@@ -174,8 +172,6 @@ import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGo
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSearchForPostCaptionsFailedSearchForPostCaptionsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess } from "../types";
 // @ts-ignore
@@ -1760,55 +1756,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    searchForPostCaptions: async (
-      searchForPostCaptionsParams: SearchForPostCaptionsParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'searchForPostCaptionsParams' is not null or undefined
-      assertParamExists(
-        "searchForPostCaptions",
-        "searchForPostCaptionsParams",
-        searchForPostCaptionsParams,
-      );
-      const localVarPath = `/discover/searchForPostCaptions`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        searchForPostCaptionsParams,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
      * @param {SearchForPostsParams} searchForPostsParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3365,32 +3312,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async searchForPostCaptions(
-      searchForPostCaptionsParams: SearchForPostCaptionsParams,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSearchForPostCaptionsFailedSearchForPostCaptionsSuccess>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.searchForPostCaptions(
-        searchForPostCaptionsParams,
-        options,
-      );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
      * @param {SearchForPostsParams} searchForPostsParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4259,20 +4180,6 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    searchForPostCaptions(
-      searchForPostCaptionsParams: SearchForPostCaptionsParams,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSearchForPostCaptionsFailedSearchForPostCaptionsSuccess> {
-      return localVarFp
-        .searchForPostCaptions(searchForPostCaptionsParams, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
      * @param {SearchForPostsParams} searchForPostsParams
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5010,22 +4917,6 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .searchForHashtags(searchForHashtagsParams, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {SearchForPostCaptionsParams} searchForPostCaptionsParams
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public searchForPostCaptions(
-    searchForPostCaptionsParams: SearchForPostCaptionsParams,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .searchForPostCaptions(searchForPostCaptionsParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { NotificationType } from "./notification-type";
+import { NOTIFICATIONEVENTSNEWFOLLOWER } from "./notificationeventsnewfollower";
 import { RenderableUser } from "./renderable-user";
 
 /**
@@ -23,16 +23,16 @@ import { RenderableUser } from "./renderable-user";
 export interface RenderableNewFollowerNotification {
   /**
    *
-   * @type {NotificationType}
+   * @type {NOTIFICATIONEVENTSNEWFOLLOWER}
    * @memberof RenderableNewFollowerNotification
    */
-  type: NotificationType;
+  type: NOTIFICATIONEVENTSNEWFOLLOWER;
   /**
    *
    * @type {number}
    * @memberof RenderableNewFollowerNotification
    */
-  timestamp: number;
+  timestampSeenByUser?: number;
   /**
    *
    * @type {RenderableUser}
