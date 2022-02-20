@@ -14,7 +14,6 @@ export interface GetPageOfCommentsByPostIdRequestBody {
 
 export interface SuccessfullyGotPageOfCommentsByPostIdResponse {
   postComments: RenderablePostComment[];
-
   previousPageCursor?: string;
   nextPageCursor?: string;
 }

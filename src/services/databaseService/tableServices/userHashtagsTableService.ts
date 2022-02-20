@@ -111,13 +111,13 @@ export class UserHashtagsTableService extends TableService {
         WHERE
             hashtag_1 = $1
           OR
-            hashtag_2 = $2
+            hashtag_2 = $1
           OR
-            hashtag_3 = $3
+            hashtag_3 = $1
           OR
-            hashtag_4 = $4
+            hashtag_4 = $1
           OR
-            hashtag_5 = $5
+            hashtag_5 = $1
         ;
       `,
       values: [hashtag],
