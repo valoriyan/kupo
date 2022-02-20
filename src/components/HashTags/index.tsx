@@ -4,6 +4,8 @@ import { AnimatedHashTag } from "./HashTag";
 
 export * from "./HashTag";
 
+const HASHTAG_REGEX = /^#?.*\s$/g;
+
 export interface HashTagsProps {
   hashTags: string[];
   setHashTags: (hashTags: string[] | ((prev: string[]) => string[])) => void;
@@ -34,11 +36,12 @@ export const HashTags = (props: HashTagsProps) => {
     const textToMatch = text + " ";
 
     // Find entered hashtags
-    const matchedHashTags = Array.from(textToMatch.matchAll(/(?<=#).+?(?=\s)/g))
-      .map((match) => match[0])
+    const matchedHashTags = Array.from(textToMatch.matchAll(HASHTAG_REGEX))
+      .map((match) => match[0].replaceAll("#", "").replaceAll(" ", ""))
+      .filter((x) => x)
       .filter((match) => !props.hashTags.includes(match));
     // Remove entered hashtags
-    const strippedText = textToMatch.replaceAll(/#.+?\s/g, "");
+    const strippedText = textToMatch.replaceAll(HASHTAG_REGEX, "");
 
     setText(matchedHashTags.length ? strippedText : text);
     props.setHashTags((prev) => {
@@ -63,11 +66,12 @@ export const HashTags = (props: HashTagsProps) => {
     }
 
     // Find entered hashtags
-    const matchedHashTags = Array.from(newText.matchAll(/(?<=#).+?(?=\s)/g))
-      .map((match) => match[0])
+    const matchedHashTags = Array.from(newText.matchAll(HASHTAG_REGEX))
+      .map((match) => match[0].replaceAll("#", "").replaceAll(" ", ""))
+      .filter((x) => x)
       .filter((match) => !props.hashTags.includes(match));
     // Remove entered hashtags
-    const strippedText = newText.replaceAll(/#.+?\s/g, "");
+    const strippedText = newText.replaceAll(HASHTAG_REGEX, "");
 
     setText(strippedText);
     props.setHashTags((prev) => {
