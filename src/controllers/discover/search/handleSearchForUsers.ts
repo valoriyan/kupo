@@ -18,12 +18,10 @@ export enum SearchForUsersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchForUsersFailed {
   reason: SearchForUsersFailedReason;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchForUsersSuccess {
   users: RenderableUser[];
   previousPageCursor?: string;
