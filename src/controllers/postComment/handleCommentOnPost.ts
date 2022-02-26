@@ -61,8 +61,10 @@ export async function handleCommentOnPost({
     clientUserId,
   });
 
-  const unrenderablePostWithoutElementsOrHashtags = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
-
+  const unrenderablePostWithoutElementsOrHashtags =
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+      { postId },
+    );
 
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
     {

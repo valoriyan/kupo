@@ -18,7 +18,7 @@ export interface SuccessfullyGotPostByIdResponse {
 }
 
 export interface GetPostByIdRequestBody {
-    postId: string;
+  postId: string;
 }
 
 export async function handleGetPostById({
@@ -32,15 +32,15 @@ export async function handleGetPostById({
 }): Promise<
   SecuredHTTPResponse<FailedToGetPostByIdResponse, SuccessfullyGotPostByIdResponse>
 > {
-  const {
-    postId,
-  } = requestBody;
+  const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-
-  const unrenderablePostWithoutElementsOrHashtags = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+  const unrenderablePostWithoutElementsOrHashtags =
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+      { postId },
+    );
 
   const post = await constructRenderablePostFromParts({
     blobStorageService: controller.blobStorageService,
@@ -50,7 +50,6 @@ export async function handleGetPostById({
   });
 
   return {
-      success: {post},
-  }
-
+    success: { post },
+  };
 }

@@ -49,7 +49,12 @@ import {
   SharePostRequestBody,
   SuccessfullySharedPostResponse,
 } from "./handleSharePost";
-import { FailedToGetPostByIdResponse, GetPostByIdRequestBody, handleGetPostById, SuccessfullyGotPostByIdResponse } from "./handleGetPostById";
+import {
+  FailedToGetPostByIdResponse,
+  GetPostByIdRequestBody,
+  handleGetPostById,
+  SuccessfullyGotPostByIdResponse,
+} from "./handleGetPostById";
 
 @injectable()
 @Route("post")
@@ -119,9 +124,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPostByIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-    FailedToGetPostByIdResponse, SuccessfullyGotPostByIdResponse
-    >
+    SecuredHTTPResponse<FailedToGetPostByIdResponse, SuccessfullyGotPostByIdResponse>
   > {
     return await handleGetPostById({
       controller: this,
