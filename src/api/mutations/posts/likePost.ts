@@ -1,13 +1,22 @@
-import { InfiniteData, QueryKey, useMutation, useQueryClient } from "react-query";
-import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
+import { InfiniteData, useMutation, useQueryClient } from "react-query";
+import {
+  Api,
+  SuccessfulGetPageOfPostsPaginationResponse,
+  UserContentFeedFilter,
+} from "../..";
+import {
+  updateCurrentlyActivePostCacheForUserPosts,
+  UpdateQueriedPostDataFunction,
+} from "./utilities";
 
 export const useLikePost = ({
   postId,
   authorUserId,
+  contentFilter,
 }: {
   postId: string;
   authorUserId: string;
+  contentFilter?: UserContentFeedFilter;
 }) => {
   const queryClient = useQueryClient();
 
@@ -19,50 +28,51 @@ export const useLikePost = ({
     },
     {
       onSuccess: () => {
-        function updateCache(queryKey: QueryKey) {
-          queryClient.setQueryData<
-            InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
-          >(
-            queryKey,
-            (queriedData): InfiniteData<SuccessfulGetPageOfPostsPaginationResponse> => {
-              if (!!queriedData) {
-                const updatedPages = queriedData.pages.map((page) => {
-                  const updatedRenderablePosts = page.posts.map((post) => {
-                    if (post.postId === postId) {
-                      return {
-                        ...post,
-                        isLikedByClient: true,
-                        likes: {
-                          count: post.likes.count + 1,
-                        },
-                      };
-                    }
-                    return post;
-                  });
-
-                  const updatedPages: SuccessfulGetPageOfPostsPaginationResponse = {
-                    ...page,
-                    posts: updatedRenderablePosts,
+        const updateQueriedPostDataFunction: UpdateQueriedPostDataFunction = (
+          queriedData:
+            | InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
+            | undefined,
+        ) => {
+          if (!!queriedData) {
+            const updatedPages = queriedData.pages.map((page) => {
+              const updatedRenderablePosts = page.posts.map((post) => {
+                if (post.postId === postId) {
+                  return {
+                    ...post,
+                    isLikedByClient: true,
+                    likes: {
+                      count: post.likes.count + 1,
+                    },
                   };
-                  return updatedPages;
-                });
+                }
+                return post;
+              });
 
-                return {
-                  pages: updatedPages,
-                  pageParams: queriedData.pageParams,
-                };
-              }
-
-              return {
-                pages: [],
-                pageParams: [],
+              const updatedPages: SuccessfulGetPageOfPostsPaginationResponse = {
+                ...page,
+                posts: updatedRenderablePosts,
               };
-            },
-          );
-        }
+              return updatedPages;
+            });
 
-        updateCache([CacheKeys.ContentFeed]);
-        updateCache([CacheKeys.UserPostPages, authorUserId]);
+            return {
+              pages: updatedPages,
+              pageParams: queriedData.pageParams,
+            };
+          }
+
+          return {
+            pages: [],
+            pageParams: [],
+          };
+        };
+
+        updateCurrentlyActivePostCacheForUserPosts({
+          updateQueriedPostDataFunction,
+          queryClient,
+          authorUserId,
+          contentFilter,
+        });
       },
     },
   );

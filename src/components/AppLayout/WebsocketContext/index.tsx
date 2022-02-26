@@ -32,8 +32,8 @@ const generateSocket = ({
   });
 
   newSocket.on("connect", () => {
-    const notificationsReceived = get().notificationsReceived;
-    set({ notificationsReceived: [...notificationsReceived, "CONNECTED"] });
+    // const notificationsReceived = get().notificationsReceived;
+    // set({ notificationsReceived: [...notificationsReceived, "CONNECTED"] });
     console.log("CONNECTED!");
   });
 

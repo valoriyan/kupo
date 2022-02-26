@@ -26,10 +26,12 @@ export const PostWrapper = ({ post, contentFilter }: PostWrapperProps) => {
   const { mutateAsync: likePost } = useLikePost({
     postId,
     authorUserId,
+    contentFilter,
   });
   const { mutateAsync: unlikePost } = useUnlikePost({
     postId,
     authorUserId,
+    contentFilter,
   });
   const { mutateAsync: deletePost } = useDeletePost({
     postId,

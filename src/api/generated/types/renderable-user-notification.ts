@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { NOTIFICATIONEVENTSNEWLIKEONPOST } from "./notificationeventsnewlikeonpost";
+import { NOTIFICATIONEVENTS } from "./notificationevents";
 import { RenderableNewCommentOnPostNotification } from "./renderable-new-comment-on-post-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
 import { RenderableNewLikeOnPostNotification } from "./renderable-new-like-on-post-notification";
@@ -28,10 +28,10 @@ import { RenderableUser } from "./renderable-user";
 export interface RenderableUserNotification {
   /**
    *
-   * @type {NOTIFICATIONEVENTSNEWLIKEONPOST}
+   * @type {NOTIFICATIONEVENTS}
    * @memberof RenderableUserNotification
    */
-  type: NOTIFICATIONEVENTSNEWLIKEONPOST;
+  type: NOTIFICATIONEVENTS;
   /**
    *
    * @type {number}

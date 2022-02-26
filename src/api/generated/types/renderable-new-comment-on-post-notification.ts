@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { NOTIFICATIONEVENTSNEWCOMMENTONPOST } from "./notificationeventsnewcommentonpost";
+import { NOTIFICATIONEVENTS } from "./notificationevents";
 import { RenderablePost } from "./renderable-post";
 import { RenderablePostComment } from "./renderable-post-comment";
 import { RenderableUser } from "./renderable-user";
@@ -25,10 +25,10 @@ import { RenderableUser } from "./renderable-user";
 export interface RenderableNewCommentOnPostNotification {
   /**
    *
-   * @type {NOTIFICATIONEVENTSNEWCOMMENTONPOST}
+   * @type {NOTIFICATIONEVENTS}
    * @memberof RenderableNewCommentOnPostNotification
    */
-  type: NOTIFICATIONEVENTSNEWCOMMENTONPOST;
+  type: NOTIFICATIONEVENTS;
   /**
    *
    * @type {number}

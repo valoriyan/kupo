@@ -1,13 +1,22 @@
-import { InfiniteData, QueryKey, useMutation, useQueryClient } from "react-query";
-import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
+import { InfiniteData, useMutation, useQueryClient } from "react-query";
+import {
+  Api,
+  SuccessfulGetPageOfPostsPaginationResponse,
+  UserContentFeedFilter,
+} from "../..";
+import {
+  updateCurrentlyActivePostCacheForUserPosts,
+  UpdateQueriedPostDataFunction,
+} from "./utilities";
 
 export const useUnlikePost = ({
   postId,
   authorUserId,
+  contentFilter,
 }: {
   postId: string;
   authorUserId: string;
+  contentFilter?: UserContentFeedFilter;
 }) => {
   const queryClient = useQueryClient();
 
@@ -19,55 +28,56 @@ export const useUnlikePost = ({
     },
     {
       onSuccess: () => {
-        function updateCache(queryKey: QueryKey) {
-          queryClient.setQueryData<
-            InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
-          >(
-            queryKey,
-            (queriedData): InfiniteData<SuccessfulGetPageOfPostsPaginationResponse> => {
-              if (!!queriedData) {
-                const updatedPages = queriedData.pages.map((page) => {
-                  const updatedRenderablePosts = page.posts.map((post) => {
-                    if (post.postId === postId) {
-                      console.log(
-                        "post.likes.count",
-                        post.likes.count,
-                        typeof post.likes.count,
-                      );
-
-                      return {
-                        ...post,
-                        isLikedByClient: false,
-                        likes: {
-                          count: post.likes.count - 1,
-                        },
-                      };
-                    }
-                    return post;
-                  });
+        const updateQueriedPostDataFunction: UpdateQueriedPostDataFunction = (
+          queriedData:
+            | InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
+            | undefined,
+        ) => {
+          if (!!queriedData) {
+            const updatedPages = queriedData.pages.map((page) => {
+              const updatedRenderablePosts = page.posts.map((post) => {
+                if (post.postId === postId) {
+                  console.log(
+                    "post.likes.count",
+                    post.likes.count,
+                    typeof post.likes.count,
+                  );
 
                   return {
-                    ...page,
-                    posts: updatedRenderablePosts,
+                    ...post,
+                    isLikedByClient: false,
+                    likes: {
+                      count: post.likes.count - 1,
+                    },
                   };
-                });
-
-                return {
-                  pages: updatedPages,
-                  pageParams: queriedData.pageParams,
-                };
-              }
+                }
+                return post;
+              });
 
               return {
-                pages: [],
-                pageParams: [],
+                ...page,
+                posts: updatedRenderablePosts,
               };
-            },
-          );
-        }
+            });
 
-        updateCache([CacheKeys.ContentFeed]);
-        updateCache([CacheKeys.UserPostPages, authorUserId]);
+            return {
+              pages: updatedPages,
+              pageParams: queriedData.pageParams,
+            };
+          }
+
+          return {
+            pages: [],
+            pageParams: [],
+          };
+        };
+
+        updateCurrentlyActivePostCacheForUserPosts({
+          updateQueriedPostDataFunction,
+          queryClient,
+          authorUserId,
+          contentFilter,
+        });
       },
     },
   );

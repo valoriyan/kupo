@@ -18,7 +18,7 @@ export const useUnfollowUser = ({
     {
       onSuccess: (data) => {
         if (data.data.success) {
-          const updateQueriedUserDataOperation: UpdateQueriedUserDataFunction = (
+          const updateQueriedUserDataFunction: UpdateQueriedUserDataFunction = (
             queriedData: RenderableUser | undefined,
           ) => {
             if (!!queriedData) {
@@ -36,7 +36,7 @@ export const useUnfollowUser = ({
           };
 
           updateUsersCache({
-            updateQueriedUserDataFunction: updateQueriedUserDataOperation,
+            updateQueriedUserDataFunction,
             queryClient,
             userId: userIdBeingUnfollowed,
             username: usernameBeingUnfollowed,

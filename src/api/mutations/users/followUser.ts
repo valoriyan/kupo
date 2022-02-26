@@ -18,7 +18,7 @@ export const useFollowUser = ({
     {
       onSuccess: (data) => {
         if (data.data.success) {
-          const updateQueriedUserDataOperation: UpdateQueriedUserDataFunction = (
+          const updateQueriedUserDataFunction: UpdateQueriedUserDataFunction = (
             queriedData: RenderableUser | undefined,
           ) => {
             if (!!queriedData) {
@@ -36,7 +36,7 @@ export const useFollowUser = ({
           };
 
           updateUsersCache({
-            updateQueriedUserDataFunction: updateQueriedUserDataOperation,
+            updateQueriedUserDataFunction,
             queryClient,
             userId: userIdBeingFollowed,
             username: usernameBeingFollowed,

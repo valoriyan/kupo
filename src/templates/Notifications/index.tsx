@@ -1,6 +1,9 @@
+import { NOTIFICATIONEVENTS } from "#/api";
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
-import { Avatar } from "#/components/Avatar";
+import { NewCommentOnPostNotification } from "./NewCommentOnPostNotification";
+import { NewFollowerNotification } from "./NewFollowerNotification";
+import { NewLikeOnPostNotification } from "./NewLikeOnPostNotification";
 
 export const Notifications = () => {
   const { notificationsReceived } = useWebsocketState();
@@ -26,21 +29,15 @@ export const Notifications = () => {
 
   const renderedOldNotifications = data?.pages.flatMap((page) => {
     return page.userNotifications.map((notification) => {
-      const { userDoingFollowing, type } = notification;
+      const { type } = notification;
 
-      const timestamp = Date.now();
-
-      const { username, profilePictureTemporaryUrl } = userDoingFollowing;
-
-      return (
-        <div key={`${timestamp}+${type}`}>
-          <Avatar src={profilePictureTemporaryUrl} alt="User Avatar" size="$7" />
-
-          <span>
-            {username} followed you. @ {timestamp}
-          </span>
-        </div>
-      );
+      if (type === NOTIFICATIONEVENTS.NewFollower) {
+        return <NewFollowerNotification notification={notification} />;
+      } else if (type === NOTIFICATIONEVENTS.NewCommentOnPost) {
+        return <NewCommentOnPostNotification notification={notification} />;
+      } else if (type === NOTIFICATIONEVENTS.NewLikeOnPost) {
+        return <NewLikeOnPostNotification notification={notification} />;
+      }
     });
   });
 
