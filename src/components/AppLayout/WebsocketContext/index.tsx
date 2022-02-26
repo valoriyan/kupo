@@ -13,8 +13,6 @@ export interface WebsocketState {
 
 const generateSocket = ({
   accessToken,
-  set,
-  get,
 }: {
   accessToken: string;
   set: SetState<WebsocketState>;

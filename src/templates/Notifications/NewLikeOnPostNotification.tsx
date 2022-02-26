@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { RenderableNewLikeOnPostNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
-import Link from "next/link";
 
 export const NewLikeOnPostNotification = ({
   notification,

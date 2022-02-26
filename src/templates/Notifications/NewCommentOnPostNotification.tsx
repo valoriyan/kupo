@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { RenderableNewCommentOnPostNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
-import Link from "next/link";
 
 export const NewCommentOnPostNotification = ({
   notification,
