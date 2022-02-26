@@ -66,6 +66,7 @@ export async function handleSearchForUsers({
       },
     );
 
+
   const unrenderableUsersMatchingHashtag =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
       { userIds: unrenderableUsersIdsMatchingHashtag },

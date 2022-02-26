@@ -9,21 +9,16 @@ export interface BaseNotification {
 }
 
 export interface RenderableNewFollowerNotification extends BaseNotification {
-  type: NOTIFICATION_EVENTS.NEW_FOLLOWER;
   userDoingFollowing: RenderableUser;
 }
 
 export interface RenderableNewCommentOnPostNotification extends BaseNotification {
-  type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST;
-
   userThatCommented: RenderableUser;
   post: RenderablePost;
   postComment: RenderablePostComment;
 }
 
 export interface RenderableNewLikeOnPostNotification extends BaseNotification {
-  type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST;
-
   userThatLikedPost: RenderableUser;
   post: RenderablePost;
 }

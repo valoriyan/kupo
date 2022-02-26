@@ -49,6 +49,7 @@ import {
   SharePostRequestBody,
   SuccessfullySharedPostResponse,
 } from "./handleSharePost";
+import { FailedToGetPostByIdResponse, GetPostByIdRequestBody, handleGetPostById, SuccessfullyGotPostByIdResponse } from "./handleGetPostById";
 
 @injectable()
 @Route("post")
@@ -112,6 +113,22 @@ export class PostController extends Controller {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  @Post("getPostById")
+  public async getPostById(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPostByIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    FailedToGetPostByIdResponse, SuccessfullyGotPostByIdResponse
+    >
+  > {
+    return await handleGetPostById({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
 
   @Post("getPageOfPostsPagination")
   public async getPageOfPostsPagination(

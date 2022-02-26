@@ -100,7 +100,7 @@ export class UserNotificationsTableService extends TableService {
         WHERE
           recipient_user_id = $1
         ORDER BY
-          last_updated_timestamp DESC
+          last_updated_timestamp ASC
         ;
       `,
       values: [userId],
