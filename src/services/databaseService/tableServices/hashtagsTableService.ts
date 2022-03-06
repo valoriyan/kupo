@@ -151,8 +151,8 @@ export class HashtagsTableService extends TableService {
   }): Promise<string[]> {
     const query: QueryConfig = {
       text: `
-        SELECT
-          *
+        SELECT DISTINCT
+          hashtag
         FROM
           ${this.tableName}
         WHERE
