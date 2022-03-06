@@ -40,8 +40,18 @@ import {
   SuccessfullyGotUsersByUsernamesRequestBodyResponse,
 } from "./handleGetUsersByUsernames";
 import { BlobStorageService } from "./../../services/blobStorageService";
-import { GetPageOfUsersFollowedByUserIdFailed, GetPageOfUsersFollowedByUserIdRequestBody, GetPageOfUsersFollowedByUserIdSuccess, handleGetPageOfUsersFollowedByUserId } from "./handleGetPageOfUsersFollowedByUserId";
-import { GetPageOfUsersFollowingUserIdFailed, GetPageOfUsersFollowingUserIdRequestBody, GetPageOfUsersFollowingUserIdSuccess, handleGetPageOfUsersFollowingUserId } from "./handleGetPageOfUsersFollowingUserId";
+import {
+  GetPageOfUsersFollowedByUserIdFailed,
+  GetPageOfUsersFollowedByUserIdRequestBody,
+  GetPageOfUsersFollowedByUserIdSuccess,
+  handleGetPageOfUsersFollowedByUserId,
+} from "./handleGetPageOfUsersFollowedByUserId";
+import {
+  GetPageOfUsersFollowingUserIdFailed,
+  GetPageOfUsersFollowingUserIdRequestBody,
+  GetPageOfUsersFollowingUserIdSuccess,
+  handleGetPageOfUsersFollowingUserId,
+} from "./handleGetPageOfUsersFollowingUserId";
 
 @injectable()
 @Route("user")
@@ -132,7 +142,9 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetPageOfUsersFollowedByUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    GetPageOfUsersFollowedByUserIdFailed, GetPageOfUsersFollowedByUserIdSuccess    >
+      GetPageOfUsersFollowedByUserIdFailed,
+      GetPageOfUsersFollowedByUserIdSuccess
+    >
   > {
     return await handleGetPageOfUsersFollowedByUserId({
       controller: this,
@@ -147,7 +159,8 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetPageOfUsersFollowingUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    GetPageOfUsersFollowingUserIdFailed, GetPageOfUsersFollowingUserIdSuccess
+      GetPageOfUsersFollowingUserIdFailed,
+      GetPageOfUsersFollowingUserIdSuccess
     >
   > {
     return await handleGetPageOfUsersFollowingUserId({

@@ -33,18 +33,30 @@ export async function handleGetPageOfUsersFollowingUserId({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetPageOfUsersFollowingUserIdRequestBody;
-}): Promise<SecuredHTTPResponse<GetPageOfUsersFollowingUserIdFailed, GetPageOfUsersFollowingUserIdSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    GetPageOfUsersFollowingUserIdFailed,
+    GetPageOfUsersFollowingUserIdSuccess
+  >
+> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { cursor, userIdBeingFollowed, pageSize } = requestBody;
 
+  const unrenderableUserFollows =
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
+      { userIdBeingFollowed },
+    );
 
-  const unrenderableUserFollows = await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId({userIdBeingFollowed});
+  const userIdsDoingFollowing = unrenderableUserFollows.map(
+    ({ userIdDoingFollowing }) => userIdDoingFollowing,
+  );
 
-  const userIdsDoingFollowing = unrenderableUserFollows.map(({userIdDoingFollowing}) => userIdDoingFollowing);
-
-  const unrenderableUsers = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({userIds: userIdsDoingFollowing});
+  const unrenderableUsers =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+      { userIds: userIdsDoingFollowing },
+    );
 
   if (unrenderableUsers.length === 0) {
     // controller.setStatus(404);

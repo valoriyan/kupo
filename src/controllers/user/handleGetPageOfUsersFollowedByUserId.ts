@@ -33,17 +33,26 @@ export async function handleGetPageOfUsersFollowedByUserId({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetPageOfUsersFollowedByUserIdRequestBody;
-}): Promise<SecuredHTTPResponse<GetPageOfUsersFollowedByUserIdFailed, GetPageOfUsersFollowedByUserIdSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    GetPageOfUsersFollowedByUserIdFailed,
+    GetPageOfUsersFollowedByUserIdSuccess
+  >
+> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { cursor, userIdDoingFollowing, pageSize } = requestBody;
 
+  const userIdsBeingFollowed =
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
+      { userIdDoingFollowing },
+    );
 
-  const userIdsBeingFollowed = await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId({userIdDoingFollowing});
-
-
-  const unrenderableUsers = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({userIds: userIdsBeingFollowed});
+  const unrenderableUsers =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+      { userIds: userIdsBeingFollowed },
+    );
 
   if (unrenderableUsers.length === 0) {
     // controller.setStatus(404);

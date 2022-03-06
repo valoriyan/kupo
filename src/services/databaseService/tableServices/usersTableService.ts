@@ -32,6 +32,7 @@ interface DBUser {
   preferred_page_primary_color_green?: number;
   preferred_page_primary_color_blue?: number;
 
+  is_waitlisted: boolean;
   is_admin: boolean;
 }
 
@@ -106,7 +107,8 @@ export class UsersTableService extends TableService {
         preferred_page_primary_color_green SMALLINT,
         preferred_page_primary_color_blue SMALLINT,
 
-        is_admin boolean;
+        is_waitlisted boolean NOT NULL;
+        is_admin boolean NOT NULL;
       )
       ;
     `;
@@ -137,6 +139,9 @@ export class UsersTableService extends TableService {
           { field: "username", value: username },
           { field: "encrypted_password", value: encryptedPassword },
           { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
+          
+          { field: "is_waitlisted", value: "true" },
+          { field: "is_admin", value: "false" },          
         ],
       ],
       tableName: this.tableName,
