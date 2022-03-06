@@ -40,6 +40,8 @@ import {
   SuccessfullyGotUsersByUsernamesRequestBodyResponse,
 } from "./handleGetUsersByUsernames";
 import { BlobStorageService } from "./../../services/blobStorageService";
+import { GetPageOfUsersFollowedByUserIdFailed, GetPageOfUsersFollowedByUserIdRequestBody, GetPageOfUsersFollowedByUserIdSuccess, handleGetPageOfUsersFollowedByUserId } from "./handleGetPageOfUsersFollowedByUserId";
+import { GetPageOfUsersFollowingUserIdFailed, GetPageOfUsersFollowingUserIdRequestBody, GetPageOfUsersFollowingUserIdSuccess, handleGetPageOfUsersFollowingUserId } from "./handleGetPageOfUsersFollowingUserId";
 
 @injectable()
 @Route("user")
@@ -118,6 +120,37 @@ export class UserPageController extends Controller {
     >
   > {
     return await handleSearchUserProfilesByUsername({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPageOfUsersFollowedByUserId")
+  public async getPageOfUsersFollowedByUserId(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfUsersFollowedByUserIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    GetPageOfUsersFollowedByUserIdFailed, GetPageOfUsersFollowedByUserIdSuccess    >
+  > {
+    return await handleGetPageOfUsersFollowedByUserId({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPageOfUsersFollowingUserId")
+  public async getPageOfUsersFollowingUserId(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfUsersFollowingUserIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    GetPageOfUsersFollowingUserIdFailed, GetPageOfUsersFollowingUserIdSuccess
+    >
+  > {
+    return await handleGetPageOfUsersFollowingUserId({
       controller: this,
       request,
       requestBody,

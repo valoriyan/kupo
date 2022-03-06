@@ -31,6 +31,8 @@ interface DBUser {
   preferred_page_primary_color_red?: number;
   preferred_page_primary_color_green?: number;
   preferred_page_primary_color_blue?: number;
+
+  is_admin: boolean;
 }
 
 function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
@@ -102,7 +104,9 @@ export class UsersTableService extends TableService {
         
         preferred_page_primary_color_red SMALLINT,
         preferred_page_primary_color_green SMALLINT,
-        preferred_page_primary_color_blue SMALLINT
+        preferred_page_primary_color_blue SMALLINT,
+
+        is_admin boolean;
       )
       ;
     `;

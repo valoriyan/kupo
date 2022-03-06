@@ -43,7 +43,7 @@ export class PostCommentsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         post_comment_id VARCHAR(64) UNIQUE NOT NULL,
         post_id VARCHAR(64) NOT NULL,
-        text VARCHAR(64) NOT NULL,
+        text VARCHAR(300) NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
         creation_timestamp BIGINT NOT NULL
       )
