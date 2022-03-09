@@ -102,8 +102,7 @@ export class UserFollowsTableService extends TableService {
     const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
     const rows = response.rows;
 
-    return convertDBUserFollowToUnrenderableUserFollow(rows[0])
-
+    return convertDBUserFollowToUnrenderableUserFollow(rows[0]);
   }
 
   public async getUserIdsFollowingUserId({

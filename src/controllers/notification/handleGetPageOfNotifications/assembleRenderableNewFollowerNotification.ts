@@ -22,20 +22,18 @@ export async function assembleRenderableNewFollowerNotification({
   } = userNotification;
 
   const unrenderableUserFollowEvent =
-    await databaseService.tableNameToServicesMap.userFollowsTableService.getUserFollowEventById({
-      userFollowEventId,
-    });
+    await databaseService.tableNameToServicesMap.userFollowsTableService.getUserFollowEventById(
+      {
+        userFollowEventId,
+      },
+    );
 
-    const {
-      userIdDoingFollowing,
-      timestamp: eventTimestamp,
-    } = unrenderableUserFollowEvent;
+  const { userIdDoingFollowing, timestamp: eventTimestamp } = unrenderableUserFollowEvent;
 
-    const unrenderableUserDoingFollowing =
+  const unrenderableUserDoingFollowing =
     await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
       userId: userIdDoingFollowing,
     });
-
 
   const userDoingFollowing = await constructRenderableUserFromParts({
     clientUserId,

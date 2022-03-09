@@ -32,12 +32,13 @@ export async function handleUnfollowUser({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const {user_follow_event_id} = await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
-    {
-      userIdDoingUnfollowing: clientUserId,
-      userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,
-    },
-  );
+  const { user_follow_event_id } =
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
+      {
+        userIdDoingUnfollowing: clientUserId,
+        userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,
+      },
+    );
 
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
     {

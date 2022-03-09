@@ -20,10 +20,13 @@ export async function assembleRenderableNewLikeOnPostNotification({
   const { reference_table_id: postLikeId, timestamp_seen_by_user: timestampSeenByUser } =
     userNotification;
 
-  const { post_id: postId, user_id: userLikingPostId,  timestamp: eventTimestampString } =
-    await databaseService.tableNameToServicesMap.postLikesTableService.getPostLikeByPostLikeId(
-      { postLikeId },
-    );
+  const {
+    post_id: postId,
+    user_id: userLikingPostId,
+    timestamp: eventTimestampString,
+  } = await databaseService.tableNameToServicesMap.postLikesTableService.getPostLikeByPostLikeId(
+    { postLikeId },
+  );
 
   const unrenderablePostWithoutElementsOrHashtags =
     await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({
