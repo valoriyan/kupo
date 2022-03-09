@@ -72,6 +72,12 @@ export interface RenderableUser {
   preferredPagePrimaryColor?: Color;
   /**
    *
+   * @type {number}
+   * @memberof RenderableUser
+   */
+  creationTimestamp: number;
+  /**
+   *
    * @type {string}
    * @memberof RenderableUser
    */
