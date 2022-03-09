@@ -35,7 +35,7 @@ interface DBUser {
   is_waitlisted: boolean;
   is_admin: boolean;
 
-  creation_timestamp: string;  
+  creation_timestamp: string;
 }
 
 function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
@@ -149,7 +149,7 @@ export class UsersTableService extends TableService {
 
           { field: "is_waitlisted", value: "true" },
           { field: "is_admin", value: "false" },
-          
+
           { field: "creation_timestamp", value: creationTimestamp },
         ],
       ],
