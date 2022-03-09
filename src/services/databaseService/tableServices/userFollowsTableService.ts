@@ -6,6 +6,7 @@ import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUserFollow {
+  user_follow_event_id: string;
   user_id_doing_following: string;
   user_id_being_followed: string;
   timestamp: string;
@@ -15,6 +16,7 @@ function convertDBUserFollowToUnrenderableUserFollow(
   dbUserFollow: DBUserFollow,
 ): UnrenderableUserFollow {
   return {
+    userFollowEventId: dbUserFollow.user_follow_event_id,
     userIdDoingFollowing: dbUserFollow.user_id_doing_following,
     userIdBeingFollowed: dbUserFollow.user_id_being_followed,
     timestamp: parseInt(dbUserFollow.timestamp),
@@ -32,6 +34,8 @@ export class UserFollowsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
+        user_follow_event_id VARCHAR(64) NOT NULL,
+
         user_id_doing_following VARCHAR(64) NOT NULL,
         user_id_being_followed VARCHAR(64) NOT NULL,
         timestamp BIGINT NOT NULL,
@@ -50,10 +54,12 @@ export class UserFollowsTableService extends TableService {
   public async createUserFollow({
     userIdDoingFollowing,
     userIdBeingFollowed,
+    userFollowEventId,
     timestamp,
   }: {
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
+    userFollowEventId: string;
     timestamp: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
@@ -61,6 +67,7 @@ export class UserFollowsTableService extends TableService {
         [
           { field: "user_id_doing_following", value: userIdDoingFollowing },
           { field: "user_id_being_followed", value: userIdBeingFollowed },
+          { field: "user_follow_event_id", value: userFollowEventId },
           { field: "timestamp", value: timestamp },
         ],
       ],
@@ -73,6 +80,31 @@ export class UserFollowsTableService extends TableService {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async getUserFollowEventById({
+    userFollowEventId,
+  }: {
+    userFollowEventId: string;
+  }): Promise<UnrenderableUserFollow> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          user_follow_event_id = $1
+        ;
+      `,
+      values: [userFollowEventId],
+    };
+
+    const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+    const rows = response.rows;
+
+    return convertDBUserFollowToUnrenderableUserFollow(rows[0])
+
+  }
 
   public async getUserIdsFollowingUserId({
     userIdBeingFollowed,
@@ -170,6 +202,10 @@ export class UserFollowsTableService extends TableService {
       count: string;
     }> = await this.datastorePool.query(query);
 
+    if (response.rows.length === 0) {
+      throw new Error("Missing follow event");
+    }
+
     return parseInt(response.rows[0].count);
   }
 
@@ -216,7 +252,7 @@ export class UserFollowsTableService extends TableService {
   }: {
     userIdDoingUnfollowing: string;
     userIdBeingUnfollowed: string;
-  }): Promise<void> {
+  }): Promise<DBUserFollow> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "user_id_doing_following", value: userIdDoingUnfollowing },
@@ -225,6 +261,7 @@ export class UserFollowsTableService extends TableService {
       tableName: this.tableName,
     });
 
-    await this.datastorePool.query(query);
+    const response = await this.datastorePool.query<DBUserFollow>(query);
+    return response.rows[0];
   }
 }

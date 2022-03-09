@@ -28,8 +28,11 @@ export async function handleFollowUser({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const userFollowEventId = uuidv4();
+
   await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
     {
+      userFollowEventId,
       userIdDoingFollowing: clientUserId,
       userIdBeingFollowed,
       timestamp: Date.now(),
@@ -41,7 +44,7 @@ export async function handleFollowUser({
       userNotificationId: uuidv4(),
       recipientUserId: userIdBeingFollowed,
       notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-      referenceTableId: clientUserId,
+      referenceTableId: userFollowEventId,
     },
   );
 

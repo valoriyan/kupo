@@ -5,6 +5,7 @@ import { RenderableUser } from "../user/models";
 
 export interface BaseNotification {
   type: NOTIFICATION_EVENTS;
+  eventTimestamp: number;
   timestampSeenByUser?: number;
 }
 

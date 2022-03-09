@@ -17,18 +17,29 @@ export async function assembleRenderableNewFollowerNotification({
   clientUserId: string;
 }): Promise<RenderableNewFollowerNotification> {
   const {
-    reference_table_id: followingUserId,
+    reference_table_id: userFollowEventId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
-  const unrenderableUser =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      userId: followingUserId,
+  const unrenderableUserFollowEvent =
+    await databaseService.tableNameToServicesMap.userFollowsTableService.getUserFollowEventById({
+      userFollowEventId,
     });
+
+    const {
+      userIdDoingFollowing,
+      timestamp: eventTimestamp,
+    } = unrenderableUserFollowEvent;
+
+    const unrenderableUserDoingFollowing =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId: userIdDoingFollowing,
+    });
+
 
   const userDoingFollowing = await constructRenderableUserFromParts({
     clientUserId,
-    unrenderableUser: unrenderableUser!,
+    unrenderableUser: unrenderableUserDoingFollowing!,
     blobStorageService,
     databaseService,
   });
@@ -37,5 +48,6 @@ export async function assembleRenderableNewFollowerNotification({
     userDoingFollowing,
     timestampSeenByUser,
     type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+    eventTimestamp,
   };
 }

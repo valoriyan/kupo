@@ -65,5 +65,6 @@ export async function assembleRenderableNewCommentOnPostNotification({
     postComment,
     timestampSeenByUser,
     type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+    eventTimestamp: postComment.creationTimestamp,
   };
 }
