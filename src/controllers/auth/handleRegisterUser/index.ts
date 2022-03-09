@@ -46,12 +46,15 @@ export async function handleRegisterUser({
 
   const encryptedPassword = encryptPassword({ password });
 
+  const now = Date.now();
+
   try {
     await controller.databaseService.tableNameToServicesMap.usersTableService.createUser({
       userId,
       email,
       username,
       encryptedPassword,
+      creationTimestamp: now,
     });
 
     const newAccessTokenResponse = grantNewAccessToken({

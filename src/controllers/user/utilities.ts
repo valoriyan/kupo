@@ -50,6 +50,7 @@ export async function constructRenderableUserFromParts({
     userWebsite,
     shortBio,
     preferredPagePrimaryColor,
+    creationTimestamp,
   } = unrenderableUser;
 
   const backgroundImageTemporaryUrl = !!backgroundImageBlobFileKey
@@ -121,6 +122,7 @@ export async function constructRenderableUserFromParts({
     hashtags: userHashtags,
     preferredPagePrimaryColor,
     isBeingFollowedByClient,
+    creationTimestamp,
   };
 }
 

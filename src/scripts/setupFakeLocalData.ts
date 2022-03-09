@@ -14,6 +14,7 @@ async function run() {
     email: "richard.morgan@sweetemail.com",
     username: "richard",
     encryptedPassword: "adfohfhallk1323ban9323",
+    creationTimestamp: Date.now(),
   });
 
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
@@ -21,6 +22,7 @@ async function run() {
     email: "gloria.lamb@woahcoolemail.com",
     username: "gloria",
     encryptedPassword: "a;jfdsaidfsioadfsadfh",
+    creationTimestamp: Date.now(),
   });
 
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
@@ -28,6 +30,7 @@ async function run() {
     email: "jayjayrogers@okayyeah.com",
     username: "jay",
     encryptedPassword: "a;adfadkadjhluiehaKSdf",
+    creationTimestamp: Date.now(),
   });
 }
 

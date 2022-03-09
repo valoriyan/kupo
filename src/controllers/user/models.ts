@@ -15,6 +15,8 @@ export interface BaseUnrenderableUser {
   profilePrivacySetting: ProfilePrivacySetting;
 
   preferredPagePrimaryColor?: Color;
+
+  creationTimestamp: number;
 }
 export interface UnrenderableUser extends BaseUnrenderableUser {
   backgroundImageBlobFileKey?: string;

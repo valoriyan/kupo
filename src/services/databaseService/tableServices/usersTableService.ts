@@ -34,6 +34,8 @@ interface DBUser {
 
   is_waitlisted: boolean;
   is_admin: boolean;
+
+  creation_timestamp: string;  
 }
 
 function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
@@ -65,6 +67,7 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     backgroundImageBlobFileKey: dbUser.background_image_blob_file_key,
     profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
     preferredPagePrimaryColor,
+    creationTimestamp: parseInt(dbUser.creation_timestamp),
   };
 }
 
@@ -108,7 +111,9 @@ export class UsersTableService extends TableService {
         preferred_page_primary_color_blue SMALLINT,
 
         is_waitlisted boolean NOT NULL,
-        is_admin boolean NOT NULL
+        is_admin boolean NOT NULL,
+
+        creation_timestamp BIGINT NOT NULL
       )
       ;
     `;
@@ -125,11 +130,13 @@ export class UsersTableService extends TableService {
     email,
     username,
     encryptedPassword,
+    creationTimestamp,
   }: {
     userId: string;
     email: string;
     username: string;
     encryptedPassword: string;
+    creationTimestamp: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
@@ -142,6 +149,8 @@ export class UsersTableService extends TableService {
 
           { field: "is_waitlisted", value: "true" },
           { field: "is_admin", value: "false" },
+          
+          { field: "creation_timestamp", value: creationTimestamp },
         ],
       ],
       tableName: this.tableName,
