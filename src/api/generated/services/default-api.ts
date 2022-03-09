@@ -71,6 +71,10 @@ import { GetPageOfPostFromFollowedUsersParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostsPaginationParams } from "../types";
 // @ts-ignore
+import { GetPageOfUsersFollowedByUserIdRequestBody } from "../types";
+// @ts-ignore
+import { GetPageOfUsersFollowingUserIdRequestBody } from "../types";
+// @ts-ignore
 import { GetPasswordResetEmailRequestBody } from "../types";
 // @ts-ignore
 import { GetPostByIdRequestBody } from "../types";
@@ -174,6 +178,10 @@ import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageO
 import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedGetPageOfUsersFollowedByUserIdSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedGetPageOfUsersFollowingUserIdSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess } from "../types";
 // @ts-ignore
@@ -1207,6 +1215,104 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPageOfPostsPaginationParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfUsersFollowedByUserId: async (
+      getPageOfUsersFollowedByUserIdRequestBody: GetPageOfUsersFollowedByUserIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfUsersFollowedByUserIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfUsersFollowedByUserId",
+        "getPageOfUsersFollowedByUserIdRequestBody",
+        getPageOfUsersFollowedByUserIdRequestBody,
+      );
+      const localVarPath = `/user/getPageOfUsersFollowedByUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfUsersFollowedByUserIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfUsersFollowingUserIdRequestBody} getPageOfUsersFollowingUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfUsersFollowingUserId: async (
+      getPageOfUsersFollowingUserIdRequestBody: GetPageOfUsersFollowingUserIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfUsersFollowingUserIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfUsersFollowingUserId",
+        "getPageOfUsersFollowingUserIdRequestBody",
+        getPageOfUsersFollowingUserIdRequestBody,
+      );
+      const localVarPath = `/user/getPageOfUsersFollowingUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfUsersFollowingUserIdRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -3062,6 +3168,60 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfUsersFollowedByUserId(
+      getPageOfUsersFollowedByUserIdRequestBody: GetPageOfUsersFollowedByUserIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedGetPageOfUsersFollowedByUserIdSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPageOfUsersFollowedByUserId(
+          getPageOfUsersFollowedByUserIdRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfUsersFollowingUserIdRequestBody} getPageOfUsersFollowingUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfUsersFollowingUserId(
+      getPageOfUsersFollowingUserIdRequestBody: GetPageOfUsersFollowingUserIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedGetPageOfUsersFollowingUserIdSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPageOfUsersFollowingUserId(
+          getPageOfUsersFollowingUserIdRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPasswordResetEmailRequestBody} getPasswordResetEmailRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4095,6 +4255,37 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfUsersFollowedByUserId(
+      getPageOfUsersFollowedByUserIdRequestBody: GetPageOfUsersFollowedByUserIdRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedGetPageOfUsersFollowedByUserIdSuccess> {
+      return localVarFp
+        .getPageOfUsersFollowedByUserId(
+          getPageOfUsersFollowedByUserIdRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfUsersFollowingUserIdRequestBody} getPageOfUsersFollowingUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfUsersFollowingUserId(
+      getPageOfUsersFollowingUserIdRequestBody: GetPageOfUsersFollowingUserIdRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedGetPageOfUsersFollowingUserIdSuccess> {
+      return localVarFp
+        .getPageOfUsersFollowingUserId(getPageOfUsersFollowingUserIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPasswordResetEmailRequestBody} getPasswordResetEmailRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4834,6 +5025,38 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfUsersFollowedByUserId(
+    getPageOfUsersFollowedByUserIdRequestBody: GetPageOfUsersFollowedByUserIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfUsersFollowedByUserId(getPageOfUsersFollowedByUserIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfUsersFollowingUserIdRequestBody} getPageOfUsersFollowingUserIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfUsersFollowingUserId(
+    getPageOfUsersFollowingUserIdRequestBody: GetPageOfUsersFollowingUserIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfUsersFollowingUserId(getPageOfUsersFollowingUserIdRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

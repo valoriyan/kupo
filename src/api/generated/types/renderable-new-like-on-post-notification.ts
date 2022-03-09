@@ -33,6 +33,12 @@ export interface RenderableNewLikeOnPostNotification {
    * @type {number}
    * @memberof RenderableNewLikeOnPostNotification
    */
+  eventTimestamp: number;
+  /**
+   *
+   * @type {number}
+   * @memberof RenderableNewLikeOnPostNotification
+   */
   timestampSeenByUser?: number;
   /**
    *

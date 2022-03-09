@@ -1,22 +1,16 @@
-import { NOTIFICATIONEVENTS } from "#/api";
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
-import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
-import { NewCommentOnPostNotification } from "./NewCommentOnPostNotification";
-import { NewFollowerNotification } from "./NewFollowerNotification";
-import { NewLikeOnPostNotification } from "./NewLikeOnPostNotification";
+import { Notification } from "./Notification";
 
 export const Notifications = () => {
-  const { notificationsReceived } = useWebsocketState();
-
   const {
     data,
     isError,
     isLoading,
     error,
     isFetching: isFetchingChatMessages,
-    fetchPreviousPage,
-    hasPreviousPage,
-    isFetchingPreviousPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useGetPageOfOldNotifications();
 
   if (isError && !isLoading) {
@@ -27,36 +21,10 @@ export const Notifications = () => {
     return <div>Loading</div>;
   }
 
-  const renderedOldNotifications = data?.pages.flatMap((page) => {
-    return page.userNotifications.map((notification) => {
-      const { type } = notification;
-
-      if (type === NOTIFICATIONEVENTS.NewFollower) {
-        return <NewFollowerNotification notification={notification} />;
-      } else if (type === NOTIFICATIONEVENTS.NewCommentOnPost) {
-        return <NewCommentOnPostNotification notification={notification} />;
-      } else if (type === NOTIFICATIONEVENTS.NewLikeOnPost) {
-        return <NewLikeOnPostNotification notification={notification} />;
-      }
-    });
-  });
+  const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
 
   return (
     <div>
-      <button
-        onClick={() => {
-          fetchPreviousPage();
-        }}
-        disabled={!hasPreviousPage || isFetchingPreviousPage}
-      >
-        {isFetchingPreviousPage ? (
-          "Loading more..."
-        ) : hasPreviousPage ? (
-          <h3>LOAD PREVIOUS</h3>
-        ) : (
-          "Nothing more to load"
-        )}
-      </button>
       {isFetchingChatMessages ? (
         <div>
           Refreshing...
@@ -64,11 +32,28 @@ export const Notifications = () => {
         </div>
       ) : null}
 
-      {renderedOldNotifications}
-
-      {notificationsReceived.map((notificationReceived, index) => (
-        <div key={index}>{notificationReceived}</div>
+      {oldNotifications.map((notification, index) => (
+        <Notification key={index} notification={notification} />
       ))}
+
+      {/* {notificationsReceived.map((notificationReceived, index) => (
+        <Notification key={index} notification={notificationReceived} />
+      ))} */}
+
+      <button
+        onClick={() => {
+          fetchNextPage();
+        }}
+        disabled={!hasNextPage || isFetchingNextPage}
+      >
+        {isFetchingNextPage ? (
+          "Loading more..."
+        ) : hasNextPage ? (
+          <h3>Load Next</h3>
+        ) : (
+          "Nothing more to load"
+        )}
+      </button>
     </div>
   );
 };
