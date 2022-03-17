@@ -201,20 +201,30 @@ export class PostsTableService extends TableService {
 
   public async getPostsByCreatorUserIds({
     creatorUserIds,
-    count,
+    beforeTimestamp,
+    pageSize,
   }: {
     creatorUserIds: string[];
-    count?: number;
+    beforeTimestamp?: number;
+    pageSize: number;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     if (creatorUserIds.length === 0) {
       return [];
     }
 
+    const values: Array<string | number> = [...creatorUserIds, pageSize];
+
+    let beforeTimestampCondition = "";
+    if (!!beforeTimestamp) {
+      beforeTimestampCondition = `AND scheduled_publication_timestamp < $${
+        creatorUserIds.length + 2
+      }`;
+      values.push(beforeTimestamp);
+    }
+
     const creatorUserIdsQueryString = creatorUserIds
       .map((_, index) => `$${index + 1}`)
       .join(", ");
-
-    const limitQueryClause = !!count ? `LIMIT ${count}` : "";
 
     const query = {
       text: `
@@ -224,12 +234,14 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           author_user_id IN (${creatorUserIdsQueryString})
+          ${beforeTimestampCondition}
         ORDER BY
           scheduled_publication_timestamp DESC
-        ${limitQueryClause}
+        LIMIT
+          $${creatorUserIds.length + 1}
         ;
       `,
-      values: creatorUserIds,
+      values,
     };
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(query);

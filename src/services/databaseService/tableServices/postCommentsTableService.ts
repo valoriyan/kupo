@@ -115,19 +115,19 @@ export class PostCommentsTableService extends TableService {
 
   public async getPostCommentsByPostId({
     postId,
-    beforeTimestamp,
+    afterTimestamp,
     pageSize,
   }: {
     postId: string;
-    beforeTimestamp?: number;
+    afterTimestamp?: number;
     pageSize: number;
   }): Promise<UnrenderablePostComment[]> {
-    const values: (string | number)[] = [postId, pageSize];
+    const values: Array<string | number> = [postId, pageSize];
 
-    let beforeTimestampCondition = "";
-    if (!!beforeTimestamp) {
-      beforeTimestampCondition = `AND creation_timestamp > $3`;
-      values.push(beforeTimestamp);
+    let afterTimestampCondition = "";
+    if (!!afterTimestamp) {
+      afterTimestampCondition = `AND creation_timestamp > $3`;
+      values.push(afterTimestamp);
     }
 
     const query = {
@@ -138,7 +138,7 @@ export class PostCommentsTableService extends TableService {
           ${this.tableName}
         WHERE
           post_id = $1
-          ${beforeTimestampCondition}
+          ${afterTimestampCondition}
         ORDER BY
           creation_timestamp
         LIMIT

@@ -2,7 +2,7 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import { encodeCursor, getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
+import { decodeCursor, encodeCursor } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
@@ -40,7 +40,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
     SuccessfulGetPageOfPostFromFollowedUsersResponse
   >
 > {
-  const { cursor } = requestBody;
+  const { cursor, pageSize } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -52,19 +52,17 @@ export async function handleGetPageOfPostFromFollowedUsers({
 
   const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserIds(
-      { creatorUserIds: [...userIdsBeingFollowed, clientUserId] },
+      {
+        creatorUserIds: [...userIdsBeingFollowed, clientUserId],
+        beforeTimestamp: cursor ? decodeCursor({ encodedCursor: cursor }) : undefined,
+        pageSize,
+      },
     );
-
-  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
-    unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: cursor,
-    pageSize: requestBody.pageSize,
-  });
 
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: filteredUnrenderablePostsWithoutElements,
+    posts: unrenderablePostsWithoutElementsOrHashtags,
     clientUserId,
   });
 
@@ -72,7 +70,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
     renderablePosts.length > 0
       ? encodeCursor({
           timestamp:
-            renderablePosts[renderablePosts.length - 1]!.scheduledPublicationTimestamp,
+            renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
         })
       : undefined;
 
