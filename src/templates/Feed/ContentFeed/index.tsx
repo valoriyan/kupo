@@ -1,9 +1,11 @@
 import { UserContentFeedFilter } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
+import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { styled } from "#/styling";
+import { goToPostPage } from "#/utils/generateLinkUrls";
 import { PostWrapper } from "./PostWrapper";
 
 export interface ContentFeedProps {
@@ -11,33 +13,21 @@ export interface ContentFeedProps {
 }
 
 export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
-  const infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers =
-    useGetPageOfContentFeed({ contentFeedFilter: selectedContentFilter });
+  const { data, isLoading, error, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useGetPageOfContentFeed({
+      filterType: selectedContentFilter.type,
+      filterValue: selectedContentFilter.value,
+    });
 
-  const {
-    data: pagesOfContentFromFrollowedUsers,
-    isError: isErrorAcquiringPagesOfContentFromFrollowedUsers,
-    isLoading: isLoadingPagesOfContentFromFrollowedUsers,
-    error: errorAcquiringPagesOfContentFromFrollowedUsers,
-  } = infiniteQueryResultOfFetchingPageOfContentFromFollowedUsers;
-
-  if (
-    isErrorAcquiringPagesOfContentFromFrollowedUsers &&
-    !isLoadingPagesOfContentFromFrollowedUsers
-  ) {
-    return (
-      <ErrorMessage>
-        Error:{" "}
-        {errorAcquiringPagesOfContentFromFrollowedUsers?.message ?? "Unknown Error"}
-      </ErrorMessage>
-    );
+  if (!!error && !isLoading) {
+    return <ErrorMessage>Error: {error?.message ?? "Unknown Error"}</ErrorMessage>;
   }
 
-  if (isLoadingPagesOfContentFromFrollowedUsers || !pagesOfContentFromFrollowedUsers) {
+  if (isLoading || !data) {
     return <LoadingArea size="lg" />;
   }
 
-  const posts = pagesOfContentFromFrollowedUsers.pages.flatMap((page) => {
+  const posts = data.pages.flatMap((page) => {
     return page.posts;
   });
 
@@ -45,37 +35,24 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
     posts.length === 0 ? (
       <ErrorMessage>No Posts Found</ErrorMessage>
     ) : (
-      posts.map((post) => {
-        return (
+      <InfiniteScrollArea
+        hasNextPage={hasNextPage ?? false}
+        isNextPageLoading={isFetchingNextPage}
+        loadNextPage={fetchNextPage}
+        items={posts.map((post) => (
           <PostWrapper
             key={post.postId}
             post={post}
-            contentFilter={selectedContentFilter}
+            handleClickOfCommentsButton={() => goToPostPage(post.postId)}
           />
-        );
-      })
+        ))}
+      />
     );
 
-  return (
-    <Grid>
-      <ContentItemsList>{renderedPosts}</ContentItemsList>
-    </Grid>
-  );
+  return <Wrapper>{renderedPosts}</Wrapper>;
 };
 
-const Grid = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  height: "100%",
-  width: "100%",
-});
-
-const ContentItemsList = styled(Stack, {
+const Wrapper = styled(Stack, {
   height: "100%",
   overflow: "auto",
-  gap: "$2",
-  py: "$2",
-  "> *:not(:last-child)": {
-    borderBottom: "solid $borderWidths$1 $border",
-  },
 });

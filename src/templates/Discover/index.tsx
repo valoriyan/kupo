@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import create from "zustand";
 import { SearchIcon } from "#/components/Icons";
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
@@ -7,8 +7,16 @@ import { styled } from "#/styling";
 import { SearchResults } from "./SearchResults";
 import { SuggestedContent } from "./SuggestedContent";
 
+const useSearchText = create<{
+  searchText: string;
+  setSearchText: (searchText: string) => void;
+}>((set) => ({
+  searchText: "",
+  setSearchText: (searchText) => set({ searchText }),
+}));
+
 export const Discover = () => {
-  const [searchText, setSearchText] = useState("");
+  const { searchText, setSearchText } = useSearchText();
 
   return (
     <Grid

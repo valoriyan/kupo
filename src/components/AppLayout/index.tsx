@@ -10,6 +10,14 @@ import { NoAuthSidePanel } from "./NoAuthSidePanel";
 import { SidePanel } from "./SidePanel";
 import { useWebsocketState, WebsocketStateProvider } from "./WebsocketContext";
 
+export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
+  return (
+    <WebsocketStateProvider>
+      <AppLayoutInner>{children}</AppLayoutInner>
+    </WebsocketStateProvider>
+  );
+};
+
 const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
@@ -48,14 +56,6 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
         )}
       </Box>
     </Wrapper>
-  );
-};
-
-export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
-  return (
-    <WebsocketStateProvider>
-      <AppLayoutInner>{children}</AppLayoutInner>
-    </WebsocketStateProvider>
   );
 };
 

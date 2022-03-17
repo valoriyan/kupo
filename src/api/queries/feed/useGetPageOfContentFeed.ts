@@ -3,31 +3,37 @@ import { CacheKeys } from "#/contexts/queryClient";
 import {
   Api,
   SuccessfulGetPageOfPostFromFollowedUsersResponse,
-  UserContentFeedFilter,
   UserContentFeedFilterType,
 } from "../..";
 
 export const useGetPageOfContentFeed = ({
-  contentFeedFilter,
+  filterType,
+  filterValue,
 }: {
-  contentFeedFilter: UserContentFeedFilter;
+  filterType: UserContentFeedFilterType;
+  filterValue: string;
 }) => {
-  const { type: filterType, value } = contentFeedFilter;
   return useInfiniteQuery<
     SuccessfulGetPageOfPostFromFollowedUsersResponse,
     Error,
     SuccessfulGetPageOfPostFromFollowedUsersResponse,
     string[]
   >(
-    [CacheKeys.ContentFeed, filterType, value],
+    [CacheKeys.ContentFeed, filterType, filterValue],
     ({ pageParam }) => {
       if (filterType === UserContentFeedFilterType.FollowingUsers) {
         return fetchPageOfContentFromFromFollowedUsers({ pageParam });
       } else if (filterType === UserContentFeedFilterType.Hashtag) {
-        return fetchPageOfContentFromFromFollowedHashtag({ pageParam, hashtag: value });
+        return fetchPageOfContentFromFromFollowedHashtag({
+          pageParam,
+          hashtag: filterValue,
+        });
       } else {
         // TODO: replace with posts by username
-        return fetchPageOfContentFromFromFollowedUsername({ pageParam, userId: value });
+        return fetchPageOfContentFromFromFollowedUsername({
+          pageParam,
+          userId: filterValue,
+        });
       }
     },
     {

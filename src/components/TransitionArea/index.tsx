@@ -1,6 +1,7 @@
-import { Key, ReactNode } from "react";
 import { AnimatePresence, motion, Variant, Variants } from "framer-motion";
+import { Key, ReactNode } from "react";
 import { CSS, styled, usePrefersMotion } from "#/styling";
+import { ScrollArea } from "../ScrollArea";
 
 export type Transition = Record<"initial" | "animate" | "exit", Variant> & {
   duration?: number;
@@ -58,15 +59,14 @@ const TransitionWrapper = styled(motion.div, {
   right: 0,
 });
 
-const CurrentContent = styled("div", {
+const CurrentContent = styled(ScrollArea, {
   height: "100%",
   width: "100%",
-  overflow: "auto",
   bg: "$background1",
 });
 
 const noAnimation: Transition = {
   initial: { translateX: 0, translateY: 0 },
-  animate: { translateX: 0, translateY: 0 },
+  animate: { translateX: 0, translateY: 0, zIndex: 1 },
   exit: { translateX: 0, translateY: 0 },
 };

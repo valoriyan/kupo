@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { RenderablePost } from "#/api";
 import { useSearchForPosts } from "#/api/queries/discover/useSearchForPosts";
-import { Flex, Grid, Stack } from "#/components/Layout";
-import { ResultsWrapper } from "./ResultsWrapper";
-import { styled } from "#/styling";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { Flex, Grid, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
+import { styled } from "#/styling";
+import { getProfilePageUrl, goToPostPage } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface PostResultsProps {
   query: string;
@@ -52,7 +52,7 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
     : "";
 
   return (
-    <PostWrapper>
+    <PostWrapper onClick={() => goToPostPage(post.postId)}>
       {!!post.contentElementTemporaryUrls[0] && (
         <PostImage src={post.contentElementTemporaryUrls[0]} />
       )}
@@ -71,7 +71,9 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
   );
 };
 
-const PostWrapper = styled(Stack, {
+const PostWrapper = styled("button", {
+  display: "flex",
+  flexDirection: "column",
   gap: "$4",
   borderRadius: "$3",
   bg: "$background2",

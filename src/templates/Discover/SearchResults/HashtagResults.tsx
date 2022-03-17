@@ -1,6 +1,7 @@
 import { useSearchForHashtags } from "#/api/queries/discover/useSearchForHashtags";
 import { HashTag } from "#/components/HashTags";
 import { Flex } from "#/components/Layout";
+import { goToPostByHashTagPage } from "#/utils/generateLinkUrls";
 import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface HashtagResultsProps {
@@ -25,7 +26,9 @@ export const HashtagResults = ({ query }: HashtagResultsProps) => {
       {!data ? null : (
         <Flex css={{ gap: "$3" }}>
           {data.hashtags.map((hashtag) => (
-            <HashTag key={hashtag}>#{hashtag}</HashTag>
+            <button key={hashtag} onClick={() => goToPostByHashTagPage(hashtag)}>
+              <HashTag>#{hashtag}</HashTag>
+            </button>
           ))}
         </Flex>
       )}

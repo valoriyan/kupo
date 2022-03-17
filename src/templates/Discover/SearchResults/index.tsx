@@ -8,13 +8,15 @@ export interface SearchResultsProps {
 }
 
 export const SearchResults = ({ query }: SearchResultsProps) => {
+  const strippedQuery = query.replaceAll(/(#|@)/g, "");
+
   return (
     <Stack css={{ pt: "$6" }}>
-      <HashtagResults query={query} />
+      <HashtagResults query={strippedQuery} />
       <Flex css={{ height: "1px", width: "100%", bg: "$border", my: "$5" }} />
-      <UserResults query={query} />
+      <UserResults query={strippedQuery} />
       <Flex css={{ height: "1px", width: "100%", bg: "$border", my: "$5" }} />
-      <PostResults query={query} />
+      <PostResults query={strippedQuery} />
     </Stack>
   );
 };

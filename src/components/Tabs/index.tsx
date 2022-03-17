@@ -1,8 +1,9 @@
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { ReactNode, useState } from "react";
 import { styled } from "#/styling";
-import { mainTitleStyles } from "../Typography";
 import { Flex } from "../Layout";
+import { ScrollArea } from "../ScrollArea";
+import { mainTitleStyles } from "../Typography";
 
 export interface Tab {
   id: string;
@@ -23,13 +24,15 @@ export const Tabs = (props: TabsProps) => {
   return (
     <TabRoot value={selectedTab} onValueChange={setTab} orientation="horizontal">
       <TabList aria-label={props.ariaLabel} hasRightContent={!!props.headerRightContent}>
-        <Flex css={{ flex: 1, overflow: "auto" }}>
-          {props.tabs.map((tab) => (
-            <Trigger key={tab.id} value={tab.id} stretchTabs={props.stretchTabs}>
-              {tab.trigger}
-            </Trigger>
-          ))}
-        </Flex>
+        <ScrollArea>
+          <Flex>
+            {props.tabs.map((tab) => (
+              <Trigger key={tab.id} value={tab.id} stretchTabs={props.stretchTabs}>
+                {tab.trigger}
+              </Trigger>
+            ))}
+          </Flex>
+        </ScrollArea>
         {props.headerRightContent ?? null}
       </TabList>
       {props.tabs.map(

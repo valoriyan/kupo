@@ -1,67 +1,79 @@
 import { InfiniteData, QueryClient } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { SuccessfulGetPageOfPostsPaginationResponse, UserContentFeedFilter } from "../..";
+import { RenderablePost, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
 
-export type UpdateQueriedPostDataFunction = (
-  queriedData: InfiniteData<SuccessfulGetPageOfPostsPaginationResponse> | undefined,
-) => InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>;
-
-const updatePostCacheForContentFeed = ({
-  updateQueriedPostDataFunction,
+export const updateCachedPost = ({
   queryClient,
-  contentFilter,
+  authorUserId,
+  postId,
+  postUpdater,
 }: {
-  updateQueriedPostDataFunction: UpdateQueriedPostDataFunction;
   queryClient: QueryClient;
-  contentFilter: UserContentFeedFilter;
+  authorUserId: string;
+  postId: string;
+  /** A function to update the post, or null if you want to remove the post from cache */
+  postUpdater: ((oldPost: RenderablePost) => RenderablePost) | null;
 }) => {
-  const queryKey = [CacheKeys.ContentFeed, contentFilter?.type, contentFilter?.value];
+  const userPostsCacheKey = [CacheKeys.UserPostPages, authorUserId];
+  const singlePostCacheKey = [CacheKeys.PostById, postId];
 
-  queryClient.setQueryData<InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>>(
-    queryKey,
-    updateQueriedPostDataFunction,
-  );
+  const contentFeedQueries = queryClient.getQueriesData<
+    InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
+  >(CacheKeys.ContentFeed);
+  const userPostsData =
+    queryClient.getQueryData<InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>>(
+      userPostsCacheKey,
+    );
+  const singlePostData = queryClient.getQueryData<RenderablePost>(singlePostCacheKey);
+
+  for (const [queryKey, queryData] of contentFeedQueries) {
+    const updatedQueryData = {
+      ...queryData,
+      pages: queryData.pages.map((page) => ({
+        ...page,
+        posts: postUpdater
+          ? page.posts.map((post) => {
+              if (post.postId === postId) return postUpdater(post);
+              return post;
+            })
+          : page.posts.filter((post) => post.postId !== postId),
+      })),
+    };
+    queryClient.setQueryData(queryKey, updatedQueryData);
+  }
+
+  if (userPostsData) {
+    const updatedUserPostsData = {
+      ...userPostsData,
+      pages: userPostsData.pages.map((page) => ({
+        ...page,
+        posts: postUpdater
+          ? page.posts.map((post) => {
+              if (post.postId === postId) return postUpdater(post);
+              return post;
+            })
+          : page.posts.filter((post) => post.postId !== postId),
+      })),
+    };
+    queryClient.setQueryData(userPostsCacheKey, updatedUserPostsData);
+  }
+
+  if (!postUpdater) {
+    queryClient.removeQueries(singlePostCacheKey);
+  } else if (singlePostData) {
+    queryClient.setQueryData(singlePostCacheKey, postUpdater(singlePostData));
+  }
 };
 
-const updatePostCacheForUserPosts = ({
-  updateQueriedPostDataFunction,
+export const invalidatePostFeeds = ({
   queryClient,
   authorUserId,
 }: {
-  updateQueriedPostDataFunction: UpdateQueriedPostDataFunction;
   queryClient: QueryClient;
-  authorUserId: string;
+  authorUserId?: string;
 }) => {
-  const queryKey = [CacheKeys.UserPostPages, authorUserId];
-
-  queryClient.setQueryData<InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>>(
-    queryKey,
-    updateQueriedPostDataFunction,
-  );
-};
-
-export const updateCurrentlyActivePostCacheForUserPosts = ({
-  updateQueriedPostDataFunction,
-  queryClient,
-  authorUserId,
-  contentFilter,
-}: {
-  updateQueriedPostDataFunction: UpdateQueriedPostDataFunction;
-  queryClient: QueryClient;
-  authorUserId: string;
-  contentFilter?: UserContentFeedFilter;
-}) => {
-  if (!!contentFilter) {
-    updatePostCacheForContentFeed({
-      updateQueriedPostDataFunction,
-      queryClient,
-      contentFilter,
-    });
-  } else {
-    updatePostCacheForUserPosts({
-      updateQueriedPostDataFunction,
-      queryClient,
-      authorUserId,
-    });
+  queryClient.invalidateQueries([CacheKeys.ContentFeed]);
+  if (authorUserId) {
+    queryClient.invalidateQueries([CacheKeys.UserPostPages, authorUserId]);
   }
 };

@@ -1,8 +1,8 @@
-import { RenderablePost, UserContentFeedFilter } from "#/api";
+import { RenderablePost } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePost } from "#/api/mutations/posts/likePost";
-import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useSharePost } from "#/api/mutations/posts/sharePost";
+import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { Post } from "#/components/Post";
@@ -10,47 +10,18 @@ import { useCurrentUserId } from "#/contexts/auth";
 
 export interface PostWrapperProps {
   post: RenderablePost;
-  contentFilter: UserContentFeedFilter;
+  handleClickOfCommentsButton?: () => void;
 }
 
-export const PostWrapper = ({ post, contentFilter }: PostWrapperProps) => {
+export const PostWrapper = ({ post, handleClickOfCommentsButton }: PostWrapperProps) => {
   const { isLikedByClient, postId, authorUserId } = post;
   const userId = useCurrentUserId();
-  const {
-    data: user,
-    isLoading,
-    error,
-    isError,
-  } = useGetUserByUserId({ userId: authorUserId });
+  const { data: user } = useGetUserByUserId({ userId: authorUserId });
 
-  const { mutateAsync: likePost } = useLikePost({
-    postId,
-    authorUserId,
-    contentFilter,
-  });
-  const { mutateAsync: unlikePost } = useUnlikePost({
-    postId,
-    authorUserId,
-    contentFilter,
-  });
-  const { mutateAsync: deletePost } = useDeletePost({
-    postId,
-    authorUserId,
-    contentFilter,
-  });
-  const { mutateAsync: sharePost } = useSharePost({
-    sharedPostId: postId,
-    authorUserId,
-    contentFilter,
-  });
-
-  if (isError && !isLoading) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
-
-  if (isLoading || !user) {
-    return <div>Loading</div>;
-  }
+  const { mutateAsync: likePost } = useLikePost({ postId, authorUserId });
+  const { mutateAsync: unlikePost } = useUnlikePost({ postId, authorUserId });
+  const { mutateAsync: deletePost } = useDeletePost({ postId, authorUserId });
+  const { mutateAsync: sharePost } = useSharePost({ postId });
 
   async function handleClickOfLikeButton() {
     if (isLikedByClient) {
@@ -90,10 +61,11 @@ export const PostWrapper = ({ post, contentFilter }: PostWrapperProps) => {
     <Post
       key={postId}
       post={post}
-      authorUserName={user.username}
-      authorUserAvatar={user.profilePictureTemporaryUrl}
+      authorUserName={user?.username}
+      authorUserAvatar={user?.profilePictureTemporaryUrl}
       handleClickOfLikeButton={handleClickOfLikeButton}
       handleClickOfShareButton={handleClickOfShareButton}
+      handleClickOfCommentsButton={handleClickOfCommentsButton}
       menuActions={menuActions}
     />
   );

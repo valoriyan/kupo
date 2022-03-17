@@ -3,25 +3,39 @@ import { useEffect, useRef, useState } from "react";
 import { RenderablePostComment } from "#/api";
 import { useDeleteCommentFromPost } from "#/api/mutations/posts/deleteCommentFromPost";
 import { Avatar } from "#/components/Avatar";
+import { ErrorMessage } from "#/components/ErrorArea";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
+import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Box, Flex, Grid, Stack } from "#/components/Layout";
+import { Body, truncateByLines } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { ActionMenu } from "../ActionMenu";
-import { Body, truncateByLines } from "#/components/Typography";
 
 export interface CommentListProps {
   comments: RenderablePostComment[];
+  hasNextPage: boolean | undefined;
+  fetchNextPage: () => void;
+  isFetchingNextPage: boolean;
 }
 
-export const CommentList = ({ comments }: CommentListProps) => {
+export const CommentList = (props: CommentListProps) => {
+  if (!props.comments.length) {
+    return <ErrorMessage>No comments yet</ErrorMessage>;
+  }
+
   return (
-    <Stack css={{ maxHeight: "70vh", overflow: "auto" }}>
-      {comments.map((comment) => (
-        <Comment key={comment.postCommentId} comment={comment} />
-      ))}
+    <Stack css={{ height: "100%", width: "100%" }}>
+      <InfiniteScrollArea
+        hasNextPage={props.hasNextPage ?? false}
+        isNextPageLoading={props.isFetchingNextPage}
+        loadNextPage={props.fetchNextPage}
+        items={props.comments.map((comment) => (
+          <Comment key={comment.postCommentId} comment={comment} />
+        ))}
+      />
     </Stack>
   );
 };

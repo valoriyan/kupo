@@ -1,5 +1,6 @@
 export * from "./generated/AddIcon";
 export * from "./generated/AddRIcon";
+export * from "./generated/ArrowLeftIcon";
 export * from "./generated/BellIcon";
 export * from "./generated/BookmarkIcon";
 export * from "./generated/BoxIcon";

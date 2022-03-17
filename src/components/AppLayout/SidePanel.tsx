@@ -16,6 +16,7 @@ import {
 } from "../Icons";
 import { Flex, Stack } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
+import { ScrollArea } from "../ScrollArea";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 import { useWebsocketState } from "./WebsocketContext";
@@ -48,33 +49,35 @@ export const SidePanel = () => {
           <UploadLink>Create</UploadLink>
         </Link>
       </Stack>
-      <Stack css={{ gap: "$9", px: "$8", height: "100%", overflow: "auto" }}>
-        <Stack css={{ gap: "$6" }}>
-          <NavLink href="/feed" Icon={HomeIcon} label="Home" />
-          <NavLink
-            href="/notifications"
-            Icon={BellIcon}
-            label={
-              <Flex css={{ alignItems: "center", gap: "$3" }}>
-                Notifications
-                {notificationsIndicator}
-              </Flex>
-            }
-          />
-          <NavLink href="/messages" Icon={MailIcon} label="Messages" />
-          <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
-          <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
-          <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
-          <NavLink href="/settings" Icon={OptionsIcon} label="Settings" />
+      <ScrollArea>
+        <Stack css={{ gap: "$9", px: "$8", height: "100%" }}>
+          <Stack css={{ gap: "$6" }}>
+            <NavLink href="/feed" Icon={HomeIcon} label="Home" />
+            <NavLink
+              href="/notifications"
+              Icon={BellIcon}
+              label={
+                <Flex css={{ alignItems: "center", gap: "$3" }}>
+                  Notifications
+                  {notificationsIndicator}
+                </Flex>
+              }
+            />
+            <NavLink href="/messages" Icon={MailIcon} label="Messages" />
+            <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
+            <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
+            <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
+            <NavLink href="/settings" Icon={OptionsIcon} label="Settings" />
+          </Stack>
+          <Stack css={{ gap: "$6" }}>
+            <NavLink href="/support" Icon={SupportIcon} label="Support" />
+            <NavItem as="button" css={{ color: "$link", pb: "$8" }} onClick={logout}>
+              <LogOutIcon />
+              <div>Log Out</div>
+            </NavItem>
+          </Stack>
         </Stack>
-        <Stack css={{ gap: "$6" }}>
-          <NavLink href="/support" Icon={SupportIcon} label="Support" />
-          <NavItem as="button" css={{ color: "$link", pb: "$8" }} onClick={logout}>
-            <LogOutIcon />
-            <div>Log Out</div>
-          </NavItem>
-        </Stack>
-      </Stack>
+      </ScrollArea>
     </SidePanelWrapper>
   );
 };

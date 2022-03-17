@@ -28,7 +28,7 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
     <Flex
       as="form"
       onSubmit={onSubmitComment}
-      css={{ borderY: "solid $borderWidths$1 $border" }}
+      css={{ borderBottom: "solid $borderWidths$1 $border" }}
     >
       <TextArea
         rows={3}

@@ -1,13 +1,12 @@
-import * as Collapsible from "@radix-ui/react-collapsible";
 import Link from "next/link";
 import { ComponentType } from "react";
 import { RenderablePost } from "#/api";
-import { keyframes, prefersMotionSelector, styled } from "#/styling";
+import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { Avatar } from "../Avatar";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
-import { Flex, Grid } from "../Layout";
+import { Box, Flex } from "../Layout";
 import { Body } from "../Typography";
 import { ActionMenu, MenuAction } from "./ActionMenu";
 import { Comments } from "./Comments";
@@ -25,6 +24,7 @@ export interface PostProps {
   authorUserAvatar?: string;
   handleClickOfLikeButton: () => void;
   handleClickOfShareButton: () => void;
+  handleClickOfCommentsButton?: () => void;
   menuActions: MenuAction[];
 }
 
@@ -32,6 +32,7 @@ export const Post = ({
   post,
   handleClickOfLikeButton,
   handleClickOfShareButton,
+  handleClickOfCommentsButton,
   authorUserName,
   authorUserAvatar,
   menuActions,
@@ -42,6 +43,7 @@ export const Post = ({
     contentElementTemporaryUrls,
     hashtags,
     likes,
+    comments,
     shared,
   } = post;
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
@@ -54,8 +56,15 @@ export const Post = ({
   }
 
   return (
-    <Grid as={Collapsible.Root}>
-      <Flex css={{ px: "$4", py: "$3", gap: "$3", alignItems: "center" }}>
+    <Box>
+      <Flex
+        css={{
+          px: "$4",
+          py: "$3",
+          gap: "$3",
+          alignItems: "center",
+        }}
+      >
         <Avatar
           alt={`@${authorUserName}'s profile picture`}
           src={authorUserAvatar}
@@ -76,21 +85,34 @@ export const Post = ({
           <HashTag key={tag}>#{tag}</HashTag>
         ))}
       </Flex>
-      <Flex css={{ justifyContent: "space-between", px: "$5", py: "$5" }}>
+      <Flex
+        css={{
+          justifyContent: "space-between",
+          px: "$5",
+          py: "$5",
+          borderBottom: "solid $borderWidths$1 $border",
+        }}
+      >
         <PostAction
           Icon={HeartIcon}
           isSelected={isLikedByClient}
           onClick={handleClickOfLikeButton}
           metric={likes.count}
         />
-        <PostAction Icon={CommentIcon} as={Collapsible.Trigger} />
+        {handleClickOfCommentsButton ? (
+          <PostAction
+            Icon={CommentIcon}
+            metric={comments.count}
+            onClick={handleClickOfCommentsButton}
+          />
+        ) : (
+          <PostAction Icon={CommentIcon} metric={comments.count} />
+        )}
         <PostAction Icon={PaperPlanIcon} onClick={handleClickOfShareButton} />
         <PostAction Icon={BookmarkIcon} />
       </Flex>
-      <CollapsibleContent>
-        <Comments postId={post.postId} />
-      </CollapsibleContent>
-    </Grid>
+      {!handleClickOfCommentsButton && <Comments postId={post.postId} />}
+    </Box>
   );
 };
 
@@ -122,7 +144,7 @@ const PostAction = (props: PostActionProps) => {
       as={props.as ?? "button"}
       css={{
         alignItems: "center",
-        gap: "$1",
+        gap: "$2",
         color: isSelected ? "$primary" : "$secondaryText",
         cursor: "pointer",
       }}
@@ -133,21 +155,3 @@ const PostAction = (props: PostActionProps) => {
     </Flex>
   );
 };
-
-const open = keyframes({
-  from: { height: 0 },
-  to: { height: "var(--radix-collapsible-content-height)" },
-});
-
-const close = keyframes({
-  from: { height: "var(--radix-collapsible-content-height)" },
-  to: { height: 0 },
-});
-
-const CollapsibleContent = styled(Collapsible.Content, {
-  [prefersMotionSelector]: {
-    '&[data-state="open"]': { animation: `${open} $1 ease-out` },
-    '&[data-state="closed"]': { animation: `${close} $1 ease-out` },
-  },
-  overflow: "hidden",
-});

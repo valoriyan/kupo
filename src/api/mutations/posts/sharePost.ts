@@ -1,29 +1,14 @@
-import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import {
-  Api,
-  SuccessfulGetPageOfPostsPaginationResponse,
-  UserContentFeedFilter,
-} from "../..";
-import {
-  updateCurrentlyActivePostCacheForUserPosts,
-  UpdateQueriedPostDataFunction,
-} from "./utilities";
+import { useMutation, useQueryClient } from "react-query";
+import { Api } from "../..";
+import { invalidatePostFeeds } from "./utilities";
 
-export const useSharePost = ({
-  sharedPostId,
-  authorUserId,
-  contentFilter,
-}: {
-  sharedPostId: string;
-  authorUserId: string;
-  contentFilter?: UserContentFeedFilter;
-}) => {
+export const useSharePost = ({ postId }: { postId: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async ({ caption, hashtags }: { caption: string; hashtags: string[] }) => {
       return await Api.sharePost({
-        sharedPostId,
+        sharedPostId: postId,
         caption,
         hashtags,
       });
@@ -31,31 +16,9 @@ export const useSharePost = ({
     {
       onSuccess: (data) => {
         if (data.data.success) {
-          const sharedPost = data.data.success.renderablePost;
-
-          const updatePostCacheForDeleteOperation: UpdateQueriedPostDataFunction = (
-            queriedData:
-              | InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
-              | undefined,
-          ) => {
-            if (!!queriedData) {
-              return {
-                pages: [{ posts: [sharedPost] }, ...queriedData.pages],
-                pageParams: queriedData.pageParams,
-              };
-            } else {
-              return {
-                pages: [{ posts: [sharedPost] }],
-                pageParams: [],
-              };
-            }
-          };
-
-          updateCurrentlyActivePostCacheForUserPosts({
-            updateQueriedPostDataFunction: updatePostCacheForDeleteOperation,
+          invalidatePostFeeds({
             queryClient,
-            authorUserId,
-            contentFilter,
+            authorUserId: data.data.success.renderablePost.authorUserId,
           });
         }
       },

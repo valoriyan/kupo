@@ -10,7 +10,15 @@ export interface CommentsProps {
 }
 
 export const Comments = ({ postId }: CommentsProps) => {
-  const { data, isLoading, error, isError } = useGetPageOfPostCommentsByPostId({
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useGetPageOfPostCommentsByPostId({
     postId,
   });
 
@@ -29,9 +37,14 @@ export const Comments = ({ postId }: CommentsProps) => {
   const comments = data.pages.flatMap((page) => page.postComments);
 
   return (
-    <Stack>
+    <Stack css={{ height: "100vh" }}>
       <CommentInput postId={postId} />
-      <CommentList comments={comments} />
+      <CommentList
+        comments={comments}
+        hasNextPage={hasNextPage}
+        fetchNextPage={fetchNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+      />
     </Stack>
   );
 };

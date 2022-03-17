@@ -56,7 +56,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
   const hashtags = props.user.hashtags.filter((x) => x);
 
   return (
-    <Stack>
+    <Stack css={{ size: "100%" }}>
       <Stack>
         <ProfileHeader>
           <BackgroundImage
