@@ -4,7 +4,7 @@ import { Api } from "../..";
 
 export const useGetPageOfOldNotifications = () => {
   return useInfiniteQuery([CacheKeys.OldNotificationPages], fetchPageOfOldNotifications, {
-    getPreviousPageParam: (lastPage) => {
+    getNextPageParam: (lastPage) => {
       return lastPage.nextPageCursor;
     },
   });

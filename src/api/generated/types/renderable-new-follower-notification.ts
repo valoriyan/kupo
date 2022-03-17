@@ -32,6 +32,12 @@ export interface RenderableNewFollowerNotification {
    * @type {number}
    * @memberof RenderableNewFollowerNotification
    */
+  eventTimestamp: number;
+  /**
+   *
+   * @type {number}
+   * @memberof RenderableNewFollowerNotification
+   */
   timestampSeenByUser?: number;
   /**
    *
