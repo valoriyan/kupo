@@ -1,16 +1,13 @@
-import Link from "next/link";
 import { ComponentType } from "react";
 import { RenderablePost } from "#/api";
 import { styled } from "#/styling";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
-import { Avatar } from "../Avatar";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { Body } from "../Typography";
-import { ActionMenu, MenuAction } from "./ActionMenu";
+import { MenuAction } from "./ActionMenu";
 import { Comments } from "./Comments";
-import { ContentViewer } from "./ContentViewer";
+import { PostBody } from "./PostBody";
 
 export interface PostMenuOption {
   Icon: ComponentType;
@@ -48,43 +45,24 @@ export const Post = ({
   } = post;
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
-  let contentUrls;
-  if (shared && shared.type === "post") {
-    contentUrls = shared.post.contentElementTemporaryUrls;
-  } else {
-    contentUrls = contentElementTemporaryUrls;
-  }
-
   return (
     <Box>
-      <Flex
-        css={{
-          px: "$4",
-          py: "$3",
-          gap: "$3",
-          alignItems: "center",
-        }}
-      >
-        <Avatar
-          alt={`@${authorUserName}'s profile picture`}
-          src={authorUserAvatar}
-          size="$7"
-        />
-        <Link href={getProfilePageUrl({ username: authorUserName || "" })} passHref>
-          <a>{authorUserName ? `@${authorUserName}` : "User"}</a>
-        </Link>
-        <Flex css={{ marginLeft: "auto", gap: "$5", alignItems: "center" }}>
-          <Timestamp>{relativeTimestamp}</Timestamp>
-          <ActionMenu actions={menuActions} />
-        </Flex>
-      </Flex>
-      <Body css={{ px: "$4", py: "$2" }}>{caption}</Body>
-      {contentUrls?.length && <ContentViewer contentUrls={contentUrls} />}
-      <Flex css={{ gap: "$3", px: "$4", py: "$2", width: "100%", overflow: "auto" }}>
-        {hashtags.map((tag) => (
-          <HashTag key={tag}>#{tag}</HashTag>
-        ))}
-      </Flex>
+      <PostBody
+        authorUserName={authorUserName}
+        authorUserAvatar={authorUserAvatar}
+        relativeTimestamp={relativeTimestamp}
+        caption={caption}
+        contentUrls={contentElementTemporaryUrls}
+        shared={shared}
+        menuActions={menuActions}
+      />
+      {!!hashtags.length && (
+        <HashTagsWrapper>
+          {hashtags.map((tag) => (
+            <HashTag key={tag}>#{tag}</HashTag>
+          ))}
+        </HashTagsWrapper>
+      )}
       <Flex
         css={{
           justifyContent: "space-between",
@@ -116,8 +94,13 @@ export const Post = ({
   );
 };
 
-const Timestamp = styled("div", {
-  color: "$secondaryText",
+const HashTagsWrapper = styled(Flex, {
+  gap: "$3",
+  px: "$4",
+  pt: "$4",
+  pb: "$2",
+  width: "100%",
+  overflow: "auto",
 });
 
 const HashTag = styled(Body, {

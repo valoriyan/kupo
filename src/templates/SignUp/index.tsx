@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { FormEventHandler, useState } from "react";
+import { toast } from "react-toastify";
 import { useRegisterUser } from "#/api/mutations/users/registerUser";
 import { AuthFormLayout } from "#/components/AuthFormLayout";
 import { Button } from "#/components/Button";
@@ -10,11 +11,16 @@ import { TextOrSpinner } from "#/components/TextOrSpinner";
 export const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmedPassword, setConfirmedPassword] = useState("");
   const [email, setEmail] = useState("");
   const { mutateAsync: registerUser, isLoading } = useRegisterUser();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (password && password !== confirmedPassword) {
+      toast.error("The entered passwords do not match", { toastId: "password-match" });
+      return;
+    }
     if (!username || !password || !email) return;
     registerUser({ username, password, email });
   };
@@ -32,6 +38,14 @@ export const SignUp = () => {
         <Input
           size="lg"
           required
+          type="email"
+          placeholder="email"
+          value={email}
+          onChange={(e) => setEmail(e.currentTarget.value)}
+        />
+        <Input
+          size="lg"
+          required
           type="password"
           placeholder="password"
           value={password}
@@ -40,10 +54,10 @@ export const SignUp = () => {
         <Input
           size="lg"
           required
-          type="email"
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.currentTarget.value)}
+          type="password"
+          placeholder="confirm password"
+          value={confirmedPassword}
+          onChange={(e) => setConfirmedPassword(e.currentTarget.value)}
         />
       </Stack>
       <Stack css={{ gap: "$5", pt: "$9" }}>

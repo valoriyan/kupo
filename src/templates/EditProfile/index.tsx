@@ -1,3 +1,4 @@
+import Router from "next/router";
 import { SetStateAction, useState } from "react";
 import isEqual from "react-fast-compare";
 import { toast } from "react-toastify";
@@ -9,6 +10,7 @@ import { useUpdateOwnProfilePicture } from "#/api/mutations/profile/updateOwnPro
 import { Button } from "#/components/Button";
 import { Box, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
@@ -110,6 +112,7 @@ export const EditProfile = ({ user }: EditProfileProps) => {
         setIsProfilePictureUrlTouched(false);
         setIsBackgroundImageUrlTouched(false);
         toast.success("Profile updated successfully");
+        Router.push(getProfilePageUrl({ username }));
       } else {
         setIsProfileUpdating(false);
         toast.error("Failed to update profile");
