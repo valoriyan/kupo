@@ -17,6 +17,7 @@ export interface PostBodyProps {
   contentUrls: string[];
   shared?: RenderablePostShared;
   menuActions?: MenuAction[];
+  onPostClick?: () => void;
 }
 
 export const PostBody = (props: PostBodyProps) => {
@@ -28,7 +29,9 @@ export const PostBody = (props: PostBodyProps) => {
           py: "$3",
           gap: "$3",
           alignItems: "center",
+          cursor: props.onPostClick ? "pointer" : "default",
         }}
+        onClick={props.onPostClick}
       >
         <Avatar
           alt={`@${props.authorUserName}'s profile picture`}
@@ -43,7 +46,7 @@ export const PostBody = (props: PostBodyProps) => {
           {props.menuActions && <ActionMenu actions={props.menuActions} />}
         </Flex>
       </Flex>
-      <Body css={{ px: "$4", py: "$2" }}>{props.caption}</Body>
+      <Body css={{ px: "$4", py: "$2", mb: "$3" }}>{props.caption}</Body>
       {props.shared && props.shared.type === "post" ? (
         <SharedPost post={props.shared.post} />
       ) : (

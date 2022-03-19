@@ -4,31 +4,25 @@ import { useLikePost } from "#/api/mutations/posts/likePost";
 import { useSharePost } from "#/api/mutations/posts/sharePost";
 import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { InfoIcon, TrashIcon } from "#/components/Icons";
-import { Post } from "#/components/Post";
 import { useCurrentUserId } from "#/contexts/auth";
+import { TrashIcon, InfoIcon } from "../Icons";
 
-export interface PostWrapperProps {
-  post: RenderablePost;
-  handleClickOfCommentsButton?: () => void;
-}
+export const usePostActions = (post: RenderablePost) => {
+  const { postId, authorUserId, isLikedByClient, shared } = post;
 
-export const PostWrapper = ({ post, handleClickOfCommentsButton }: PostWrapperProps) => {
-  const { isLikedByClient, postId, authorUserId } = post;
   const userId = useCurrentUserId();
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
 
   const { mutateAsync: likePost } = useLikePost({ postId, authorUserId });
   const { mutateAsync: unlikePost } = useUnlikePost({ postId, authorUserId });
   const { mutateAsync: deletePost } = useDeletePost({ postId, authorUserId });
-  const { mutateAsync: sharePost } = useSharePost({ postId });
+  const { mutateAsync: sharePost } = useSharePost({
+    postId: shared?.post.postId ?? postId,
+  });
 
   async function handleClickOfLikeButton() {
-    if (isLikedByClient) {
-      unlikePost();
-    } else {
-      likePost();
-    }
+    if (isLikedByClient) unlikePost();
+    else likePost();
   }
 
   async function handleClickOfShareButton() {
@@ -57,16 +51,10 @@ export const PostWrapper = ({ post, handleClickOfCommentsButton }: PostWrapperPr
     onClick: () => {},
   });
 
-  return (
-    <Post
-      key={postId}
-      post={post}
-      authorUserName={user?.username}
-      authorUserAvatar={user?.profilePictureTemporaryUrl}
-      handleClickOfLikeButton={handleClickOfLikeButton}
-      handleClickOfShareButton={handleClickOfShareButton}
-      handleClickOfCommentsButton={handleClickOfCommentsButton}
-      menuActions={menuActions}
-    />
-  );
+  return {
+    handleClickOfLikeButton,
+    handleClickOfShareButton,
+    menuActions,
+    user,
+  };
 };

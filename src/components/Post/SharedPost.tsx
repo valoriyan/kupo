@@ -1,6 +1,7 @@
 import { RenderablePost } from "#/api";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { styled } from "#/styling";
+import { goToPostPage } from "#/utils/generateLinkUrls";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { PostBody } from "./PostBody";
 
@@ -10,21 +11,19 @@ export interface SharedPostProps {
 
 export const SharedPost = ({ post }: SharedPostProps) => {
   const { authorUserId, caption, contentElementTemporaryUrls, shared } = post;
-  const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
-
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
-  const authorUserName = user?.username;
-  const authorUserAvatar = user?.profilePictureTemporaryUrl;
+  const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
   return (
     <Wrapper>
       <PostBody
-        authorUserName={authorUserName}
-        authorUserAvatar={authorUserAvatar}
+        authorUserName={user?.username}
+        authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
         contentUrls={contentElementTemporaryUrls}
         shared={shared}
+        onPostClick={() => goToPostPage(post.postId)}
       />
     </Wrapper>
   );

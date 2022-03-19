@@ -4,9 +4,9 @@ import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
+import { Post } from "#/components/Post";
 import { styled } from "#/styling";
 import { goToPostPage } from "#/utils/generateLinkUrls";
-import { PostWrapper } from "./PostWrapper";
 
 export interface ContentFeedProps {
   selectedContentFilter: UserContentFeedFilter;
@@ -40,7 +40,7 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
         isNextPageLoading={isFetchingNextPage}
         loadNextPage={fetchNextPage}
         items={posts.map((post) => (
-          <PostWrapper
+          <Post
             key={post.postId}
             post={post}
             handleClickOfCommentsButton={() => goToPostPage(post.postId)}

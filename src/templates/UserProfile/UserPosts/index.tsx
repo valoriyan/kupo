@@ -3,10 +3,10 @@ import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPosts
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
+import { Post } from "#/components/Post";
 import { ScrollArea } from "#/components/ScrollArea";
 import { Spinner } from "#/components/Spinner";
 import { styled } from "#/styling";
-import { PostWrapper } from "#/templates/Feed/ContentFeed/PostWrapper";
 import { goToPostPage } from "#/utils/generateLinkUrls";
 
 export interface UserPostsProps {
@@ -40,7 +40,7 @@ export const UserPosts = ({ user }: UserPostsProps) => {
         isNextPageLoading={isFetchingNextPage}
         loadNextPage={fetchNextPage}
         items={posts.map((post) => (
-          <PostWrapper
+          <Post
             key={post.postId}
             post={post}
             handleClickOfCommentsButton={() => goToPostPage(post.postId)}

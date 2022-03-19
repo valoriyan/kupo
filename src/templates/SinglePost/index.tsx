@@ -2,7 +2,7 @@ import { useGetPostById } from "#/api/queries/posts/useGetPostById";
 import { DetailLayout } from "#/components/DetailLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
-import { PostWrapper } from "../Feed/ContentFeed/PostWrapper";
+import { Post } from "#/components/Post";
 
 export interface SinglePostProps {
   postId: string;
@@ -18,7 +18,7 @@ export const SinglePost = ({ postId }: SinglePostProps) => {
       ) : isLoading || !data ? (
         <LoadingArea size="lg" />
       ) : (
-        <PostWrapper post={data} />
+        <Post post={data} />
       )}
     </DetailLayout>
   );

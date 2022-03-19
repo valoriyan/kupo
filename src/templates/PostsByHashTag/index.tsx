@@ -5,8 +5,8 @@ import { ErrorArea } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
+import { Post } from "#/components/Post";
 import { goToPostPage } from "#/utils/generateLinkUrls";
-import { PostWrapper } from "../Feed/ContentFeed/PostWrapper";
 
 export interface PostsByHashTagProps {
   hashTag: string;
@@ -34,7 +34,7 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
             isNextPageLoading={isFetchingNextPage}
             loadNextPage={fetchNextPage}
             items={posts.map((post) => (
-              <PostWrapper
+              <Post
                 key={post.postId}
                 post={post}
                 handleClickOfCommentsButton={() => goToPostPage(post.postId)}

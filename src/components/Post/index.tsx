@@ -5,35 +5,16 @@ import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { Body } from "../Typography";
-import { MenuAction } from "./ActionMenu";
 import { Comments } from "./Comments";
 import { PostBody } from "./PostBody";
-
-export interface PostMenuOption {
-  Icon: ComponentType;
-  label: string;
-  onClick: () => void;
-}
+import { usePostActions } from "./usePostActions";
 
 export interface PostProps {
   post: RenderablePost;
-  authorUserName?: string;
-  authorUserAvatar?: string;
-  handleClickOfLikeButton: () => void;
-  handleClickOfShareButton: () => void;
   handleClickOfCommentsButton?: () => void;
-  menuActions: MenuAction[];
 }
 
-export const Post = ({
-  post,
-  handleClickOfLikeButton,
-  handleClickOfShareButton,
-  handleClickOfCommentsButton,
-  authorUserName,
-  authorUserAvatar,
-  menuActions,
-}: PostProps) => {
+export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
   const {
     isLikedByClient,
     caption,
@@ -43,13 +24,17 @@ export const Post = ({
     comments,
     shared,
   } = post;
+
+  const { handleClickOfLikeButton, handleClickOfShareButton, menuActions, user } =
+    usePostActions(post);
+
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
   return (
     <Box>
       <PostBody
-        authorUserName={authorUserName}
-        authorUserAvatar={authorUserAvatar}
+        authorUserName={user?.username}
+        authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
         contentUrls={contentElementTemporaryUrls}
@@ -116,20 +101,17 @@ interface PostActionProps {
   metric?: number;
   onClick?: () => void;
   isSelected?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  as?: string | ComponentType<any>;
 }
 
 const PostAction = (props: PostActionProps) => {
   const { Icon, metric, onClick, isSelected } = props;
   return (
     <Flex
-      as={props.as ?? "button"}
+      as="button"
       css={{
         alignItems: "center",
         gap: "$2",
         color: isSelected ? "$primary" : "$secondaryText",
-        cursor: "pointer",
       }}
       onClick={onClick}
     >
