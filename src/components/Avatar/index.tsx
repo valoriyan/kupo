@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import { styled, css, ThemeScale } from "#/styling";
 import { UserIcon } from "../Icons";
 
@@ -5,7 +6,7 @@ export interface AvatarProps {
   alt: string;
   src?: string;
   size?: ThemeScale<"sizes">;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLImageElement>;
 }
 
 export const Avatar = (props: AvatarProps) => {

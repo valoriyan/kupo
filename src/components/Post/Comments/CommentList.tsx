@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import Router from "next/router";
 import { RenderablePostComment } from "#/api";
 import { useDeleteCommentFromPost } from "#/api/mutations/posts/deleteCommentFromPost";
 import { Avatar } from "#/components/Avatar";
@@ -87,7 +88,12 @@ const Comment = ({ comment }: CommentProps) => {
 
   return (
     <CommentWrapper>
-      <Avatar size="$7" src={userAvatarUrl} alt={`@${username}'s profile picture`} />
+      <Avatar
+        size="$7"
+        src={userAvatarUrl}
+        alt={`@${username}'s profile picture`}
+        onClick={() => Router.push(getProfilePageUrl({ username }))}
+      />
       <Stack css={{ gap: "$3" }}>
         <Flex css={{ justifyContent: "space-between", alignItems: "center" }}>
           <Flex css={{ gap: "$3", alignItems: "baseline" }}>

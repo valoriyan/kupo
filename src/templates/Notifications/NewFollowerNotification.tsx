@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Router from "next/router";
 import { RenderableNewFollowerNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
@@ -32,6 +33,7 @@ export const NewFollowerNotification = ({
         alt={`@${username}'s profile picture`}
         src={profilePictureTemporaryUrl}
         size="$8"
+        onClick={() => Router.push(getProfilePageUrl({ username }))}
       />
 
       <Stack css={{ gap: "$1" }}>

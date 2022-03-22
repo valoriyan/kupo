@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Router from "next/router";
 import { RenderablePostShared } from "#/api";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
@@ -35,9 +36,14 @@ export const PostBody = (props: PostBodyProps) => {
         onClick={props.onPostClick}
       >
         <Avatar
-          alt={`@${props.authorUserName}'s profile picture`}
+          alt={`@${props.authorUserName ?? "User"}'s profile picture`}
           src={props.authorUserAvatar}
           size="$7"
+          onClick={(e) => {
+            if (!props.authorUserName) return;
+            e.stopPropagation();
+            Router.push(getProfilePageUrl({ username: props.authorUserName }));
+          }}
         />
         <Link href={getProfilePageUrl({ username: props.authorUserName || "" })} passHref>
           <a>{props.authorUserName ? `@${props.authorUserName}` : "User"}</a>
