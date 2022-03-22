@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import { ArrowLeftIcon } from "../Icons";
 import { Flex, Grid } from "../Layout";
@@ -7,12 +6,11 @@ import { MainTitle } from "../Typography";
 
 export interface DetailLayoutProps {
   heading: string;
+  backRoute: string;
   children: ReactNode;
 }
 
 export const DetailLayout = (props: DetailLayoutProps) => {
-  const router = useRouter();
-
   return (
     <Grid css={{ gridTemplateRows: "auto minmax(0, 1fr)", height: "100%" }}>
       <Flex
@@ -27,10 +25,7 @@ export const DetailLayout = (props: DetailLayoutProps) => {
           py: "$5",
         }}
       >
-        <Link
-          href={typeof router.query.backTo === "string" ? router.query.backTo : "/feed"}
-          passHref
-        >
+        <Link href={props.backRoute} passHref>
           <Flex as="a" css={{ color: "$text", gap: "$4" }}>
             <ArrowLeftIcon />
             <MainTitle>{props.heading}</MainTitle>

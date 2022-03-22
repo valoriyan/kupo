@@ -7,7 +7,7 @@ import { Post } from "#/components/Post";
 import { ScrollArea } from "#/components/ScrollArea";
 import { Spinner } from "#/components/Spinner";
 import { styled } from "#/styling";
-import { goToPostPage } from "#/utils/generateLinkUrls";
+import { goToPostPage } from "#/templates/SinglePost";
 
 export interface UserPostsProps {
   user: RenderableUser;

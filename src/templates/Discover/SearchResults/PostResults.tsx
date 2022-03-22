@@ -5,7 +5,8 @@ import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
 import { styled } from "#/styling";
-import { getProfilePageUrl, goToPostPage } from "#/utils/generateLinkUrls";
+import { goToPostPage } from "#/templates/SinglePost";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { ResultsWrapper } from "./ResultsWrapper";
 
@@ -56,7 +57,7 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
       {!!post.contentElementTemporaryUrls[0] && (
         <PostImage src={post.contentElementTemporaryUrls[0]} />
       )}
-      <Stack css={{ gap: "$4", px: "$5", pb: "$5" }}>
+      <Stack css={{ gap: "$4", px: "$5", py: "$5" }}>
         <Flex css={{ alignItems: "center", gap: "$4" }}>
           <Link href={profileUrl} passHref>
             <a>@{user?.username ?? "User"}</a>
@@ -74,11 +75,11 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
 const PostWrapper = styled("button", {
   display: "flex",
   flexDirection: "column",
-  gap: "$4",
   borderRadius: "$3",
   bg: "$background2",
   boxShadow: "$1",
   overflow: "hidden",
+  textAlign: "left",
 });
 
 const PostImage = styled("img", {

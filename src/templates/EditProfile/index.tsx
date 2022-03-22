@@ -2,6 +2,7 @@ import Router from "next/router";
 import { SetStateAction, useState } from "react";
 import isEqual from "react-fast-compare";
 import { toast } from "react-toastify";
+import { useQueryClient } from "react-query";
 import { RenderableUser } from "#/api";
 import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
 import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";
@@ -15,12 +16,14 @@ import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
 import { ProfileSettings } from "./ProfileSettings";
+import { CacheKeys } from "#/contexts/queryClient";
 
 export interface EditProfileProps {
   user: RenderableUser;
 }
 
 export const EditProfile = ({ user }: EditProfileProps) => {
+  const queryClient = useQueryClient();
   const [username, setUsername, isUsernameTouched, setIsUsernameTouched] = useFormField(
     user.username,
   );
@@ -111,6 +114,10 @@ export const EditProfile = ({ user }: EditProfileProps) => {
         setIsPrivacySettingTouched(false);
         setIsProfilePictureUrlTouched(false);
         setIsBackgroundImageUrlTouched(false);
+        queryClient.removeQueries(CacheKeys.ClientProfile);
+        queryClient.removeQueries([CacheKeys.UserById, user.userId]);
+        queryClient.removeQueries([CacheKeys.UserByUsername, user.username]);
+        queryClient.removeQueries([CacheKeys.UserByUsername, username]);
         toast.success("Profile updated successfully");
         Router.push(getProfilePageUrl({ username }));
       } else {

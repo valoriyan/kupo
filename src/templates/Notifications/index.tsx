@@ -1,59 +1,50 @@
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
+import { ErrorMessage } from "#/components/ErrorArea";
+import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { LoadingArea } from "#/components/LoadingArea";
+import { MainTitle } from "#/components/Typography";
+import { styled } from "#/styling";
 import { Notification } from "./Notification";
 
 export const Notifications = () => {
-  const {
-    data,
-    isError,
-    isLoading,
-    error,
-    isFetching: isFetchingChatMessages,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useGetPageOfOldNotifications();
-
-  if (isError && !isLoading) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
-
-  if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
+  const { data, isError, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useGetPageOfOldNotifications();
 
   const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
 
   return (
-    <div>
-      {isFetchingChatMessages ? (
-        <div>
-          Refreshing...
-          <br />
-        </div>
-      ) : null}
-
-      {oldNotifications.map((notification, index) => (
-        <Notification key={index} notification={notification} />
-      ))}
-
-      {/* {notificationsReceived.map((notificationReceived, index) => (
-        <Notification key={index} notification={notificationReceived} />
-      ))} */}
-
-      <button
-        onClick={() => {
-          fetchNextPage();
-        }}
-        disabled={!hasNextPage || isFetchingNextPage}
-      >
-        {isFetchingNextPage ? (
-          "Loading more..."
-        ) : hasNextPage ? (
-          <h3>Load Next</h3>
-        ) : (
-          "Nothing more to load"
-        )}
-      </button>
-    </div>
+    <Wrapper>
+      <Header>
+        <MainTitle as="h1">Notifications</MainTitle>
+      </Header>
+      {isError && !isLoading ? (
+        <ErrorMessage>An error occurred</ErrorMessage>
+      ) : isLoading || !oldNotifications ? (
+        <LoadingArea size="lg" />
+      ) : (
+        <InfiniteScrollArea
+          hasNextPage={hasNextPage ?? false}
+          isNextPageLoading={isFetchingNextPage}
+          loadNextPage={fetchNextPage}
+          items={oldNotifications.map((notification, index) => (
+            <Notification key={index} notification={notification} />
+          ))}
+        />
+      )}
+    </Wrapper>
   );
 };
+
+const Wrapper = styled("div", {
+  display: "grid",
+  gridTemplateRows: "auto minmax(0, 1fr)",
+  height: "100%",
+});
+
+const Header = styled("div", {
+  display: "flex",
+  px: "$6",
+  py: "$5",
+  gap: "$5",
+  borderBottom: "solid $borderWidths$1 $text",
+});

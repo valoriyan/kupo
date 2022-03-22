@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { RenderableNewCommentOnPostNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { Button } from "#/components/Button";
 import { Grid, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
-import { Button } from "#/components/Button";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import { truncate } from "#/utils/truncate";
 
 export const NewCommentOnPostNotification = ({
   notification,
@@ -14,7 +15,6 @@ export const NewCommentOnPostNotification = ({
 }) => {
   const {
     userThatCommented: { username, profilePictureTemporaryUrl },
-    // post,
     postComment: { text: postCommentText },
     eventTimestamp,
   } = notification;
@@ -26,6 +26,7 @@ export const NewCommentOnPostNotification = ({
         py: "$4",
         gridTemplateColumns: "auto minmax(0, 1fr) auto",
         columnGap: "$4",
+        alignItems: "center",
         borderBottom: "solid $borderWidths$1 $border",
       }}
     >
@@ -37,8 +38,13 @@ export const NewCommentOnPostNotification = ({
 
       <Stack css={{ gap: "$1" }}>
         <Body>
-          <Link href={getProfilePageUrl({ username })}>{username}</Link> commented &ldquo;
-          {postCommentText}&rdquo; on your post.
+          <Link href={getProfilePageUrl({ username })}>{username}</Link> commented{" "}
+          <em>
+            &ldquo;
+            {truncate(postCommentText, 60)}
+            &rdquo;
+          </em>{" "}
+          on your post.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago

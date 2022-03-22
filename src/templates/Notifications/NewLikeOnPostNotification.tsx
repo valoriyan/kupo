@@ -26,6 +26,7 @@ export const NewLikeOnPostNotification = ({
         py: "$4",
         gridTemplateColumns: "auto minmax(0, 1fr) auto",
         columnGap: "$4",
+        alignItems: "center",
         borderBottom: "solid $borderWidths$1 $border",
       }}
     >

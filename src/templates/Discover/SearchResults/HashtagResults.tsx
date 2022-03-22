@@ -1,7 +1,7 @@
 import { useSearchForHashtags } from "#/api/queries/discover/useSearchForHashtags";
 import { HashTag } from "#/components/HashTags";
 import { Flex } from "#/components/Layout";
-import { goToPostByHashTagPage } from "#/utils/generateLinkUrls";
+import { goToPostByHashTagPage } from "#/templates/PostsByHashTag";
 import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface HashtagResultsProps {

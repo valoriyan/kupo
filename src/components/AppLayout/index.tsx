@@ -1,9 +1,7 @@
-import { useRouter } from "next/router";
 import { PropsWithChildren, useEffect } from "react";
 import { Box, Flex, Grid } from "#/components/Layout";
 import { getAccessToken, useIsAuthenticated } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { TransitionArea } from "../TransitionArea";
 import { Footer } from "./Footer";
 import { NoAuthFooter } from "./NoAuthFooter";
 import { NoAuthSidePanel } from "./NoAuthSidePanel";
@@ -19,15 +17,9 @@ export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
 };
 
 const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
-  const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
   const generateSocket = useWebsocketState((state) => state.generateSocket);
   const hasAccessToken = isAuthenticated === true;
-
-  const pageTransition =
-    router.pathname.includes("add-content") || router.pathname.includes("settings")
-      ? slideUpFromBottom
-      : undefined;
 
   useEffect(() => {
     getAccessToken().then((accessToken) => {
@@ -45,9 +37,7 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
           <NoAuthSidePanel />
         )}
       </SidePanelWrapper>
-      <TransitionArea transitionKey={router.route} animation={pageTransition}>
-        <Box css={{ "@md": { maxWidth: "600px" }, height: "100%" }}>{children}</Box>
-      </TransitionArea>
+      <Box css={{ "@md": { maxWidth: "600px" }, height: "100%" }}>{children}</Box>
       <Box css={{ zIndex: 1, "@md": { display: "none" } }}>
         {isAuthenticated === "unset" ? null : isAuthenticated ? (
           <Footer />
@@ -77,9 +67,3 @@ const SidePanelWrapper = styled(Flex, {
   display: "none",
   "@md": { display: "block" },
 });
-
-const slideUpFromBottom = {
-  initial: { translateY: "100%" },
-  animate: { translateY: 0 },
-  exit: { translateY: "100%", zIndex: 1 },
-};

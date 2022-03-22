@@ -8,7 +8,7 @@ const EditProfilePage = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
 
   return !isLoading && error ? (
-    <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
+    <ErrorArea>{error.message || "An error occurred"}</ErrorArea>
   ) : isLoading || !data ? (
     <LoadingArea size="lg" />
   ) : (

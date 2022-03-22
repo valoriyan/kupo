@@ -1,3 +1,4 @@
+import Router from "next/router";
 import { UserContentFeedFilterType } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { DetailLayout } from "#/components/DetailLayout";
@@ -6,7 +7,15 @@ import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
-import { goToPostPage } from "#/utils/generateLinkUrls";
+import { SessionStorageItem } from "#/utils/storage";
+import { goToPostPage } from "../SinglePost";
+
+const previousLocation = SessionStorageItem<string>("previous-location-post-by-hashtag");
+
+export const goToPostByHashTagPage = (hashtag: string) => {
+  previousLocation.set(Router.asPath);
+  Router.push(`/posts/${hashtag}`);
+};
 
 export interface PostsByHashTagProps {
   hashTag: string;
@@ -22,9 +31,9 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
   const posts = data?.pages.flatMap((page) => page.posts);
 
   return (
-    <DetailLayout heading={`#${hashTag}`}>
+    <DetailLayout heading={`#${hashTag}`} backRoute={previousLocation.get() ?? "/feed"}>
       {!isLoading && error ? (
-        <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
+        <ErrorArea>{error.message || "An error occurred"}</ErrorArea>
       ) : isLoading || !posts ? (
         <LoadingArea size="lg" />
       ) : (

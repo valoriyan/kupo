@@ -1,7 +1,7 @@
 import { RenderablePost } from "#/api";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { styled } from "#/styling";
-import { goToPostPage } from "#/utils/generateLinkUrls";
+import { goToPostPage } from "#/templates/SinglePost";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { PostBody } from "./PostBody";
 

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { useRef } from "react";
 import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
 import { useGetContentFilters } from "#/api/queries/feed/useGetContentFilters";
 import { ChevronDownIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
-import { SlideDownDialog } from "#/components/SlideDownDialog";
 import { Tabs } from "#/components/Tabs";
+import { VerticalSlideDialog } from "#/components/VerticalSlideDialog";
 import { useCurrentUserId } from "#/contexts/auth";
 import { ContentFeed } from "./ContentFeed";
 import { FeedListEditor } from "./FeedListEditor";
@@ -16,9 +17,10 @@ export const Feed = () => {
     clientUserId: clientUserId ?? "",
   });
   const { mutateAsync: updateContentFilters } = useUpdateContentFilters();
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <Flex css={{ position: "relative", height: "100%" }}>
+    <Flex ref={containerRef} css={{ position: "relative", height: "100%" }}>
       <Tabs
         ariaLabel="Content Filters"
         tabs={contentFilters.map((userContentFeedFilter) => ({
@@ -28,7 +30,9 @@ export const Feed = () => {
         }))}
         headerRightContent={
           <Flex css={{ gap: "$5", px: "$3", alignItems: "center" }}>
-            <SlideDownDialog
+            <VerticalSlideDialog
+              origin="fromTop"
+              container={containerRef.current}
               position={{ right: "40px" }}
               trigger={
                 <Flex>
@@ -43,7 +47,7 @@ export const Feed = () => {
                   updateContentFilters={updateContentFilters}
                 />
               )}
-            </SlideDownDialog>
+            </VerticalSlideDialog>
             <Link href="/discover" passHref>
               <Flex as="a" css={{ color: "$text" }}>
                 <SearchIcon />

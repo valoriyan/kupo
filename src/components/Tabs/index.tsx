@@ -19,7 +19,7 @@ export interface TabsProps {
 }
 
 export const Tabs = (props: TabsProps) => {
-  const [selectedTab, setTab] = useState(props.tabs[0].id);
+  const [selectedTab, setTab] = useState(props.tabs[0]?.id);
 
   return (
     <TabRoot value={selectedTab} onValueChange={setTab} orientation="horizontal">

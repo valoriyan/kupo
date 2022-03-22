@@ -28,7 +28,7 @@ export const UserProfile = ({ username }: { username: string }) => {
   const isOwnProfile = data && clientUserId === data?.userId;
 
   return !isLoading && error ? (
-    <ErrorArea>{error.message || "An Unexpected Error Occurred"}</ErrorArea>
+    <ErrorArea>{error.message || "An error occurred"}</ErrorArea>
   ) : isLoading || !data ? (
     <LoadingArea size="lg" />
   ) : (
