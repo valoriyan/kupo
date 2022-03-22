@@ -2,10 +2,10 @@ import Link from "next/link";
 import Router from "next/router";
 import { RenderableNewFollowerNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { Button } from "#/components/Button";
 import { Grid, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
-import { Button } from "#/components/Button";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
 export const NewFollowerNotification = ({

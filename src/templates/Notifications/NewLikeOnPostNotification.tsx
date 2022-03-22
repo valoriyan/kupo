@@ -1,13 +1,14 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import Router from "next/router";
 import { RenderableNewLikeOnPostNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { Grid, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
 import { styled } from "#/styling";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import { goToPostPage } from "../SinglePost";
 
 export const NewLikeOnPostNotification = ({
   notification,
@@ -47,7 +48,7 @@ export const NewLikeOnPostNotification = ({
         </Body>
       </Stack>
 
-      <ImageWrapper>
+      <ImageWrapper onClick={() => goToPostPage(post.postId)}>
         <Image
           alt="Post Media"
           src={post.contentElementTemporaryUrls[0]}
@@ -61,7 +62,7 @@ export const NewLikeOnPostNotification = ({
   );
 };
 
-const ImageWrapper = styled("div", {
+const ImageWrapper = styled("button", {
   position: "relative",
   size: "$9",
   bg: "$background3",
