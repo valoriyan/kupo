@@ -1,17 +1,25 @@
+import Link from "next/link";
 import Router from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { assertUnreachable } from "#/utils/assertUnreachable";
-import { AdditionalScreen } from "../AddContent";
-import { Initial } from "./Initial";
-import { styled } from "#/styling";
+import { CloseIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
-import { FormStateProvider } from "../AddContent/FormContext";
 import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
-import { CloseIcon } from "#/components/Icons";
+import EditProfilePage from "#/pages/edit-profile";
+import { styled } from "#/styling";
+import { assertUnreachable } from "#/utils/assertUnreachable";
+import { SessionStorageItem } from "#/utils/storage";
+import { AdditionalScreen } from "../AddContent";
+import { FormStateProvider } from "../AddContent/FormContext";
 import { AccountSettings } from "./AccountSettings";
 import { PasswordSettings } from "./AccountSettings/PasswordSettings";
-import EditProfilePage from "#/pages/edit-profile";
+import { Initial } from "./Initial";
+
+const previousLocation = SessionStorageItem<string>("settings");
+
+export const setPreviousLocationForSettings = () => {
+  previousLocation.set(Router.asPath);
+};
 
 export enum SettingsScreen {
   Initial = "Initial",
@@ -63,9 +71,11 @@ export const Settings = () => {
           {additionalScreen ? (
             <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
           ) : (
-            <CloseButton onClick={() => Router.back()}>
-              <CloseIcon />
-            </CloseButton>
+            <Link href={previousLocation.get() ?? "/feed"} passHref>
+              <CloseButton as="a">
+                <CloseIcon />
+              </CloseButton>
+            </Link>
           )}
           <MainTitle as="h1">
             {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
@@ -105,6 +115,7 @@ const Header = styled(Stack, {
 });
 
 const CloseButton = styled("button", {
+  color: "$text",
   alignSelf: "flex-end",
   fontWeight: "$bold",
   fontSize: "$4",

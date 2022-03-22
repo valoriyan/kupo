@@ -1,5 +1,6 @@
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
+import { setPreviousLocationForSettings } from "#/templates/Settings";
 import {
   BookmarkIcon,
   BoxIcon,
@@ -31,7 +32,15 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
           <NavLink href="/lists" Icon={ListIcon} label="My Lists" onClick={hide} />
           <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" onClick={hide} />
           <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" onClick={hide} />
-          <NavLink href="/settings" Icon={OptionsIcon} label="Settings" onClick={hide} />
+          <NavLink
+            href="/settings"
+            Icon={OptionsIcon}
+            label="Settings"
+            onClick={() => {
+              setPreviousLocationForSettings();
+              hide();
+            }}
+          />
         </Stack>
         <Stack css={{ gap: "$6" }}>
           <NavLink href="/support" Icon={SupportIcon} label="Support" onClick={hide} />

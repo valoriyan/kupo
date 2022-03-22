@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { logout } from "#/contexts/auth";
 import { styled } from "#/styling";
+import { setPreviousLocationForAddContent } from "#/templates/AddContent";
+import { setPreviousLocationForSettings } from "#/templates/Settings";
 import { ErrorMessage } from "../ErrorArea";
 import {
   BellIcon,
@@ -46,7 +48,7 @@ export const SidePanel = () => {
           <UserInfo />
         </UserInfoWrapper>
         <Link href="/add-content" passHref>
-          <UploadLink>Create</UploadLink>
+          <UploadLink onClick={setPreviousLocationForAddContent}>Create</UploadLink>
         </Link>
       </Stack>
       <ScrollArea>
@@ -67,7 +69,12 @@ export const SidePanel = () => {
             <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
             <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
             <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
-            <NavLink href="/settings" Icon={OptionsIcon} label="Settings" />
+            <NavLink
+              href="/settings"
+              Icon={OptionsIcon}
+              label="Settings"
+              onClick={setPreviousLocationForSettings}
+            />
           </Stack>
           <Stack css={{ gap: "$6" }}>
             <NavLink href="/support" Icon={SupportIcon} label="Support" />

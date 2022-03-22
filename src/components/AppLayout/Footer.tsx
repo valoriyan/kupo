@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
+import { setPreviousLocationForAddContent } from "#/templates/AddContent";
 import { Avatar } from "../Avatar";
 import { Drawer } from "../Drawer";
 import { BellIcon, HomeIcon, MailIcon, MathPlusIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadLink } from "./shared";
-import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
 export const Footer = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
@@ -29,7 +30,7 @@ export const Footer = () => {
         <BellIcon />
       </IconLink>
       <Link href="/add-content" passHref>
-        <UploadLink>
+        <UploadLink onClick={setPreviousLocationForAddContent}>
           <MathPlusIcon />
         </UploadLink>
       </Link>

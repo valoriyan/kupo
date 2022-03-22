@@ -1,18 +1,26 @@
+import Link from "next/link";
 import Router from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { SHORT_MONTHS, useCalendarState } from "#/components/Calendar";
 import { CloseIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { TransitionArea } from "#/components/TransitionArea";
+import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
+import { assertUnreachable } from "#/utils/assertUnreachable";
+import { SessionStorageItem } from "#/utils/storage";
 import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
 import { NewPost } from "./NewPost";
 import { NewShopItem } from "./NewShopItem";
-import { MainTitle } from "#/components/Typography";
-import { assertUnreachable } from "#/utils/assertUnreachable";
 import { PostSchedule } from "./PostSchedule";
-import { SHORT_MONTHS, useCalendarState } from "#/components/Calendar";
 import { ScheduleByDay } from "./ScheduleByDay";
+
+const previousLocation = SessionStorageItem<string>("add-content");
+
+export const setPreviousLocationForAddContent = () => {
+  previousLocation.set(Router.asPath);
+};
 
 export enum AddContentScreen {
   Initial = "Initial",
@@ -80,9 +88,11 @@ export const AddContent = () => {
           {additionalScreen ? (
             <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
           ) : (
-            <CloseButton onClick={() => Router.back()}>
-              <CloseIcon />
-            </CloseButton>
+            <Link href={previousLocation.get() ?? "/feed"} passHref>
+              <CloseButton as="a">
+                <CloseIcon />
+              </CloseButton>
+            </Link>
           )}
           <MainTitle as="h1">
             {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
@@ -122,6 +132,7 @@ const Header = styled(Stack, {
 });
 
 const CloseButton = styled("button", {
+  color: "$text",
   alignSelf: "flex-end",
   fontWeight: "$bold",
   fontSize: "$4",
