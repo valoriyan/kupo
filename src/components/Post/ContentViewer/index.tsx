@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "#/styling";
 import { Content } from "./Content";
 import { range } from "#/utils/range";
@@ -7,13 +7,21 @@ import { ChevronLeftIcon, ChevronRightIcon } from "#/components/Icons";
 
 export interface ContentViewerProps {
   contentUrls: string[];
+  setCurrentMediaUrl: (url: string | undefined) => void;
 }
 
-export const ContentViewer = ({ contentUrls }: ContentViewerProps) => {
+export const ContentViewer = ({
+  contentUrls,
+  setCurrentMediaUrl,
+}: ContentViewerProps) => {
   const { page, direction, paginate } = usePagination([0, 0], contentUrls.length);
 
   const currentImageUrl = contentUrls[page];
   const hasMultiple = contentUrls.length > 1;
+
+  useEffect(() => {
+    setCurrentMediaUrl(currentImageUrl);
+  }, [currentImageUrl, setCurrentMediaUrl]);
 
   return (
     <AnimatePresence initial={false} custom={direction}>

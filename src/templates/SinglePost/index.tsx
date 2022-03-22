@@ -4,13 +4,14 @@ import { DetailLayout } from "#/components/DetailLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
+import { getSinglePostUrl } from "#/utils/generateLinkUrls";
 import { SessionStorageItem } from "#/utils/storage";
 
 const previousLocation = SessionStorageItem<string>("previous-location-single-post");
 
 export const goToPostPage = (postId: string) => {
   previousLocation.set(Router.asPath);
-  Router.push(`/post/${postId}`);
+  Router.push(getSinglePostUrl(postId));
 };
 
 export interface SinglePostProps {

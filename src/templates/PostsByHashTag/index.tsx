@@ -7,6 +7,7 @@ import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
+import { getPostsByHashtagUrl } from "#/utils/generateLinkUrls";
 import { SessionStorageItem } from "#/utils/storage";
 import { goToPostPage } from "../SinglePost";
 
@@ -14,7 +15,7 @@ const previousLocation = SessionStorageItem<string>("previous-location-post-by-h
 
 export const goToPostByHashTagPage = (hashtag: string) => {
   previousLocation.set(Router.asPath);
-  Router.push(`/posts/${hashtag}`);
+  Router.push(getPostsByHashtagUrl(hashtag));
 };
 
 export interface PostsByHashTagProps {

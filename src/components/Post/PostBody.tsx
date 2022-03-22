@@ -15,6 +15,7 @@ export interface PostBodyProps {
   relativeTimestamp: string;
   caption: string;
   contentUrls: string[];
+  setCurrentMediaUrl: (url: string | undefined) => void;
   shared?: RenderablePostShared;
   menuActions?: MenuAction[];
   onPostClick?: () => void;
@@ -48,9 +49,17 @@ export const PostBody = (props: PostBodyProps) => {
       </Flex>
       <Body css={{ px: "$4", py: "$2", mb: "$3" }}>{props.caption}</Body>
       {props.shared && props.shared.type === "post" ? (
-        <SharedPost post={props.shared.post} />
+        <SharedPost
+          post={props.shared.post}
+          setCurrentMediaUrl={props.setCurrentMediaUrl}
+        />
       ) : (
-        !!props.contentUrls?.length && <ContentViewer contentUrls={props.contentUrls} />
+        !!props.contentUrls?.length && (
+          <ContentViewer
+            contentUrls={props.contentUrls}
+            setCurrentMediaUrl={props.setCurrentMediaUrl}
+          />
+        )
       )}
     </>
   );

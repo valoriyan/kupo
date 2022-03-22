@@ -7,9 +7,10 @@ import { PostBody } from "./PostBody";
 
 export interface SharedPostProps {
   post: RenderablePost;
+  setCurrentMediaUrl: (url: string | undefined) => void;
 }
 
-export const SharedPost = ({ post }: SharedPostProps) => {
+export const SharedPost = ({ post, setCurrentMediaUrl }: SharedPostProps) => {
   const { authorUserId, caption, contentElementTemporaryUrls, shared } = post;
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
@@ -22,6 +23,7 @@ export const SharedPost = ({ post }: SharedPostProps) => {
         relativeTimestamp={relativeTimestamp}
         caption={caption}
         contentUrls={contentElementTemporaryUrls}
+        setCurrentMediaUrl={setCurrentMediaUrl}
         shared={shared}
         onPostClick={() => goToPostPage(post.postId)}
       />

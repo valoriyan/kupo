@@ -1,16 +1,22 @@
+import { useState } from "react";
 import { useSharePost } from "#/api/mutations/posts/sharePost";
 import { styled } from "#/styling";
-import { CloseIcon, UserIcon } from "../Icons";
+import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
+import { getSinglePostUrl } from "#/utils/generateLinkUrls";
+import { CloseIcon, LinkIcon, UserIcon } from "../Icons";
+import { SoftwareDownloadIcon } from "../Icons/generated/SoftwareDownloadIcon";
 import { Stack } from "../Layout";
 import { Heading } from "../Typography";
 
 export interface ShareMenuProps {
   hide: () => void;
   postId: string;
+  currentMediaUrl: string | undefined;
 }
 
-export const ShareMenu = ({ hide, postId }: ShareMenuProps) => {
+export const ShareMenu = ({ hide, postId, currentMediaUrl }: ShareMenuProps) => {
   const { mutateAsync: sharePost } = useSharePost({ postId });
+  const [isLoading, setIsLoading] = useState(false);
 
   const shareToProfile = async () => {
     sharePost({
@@ -18,6 +24,28 @@ export const ShareMenu = ({ hide, postId }: ShareMenuProps) => {
       hashtags: ["shared"],
     });
     hide();
+  };
+
+  const copyLink = () => {
+    const link = `${location.origin}${getSinglePostUrl(postId)}`;
+    copyTextToClipboard(link, "Link");
+  };
+
+  const saveMedia = async () => {
+    if (!currentMediaUrl) return;
+    setIsLoading(true);
+    const blob = await (await fetch(currentMediaUrl)).blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const dlAnchor = document.createElement("a");
+    dlAnchor.style.display = "none";
+    // TODO: support different file types and move to util function
+    dlAnchor.download = "kupono-media.jpg";
+    dlAnchor.href = blobUrl;
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    document.body.removeChild(dlAnchor);
+    URL.revokeObjectURL(blobUrl);
+    setIsLoading(false);
   };
 
   return (
@@ -30,6 +58,16 @@ export const ShareMenu = ({ hide, postId }: ShareMenuProps) => {
         <UserIcon />
         <Heading>Share to Profile</Heading>
       </ItemWrapper>
+      <ItemWrapper onClick={copyLink}>
+        <LinkIcon />
+        <Heading>Copy Link</Heading>
+      </ItemWrapper>
+      {!!currentMediaUrl && (
+        <ItemWrapper onClick={saveMedia} disabled={isLoading}>
+          <SoftwareDownloadIcon />
+          <Heading>Save Media</Heading>
+        </ItemWrapper>
+      )}
     </Stack>
   );
 };
