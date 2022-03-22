@@ -2,9 +2,12 @@ import { FormEventHandler, useState } from "react";
 import { useCommentOnPost } from "#/api/mutations/posts/commentOnPost";
 import { Button } from "#/components/Button";
 import { CommentIcon } from "#/components/Icons";
-import { Flex } from "#/components/Layout";
+import { Flex, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
+
+const COMMENT_CHAR_LIMIT = 300;
 
 export interface CommentInputProps {
   postId: string;
@@ -30,12 +33,17 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
       onSubmit={onSubmitComment}
       css={{ borderBottom: "solid $borderWidths$1 $border" }}
     >
-      <TextArea
-        rows={3}
-        placeholder="Add comment"
-        value={text}
-        onChange={(e) => setText(e.currentTarget.value)}
-      />
+      <Stack css={{ flex: 1 }}>
+        <TextArea
+          rows={3}
+          placeholder="Add comment"
+          value={text}
+          onChange={(e) => setText(e.currentTarget.value.slice(0, COMMENT_CHAR_LIMIT))}
+        />
+        <Subtext css={{ color: "$secondaryText", p: "$2", alignSelf: "flex-end" }}>
+          {text.length}/{COMMENT_CHAR_LIMIT} character limit
+        </Subtext>
+      </Stack>
       <SubmitButton type="submit">
         <TextOrSpinner isLoading={isLoading}>
           <CommentIcon />
@@ -46,15 +54,15 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
 };
 
 const TextArea = styled("textarea", {
+  resize: "vertical",
   fontSize: "$2",
   p: "$3",
   border: "none",
   backgroundColor: "$background1",
   color: "$text",
-  flex: 1,
 });
 
 const SubmitButton = styled(Button, {
   borderRadius: "0 !important",
-  p: "$4",
+  px: "$5",
 });

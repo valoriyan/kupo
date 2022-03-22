@@ -7,6 +7,7 @@ import { NoAuthFooter } from "./NoAuthFooter";
 import { NoAuthSidePanel } from "./NoAuthSidePanel";
 import { SidePanel } from "./SidePanel";
 import { useWebsocketState, WebsocketStateProvider } from "./WebsocketContext";
+import { ScrollArea } from "../ScrollArea";
 
 export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
   return (
@@ -37,7 +38,7 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
           <NoAuthSidePanel />
         )}
       </SidePanelWrapper>
-      <Box css={{ "@md": { maxWidth: "600px" }, height: "100%" }}>{children}</Box>
+      <Content>{children}</Content>
       <Box css={{ zIndex: 1, "@md": { display: "none" } }}>
         {isAuthenticated === "unset" ? null : isAuthenticated ? (
           <Footer />
@@ -66,4 +67,9 @@ const SidePanelWrapper = styled(Flex, {
   maxWidth: "calc((100vw - 600px) / 2)",
   display: "none",
   "@md": { display: "block" },
+});
+
+const Content = styled(ScrollArea, {
+  "@md": { maxWidth: "600px" },
+  height: "100%",
 });
