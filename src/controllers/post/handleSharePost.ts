@@ -90,6 +90,13 @@ export async function handleSharePost({
       sharedPostId,
     });
 
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
+      {
+        hashtags,
+        postId,
+      },
+    );
+
     return {
       success: {
         renderablePost: {
