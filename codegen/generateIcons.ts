@@ -22,6 +22,7 @@ const ICONS_TO_GENERATE = [
   "comment",
   "dollar",
   "duplicate",
+  "file-document",
   "folder",
   "heart",
   "home",

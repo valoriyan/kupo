@@ -1,15 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
 import { RenderableNewCommentOnPostNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Grid, Stack } from "#/components/Layout";
+import { PostThumbnail } from "#/components/PostThumbnail";
 import { Body } from "#/components/Typography";
-import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { truncate } from "#/utils/truncate";
-import { goToPostPage } from "../SinglePost";
 
 export const NewCommentOnPostNotification = ({
   notification,
@@ -56,22 +54,7 @@ export const NewCommentOnPostNotification = ({
         </Body>
       </Stack>
 
-      <ImageWrapper onClick={() => goToPostPage(post.postId)}>
-        <Image
-          alt="Post Media"
-          src={post.contentElementTemporaryUrls[0]}
-          layout="fill"
-          objectFit="cover"
-          unoptimized // Optimization caching is broken because signed urls aren't stable
-          priority
-        />
-      </ImageWrapper>
+      <PostThumbnail post={post} />
     </Grid>
   );
 };
-
-const ImageWrapper = styled("button", {
-  position: "relative",
-  size: "$9",
-  bg: "$background3",
-});
