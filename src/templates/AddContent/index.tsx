@@ -19,6 +19,7 @@ import { ScheduleByDay } from "./ScheduleByDay";
 const previousLocation = SessionStorageItem<string>("add-content");
 
 export const setPreviousLocationForAddContent = () => {
+  if (Router.asPath === "/add-content") return;
   previousLocation.set(Router.asPath);
 };
 

@@ -10,7 +10,6 @@ import { styled } from "#/styling";
 import { assertUnreachable } from "#/utils/assertUnreachable";
 import { SessionStorageItem } from "#/utils/storage";
 import { AdditionalScreen } from "../AddContent";
-import { FormStateProvider } from "../AddContent/FormContext";
 import { AccountSettings } from "./AccountSettings";
 import { PasswordSettings } from "./AccountSettings/PasswordSettings";
 import { Initial } from "./Initial";
@@ -18,6 +17,7 @@ import { Initial } from "./Initial";
 const previousLocation = SessionStorageItem<string>("settings");
 
 export const setPreviousLocationForSettings = () => {
+  if (Router.asPath === "/settings") return;
   previousLocation.set(Router.asPath);
 };
 
@@ -65,36 +65,34 @@ export const Settings = () => {
   }
 
   return (
-    <FormStateProvider>
-      <Wrapper>
-        <Header>
-          {additionalScreen ? (
-            <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
-          ) : (
-            <Link href={previousLocation.get() ?? "/feed"} passHref>
-              <CloseButton as="a">
-                <CloseIcon />
-              </CloseButton>
-            </Link>
-          )}
-          <MainTitle as="h1">
-            {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
-          </MainTitle>
-        </Header>
-        <TransitionArea
-          transitionKey={additionalScreen ? "additionalScreen" : currentScreen}
-          animation={
-            additionalScreen
-              ? rightToRight
-              : lastScreen.current === "additionalScreen"
-              ? leftToLeft
-              : rightToLeft
-          }
-        >
-          {additionalScreen?.node || bodyNode}
-        </TransitionArea>
-      </Wrapper>
-    </FormStateProvider>
+    <Wrapper>
+      <Header>
+        {additionalScreen ? (
+          <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
+        ) : (
+          <Link href={previousLocation.get() ?? "/feed"} passHref>
+            <CloseButton as="a">
+              <CloseIcon />
+            </CloseButton>
+          </Link>
+        )}
+        <MainTitle as="h1">
+          {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
+        </MainTitle>
+      </Header>
+      <TransitionArea
+        transitionKey={additionalScreen ? "additionalScreen" : currentScreen}
+        animation={
+          additionalScreen
+            ? rightToRight
+            : lastScreen.current === "additionalScreen"
+            ? leftToLeft
+            : rightToLeft
+        }
+      >
+        {additionalScreen?.node || bodyNode}
+      </TransitionArea>
+    </Wrapper>
   );
 };
 
@@ -108,7 +106,7 @@ const Wrapper = styled("div", {
 const Header = styled(Stack, {
   px: "$6",
   py: "$5",
-  gap: "$5",
+  gap: "$1",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
   borderBottomColor: "$text",
