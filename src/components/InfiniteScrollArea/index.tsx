@@ -3,6 +3,7 @@ import mergeRefs from "react-merge-refs";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { VariableSizeList } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
+import { useWindowSize } from "#/utils/useWindowSize";
 import { Body } from "../Typography";
 
 export interface InfiniteScrollAreaProps {
@@ -18,8 +19,13 @@ export const InfiniteScrollArea = ({
   loadNextPage,
   items,
 }: InfiniteScrollAreaProps) => {
+  const { height: windowHeight, width: windowWidth } = useWindowSize();
   const listRef = useRef<VariableSizeList<unknown>>(null);
   const rowHeights = useRef<Record<number, number>>({});
+
+  useEffect(() => {
+    listRef.current?.resetAfterIndex(0);
+  }, [windowHeight, windowWidth]);
 
   const itemCount = hasNextPage ? items.length + 1 : items.length;
 
