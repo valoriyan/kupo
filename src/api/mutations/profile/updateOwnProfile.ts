@@ -10,12 +10,14 @@ export const useUpdateOwnProfile = () => {
       username,
       shortBio,
       userWebsite,
+      userEmail,
       preferredPagePrimaryColor,
       profileVisibility,
     }: {
       username?: string;
       shortBio?: string;
       userWebsite?: string;
+      userEmail?: string;
       preferredPagePrimaryColor?: Color;
       profileVisibility?: ProfilePrivacySetting;
     }) => {
@@ -23,6 +25,7 @@ export const useUpdateOwnProfile = () => {
         username: username ?? undefined,
         shortBio: shortBio ?? undefined,
         userWebsite: userWebsite ?? undefined,
+        userEmail: userEmail ?? undefined,
         phoneNumber: undefined,
         preferredPagePrimaryColor: preferredPagePrimaryColor ?? undefined,
         profileVisibility: profileVisibility ?? undefined,
@@ -41,6 +44,7 @@ export const useUpdateOwnProfile = () => {
               username: data.data.success.username,
               shortBio: data.data.success.shortBio,
               userWebsite: data.data.success.userWebsite,
+              email: data.data.success.email,
               preferredPagePrimaryColor: data.data.success.preferredPagePrimaryColor,
             });
           }

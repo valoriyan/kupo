@@ -1,80 +1,26 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
-
-import { Api } from "#/api";
-import { SettingsScreen } from "..";
-import { styled } from "#/styling";
-import { mainTitleStyles } from "#/components/Typography";
-import { DuplicateIcon } from "#/components/Icons";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { ErrorArea } from "#/components/ErrorArea";
+import { Box, Stack } from "#/components/Layout";
+import { LoadingArea } from "#/components/LoadingArea";
+import { ContactInfoSettings } from "./ContactInfoSettings";
+import { PasswordSettings } from "./PasswordSettings";
 
-export interface InitialProps {
-  setCurrentScreen: (newScreen: SettingsScreen) => void;
-}
-
-export const AccountSettings = (props: InitialProps) => {
-  const [updatedEmail, setUpdatedEmail] = useState<string>("");
-
+export const AccountSettings = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
 
-  const [hasLoaded, updatedHasLoaded] = useState<boolean>(false);
-
   if (error && !isLoading) {
-    return <div>Error: {error.message}</div>;
+    return <ErrorArea>Failed to fetch profile settings</ErrorArea>;
   }
 
   if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
-
-  const { email } = data;
-
-  if (!hasLoaded) {
-    updatedHasLoaded(true);
-    setUpdatedEmail(email || "");
-  }
-
-  function onChangUserEmail(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    const newValue = event.currentTarget.value;
-    setUpdatedEmail(newValue);
-  }
-
-  function onSubmitSettings(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-
-    Api.updateUserProfile({
-      userEmail: updatedEmail,
-    });
+    return <LoadingArea size="lg" />;
   }
 
   return (
-    <div>
-      <div>
-        Email:
-        <input type="text" value={updatedEmail} onChange={onChangUserEmail} />
-      </div>
-
-      <br />
-      <button onClick={onSubmitSettings}>Save Settings</button>
-
-      <div>
-        <NewItemButton onClick={() => props.setCurrentScreen(SettingsScreen.Password)}>
-          <DuplicateIcon /> Password
-        </NewItemButton>
-      </div>
-    </div>
+    <Stack css={{ gap: "$3" }}>
+      <ContactInfoSettings currentEmail={data?.email} />
+      <Box css={{ height: "1px", bg: "$border" }} />
+      <PasswordSettings />
+    </Stack>
   );
 };
-
-const NewItemButton = styled("button", mainTitleStyles, {
-  display: "flex",
-  alignItems: "center",
-  gap: "$6",
-  px: "$9",
-  py: "$7",
-  fontSize: "$3",
-  fontWeight: "$bold",
-  borderBottomStyle: "solid",
-  borderBottomWidth: "$1",
-  borderBottomColor: "$border",
-});

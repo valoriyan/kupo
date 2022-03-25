@@ -11,7 +11,6 @@ import { assertUnreachable } from "#/utils/assertUnreachable";
 import { SessionStorageItem } from "#/utils/storage";
 import { AdditionalScreen } from "../AddContent";
 import { AccountSettings } from "./AccountSettings";
-import { PasswordSettings } from "./AccountSettings/PasswordSettings";
 import { Initial } from "./Initial";
 
 const previousLocation = SessionStorageItem<string>("settings");
@@ -25,14 +24,12 @@ export enum SettingsScreen {
   Initial = "Initial",
   Profile = "Profile",
   Account = "Account",
-  Password = "Password",
 }
 
 const screenToHeading = {
   [SettingsScreen.Initial]: "Settings",
   [SettingsScreen.Profile]: "Settings - Profile",
   [SettingsScreen.Account]: "Settings - Account",
-  [SettingsScreen.Password]: "Settings - Account - Password",
 };
 
 export const Settings = () => {
@@ -55,10 +52,7 @@ export const Settings = () => {
       bodyNode = <EditProfilePage />;
       break;
     case SettingsScreen.Account:
-      bodyNode = <AccountSettings setCurrentScreen={setCurrentScreen} />;
-      break;
-    case SettingsScreen.Password:
-      bodyNode = <PasswordSettings />;
+      bodyNode = <AccountSettings />;
       break;
     default:
       assertUnreachable(currentScreen, "Unknown screen received");
