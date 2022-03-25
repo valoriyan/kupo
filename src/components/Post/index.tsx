@@ -5,11 +5,11 @@ import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { Body } from "../Typography";
+import { VerticalSlideDialog } from "../VerticalSlideDialog";
 import { Comments } from "./Comments";
 import { PostBody } from "./PostBody";
-import { usePostActions } from "./usePostActions";
-import { VerticalSlideDialog } from "../VerticalSlideDialog";
 import { ShareMenu } from "./ShareMenu";
+import { usePostActions } from "./usePostActions";
 
 export interface PostProps {
   post: RenderablePost;
@@ -85,7 +85,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
           {({ hide }) => (
             <ShareMenu
               hide={hide}
-              postId={shared?.post.postId ?? post.postId}
+              post={shared?.post ?? post}
               currentMediaUrl={currentMediaUrl}
             />
           )}

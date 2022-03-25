@@ -122,16 +122,16 @@ const Wrapper = styled("div", {
   bg: "$background1",
 });
 
-const Header = styled(Stack, {
+export const Header = styled(Stack, {
   px: "$6",
   py: "$5",
-  gap: "$5",
+  gap: "$1",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
   borderBottomColor: "$text",
 });
 
-const CloseButton = styled("button", {
+export const CloseButton = styled("button", {
   color: "$text",
   alignSelf: "flex-end",
   fontWeight: "$bold",

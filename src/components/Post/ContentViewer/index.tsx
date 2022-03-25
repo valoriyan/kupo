@@ -7,12 +7,14 @@ import { ChevronLeftIcon, ChevronRightIcon } from "#/components/Icons";
 
 export interface ContentViewerProps {
   contentUrls: string[];
-  setCurrentMediaUrl: (url: string | undefined) => void;
+  setCurrentMediaUrl?: (url: string | undefined) => void;
+  contentHeight?: string;
 }
 
 export const ContentViewer = ({
   contentUrls,
   setCurrentMediaUrl,
+  contentHeight,
 }: ContentViewerProps) => {
   const { page, direction, paginate } = usePagination([0, 0], contentUrls.length);
 
@@ -20,12 +22,17 @@ export const ContentViewer = ({
   const hasMultiple = contentUrls.length > 1;
 
   useEffect(() => {
-    setCurrentMediaUrl(currentImageUrl);
+    setCurrentMediaUrl?.(currentImageUrl);
   }, [currentImageUrl, setCurrentMediaUrl]);
 
   return (
     <AnimatePresence initial={false} custom={direction}>
-      <MotionWrapper css={{ height: "62vh", cursor: hasMultiple ? "grab" : "default" }}>
+      <MotionWrapper
+        css={{
+          height: contentHeight ?? "62vh",
+          cursor: hasMultiple ? "grab" : "default",
+        }}
+      >
         <motion.div
           key={page}
           style={{ height: "100%", width: "100%" }}

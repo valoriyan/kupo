@@ -1,17 +1,13 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api } from "../..";
+import { Api, SharePostRequestBody } from "../..";
 import { invalidatePostFeeds } from "./utilities";
 
-export const useSharePost = ({ postId }: { postId: string }) => {
+export const useSharePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ caption, hashtags }: { caption: string; hashtags: string[] }) => {
-      return await Api.sharePost({
-        sharedPostId: postId,
-        caption,
-        hashtags,
-      });
+    async (requestBody: SharePostRequestBody) => {
+      return await Api.sharePost(requestBody);
     },
     {
       onSuccess: (data) => {

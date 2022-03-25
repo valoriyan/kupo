@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSharePost } from "#/api/mutations/posts/sharePost";
+import { RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { getSinglePostUrl } from "#/utils/generateLinkUrls";
@@ -7,27 +7,24 @@ import { CloseIcon, LinkIcon, UserIcon } from "../Icons";
 import { SoftwareDownloadIcon } from "../Icons/generated/SoftwareDownloadIcon";
 import { Stack } from "../Layout";
 import { Heading } from "../Typography";
+import { openSharePostModal } from "./SharePostModal";
 
 export interface ShareMenuProps {
   hide: () => void;
-  postId: string;
+  post: RenderablePost;
   currentMediaUrl: string | undefined;
 }
 
-export const ShareMenu = ({ hide, postId, currentMediaUrl }: ShareMenuProps) => {
-  const { mutateAsync: sharePost } = useSharePost({ postId });
+export const ShareMenu = ({ hide, post, currentMediaUrl }: ShareMenuProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const shareToProfile = async () => {
-    sharePost({
-      caption: "I want to share this!",
-      hashtags: ["shared"],
-    });
+  const shareToProfile = () => {
     hide();
+    openSharePostModal({ post });
   };
 
   const copyLink = () => {
-    const link = `${location.origin}${getSinglePostUrl(postId)}`;
+    const link = `${location.origin}${getSinglePostUrl(post.postId)}`;
     copyTextToClipboard(link, "Link");
   };
 

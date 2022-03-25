@@ -6,6 +6,7 @@ import { QueryClientProvider } from "#/contexts/queryClient";
 import { globalStyles } from "#/styling/globalStyles";
 import { ThemeProvider } from "#/styling/ThemeProvider";
 import "#/styling/modernNormalize.css";
+import { ModalContainer } from "#/components/Modal";
 
 const KuponoApp = ({ Component, pageProps }: AppProps) => {
   globalStyles();
@@ -20,6 +21,7 @@ const KuponoApp = ({ Component, pageProps }: AppProps) => {
     <ThemeProvider>
       <IdProvider>
         <QueryClientProvider>
+          <ModalContainer />
           {noAppLayout ? (
             <Component {...pageProps} />
           ) : (

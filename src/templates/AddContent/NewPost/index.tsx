@@ -1,5 +1,6 @@
 import { useCreatePost } from "#/api/mutations/posts/createPost";
 import { Button } from "#/components/Button";
+import { CaptionTextArea } from "#/components/CaptionTextArea";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
 import { AddRIcon } from "#/components/Icons";
@@ -35,11 +36,7 @@ export const NewPost = (props: NewPostProps) => {
           <MediaUpload setAdditionalScreen={props.setAdditionalScreen} />
         </SectionWrapper>
         <SectionWrapper>
-          <Caption
-            placeholder="add caption..."
-            value={caption}
-            onChange={(e) => setCaption(e.currentTarget.value)}
-          />
+          <CaptionTextArea caption={caption} setCaption={setCaption} />
         </SectionWrapper>
         <SectionWrapper>
           <HashTags
@@ -93,26 +90,11 @@ const Wrapper = styled("div", {
   pb: "$6",
 });
 
-const SectionWrapper = styled("div", {
-  px: "$5",
-  py: "$5",
+export const SectionWrapper = styled("div", {
+  p: "$5",
   borderBottomStyle: "solid",
   borderBottomColor: "$border",
   borderBottomWidth: "$1",
-});
-
-const Caption = styled("textarea", {
-  width: "100%",
-  height: "15vh",
-  minHeight: "$10",
-  bg: "transparent",
-  resize: "vertical",
-  border: "none",
-  fontSize: "$3",
-
-  "&::placeholder": {
-    color: "$secondaryText",
-  },
 });
 
 const LinkItem = styled("button", {

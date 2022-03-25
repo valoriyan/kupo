@@ -16,10 +16,11 @@ export interface PostBodyProps {
   relativeTimestamp: string;
   caption: string;
   contentUrls: string[];
-  setCurrentMediaUrl: (url: string | undefined) => void;
+  setCurrentMediaUrl?: (url: string | undefined) => void;
   shared?: RenderablePostShared;
   menuActions?: MenuAction[];
   onPostClick?: () => void;
+  contentHeight?: string;
 }
 
 export const PostBody = (props: PostBodyProps) => {
@@ -64,6 +65,7 @@ export const PostBody = (props: PostBodyProps) => {
           <ContentViewer
             contentUrls={props.contentUrls}
             setCurrentMediaUrl={props.setCurrentMediaUrl}
+            contentHeight={props.contentHeight}
           />
         )
       )}
