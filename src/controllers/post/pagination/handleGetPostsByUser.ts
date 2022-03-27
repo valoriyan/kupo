@@ -7,42 +7,74 @@ import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserView
 import { getNextPageOfPostsEncodedCursor, getPageOfPostsFromAllPosts } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
 
-export interface GetPageOfPostsPaginationParams {
+export interface GetPostsByUserIdParams {
   userId: string;
-
   cursor?: string;
   pageSize: number;
 }
 
-export interface SuccessfulGetPageOfPostsPaginationResponse {
-  posts: RenderablePost[];
+export interface GetPostsByUsernameParams {
+  username: string;
+  cursor?: string;
+  pageSize: number;
+}
 
+export interface SuccessfulGetPostsByUserResponse {
+  posts: RenderablePost[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum FailedtoGetPageOfPostsPaginationResponseReason {
+export enum FailedtoGetPostsByUserResponseReason {
   UnknownCause = "Unknown Cause",
   UserPrivate = "This User's Posts Are Private",
+  UnknownUser = "User Not Found",
 }
 
-export interface FailedtoGetPageOfPostsPaginationResponse {
-  reason: FailedtoGetPageOfPostsPaginationResponseReason;
+export interface FailedtoGetPostsByUserResponse {
+  reason: FailedtoGetPostsByUserResponseReason;
 }
 
-export async function handleGetPageOfPostsPagination({
+export async function handleGetPostsByUsername({
   controller,
   request,
   requestBody,
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPageOfPostsPaginationParams;
+  requestBody: GetPostsByUsernameParams;
 }): Promise<
-  HTTPResponse<
-    FailedtoGetPageOfPostsPaginationResponse,
-    SuccessfulGetPageOfPostsPaginationResponse
-  >
+  HTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
+> {
+  const { username, ...restRequestBody } = requestBody;
+  const userId =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
+      username,
+    );
+
+  if (!userId) {
+    return {
+      error: { reason: FailedtoGetPostsByUserResponseReason.UnknownUser },
+    };
+  }
+
+  return handleGetPostsByUserId({
+    controller,
+    request,
+    requestBody: { ...restRequestBody, userId },
+  });
+}
+
+export async function handleGetPostsByUserId({
+  controller,
+  request,
+  requestBody,
+}: {
+  controller: PostController;
+  request: express.Request;
+  requestBody: GetPostsByUserIdParams;
+}): Promise<
+  HTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
 > {
   const clientUserId = await getClientUserId(request);
 
@@ -54,7 +86,7 @@ export async function handleGetPageOfPostsPagination({
 
   if (!canViewContent) {
     return {
-      error: { reason: FailedtoGetPageOfPostsPaginationResponseReason.UserPrivate },
+      error: { reason: FailedtoGetPostsByUserResponseReason.UserPrivate },
     };
   }
 

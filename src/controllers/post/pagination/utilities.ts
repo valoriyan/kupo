@@ -6,7 +6,7 @@ export function getNextPageOfPostsEncodedCursor({
   posts: UnrenderablePostWithoutElementsOrHashtags[];
 }): string | undefined {
   if (posts.length > 0) {
-    const timestamp = posts[posts.length - 1]!.scheduledPublicationTimestamp;
+    const timestamp = posts[posts.length - 1].scheduledPublicationTimestamp;
     return encodeCursor({ timestamp });
   }
 

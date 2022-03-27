@@ -1,34 +1,24 @@
+import express from "express";
 import {
+  Body,
   Controller,
+  Delete,
   FormField,
   Post,
-  Route,
   Request,
+  Route,
   UploadedFiles,
-  Body,
-  Delete,
 } from "tsoa";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
+import { BlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
+import { WebSocketService } from "../../services/webSocketService";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
   FailedToCreatePostResponse,
   handleCreatePost,
   SuccessfulPostCreationResponse,
 } from "./handleCreatePost";
-import express from "express";
-import {
-  FailedtoGetPageOfPostsPaginationResponse,
-  GetPageOfPostsPaginationParams,
-  handleGetPageOfPostsPagination,
-  SuccessfulGetPageOfPostsPaginationResponse,
-} from "./pagination/handleGetPageOfPostsPagination";
-import {
-  FailedToUpdatePostResponse,
-  handleUpdatePost,
-  SuccessfulPostUpdateResponse,
-  UpdatePostParams,
-} from "./handleUpdatePost";
 import {
   DeletePostRequestBody,
   FailedToDeletePostResponse,
@@ -36,13 +26,17 @@ import {
   SuccessfulPostDeletionResponse,
 } from "./handleDeletePost";
 import {
+  FailedToGetPostByIdResponse,
+  GetPostByIdRequestBody,
+  handleGetPostById,
+  SuccessfullyGotPostByIdResponse,
+} from "./handleGetPostById";
+import {
   FailedToGetPostsScheduledByUserResponse,
   GetPostsScheduledByUserParams,
   handleGetPostsScheduledByUser,
   SuccessfulGetPostsScheduledByUserResponse,
 } from "./handleGetPostsScheduledByUser";
-import { WebSocketService } from "../../services/webSocketService";
-import { BlobStorageService } from "../../services/blobStorageService";
 import {
   FailedToSharePostResponse,
   handleSharePost,
@@ -50,11 +44,19 @@ import {
   SuccessfullySharedPostResponse,
 } from "./handleSharePost";
 import {
-  FailedToGetPostByIdResponse,
-  GetPostByIdRequestBody,
-  handleGetPostById,
-  SuccessfullyGotPostByIdResponse,
-} from "./handleGetPostById";
+  FailedToUpdatePostResponse,
+  handleUpdatePost,
+  SuccessfulPostUpdateResponse,
+  UpdatePostParams,
+} from "./handleUpdatePost";
+import {
+  FailedtoGetPostsByUserResponse,
+  GetPostsByUserIdParams,
+  GetPostsByUsernameParams,
+  handleGetPostsByUserId,
+  handleGetPostsByUsername,
+  SuccessfulGetPostsByUserResponse,
+} from "./pagination/handleGetPostsByUser";
 
 @injectable()
 @Route("post")
@@ -133,17 +135,28 @@ export class PostController extends Controller {
     });
   }
 
-  @Post("getPageOfPostsPagination")
-  public async getPageOfPostsPagination(
+  @Post("getPostsByUserId")
+  public async getPostsByUserId(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfPostsPaginationParams,
+    @Body() requestBody: GetPostsByUserIdParams,
   ): Promise<
-    SecuredHTTPResponse<
-      FailedtoGetPageOfPostsPaginationResponse,
-      SuccessfulGetPageOfPostsPaginationResponse
-    >
+    SecuredHTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
   > {
-    return await handleGetPageOfPostsPagination({
+    return await handleGetPostsByUserId({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPostsByUsername")
+  public async getPostsByUsername(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPostsByUsernameParams,
+  ): Promise<
+    SecuredHTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
+  > {
+    return await handleGetPostsByUsername({
       controller: this,
       request,
       requestBody,

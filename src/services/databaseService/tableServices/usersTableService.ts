@@ -193,6 +193,29 @@ export class UsersTableService extends TableService {
     return;
   }
 
+  public async selectUserIdByUsername(username: string): Promise<string | undefined> {
+    const response: QueryResult<Pick<DBUser, "user_id">> = await this.datastorePool.query(
+      {
+        text: `
+        SELECT
+          user_id
+        FROM
+          ${this.tableName}
+        WHERE
+          username = $1
+        LIMIT
+          1
+        ;
+      `,
+        values: [username],
+      },
+    );
+
+    if (!response.rows[0]) return;
+
+    return response.rows[0].user_id;
+  }
+
   public async selectUserByUsername({
     username,
   }: {

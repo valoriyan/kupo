@@ -5,7 +5,6 @@ import { FeedController } from "./feedController";
 import { UserContentFeedFilter } from "./models";
 import { v4 as uuidv4 } from "uuid";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SetUserContentFeedFiltersRequestBody {
   requestedContentFeedFilters: UserContentFeedFilter[];
 }

@@ -74,7 +74,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     renderablePosts.length > 0
       ? encodeCursor({
           timestamp:
-            renderablePosts[renderablePosts.length - 1]!.scheduledPublicationTimestamp,
+            renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
         })
       : undefined;
 
