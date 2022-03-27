@@ -29,10 +29,9 @@ export const useGetPageOfContentFeed = ({
           hashtag: filterValue,
         });
       } else {
-        // TODO: replace with posts by username
         return fetchPageOfContentFromFromFollowedUsername({
           pageParam,
-          userId: filterValue,
+          username: filterValue,
         });
       }
     },
@@ -76,13 +75,13 @@ async function fetchPageOfContentFromFromFollowedHashtag({
 
 async function fetchPageOfContentFromFromFollowedUsername({
   pageParam = undefined,
-  userId,
+  username,
 }: {
   pageParam: string | undefined;
-  userId: string;
+  username: string;
 }) {
-  const res = await Api.getPageOfPostsPagination({
-    userId,
+  const res = await Api.getPostsByUsername({
+    username,
     cursor: pageParam,
     pageSize: 5,
   });

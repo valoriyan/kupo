@@ -1,6 +1,6 @@
 import { InfiniteData, QueryClient } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { RenderablePost, SuccessfulGetPageOfPostsPaginationResponse } from "../..";
+import { RenderablePost, SuccessfulGetPostsByUserResponse } from "../..";
 
 export const updateCachedPost = ({
   queryClient,
@@ -18,10 +18,10 @@ export const updateCachedPost = ({
   const singlePostCacheKey = [CacheKeys.PostById, postId];
 
   const contentFeedQueries = queryClient.getQueriesData<
-    InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>
+    InfiniteData<SuccessfulGetPostsByUserResponse>
   >(CacheKeys.ContentFeed);
   const userPostsData =
-    queryClient.getQueryData<InfiniteData<SuccessfulGetPageOfPostsPaginationResponse>>(
+    queryClient.getQueryData<InfiniteData<SuccessfulGetPostsByUserResponse>>(
       userPostsCacheKey,
     );
   const singlePostData = queryClient.getQueryData<RenderablePost>(singlePostCacheKey);

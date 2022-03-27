@@ -20,7 +20,7 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
     });
 
   if (!!error && !isLoading) {
-    return <ErrorMessage>Error: {error?.message ?? "Unknown Error"}</ErrorMessage>;
+    return <ErrorMessage>{error?.message ?? "An error occurred"}</ErrorMessage>;
   }
 
   if (isLoading || !data) {

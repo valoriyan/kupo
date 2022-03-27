@@ -69,8 +69,6 @@ import { GetPageOfPostFromFollowedHashtagParams } from "../types";
 // @ts-ignore
 import { GetPageOfPostFromFollowedUsersParams } from "../types";
 // @ts-ignore
-import { GetPageOfPostsPaginationParams } from "../types";
-// @ts-ignore
 import { GetPageOfUsersFollowedByUserIdRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfUsersFollowingUserIdRequestBody } from "../types";
@@ -78,6 +76,10 @@ import { GetPageOfUsersFollowingUserIdRequestBody } from "../types";
 import { GetPasswordResetEmailRequestBody } from "../types";
 // @ts-ignore
 import { GetPostByIdRequestBody } from "../types";
+// @ts-ignore
+import { GetPostsByUserIdParams } from "../types";
+// @ts-ignore
+import { GetPostsByUsernameParams } from "../types";
 // @ts-ignore
 import { GetPostsScheduledByUserParams } from "../types";
 // @ts-ignore
@@ -177,7 +179,7 @@ import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageO
 // @ts-ignore
 import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse } from "../types";
+import { SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedGetPageOfUsersFollowedByUserIdSuccess } from "../types";
 // @ts-ignore
@@ -1177,55 +1179,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfPostsPagination: async (
-      getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfPostsPaginationParams' is not null or undefined
-      assertParamExists(
-        "getPageOfPostsPagination",
-        "getPageOfPostsPaginationParams",
-        getPageOfPostsPaginationParams,
-      );
-      const localVarPath = `/post/getPageOfPostsPagination`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfPostsPaginationParams,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
      * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1407,6 +1360,104 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPostByIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPostsByUserId: async (
+      getPostsByUserIdParams: GetPostsByUserIdParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPostsByUserIdParams' is not null or undefined
+      assertParamExists(
+        "getPostsByUserId",
+        "getPostsByUserIdParams",
+        getPostsByUserIdParams,
+      );
+      const localVarPath = `/post/getPostsByUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPostsByUserIdParams,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPostsByUsername: async (
+      getPostsByUsernameParams: GetPostsByUsernameParams,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPostsByUsernameParams' is not null or undefined
+      assertParamExists(
+        "getPostsByUsername",
+        "getPostsByUsernameParams",
+        getPostsByUsernameParams,
+      );
+      const localVarPath = `/post/getPostsByUsername`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPostsByUsernameParams,
         localVarRequestOptions,
         configuration,
       );
@@ -3142,32 +3193,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfPostsPagination(
-      getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfPostsPagination(
-        getPageOfPostsPaginationParams,
-        options,
-      );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
      * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3263,6 +3288,58 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostById(
         getPostByIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPostsByUserId(
+      getPostsByUserIdParams: GetPostsByUserIdParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUserId(
+        getPostsByUserIdParams,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPostsByUsername(
+      getPostsByUsernameParams: GetPostsByUsernameParams,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUsername(
+        getPostsByUsernameParams,
         options,
       );
       return createRequestFunction(
@@ -4241,20 +4318,6 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfPostsPagination(
-      getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
-      options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfPostsPaginationResponseSuccessfulGetPageOfPostsPaginationResponse> {
-      return localVarFp
-        .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
      * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4310,6 +4373,34 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseFailedToGetPostByIdResponseSuccessfullyGotPostByIdResponse> {
       return localVarFp
         .getPostById(getPostByIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPostsByUserId(
+      getPostsByUserIdParams: GetPostsByUserIdParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse> {
+      return localVarFp
+        .getPostsByUserId(getPostsByUserIdParams, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPostsByUsername(
+      getPostsByUsernameParams: GetPostsByUsernameParams,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse> {
+      return localVarFp
+        .getPostsByUsername(getPostsByUsernameParams, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5014,22 +5105,6 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPageOfPostsPaginationParams} getPageOfPostsPaginationParams
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfPostsPagination(
-    getPageOfPostsPaginationParams: GetPageOfPostsPaginationParams,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfPostsPagination(getPageOfPostsPaginationParams, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
    * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -5086,6 +5161,35 @@ export class DefaultApi extends BaseAPI {
   public getPostById(getPostByIdRequestBody: GetPostByIdRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
       .getPostById(getPostByIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPostsByUserId(getPostsByUserIdParams: GetPostsByUserIdParams, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getPostsByUserId(getPostsByUserIdParams, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPostsByUsername(
+    getPostsByUsernameParams: GetPostsByUsernameParams,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPostsByUsername(getPostsByUsernameParams, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
