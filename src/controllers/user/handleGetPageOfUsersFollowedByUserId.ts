@@ -77,11 +77,14 @@ export async function handleGetPageOfUsersFollowedByUserId({
 
   const pageOfRenderableUsers = renderableUsers.slice(startIndexForPage, endIndexForPage);
 
+  const nextPageCursor =
+    pageOfRenderableUsers.length === pageSize ? (pageNumber + 1).toString() : undefined;
+
   return {
     success: {
       users: pageOfRenderableUsers,
       previousPageCursor: cursor,
-      nextPageCursor: (pageNumber + 1).toString(),
+      nextPageCursor,
     },
   };
 }
