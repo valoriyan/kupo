@@ -16,7 +16,7 @@ export const SharedPost = ({
   setCurrentMediaUrl,
   contentHeight,
 }: SharedPostProps) => {
-  const { authorUserId, caption, contentElementTemporaryUrls, shared } = post;
+  const { authorUserId, caption, contentElements, shared } = post;
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
@@ -27,7 +27,7 @@ export const SharedPost = ({
         authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
-        contentUrls={contentElementTemporaryUrls}
+        contentElements={contentElements}
         setCurrentMediaUrl={setCurrentMediaUrl}
         shared={shared}
         onPostClick={() => goToPostPage(post.postId)}

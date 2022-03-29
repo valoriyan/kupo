@@ -17,20 +17,13 @@ export interface PostProps {
 }
 
 export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
-  const {
-    isLikedByClient,
-    caption,
-    contentElementTemporaryUrls,
-    hashtags,
-    likes,
-    comments,
-    shared,
-  } = post;
+  const { isLikedByClient, caption, contentElements, hashtags, likes, comments, shared } =
+    post;
 
   const { handleClickOfLikeButton, menuActions, user } = usePostActions(post);
 
   const [currentMediaUrl, setCurrentMediaUrl] = useState<string | undefined>(
-    contentElementTemporaryUrls[0],
+    contentElements.length > 0 ? contentElements[0].temporaryUrl : undefined,
   );
 
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
@@ -42,7 +35,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
-        contentUrls={contentElementTemporaryUrls}
+        contentElements={contentElements}
         setCurrentMediaUrl={setCurrentMediaUrl}
         shared={shared}
         menuActions={menuActions}

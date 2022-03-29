@@ -4,22 +4,23 @@ import { styled } from "#/styling";
 import { Content } from "./Content";
 import { range } from "#/utils/range";
 import { ChevronLeftIcon, ChevronRightIcon } from "#/components/Icons";
+import { ContentElement } from "#/api";
 
 export interface ContentViewerProps {
-  contentUrls: string[];
+  contentElements: ContentElement[];
   setCurrentMediaUrl?: (url: string | undefined) => void;
   contentHeight?: string;
 }
 
 export const ContentViewer = ({
-  contentUrls,
+  contentElements,
   setCurrentMediaUrl,
   contentHeight,
 }: ContentViewerProps) => {
-  const { page, direction, paginate } = usePagination([0, 0], contentUrls.length);
+  const { page, direction, paginate } = usePagination([0, 0], contentElements.length);
 
-  const currentImageUrl = contentUrls[page];
-  const hasMultiple = contentUrls.length > 1;
+  const currentImageUrl = contentElements[page].temporaryUrl;
+  const hasMultiple = contentElements.length > 1;
 
   useEffect(() => {
     setCurrentMediaUrl?.(currentImageUrl);
@@ -68,11 +69,11 @@ export const ContentViewer = ({
               </ArrowButton>
             )}
             <IndexDots>
-              {range(contentUrls.length).map((index) => (
+              {range(contentElements.length).map((index) => (
                 <IndexDot key={index} active={page === index} />
               ))}
             </IndexDots>
-            {page < contentUrls.length - 1 && (
+            {page < contentElements.length - 1 && (
               <ArrowButton direction="right" onClick={() => paginate(1)}>
                 <ChevronRightIcon />
               </ArrowButton>

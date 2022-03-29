@@ -10,11 +10,11 @@ export interface PostThumbnailProps {
 }
 
 export const PostThumbnail = ({ post }: PostThumbnailProps) => {
-  return post.contentElementTemporaryUrls[0] ? (
+  return post.contentElements[0] ? (
     <ImageWrapper onClick={() => goToPostPage(post.postId)}>
       <Image
         alt="Post Media"
-        src={post.contentElementTemporaryUrls[0]}
+        src={post.contentElements[0].temporaryUrl}
         layout="fill"
         objectFit="cover"
         unoptimized // Optimization caching is broken because signed urls aren't stable

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { ContentElement } from "./content-element";
 import { RenderablePostShared } from "./renderable-post-shared";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
@@ -65,10 +66,10 @@ export interface RenderablePost {
   sharedPostId?: string;
   /**
    *
-   * @type {Array<string>}
+   * @type {Array<ContentElement>}
    * @memberof RenderablePost
    */
-  contentElementTemporaryUrls: Array<string>;
+  contentElements: Array<ContentElement>;
   /**
    *
    * @type {Array<string>}

@@ -1,6 +1,7 @@
 export * from "./auth-failure-reason";
 export * from "./color";
 export * from "./comment-on-post-request-body";
+export * from "./content-element";
 export * from "./create-chat-message-failure-reasons";
 export * from "./create-chat-message-in-new-room-failure-reasons";
 export * from "./create-chat-message-in-new-room-request-body";
