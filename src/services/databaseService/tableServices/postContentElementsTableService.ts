@@ -77,6 +77,7 @@ export class PostContentElementsTableService extends TableService {
   public async getPostContentElementsByPostId({ postId }: { postId: string }): Promise<
     {
       blobFileKey: string;
+      mimeType: string;
     }[]
   > {
     const queryString = {
@@ -104,6 +105,7 @@ export class PostContentElementsTableService extends TableService {
       )
       .map((dbPostContentElement) => ({
         blobFileKey: dbPostContentElement.blob_file_key,
+        mimeType: dbPostContentElement.mimetype,
       }));
   }
 

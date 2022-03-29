@@ -4,7 +4,7 @@ import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "./models";
+import { ContentElement, RenderablePost } from "./models";
 import { uploadMediaFile } from "../utilities/uploadMediaFile";
 
 export enum CreatePostFailureReasons {
@@ -75,6 +75,14 @@ export async function handleCreatePost({
         }),
     );
 
+    const contentElements: ContentElement[] = filedAndRenderablePostContentElements.map(
+      (filedAndRenderablePostContentElement) =>
+        ({
+          temporaryUrl: filedAndRenderablePostContentElement.fileTemporaryUrl,
+          mimeType: filedAndRenderablePostContentElement.mimetype,
+        })
+    );
+
     const contentElementTemporaryUrls = filedAndRenderablePostContentElements.map(
       (filedAndRenderablePostContentElement) =>
         filedAndRenderablePostContentElement.fileTemporaryUrl,
@@ -119,7 +127,7 @@ export async function handleCreatePost({
         renderablePost: {
           postId,
           creationTimestamp,
-          contentElementTemporaryUrls,
+          contentElements,
           authorUserId: clientUserId,
           caption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,

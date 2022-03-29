@@ -102,7 +102,7 @@ export async function handleSharePost({
         renderablePost: {
           postId,
           creationTimestamp,
-          contentElementTemporaryUrls: [],
+          contentElements: [],
           authorUserId: clientUserId,
           caption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,

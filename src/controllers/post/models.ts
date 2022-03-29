@@ -12,8 +12,13 @@ export interface UnrenderablePostWithoutElementsOrHashtags {
   sharedPostId?: string;
 }
 
+export interface ContentElement {
+  temporaryUrl: string;
+  mimeType: string;
+}
+
 export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
-  contentElementTemporaryUrls: string[];
+  contentElements: ContentElement[];
   hashtags: string[];
   likes: {
     count: number;

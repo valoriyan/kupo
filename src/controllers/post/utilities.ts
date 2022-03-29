@@ -1,6 +1,7 @@
 import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
 import { DatabaseService } from "../../services/databaseService";
 import {
+  ContentElement,
   RenderablePost,
   SharedPostType,
   UnrenderablePost,
@@ -109,16 +110,19 @@ async function assemblePostComponents({
       },
     );
 
-  const contentElementTemporaryUrls: string[] = await BluebirdPromise.map(
+  const contentElements: ContentElement[] = await BluebirdPromise.map(
     filedPostContentElements,
-    async (filedPostContentElement): Promise<string> => {
+    async (filedPostContentElement): Promise<ContentElement> => {
       const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
         blobItemPointer: {
           fileKey: filedPostContentElement.blobFileKey,
         },
       });
 
-      return fileTemporaryUrl;
+      return {
+        temporaryUrl: fileTemporaryUrl,
+        mimeType: filedPostContentElement.mimeType,
+      };
     },
   );
 
@@ -157,7 +161,7 @@ async function assemblePostComponents({
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
-    contentElementTemporaryUrls,
+    contentElements,
     hashtags,
     likes: {
       count: countOfLikesOnPost,
