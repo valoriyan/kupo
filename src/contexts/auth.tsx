@@ -1,10 +1,13 @@
+import jwt from "jsonwebtoken";
 import Router from "next/router";
 import { ComponentType, useEffect, useState } from "react";
-import jwt from "jsonwebtoken";
-import { LocalStorageItem } from "#/utils/storage";
 import { Api } from "#/api";
 import { FullScreenLoadingArea } from "#/components/LoadingArea";
+import { WithPageWithLayout } from "#/pages/_app";
+import { LocalStorageItem } from "#/utils/storage";
 import { queryClient } from "./queryClient";
+
+export type PageComponent<T> = ComponentType<T> & WithPageWithLayout;
 
 export interface AccessTokenPayload {
   userId: string;
@@ -69,7 +72,7 @@ const doesTokenExpireSoon = (token: string) => {
   return expiresSoon;
 };
 
-export const ProtectedPage = <T,>(Component: ComponentType<T>) => {
+export const ProtectedPage = <T,>(Component: ComponentType<T>): PageComponent<T> => {
   const ProtectedComponent = (props: T) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -93,7 +96,7 @@ export const ProtectedPage = <T,>(Component: ComponentType<T>) => {
   return ProtectedComponent;
 };
 
-export const RedirectAfterAuth = <T,>(Component: ComponentType<T>) => {
+export const RedirectAfterAuth = <T,>(Component: ComponentType<T>): PageComponent<T> => {
   const ProtectedComponent = (props: T) => {
     const [isAuthenticated, setIsAuthenticated] = useState<"unset" | boolean>("unset");
 

@@ -38,7 +38,8 @@ export const NewFollowerNotification = ({
 
       <Stack css={{ gap: "$1" }}>
         <Body>
-          <Link href={getProfilePageUrl({ username })}>{username}</Link> followed you.
+          <Link href={getProfilePageUrl({ username })}>{`@${username}`}</Link> followed
+          you.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago

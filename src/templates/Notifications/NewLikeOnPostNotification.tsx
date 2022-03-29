@@ -39,7 +39,8 @@ export const NewLikeOnPostNotification = ({
 
       <Stack css={{ gap: "$1" }}>
         <Body>
-          <Link href={getProfilePageUrl({ username })}>{username}</Link> liked your post.
+          <Link href={getProfilePageUrl({ username })}>{`@${username}`}</Link> liked your
+          post.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago

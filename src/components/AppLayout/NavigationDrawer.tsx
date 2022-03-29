@@ -1,6 +1,7 @@
 import { logout } from "#/contexts/auth";
+import { setPreviousLocationForMyLists } from "#/pages/my-lists";
+import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
-import { setPreviousLocationForSettings } from "#/templates/Settings";
 import {
   BookmarkIcon,
   BoxIcon,
@@ -29,7 +30,15 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
       </UserInfoWrapper>
       <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
         <Stack css={{ gap: "$6" }}>
-          <NavLink href="/lists" Icon={ListIcon} label="My Lists" onClick={hide} />
+          <NavLink
+            href="/my-lists"
+            Icon={ListIcon}
+            label="My Lists"
+            onClick={() => {
+              setPreviousLocationForMyLists();
+              hide();
+            }}
+          />
           <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" onClick={hide} />
           <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" onClick={hide} />
           <NavLink

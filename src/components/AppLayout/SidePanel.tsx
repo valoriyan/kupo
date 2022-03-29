@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { logout } from "#/contexts/auth";
+import { setPreviousLocationForMyLists } from "#/pages/my-lists";
+import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { setPreviousLocationForAddContent } from "#/templates/AddContent";
-import { setPreviousLocationForSettings } from "#/templates/Settings";
 import { ErrorMessage } from "../ErrorArea";
 import {
   BellIcon,
@@ -66,7 +67,12 @@ export const SidePanel = () => {
               }
             />
             <NavLink href="/messages" Icon={MailIcon} label="Messages" />
-            <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
+            <NavLink
+              href="/my-lists"
+              Icon={ListIcon}
+              label="My Lists"
+              onClick={setPreviousLocationForMyLists}
+            />
             <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
             <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
             <NavLink

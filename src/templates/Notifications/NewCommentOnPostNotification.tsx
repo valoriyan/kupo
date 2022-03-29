@@ -41,7 +41,7 @@ export const NewCommentOnPostNotification = ({
 
       <Stack css={{ gap: "$1" }}>
         <Body>
-          <Link href={getProfilePageUrl({ username })}>{username}</Link> commented{" "}
+          <Link href={getProfilePageUrl({ username })}>{`@${username}`}</Link> commented{" "}
           <em>
             &ldquo;
             {truncate(postCommentText, 60)}

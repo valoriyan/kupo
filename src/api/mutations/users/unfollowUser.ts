@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "react-query";
+import { useCurrentUserId } from "#/contexts/auth";
 import { Api, RenderableUser } from "../..";
-import { UpdateQueriedUserDataFunction, updateUsersCache } from "./utilities";
+import { updateUserFollowingStatus, updateUsersCache } from "./utilities";
+import { CacheKeys } from "#/contexts/queryClient";
 
 export const useUnfollowUser = ({
   userIdBeingUnfollowed,
@@ -9,6 +11,7 @@ export const useUnfollowUser = ({
   userIdBeingUnfollowed: string;
   usernameBeingUnfollowed: string;
 }) => {
+  const userId = useCurrentUserId();
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -18,25 +21,43 @@ export const useUnfollowUser = ({
     {
       onSuccess: (data) => {
         if (data.data.success) {
-          const updateQueriedUserDataFunction: UpdateQueriedUserDataFunction = (
-            queriedData: RenderableUser | undefined,
-          ) => {
-            if (!!queriedData) {
-              return {
-                ...queriedData,
-                followers: {
-                  ...queriedData.followers,
-                  count: queriedData.followers.count - 1,
-                },
-                isBeingFollowedByClient: false,
-              };
-            }
+          // Update following/follower lists
+          updateUserFollowingStatus({
+            queryClient,
+            clientUserId: userId || "",
+            userId: userIdBeingUnfollowed,
+            isFollowing: false,
+          });
 
-            return queriedData;
-          };
+          // Update client user
+          const clientUser = queryClient.getQueryData<RenderableUser>(
+            CacheKeys.ClientProfile,
+          );
+          if (clientUser) {
+            queryClient.setQueryData(CacheKeys.ClientProfile, {
+              ...clientUser,
+              follows: {
+                ...clientUser.follows,
+                count: clientUser.follows.count - 1,
+              },
+            });
+          }
 
+          // Update unfollowed user
           updateUsersCache({
-            updateQueriedUserDataFunction,
+            updateQueriedUserDataFunction: (user) => {
+              if (user) {
+                return {
+                  ...user,
+                  followers: {
+                    ...user.followers,
+                    count: user.followers.count - 1,
+                  },
+                  isBeingFollowedByClient: false,
+                };
+              }
+              return user;
+            },
             queryClient,
             userId: userIdBeingUnfollowed,
             username: usernameBeingUnfollowed,
