@@ -54,7 +54,7 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
 
   return (
     <PostWrapper onClick={() => goToPostPage(post.postId)}>
-      {!!post.contentElements[0].temporaryUrl && (
+      {!!post.contentElements[0] && (
         <PostImage src={post.contentElements[0].temporaryUrl} />
       )}
       <Stack css={{ gap: "$4", px: "$5", py: "$5" }}>

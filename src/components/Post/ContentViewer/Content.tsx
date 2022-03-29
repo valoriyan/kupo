@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { styled } from "#/styling";
+import { ContentElement } from "#/api";
 
 export interface ContentProps {
-  contentUrl: string;
+  contentElement: ContentElement;
 }
 
 export const Content = (props: ContentProps) => {
@@ -10,14 +11,14 @@ export const Content = (props: ContentProps) => {
     <ImageWrapper>
       <BlurredImage
         alt="Blurred Post Media"
-        src={props.contentUrl}
+        src={props.contentElement.temporaryUrl}
         layout="fill"
         unoptimized // Optimization caching is broken because signed urls aren't stable
         priority
       />
       <Image
         alt="Post Media"
-        src={props.contentUrl}
+        src={props.contentElement.temporaryUrl}
         layout="fill"
         objectFit="contain"
         unoptimized // Optimization caching is broken because signed urls aren't stable

@@ -8,23 +8,23 @@ import { ContentElement } from "#/api";
 
 export interface ContentViewerProps {
   contentElements: ContentElement[];
-  setCurrentMediaUrl?: (url: string | undefined) => void;
+  setCurrentContentElement?: (elem: ContentElement | undefined) => void;
   contentHeight?: string;
 }
 
 export const ContentViewer = ({
   contentElements,
-  setCurrentMediaUrl,
+  setCurrentContentElement,
   contentHeight,
 }: ContentViewerProps) => {
   const { page, direction, paginate } = usePagination([0, 0], contentElements.length);
 
-  const currentImageUrl = contentElements[page].temporaryUrl;
+  const currentContentElement = contentElements[page];
   const hasMultiple = contentElements.length > 1;
 
   useEffect(() => {
-    setCurrentMediaUrl?.(currentImageUrl);
-  }, [currentImageUrl, setCurrentMediaUrl]);
+    setCurrentContentElement?.(currentContentElement);
+  }, [currentContentElement, setCurrentContentElement]);
 
   return (
     <AnimatePresence initial={false} custom={direction}>
@@ -59,7 +59,7 @@ export const ContentViewer = ({
             }
           }}
         >
-          <Content contentUrl={currentImageUrl} />
+          <Content contentElement={currentContentElement} />
         </motion.div>
         {hasMultiple && (
           <>

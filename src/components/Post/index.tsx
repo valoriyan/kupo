@@ -1,5 +1,5 @@
 import { ComponentType, useState } from "react";
-import { RenderablePost } from "#/api";
+import { ContentElement, RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
@@ -22,9 +22,9 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
 
   const { handleClickOfLikeButton, menuActions, user } = usePostActions(post);
 
-  const [currentMediaUrl, setCurrentMediaUrl] = useState<string | undefined>(
-    contentElements.length > 0 ? contentElements[0].temporaryUrl : undefined,
-  );
+  const [currentContentElement, setCurrentContentElement] = useState<
+    ContentElement | undefined
+  >(contentElements.length > 0 ? contentElements[0] : undefined);
 
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
@@ -36,7 +36,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         relativeTimestamp={relativeTimestamp}
         caption={caption}
         contentElements={contentElements}
-        setCurrentMediaUrl={setCurrentMediaUrl}
+        setCurrentContentElement={setCurrentContentElement}
         shared={shared}
         menuActions={menuActions}
       />
@@ -79,7 +79,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
             <ShareMenu
               hide={hide}
               post={shared?.post ?? post}
-              currentMediaUrl={currentMediaUrl}
+              currentContentElement={currentContentElement}
             />
           )}
         </VerticalSlideDialog>

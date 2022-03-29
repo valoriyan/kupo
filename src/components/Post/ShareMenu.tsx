@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RenderablePost } from "#/api";
+import { ContentElement, RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { getSinglePostUrl } from "#/utils/generateLinkUrls";
@@ -12,10 +12,10 @@ import { openSharePostModal } from "./SharePostModal";
 export interface ShareMenuProps {
   hide: () => void;
   post: RenderablePost;
-  currentMediaUrl: string | undefined;
+  currentContentElement: ContentElement | undefined;
 }
 
-export const ShareMenu = ({ hide, post, currentMediaUrl }: ShareMenuProps) => {
+export const ShareMenu = ({ hide, post, currentContentElement }: ShareMenuProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const shareToProfile = () => {
@@ -29,9 +29,9 @@ export const ShareMenu = ({ hide, post, currentMediaUrl }: ShareMenuProps) => {
   };
 
   const saveMedia = async () => {
-    if (!currentMediaUrl) return;
+    if (!currentContentElement) return;
     setIsLoading(true);
-    const blob = await (await fetch(currentMediaUrl)).blob();
+    const blob = await (await fetch(currentContentElement.temporaryUrl)).blob();
     const blobUrl = URL.createObjectURL(blob);
     const dlAnchor = document.createElement("a");
     dlAnchor.style.display = "none";
@@ -59,7 +59,7 @@ export const ShareMenu = ({ hide, post, currentMediaUrl }: ShareMenuProps) => {
         <LinkIcon />
         <Heading>Copy Link</Heading>
       </ItemWrapper>
-      {!!currentMediaUrl && (
+      {!!currentContentElement && (
         <ItemWrapper onClick={saveMedia} disabled={isLoading}>
           <SoftwareDownloadIcon />
           <Heading>Save Media</Heading>
