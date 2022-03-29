@@ -76,11 +76,10 @@ export async function handleCreatePost({
     );
 
     const contentElements: ContentElement[] = filedAndRenderablePostContentElements.map(
-      (filedAndRenderablePostContentElement) =>
-        ({
-          temporaryUrl: filedAndRenderablePostContentElement.fileTemporaryUrl,
-          mimeType: filedAndRenderablePostContentElement.mimetype,
-        })
+      (filedAndRenderablePostContentElement) => ({
+        temporaryUrl: filedAndRenderablePostContentElement.fileTemporaryUrl,
+        mimeType: filedAndRenderablePostContentElement.mimetype,
+      }),
     );
 
     const contentElementTemporaryUrls = filedAndRenderablePostContentElements.map(
