@@ -113,9 +113,13 @@ export class PostsTableService extends TableService {
   public async getPostsByCreatorUserId({
     creatorUserId,
     filterOutExpiredAndUnscheduledPosts,
+    limit,
+    getPostsBeforeTimestamp,
   }: {
     creatorUserId: string;
     filterOutExpiredAndUnscheduledPosts: boolean;
+    limit?: number;
+    getPostsBeforeTimestamp?: number;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
     const queryValues: (string | number)[] = [creatorUserId];
 
@@ -123,23 +127,42 @@ export class PostsTableService extends TableService {
 
     let filteringWhereClause = "";
     if (!!filterOutExpiredAndUnscheduledPosts) {
-      queryValues.push(currentTimestamp);
-      queryValues.push(currentTimestamp);
-
       filteringWhereClause = `
         AND
           (
             scheduled_publication_timestamp IS NULL
               OR
-            scheduled_publication_timestamp < $2
+            scheduled_publication_timestamp < $${queryValues.length + 1}
           ) 
         AND
           (
               expiration_timestamp IS NULL
             OR
-              expiration_timestamp > $3
+              expiration_timestamp > $${queryValues.length + 2}
           )
       `;
+
+      queryValues.push(currentTimestamp);
+      queryValues.push(currentTimestamp);
+    }
+
+    let limitClause = "";
+    if (!!limit) {
+      limitClause = `
+        LIMIT $${queryValues.length + 1}
+      `;
+
+      queryValues.push(limit);
+    }
+
+    let getPostsBeforeTimestampClause = "";
+    if (!!getPostsBeforeTimestamp) {
+      getPostsBeforeTimestampClause = `
+        AND
+          scheduled_publication_timestamp < $${queryValues.length + 1}
+      `;
+
+      queryValues.push(getPostsBeforeTimestamp);
     }
 
     const query = {
@@ -150,9 +173,11 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           author_user_id = $1
-        ${filteringWhereClause}
+          ${filteringWhereClause}
+          ${getPostsBeforeTimestampClause}
         ORDER BY
-          scheduled_publication_timestamp DESC    
+          scheduled_publication_timestamp DESC
+        ${limitClause}
         ;
       `,
       values: queryValues,
@@ -278,9 +303,15 @@ export class PostsTableService extends TableService {
 
   public async getPostsByPostIds({
     postIds,
+    limit,
+    getPostsBeforeTimestamp,
   }: {
     postIds: string[];
+    limit?: number;
+    getPostsBeforeTimestamp?: number;
   }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    const queryValues = ([] as string[]).concat(postIds);
+
     if (postIds.length === 0) {
       return [];
     }
@@ -288,6 +319,25 @@ export class PostsTableService extends TableService {
     const postIdsQueryString = `( ${postIds
       .map((_, index) => `$${index + 1}`)
       .join(", ")} )`;
+
+    let limitClause = "";
+    if (!!limit) {
+      limitClause = `
+        LIMIT $${queryValues.length + 1}
+      `;
+
+      queryValues.push(limit.toString());
+    }
+
+    let getPostsBeforeTimestampClause = "";
+    if (!!getPostsBeforeTimestamp) {
+      getPostsBeforeTimestampClause = `
+        AND
+          scheduled_publication_timestamp < $${queryValues.length + 1}
+      `;
+
+      queryValues.push(getPostsBeforeTimestamp.toString());
+    }
 
     const query = {
       text: `
@@ -297,11 +347,13 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           post_id IN ${postIdsQueryString}
+          ${getPostsBeforeTimestampClause}
         ORDER BY
           scheduled_publication_timestamp DESC
+        ${limitClause}
         ;
       `,
-      values: postIds,
+      values: queryValues,
     };
 
     const response: QueryResult<DBPost> = await this.datastorePool.query(query);

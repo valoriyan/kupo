@@ -4,7 +4,7 @@ import { PostController } from "../postController";
 import { HTTPResponse } from "../../../types/httpResponse";
 import { getClientUserId } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
-import { getNextPageOfPostsEncodedCursor, getPageOfPostsFromAllPosts } from "./utilities";
+import { decodeCursor, getNextPageOfPostsEncodedCursor } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
 
 export interface GetPostsByUserIdParams {
@@ -76,11 +76,17 @@ export async function handleGetPostsByUserId({
 }): Promise<
   HTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
 > {
+  const { userId, pageSize, cursor } = requestBody;
+
   const clientUserId = await getClientUserId(request);
+
+  const pageTimestamp = cursor
+    ? decodeCursor({ encodedCursor: cursor })
+    : 999999999999999;
 
   const canViewContent = await canUserViewUserContentByUserId({
     clientUserId,
-    targetUserId: requestBody.userId,
+    targetUserId: userId,
     databaseService: controller.databaseService,
   });
 
@@ -93,21 +99,17 @@ export async function handleGetPostsByUserId({
   const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserId(
       {
-        creatorUserId: requestBody.userId,
+        creatorUserId: userId,
         filterOutExpiredAndUnscheduledPosts: true,
+        limit: pageSize,
+        getPostsBeforeTimestamp: pageTimestamp,
       },
     );
-
-  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
-    unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: requestBody.cursor,
-    pageSize: requestBody.pageSize,
-  });
 
   const posts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: filteredUnrenderablePostsWithoutElements,
+    posts: unrenderablePostsWithoutElementsOrHashtags,
     clientUserId,
   });
 
@@ -116,7 +118,7 @@ export async function handleGetPostsByUserId({
       posts,
       previousPageCursor: requestBody.cursor,
       nextPageCursor: getNextPageOfPostsEncodedCursor({
-        posts: filteredUnrenderablePostsWithoutElements,
+        posts: unrenderablePostsWithoutElementsOrHashtags,
       }),
     },
   };

@@ -2,7 +2,11 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import { encodeCursor, getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
+import {
+  decodeCursor,
+  encodeCursor,
+  getPageOfPostsFromAllPosts,
+} from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
@@ -45,22 +49,30 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const { cursor } = requestBody;
+  const { cursor, hashtag, pageSize } = requestBody;
+
+  const pageTimestamp = cursor
+    ? decodeCursor({ encodedCursor: cursor })
+    : 999999999999999;
 
   const postIdsWithHashtag =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtag(
-      { hashtag: requestBody.hashtag },
+      { hashtag: hashtag },
     );
 
   const unrenderablePostsWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
-      { postIds: postIdsWithHashtag },
+      {
+        postIds: postIdsWithHashtag,
+        limit: pageSize,
+        getPostsBeforeTimestamp: pageTimestamp,
+      },
     );
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
     unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: requestBody.cursor,
-    pageSize: requestBody.pageSize,
+    encodedCursor: cursor,
+    pageSize: pageSize,
   });
 
   const renderablePosts = await constructRenderablePostsFromParts({

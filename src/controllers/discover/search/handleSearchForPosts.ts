@@ -43,11 +43,11 @@ export async function handleSearchForPosts({
   request: express.Request;
   requestBody: SearchForPostsParams;
 }): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
+  const { cursor, query, pageSize } = requestBody;
+  const trimmedQuery = query.trim();
+
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
-
-  const { cursor, query } = requestBody;
-  const trimmedQuery = query.trim();
 
   const postIdsWithPossibleHashtags =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithOneOfHashtags(
@@ -81,8 +81,8 @@ export async function handleSearchForPosts({
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
     unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: requestBody.cursor,
-    pageSize: requestBody.pageSize,
+    encodedCursor: cursor,
+    pageSize: pageSize,
   });
 
   const renderablePosts = await constructRenderablePostsFromParts({
