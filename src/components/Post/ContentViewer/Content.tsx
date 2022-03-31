@@ -8,8 +8,6 @@ export interface ContentProps {
 }
 
 export const Content = ({ contentElement }: ContentProps) => {
-  console.log(contentElement);
-
   if (contentElement.mimeType.includes("image")) {
     return (
       <ImageWrapper>
