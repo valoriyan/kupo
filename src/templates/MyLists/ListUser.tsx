@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Router from "next/router";
 import { RenderableUser } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
@@ -7,6 +6,7 @@ import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { Flex } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 
@@ -41,7 +41,7 @@ export const ListUser = ({ user }: ListUserProps) => {
           size="$8"
           onClick={() => Router.push(profilePageUrl)}
         />
-        <Link href={profilePageUrl}>{`@${user.username}`}</Link>
+        <UserName username={user.username} />
       </Flex>
       <Button size="sm" onClick={toggleFollow} disabled={isFollowing || isUnfollowing}>
         <TextOrSpinner isLoading={isFollowing || isUnfollowing}>

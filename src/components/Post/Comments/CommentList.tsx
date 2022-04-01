@@ -1,6 +1,5 @@
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import Router from "next/router";
+import { useEffect, useRef, useState } from "react";
 import { RenderablePostComment } from "#/api";
 import { useDeleteCommentFromPost } from "#/api/mutations/posts/deleteCommentFromPost";
 import { Avatar } from "#/components/Avatar";
@@ -9,6 +8,7 @@ import { InfoIcon, TrashIcon } from "#/components/Icons";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { Body, truncateByLines } from "#/components/Typography";
+import { UserName } from "#/components/UserName";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
@@ -97,9 +97,7 @@ const Comment = ({ comment }: CommentProps) => {
       <Stack css={{ gap: "$3" }}>
         <Flex css={{ justifyContent: "space-between", alignItems: "center" }}>
           <Flex css={{ gap: "$3", alignItems: "baseline" }}>
-            <Link href={getProfilePageUrl({ username })} passHref>
-              <a>@{username}</a>
-            </Link>
+            <UserName username={username} />
             <Flex css={{ color: "$secondaryText" }}>
               {getShortRelativeTimestamp(comment.creationTimestamp)}
             </Flex>

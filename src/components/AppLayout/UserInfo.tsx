@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Router from "next/router";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
@@ -8,6 +7,7 @@ import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
 import { Subtext } from "../Typography";
+import { UserName } from "../UserName";
 
 export interface UserInfoProps {
   onUsernameClick?: () => void;
@@ -32,10 +32,8 @@ export const UserInfo = (props: UserInfoProps) => {
           <LoadingArea size="md" />
         </UserStatsPlaceholder>
       ) : (
-        <Flex css={{ gap: "$2", flexDirection: "column" }}>
-          <Link href={getProfilePageUrl({ username: data.username })} passHref>
-            <a onClick={props.onUsernameClick}>@{data.username}</a>
-          </Link>
+        <Flex css={{ gap: "$3", flexDirection: "column" }}>
+          <UserName username={data.username} onClick={props.onUsernameClick} />
           <Flex css={{ flexDirection: "column" }}>
             <UserStat>{formatStat(data.followers.count)} followers</UserStat>
             <UserStat>{formatStat(data.follows.count)} following</UserStat>
@@ -48,4 +46,4 @@ export const UserInfo = (props: UserInfoProps) => {
 
 const UserStatsPlaceholder = styled("div", { alignSelf: "center", width: "$11" });
 
-const UserStat = styled(Subtext, { whiteSace: "nowrap" });
+const UserStat = styled(Subtext, { whiteSace: "nowrap", color: "$secondaryText" });

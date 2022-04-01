@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Router from "next/router";
 import { ContentElement, RenderablePostShared } from "#/api";
 import { styled } from "#/styling";
@@ -6,6 +5,7 @@ import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { Body } from "../Typography";
+import { UserName } from "../UserName";
 import { ActionMenu, MenuAction } from "./ActionMenu";
 import { ContentViewer } from "./ContentViewer";
 import { SharedPost } from "./SharedPost";
@@ -29,7 +29,8 @@ export const PostBody = (props: PostBodyProps) => {
       <Flex
         css={{
           px: "$4",
-          py: "$3",
+          pt: "$4",
+          pb: "$3",
           gap: "$3",
           alignItems: "center",
           cursor: props.onPostClick ? "pointer" : "default",
@@ -46,9 +47,7 @@ export const PostBody = (props: PostBodyProps) => {
             Router.push(getProfilePageUrl({ username: props.authorUserName }));
           }}
         />
-        <Link href={getProfilePageUrl({ username: props.authorUserName || "" })} passHref>
-          <a>{props.authorUserName ? `@${props.authorUserName}` : "User"}</a>
-        </Link>
+        <UserName username={props.authorUserName} />
         <Flex css={{ marginLeft: "auto", gap: "$5", alignItems: "center" }}>
           <Timestamp>{props.relativeTimestamp}</Timestamp>
           {props.menuActions && <ActionMenu actions={props.menuActions} />}

@@ -10,6 +10,7 @@ import { Comments } from "./Comments";
 import { PostBody } from "./PostBody";
 import { ShareMenu } from "./ShareMenu";
 import { usePostActions } from "./usePostActions";
+import { HashTag } from "../HashTags";
 
 export interface PostProps {
   post: RenderablePost;
@@ -99,14 +100,6 @@ const HashTagsWrapper = styled(Flex, {
   overflow: "auto",
 });
 
-const HashTag = styled(Body, {
-  bg: "$primary",
-  color: "$accentText",
-  py: "$1",
-  px: "$3",
-  borderRadius: "$round",
-});
-
 interface PostActionProps {
   Icon: ComponentType;
   metric?: number;
@@ -123,7 +116,7 @@ const PostAction = (props: PostActionProps) => {
       as={props.as ?? "button"}
       css={{
         alignItems: "center",
-        gap: "$2",
+        gap: "$3",
         color: isSelected ? "$primary" : "$secondaryText",
       }}
       onClick={onClick}

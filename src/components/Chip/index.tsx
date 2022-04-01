@@ -5,6 +5,7 @@ export const Chip = styled("div", bodyStyles, {
   borderRadius: "$round",
   py: "$1",
   px: "$3",
-  color: "$accentText",
-  bg: "$primary",
+  color: "$primaryStrong",
+  bg: "$primarySubdued",
+  fontWeight: "$bold",
 });

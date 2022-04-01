@@ -16,8 +16,10 @@ const themedStitches = createStitches({
       /**
        * Primary accent color. It will be used for actionable items and accents
        */
-      primary: "#5D5FEF",
-      primaryTranslucent: "#5D5FEF30",
+      primary: "hsla(250, 90%, 64%, 1)",
+      primarySubdued: "hsla(250, 98%, 92%, 1)",
+      primaryStrong: "hsla(250, 60%, 35%, 1)",
+      primaryTranslucent: "hsla(250, 90%, 62%, 0.2)",
 
       secondary: "#EF5DA8",
 
@@ -27,20 +29,21 @@ const themedStitches = createStitches({
        * The app content backgrounds are appended with numbers that increase in the order
        * that the colors should be layered on top of each other.
        */
-      background1: "#ffffff", // Base background of app content
-      background2: "#f5f5f5", // Backgrounds that sit on top of background1
-      background3: "#ebebeb", // Backgrounds that sit on top of background2
+      background1: "linear-gradient(hsla(242, 40%, 99%, 1), hsla(242, 16%, 99%, 1))",
+      background2: "hsla(242, 16%, 98%, 1)", // Backgrounds that sit on top of background1
+      background3: "hsla(242, 16%, 94%, 1)", // Backgrounds that sit on top of background2
       overlay: "rgba(0,0,0,0.25)",
       heavyOverlay: "rgba(0,0,0,0.6)",
       mediaOverlay: "rgba(115, 115, 115, 0.5)",
 
-      text: "#000000", // Text that sits on the background colors
-      secondaryText: "#9a9a9a", // Secondary text that sits on background colors
-      accentText: "#ffffff", // Text that sits on primary and secondary accent colors
-      inverseText: "#ffffff",
+      text: "hsla(242, 14%, 8%, 1)", // Text that sits on the background colors
+      secondaryText: "hsla(242, 8%, 56%, 1)", // Secondary text that sits on background colors
+      tertiaryText: "hsla(242, 8%, 60%, 1)", // Tertiary text that sits on background colors
+      accentText: "hsla(242, 16%, 100%, 1)", // Text that sits on primary and secondary accent colors
+      inverseText: "hsla(242, 16%, 100%, 1)",
       disabledText: "#454545",
 
-      link: "#5D5FEF", // Link color
+      link: "hsla(250, 90%, 64%, 1)", // Link color
 
       border: "#cacaca", // For borders around elements
 
@@ -109,7 +112,7 @@ const themedStitches = createStitches({
     },
     fonts: {
       heading: "AbhayaLibre, serif",
-      body: "'Work Sans', Helvetica, sans-serif",
+      body: "'Nunito Sans', Helvetica, sans-serif",
     },
     fontWeights: {
       light: 300,
@@ -230,7 +233,7 @@ const themedStitches = createStitches({
       width: value,
     }),
     bg: (value: PropertyValue<"backgroundColor">) => ({
-      backgroundColor: value,
+      background: value,
     }),
     height: (value: PropertyValue<"height"> | NoInfer<string>) =>
       value === "100vh"
@@ -254,25 +257,28 @@ export type CSS = Stitches.CSS<typeof config>;
 
 export const darkTheme = themedStitches.createTheme("dark", {
   colors: {
-    primary: "#6D6FF0",
-    primaryTranslucent: "#6D6FF030",
+    primary: "hsla(250, 90%, 70%, 1)",
+    primarySubdued: "hsla(250, 98%, 76%, 1)",
+    primaryStrong: "hsla(250, 54%, 10%, 1)",
+    primaryTranslucent: "hsla(250, 90%, 70%, 0.2)",
 
     secondary: "#EF5DA8",
 
-    background1: "#191919",
-    background2: "#202020",
-    background3: "#212121",
+    background1: "linear-gradient(hsla(242, 25%, 6%, 1), hsla(242, 10%, 7%, 1))",
+    background2: "hsla(242, 10%, 9%, 1)",
+    background3: "hsla(242, 10%, 12%, 1)",
     overlay: "rgba(0,0,0,0.25)",
     heavyOverlay: "rgba(0,0,0,0.6)",
     mediaOverlay: "rgba(115, 115, 115, 0.7)",
 
-    text: "#ffffff",
-    secondaryText: "#acacac",
-    accentText: "#ffffff",
+    text: "hsla(242, 16%, 98%, 1)",
+    secondaryText: "hsla(242, 8%, 60%, 1)",
+    tertiaryText: "hsla(242, 14%, 28%, 1)",
+    accentText: "hsla(242, 16%, 100%, 1)",
     inverseText: "#000000",
     disabledText: "#323232",
 
-    link: "#8D8FF3",
+    link: "hsla(250, 90%, 70%, 1)",
 
     border: "#858585",
 

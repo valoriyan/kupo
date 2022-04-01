@@ -13,7 +13,7 @@ import { ShareIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
-import { Subtext, subtextStyles } from "#/components/Typography";
+import { Body, MainTitle, Subtext, subtextStyles } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
@@ -72,16 +72,19 @@ const ProfileBody = (props: ProfileBodyProps) => {
             >
               <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
             </Box>
-            <Link href={getProfilePageUrl({ username })} passHref>
-              <a>@{username}</a>
-            </Link>
+            <Stack css={{ gap: "$3" }}>
+              <Link href={getProfilePageUrl({ username })} passHref>
+                <MainTitle as="a">@{username}</MainTitle>
+              </Link>
+              <Subtext css={{ color: "$secondaryText" }}>
+                {formatStat(followers.count)} followers | {formatStat(follows.count)}{" "}
+                followed
+              </Subtext>
+            </Stack>
           </AvatarAndName>
         </ProfileHeader>
-        <Stack css={{ mt: "$10", pt: "$4", px: "$6", gap: "$4" }}>
-          <Subtext>
-            {formatStat(followers.count)} followers | {formatStat(follows.count)} followed
-          </Subtext>
-          {!!shortBio && <Description>{shortBio}</Description>}
+        <Stack css={{ mt: "92px", pt: "$4", px: "$6", gap: "$4" }}>
+          {!!shortBio && <Body>{shortBio}</Body>}
           {!!userWebsite && (
             <ExternalLink target="_blank" rel="noopener noreferrer" href={userWebsite}>
               {userWebsite}
@@ -149,13 +152,11 @@ const ProfileHeader = styled(Flex, {
 
 const AvatarAndName = styled(Stack, {
   position: "absolute",
-  bottom: "-60px", // Magic number
+  bottom: "-85px", // Magic number
   alignItems: "flex-start",
   gap: "$5",
   px: "$6",
 });
-
-const Description = styled(Subtext, { fontWeight: "$light" });
 
 const ExternalLink = styled("a", subtextStyles, { cursor: "pointer" });
 

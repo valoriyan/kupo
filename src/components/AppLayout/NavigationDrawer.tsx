@@ -3,11 +3,14 @@ import { setPreviousLocationForMyLists } from "#/pages/my-lists";
 import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import {
+  BellIcon,
   BookmarkIcon,
   BoxIcon,
   CloseIcon,
+  HomeIcon,
   ListIcon,
   LogOutIcon,
+  MailIcon,
   OptionsIcon,
   SupportIcon,
 } from "../Icons";
@@ -30,6 +33,14 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
       </UserInfoWrapper>
       <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
         <Stack css={{ gap: "$6" }}>
+          <NavLink href="/feed" Icon={HomeIcon} label="Home" onClick={hide} />
+          <NavLink
+            href="/notifications"
+            Icon={BellIcon}
+            label="Notifications"
+            onClick={hide}
+          />
+          <NavLink href="/messages" Icon={MailIcon} label="Messages" onClick={hide} />
           <NavLink
             href="/my-lists"
             Icon={ListIcon}
@@ -55,7 +66,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
           <NavLink href="/support" Icon={SupportIcon} label="Support" onClick={hide} />
           <NavItem
             as="button"
-            css={{ color: "$link" }}
+            css={{ color: "$text" }}
             onClick={() => {
               hide();
               logout();
