@@ -1,6 +1,20 @@
 import { css, keyframes, styled } from "#/styling";
+import { goToPostByHashTagPage } from "#/templates/PostsByHashTag";
 
-export const HashTag = styled("div", {
+export interface HashTagProps {
+  hashtag: string;
+  outlined?: boolean;
+}
+
+export const HashTag = ({ hashtag, outlined }: HashTagProps) => {
+  return (
+    <HashTagElement onClick={() => goToPostByHashTagPage(hashtag)} outlined={outlined}>
+      #{hashtag}
+    </HashTagElement>
+  );
+};
+
+const HashTagElement = styled("button", {
   borderRadius: "$round",
   py: "$1",
   px: "$3",

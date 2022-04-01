@@ -33,6 +33,8 @@ export const Discover = () => {
         <SearchBar>
           <SearchIcon />
           <SearchInput
+            type="text"
+            autoComplete="off"
             placeholder="@username, #hashtag, caption"
             value={searchText}
             onChange={(e) => setSearchText(e.currentTarget.value)}

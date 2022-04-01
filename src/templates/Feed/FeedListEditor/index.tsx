@@ -105,7 +105,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           justifyContent: "space-between",
         }}
       >
-        <MainTitle>Feed</MainTitle>
+        <MainTitle>Feeds</MainTitle>
         <IconButton onClick={props.hide}>
           <ChevronUpIcon />
         </IconButton>
@@ -134,6 +134,8 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
         css={{ gridTemplateColumns: "minmax(0, 1fr) auto" }}
       >
         <FilterInput
+          type="text"
+          autoComplete="off"
           placeholder="@username, #hashtag"
           value={newFilterText}
           onChange={(e) => setNewFilterText(e.currentTarget.value)}
@@ -219,10 +221,11 @@ const FilterRow = ({ filter, actions }: FilterRowProps) => {
 
 const FilterRowWrapper = styled(motion.div, {
   display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
   borderTop: "solid $borderWidths$1 $border",
   borderBottom: "solid $borderWidths$1 $border",
   p: "$5",
-  justifyContent: "space-between",
   bg: "$background1",
   marginTop: "-1px",
 });

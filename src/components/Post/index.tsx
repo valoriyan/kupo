@@ -44,7 +44,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
       {!!hashtags.length && (
         <HashTagsWrapper>
           {hashtags.map((tag) => (
-            <HashTag key={tag}>#{tag}</HashTag>
+            <HashTag key={tag} hashtag={tag} />
           ))}
         </HashTagsWrapper>
       )}

@@ -93,9 +93,7 @@ const ProfileBody = (props: ProfileBodyProps) => {
           {!!hashtags.length && (
             <Flex css={{ gap: "$3" }}>
               {hashtags.map((hashtag) => (
-                <HashTag key={hashtag} outlined>
-                  #{hashtag}
-                </HashTag>
+                <HashTag key={hashtag} hashtag={hashtag} outlined />
               ))}
             </Flex>
           )}
