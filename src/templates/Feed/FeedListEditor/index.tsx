@@ -136,7 +136,8 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
         <FilterInput
           type="text"
           autoComplete="off"
-          placeholder="@username, #hashtag"
+          name="add filter"
+          placeholder="Add #tag or @user"
           value={newFilterText}
           onChange={(e) => setNewFilterText(e.currentTarget.value)}
         />
