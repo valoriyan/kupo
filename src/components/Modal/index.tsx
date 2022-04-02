@@ -89,8 +89,8 @@ const scaleOut = keyframes({
 const DialogContent = styled(Dialog.Content, {
   zIndex: "$dialog",
   position: "fixed",
-  top: "50vh",
-  left: "50vw",
+  top: "50%",
+  left: "50%",
   transform: "translate(-50%, -50%) scale(0)",
   [prefersMotionSelector]: {
     "&[data-state='open']": {

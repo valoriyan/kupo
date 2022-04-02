@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "react-query";
 import { Api, SharePostRequestBody } from "../..";
-import { invalidatePostFeeds } from "./utilities";
+import { resetPostFeeds } from "./utilities";
 
 export const useSharePost = () => {
   const queryClient = useQueryClient();
@@ -12,7 +12,7 @@ export const useSharePost = () => {
     {
       onSuccess: (data) => {
         if (data.data.success) {
-          invalidatePostFeeds({
+          resetPostFeeds({
             queryClient,
             authorUserId: data.data.success.renderablePost.authorUserId,
           });

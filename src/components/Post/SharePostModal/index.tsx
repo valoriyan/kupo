@@ -84,7 +84,7 @@ export const SharePostModal = ({
               </Flex>
             </SectionWrapper>
           </Stack>
-          <Stack css={{ gap: "$3", px: "$5" }}>
+          <Stack css={{ gap: "$3", px: "$5", pb: "$6" }}>
             <Button
               size="lg"
               variant="secondary"
@@ -118,5 +118,4 @@ const FormWrapper = styled("div", {
   gridTemplateRows: "minmax(0, 1fr) auto",
   rowGap: "$5",
   height: "100%",
-  pb: "$6",
 });

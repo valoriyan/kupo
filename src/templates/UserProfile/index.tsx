@@ -15,6 +15,7 @@ import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
 import { Body, MainTitle, Subtext, subtextStyles } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
+import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
@@ -101,7 +102,13 @@ const ProfileBody = (props: ProfileBodyProps) => {
         <Flex css={{ gap: "$3", px: "$6", pt: "$6", pb: "$3" }}>
           {props.isOwnProfile ? (
             <Link href="/edit-profile" passHref>
-              <Button as="a" size="md" variant="primary" css={{ flex: 1 }}>
+              <Button
+                as="a"
+                size="md"
+                variant="primary"
+                css={{ flex: 1 }}
+                onClick={setPreviousLocationForSettings}
+              >
                 Edit Profile
               </Button>
             </Link>

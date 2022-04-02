@@ -106,6 +106,7 @@ export const HashTags = (props: HashTagsProps) => {
 const Wrapper = styled("div", {
   display: "flex",
   flexWrap: "wrap",
+  alignItems: "center",
   gap: "$3",
   lineHeight: 1.25,
   fontSize: "$3",

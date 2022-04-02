@@ -1,9 +1,13 @@
-import { useMutation } from "react-query";
 import Router from "next/router";
+import { useMutation, useQueryClient } from "react-query";
+import { useCurrentUserId } from "#/contexts/auth";
 import { useFormState } from "#/templates/AddContent/FormContext";
 import { Api } from "../..";
+import { resetPostFeeds } from "./utilities";
 
 export const useCreatePost = () => {
+  const queryClient = useQueryClient();
+  const userId = useCurrentUserId();
   const formState = useFormState();
 
   return useMutation(
@@ -19,6 +23,10 @@ export const useCreatePost = () => {
     {
       onSuccess: (data) => {
         if (data.data.success) {
+          resetPostFeeds({
+            queryClient,
+            authorUserId: userId,
+          });
           Router.push("/feed");
         }
       },

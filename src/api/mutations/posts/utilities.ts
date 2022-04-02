@@ -65,15 +65,15 @@ export const updateCachedPost = ({
   }
 };
 
-export const invalidatePostFeeds = ({
+export const resetPostFeeds = ({
   queryClient,
   authorUserId,
 }: {
   queryClient: QueryClient;
   authorUserId?: string;
 }) => {
-  queryClient.invalidateQueries([CacheKeys.ContentFeed]);
+  queryClient.resetQueries([CacheKeys.ContentFeed]);
   if (authorUserId) {
-    queryClient.invalidateQueries([CacheKeys.UserPostPages, authorUserId]);
+    queryClient.resetQueries([CacheKeys.UserPostPages, authorUserId]);
   }
 };
