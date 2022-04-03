@@ -8,13 +8,13 @@ import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { getPostsByHashtagUrl } from "#/utils/generateLinkUrls";
-import { SessionStorageItem } from "#/utils/storage";
+import { SessionStorage } from "#/utils/storage";
 import { goToPostPage } from "../SinglePost";
 
-const previousLocation = SessionStorageItem<string>("previous-location-post-by-hashtag");
+const PREVIOUS_LOCATION_BASE_KEY = "previous-location-post-by-hashtag-";
 
 export const goToPostByHashTagPage = (hashtag: string) => {
-  previousLocation.set(Router.asPath);
+  SessionStorage.setItem<string>(PREVIOUS_LOCATION_BASE_KEY + hashtag, Router.asPath);
   Router.push(getPostsByHashtagUrl(hashtag));
 };
 
@@ -31,8 +31,11 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
 
   const posts = data?.pages.flatMap((page) => page.posts);
 
+  const backRoute =
+    SessionStorage.getItem<string>(PREVIOUS_LOCATION_BASE_KEY + hashTag) ?? "/feed";
+
   return (
-    <DetailLayout heading={`#${hashTag}`} backRoute={previousLocation.get() ?? "/feed"}>
+    <DetailLayout heading={`#${hashTag}`} backRoute={backRoute}>
       {!isLoading && error ? (
         <ErrorArea>{error.message || "An error occurred"}</ErrorArea>
       ) : isLoading || !posts ? (

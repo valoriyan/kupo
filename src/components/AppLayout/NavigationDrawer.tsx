@@ -5,7 +5,6 @@ import { styled } from "#/styling";
 import {
   BellIcon,
   BookmarkIcon,
-  BoxIcon,
   CloseIcon,
   HomeIcon,
   ListIcon,
@@ -51,7 +50,6 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
             }}
           />
           <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" onClick={hide} />
-          <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" onClick={hide} />
           <NavLink
             href="/settings"
             Icon={OptionsIcon}

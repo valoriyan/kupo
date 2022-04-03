@@ -12,7 +12,6 @@ import { SessionStorageItem } from "#/utils/storage";
 import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
 import { NewPost } from "./NewPost";
-import { NewShopItem } from "./NewShopItem";
 import { PostSchedule } from "./PostSchedule";
 import { ScheduleByDay } from "./ScheduleByDay";
 
@@ -26,14 +25,12 @@ export const setPreviousLocationForAddContent = () => {
 export enum AddContentScreen {
   Initial = "Initial",
   Post = "Post",
-  ShopItem = "ShopItem",
   PostSchedule = "PostSchedule",
 }
 
 const screenToHeading = {
   [AddContentScreen.Initial]: "Add Content",
   [AddContentScreen.Post]: "New Post",
-  [AddContentScreen.ShopItem]: "New Shop Item",
   [AddContentScreen.PostSchedule]: "View Post Schedule",
 };
 
@@ -71,9 +68,6 @@ export const AddContent = () => {
       break;
     case AddContentScreen.Post:
       bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
-      break;
-    case AddContentScreen.ShopItem:
-      bodyNode = <NewShopItem />;
       break;
     case AddContentScreen.PostSchedule:
       bodyNode = <PostSchedule calendarState={calendarState} />;

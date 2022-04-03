@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DuplicateIcon, TagIcon } from "#/components/Icons";
+import { LockIcon, UserIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -9,12 +9,12 @@ export const Settings = () => {
     <Stack>
       <Link href="/settings/profile" passHref>
         <NavButton>
-          <DuplicateIcon /> Profile
+          <UserIcon /> Profile
         </NavButton>
       </Link>
       <Link href="/settings/account" passHref>
         <NavButton>
-          <TagIcon /> Account
+          <LockIcon /> Account
         </NavButton>
       </Link>
     </Stack>

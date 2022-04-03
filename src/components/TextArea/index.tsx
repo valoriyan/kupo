@@ -7,7 +7,7 @@ export const TextArea = styled("textarea", {
   borderRadius: "$4",
   borderStyle: "solid",
   borderWidth: "$1",
-  borderColor: "$text",
+  borderColor: "$border",
   backgroundColor: "$background1",
   color: "$text",
 });

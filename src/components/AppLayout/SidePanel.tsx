@@ -10,7 +10,6 @@ import { ErrorMessage } from "../ErrorArea";
 import {
   BellIcon,
   BookmarkIcon,
-  BoxIcon,
   HomeIcon,
   ListIcon,
   LogOutIcon,
@@ -99,12 +98,6 @@ export const SidePanel = () => {
               Icon={BookmarkIcon}
               label="Saved Posts"
               color={isActive("/saved") ? activeColor : inactiveColor}
-            />
-            <NavLink
-              href="/purchases"
-              Icon={BoxIcon}
-              label="Purchases"
-              color={isActive("/purchases") ? activeColor : inactiveColor}
             />
             <NavLink
               href="/settings"
