@@ -1,49 +1,48 @@
 import { useGetPageOfChatRooms } from "#/api/queries/chat/useGetPageOfChatRooms";
+import { ErrorMessage } from "#/components/ErrorArea";
+import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { LoadingArea } from "#/components/LoadingArea";
+import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { ChatRoomsListSearchBar } from "./ChatRoomsListSearchBar";
-import { ChatRoomsListFilterBar } from "./ChatRoomsListFilterBar";
-import { ChatRoomsList } from "./ChatRoomList";
-import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { ChatRoomListItem } from "./ChatRoomListItem";
+import { ChatRoomsHeader } from "./ChatRoomsHeader";
 
 export const Messages = () => {
-  const infiniteQueryResultOfFetchingPageOfChatRooms = useGetPageOfChatRooms({});
-  const { data, isLoading, error, isError } =
-    infiniteQueryResultOfFetchingPageOfChatRooms;
+  const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useGetPageOfChatRooms();
+  const clientUserId = useCurrentUserId();
 
-  const {
-    data: clientUserData,
-    isError: isErrorAcquiringClientUserData,
-    isLoading: isLoadingClientUserData,
-  } = useGetClientUserProfile();
-
-  if (
-    (isError && !isLoading) ||
-    (isErrorAcquiringClientUserData && !isLoadingClientUserData)
-  ) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
-
-  if (isLoading || !data || isLoadingClientUserData || !clientUserData) {
-    return <div>Loading</div>;
-  }
+  const chatRooms = data?.pages.flatMap((page) => page.chatRooms);
 
   return (
-    <Grid>
-      <ChatRoomsListSearchBar />
-      <ChatRoomsListFilterBar />
-      <ChatRoomsList
-        clientUserData={clientUserData}
-        infiniteQueryResultOfFetchingPageOfChatRooms={
-          infiniteQueryResultOfFetchingPageOfChatRooms
-        }
-      />
-    </Grid>
+    <Wrapper>
+      <ChatRoomsHeader />
+      <div>
+        {error && !isLoading ? (
+          <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
+        ) : isLoading || !chatRooms || !clientUserId ? (
+          <LoadingArea size="lg" />
+        ) : (
+          <InfiniteScrollArea
+            hasNextPage={hasNextPage ?? false}
+            isNextPageLoading={isFetchingNextPage}
+            loadNextPage={fetchNextPage}
+            items={chatRooms.map((chatRoom) => (
+              <ChatRoomListItem
+                key={chatRoom.chatRoomId}
+                chatRoom={chatRoom}
+                clientUserId={clientUserId}
+              />
+            ))}
+          />
+        )}
+      </div>
+    </Wrapper>
   );
 };
 
-const Grid = styled("div", {
+const Wrapper = styled("div", {
   display: "grid",
-  gridTemplateRows: "auto auto 1fr",
-  height: "100%",
-  width: "100%",
+  gridTemplateRows: "auto minmax(0, 1fr)",
+  size: "100%",
 });
