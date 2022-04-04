@@ -1,4 +1,5 @@
 import { logout } from "#/contexts/auth";
+import { setPreviousLocationForMessages } from "#/pages/messages";
 import { setPreviousLocationForMyLists } from "#/pages/my-lists";
 import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
@@ -39,7 +40,15 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
             label="Notifications"
             onClick={hide}
           />
-          <NavLink href="/messages" Icon={MailIcon} label="Messages" onClick={hide} />
+          <NavLink
+            href="/messages"
+            Icon={MailIcon}
+            label="Messages"
+            onClick={() => {
+              setPreviousLocationForMessages();
+              hide();
+            }}
+          />
           <NavLink
             href="/my-lists"
             Icon={ListIcon}

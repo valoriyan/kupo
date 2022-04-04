@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { logout } from "#/contexts/auth";
+import { setPreviousLocationForMessages } from "#/pages/messages";
 import { setPreviousLocationForMyLists } from "#/pages/my-lists";
 import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
@@ -84,6 +85,7 @@ export const SidePanel = () => {
               href="/messages"
               Icon={MailIcon}
               label="Messages"
+              onClick={setPreviousLocationForMessages}
               color={isActive("/messages") ? activeColor : inactiveColor}
             />
             <NavLink
