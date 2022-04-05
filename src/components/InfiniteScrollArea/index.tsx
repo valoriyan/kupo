@@ -1,4 +1,11 @@
-import { CSSProperties, ReactNode, useEffect, useRef } from "react";
+import {
+  CSSProperties,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import mergeRefs from "react-merge-refs";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { VariableSizeList } from "react-window";
@@ -6,11 +13,17 @@ import InfiniteLoader from "react-window-infinite-loader";
 import { useWindowSize } from "#/utils/useWindowSize";
 import { Body } from "../Typography";
 
+export interface InfiniteScrollItemRenderProps {
+  updateItemHeight: () => void;
+}
+
 export interface InfiniteScrollAreaProps {
   hasNextPage: boolean;
   isNextPageLoading: boolean;
   loadNextPage: () => void;
-  items: ReactNode[];
+  items: Array<
+    ReactElement | ((renderProps: InfiniteScrollItemRenderProps) => ReactElement)
+  >;
 }
 
 export const InfiniteScrollArea = ({
@@ -36,21 +49,29 @@ export const InfiniteScrollArea = ({
   const Item = ({ index, style }: { index: number; style: CSSProperties }) => {
     const rowRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    const updateItemHeight = useCallback(() => {
       if (rowRef.current) {
-        listRef.current?.resetAfterIndex(0);
         rowHeights.current = {
           ...rowHeights.current,
           [index]: rowRef.current.clientHeight,
         };
+        listRef.current?.resetAfterIndex(index);
       }
-    }, [index, rowRef]);
+    }, [index]);
 
-    let content;
+    useEffect(() => {
+      updateItemHeight();
+    }, [updateItemHeight]);
+
+    let content: ReactNode;
     if (!isItemLoaded(index)) {
       content = <Body css={{ textAlign: "center", p: "$3" }}>Loading...</Body>;
     } else {
-      content = items[index];
+      const currentItem = items[index];
+      content =
+        typeof currentItem === "function"
+          ? currentItem({ updateItemHeight })
+          : currentItem;
     }
 
     return (

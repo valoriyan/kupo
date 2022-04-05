@@ -7,7 +7,6 @@ import getConfig from "next/config";
 export interface WebsocketState {
   socket: Socket | undefined;
   generateSocket: ({ accessToken }: { accessToken: string }) => void;
-
   notificationsReceived: string[];
 }
 
@@ -19,15 +18,9 @@ const generateSocket = ({
   get: GetState<WebsocketState>;
 }) => {
   const { publicRuntimeConfig } = getConfig();
-
   const websocketUrl = publicRuntimeConfig.API_BASE_URL;
 
-  const newSocket = io(websocketUrl, {
-    auth: {
-      accessToken,
-    },
-    secure: true,
-  });
+  const newSocket = io(websocketUrl, { auth: { accessToken }, secure: true });
 
   newSocket.on("connect", () => {
     // const notificationsReceived = get().notificationsReceived;
