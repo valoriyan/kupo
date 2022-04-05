@@ -32,7 +32,7 @@ const Header = styled(Flex, {
   top: 0,
   zIndex: 1,
   alignItems: "center",
-  bg: "$background1",
+  bg: "$pageBackground",
   borderBottom: "solid $borderWidths$1 $border",
   px: "$4",
   py: "$5",

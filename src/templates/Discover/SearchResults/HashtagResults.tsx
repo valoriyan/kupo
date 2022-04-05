@@ -23,7 +23,7 @@ export const HashtagResults = ({ query }: HashtagResultsProps) => {
       }
     >
       {!data ? null : (
-        <Flex css={{ gap: "$3" }}>
+        <Flex css={{ gap: "$3", flexWrap: "wrap" }}>
           {data.hashtags.map((hashtag) => (
             <HashTag key={hashtag} hashtag={hashtag} />
           ))}

@@ -114,7 +114,7 @@ const Wrapper = styled("div", {
   display: "grid",
   gridTemplateRows: "auto minmax(0, 1fr)",
   height: "100%",
-  bg: "$background1",
+  bg: "$pageBackground",
 });
 
 export const Header = styled(Stack, {

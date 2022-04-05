@@ -110,7 +110,7 @@ const Wrapper = styled("div", {
   height: "100vh",
   width: "100vw",
   maxWidth: "600px",
-  bg: "$background1",
+  bg: "$pageBackground",
 });
 
 const FormWrapper = styled("div", {

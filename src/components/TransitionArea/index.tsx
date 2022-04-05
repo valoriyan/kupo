@@ -60,9 +60,7 @@ const TransitionWrapper = styled(motion.div, {
 });
 
 const CurrentContent = styled(ScrollArea, {
-  height: "100%",
-  width: "100%",
-  bg: "$background1",
+  size: "100%",
 });
 
 const noAnimation: Transition = {

@@ -68,7 +68,6 @@ const Wrapper = styled("div", {
   display: "grid",
   gridTemplateRows: "auto minmax(0, 1fr)",
   height: "100%",
-  bg: "$background1",
 });
 
 const Header = styled(Stack, {

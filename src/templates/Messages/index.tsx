@@ -22,6 +22,8 @@ export const Messages = () => {
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
         ) : isLoading || !chatRooms || !clientUserId ? (
           <LoadingArea size="lg" />
+        ) : !chatRooms.length ? (
+          <ErrorMessage>You don&apos;t have any messages yet</ErrorMessage>
         ) : (
           <InfiniteScrollArea
             hasNextPage={hasNextPage ?? false}

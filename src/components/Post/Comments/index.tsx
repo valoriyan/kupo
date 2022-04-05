@@ -37,7 +37,7 @@ export const Comments = ({ postId }: CommentsProps) => {
   const comments = data.pages.flatMap((page) => page.postComments);
 
   return (
-    <Stack css={{ height: "100vh" }}>
+    <Stack css={{ height: "100%" }}>
       <CommentInput postId={postId} />
       <CommentList
         comments={comments}

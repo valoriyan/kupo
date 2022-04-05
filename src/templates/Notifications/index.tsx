@@ -22,6 +22,8 @@ export const Notifications = () => {
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
         ) : isLoading || !oldNotifications ? (
           <LoadingArea size="lg" />
+        ) : !oldNotifications.length ? (
+          <ErrorMessage>You&apos;re all caught up!</ErrorMessage>
         ) : (
           <InfiniteScrollArea
             hasNextPage={hasNextPage ?? false}
