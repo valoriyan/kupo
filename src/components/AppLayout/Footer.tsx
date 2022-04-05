@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
-import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
 import { setPreviousLocationForAddContent } from "#/templates/AddContent";
 import { Avatar } from "../Avatar";
@@ -11,16 +10,6 @@ import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadLink } from "./shared";
 
 export const Footer = () => {
-  const { data, isLoading, error } = useGetClientUserProfile();
-
-  if (error && !isLoading) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
-
   return (
     <Wrapper>
       <IconLink href="/feed">
