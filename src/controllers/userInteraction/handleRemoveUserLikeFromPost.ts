@@ -45,7 +45,7 @@ export async function handleRemoveUserLikeFromPost({
       { postId },
     );
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
     {
       recipientUserId: unrenderablePost.authorUserId,
       notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,

@@ -91,10 +91,34 @@ export class PostLikesTableService extends TableService {
     const response: QueryResult<DBPostLike> = await this.datastorePool.query(query);
 
     if (response.rows.length < 1) {
-      throw new Error("Missing post like");
+      throw new Error("Missing post like - getPostLikeByPostLikeId");
     }
 
     return response.rows[0];
+  }
+
+  public async getPostLikesByPostId({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<DBPostLike[]> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          post_id = $1
+        ;
+      `,
+      values: [postId],
+    };
+
+    const response: QueryResult<DBPostLike> = await this.datastorePool.query(query);
+
+
+    return response.rows;
   }
 
   public async getUserIdsLikingPostId({ postId }: { postId: string }): Promise<string[]> {
@@ -186,6 +210,27 @@ export class PostLikesTableService extends TableService {
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "post_id", value: postId },
         { field: "user_id", value: userId },
+      ],
+      tableName: this.tableName,
+    });
+
+    const response: QueryResult<DBPostLike> = await this.datastorePool.query(query);
+
+    if (response.rows.length < 1) {
+      throw new Error("Missing post like - none to delete");
+    }
+
+    return response.rows[0];
+  }
+
+  public async removeAllPostLikesByPostId({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<DBPostLike> {
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "post_id", value: postId },
       ],
       tableName: this.tableName,
     });

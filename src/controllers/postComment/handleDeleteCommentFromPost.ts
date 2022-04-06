@@ -50,7 +50,7 @@ export async function handleDeleteCommentFromPost({
     },
   );
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
     {
       notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
       referenceTableId: postCommentId,

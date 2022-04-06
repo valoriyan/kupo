@@ -41,41 +41,48 @@ async function assembleNotifcations({
 }): Promise<RenderableUserNotification[]> {
   const renderableUserNotifications = await BluebirdPromise.map(
     userNotifications,
-    async (userNotification): Promise<RenderableUserNotification> => {
-      if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST
-      ) {
-        return await assembleRenderableNewCommentOnPostNotification({
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_FOLLOWER
-      ) {
-        return await assembleRenderableNewFollowerNotification({
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_LIKE_ON_POST
-      ) {
-        return await assembleRenderableNewLikeOnPostNotification({
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else {
-        throw new Error("Unknown event type");
+    async (userNotification): Promise<RenderableUserNotification | null> => {
+      try {
+        if (
+          userNotification.notification_type === NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST
+        ) {
+          return await assembleRenderableNewCommentOnPostNotification({
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type === NOTIFICATION_EVENTS.NEW_FOLLOWER
+        ) {
+          return await assembleRenderableNewFollowerNotification({
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type === NOTIFICATION_EVENTS.NEW_LIKE_ON_POST
+        ) {
+          return await assembleRenderableNewLikeOnPostNotification({
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else {
+          throw new Error("Unknown event type");
+        }        
+      } catch (error) {
+        console.log(error);
+        return null;
       }
+
     },
   );
 
-  return renderableUserNotifications;
+
+  return (renderableUserNotifications.filter(renderableUserNotification => !!renderableUserNotification) as RenderableUserNotification[]);
 }
 
 export async function handleGetPageOfNotifications({

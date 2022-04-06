@@ -40,7 +40,7 @@ export async function handleUnfollowUser({
       },
     );
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotification(
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
     {
       notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
       referenceTableId: user_follow_event_id,

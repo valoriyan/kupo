@@ -19,6 +19,7 @@ export interface DBUserNotification {
   last_updated_timestamp: number;
 
   // if type = NEW_FOLLOWER: DBUserFollow [field: id];
+  // if type = NEW_COMMENT_ON_POST: DBPostComment [field: post_comment_id];
   // if type = NEW_POST: DBPost [field: post_id]
   // if type = NEW_LIKE_ON_POST: DBPostLike [field: id]
   reference_table_id: string;
@@ -196,7 +197,7 @@ export class UserNotificationsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deleteUserNotification({
+  public async deleteUserNotificationForUserId({
     referenceTableId,
     recipientUserId,
     notificationType,
@@ -216,4 +217,28 @@ export class UserNotificationsTableService extends TableService {
 
     await this.datastorePool.query(query);
   }
+
+  public async deleteUserNotificationsForAllUsersByReferenceTableIds({
+    referenceTableIds,
+    notificationType,
+  }: {
+    referenceTableIds: string[];
+    notificationType: string;
+  }): Promise<void> {
+    const query = generatePSQLGenericDeleteRowsQueryString({
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "notification_type", value: notificationType },
+      ],
+      fieldsUsedToIdentifyRowsToDeleteUsingInClauses: [
+        { field: "reference_table_id", values: referenceTableIds },
+      ],
+      tableName: this.tableName,
+    });
+
+
+    console.log("query");
+    console.log(query);
+    
+    await this.datastorePool.query(query);
+  }  
 }
