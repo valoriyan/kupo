@@ -72,17 +72,17 @@ async function assembleNotifcations({
           });
         } else {
           throw new Error("Unknown event type");
-        }        
+        }
       } catch (error) {
         console.log(error);
         return null;
       }
-
     },
   );
 
-
-  return (renderableUserNotifications.filter(renderableUserNotification => !!renderableUserNotification) as RenderableUserNotification[]);
+  return renderableUserNotifications.filter(
+    (renderableUserNotification) => !!renderableUserNotification,
+  ) as RenderableUserNotification[];
 }
 
 export async function handleGetPageOfNotifications({

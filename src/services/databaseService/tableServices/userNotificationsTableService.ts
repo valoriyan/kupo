@@ -235,10 +235,9 @@ export class UserNotificationsTableService extends TableService {
       tableName: this.tableName,
     });
 
-
     console.log("query");
     console.log(query);
-    
+
     await this.datastorePool.query(query);
-  }  
+  }
 }

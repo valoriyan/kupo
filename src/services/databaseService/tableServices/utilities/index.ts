@@ -107,7 +107,6 @@ export function generatePSQLGenericDeleteRowsQueryString<T>({
   const queryValues: T[] = filteredFields.map((fields) => fields.value!);
   let queryValueIndex = 0;
 
-
   const parameterizedValuesString = filteredFields
     .map(({ field }) => {
       queryValueIndex += 1;
@@ -115,24 +114,27 @@ export function generatePSQLGenericDeleteRowsQueryString<T>({
     })
     .join(" AND ");
 
-
   let stringOfValuesForInCondition = "";
-  if (!!fieldsUsedToIdentifyRowsToDeleteUsingInClauses && fieldsUsedToIdentifyRowsToDeleteUsingInClauses.length > 0) {
+  if (
+    !!fieldsUsedToIdentifyRowsToDeleteUsingInClauses &&
+    fieldsUsedToIdentifyRowsToDeleteUsingInClauses.length > 0
+  ) {
     if (queryValues.length > 0) {
       stringOfValuesForInCondition += "\n AND \n";
     }
 
-    stringOfValuesForInCondition += fieldsUsedToIdentifyRowsToDeleteUsingInClauses.map(({field, values}) => {
-      const stringOfValuesForInCondition = `( ${values.map((_, index) => "$" + (index + 1 + queryValueIndex)).join(", ")} )`;
-      values.forEach((value => queryValues.push(value)));
-      queryValueIndex += values.length;
+    stringOfValuesForInCondition += fieldsUsedToIdentifyRowsToDeleteUsingInClauses
+      .map(({ field, values }) => {
+        const stringOfValuesForInCondition = `( ${values
+          .map((_, index) => "$" + (index + 1 + queryValueIndex))
+          .join(", ")} )`;
+        values.forEach((value) => queryValues.push(value));
+        queryValueIndex += values.length;
 
-
-      return `${field} IN ${stringOfValuesForInCondition}`;
-    }).join("\n AND ");
+        return `${field} IN ${stringOfValuesForInCondition}`;
+      })
+      .join("\n AND ");
   }
-  
-
 
   const queryText = `
     DELETE FROM ${tableName}

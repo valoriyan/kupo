@@ -164,11 +164,26 @@ export class ChatRoomsTableService extends TableService {
     return response.rows.map((dbChatRoom) => dbChatRoom.user_id);
   }
 
-  public async getChatRoomsJoinedByUserId({
-    userId,
+  public async getChatRoomsJoinedByUserIds({
+    userIds,
   }: {
-    userId: string;
+    userIds: string[];
   }): Promise<UnrenderableChatRoomPreview[]> {
+    const whereConditionText = userIds
+      .map((_,index) => {
+        return `
+        chat_room_id IN (
+          SELECT 
+            chat_room_id
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id = $${index + 1}
+        )
+      `;
+      })
+      .join("\n AND \n");
+
     const query = {
       text: `
         SELECT
@@ -176,17 +191,10 @@ export class ChatRoomsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          chat_room_id IN (
-            SELECT 
-              chat_room_id
-            FROM
-              ${this.tableName}
-            WHERE
-              user_id = $1
-          )
+          ${whereConditionText}
         ;
       `,
-      values: [userId],
+      values: userIds,
     };
 
     const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(

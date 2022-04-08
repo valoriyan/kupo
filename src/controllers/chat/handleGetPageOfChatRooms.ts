@@ -3,11 +3,14 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromParts } from "../user/utilities";
 import { ChatController } from "./chatController";
-import { RenderableChatRoomPreview } from "./models";
+import { RenderableChatRoomPreview, UnrenderableChatRoomPreview } from "./models";
+import { Promise as BluebirdPromise } from "bluebird";
+import { UnrenderableUser } from "../user/models";
 
 export interface GetPageOfChatRoomsRequestBody {
   cursor?: string;
   pageSize: number;
+  query?: string;
 }
 
 export interface SuccessfulGetPageOfChatRoomsResponse {
@@ -39,15 +42,43 @@ export async function handleGetPageOfChatRooms({
     SuccessfulGetPageOfChatRoomsResponse
   >
 > {
-  const { pageSize, cursor } = requestBody;
+  const { pageSize, cursor, query } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const unrenderableChatRooms =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserId(
-      { userId: clientUserId },
+  let unrenderableChatRooms: UnrenderableChatRoomPreview[];
+
+  if (!!query) {
+    const usernameSubstrings = query.split(" ");
+
+    const matchedUsers = await BluebirdPromise.map(
+      usernameSubstrings,
+      async (usernameSubstring) => {
+        return await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
+          {
+            usernameSubstring,
+          },
+        );
+      },
+    ).reduce(
+      (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
+        memo.concat(...matchedUsers),
+      [],
     );
+
+    const matchedUserIds = matchedUsers.map(({ userId }) => userId);
+
+    unrenderableChatRooms =
+      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserIds(
+        { userIds: [clientUserId, ...matchedUserIds] },
+      );
+  } else {
+    unrenderableChatRooms =
+      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserIds(
+        { userIds: [clientUserId] },
+      );
+  }
 
   const setOfUserIds: Set<string> = new Set();
   unrenderableChatRooms.forEach(({ memberUserIds }) => {

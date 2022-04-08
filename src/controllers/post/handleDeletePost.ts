@@ -30,15 +30,14 @@ export async function handleDeletePost({
 
   const { postId } = requestBody;
 
-  console.log("HITTTTTTT")
+  console.log("HITTTTTTT");
 
   await controller.databaseService.tableNameToServicesMap.postsTableService.deletePost({
     postId,
     authorUserId: clientUserId,
   });
 
-  console.log("NOW THISSSSSSSSSSS\n\n")
-
+  console.log("NOW THISSSSSSSSSSS\n\n");
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED BLOB FILES
@@ -54,15 +53,19 @@ export async function handleDeletePost({
   // DELETE ASSOCIATED POST LIKES
   //////////////////////////////////////////////////
 
-  const dbPostLikes = await controller.databaseService.tableNameToServicesMap.postLikesTableService.getPostLikesByPostId({postId});
-  const postLikeIds = dbPostLikes.map(({post_like_id}) => post_like_id);
-  
-  await controller.databaseService.tableNameToServicesMap.postLikesTableService.removeAllPostLikesByPostId({postId});
+  const dbPostLikes =
+    await controller.databaseService.tableNameToServicesMap.postLikesTableService.getPostLikesByPostId(
+      { postId },
+    );
+  const postLikeIds = dbPostLikes.map(({ post_like_id }) => post_like_id);
+
+  await controller.databaseService.tableNameToServicesMap.postLikesTableService.removeAllPostLikesByPostId(
+    { postId },
+  );
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED NOTIFICATIONS
   //////////////////////////////////////////////////
-
 
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
     {
@@ -70,7 +73,6 @@ export async function handleDeletePost({
       referenceTableIds: postLikeIds,
     },
   );
-
 
   return {};
 }

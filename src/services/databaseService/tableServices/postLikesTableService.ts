@@ -117,7 +117,6 @@ export class PostLikesTableService extends TableService {
 
     const response: QueryResult<DBPostLike> = await this.datastorePool.query(query);
 
-
     return response.rows;
   }
 
@@ -229,9 +228,7 @@ export class PostLikesTableService extends TableService {
     postId: string;
   }): Promise<DBPostLike> {
     const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "post_id", value: postId },
-      ],
+      fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
       tableName: this.tableName,
     });
 
