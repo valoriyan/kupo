@@ -170,7 +170,7 @@ export class ChatRoomsTableService extends TableService {
     userIds: string[];
   }): Promise<UnrenderableChatRoomPreview[]> {
     const whereConditionText = userIds
-      .map((_,index) => {
+      .map((_, index) => {
         return `
         chat_room_id IN (
           SELECT 
