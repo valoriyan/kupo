@@ -34,7 +34,7 @@ export async function uploadMediaFile({
   const ogBufferSizeInKB = file.buffer.byteLength / 1024;
 
   // Image compression
-  if (permittedImageTypes.includes(mimetype) && ogBufferSizeInKB > 512) {
+  if (permittedImageTypes.includes(mimetype) && ogBufferSizeInKB > 256) {
     if (mimetype.includes("png")) {
       buffer = await sharp(file.buffer)
         .rotate()
