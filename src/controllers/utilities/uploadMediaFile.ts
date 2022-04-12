@@ -35,25 +35,19 @@ export async function uploadMediaFile({
 
   // Image compression
   if (permittedImageTypes.includes(mimetype) && ogBufferSizeInKB > 512) {
-    const sharpInstance = sharp(file.buffer);
-
-    // Save original image orientation
-    const { orientation } = await sharpInstance.metadata();
-
     if (mimetype.includes("png")) {
-      buffer = await sharpInstance
+      buffer = await sharp(file.buffer)
+        .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
         .png({ compressionLevel: 8 })
         .toBuffer();
     } else {
-      buffer = await sharpInstance
+      buffer = await sharp(file.buffer)
+        .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
         .jpeg({ quality: 80 })
         .toBuffer();
     }
-
-    // All metadata was stripped above, let's just re-apply the original orientation
-    buffer = await sharp(buffer).withMetadata({ orientation }).toBuffer();
   }
 
   const newBufferSizeInKB = buffer.byteLength / 1024;
