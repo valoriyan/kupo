@@ -1,9 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import {
-  generatePSQLGenericDeleteRowsQueryString,
-} from "./utilities";
+import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBSavedItem {
@@ -18,7 +16,6 @@ interface DBSavedItem {
 
   timestamp: string;
 }
-
 
 export class SavedItemsTableService extends TableService {
   public static readonly tableName = `${TABLE_NAME_PREFIX}_posts`;
@@ -136,12 +133,9 @@ export class SavedItemsTableService extends TableService {
     return response.rows;
   }
 
-
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
-
-
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
