@@ -1,3 +1,4 @@
+import sharp from "sharp";
 import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
 
 export async function uploadMediaFile({
@@ -13,7 +14,7 @@ export async function uploadMediaFile({
 }> {
   const mimetype = file.mimetype;
 
-  const permittedImageTypes = ["image/jpeg", "image/png", "image/heic", "image/heif"];
+  const permittedImageTypes = ["image/jpeg", "image/png"];
 
   const permittedVideoTypes = ["video/mp4"];
 
@@ -29,9 +30,32 @@ export async function uploadMediaFile({
     // TODO: ADD VIDEO VALIDATION
   }
 
-  const blobItemPointer = await blobStorageService.saveImage({
-    image: file.buffer,
-  });
+  let buffer = file.buffer;
+  const ogBufferSizeInKB = file.buffer.byteLength / 1024;
+
+  // Image compression
+  if (permittedImageTypes.includes(mimetype) && ogBufferSizeInKB > 256) {
+    if (mimetype.includes("png")) {
+      buffer = await sharp(file.buffer)
+        .rotate()
+        .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
+        .png({ compressionLevel: 8 })
+        .toBuffer();
+    } else {
+      buffer = await sharp(file.buffer)
+        .rotate()
+        .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+    }
+  }
+
+  const newBufferSizeInKB = buffer.byteLength / 1024;
+
+  // Revert to original file if compression somehow made the file larger (it could happen...)
+  buffer = newBufferSizeInKB < ogBufferSizeInKB ? buffer : file.buffer;
+
+  const blobItemPointer = await blobStorageService.saveImage({ image: buffer });
 
   const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
     blobItemPointer,

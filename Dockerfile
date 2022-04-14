@@ -3,7 +3,7 @@ FROM node:14.17.3
 WORKDIR /app
 
 COPY package.json package.json
-RUN yarn --ignore-scripts install
+RUN yarn --ignore-scripts=false install
 
 COPY . .
 
