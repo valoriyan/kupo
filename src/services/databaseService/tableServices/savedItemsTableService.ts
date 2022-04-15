@@ -1,4 +1,5 @@
 import { Pool, QueryResult } from "pg";
+import { SavedItemType } from "../../../controllers/userInteraction/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
@@ -9,8 +10,7 @@ interface DBSavedItem {
 
   item_id: string;
 
-  // "post" | "shop_item"
-  item_type: string;
+  item_type: SavedItemType;
 
   user_id: string;
 
@@ -46,7 +46,7 @@ export class SavedItemsTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async createPost({
+  public async saveItem({
     saveId,
     itemId,
     itemType,
@@ -55,7 +55,7 @@ export class SavedItemsTableService extends TableService {
   }: {
     saveId: string;
     itemId: string;
-    itemType: string;
+    itemType: SavedItemType;
     userId: string;
     timestamp: number;
   }): Promise<void> {
@@ -147,7 +147,7 @@ export class SavedItemsTableService extends TableService {
     itemId,
   }: {
     userId: string;
-    itemType: string;
+    itemType: SavedItemType;
     itemId: string;
   }): Promise<void> {
     const query = generatePSQLGenericDeleteRowsQueryString({

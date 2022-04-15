@@ -28,6 +28,7 @@ import {
   SuccessfullyRemovedUserLikeFromPostResponse,
 } from "./handleRemoveUserLikeFromPost";
 import { BlobStorageService } from "./../../services/blobStorageService";
+import { handleUserSavesPost, UserSavesPostFailed, UserSavesPostRequestBody, UserSavesPostSuccess } from "./handleUserSavesPost";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
@@ -70,6 +71,20 @@ export class UserInteractionController extends Controller {
     });
   }
 
+  @Post("userSavesPost")
+  public async userSavesPost(
+    @Request() request: express.Request,
+    @Body() requestBody: UserSavesPostRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<UserSavesPostFailed, UserSavesPostSuccess>
+  > {
+    return await handleUserSavesPost({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -101,6 +116,23 @@ export class UserInteractionController extends Controller {
 
   @Delete("removeUserLikeFromPost")
   public async removeUserLikeFromPost(
+    @Request() request: express.Request,
+    @Body() requestBody: RemoveUserLikeFromPostRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      FailedToRemoveUserLikeFromPostResponse,
+      SuccessfullyRemovedUserLikeFromPostResponse
+    >
+  > {
+    return await handleRemoveUserLikeFromPost({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Delete("userUnsavesPost")
+  public async userUnsavesPost(
     @Request() request: express.Request,
     @Body() requestBody: RemoveUserLikeFromPostRequestBody,
   ): Promise<

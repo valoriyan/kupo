@@ -19,6 +19,7 @@ import { UsersTableService } from "./tableServices/usersTableService";
 import { teardownDatabaseService } from "./teardown";
 import { DatabaseServiceType } from "./models";
 import { UserNotificationsTableService } from "./tableServices/userNotificationsTableService";
+import { SavedItemsTableService } from "./tableServices/savedItemsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -48,6 +49,9 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     userNotificationsTableService: new UserNotificationsTableService(
+      DatabaseService.datastorePool,
+    ),
+    savedItemsTableService: new SavedItemsTableService(
       DatabaseService.datastorePool,
     ),
   };
