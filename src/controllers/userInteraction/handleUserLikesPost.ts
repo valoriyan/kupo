@@ -70,9 +70,8 @@ export async function handleUserLikesPost({
           notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
           referenceTableId: postLikeId,
         },
-      );  
+      );
     }
-
   }
 
   return {};

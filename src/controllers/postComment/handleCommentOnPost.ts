@@ -61,11 +61,10 @@ export async function handleCommentOnPost({
     clientUserId,
   });
 
-  const {authorUserId: recipientUserId} =
+  const { authorUserId: recipientUserId } =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
       { postId },
     );
-
 
   if (recipientUserId !== clientUserId) {
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
@@ -75,9 +74,8 @@ export async function handleCommentOnPost({
         notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
         referenceTableId: postCommentId,
       },
-    );  
+    );
   }
-
 
   return {
     success: { postComment: renderablePostComment },

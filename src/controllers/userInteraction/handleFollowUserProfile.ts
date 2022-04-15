@@ -50,8 +50,6 @@ export async function handleFollowUser({
     );
   }
 
-
-
   return {
     success: {},
   };
