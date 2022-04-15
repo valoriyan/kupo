@@ -51,9 +51,7 @@ export class DatabaseService {
     userNotificationsTableService: new UserNotificationsTableService(
       DatabaseService.datastorePool,
     ),
-    savedItemsTableService: new SavedItemsTableService(
-      DatabaseService.datastorePool,
-    ),
+    savedItemsTableService: new SavedItemsTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

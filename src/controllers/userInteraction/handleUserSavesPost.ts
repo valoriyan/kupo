@@ -22,9 +22,7 @@ export async function handleUserSavesPost({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: UserSavesPostRequestBody;
-}): Promise<
-  HTTPResponse<UserSavesPostFailed, UserSavesPostSuccess>
-> {
+}): Promise<HTTPResponse<UserSavesPostFailed, UserSavesPostSuccess>> {
   const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -34,11 +32,11 @@ export async function handleUserSavesPost({
 
   await controller.databaseService.tableNameToServicesMap.savedItemsTableService.saveItem(
     {
-        saveId,
-        itemId: postId,
-        itemType: SavedItemType.post,
-        userId: clientUserId,
-        timestamp: Date.now(),
+      saveId,
+      itemId: postId,
+      itemType: SavedItemType.post,
+      userId: clientUserId,
+      timestamp: Date.now(),
     },
   );
 

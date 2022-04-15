@@ -21,24 +21,19 @@ export async function handleRemoveUserLikeFromPost({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: UserUnsavesPostRequestBody;
-}): Promise<
-  HTTPResponse<
-    UserUnsavesPostFailed,
-    UserUnsavesPostSuccess
-  >
-> {
+}): Promise<HTTPResponse<UserUnsavesPostFailed, UserUnsavesPostSuccess>> {
   const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
-      {
-          userId: clientUserId,
-          itemType: SavedItemType.post,
-          itemId: postId,
-      },
-    );
+    {
+      userId: clientUserId,
+      itemType: SavedItemType.post,
+      itemId: postId,
+    },
+  );
 
   return {};
 }

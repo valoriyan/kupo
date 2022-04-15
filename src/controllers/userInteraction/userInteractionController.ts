@@ -28,7 +28,12 @@ import {
   SuccessfullyRemovedUserLikeFromPostResponse,
 } from "./handleRemoveUserLikeFromPost";
 import { BlobStorageService } from "./../../services/blobStorageService";
-import { handleUserSavesPost, UserSavesPostFailed, UserSavesPostRequestBody, UserSavesPostSuccess } from "./handleUserSavesPost";
+import {
+  handleUserSavesPost,
+  UserSavesPostFailed,
+  UserSavesPostRequestBody,
+  UserSavesPostSuccess,
+} from "./handleUserSavesPost";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
@@ -75,9 +80,7 @@ export class UserInteractionController extends Controller {
   public async userSavesPost(
     @Request() request: express.Request,
     @Body() requestBody: UserSavesPostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<UserSavesPostFailed, UserSavesPostSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<UserSavesPostFailed, UserSavesPostSuccess>> {
     return await handleUserSavesPost({
       controller: this,
       request,
