@@ -3,12 +3,22 @@ import { AddRIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 
-export const ChatRoomsHeader = () => {
+export interface ChatRoomsHeaderProps {
+  query: string;
+  setQuery: (newQuery: string) => void;
+}
+
+export const ChatRoomsHeader = (props: ChatRoomsHeaderProps) => {
   return (
     <Wrapper>
       <Flex css={{ gap: "$2", alignItems: "center", flex: 1, color: "$secondaryText" }}>
         <SearchIcon />
-        <SearchBox placeholder="Search..." type="text" />
+        <SearchBox
+          type="text"
+          placeholder="Search..."
+          value={props.query}
+          onChange={(e) => props.setQuery(e.currentTarget.value)}
+        />
       </Flex>
       <Flex css={{ gap: "$5", alignItems: "center" }}>
         <Link href="/messages/new" passHref>

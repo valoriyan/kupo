@@ -30,4 +30,10 @@ export interface GetPageOfChatRoomsRequestBody {
    * @memberof GetPageOfChatRoomsRequestBody
    */
   pageSize: number;
+  /**
+   *
+   * @type {string}
+   * @memberof GetPageOfChatRoomsRequestBody
+   */
+  query?: string;
 }

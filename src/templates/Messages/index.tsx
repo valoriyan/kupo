@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useGetPageOfChatRooms } from "#/api/queries/chat/useGetPageOfChatRooms";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
@@ -8,22 +9,25 @@ import { ChatRoomListItem } from "./ChatRoomListItem";
 import { ChatRoomsHeader } from "./ChatRoomsHeader";
 
 export const Messages = () => {
+  const [query, setQuery] = useState("");
   const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetPageOfChatRooms();
+    useGetPageOfChatRooms({ query });
   const clientUserId = useCurrentUserId();
 
   const chatRooms = data?.pages.flatMap((page) => page.chatRooms);
 
   return (
     <Wrapper>
-      <ChatRoomsHeader />
+      <ChatRoomsHeader query={query} setQuery={setQuery} />
       <div>
         {error && !isLoading ? (
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
         ) : isLoading || !chatRooms || !clientUserId ? (
           <LoadingArea size="lg" />
         ) : !chatRooms.length ? (
-          <ErrorMessage>You don&apos;t have any messages yet</ErrorMessage>
+          <ErrorMessage>
+            {query ? "No matching chats found" : "You don't have any messages yet"}
+          </ErrorMessage>
         ) : (
           <InfiniteScrollArea
             hasNextPage={hasNextPage ?? false}
