@@ -62,14 +62,17 @@ export async function handleUserLikesPost({
       },
     );
   } else {
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
-      {
-        userNotificationId: uuidv4(),
-        recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-        referenceTableId: postLikeId,
-      },
-    );
+    if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
+      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+        {
+          userNotificationId: uuidv4(),
+          recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+          notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+          referenceTableId: postLikeId,
+        },
+      );  
+    }
+
   }
 
   return {};

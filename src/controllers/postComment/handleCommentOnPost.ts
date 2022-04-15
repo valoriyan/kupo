@@ -61,19 +61,23 @@ export async function handleCommentOnPost({
     clientUserId,
   });
 
-  const unrenderablePostWithoutElementsOrHashtags =
+  const {authorUserId: recipientUserId} =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
       { postId },
     );
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
-    {
-      userNotificationId: uuidv4(),
-      recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-      notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-      referenceTableId: postCommentId,
-    },
-  );
+
+  if (recipientUserId !== clientUserId) {
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+      {
+        userNotificationId: uuidv4(),
+        recipientUserId,
+        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+        referenceTableId: postCommentId,
+      },
+    );  
+  }
+
 
   return {
     success: { postComment: renderablePostComment },

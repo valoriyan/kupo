@@ -39,14 +39,18 @@ export async function handleFollowUser({
     },
   );
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
-    {
-      userNotificationId: uuidv4(),
-      recipientUserId: userIdBeingFollowed,
-      notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-      referenceTableId: userFollowEventId,
-    },
-  );
+  if (userIdBeingFollowed !== clientUserId) {
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+      {
+        userNotificationId: uuidv4(),
+        recipientUserId: userIdBeingFollowed,
+        notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+        referenceTableId: userFollowEventId,
+      },
+    );
+  }
+
+
 
   return {
     success: {},
