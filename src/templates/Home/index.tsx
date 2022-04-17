@@ -9,7 +9,7 @@ export const Home = () => {
   const isAuthenticated = useIsAuthenticated();
 
   return (
-    <Stack css={{ alignItems: "center" }}>
+    <Stack css={{ alignItems: "center", minHeight: "100vh" }}>
       <Stack css={{ p: "$6", width: "100%", maxWidth: "600px", gap: "$9" }}>
         <Heading css={{ alignSelf: "flex-end", button: { color: "$link" } }}>
           {isAuthenticated ? (

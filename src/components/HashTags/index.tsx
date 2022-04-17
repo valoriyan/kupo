@@ -59,7 +59,7 @@ export const HashTags = (props: HashTagsProps) => {
       return;
     }
 
-    const newText = e.currentTarget.value;
+    const newText = e.currentTarget.value.toLocaleLowerCase();
     if (!newText) {
       setText(newText);
       return;

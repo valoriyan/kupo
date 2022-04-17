@@ -3,8 +3,9 @@ import Stitches, {
   defaultThemeMap,
   PropertyValue,
 } from "@stitches/react";
-import { useEffect, useState } from "react";
 import { NoInfer } from "#/types/noInfer";
+
+export * from "./utils";
 
 export type ThemeScale<TScale extends keyof typeof theme> =
   | `$${Exclude<keyof typeof theme[TScale], bigint | symbol>}`
@@ -236,6 +237,15 @@ const themedStitches = createStitches({
     bg: (value: PropertyValue<"backgroundColor">) => ({
       background: value,
     }),
+    minHeight: (value: PropertyValue<"minHeight"> | NoInfer<string>) =>
+      value === "100vh"
+        ? {
+            minHeight: value,
+            "@supports (-webkit-touch-callout: none)": {
+              minHeight: "-webkit-fill-available",
+            },
+          }
+        : { height: value },
     height: (value: PropertyValue<"height"> | NoInfer<string>) =>
       value === "100vh"
         ? {
@@ -295,27 +305,3 @@ export const darkTheme = themedStitches.createTheme("dark", {
     transparent: "rgba(0,0,0,0)",
   },
 });
-
-export const useMediaQuery = (mediaQuery: string) => {
-  const [matches, setMatches] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia(mediaQuery);
-    const setValue = () => setMatches(mq.matches);
-
-    // Set the initial value
-    setValue();
-
-    // Add a listener to update the value if it changes
-    mq.addEventListener("change", setValue);
-    return () => {
-      mq.removeEventListener("change", setValue);
-    };
-  }, [mediaQuery]);
-
-  return matches;
-};
-
-const prefersMotionQuery = "(prefers-reduced-motion: no-preference)";
-export const prefersMotionSelector = `@media ${prefersMotionQuery}`;
-export const usePrefersMotion = () => useMediaQuery(prefersMotionQuery);

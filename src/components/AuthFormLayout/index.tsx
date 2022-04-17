@@ -13,7 +13,11 @@ export interface AuthFormLayoutProps {
 
 export const AuthFormLayout = (props: AuthFormLayoutProps) => {
   return (
-    <Flex css={{ justifyContent: "center" }} as="form" onSubmit={props.onSubmit}>
+    <Flex
+      css={{ justifyContent: "center", minHeight: "100vh" }}
+      as="form"
+      onSubmit={props.onSubmit}
+    >
       <Stack
         css={{
           mt: "$10",

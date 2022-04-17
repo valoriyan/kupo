@@ -3,9 +3,9 @@ import { Button } from "#/components/Button";
 import { CaptionTextArea } from "#/components/CaptionTextArea";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
-import { AddRIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { ScrollArea } from "#/components/ScrollArea";
+import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 import { AdditionalScreen } from "..";
@@ -26,7 +26,7 @@ export const NewPost = (props: NewPostProps) => {
     expirationDate,
     setExpirationDate,
   } = useFormState();
-  const { mutateAsync: createPost } = useCreatePost();
+  const { mutateAsync: createPost, isLoading } = useCreatePost();
 
   const canSubmit = !!caption || !!mediaFiles.length;
 
@@ -49,12 +49,6 @@ export const NewPost = (props: NewPostProps) => {
             />
           </SectionWrapper>
           <SectionWrapper>
-            <LinkItem>
-              <AddRIcon />
-              Link Shop Item
-            </LinkItem>
-          </SectionWrapper>
-          <SectionWrapper>
             <Flex
               css={{ alignItems: "center", justifyContent: "space-between", gap: "$3" }}
             >
@@ -71,10 +65,10 @@ export const NewPost = (props: NewPostProps) => {
           <Button
             size="lg"
             variant="secondary"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isLoading}
             onClick={() => createPost()}
           >
-            Post Now
+            <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>
           </Button>
           <Button size="lg" variant="secondary" outlined disabled={!canSubmit}>
             Schedule For Later
@@ -89,7 +83,7 @@ const Wrapper = styled("div", {
   display: "grid",
   gridTemplateRows: "minmax(0, 1fr) auto",
   rowGap: "$5",
-  height: "100%",
+  size: "100%",
 });
 
 export const SectionWrapper = styled("div", {
@@ -97,12 +91,4 @@ export const SectionWrapper = styled("div", {
   borderBottomStyle: "solid",
   borderBottomColor: "$border",
   borderBottomWidth: "$1",
-});
-
-const LinkItem = styled("button", {
-  display: "flex",
-  alignItems: "center",
-  gap: "$5",
-  fontSize: "$4",
-  fontWeight: "$bold",
 });

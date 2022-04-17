@@ -6,13 +6,10 @@ export const globalStyles = globalCss({
     fontFamily: "AbhayaLibre",
     src: 'local("AbhayaLibre"), url("/fonts/AbhayaLibre-SemiBold.ttf")',
   },
-  html: {
-    bg: "$pageBackground",
-    height: "100%",
-  },
   body: {
     p: "0 !important",
     fontFamily: "$body !important",
+    bg: "$pageBackground",
     color: "$text",
     transition: "background-color $1 ease",
     "-webkit-font-smoothing": "antialiased",
