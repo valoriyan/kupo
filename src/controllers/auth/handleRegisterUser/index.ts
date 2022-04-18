@@ -49,7 +49,6 @@ export async function handleRegisterUser({
   const now = Date.now();
 
   try {
-
     const INSANELY_HARDCODED_ADMIN_EMAILS = [
       "julian.trajanson@gmail.com",
       "chan.asa.co@gmail.com",

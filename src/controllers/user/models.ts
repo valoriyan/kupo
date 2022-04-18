@@ -17,6 +17,8 @@ export interface BaseUnrenderableUser {
   preferredPagePrimaryColor?: Color;
 
   creationTimestamp: number;
+
+  isAdmin: boolean;
 }
 export interface UnrenderableUser extends BaseUnrenderableUser {
   backgroundImageBlobFileKey?: string;

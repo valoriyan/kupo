@@ -68,6 +68,7 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     profilePictureBlobFileKey: dbUser.profile_picture_blob_file_key,
     preferredPagePrimaryColor,
     creationTimestamp: parseInt(dbUser.creation_timestamp),
+    isAdmin: dbUser.is_admin,
   };
 }
 
@@ -139,8 +140,8 @@ export class UsersTableService extends TableService {
     username: string;
     encryptedPassword: string;
     creationTimestamp: number;
-    isAdmin?: boolean,
-    isWaitlisted?: boolean,
+    isAdmin?: boolean;
+    isWaitlisted?: boolean;
   }): Promise<void> {
     const is_admin_value = !!isAdmin ? "true" : "false";
     const is_waitlisted_value = !!isWaitlisted ? "true" : "false";
@@ -516,6 +517,58 @@ export class UsersTableService extends TableService {
           field: "preferred_page_primary_color_blue",
           value: preferredPagePrimaryColor?.blue,
         },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "user_id",
+        value: userId,
+      },
+      tableName: this.tableName,
+    });
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
+  }
+
+  public async elevateUserToAdmin({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UnrenderableUser | undefined> {
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "is_admin", value: "true" },
+      ],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "user_id",
+        value: userId,
+      },
+      tableName: this.tableName,
+    });
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
+  }
+
+  public async removeUserFromWaitlist({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UnrenderableUser | undefined> {
+    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+      updatedFields: [
+        { field: "is_waitlisted", value: "false" },
       ],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
