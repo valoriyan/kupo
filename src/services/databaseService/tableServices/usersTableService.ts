@@ -131,13 +131,20 @@ export class UsersTableService extends TableService {
     username,
     encryptedPassword,
     creationTimestamp,
+    isAdmin,
+    isWaitlisted,
   }: {
     userId: string;
     email: string;
     username: string;
     encryptedPassword: string;
     creationTimestamp: number;
+    isAdmin?: boolean,
+    isWaitlisted?: boolean,
   }): Promise<void> {
+    const is_admin_value = !!isAdmin ? "true" : "false";
+    const is_waitlisted_value = !!isWaitlisted ? "true" : "false";
+
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
@@ -147,8 +154,8 @@ export class UsersTableService extends TableService {
           { field: "encrypted_password", value: encryptedPassword },
           { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
 
-          { field: "is_waitlisted", value: "true" },
-          { field: "is_admin", value: "false" },
+          { field: "is_waitlisted", value: is_waitlisted_value },
+          { field: "is_admin", value: is_admin_value },
 
           { field: "creation_timestamp", value: creationTimestamp },
         ],

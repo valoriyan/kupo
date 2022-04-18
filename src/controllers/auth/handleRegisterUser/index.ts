@@ -49,12 +49,24 @@ export async function handleRegisterUser({
   const now = Date.now();
 
   try {
+
+    const INSANELY_HARDCODED_ADMIN_EMAILS = [
+      "julian.trajanson@gmail.com",
+      "chan.asa.co@gmail.com",
+      "blake.zimmerman@icloud.com",
+    ];
+
+    const isAdmin = INSANELY_HARDCODED_ADMIN_EMAILS.includes(email);
+    const isWaitlisted = !!isAdmin ? false : true;
+
     await controller.databaseService.tableNameToServicesMap.usersTableService.createUser({
       userId,
       email,
       username,
       encryptedPassword,
       creationTimestamp: now,
+      isAdmin,
+      isWaitlisted,
     });
 
     const newAccessTokenResponse = grantNewAccessToken({
