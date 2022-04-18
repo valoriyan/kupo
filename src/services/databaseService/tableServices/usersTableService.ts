@@ -541,9 +541,7 @@ export class UsersTableService extends TableService {
     userId: string;
   }): Promise<UnrenderableUser | undefined> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [
-        { field: "is_admin", value: "true" },
-      ],
+      updatedFields: [{ field: "is_admin", value: "true" }],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
         value: userId,
@@ -567,9 +565,7 @@ export class UsersTableService extends TableService {
     userId: string;
   }): Promise<UnrenderableUser | undefined> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [
-        { field: "is_waitlisted", value: "false" },
-      ],
+      updatedFields: [{ field: "is_waitlisted", value: "false" }],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
         value: userId,

@@ -28,24 +28,25 @@ export async function handleRemoveUserFromWaitlist({
   request: express.Request;
   requestBody: RemoveUserFromWaitlistRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    RemoveUserFromWaitlistFailed,
-    RemoveUserFromWaitlistSuccess
-  >
+  SecuredHTTPResponse<RemoveUserFromWaitlistFailed, RemoveUserFromWaitlistSuccess>
 > {
-const {userIdToRemoveFromWaitlist} = requestBody;
+  const { userIdToRemoveFromWaitlist } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const clientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({userId: clientUserId});
+  const clientUser =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      { userId: clientUserId },
+    );
 
   if (!!clientUser && clientUser.isAdmin) {
-    await controller.databaseService.tableNameToServicesMap.usersTableService.removeUserFromWaitlist({userId: userIdToRemoveFromWaitlist});
+    await controller.databaseService.tableNameToServicesMap.usersTableService.removeUserFromWaitlist(
+      { userId: userIdToRemoveFromWaitlist },
+    );
   } else {
-      throw new Error("Client user does not have permission to modify waitlist");
+    throw new Error("Client user does not have permission to modify waitlist");
   }
-
 
   return {};
 }

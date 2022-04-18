@@ -27,25 +27,24 @@ export async function handleElevateUserToAdmin({
   controller: AuthController;
   request: express.Request;
   requestBody: ElevateUserToAdminRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    ElevateUserToAdminFailed,
-    ElevateUserToAdminSuccess
-  >
-> {
-const {userIdElevatedToAdmin} = requestBody;
+}): Promise<SecuredHTTPResponse<ElevateUserToAdminFailed, ElevateUserToAdminSuccess>> {
+  const { userIdElevatedToAdmin } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const clientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({userId: clientUserId});
+  const clientUser =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      { userId: clientUserId },
+    );
 
   if (!!clientUser && clientUser.isAdmin) {
-    await controller.databaseService.tableNameToServicesMap.usersTableService.elevateUserToAdmin({userId: userIdElevatedToAdmin});
+    await controller.databaseService.tableNameToServicesMap.usersTableService.elevateUserToAdmin(
+      { userId: userIdElevatedToAdmin },
+    );
   } else {
-      throw new Error("Client user does not have permission to create admins");
+    throw new Error("Client user does not have permission to create admins");
   }
-
 
   return {};
 }

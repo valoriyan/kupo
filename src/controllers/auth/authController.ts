@@ -25,8 +25,18 @@ import {
 } from "./handleGetPasswordResetEmail";
 import { handleLogout } from "./handleLogout";
 import { EmailService } from "../../services/emailService";
-import { ElevateUserToAdminFailed, ElevateUserToAdminRequestBody, ElevateUserToAdminSuccess, handleElevateUserToAdmin } from "./handleElevateUserToAdmin";
-import { handleRemoveUserFromWaitlist, RemoveUserFromWaitlistFailed, RemoveUserFromWaitlistRequestBody, RemoveUserFromWaitlistSuccess } from "./handleRemoveUserFromWaitlist";
+import {
+  ElevateUserToAdminFailed,
+  ElevateUserToAdminRequestBody,
+  ElevateUserToAdminSuccess,
+  handleElevateUserToAdmin,
+} from "./handleElevateUserToAdmin";
+import {
+  handleRemoveUserFromWaitlist,
+  RemoveUserFromWaitlistFailed,
+  RemoveUserFromWaitlistRequestBody,
+  RemoveUserFromWaitlistSuccess,
+} from "./handleRemoveUserFromWaitlist";
 
 @injectable()
 @Route("auth")
@@ -104,12 +114,7 @@ export class AuthController extends Controller {
   public async elevateUserToAdmin(
     @Request() request: express.Request,
     @Body() requestBody: ElevateUserToAdminRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      ElevateUserToAdminFailed,
-      ElevateUserToAdminSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<ElevateUserToAdminFailed, ElevateUserToAdminSuccess>> {
     return await handleElevateUserToAdmin({
       controller: this,
       request,
@@ -122,10 +127,7 @@ export class AuthController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: RemoveUserFromWaitlistRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-    RemoveUserFromWaitlistFailed,
-    RemoveUserFromWaitlistSuccess
-    >
+    SecuredHTTPResponse<RemoveUserFromWaitlistFailed, RemoveUserFromWaitlistSuccess>
   > {
     return await handleRemoveUserFromWaitlist({
       controller: this,
