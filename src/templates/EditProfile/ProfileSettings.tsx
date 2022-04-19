@@ -100,7 +100,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
         <Input
           id={usernameId}
           value={props.username}
-          onChange={(e) => props.setUsername(e.currentTarget.value)}
+          onChange={(e) => props.setUsername(e.currentTarget.value.toLocaleLowerCase())}
         />
         <label htmlFor={bioId}>Profile Bio</label>
         <TextArea

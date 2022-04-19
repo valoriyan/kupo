@@ -139,7 +139,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           name="add filter"
           placeholder="Add #tag or @user"
           value={newFilterText}
-          onChange={(e) => setNewFilterText(e.currentTarget.value)}
+          onChange={(e) => setNewFilterText(e.currentTarget.value.toLocaleLowerCase())}
         />
         <AddButton type="submit" disabled={!isFilterValid(newFilterText)}>
           <MathPlusIcon />

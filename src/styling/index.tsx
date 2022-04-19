@@ -245,7 +245,7 @@ const themedStitches = createStitches({
               minHeight: "-webkit-fill-available",
             },
           }
-        : { height: value },
+        : { minHeight: value },
     height: (value: PropertyValue<"height"> | NoInfer<string>) =>
       value === "100vh"
         ? {
