@@ -59,23 +59,24 @@ export async function handleDeletePost({
     );
   const postLikeIds = dbPostLikes.map(({ post_like_id }) => post_like_id);
 
-  if (dbPostLikes.length > 0 ) {
+  if (dbPostLikes.length > 0) {
     await controller.databaseService.tableNameToServicesMap.postLikesTableService.removeAllPostLikesByPostId(
       { postId },
-    );  
+    );
   }
-
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED NOTIFICATIONS
   //////////////////////////////////////////////////
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
-    {
-      notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-      referenceTableIds: postLikeIds,
-    },
-  );
+  if (postLikeIds.length > 0) {
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
+      {
+        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+        referenceTableIds: postLikeIds,
+      },
+    );
+  }
 
   return {};
 }
