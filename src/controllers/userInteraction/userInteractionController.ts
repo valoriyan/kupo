@@ -34,7 +34,12 @@ import {
   UserSavesPostRequestBody,
   UserSavesPostSuccess,
 } from "./handleUserSavesPost";
-import { GetPageOfSavedPostsFailed, GetPageOfSavedPostsRequestBody, GetPageOfSavedPostsSuccess, handleGetPageOfSavedPosts } from "./handleGetPageOfSavedPosts";
+import {
+  GetPageOfSavedPostsFailed,
+  GetPageOfSavedPostsRequestBody,
+  GetPageOfSavedPostsSuccess,
+  handleGetPageOfSavedPosts,
+} from "./handleGetPageOfSavedPosts";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
@@ -104,7 +109,6 @@ export class UserInteractionController extends Controller {
       requestBody,
     });
   }
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
