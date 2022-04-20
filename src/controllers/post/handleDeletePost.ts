@@ -59,9 +59,12 @@ export async function handleDeletePost({
     );
   const postLikeIds = dbPostLikes.map(({ post_like_id }) => post_like_id);
 
-  await controller.databaseService.tableNameToServicesMap.postLikesTableService.removeAllPostLikesByPostId(
-    { postId },
-  );
+  if (dbPostLikes.length > 0 ) {
+    await controller.databaseService.tableNameToServicesMap.postLikesTableService.removeAllPostLikesByPostId(
+      { postId },
+    );  
+  }
+
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED NOTIFICATIONS
