@@ -34,6 +34,7 @@ import {
   UserSavesPostRequestBody,
   UserSavesPostSuccess,
 } from "./handleUserSavesPost";
+import { GetPageOfSavedPostsFailed, GetPageOfSavedPostsRequestBody, GetPageOfSavedPostsSuccess, handleGetPageOfSavedPosts } from "./handleGetPageOfSavedPosts";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
@@ -91,6 +92,19 @@ export class UserInteractionController extends Controller {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  @Post("getPageOfSavedPosts")
+  public async getPageOfSavedPosts(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfSavedPostsRequestBody,
+  ): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
+    return await handleGetPageOfSavedPosts({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
