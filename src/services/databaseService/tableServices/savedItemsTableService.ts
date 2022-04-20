@@ -59,8 +59,6 @@ export class SavedItemsTableService extends TableService {
     userId: string;
     timestamp: number;
   }): Promise<void> {
-    console.log(`${this.tableName} | createPost`);
-
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
