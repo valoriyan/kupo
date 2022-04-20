@@ -16,9 +16,9 @@ export interface GetPageOfSavedPostsRequestBody {
 }
 
 export interface GetPageOfSavedPostsSuccess {
-    posts: RenderablePost[];
-    previousPageCursor?: string;
-    nextPageCursor?: string;  
+  posts: RenderablePost[];
+  previousPageCursor?: string;
+  nextPageCursor?: string;
 }
 
 export enum GetPageOfSavedPostsFailedReason {
