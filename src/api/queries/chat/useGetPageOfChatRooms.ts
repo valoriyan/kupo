@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
 import {
   Api,
-  SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse,
+  SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
 } from "../..";
 
 export interface GetChatRoomsArgs {
@@ -11,9 +11,9 @@ export interface GetChatRoomsArgs {
 
 export const useGetPageOfChatRooms = ({ cursor }: GetChatRoomsArgs) => {
   return useInfiniteQuery<
-    SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse,
+    SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
     Error,
-    SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse,
+    SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
     (string | undefined)[]
   >([CacheKeys.ChatRoomsPages, cursor], fetchPageOfChatRooms, {
     getNextPageParam: (lastPage) => {

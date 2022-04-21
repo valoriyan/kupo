@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { FailedAuthResponse } from "./failed-auth-response";
+import { AuthFailed } from "./auth-failed";
 import { SearchForHashtagsFailed } from "./search-for-hashtags-failed";
 import { SearchForHashtagsSuccess } from "./search-for-hashtags-success";
 
@@ -24,10 +24,10 @@ import { SearchForHashtagsSuccess } from "./search-for-hashtags-success";
 export interface SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess {
   /**
    *
-   * @type {SearchForHashtagsFailed | FailedAuthResponse}
+   * @type {SearchForHashtagsFailed | AuthFailed}
    * @memberof SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess
    */
-  error?: SearchForHashtagsFailed | FailedAuthResponse;
+  error?: SearchForHashtagsFailed | AuthFailed;
   /**
    *
    * @type {SearchForHashtagsSuccess}

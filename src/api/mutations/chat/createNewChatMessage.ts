@@ -1,6 +1,7 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import { Api, SuccessfulGetPageOfChatMessagesResponse } from "#/api";
+import { Api } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
+import { GetPageOfChatMessagesSuccess } from "#/api/generated";
 
 export const useCreateNewChatMessage = () => {
   const queryClient = useQueryClient();
@@ -24,9 +25,9 @@ export const useCreateNewChatMessage = () => {
           const createdChatMessage = data.data.success.chatMessage;
           const { chatRoomId } = createdChatMessage;
 
-          queryClient.setQueryData<InfiniteData<SuccessfulGetPageOfChatMessagesResponse>>(
+          queryClient.setQueryData<InfiniteData<GetPageOfChatMessagesSuccess>>(
             [CacheKeys.ChatRoomMessagePages, chatRoomId],
-            (queriedData): InfiniteData<SuccessfulGetPageOfChatMessagesResponse> => {
+            (queriedData): InfiniteData<GetPageOfChatMessagesSuccess> => {
               if (!!queriedData) {
                 const updatedPages = queriedData.pages.map((page, index) => {
                   if (index < queriedData.pages.length - 1) {

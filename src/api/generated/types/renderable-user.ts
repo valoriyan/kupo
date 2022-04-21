@@ -78,6 +78,12 @@ export interface RenderableUser {
   creationTimestamp: number;
   /**
    *
+   * @type {boolean}
+   * @memberof RenderableUser
+   */
+  isAdmin: boolean;
+  /**
+   *
    * @type {string}
    * @memberof RenderableUser
    */

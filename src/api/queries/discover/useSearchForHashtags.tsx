@@ -1,12 +1,12 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SearchForHashtagsParams, SearchForHashtagsSuccess } from "../..";
+import { Api, SearchForHashtagsRequestBody, SearchForHashtagsSuccess } from "../..";
 
 export const useSearchForHashtags = ({
   query,
   cursor,
   pageSize,
-}: SearchForHashtagsParams) => {
+}: SearchForHashtagsRequestBody) => {
   return useQuery<SearchForHashtagsSuccess, Error>(
     [CacheKeys.SearchForHashtags, query, cursor, pageSize],
     async () => {

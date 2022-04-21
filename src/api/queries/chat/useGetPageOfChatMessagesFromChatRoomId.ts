@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfulGetPageOfChatMessagesResponse } from "../..";
+import { Api, GetPageOfChatMessagesSuccess } from "../..";
 
 export interface GetPageOfChatRoomsMessagesFromChatRoomIdArgs {
   chatRoomId: string;
@@ -10,9 +10,9 @@ export const useGetPageOfChatMessagesFromChatRoomId = ({
   chatRoomId,
 }: GetPageOfChatRoomsMessagesFromChatRoomIdArgs) => {
   return useInfiniteQuery<
-    SuccessfulGetPageOfChatMessagesResponse,
+    GetPageOfChatMessagesSuccess,
     Error,
-    SuccessfulGetPageOfChatMessagesResponse,
+    GetPageOfChatMessagesSuccess,
     string[]
   >(
     [CacheKeys.ChatRoomMessagePages, chatRoomId],

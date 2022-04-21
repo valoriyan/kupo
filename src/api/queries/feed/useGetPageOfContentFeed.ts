@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
 import {
   Api,
-  SuccessfulGetPageOfPostFromFollowedUsersResponse,
+  GetPageOfPostFromFollowedUsersSuccess,
   UserContentFeedFilterType,
 } from "../..";
 
@@ -14,9 +14,9 @@ export const useGetPageOfContentFeed = ({
   filterValue: string;
 }) => {
   return useInfiniteQuery<
-    SuccessfulGetPageOfPostFromFollowedUsersResponse,
+    GetPageOfPostFromFollowedUsersSuccess,
     Error,
-    SuccessfulGetPageOfPostFromFollowedUsersResponse,
+    GetPageOfPostFromFollowedUsersSuccess,
     string[]
   >(
     [CacheKeys.ContentFeed, filterType, filterValue],

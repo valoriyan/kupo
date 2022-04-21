@@ -1,13 +1,13 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../..";
+import { Api, DoesChatRoomExistWithUserIdsSuccess } from "../..";
 
 export interface GetChatRoomIdArgs {
   userIds: string[];
 }
 
 export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
-  return useQuery<SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse, Error>(
+  return useQuery<DoesChatRoomExistWithUserIdsSuccess, Error>(
     [CacheKeys.ChatRoomMembers, userIds],
     async () => {
       const res = await Api.doesChatRoomExistWithUserIds({

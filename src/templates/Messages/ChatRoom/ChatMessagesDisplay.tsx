@@ -2,7 +2,7 @@ import { UseInfiniteQueryResult } from "react-query";
 import {
   RenderableChatMessage,
   RenderableUser,
-  SuccessfulGetPageOfChatMessagesResponse,
+  GetPageOfChatMessagesSuccess,
 } from "#/api";
 import { styled } from "#/styling";
 import { ChatRoomMessage } from "./ChatRoomMessage";
@@ -15,7 +15,7 @@ export const ChatMessagesDisplay = ({
   chatMessages: RenderableChatMessage[];
   clientUser: RenderableUser;
   infiniteQueryResultOfFetchingPageOfChatMessages: UseInfiniteQueryResult<
-    SuccessfulGetPageOfChatMessagesResponse,
+    GetPageOfChatMessagesSuccess,
     Error
   >;
 }) => {

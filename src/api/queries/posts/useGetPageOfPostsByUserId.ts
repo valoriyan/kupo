@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfulGetPostsByUserResponse } from "../..";
+import { Api, GetPostsByUsernameSuccess } from "../..";
 
 export interface GetPostsByUserIdArgs {
   userId: string;
@@ -30,9 +30,9 @@ export async function fetchPageOfPostsByUserId({
 
 export const useGetPageOfPostsByUserId = ({ userId }: GetPostsByUserIdArgs) => {
   return useInfiniteQuery<
-    SuccessfulGetPostsByUserResponse,
+    GetPostsByUsernameSuccess,
     Error,
-    SuccessfulGetPostsByUserResponse,
+    GetPostsByUsernameSuccess,
     string[]
   >(
     [CacheKeys.UserPostPages, userId],

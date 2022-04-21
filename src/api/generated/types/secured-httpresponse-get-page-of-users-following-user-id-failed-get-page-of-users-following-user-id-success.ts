@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { FailedAuthResponse } from "./failed-auth-response";
+import { AuthFailed } from "./auth-failed";
 import { GetPageOfUsersFollowingUserIdFailed } from "./get-page-of-users-following-user-id-failed";
 import { GetPageOfUsersFollowingUserIdSuccess } from "./get-page-of-users-following-user-id-success";
 
@@ -24,10 +24,10 @@ import { GetPageOfUsersFollowingUserIdSuccess } from "./get-page-of-users-follow
 export interface SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedGetPageOfUsersFollowingUserIdSuccess {
   /**
    *
-   * @type {GetPageOfUsersFollowingUserIdFailed | FailedAuthResponse}
+   * @type {GetPageOfUsersFollowingUserIdFailed | AuthFailed}
    * @memberof SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedGetPageOfUsersFollowingUserIdSuccess
    */
-  error?: GetPageOfUsersFollowingUserIdFailed | FailedAuthResponse;
+  error?: GetPageOfUsersFollowingUserIdFailed | AuthFailed;
   /**
    *
    * @type {GetPageOfUsersFollowingUserIdSuccess}

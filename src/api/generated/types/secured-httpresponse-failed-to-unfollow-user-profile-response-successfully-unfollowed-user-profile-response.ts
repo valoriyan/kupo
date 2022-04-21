@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { FailedAuthResponse } from "./failed-auth-response";
+import { AuthFailed } from "./auth-failed";
 
 /**
  *
@@ -22,10 +22,10 @@ import { FailedAuthResponse } from "./failed-auth-response";
 export interface SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse {
   /**
    *
-   * @type {object | FailedAuthResponse}
+   * @type {object | AuthFailed}
    * @memberof SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse
    */
-  error?: object | FailedAuthResponse;
+  error?: object | AuthFailed;
   /**
    *
    * @type {object}

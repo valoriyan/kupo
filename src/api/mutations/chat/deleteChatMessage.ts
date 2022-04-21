@@ -1,5 +1,5 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import { Api, SuccessfulGetPageOfChatMessagesResponse } from "#/api";
+import { Api, GetPageOfChatMessagesSuccess } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useDeleteChatMessage = ({ chatRoomId }: { chatRoomId: string }) => {
@@ -21,9 +21,9 @@ export const useDeleteChatMessage = ({ chatRoomId }: { chatRoomId: string }) => 
     },
     {
       onSuccess: (deletedChatMessageId) => {
-        queryClient.setQueryData<InfiniteData<SuccessfulGetPageOfChatMessagesResponse>>(
+        queryClient.setQueryData<InfiniteData<GetPageOfChatMessagesSuccess>>(
           [CacheKeys.ChatRoomMessagePages, chatRoomId],
-          (queriedData): InfiniteData<SuccessfulGetPageOfChatMessagesResponse> => {
+          (queriedData): InfiniteData<GetPageOfChatMessagesSuccess> => {
             if (!!queriedData) {
               const updatedPages = queriedData.pages.map((page) => {
                 const filteredChatMessages = page.chatMessages.filter(

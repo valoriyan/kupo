@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { FailedAuthResponse } from "./failed-auth-response";
+import { AuthFailed } from "./auth-failed";
 import { SearchForPostsFailed } from "./search-for-posts-failed";
 import { SearchForPostsSuccess } from "./search-for-posts-success";
 
@@ -24,10 +24,10 @@ import { SearchForPostsSuccess } from "./search-for-posts-success";
 export interface SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess {
   /**
    *
-   * @type {SearchForPostsFailed | FailedAuthResponse}
+   * @type {SearchForPostsFailed | AuthFailed}
    * @memberof SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess
    */
-  error?: SearchForPostsFailed | FailedAuthResponse;
+  error?: SearchForPostsFailed | AuthFailed;
   /**
    *
    * @type {SearchForPostsSuccess}

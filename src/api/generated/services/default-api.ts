@@ -53,6 +53,8 @@ import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
 import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 // @ts-ignore
+import { ElevateUserToAdminRequestBody } from "../types";
+// @ts-ignore
 import { FollowUserRequestBody } from "../types";
 // @ts-ignore
 import { GetChatRoomByIdRequestBody } from "../types";
@@ -65,9 +67,11 @@ import { GetPageOfCommentsByPostIdRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfNotificationsRequestBody } from "../types";
 // @ts-ignore
-import { GetPageOfPostFromFollowedHashtagParams } from "../types";
+import { GetPageOfPostFromFollowedHashtagRequestBody } from "../types";
 // @ts-ignore
-import { GetPageOfPostFromFollowedUsersParams } from "../types";
+import { GetPageOfPostFromFollowedUsersRequestBody } from "../types";
+// @ts-ignore
+import { GetPageOfSavedPostsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfUsersFollowedByUserIdRequestBody } from "../types";
 // @ts-ignore
@@ -77,119 +81,129 @@ import { GetPasswordResetEmailRequestBody } from "../types";
 // @ts-ignore
 import { GetPostByIdRequestBody } from "../types";
 // @ts-ignore
-import { GetPostsByUserIdParams } from "../types";
+import { GetPostsByUserIdRequestBody } from "../types";
 // @ts-ignore
-import { GetPostsByUsernameParams } from "../types";
+import { GetPostsByUsernameRequestBody } from "../types";
 // @ts-ignore
-import { GetPostsScheduledByUserParams } from "../types";
+import { GetPostsScheduledByUserRequestBody } from "../types";
 // @ts-ignore
-import { GetUserProfileParams } from "../types";
+import { GetUserProfileRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByIdsRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedAuthResponseSuccessfulAuthResponse } from "../types";
+import { HTTPResponseAuthFailedAuthSuccess } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedToGetPasswordResetEmailResponseSuccessfullyGotPasswordResetEmailResponse } from "../types";
+import { HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess } from "../types";
 // @ts-ignore
-import { HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse } from "../types";
+import { HTTPResponseRegisterUserFailedAuthSuccess } from "../types";
 // @ts-ignore
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
 import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
+import { RemoveUserFromWaitlistRequestBody } from "../types";
+// @ts-ignore
 import { RemoveUserLikeFromPostRequestBody } from "../types";
 // @ts-ignore
-import { SearchForHashtagsParams } from "../types";
+import { SearchForHashtagsRequestBody } from "../types";
 // @ts-ignore
-import { SearchForPostsParams } from "../types";
+import { SearchForPostsRequestBody } from "../types";
 // @ts-ignore
-import { SearchForUsersParams } from "../types";
+import { SearchForUsersRequestBody } from "../types";
 // @ts-ignore
-import { SearchUserProfilesByUsernameParams } from "../types";
+import { SearchUserProfilesByUsernameRequestBody } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse } from "../types";
+import { SecuredHTTPResponseCommentOnPostFailedCommentOnPostSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToCommentOnPostResponseSuccessfullyCommentedOnPostResponse } from "../types";
+import { SecuredHTTPResponseCreateChatMessageFailedCreateChatMessageSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse } from "../types";
+import { SecuredHTTPResponseCreateChatMessageInNewChatRoomFailedCreateChatMessageInNewChatRoomSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse } from "../types";
+import { SecuredHTTPResponseCreatePostFailedCreatePostSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse } from "../types";
+import { SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse } from "../types";
+import { SecuredHTTPResponseDeleteChatMessageFailedDeleteChatMessageSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse } from "../types";
+import { SecuredHTTPResponseDeleteCommentFromPostFailedDeleteCommentFromPostSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToDeleteCommentFromPostResponseSuccessfullyDeletedCommentFromPostResponse } from "../types";
+import { SecuredHTTPResponseDeletePostFailedDeletePostSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse } from "../types";
+import { SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse } from "../types";
+import { SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedDoesChatRoomExistWithUserIdsSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPostByIdResponseSuccessfullyGotPostByIdResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetUserContentFeedFiltersResponseSuccessfullyGotUserContentFeedFiltersResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPostResponse } from "../types";
+import { SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToSetUserContentFeedFiltersResponseSuccessfullySetUserContentFeedFiltersResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToSharePostResponseSuccessfullySharedPostResponse } from "../types";
-// @ts-ignore
 import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse } from "../types";
+import { SecuredHTTPResponseFollowUserFailedFollowUserSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse } from "../types";
+import { SecuredHTTPResponseGetChatRoomByIdFailedGetChatRoomByIdSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfChatMessagesFailedGetPageOfChatMessagesSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfCommentsByPostIdFailureGetPageOfCommentsByPostIdSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfNotificationsFailedGetPageOfNotificationsSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfPostFromFollowedHashtagFailedGetPageOfPostFromFollowedHashtagSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfPostFromFollowedUsersFailedGetPageOfPostFromFollowedUsersSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse } from "../types";
+import { SecuredHTTPResponseGetPageOfSavedPostsFailedGetPageOfSavedPostsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedGetPageOfUsersFollowedByUserIdSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedGetPageOfUsersFollowingUserIdSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetPostByIdFailedGetPostByIdSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetPostsByUsernameFailedGetPostsByUsernameSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetUserContentFeedFiltersFailedGetUserContentFeedFiltersSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetUserProfileFailedGetUserProfileSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetUsersByIdsFailedGetUsersByIdsSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetUsersByUsernamesFailedGetUsersByUsernamesSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForUsersFailedSearchForUsersSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSearchUserProfilesByUsernameFailedSearchUserProfilesByUsernameSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseSharePostFailedSharePostSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUpdatePostFailedUpdatePostSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUpdateShopItemFailedUpdateShopItemSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUserSavesPostFailedUserSavesPostSuccess } from "../types";
 // @ts-ignore
 import { SetUserContentFeedFiltersRequestBody } from "../types";
 // @ts-ignore
@@ -201,11 +215,13 @@ import { UnfollowUserRequestBody } from "../types";
 // @ts-ignore
 import { UpdatePasswordRequestBody } from "../types";
 // @ts-ignore
-import { UpdatePostParams } from "../types";
+import { UpdatePostRequestBody } from "../types";
 // @ts-ignore
 import { UpdateUserProfileRequestBody } from "../types";
 // @ts-ignore
 import { UserLikesPostRequestBody } from "../types";
+// @ts-ignore
+import { UserSavesPostRequestBody } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -791,6 +807,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {ElevateUserToAdminRequestBody} elevateUserToAdminRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    elevateUserToAdmin: async (
+      elevateUserToAdminRequestBody: ElevateUserToAdminRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'elevateUserToAdminRequestBody' is not null or undefined
+      assertParamExists(
+        "elevateUserToAdmin",
+        "elevateUserToAdminRequestBody",
+        elevateUserToAdminRequestBody,
+      );
+      const localVarPath = `/auth/elevateUserToAdmin`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        elevateUserToAdminRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {FollowUserRequestBody} followUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1081,19 +1146,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+     * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPageOfPostFromFollowedHashtag: async (
-      getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+      getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfPostFromFollowedHashtagParams' is not null or undefined
+      // verify required parameter 'getPageOfPostFromFollowedHashtagRequestBody' is not null or undefined
       assertParamExists(
         "getPageOfPostFromFollowedHashtag",
-        "getPageOfPostFromFollowedHashtagParams",
-        getPageOfPostFromFollowedHashtagParams,
+        "getPageOfPostFromFollowedHashtagRequestBody",
+        getPageOfPostFromFollowedHashtagRequestBody,
       );
       const localVarPath = `/feed/getPageOfPostFromFollowedHashtag`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1118,7 +1183,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfPostFromFollowedHashtagParams,
+        getPageOfPostFromFollowedHashtagRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1130,19 +1195,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+     * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPageOfPostFromFollowedUsers: async (
-      getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+      getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfPostFromFollowedUsersParams' is not null or undefined
+      // verify required parameter 'getPageOfPostFromFollowedUsersRequestBody' is not null or undefined
       assertParamExists(
         "getPageOfPostFromFollowedUsers",
-        "getPageOfPostFromFollowedUsersParams",
-        getPageOfPostFromFollowedUsersParams,
+        "getPageOfPostFromFollowedUsersRequestBody",
+        getPageOfPostFromFollowedUsersRequestBody,
       );
       const localVarPath = `/feed/getPageOfPostFromFollowedUsers`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1167,7 +1232,56 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfPostFromFollowedUsersParams,
+        getPageOfPostFromFollowedUsersRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfSavedPosts: async (
+      getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfSavedPostsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfSavedPosts",
+        "getPageOfSavedPostsRequestBody",
+        getPageOfSavedPostsRequestBody,
+      );
+      const localVarPath = `/userInteractions/getPageOfSavedPosts`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfSavedPostsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1371,19 +1485,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+     * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsByUserId: async (
-      getPostsByUserIdParams: GetPostsByUserIdParams,
+      getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPostsByUserIdParams' is not null or undefined
+      // verify required parameter 'getPostsByUserIdRequestBody' is not null or undefined
       assertParamExists(
         "getPostsByUserId",
-        "getPostsByUserIdParams",
-        getPostsByUserIdParams,
+        "getPostsByUserIdRequestBody",
+        getPostsByUserIdRequestBody,
       );
       const localVarPath = `/post/getPostsByUserId`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1408,7 +1522,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPostsByUserIdParams,
+        getPostsByUserIdRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1420,19 +1534,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+     * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsByUsername: async (
-      getPostsByUsernameParams: GetPostsByUsernameParams,
+      getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPostsByUsernameParams' is not null or undefined
+      // verify required parameter 'getPostsByUsernameRequestBody' is not null or undefined
       assertParamExists(
         "getPostsByUsername",
-        "getPostsByUsernameParams",
-        getPostsByUsernameParams,
+        "getPostsByUsernameRequestBody",
+        getPostsByUsernameRequestBody,
       );
       const localVarPath = `/post/getPostsByUsername`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1457,7 +1571,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPostsByUsernameParams,
+        getPostsByUsernameRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1469,19 +1583,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+     * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsScheduledByUser: async (
-      getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+      getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPostsScheduledByUserParams' is not null or undefined
+      // verify required parameter 'getPostsScheduledByUserRequestBody' is not null or undefined
       assertParamExists(
         "getPostsScheduledByUser",
-        "getPostsScheduledByUserParams",
-        getPostsScheduledByUserParams,
+        "getPostsScheduledByUserRequestBody",
+        getPostsScheduledByUserRequestBody,
       );
       const localVarPath = `/post/getPostsScheduledByUser`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1506,7 +1620,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPostsScheduledByUserParams,
+        getPostsScheduledByUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1563,16 +1677,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetUserProfileParams} getUserProfileParams
+     * @param {GetUserProfileRequestBody} getUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getUserProfile: async (
-      getUserProfileParams: GetUserProfileParams,
+      getUserProfileRequestBody: GetUserProfileRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getUserProfileParams' is not null or undefined
-      assertParamExists("getUserProfile", "getUserProfileParams", getUserProfileParams);
+      // verify required parameter 'getUserProfileRequestBody' is not null or undefined
+      assertParamExists(
+        "getUserProfile",
+        "getUserProfileRequestBody",
+        getUserProfileRequestBody,
+      );
       const localVarPath = `/user/GetUserProfile`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1596,7 +1714,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getUserProfileParams,
+        getUserProfileRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1864,6 +1982,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserFromWaitlist: async (
+      removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'removeUserFromWaitlistRequestBody' is not null or undefined
+      assertParamExists(
+        "removeUserFromWaitlist",
+        "removeUserFromWaitlistRequestBody",
+        removeUserFromWaitlistRequestBody,
+      );
+      const localVarPath = `/auth/removeUserFromWaitlist`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        removeUserFromWaitlistRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1913,19 +2080,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SearchForHashtagsParams} searchForHashtagsParams
+     * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchForHashtags: async (
-      searchForHashtagsParams: SearchForHashtagsParams,
+      searchForHashtagsRequestBody: SearchForHashtagsRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'searchForHashtagsParams' is not null or undefined
+      // verify required parameter 'searchForHashtagsRequestBody' is not null or undefined
       assertParamExists(
         "searchForHashtags",
-        "searchForHashtagsParams",
-        searchForHashtagsParams,
+        "searchForHashtagsRequestBody",
+        searchForHashtagsRequestBody,
       );
       const localVarPath = `/discover/searchForHashtags`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1950,7 +2117,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        searchForHashtagsParams,
+        searchForHashtagsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1962,16 +2129,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SearchForPostsParams} searchForPostsParams
+     * @param {SearchForPostsRequestBody} searchForPostsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchForPosts: async (
-      searchForPostsParams: SearchForPostsParams,
+      searchForPostsRequestBody: SearchForPostsRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'searchForPostsParams' is not null or undefined
-      assertParamExists("searchForPosts", "searchForPostsParams", searchForPostsParams);
+      // verify required parameter 'searchForPostsRequestBody' is not null or undefined
+      assertParamExists(
+        "searchForPosts",
+        "searchForPostsRequestBody",
+        searchForPostsRequestBody,
+      );
       const localVarPath = `/discover/searchForPosts`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1995,7 +2166,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        searchForPostsParams,
+        searchForPostsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2007,16 +2178,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SearchForUsersParams} searchForUsersParams
+     * @param {SearchForUsersRequestBody} searchForUsersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchForUsers: async (
-      searchForUsersParams: SearchForUsersParams,
+      searchForUsersRequestBody: SearchForUsersRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'searchForUsersParams' is not null or undefined
-      assertParamExists("searchForUsers", "searchForUsersParams", searchForUsersParams);
+      // verify required parameter 'searchForUsersRequestBody' is not null or undefined
+      assertParamExists(
+        "searchForUsers",
+        "searchForUsersRequestBody",
+        searchForUsersRequestBody,
+      );
       const localVarPath = `/discover/searchForUsers`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2040,7 +2215,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        searchForUsersParams,
+        searchForUsersRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2052,19 +2227,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+     * @param {SearchUserProfilesByUsernameRequestBody} searchUserProfilesByUsernameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchUserProfilesByUsername: async (
-      searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+      searchUserProfilesByUsernameRequestBody: SearchUserProfilesByUsernameRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'searchUserProfilesByUsernameParams' is not null or undefined
+      // verify required parameter 'searchUserProfilesByUsernameRequestBody' is not null or undefined
       assertParamExists(
         "searchUserProfilesByUsername",
-        "searchUserProfilesByUsernameParams",
-        searchUserProfilesByUsernameParams,
+        "searchUserProfilesByUsernameRequestBody",
+        searchUserProfilesByUsernameRequestBody,
       );
       const localVarPath = `/user/SearchUserProfilesByUsername`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2089,7 +2264,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        searchUserProfilesByUsernameParams,
+        searchUserProfilesByUsernameRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2342,16 +2517,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {UpdatePostParams} updatePostParams
+     * @param {UpdatePostRequestBody} updatePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePost: async (
-      updatePostParams: UpdatePostParams,
+      updatePostRequestBody: UpdatePostRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'updatePostParams' is not null or undefined
-      assertParamExists("updatePost", "updatePostParams", updatePostParams);
+      // verify required parameter 'updatePostRequestBody' is not null or undefined
+      assertParamExists("updatePost", "updatePostRequestBody", updatePostRequestBody);
       const localVarPath = `/post/updatePost`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2375,7 +2550,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        updatePostParams,
+        updatePostRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2676,6 +2851,104 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userSavesPost: async (
+      userSavesPostRequestBody: UserSavesPostRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'userSavesPostRequestBody' is not null or undefined
+      assertParamExists(
+        "userSavesPost",
+        "userSavesPostRequestBody",
+        userSavesPostRequestBody,
+      );
+      const localVarPath = `/userInteractions/userSavesPost`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        userSavesPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userUnsavesPost: async (
+      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'removeUserLikeFromPostRequestBody' is not null or undefined
+      assertParamExists(
+        "userUnsavesPost",
+        "removeUserLikeFromPostRequestBody",
+        removeUserLikeFromPostRequestBody,
+      );
+      const localVarPath = `/userInteractions/userUnsavesPost`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        removeUserLikeFromPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -2699,7 +2972,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToCommentOnPostResponseSuccessfullyCommentedOnPostResponse>
+      ) => AxiosPromise<SecuredHTTPResponseCommentOnPostFailedCommentOnPostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.commentOnPost(
         commentOnPostRequestBody,
@@ -2725,7 +2998,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse>
+      ) => AxiosPromise<SecuredHTTPResponseCreateChatMessageFailedCreateChatMessageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createChatMessage(
         createChatMessageRequestBody,
@@ -2751,7 +3024,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse>
+      ) => AxiosPromise<SecuredHTTPResponseCreateChatMessageInNewChatRoomFailedCreateChatMessageInNewChatRoomSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.createChatMessageInNewChatRoom(
@@ -2786,7 +3059,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse>
+      ) => AxiosPromise<SecuredHTTPResponseCreatePostFailedCreatePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
         mediaFiles,
@@ -2830,7 +3103,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse>
+      ) => AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
         caption,
@@ -2863,7 +3136,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse>
+      ) => AxiosPromise<SecuredHTTPResponseDeleteChatMessageFailedDeleteChatMessageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteChatMessage(
         deleteChatMessageRequestBody,
@@ -2889,7 +3162,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteCommentFromPostResponseSuccessfullyDeletedCommentFromPostResponse>
+      ) => AxiosPromise<SecuredHTTPResponseDeleteCommentFromPostFailedDeleteCommentFromPostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCommentFromPost(
         deleteCommentFromPostRequestBody,
@@ -2915,7 +3188,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse>
+      ) => AxiosPromise<SecuredHTTPResponseDeletePostFailedDeletePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deletePost(
         deletePostRequestBody,
@@ -2941,7 +3214,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse>
+      ) => AxiosPromise<SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteShopItem(
         deleteShopItemRequestBody,
@@ -2967,13 +3240,39 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse>
+      ) => AxiosPromise<SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedDoesChatRoomExistWithUserIdsSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.doesChatRoomExistWithUserIds(
           doesChatRoomExistWithUserIdsRequestBody,
           options,
         );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {ElevateUserToAdminRequestBody} elevateUserToAdminRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async elevateUserToAdmin(
+      elevateUserToAdminRequestBody: ElevateUserToAdminRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.elevateUserToAdmin(
+        elevateUserToAdminRequestBody,
+        options,
+      );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -2994,7 +3293,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFollowUserFailedFollowUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
         followUserRequestBody,
@@ -3020,7 +3319,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetChatRoomByIdFailedGetChatRoomByIdSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getChatRoomById(
         getChatRoomByIdRequestBody,
@@ -3046,7 +3345,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfChatMessagesFailedGetPageOfChatMessagesSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatMessages(
         getPageOfChatMessagesRequestBody,
@@ -3072,7 +3371,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatRooms(
         getPageOfChatRoomsRequestBody,
@@ -3098,7 +3397,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfCommentsByPostIdFailureGetPageOfCommentsByPostIdSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfCommentsByPostId(
         getPageOfCommentsByPostIdRequestBody,
@@ -3124,7 +3423,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfNotificationsFailedGetPageOfNotificationsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfNotifications(
         getPageOfNotificationsRequestBody,
@@ -3139,22 +3438,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+     * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPageOfPostFromFollowedHashtag(
-      getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+      getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedHashtagFailedGetPageOfPostFromFollowedHashtagSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfPostFromFollowedHashtag(
-          getPageOfPostFromFollowedHashtagParams,
+          getPageOfPostFromFollowedHashtagRequestBody,
           options,
         );
       return createRequestFunction(
@@ -3166,24 +3465,50 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+     * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPageOfPostFromFollowedUsers(
-      getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+      getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedUsersFailedGetPageOfPostFromFollowedUsersSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfPostFromFollowedUsers(
-          getPageOfPostFromFollowedUsersParams,
+          getPageOfPostFromFollowedUsersRequestBody,
           options,
         );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfSavedPosts(
+      getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfSavedPostsFailedGetPageOfSavedPostsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfSavedPosts(
+        getPageOfSavedPostsRequestBody,
+        options,
+      );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -3258,7 +3583,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedToGetPasswordResetEmailResponseSuccessfullyGotPasswordResetEmailResponse>
+      ) => AxiosPromise<HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPasswordResetEmail(
         getPasswordResetEmailRequestBody,
@@ -3284,7 +3609,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPostByIdResponseSuccessfullyGotPostByIdResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPostByIdFailedGetPostByIdSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostById(
         getPostByIdRequestBody,
@@ -3299,21 +3624,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+     * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPostsByUserId(
-      getPostsByUserIdParams: GetPostsByUserIdParams,
+      getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedGetPostsByUsernameSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUserId(
-        getPostsByUserIdParams,
+        getPostsByUserIdRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3325,21 +3650,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+     * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPostsByUsername(
-      getPostsByUsernameParams: GetPostsByUsernameParams,
+      getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedGetPostsByUsernameSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUsername(
-        getPostsByUsernameParams,
+        getPostsByUsernameRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3351,21 +3676,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+     * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPostsScheduledByUser(
-      getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+      getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsScheduledByUser(
-        getPostsScheduledByUserParams,
+        getPostsScheduledByUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3388,7 +3713,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUserContentFeedFiltersResponseSuccessfullyGotUserContentFeedFiltersResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetUserContentFeedFiltersFailedGetUserContentFeedFiltersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUserContentFeedFilters(
         body,
@@ -3403,21 +3728,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetUserProfileParams} getUserProfileParams
+     * @param {GetUserProfileRequestBody} getUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getUserProfile(
-      getUserProfileParams: GetUserProfileParams,
+      getUserProfileRequestBody: GetUserProfileRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetUserProfileFailedGetUserProfileSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(
-        getUserProfileParams,
+        getUserProfileRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3440,7 +3765,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetUsersByIdsFailedGetUsersByIdsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByIds(
         getUsersByIdsRequestBody,
@@ -3466,7 +3791,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse>
+      ) => AxiosPromise<SecuredHTTPResponseGetUsersByUsernamesFailedGetUsersByUsernamesSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByUsernames(
         getUsersByUsernamesRequestBody,
@@ -3492,7 +3817,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
+      ) => AxiosPromise<HTTPResponseAuthFailedAuthSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.loginUser(
         loginUserRequestBody,
@@ -3532,7 +3857,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse>
+      ) => AxiosPromise<HTTPResponseAuthFailedAuthSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.refreshAccessToken(
         options,
@@ -3557,10 +3882,36 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse>
+      ) => AxiosPromise<HTTPResponseRegisterUserFailedAuthSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(
         registerUserRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async removeUserFromWaitlist(
+      removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserFromWaitlist(
+        removeUserFromWaitlistRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3598,12 +3949,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SearchForHashtagsParams} searchForHashtagsParams
+     * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async searchForHashtags(
-      searchForHashtagsParams: SearchForHashtagsParams,
+      searchForHashtagsRequestBody: SearchForHashtagsRequestBody,
       options?: any,
     ): Promise<
       (
@@ -3612,7 +3963,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchForHashtags(
-        searchForHashtagsParams,
+        searchForHashtagsRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3624,12 +3975,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SearchForPostsParams} searchForPostsParams
+     * @param {SearchForPostsRequestBody} searchForPostsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async searchForPosts(
-      searchForPostsParams: SearchForPostsParams,
+      searchForPostsRequestBody: SearchForPostsRequestBody,
       options?: any,
     ): Promise<
       (
@@ -3638,7 +3989,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchForPosts(
-        searchForPostsParams,
+        searchForPostsRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3650,12 +4001,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SearchForUsersParams} searchForUsersParams
+     * @param {SearchForUsersRequestBody} searchForUsersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async searchForUsers(
-      searchForUsersParams: SearchForUsersParams,
+      searchForUsersRequestBody: SearchForUsersRequestBody,
       options?: any,
     ): Promise<
       (
@@ -3664,7 +4015,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseSearchForUsersFailedSearchForUsersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchForUsers(
-        searchForUsersParams,
+        searchForUsersRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3676,22 +4027,22 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+     * @param {SearchUserProfilesByUsernameRequestBody} searchUserProfilesByUsernameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async searchUserProfilesByUsername(
-      searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+      searchUserProfilesByUsernameRequestBody: SearchUserProfilesByUsernameRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse>
+      ) => AxiosPromise<SecuredHTTPResponseSearchUserProfilesByUsernameFailedSearchUserProfilesByUsernameSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.searchUserProfilesByUsername(
-          searchUserProfilesByUsernameParams,
+          searchUserProfilesByUsernameRequestBody,
           options,
         );
       return createRequestFunction(
@@ -3714,7 +4065,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToSetUserContentFeedFiltersResponseSuccessfullySetUserContentFeedFiltersResponse>
+      ) => AxiosPromise<SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.setUserContentFeedFilters(
         setUserContentFeedFiltersRequestBody,
@@ -3740,7 +4091,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse>
+      ) => AxiosPromise<SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.setUserHashtags(
         setUserHashtagsRequestBody,
@@ -3766,7 +4117,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToSharePostResponseSuccessfullySharedPostResponse>
+      ) => AxiosPromise<SecuredHTTPResponseSharePostFailedSharePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.sharePost(
         sharePostRequestBody,
@@ -3818,7 +4169,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePassword(
         updatePasswordRequestBody,
@@ -3833,21 +4184,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {UpdatePostParams} updatePostParams
+     * @param {UpdatePostRequestBody} updatePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updatePost(
-      updatePostParams: UpdatePostParams,
+      updatePostRequestBody: UpdatePostRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUpdatePostFailedUpdatePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePost(
-        updatePostParams,
+        updatePostRequestBody,
         options,
       );
       return createRequestFunction(
@@ -3886,7 +4237,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUpdateShopItemFailedUpdateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
         shopItemId,
@@ -3920,7 +4271,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserBackgroundImage(
         backgroundImage,
@@ -3946,7 +4297,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
         updateUserProfileRequestBody,
@@ -3972,7 +4323,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfilePicture(
         profilePicture,
@@ -3998,10 +4349,62 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPostResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userLikesPost(
         userLikesPostRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userSavesPost(
+      userSavesPostRequestBody: UserSavesPostRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseUserSavesPostFailedUserSavesPostSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userSavesPost(
+        userSavesPostRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userUnsavesPost(
+      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userUnsavesPost(
+        removeUserLikeFromPostRequestBody,
         options,
       );
       return createRequestFunction(
@@ -4034,7 +4437,7 @@ export const DefaultApiFactory = function (
     commentOnPost(
       commentOnPostRequestBody: CommentOnPostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToCommentOnPostResponseSuccessfullyCommentedOnPostResponse> {
+    ): AxiosPromise<SecuredHTTPResponseCommentOnPostFailedCommentOnPostSuccess> {
       return localVarFp
         .commentOnPost(commentOnPostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4048,7 +4451,7 @@ export const DefaultApiFactory = function (
     createChatMessage(
       createChatMessageRequestBody: CreateChatMessageRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageResponseSuccessfulChatMessageCreationResponse> {
+    ): AxiosPromise<SecuredHTTPResponseCreateChatMessageFailedCreateChatMessageSuccess> {
       return localVarFp
         .createChatMessage(createChatMessageRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4062,7 +4465,7 @@ export const DefaultApiFactory = function (
     createChatMessageInNewChatRoom(
       createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToCreateChatMessageInNewRoomResponseSuccessfullyCreatedChatMessageInNewRoomResponse> {
+    ): AxiosPromise<SecuredHTTPResponseCreateChatMessageInNewChatRoomFailedCreateChatMessageInNewChatRoomSuccess> {
       return localVarFp
         .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4084,7 +4487,7 @@ export const DefaultApiFactory = function (
       scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToCreatePostResponseSuccessfulPostCreationResponse> {
+    ): AxiosPromise<SecuredHTTPResponseCreatePostFailedCreatePostSuccess> {
       return localVarFp
         .createPost(
           mediaFiles,
@@ -4119,7 +4522,7 @@ export const DefaultApiFactory = function (
       mediaFiles: Array<any>,
       expirationTimestamp?: string,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToCreateShopItemResponseSuccessfulShopItemCreationResponse> {
+    ): AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess> {
       return localVarFp
         .createShopItem(
           caption,
@@ -4143,7 +4546,7 @@ export const DefaultApiFactory = function (
     deleteChatMessage(
       deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteChatMessageResponseSuccessfullyDeletedChatMessageResponse> {
+    ): AxiosPromise<SecuredHTTPResponseDeleteChatMessageFailedDeleteChatMessageSuccess> {
       return localVarFp
         .deleteChatMessage(deleteChatMessageRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4157,7 +4560,7 @@ export const DefaultApiFactory = function (
     deleteCommentFromPost(
       deleteCommentFromPostRequestBody: DeleteCommentFromPostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteCommentFromPostResponseSuccessfullyDeletedCommentFromPostResponse> {
+    ): AxiosPromise<SecuredHTTPResponseDeleteCommentFromPostFailedDeleteCommentFromPostSuccess> {
       return localVarFp
         .deleteCommentFromPost(deleteCommentFromPostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4171,7 +4574,7 @@ export const DefaultApiFactory = function (
     deletePost(
       deletePostRequestBody: DeletePostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToDeletePostResponseSuccessfulPostDeletionResponse> {
+    ): AxiosPromise<SecuredHTTPResponseDeletePostFailedDeletePostSuccess> {
       return localVarFp
         .deletePost(deletePostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4185,7 +4588,7 @@ export const DefaultApiFactory = function (
     deleteShopItem(
       deleteShopItemRequestBody: DeleteShopItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToDeleteShopItemResponseSuccessfulShopItemDeletionResponse> {
+    ): AxiosPromise<SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess> {
       return localVarFp
         .deleteShopItem(deleteShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4199,9 +4602,23 @@ export const DefaultApiFactory = function (
     doesChatRoomExistWithUserIds(
       doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoDetermineIfChatRoomExistsWithUserIdsSuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse> {
+    ): AxiosPromise<SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedDoesChatRoomExistWithUserIdsSuccess> {
       return localVarFp
         .doesChatRoomExistWithUserIds(doesChatRoomExistWithUserIdsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {ElevateUserToAdminRequestBody} elevateUserToAdminRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    elevateUserToAdmin(
+      elevateUserToAdminRequestBody: ElevateUserToAdminRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess> {
+      return localVarFp
+        .elevateUserToAdmin(elevateUserToAdminRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4213,7 +4630,7 @@ export const DefaultApiFactory = function (
     followUser(
       followUserRequestBody: FollowUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToFollowUserResponseSuccessfullyFollowedUserResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFollowUserFailedFollowUserSuccess> {
       return localVarFp
         .followUser(followUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4227,7 +4644,7 @@ export const DefaultApiFactory = function (
     getChatRoomById(
       getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetChatRoomByIdResponseSuccessfullyGotChatRoomByIdResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetChatRoomByIdFailedGetChatRoomByIdSuccess> {
       return localVarFp
         .getChatRoomById(getChatRoomByIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4241,7 +4658,7 @@ export const DefaultApiFactory = function (
     getPageOfChatMessages(
       getPageOfChatMessagesRequestBody: GetPageOfChatMessagesRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatMessagesResponseSuccessfulGetPageOfChatMessagesResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfChatMessagesFailedGetPageOfChatMessagesSuccess> {
       return localVarFp
         .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4255,7 +4672,7 @@ export const DefaultApiFactory = function (
     getPageOfChatRooms(
       getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfChatRoomsResponseSuccessfulGetPageOfChatRoomsResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess> {
       return localVarFp
         .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4269,7 +4686,7 @@ export const DefaultApiFactory = function (
     getPageOfCommentsByPostId(
       getPageOfCommentsByPostIdRequestBody: GetPageOfCommentsByPostIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfCommentsByPostIdResponseSuccessfullyGotPageOfCommentsByPostIdResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfCommentsByPostIdFailureGetPageOfCommentsByPostIdSuccess> {
       return localVarFp
         .getPageOfCommentsByPostId(getPageOfCommentsByPostIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4283,37 +4700,57 @@ export const DefaultApiFactory = function (
     getPageOfNotifications(
       getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPageOfNotificationsResponseSuccessfullyGotPageOfNotificationsResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfNotificationsFailedGetPageOfNotificationsSuccess> {
       return localVarFp
         .getPageOfNotifications(getPageOfNotificationsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+     * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPageOfPostFromFollowedHashtag(
-      getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+      getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedHashtagResponseSuccessfulGetPageOfPostFromFollowedHashtagResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedHashtagFailedGetPageOfPostFromFollowedHashtagSuccess> {
       return localVarFp
-        .getPageOfPostFromFollowedHashtag(getPageOfPostFromFollowedHashtagParams, options)
+        .getPageOfPostFromFollowedHashtag(
+          getPageOfPostFromFollowedHashtagRequestBody,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+     * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPageOfPostFromFollowedUsers(
-      getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+      getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPageOfPostFromFollowedUsersResponseSuccessfulGetPageOfPostFromFollowedUsersResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedUsersFailedGetPageOfPostFromFollowedUsersSuccess> {
       return localVarFp
-        .getPageOfPostFromFollowedUsers(getPageOfPostFromFollowedUsersParams, options)
+        .getPageOfPostFromFollowedUsers(
+          getPageOfPostFromFollowedUsersRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfSavedPosts(
+      getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfSavedPostsFailedGetPageOfSavedPostsSuccess> {
+      return localVarFp
+        .getPageOfSavedPosts(getPageOfSavedPostsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4356,7 +4793,7 @@ export const DefaultApiFactory = function (
     getPasswordResetEmail(
       getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedToGetPasswordResetEmailResponseSuccessfullyGotPasswordResetEmailResponse> {
+    ): AxiosPromise<HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess> {
       return localVarFp
         .getPasswordResetEmail(getPasswordResetEmailRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4370,51 +4807,51 @@ export const DefaultApiFactory = function (
     getPostById(
       getPostByIdRequestBody: GetPostByIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPostByIdResponseSuccessfullyGotPostByIdResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPostByIdFailedGetPostByIdSuccess> {
       return localVarFp
         .getPostById(getPostByIdRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+     * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsByUserId(
-      getPostsByUserIdParams: GetPostsByUserIdParams,
+      getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedGetPostsByUsernameSuccess> {
       return localVarFp
-        .getPostsByUserId(getPostsByUserIdParams, options)
+        .getPostsByUserId(getPostsByUserIdRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+     * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsByUsername(
-      getPostsByUsernameParams: GetPostsByUsernameParams,
+      getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedtoGetPostsByUserResponseSuccessfulGetPostsByUserResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedGetPostsByUsernameSuccess> {
       return localVarFp
-        .getPostsByUsername(getPostsByUsernameParams, options)
+        .getPostsByUsername(getPostsByUsernameRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+     * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsScheduledByUser(
-      getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+      getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetPostsScheduledByUserResponseSuccessfulGetPostsScheduledByUserResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess> {
       return localVarFp
-        .getPostsScheduledByUser(getPostsScheduledByUserParams, options)
+        .getPostsScheduledByUser(getPostsScheduledByUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4426,23 +4863,23 @@ export const DefaultApiFactory = function (
     getUserContentFeedFilters(
       body: object,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetUserContentFeedFiltersResponseSuccessfullyGotUserContentFeedFiltersResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetUserContentFeedFiltersFailedGetUserContentFeedFiltersSuccess> {
       return localVarFp
         .getUserContentFeedFilters(body, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {GetUserProfileParams} getUserProfileParams
+     * @param {GetUserProfileRequestBody} getUserProfileRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getUserProfile(
-      getUserProfileParams: GetUserProfileParams,
+      getUserProfileRequestBody: GetUserProfileRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseDeniedGetUserProfileResponseSuccessfulGetUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetUserProfileFailedGetUserProfileSuccess> {
       return localVarFp
-        .getUserProfile(getUserProfileParams, options)
+        .getUserProfile(getUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4454,7 +4891,7 @@ export const DefaultApiFactory = function (
     getUsersByIds(
       getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByIdsResponseSuccessfullyGotUsersByIdsRequestBodyResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetUsersByIdsFailedGetUsersByIdsSuccess> {
       return localVarFp
         .getUsersByIds(getUsersByIdsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4468,7 +4905,7 @@ export const DefaultApiFactory = function (
     getUsersByUsernames(
       getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToGetUsersByUsernamesResponseSuccessfullyGotUsersByUsernamesRequestBodyResponse> {
+    ): AxiosPromise<SecuredHTTPResponseGetUsersByUsernamesFailedGetUsersByUsernamesSuccess> {
       return localVarFp
         .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4482,7 +4919,7 @@ export const DefaultApiFactory = function (
     loginUser(
       loginUserRequestBody: LoginUserRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
+    ): AxiosPromise<HTTPResponseAuthFailedAuthSuccess> {
       return localVarFp
         .loginUser(loginUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4500,9 +4937,7 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    refreshAccessToken(
-      options?: any,
-    ): AxiosPromise<HTTPResponseFailedAuthResponseSuccessfulAuthResponse> {
+    refreshAccessToken(options?: any): AxiosPromise<HTTPResponseAuthFailedAuthSuccess> {
       return localVarFp
         .refreshAccessToken(options)
         .then((request) => request(axios, basePath));
@@ -4516,9 +4951,23 @@ export const DefaultApiFactory = function (
     registerUser(
       registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseFailedToRegisterUserResponseSuccessfulAuthResponse> {
+    ): AxiosPromise<HTTPResponseRegisterUserFailedAuthSuccess> {
       return localVarFp
         .registerUser(registerUserRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserFromWaitlist(
+      removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess> {
+      return localVarFp
+        .removeUserFromWaitlist(removeUserFromWaitlistRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4537,58 +4986,58 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {SearchForHashtagsParams} searchForHashtagsParams
+     * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchForHashtags(
-      searchForHashtagsParams: SearchForHashtagsParams,
+      searchForHashtagsRequestBody: SearchForHashtagsRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess> {
       return localVarFp
-        .searchForHashtags(searchForHashtagsParams, options)
+        .searchForHashtags(searchForHashtagsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {SearchForPostsParams} searchForPostsParams
+     * @param {SearchForPostsRequestBody} searchForPostsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchForPosts(
-      searchForPostsParams: SearchForPostsParams,
+      searchForPostsRequestBody: SearchForPostsRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseSearchForPostsFailedSearchForPostsSuccess> {
       return localVarFp
-        .searchForPosts(searchForPostsParams, options)
+        .searchForPosts(searchForPostsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {SearchForUsersParams} searchForUsersParams
+     * @param {SearchForUsersRequestBody} searchForUsersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchForUsers(
-      searchForUsersParams: SearchForUsersParams,
+      searchForUsersRequestBody: SearchForUsersRequestBody,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseSearchForUsersFailedSearchForUsersSuccess> {
       return localVarFp
-        .searchForUsers(searchForUsersParams, options)
+        .searchForUsers(searchForUsersRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+     * @param {SearchUserProfilesByUsernameRequestBody} searchUserProfilesByUsernameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     searchUserProfilesByUsername(
-      searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+      searchUserProfilesByUsernameRequestBody: SearchUserProfilesByUsernameRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToSearchUserProfilesByUsernameResponseSuccessfulSearchUserProfilesByUsernameResponse> {
+    ): AxiosPromise<SecuredHTTPResponseSearchUserProfilesByUsernameFailedSearchUserProfilesByUsernameSuccess> {
       return localVarFp
-        .searchUserProfilesByUsername(searchUserProfilesByUsernameParams, options)
+        .searchUserProfilesByUsername(searchUserProfilesByUsernameRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4600,7 +5049,7 @@ export const DefaultApiFactory = function (
     setUserContentFeedFilters(
       setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToSetUserContentFeedFiltersResponseSuccessfullySetUserContentFeedFiltersResponse> {
+    ): AxiosPromise<SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess> {
       return localVarFp
         .setUserContentFeedFilters(setUserContentFeedFiltersRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4614,7 +5063,7 @@ export const DefaultApiFactory = function (
     setUserHashtags(
       setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToSetUserHashtagsResponseSuccessfullySetUserHashtagsResponse> {
+    ): AxiosPromise<SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess> {
       return localVarFp
         .setUserHashtags(setUserHashtagsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4628,7 +5077,7 @@ export const DefaultApiFactory = function (
     sharePost(
       sharePostRequestBody: SharePostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToSharePostResponseSuccessfullySharedPostResponse> {
+    ): AxiosPromise<SecuredHTTPResponseSharePostFailedSharePostSuccess> {
       return localVarFp
         .sharePost(sharePostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4656,23 +5105,23 @@ export const DefaultApiFactory = function (
     updatePassword(
       updatePasswordRequestBody: UpdatePasswordRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePasswordResponseSuccessfullyUpdatedPasswordResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess> {
       return localVarFp
         .updatePassword(updatePasswordRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {UpdatePostParams} updatePostParams
+     * @param {UpdatePostRequestBody} updatePostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePost(
-      updatePostParams: UpdatePostParams,
+      updatePostRequestBody: UpdatePostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUpdatePostResponseSuccessfulPostUpdateResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUpdatePostFailedUpdatePostSuccess> {
       return localVarFp
-        .updatePost(updatePostParams, options)
+        .updatePost(updatePostRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -4700,7 +5149,7 @@ export const DefaultApiFactory = function (
       collaboratorUserIds?: string,
       mediaFiles?: Array<any>,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateShopItemResponseSuccessfulShopItemUpdateResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUpdateShopItemFailedUpdateShopItemSuccess> {
       return localVarFp
         .updateShopItem(
           shopItemId,
@@ -4725,7 +5174,7 @@ export const DefaultApiFactory = function (
     updateUserBackgroundImage(
       backgroundImage: any,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess> {
       return localVarFp
         .updateUserBackgroundImage(backgroundImage, options)
         .then((request) => request(axios, basePath));
@@ -4739,7 +5188,7 @@ export const DefaultApiFactory = function (
     updateUserProfile(
       updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess> {
       return localVarFp
         .updateUserProfile(updateUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -4753,7 +5202,7 @@ export const DefaultApiFactory = function (
     updateUserProfilePicture(
       profilePicture: any,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUpdateUserProfileResponseSuccessfulUpdateToUserProfileResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess> {
       return localVarFp
         .updateUserProfilePicture(profilePicture, options)
         .then((request) => request(axios, basePath));
@@ -4767,9 +5216,37 @@ export const DefaultApiFactory = function (
     userLikesPost(
       userLikesPostRequestBody: UserLikesPostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToLikePostByUserResponseSuccessfulUserLikesPostResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess> {
       return localVarFp
         .userLikesPost(userLikesPostRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userSavesPost(
+      userSavesPostRequestBody: UserSavesPostRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseUserSavesPostFailedUserSavesPostSuccess> {
+      return localVarFp
+        .userSavesPost(userSavesPostRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userUnsavesPost(
+      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse> {
+      return localVarFp
+        .userUnsavesPost(removeUserLikeFromPostRequestBody, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -4980,6 +5457,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {ElevateUserToAdminRequestBody} elevateUserToAdminRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public elevateUserToAdmin(
+    elevateUserToAdminRequestBody: ElevateUserToAdminRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .elevateUserToAdmin(elevateUserToAdminRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {FollowUserRequestBody} followUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -5073,33 +5566,52 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPageOfPostFromFollowedHashtagParams} getPageOfPostFromFollowedHashtagParams
+   * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public getPageOfPostFromFollowedHashtag(
-    getPageOfPostFromFollowedHashtagParams: GetPageOfPostFromFollowedHashtagParams,
+    getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .getPageOfPostFromFollowedHashtag(getPageOfPostFromFollowedHashtagParams, options)
+      .getPageOfPostFromFollowedHashtag(
+        getPageOfPostFromFollowedHashtagRequestBody,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {GetPageOfPostFromFollowedUsersParams} getPageOfPostFromFollowedUsersParams
+   * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public getPageOfPostFromFollowedUsers(
-    getPageOfPostFromFollowedUsersParams: GetPageOfPostFromFollowedUsersParams,
+    getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .getPageOfPostFromFollowedUsers(getPageOfPostFromFollowedUsersParams, options)
+      .getPageOfPostFromFollowedUsers(getPageOfPostFromFollowedUsersRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfSavedPosts(
+    getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfSavedPosts(getPageOfSavedPostsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -5166,46 +5678,49 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPostsByUserIdParams} getPostsByUserIdParams
+   * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getPostsByUserId(getPostsByUserIdParams: GetPostsByUserIdParams, options?: any) {
+  public getPostsByUserId(
+    getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .getPostsByUserId(getPostsByUserIdParams, options)
+      .getPostsByUserId(getPostsByUserIdRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {GetPostsByUsernameParams} getPostsByUsernameParams
+   * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public getPostsByUsername(
-    getPostsByUsernameParams: GetPostsByUsernameParams,
+    getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .getPostsByUsername(getPostsByUsernameParams, options)
+      .getPostsByUsername(getPostsByUsernameRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {GetPostsScheduledByUserParams} getPostsScheduledByUserParams
+   * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public getPostsScheduledByUser(
-    getPostsScheduledByUserParams: GetPostsScheduledByUserParams,
+    getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .getPostsScheduledByUser(getPostsScheduledByUserParams, options)
+      .getPostsScheduledByUser(getPostsScheduledByUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -5224,14 +5739,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetUserProfileParams} getUserProfileParams
+   * @param {GetUserProfileRequestBody} getUserProfileRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getUserProfile(getUserProfileParams: GetUserProfileParams, options?: any) {
+  public getUserProfile(
+    getUserProfileRequestBody: GetUserProfileRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .getUserProfile(getUserProfileParams, options)
+      .getUserProfile(getUserProfileRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -5319,6 +5837,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public removeUserFromWaitlist(
+    removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .removeUserFromWaitlist(removeUserFromWaitlistRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -5335,59 +5869,65 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {SearchForHashtagsParams} searchForHashtagsParams
+   * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public searchForHashtags(
-    searchForHashtagsParams: SearchForHashtagsParams,
+    searchForHashtagsRequestBody: SearchForHashtagsRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .searchForHashtags(searchForHashtagsParams, options)
+      .searchForHashtags(searchForHashtagsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {SearchForPostsParams} searchForPostsParams
+   * @param {SearchForPostsRequestBody} searchForPostsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public searchForPosts(searchForPostsParams: SearchForPostsParams, options?: any) {
+  public searchForPosts(
+    searchForPostsRequestBody: SearchForPostsRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .searchForPosts(searchForPostsParams, options)
+      .searchForPosts(searchForPostsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {SearchForUsersParams} searchForUsersParams
+   * @param {SearchForUsersRequestBody} searchForUsersRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public searchForUsers(searchForUsersParams: SearchForUsersParams, options?: any) {
+  public searchForUsers(
+    searchForUsersRequestBody: SearchForUsersRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .searchForUsers(searchForUsersParams, options)
+      .searchForUsers(searchForUsersRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {SearchUserProfilesByUsernameParams} searchUserProfilesByUsernameParams
+   * @param {SearchUserProfilesByUsernameRequestBody} searchUserProfilesByUsernameRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public searchUserProfilesByUsername(
-    searchUserProfilesByUsernameParams: SearchUserProfilesByUsernameParams,
+    searchUserProfilesByUsernameRequestBody: SearchUserProfilesByUsernameRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .searchUserProfilesByUsername(searchUserProfilesByUsernameParams, options)
+      .searchUserProfilesByUsername(searchUserProfilesByUsernameRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -5467,14 +6007,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {UpdatePostParams} updatePostParams
+   * @param {UpdatePostRequestBody} updatePostRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public updatePost(updatePostParams: UpdatePostParams, options?: any) {
+  public updatePost(updatePostRequestBody: UpdatePostRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .updatePost(updatePostParams, options)
+      .updatePost(updatePostRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -5576,6 +6116,38 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .userLikesPost(userLikesPostRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public userSavesPost(
+    userSavesPostRequestBody: UserSavesPostRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .userSavesPost(userSavesPostRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public userUnsavesPost(
+    removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .userUnsavesPost(removeUserLikeFromPostRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

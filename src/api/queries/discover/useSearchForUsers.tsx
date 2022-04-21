@@ -1,8 +1,12 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SearchForUsersParams, SearchForUsersSuccess } from "../..";
+import { Api, SearchForUsersRequestBody, SearchForUsersSuccess } from "../..";
 
-export const useSearchForUsers = ({ query, cursor, pageSize }: SearchForUsersParams) => {
+export const useSearchForUsers = ({
+  query,
+  cursor,
+  pageSize,
+}: SearchForUsersRequestBody) => {
   return useQuery<SearchForUsersSuccess, Error>(
     [CacheKeys.SearchForUsers, query, cursor, pageSize],
     async () => {

@@ -1,12 +1,12 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, SuccessfullyGotPageOfCommentsByPostIdResponse } from "../..";
+import { Api, GetPageOfCommentsByPostIdSuccess } from "../..";
 
 export const useGetPageOfPostCommentsByPostId = ({ postId }: { postId: string }) => {
   return useInfiniteQuery<
-    SuccessfullyGotPageOfCommentsByPostIdResponse,
+    GetPageOfCommentsByPostIdSuccess,
     Error,
-    SuccessfullyGotPageOfCommentsByPostIdResponse,
+    GetPageOfCommentsByPostIdSuccess,
     string[]
   >(
     [CacheKeys.PostComments, postId],
