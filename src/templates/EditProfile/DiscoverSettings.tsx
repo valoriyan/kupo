@@ -33,6 +33,6 @@ export const DiscoverSettings = (props: DiscoverSettingsProps) => {
 
 const HashTagsWrapper = styled("div", {
   borderRadius: "$4",
-  border: "solid $borderWidths$1 $text",
+  border: "solid $borderWidths$1 $border",
   p: "$3",
 });

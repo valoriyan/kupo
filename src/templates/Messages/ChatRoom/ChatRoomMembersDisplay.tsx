@@ -1,6 +1,7 @@
-import Link from "next/link";
 import { RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
+import { Box } from "#/components/Layout";
+import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
 
 export const ChatRoomMembersDisplay = ({
@@ -24,20 +25,18 @@ export const ChatRoomMembersDisplay = ({
       if (!chatRoomMember) return [];
       const { username, userId } = chatRoomMember;
       return [
-        <Link key={userId} href={`/profile/${username}`} passHref>
-          <Username as="a">
-            @{username}
-            {index < nonClientChatRoomMembersWithData.length - 1 ? "," : null}
-          </Username>
-        </Link>,
+        <Box as="span" key={userId} css={{ color: "$link" }}>
+          <UserName username={username} />
+          {index < nonClientChatRoomMembersWithData.length - 1 ? ", " : null}
+        </Box>,
       ];
     },
   );
 
   return (
     <Wrapper>
-      <Avatar src={chatRoomAvatarImage} alt="Chat Room Avatar Image" size="$8" />
-      <Usernames>{chatRoomMemberUsernames}</Usernames>
+      <Avatar src={chatRoomAvatarImage} alt="Chat Room Avatar Image" size="$7" />
+      <div>{chatRoomMemberUsernames}</div>
     </Wrapper>
   );
 };
@@ -46,17 +45,6 @@ const Wrapper = styled("div", {
   padding: "$5",
   display: "flex",
   alignItems: "center",
-  borderBottom: "3px solid $primaryTranslucent",
-});
-
-const Usernames = styled("div", {
-  paddingLeft: "$5",
-});
-
-const Username = styled("span", {
-  paddingLeft: "$2",
-  color: "$link",
-  fontSize: "$4",
-  cursor: "pointer",
-  textDecoration: "none",
+  gap: "$4",
+  borderBottom: "solid $borderWidths$1 $border",
 });

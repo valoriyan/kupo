@@ -1,28 +1,32 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import {
-  Api,
-  SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
-} from "../..";
+import { Api, GetPageOfChatRoomsSuccess } from "../..";
 
-export interface GetChatRoomsArgs {
-  cursor?: string;
+export interface GetPageOfChatRoomsArgs {
+  query: string;
+  cursor?: string | undefined;
 }
 
-export const useGetPageOfChatRooms = ({ cursor }: GetChatRoomsArgs) => {
+export const useGetPageOfChatRooms = ({ query }: GetPageOfChatRoomsArgs) => {
   return useInfiniteQuery<
-    SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
+    GetPageOfChatRoomsSuccess,
     Error,
-    SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
+    GetPageOfChatRoomsSuccess,
     (string | undefined)[]
-  >([CacheKeys.ChatRoomsPages, cursor], fetchPageOfChatRooms, {
-    getNextPageParam: (lastPage) => {
-      return lastPage.success?.nextPageCursor;
+  >(
+    [CacheKeys.ChatRoomsPages, query],
+    ({ pageParam = undefined }) => fetchPageOfChatRooms({ cursor: pageParam, query }),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.nextPageCursor;
+      },
     },
-  });
+  );
 };
 
-async function fetchPageOfChatRooms({ pageParam = undefined }) {
-  const res = await Api.getPageOfChatRooms({ cursor: pageParam, pageSize: 5 });
-  return res.data;
+async function fetchPageOfChatRooms({ cursor, query }: GetPageOfChatRoomsArgs) {
+  const res = await Api.getPageOfChatRooms({ query, cursor, pageSize: 25 });
+
+  if (res.data.success) return res.data.success;
+  throw new Error(res.data.error?.reason ?? "Unknown Error");
 }

@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
 } from "#/api";
 import { styled } from "#/styling";
-import { ChatRoomListItem } from "./ChatRoomListItem";
+import { ChatRoomListItem } from "../ChatRoomListItem";
 
 export const ChatRoomsList = ({
   clientUserData,
@@ -43,7 +43,11 @@ export const ChatRoomsList = ({
 
   const renderedChatRooms = chatRooms.map((chatRoom, index) => {
     return (
-      <ChatRoomListItem key={index} chatRoom={chatRoom} clientUserData={clientUserData} />
+      <ChatRoomListItem
+        key={index}
+        chatRoom={chatRoom}
+        clientUserId={clientUserData.userId}
+      />
     );
   });
 

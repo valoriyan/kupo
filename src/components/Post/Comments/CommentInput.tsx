@@ -40,8 +40,16 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
           value={text}
           onChange={(e) => setText(e.currentTarget.value.slice(0, COMMENT_CHAR_LIMIT))}
         />
-        <Subtext css={{ color: "$secondaryText", p: "$2", alignSelf: "flex-end" }}>
-          {text.length}/{COMMENT_CHAR_LIMIT}
+        <Subtext
+          css={{
+            bg: "$background1",
+            width: "100%",
+            color: "$secondaryText",
+            p: "$2",
+            textAlign: "right",
+          }}
+        >
+          {text.length} / {COMMENT_CHAR_LIMIT}
         </Subtext>
       </Stack>
       <SubmitButton type="submit">

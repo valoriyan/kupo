@@ -1,12 +1,11 @@
-import Link from "next/link";
 import { RenderablePost } from "#/api";
 import { useSearchForPosts } from "#/api/queries/discover/useSearchForPosts";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
+import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
 import { goToPostPage } from "#/templates/SinglePost";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { ResultsWrapper } from "./ResultsWrapper";
 
@@ -48,20 +47,15 @@ export const PostResults = ({ query }: PostResultsProps) => {
 
 const PostPreview = ({ post }: { post: RenderablePost }) => {
   const { data: user } = useGetUserByUserId({ userId: post.authorUserId });
-  const profileUrl = user?.username
-    ? getProfilePageUrl({ username: user?.username })
-    : "";
 
   return (
     <PostWrapper onClick={() => goToPostPage(post.postId)}>
-      {!!post.contentElements[0].temporaryUrl && (
+      {!!post.contentElements[0] && (
         <PostImage src={post.contentElements[0].temporaryUrl} />
       )}
       <Stack css={{ gap: "$4", px: "$5", py: "$5" }}>
         <Flex css={{ alignItems: "center", gap: "$4" }}>
-          <Link href={profileUrl} passHref>
-            <a>@{user?.username ?? "User"}</a>
-          </Link>
+          <UserName username={user?.username} />
           <Body css={{ color: "$secondaryText" }}>
             {getShortRelativeTimestamp(post.creationTimestamp)}
           </Body>

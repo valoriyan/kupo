@@ -1,14 +1,14 @@
-import Link from "next/link";
 import Router from "next/router";
 import { RenderableUser } from "#/api";
 import { useSearchForUsers } from "#/api/queries/discover/useSearchForUsers";
-import { Flex, Stack } from "#/components/Layout";
-import { ResultsWrapper } from "./ResultsWrapper";
-import { styled } from "#/styling";
 import { Avatar } from "#/components/Avatar";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
-import { Body } from "#/components/Typography";
 import { HashTag } from "#/components/HashTags";
+import { Flex, Stack } from "#/components/Layout";
+import { Body } from "#/components/Typography";
+import { UserName } from "#/components/UserName";
+import { styled } from "#/styling";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface UserResultsProps {
   query: string;
@@ -53,17 +53,13 @@ const UserPreview = ({ user }: { user: RenderableUser }) => {
           size="$8"
           onClick={() => Router.push(profileUrl)}
         />
-        <Link href={profileUrl} passHref>
-          <a>@{user.username}</a>
-        </Link>
+        <UserName username={user.username} />
       </Flex>
       <Body>{user.shortBio}</Body>
       {!!hashtags.length && (
         <Flex css={{ gap: "$3" }}>
           {hashtags.map((hashtag) => (
-            <HashTag key={hashtag} outlined>
-              #{hashtag}
-            </HashTag>
+            <HashTag key={hashtag} hashtag={hashtag} outlined />
           ))}
         </Flex>
       )}

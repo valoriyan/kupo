@@ -13,8 +13,9 @@ import { ShareIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
-import { Subtext, subtextStyles } from "#/components/Typography";
+import { Body, MainTitle, Subtext, subtextStyles } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
+import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
@@ -59,29 +60,77 @@ const ProfileBody = (props: ProfileBodyProps) => {
     <Stack css={{ size: "100%" }}>
       <Stack>
         <ProfileHeader>
-          <BackgroundImage
-            src={backgroundImageTemporaryUrl}
-            alt="User Background Image"
-          />
+          <Flex css={{ position: "relative", width: "100%" }}>
+            <BackgroundImage
+              src={backgroundImageTemporaryUrl}
+              alt="User Background Image"
+            />
+            <Flex
+              css={{
+                gap: "$3",
+                position: "absolute",
+                bottom: "-$9",
+                right: "$4",
+                zIndex: 1,
+              }}
+            >
+              {props.isOwnProfile ? (
+                <Link href="/edit-profile" passHref>
+                  <Button
+                    as="a"
+                    size="sm"
+                    variant="primary"
+                    css={{ flex: 1 }}
+                    onClick={setPreviousLocationForSettings}
+                  >
+                    Edit Profile
+                  </Button>
+                </Link>
+              ) : (
+                <FollowButton
+                  userId={userId}
+                  username={username}
+                  isBeingFollowedByClient={isBeingFollowedByClient}
+                />
+              )}
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={() => {
+                  const link = `${location.origin}${getProfilePageUrl({ username })}`;
+                  copyTextToClipboard(link, "Link");
+                }}
+              >
+                <ShareIcon />
+              </Button>
+            </Flex>
+          </Flex>
           <AvatarAndName>
             <Box
               css={{
-                border: "solid $borderWidths$2 $background1",
+                border: "solid $borderWidths$3 $background1",
                 borderRadius: "$round",
               }}
             >
-              <Avatar src={profilePictureTemporaryUrl} alt="User Profile Picture" />
+              <Avatar
+                src={profilePictureTemporaryUrl}
+                alt="User Profile Picture"
+                size="$11"
+              />
             </Box>
-            <Link href={getProfilePageUrl({ username })} passHref>
-              <a>@{username}</a>
-            </Link>
+            <Stack css={{ gap: "$3" }}>
+              <Link href={getProfilePageUrl({ username })} passHref>
+                <MainTitle as="a">@{username}</MainTitle>
+              </Link>
+              <Subtext css={{ color: "$secondaryText" }}>
+                {formatStat(followers.count)} followers | {formatStat(follows.count)}{" "}
+                followed
+              </Subtext>
+            </Stack>
           </AvatarAndName>
         </ProfileHeader>
-        <Stack css={{ mt: "$10", pt: "$4", px: "$6", gap: "$4" }}>
-          <Subtext>
-            {formatStat(followers.count)} followers | {formatStat(follows.count)} followed
-          </Subtext>
-          {!!shortBio && <Description>{shortBio}</Description>}
+        <Stack css={{ mt: "107px", pt: "$4", px: "$6", gap: "$4" }}>
+          {!!shortBio && <Body>{shortBio}</Body>}
           {!!userWebsite && (
             <ExternalLink target="_blank" rel="noopener noreferrer" href={userWebsite}>
               {userWebsite}
@@ -90,38 +139,11 @@ const ProfileBody = (props: ProfileBodyProps) => {
           {!!hashtags.length && (
             <Flex css={{ gap: "$3" }}>
               {hashtags.map((hashtag) => (
-                <HashTag key={hashtag} outlined>
-                  #{hashtag}
-                </HashTag>
+                <HashTag key={hashtag} hashtag={hashtag} outlined />
               ))}
             </Flex>
           )}
         </Stack>
-        <Flex css={{ gap: "$3", px: "$6", pt: "$6", pb: "$3" }}>
-          {props.isOwnProfile ? (
-            <Link href="/edit-profile" passHref>
-              <Button as="a" size="md" variant="primary" css={{ flex: 1 }}>
-                Edit Profile
-              </Button>
-            </Link>
-          ) : (
-            <FollowButton
-              userId={userId}
-              username={username}
-              isBeingFollowedByClient={isBeingFollowedByClient}
-            />
-          )}
-          <Button
-            size="md"
-            variant="primary"
-            onClick={() => {
-              const link = `${location.origin}${getProfilePageUrl({ username })}`;
-              copyTextToClipboard(link, "Link");
-            }}
-          >
-            <ShareIcon />
-          </Button>
-        </Flex>
       </Stack>
       <Tabs
         ariaLabel="User Content Categories"
@@ -131,11 +153,6 @@ const ProfileBody = (props: ProfileBodyProps) => {
             id: "posts",
             trigger: "Posts",
             content: <UserPosts user={props.user} />,
-          },
-          {
-            id: "shop",
-            trigger: "Shop",
-            content: <Stack css={{ p: "$5" }}>User Shop Items Go Here</Stack>,
           },
         ]}
       />
@@ -149,19 +166,14 @@ const ProfileHeader = styled(Flex, {
 
 const AvatarAndName = styled(Stack, {
   position: "absolute",
-  bottom: "-60px", // Magic number
+  bottom: "-100px", // Magic number
+  width: "100%",
   alignItems: "flex-start",
   gap: "$5",
   px: "$6",
 });
 
-const Description = styled(Subtext, { fontWeight: "$light" });
-
 const ExternalLink = styled("a", subtextStyles, { cursor: "pointer" });
-
-const PrimaryButton = styled(Button, {
-  flex: 1,
-});
 
 const FollowButton = ({
   userId,
@@ -193,8 +205,14 @@ const FollowButton = ({
   }
 
   return (
-    <PrimaryButton onClick={handleClick} size="md" variant="primary">
+    <Button
+      onClick={handleClick}
+      size="sm"
+      variant="primary"
+      outlined={isBeingFollowedByClient}
+      css={{ width: "88px" }} // Width of Unfollow button
+    >
       {isBeingFollowedByClient ? "Unfollow" : "Follow"}
-    </PrimaryButton>
+    </Button>
   );
 };

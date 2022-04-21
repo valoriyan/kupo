@@ -33,7 +33,7 @@ export const SignUp = () => {
           required
           placeholder="username"
           value={username}
-          onChange={(e) => setUsername(e.currentTarget.value)}
+          onChange={(e) => setUsername(e.currentTarget.value.toLocaleLowerCase())}
         />
         <Input
           size="lg"

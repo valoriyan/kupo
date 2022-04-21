@@ -18,7 +18,7 @@ export const CaptionTextArea = ({ caption, setCaption }: CaptionTextAreaProps) =
         onChange={(e) => setCaption(e.currentTarget.value.slice(0, CAPTION_CHAR_LIMIT))}
       />
       <Subtext css={{ color: "$secondaryText", p: "$2", pb: 0, alignSelf: "flex-end" }}>
-        {caption.length}/{CAPTION_CHAR_LIMIT}
+        {caption.length} / {CAPTION_CHAR_LIMIT}
       </Subtext>
     </Stack>
   );

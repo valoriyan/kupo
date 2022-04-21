@@ -1,5 +1,5 @@
 import { ComponentType, useState } from "react";
-import { RenderablePost } from "#/api";
+import { ContentElement, RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
@@ -10,6 +10,7 @@ import { Comments } from "./Comments";
 import { PostBody } from "./PostBody";
 import { ShareMenu } from "./ShareMenu";
 import { usePostActions } from "./usePostActions";
+import { HashTag } from "../HashTags";
 
 export interface PostProps {
   post: RenderablePost;
@@ -22,9 +23,9 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
 
   const { handleClickOfLikeButton, menuActions, user } = usePostActions(post);
 
-  const [currentMediaUrl, setCurrentMediaUrl] = useState<string | undefined>(
-    contentElements.length > 0 ? contentElements[0].temporaryUrl : undefined,
-  );
+  const [currentContentElement, setCurrentContentElement] = useState<
+    ContentElement | undefined
+  >(contentElements.length > 0 ? contentElements[0] : undefined);
 
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
@@ -36,14 +37,14 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         relativeTimestamp={relativeTimestamp}
         caption={caption}
         contentElements={contentElements}
-        setCurrentMediaUrl={setCurrentMediaUrl}
+        setCurrentContentElement={setCurrentContentElement}
         shared={shared}
         menuActions={menuActions}
       />
       {!!hashtags.length && (
         <HashTagsWrapper>
           {hashtags.map((tag) => (
-            <HashTag key={tag}>#{tag}</HashTag>
+            <HashTag key={tag} hashtag={tag} />
           ))}
         </HashTagsWrapper>
       )}
@@ -79,7 +80,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
             <ShareMenu
               hide={hide}
               post={shared?.post ?? post}
-              currentMediaUrl={currentMediaUrl}
+              currentContentElement={currentContentElement}
             />
           )}
         </VerticalSlideDialog>
@@ -99,14 +100,6 @@ const HashTagsWrapper = styled(Flex, {
   overflow: "auto",
 });
 
-const HashTag = styled(Body, {
-  bg: "$primary",
-  color: "$accentText",
-  py: "$1",
-  px: "$3",
-  borderRadius: "$round",
-});
-
 interface PostActionProps {
   Icon: ComponentType;
   metric?: number;
@@ -123,7 +116,7 @@ const PostAction = (props: PostActionProps) => {
       as={props.as ?? "button"}
       css={{
         alignItems: "center",
-        gap: "$2",
+        gap: "$3",
         color: isSelected ? "$primary" : "$secondaryText",
       }}
       onClick={onClick}

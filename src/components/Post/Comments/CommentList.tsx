@@ -1,14 +1,17 @@
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import Router from "next/router";
+import { useEffect, useRef, useState } from "react";
 import { RenderablePostComment } from "#/api";
 import { useDeleteCommentFromPost } from "#/api/mutations/posts/deleteCommentFromPost";
 import { Avatar } from "#/components/Avatar";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import {
+  InfiniteScrollArea,
+  InfiniteScrollItemRenderProps,
+} from "#/components/InfiniteScrollArea";
 import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { Body, truncateByLines } from "#/components/Typography";
+import { UserName } from "#/components/UserName";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
@@ -33,8 +36,13 @@ export const CommentList = (props: CommentListProps) => {
         hasNextPage={props.hasNextPage ?? false}
         isNextPageLoading={props.isFetchingNextPage}
         loadNextPage={props.fetchNextPage}
-        items={props.comments.map((comment) => (
-          <Comment key={comment.postCommentId} comment={comment} />
+        // eslint-disable-next-line react/display-name
+        items={props.comments.map((comment) => ({ updateItemHeight }) => (
+          <Comment
+            key={comment.postCommentId}
+            comment={comment}
+            updateItemHeight={updateItemHeight}
+          />
         ))}
       />
     </Stack>
@@ -43,9 +51,10 @@ export const CommentList = (props: CommentListProps) => {
 
 interface CommentProps {
   comment: RenderablePostComment;
+  updateItemHeight: InfiniteScrollItemRenderProps["updateItemHeight"];
 }
 
-const Comment = ({ comment }: CommentProps) => {
+const Comment = ({ comment, updateItemHeight }: CommentProps) => {
   const userId = useCurrentUserId();
   const { mutateAsync: deleteComment } = useDeleteCommentFromPost({
     postId: comment.postId,
@@ -54,6 +63,10 @@ const Comment = ({ comment }: CommentProps) => {
   const [shouldExpandComment, setShouldExpandComment] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    updateItemHeight();
+  }, [shouldExpandComment, hasOverflow, updateItemHeight]);
 
   useEffect(() => {
     if (
@@ -97,9 +110,7 @@ const Comment = ({ comment }: CommentProps) => {
       <Stack css={{ gap: "$3" }}>
         <Flex css={{ justifyContent: "space-between", alignItems: "center" }}>
           <Flex css={{ gap: "$3", alignItems: "baseline" }}>
-            <Link href={getProfilePageUrl({ username })} passHref>
-              <a>@{username}</a>
-            </Link>
+            <UserName username={username} />
             <Flex css={{ color: "$secondaryText" }}>
               {getShortRelativeTimestamp(comment.creationTimestamp)}
             </Flex>

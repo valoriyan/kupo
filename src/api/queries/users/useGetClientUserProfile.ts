@@ -3,7 +3,7 @@ import { CacheKeys } from "#/contexts/queryClient";
 import { Api, RenderableUser } from "../..";
 
 export const useGetClientUserProfile = () => {
-  return useQuery<RenderableUser, Error>([CacheKeys.ClientProfile], async () => {
+  return useQuery<RenderableUser, Error>(CacheKeys.ClientProfile, async () => {
     const res = await Api.getUserProfile({}, { authStrat: "tryToken" });
 
     if (res.data.success) {

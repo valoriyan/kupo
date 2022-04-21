@@ -7,7 +7,7 @@ import { styled } from "#/styling";
 import { Notification } from "./Notification";
 
 export const Notifications = () => {
-  const { data, isError, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetPageOfOldNotifications();
 
   const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
@@ -17,20 +17,24 @@ export const Notifications = () => {
       <Header>
         <MainTitle as="h1">Notifications</MainTitle>
       </Header>
-      {isError && !isLoading ? (
-        <ErrorMessage>An error occurred</ErrorMessage>
-      ) : isLoading || !oldNotifications ? (
-        <LoadingArea size="lg" />
-      ) : (
-        <InfiniteScrollArea
-          hasNextPage={hasNextPage ?? false}
-          isNextPageLoading={isFetchingNextPage}
-          loadNextPage={fetchNextPage}
-          items={oldNotifications.map((notification, index) => (
-            <Notification key={index} notification={notification} />
-          ))}
-        />
-      )}
+      <div>
+        {error && !isLoading ? (
+          <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
+        ) : isLoading || !oldNotifications ? (
+          <LoadingArea size="lg" />
+        ) : !oldNotifications.length ? (
+          <ErrorMessage>You&apos;re all caught up!</ErrorMessage>
+        ) : (
+          <InfiniteScrollArea
+            hasNextPage={hasNextPage ?? false}
+            isNextPageLoading={isFetchingNextPage}
+            loadNextPage={fetchNextPage}
+            items={oldNotifications.map((notification, index) => (
+              <Notification key={index} notification={notification} />
+            ))}
+          />
+        )}
+      </div>
     </Wrapper>
   );
 };

@@ -73,11 +73,11 @@ const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
   height: "$8",
   px: "$5",
   fontWeight: "$regular",
-  color: "$text",
+  color: "$secondaryText",
   transition: "color $1 ease, box-shadow $1 ease",
   cursor: "pointer",
 
-  "&:hover": { color: "$primary" },
+  "&:hover": { filter: "brightness(0.9)" },
 
   '&[data-state="active"]': {
     fontWeight: "$bold",

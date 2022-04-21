@@ -60,10 +60,10 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
       <Grid
         css={{
           gridTemplateColumns: "auto minmax(0, 1fr)",
-          columnGap: "$5",
+          columnGap: "$6",
         }}
       >
-        <Stack css={{ alignItems: "center", gap: "$3" }}>
+        <Stack css={{ alignItems: "center", gap: "$4" }}>
           <Body>Profile Picture</Body>
           <EditMedia>
             <Darken>
@@ -100,7 +100,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
         <Input
           id={usernameId}
           value={props.username}
-          onChange={(e) => props.setUsername(e.currentTarget.value)}
+          onChange={(e) => props.setUsername(e.currentTarget.value.toLocaleLowerCase())}
         />
         <label htmlFor={bioId}>Profile Bio</label>
         <TextArea

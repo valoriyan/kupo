@@ -1,12 +1,16 @@
 import { logout } from "#/contexts/auth";
+import { setPreviousLocationForMessages } from "#/pages/messages";
+import { setPreviousLocationForMyLists } from "#/pages/my-lists";
+import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
-import { setPreviousLocationForSettings } from "#/templates/Settings";
 import {
+  BellIcon,
   BookmarkIcon,
-  BoxIcon,
   CloseIcon,
+  HomeIcon,
   ListIcon,
   LogOutIcon,
+  MailIcon,
   OptionsIcon,
   SupportIcon,
 } from "../Icons";
@@ -29,9 +33,32 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
       </UserInfoWrapper>
       <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
         <Stack css={{ gap: "$6" }}>
-          <NavLink href="/lists" Icon={ListIcon} label="My Lists" onClick={hide} />
+          <NavLink href="/feed" Icon={HomeIcon} label="Home" onClick={hide} />
+          <NavLink
+            href="/notifications"
+            Icon={BellIcon}
+            label="Notifications"
+            onClick={hide}
+          />
+          <NavLink
+            href="/messages"
+            Icon={MailIcon}
+            label="Messages"
+            onClick={() => {
+              setPreviousLocationForMessages();
+              hide();
+            }}
+          />
+          <NavLink
+            href="/my-lists"
+            Icon={ListIcon}
+            label="My Lists"
+            onClick={() => {
+              setPreviousLocationForMyLists();
+              hide();
+            }}
+          />
           <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" onClick={hide} />
-          <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" onClick={hide} />
           <NavLink
             href="/settings"
             Icon={OptionsIcon}
@@ -46,7 +73,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
           <NavLink href="/support" Icon={SupportIcon} label="Support" onClick={hide} />
           <NavItem
             as="button"
-            css={{ color: "$link" }}
+            css={{ color: "$text" }}
             onClick={() => {
               hide();
               logout();

@@ -1,14 +1,16 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { logout } from "#/contexts/auth";
+import { setPreviousLocationForMessages } from "#/pages/messages";
+import { setPreviousLocationForMyLists } from "#/pages/my-lists";
+import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { setPreviousLocationForAddContent } from "#/templates/AddContent";
-import { setPreviousLocationForSettings } from "#/templates/Settings";
 import { ErrorMessage } from "../ErrorArea";
 import {
   BellIcon,
   BookmarkIcon,
-  BoxIcon,
   HomeIcon,
   ListIcon,
   LogOutIcon,
@@ -26,6 +28,11 @@ import { useWebsocketState } from "./WebsocketContext";
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
   const { notificationsReceived } = useWebsocketState();
+  const router = useRouter();
+
+  const isActive = (href: string) => {
+    return router.asPath.includes(href);
+  };
 
   const notificationsIndicator = !notificationsReceived.length ? null : (
     <NotificationBadge>
@@ -41,6 +48,9 @@ export const SidePanel = () => {
     return <LoadingArea size="lg" />;
   }
 
+  const activeColor = "$text";
+  const inactiveColor = "$secondaryText";
+
   return (
     <SidePanelWrapper>
       <Stack css={{ gap: "$5", px: "$8" }}>
@@ -54,7 +64,12 @@ export const SidePanel = () => {
       <ScrollArea>
         <Stack css={{ gap: "$9", px: "$8", height: "100%" }}>
           <Stack css={{ gap: "$6" }}>
-            <NavLink href="/feed" Icon={HomeIcon} label="Home" />
+            <NavLink
+              href="/feed"
+              Icon={HomeIcon}
+              label="Home"
+              color={isActive("/feed") ? activeColor : inactiveColor}
+            />
             <NavLink
               href="/notifications"
               Icon={BellIcon}
@@ -64,21 +79,48 @@ export const SidePanel = () => {
                   {notificationsIndicator}
                 </Flex>
               }
+              color={isActive("/notifications") ? activeColor : inactiveColor}
             />
-            <NavLink href="/messages" Icon={MailIcon} label="Messages" />
-            <NavLink href="/lists" Icon={ListIcon} label="My Lists" />
-            <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" />
-            <NavLink href="/purchases" Icon={BoxIcon} label="Purchases" />
+            <NavLink
+              href="/messages"
+              Icon={MailIcon}
+              label="Messages"
+              onClick={setPreviousLocationForMessages}
+              color={isActive("/messages") ? activeColor : inactiveColor}
+            />
+            <NavLink
+              href="/my-lists"
+              Icon={ListIcon}
+              label="My Lists"
+              onClick={setPreviousLocationForMyLists}
+              color={isActive("/my-lists") ? activeColor : inactiveColor}
+            />
+            <NavLink
+              href="/saved"
+              Icon={BookmarkIcon}
+              label="Saved Posts"
+              color={isActive("/saved") ? activeColor : inactiveColor}
+            />
             <NavLink
               href="/settings"
               Icon={OptionsIcon}
               label="Settings"
               onClick={setPreviousLocationForSettings}
+              color={isActive("/settings") ? activeColor : inactiveColor}
             />
           </Stack>
           <Stack css={{ gap: "$6" }}>
-            <NavLink href="/support" Icon={SupportIcon} label="Support" />
-            <NavItem as="button" css={{ color: "$link", pb: "$8" }} onClick={logout}>
+            <NavLink
+              href="/support"
+              Icon={SupportIcon}
+              label="Support"
+              color={isActive("/support") ? activeColor : inactiveColor}
+            />
+            <NavItem
+              as="button"
+              css={{ color: "$secondaryText", pb: "$8" }}
+              onClick={logout}
+            >
               <LogOutIcon />
               <div>Log Out</div>
             </NavItem>

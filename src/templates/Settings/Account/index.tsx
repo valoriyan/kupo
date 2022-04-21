@@ -5,7 +5,7 @@ import { LoadingArea } from "#/components/LoadingArea";
 import { ContactInfoSettings } from "./ContactInfoSettings";
 import { PasswordSettings } from "./PasswordSettings";
 
-export const AccountSettings = () => {
+export const Account = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
 
   if (error && !isLoading) {

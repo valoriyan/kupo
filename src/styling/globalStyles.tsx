@@ -9,12 +9,16 @@ export const globalStyles = globalCss({
   body: {
     p: "0 !important",
     fontFamily: "$body !important",
+    bg: "$pageBackground",
     color: "$text",
-    bg: "$background1",
     transition: "background-color $1 ease",
     "-webkit-font-smoothing": "antialiased",
     "-moz-osx-font-smoothing": "grayscale",
     overflow: "auto",
+    "@supports (-webkit-touch-callout: none)": {
+      // Disable focus outlines for touch devices since they don't use keyboard navigation
+      "*:focus": { outline: "none" },
+    },
     "@media(hover: hover)": {
       "scrollbar-width": "thin",
       "scrollbar-color": "transparent transparent",
@@ -58,6 +62,7 @@ export const globalStyles = globalCss({
       filter: "brightness(0.8)",
     },
   },
+  input: { padding: "0" },
   a: {
     color: "$link",
     textDecoration: "none",

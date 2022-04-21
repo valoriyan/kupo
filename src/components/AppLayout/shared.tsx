@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PropsWithChildren, ReactNode } from "react";
-import { styled } from "#/styling";
+import { styled, ThemeScale } from "#/styling";
 import { Grid } from "../Layout";
 import { headingStyles, mainTitleStyles } from "../Typography";
 
@@ -9,12 +9,13 @@ export interface NavLinkProps {
   Icon: React.ComponentType;
   label: ReactNode;
   onClick?: () => void;
+  color?: ThemeScale<"colors">;
 }
 
 export const NavLink = (props: NavLinkProps) => {
   return (
     <Link href={props.href} passHref>
-      <NavItem onClick={props.onClick}>
+      <NavItem onClick={props.onClick} css={{ color: props.color || "$text" }}>
         <props.Icon />
         <div>{props.label}</div>
       </NavItem>
@@ -26,7 +27,6 @@ export const NavItem = styled("a", headingStyles, {
   display: "flex",
   alignItems: "center",
   gap: "$5",
-  color: "$text",
 });
 
 export const SidePanelWrapper = ({ children }: PropsWithChildren<unknown>) => {

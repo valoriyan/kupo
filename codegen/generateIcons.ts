@@ -10,7 +10,6 @@ const ICONS_TO_GENERATE = [
   "arrow-left",
   "bell",
   "bookmark",
-  "box",
   "calendar",
   "chevron-down",
   "chevron-down-r",
@@ -30,6 +29,7 @@ const ICONS_TO_GENERATE = [
   "image",
   "link",
   "list",
+  "lock",
   "log-out",
   "options",
   "mail",
@@ -43,7 +43,6 @@ const ICONS_TO_GENERATE = [
   "share",
   "software-download",
   "support",
-  "tag",
   "trash",
   "user",
 ];
