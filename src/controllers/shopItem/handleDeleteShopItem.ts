@@ -4,10 +4,10 @@ import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToDeleteShopItemResponse {}
+export interface DeleteShopItemFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulShopItemDeletionResponse {}
+export interface DeleteShopItemSuccess {}
 
 export interface DeleteShopItemRequestBody {
   shopItemId: string;
@@ -22,7 +22,7 @@ export async function handleDeleteShopItem({
   request: express.Request;
   requestBody: DeleteShopItemRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToDeleteShopItemResponse, SuccessfulShopItemDeletionResponse>
+  SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>
 > {
   const { shopItemId } = requestBody;
 

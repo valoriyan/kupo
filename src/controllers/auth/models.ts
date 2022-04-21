@@ -7,10 +7,10 @@ export enum AuthFailureReason {
   AuthorizationError = "You Must Be Logged In",
 }
 
-export interface SuccessfulAuthResponse {
+export interface AuthSuccess {
   accessToken: string;
 }
 
-export interface FailedAuthResponse {
+export interface AuthFailed {
   reason: AuthFailureReason;
 }

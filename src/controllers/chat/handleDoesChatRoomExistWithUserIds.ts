@@ -8,18 +8,18 @@ export interface DoesChatRoomExistWithUserIdsRequestBody {
   userIds: string[];
 }
 
-export interface SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse {
+export interface DoesChatRoomExistWithUserIdsSuccess {
   doesChatRoomExist: boolean;
   chatRoomId?: string;
 }
 
-export enum FailedtoDetermineIfChatRoomExistsWithUserIdsReason {
+export enum DoesChatRoomExistWithUserIdsFailedReason {
   UnknownCause = "Unknown Cause",
   IllegalAccess = "Illegal Access",
 }
 
-export interface FailedtoDetermineIfChatRoomExistsWithUserIds {
-  reason: FailedtoDetermineIfChatRoomExistsWithUserIdsReason;
+export interface DoesChatRoomExistWithUserIdsFailed {
+  reason: DoesChatRoomExistWithUserIdsFailedReason;
 }
 
 export async function handleDoesChatRoomExistWithUserIds({
@@ -32,8 +32,8 @@ export async function handleDoesChatRoomExistWithUserIds({
   requestBody: DoesChatRoomExistWithUserIdsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedtoDetermineIfChatRoomExistsWithUserIds,
-    SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+    DoesChatRoomExistWithUserIdsFailed,
+    DoesChatRoomExistWithUserIdsSuccess
   >
 > {
   const { userIds } = requestBody;
@@ -43,7 +43,7 @@ export async function handleDoesChatRoomExistWithUserIds({
 
   if (!userIds.includes(clientUserId)) {
     return {
-      error: { reason: FailedtoDetermineIfChatRoomExistsWithUserIdsReason.IllegalAccess },
+      error: { reason: DoesChatRoomExistWithUserIdsFailedReason.IllegalAccess },
     };
   }
 

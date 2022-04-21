@@ -6,17 +6,17 @@ import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost, SharedPostType } from "./models";
 import { constructRenderablePostFromParts } from "./utilities";
 
-export enum SharePostFailureReasons {
+export enum SharePostFailedReason {
   UnknownCause = "Unknown Cause",
   ExpirationTimestampIsInPast = "Expiration Timestamp is in Past",
   ScheduledPublicationTimestampIsInPast = "Scheduled Publication Timestamp is in Past",
 }
 
-export interface FailedToSharePostResponse {
-  reason: SharePostFailureReasons;
+export interface SharePostFailed {
+  reason: SharePostFailedReason;
 }
 
-export interface SuccessfullySharedPostResponse {
+export interface SharePostSuccess {
   renderablePost: RenderablePost;
 }
 
@@ -37,7 +37,7 @@ export async function handleSharePost({
   request: express.Request;
   requestBody: SharePostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToSharePostResponse, SuccessfullySharedPostResponse>
+  SecuredHTTPResponse<SharePostFailed, SharePostSuccess>
 > {
   const {
     sharedPostId,
@@ -125,6 +125,6 @@ export async function handleSharePost({
   } catch (error) {
     console.log("error", error);
     controller.setStatus(401);
-    return { error: { reason: SharePostFailureReasons.UnknownCause } };
+    return { error: { reason: SharePostFailedReason.UnknownCause } };
   }
 }

@@ -7,10 +7,10 @@ import { Promise as BluebirdPromise } from "bluebird";
 import { uploadMediaFile } from "../utilities/uploadMediaFile";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulShopItemCreationResponse {}
+export interface CreateShopItemSuccess {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToCreateShopItemResponse {}
+export interface CreateShopItemFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
@@ -33,7 +33,7 @@ export async function handleCreateShopItem({
   request: express.Request;
   requestBody: HandlerRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToCreateShopItemResponse, SuccessfulShopItemCreationResponse>
+  SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

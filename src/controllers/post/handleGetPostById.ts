@@ -5,15 +5,15 @@ import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "./models";
 import { constructRenderablePostFromParts } from "./utilities";
 
-export enum GetPostByIdFailureReasons {
+export enum GetPostByIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToGetPostByIdResponse {
-  reason: GetPostByIdFailureReasons;
+export interface GetPostByIdFailed {
+  reason: GetPostByIdFailedReason;
 }
 
-export interface SuccessfullyGotPostByIdResponse {
+export interface GetPostByIdSuccess {
   post: RenderablePost;
 }
 
@@ -30,7 +30,7 @@ export async function handleGetPostById({
   request: express.Request;
   requestBody: GetPostByIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToGetPostByIdResponse, SuccessfullyGotPostByIdResponse>
+  SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>
 > {
   const { postId } = requestBody;
 

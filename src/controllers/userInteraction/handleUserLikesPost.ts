@@ -10,9 +10,9 @@ export interface UserLikesPostRequestBody {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulUserLikesPostResponse {}
+export interface UserLikesPostSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToLikePostByUserResponse {}
+export interface UserLikesPostFailed {}
 
 export async function handleUserLikesPost({
   controller,
@@ -23,7 +23,7 @@ export async function handleUserLikesPost({
   request: express.Request;
   requestBody: UserLikesPostRequestBody;
 }): Promise<
-  HTTPResponse<FailedToLikePostByUserResponse, SuccessfulUserLikesPostResponse>
+  HTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>
 > {
   const { postId } = requestBody;
 

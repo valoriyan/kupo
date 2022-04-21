@@ -7,17 +7,17 @@ import { checkAuthorization } from "../auth/utilities";
 import { ContentElement, RenderablePost } from "./models";
 import { uploadMediaFile } from "../utilities/uploadMediaFile";
 
-export enum CreatePostFailureReasons {
+export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
   ExpirationTimestampIsInPast = "Expiration Timestamp is in Past",
   ScheduledPublicationTimestampIsInPast = "Scheduled Publication Timestamp is in Past",
 }
 
-export interface FailedToCreatePostResponse {
-  reason: CreatePostFailureReasons;
+export interface CreatePostFailed {
+  reason: CreatePostFailedReason;
 }
 
-export interface SuccessfulPostCreationResponse {
+export interface CreatePostSuccess {
   renderablePost: RenderablePost;
 }
 
@@ -38,7 +38,7 @@ export async function handleCreatePost({
   request: express.Request;
   requestBody: HandlerRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
+  SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>
 > {
   const {
     caption,
@@ -145,6 +145,6 @@ export async function handleCreatePost({
   } catch (error) {
     console.log("error", error);
     controller.setStatus(401);
-    return { error: { reason: CreatePostFailureReasons.UnknownCause } };
+    return { error: { reason: CreatePostFailedReason.UnknownCause } };
   }
 }

@@ -5,10 +5,10 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { WebSocketService } from "../../services/webSocketService";
 import {
-  FailedtoGetPageOfNotificationsResponse,
+  GetPageOfNotificationsFailed,
   GetPageOfNotificationsRequestBody,
   handleGetPageOfNotifications,
-  SuccessfullyGotPageOfNotificationsResponse,
+  GetPageOfNotificationsSuccess,
 } from "./handleGetPageOfNotifications";
 import { BlobStorageService } from "./../../services/blobStorageService";
 
@@ -37,8 +37,8 @@ export class NotificationController extends Controller {
     @Body() requestBody: GetPageOfNotificationsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedtoGetPageOfNotificationsResponse,
-      SuccessfullyGotPageOfNotificationsResponse
+      GetPageOfNotificationsFailed,
+      GetPageOfNotificationsSuccess
     >
   > {
     return await handleGetPageOfNotifications({

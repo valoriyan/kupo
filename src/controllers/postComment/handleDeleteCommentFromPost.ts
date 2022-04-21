@@ -9,10 +9,10 @@ export interface DeleteCommentFromPostRequestBody {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyDeletedCommentFromPostResponse {}
+export interface DeleteCommentFromPostSuccess {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToDeleteCommentFromPostResponse {}
+export interface DeleteCommentFromPostFailed {}
 
 export async function handleDeleteCommentFromPost({
   controller,
@@ -24,8 +24,8 @@ export async function handleDeleteCommentFromPost({
   requestBody: DeleteCommentFromPostRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToDeleteCommentFromPostResponse,
-    SuccessfullyDeletedCommentFromPostResponse
+    DeleteCommentFromPostFailed,
+    DeleteCommentFromPostSuccess
   >
 > {
   const { postCommentId } = requestBody;

@@ -6,20 +6,20 @@ import { decodeCursor, encodeCursor } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
-export interface GetPageOfPostFromFollowedUsersParams {
+export interface GetPageOfPostFromFollowedUsersRequestBody {
   cursor?: string;
   pageSize: number;
 }
 
-export enum FailedToGetPageOfPostFromFollowedUsersResponseReason {
+export enum GetPageOfPostFromFollowedUsersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToGetPageOfPostFromFollowedUsersResponse {
-  reason: FailedToGetPageOfPostFromFollowedUsersResponseReason;
+export interface GetPageOfPostFromFollowedUsersFailed {
+  reason: GetPageOfPostFromFollowedUsersFailedReason;
 }
 
-export interface SuccessfulGetPageOfPostFromFollowedUsersResponse {
+export interface GetPageOfPostFromFollowedUsersSuccess {
   posts: RenderablePost[];
 
   previousPageCursor?: string;
@@ -33,11 +33,11 @@ export async function handleGetPageOfPostFromFollowedUsers({
 }: {
   controller: FeedController;
   request: express.Request;
-  requestBody: GetPageOfPostFromFollowedUsersParams;
+  requestBody: GetPageOfPostFromFollowedUsersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToGetPageOfPostFromFollowedUsersResponse,
-    SuccessfulGetPageOfPostFromFollowedUsersResponse
+    GetPageOfPostFromFollowedUsersFailed,
+    GetPageOfPostFromFollowedUsersSuccess
   >
 > {
   const { cursor, pageSize } = requestBody;

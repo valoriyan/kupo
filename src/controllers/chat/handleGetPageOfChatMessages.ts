@@ -11,19 +11,19 @@ export interface GetPageOfChatMessagesRequestBody {
   pageSize: number;
 }
 
-export interface SuccessfulGetPageOfChatMessagesResponse {
+export interface GetPageOfChatMessagesSuccess {
   chatMessages: RenderableChatMessage[];
 
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum FailedtoGetPageOfChatMessagesResponseReason {
+export enum GetPageOfChatMessagesFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedtoGetPageOfChatMessagesResponse {
-  reason: FailedtoGetPageOfChatMessagesResponseReason;
+export interface GetPageOfChatMessagesFailed {
+  reason: GetPageOfChatMessagesFailedReason;
 }
 
 export async function handleGetPageOfChatMessages({
@@ -36,8 +36,8 @@ export async function handleGetPageOfChatMessages({
   requestBody: GetPageOfChatMessagesRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedtoGetPageOfChatMessagesResponse,
-    SuccessfulGetPageOfChatMessagesResponse
+    GetPageOfChatMessagesFailed,
+    GetPageOfChatMessagesSuccess
   >
 > {
   const { chatRoomId, pageSize, cursor } = requestBody;

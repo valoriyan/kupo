@@ -6,15 +6,15 @@ import { ProfilePrivacySetting, RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities";
 
-export enum FailedToUpdateUserProfileResponseReason {
+export enum UpdateUserProfileFailedReason {
   Unknown = "Unknown",
 }
 
-export interface FailedToUpdateUserProfileResponse {
-  reason: FailedToUpdateUserProfileResponseReason;
+export interface UpdateUserProfileFailed {
+  reason: UpdateUserProfileFailedReason;
 }
 
-export type SuccessfulUpdateToUserProfileResponse = RenderableUser;
+export type UpdateUserProfileSuccess = RenderableUser;
 
 export interface UpdateUserProfileRequestBody {
   username?: string;
@@ -39,8 +39,8 @@ export async function handleUpdateUserProfile({
   };
 }): Promise<
   SecuredHTTPResponse<
-    FailedToUpdateUserProfileResponse,
-    SuccessfulUpdateToUserProfileResponse
+    UpdateUserProfileFailed,
+    UpdateUserProfileSuccess
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -75,7 +75,7 @@ export async function handleUpdateUserProfile({
 
   if (!updatedUnrenderableUser) {
     controller.setStatus(404);
-    return { error: { reason: FailedToUpdateUserProfileResponseReason.Unknown } };
+    return { error: { reason: UpdateUserProfileFailedReason.Unknown } };
   }
 
   const renderableUser = await constructRenderableUserFromParts({

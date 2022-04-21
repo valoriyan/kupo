@@ -5,21 +5,21 @@ import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUsersFromParts } from "./utilities";
 
-export interface SearchUserProfilesByUsernameParams {
+export interface SearchUserProfilesByUsernameRequestBody {
   searchString: string;
 }
 
-export interface SuccessfulSearchUserProfilesByUsernameResponse {
+export interface SearchUserProfilesByUsernameSuccess {
   results: RenderableUser[];
 }
 
-export enum FailedToSearchUserProfilesByUsernameResponseReason {
+export enum SearchUserProfilesByUsernameFailedReason {
   NotFound = "User Not Found",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToSearchUserProfilesByUsernameResponse {
-  reason: FailedToSearchUserProfilesByUsernameResponseReason;
+export interface SearchUserProfilesByUsernameFailed {
+  reason: SearchUserProfilesByUsernameFailedReason;
 }
 
 export async function handleSearchUserProfilesByUsername({
@@ -29,11 +29,11 @@ export async function handleSearchUserProfilesByUsername({
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: SearchUserProfilesByUsernameParams;
+  requestBody: SearchUserProfilesByUsernameRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToSearchUserProfilesByUsernameResponse,
-    SuccessfulSearchUserProfilesByUsernameResponse
+    SearchUserProfilesByUsernameFailed,
+    SearchUserProfilesByUsernameSuccess
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -53,7 +53,7 @@ export async function handleSearchUserProfilesByUsername({
   if (unrenderableUsers.length === 0) {
     controller.setStatus(404);
     return {
-      error: { reason: FailedToSearchUserProfilesByUsernameResponseReason.NotFound },
+      error: { reason: SearchUserProfilesByUsernameFailedReason.NotFound },
     };
   }
 

@@ -7,19 +7,19 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
   handleSearchForHashtags,
   SearchForHashtagsFailed,
-  SearchForHashtagsParams,
+  SearchForHashtagsRequestBody,
   SearchForHashtagsSuccess,
 } from "./search/handleSearchForHashtags";
 import {
   handleSearchForPosts,
   SearchForPostsFailed,
-  SearchForPostsParams,
+  SearchForPostsRequestBody,
   SearchForPostsSuccess,
 } from "./search/handleSearchForPosts";
 import {
   handleSearchForUsers,
   SearchForUsersFailed,
-  SearchForUsersParams,
+  SearchForUsersRequestBody,
   SearchForUsersSuccess,
 } from "./search/handleSearchForUsers";
 
@@ -44,7 +44,7 @@ export class DiscoverController extends Controller {
   @Post("searchForHashtags")
   public async searchForHashtags(
     @Request() request: express.Request,
-    @Body() requestBody: SearchForHashtagsParams,
+    @Body() requestBody: SearchForHashtagsRequestBody,
   ): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
     return await handleSearchForHashtags({
       controller: this,
@@ -56,7 +56,7 @@ export class DiscoverController extends Controller {
   @Post("searchForPosts")
   public async searchForPosts(
     @Request() request: express.Request,
-    @Body() requestBody: SearchForPostsParams,
+    @Body() requestBody: SearchForPostsRequestBody,
   ): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
     return await handleSearchForPosts({
       controller: this,
@@ -68,7 +68,7 @@ export class DiscoverController extends Controller {
   @Post("searchForUsers")
   public async searchForUsers(
     @Request() request: express.Request,
-    @Body() requestBody: SearchForUsersParams,
+    @Body() requestBody: SearchForUsersRequestBody,
   ): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
     return await handleSearchForUsers({
       controller: this,

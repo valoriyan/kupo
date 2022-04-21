@@ -7,17 +7,17 @@ export interface UpdatePasswordRequestBody {
   updatedPassword: string;
 }
 
-export enum FailedToUpdatePasswordResponseReason {
+export enum UpdatePasswordFailedReason {
   Unknown = "Unknown",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToUpdatePasswordResponse {
-  reason: FailedToUpdatePasswordResponseReason;
+export interface UpdatePasswordFailed {
+  reason: UpdatePasswordFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyUpdatedPasswordResponse {}
+export interface UpdatePasswordSuccess {}
 
 export async function handleUpdatePassword({
   controller,
@@ -28,7 +28,7 @@ export async function handleUpdatePassword({
   request: express.Request;
   requestBody: UpdatePasswordRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToUpdatePasswordResponse, SuccessfullyUpdatedPasswordResponse>
+  SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

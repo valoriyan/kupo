@@ -10,23 +10,23 @@ import {
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { FeedController } from "./feedController";
 
-export interface GetPageOfPostFromFollowedHashtagParams {
+export interface GetPageOfPostFromFollowedHashtagRequestBody {
   hashtag: string;
   cursor?: string;
   pageSize: number;
 }
 
-export enum FailedToGetPageOfPostFromFollowedHashtagResponseReason {
+export enum GetPageOfPostFromFollowedHashtagFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPageOfPostFromFollowedHashtagResponse {
-  reason: FailedToGetPageOfPostFromFollowedHashtagResponseReason;
+export interface GetPageOfPostFromFollowedHashtagFailed {
+  reason: GetPageOfPostFromFollowedHashtagFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulGetPageOfPostFromFollowedHashtagResponse {
+export interface GetPageOfPostFromFollowedHashtagSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;
   nextPageCursor?: string;
@@ -39,11 +39,11 @@ export async function handleGetPageOfPostFromFollowedHashtag({
 }: {
   controller: FeedController;
   request: express.Request;
-  requestBody: GetPageOfPostFromFollowedHashtagParams;
+  requestBody: GetPageOfPostFromFollowedHashtagRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToGetPageOfPostFromFollowedHashtagResponse,
-    SuccessfulGetPageOfPostFromFollowedHashtagResponse
+    GetPageOfPostFromFollowedHashtagFailed,
+    GetPageOfPostFromFollowedHashtagSuccess
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);

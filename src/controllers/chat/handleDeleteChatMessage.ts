@@ -3,16 +3,16 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
-export enum FailedToDeleteChatMessageResponseReasons {
+export enum DeleteChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToDeleteChatMessageResponse {
-  reason: FailedToDeleteChatMessageResponseReasons;
+export interface DeleteChatMessageFailed {
+  reason: DeleteChatMessageFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyDeletedChatMessageResponse {}
+export interface DeleteChatMessageSuccess {}
 
 export interface DeleteChatMessageRequestBody {
   chatMessageId: string;
@@ -28,8 +28,8 @@ export async function handleDeleteChatMessage({
   requestBody: DeleteChatMessageRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToDeleteChatMessageResponse,
-    SuccessfullyDeletedChatMessageResponse
+    DeleteChatMessageFailed,
+    DeleteChatMessageSuccess
   >
 > {
   const { chatMessageId } = requestBody;

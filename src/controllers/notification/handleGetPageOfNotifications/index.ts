@@ -15,19 +15,19 @@ export interface GetPageOfNotificationsRequestBody {
   pageSize: number;
 }
 
-export interface SuccessfullyGotPageOfNotificationsResponse {
+export interface GetPageOfNotificationsSuccess {
   userNotifications: RenderableUserNotification[];
 
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum FailedtoGetPageOfNotificationsResponseReason {
+export enum GetPageOfNotificationsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedtoGetPageOfNotificationsResponse {
-  reason: FailedtoGetPageOfNotificationsResponseReason;
+export interface GetPageOfNotificationsFailed {
+  reason: GetPageOfNotificationsFailedReason;
 }
 
 async function assembleNotifcations({
@@ -95,8 +95,8 @@ export async function handleGetPageOfNotifications({
   requestBody: GetPageOfNotificationsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedtoGetPageOfNotificationsResponse,
-    SuccessfullyGotPageOfNotificationsResponse
+    GetPageOfNotificationsFailed,
+    GetPageOfNotificationsSuccess
   >
 > {
   console.log(requestBody);

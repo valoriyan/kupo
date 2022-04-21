@@ -5,7 +5,7 @@ import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./mod
 import { PostController } from "./postController";
 import { constructRenderablePostsFromParts } from "./utilities";
 
-export interface GetPostsScheduledByUserParams {
+export interface GetPostsScheduledByUserRequestBody {
   // JS Timestamp
   rangeStartTimestamp: number;
   // JS Timestamp
@@ -13,12 +13,12 @@ export interface GetPostsScheduledByUserParams {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulGetPostsScheduledByUserResponse {
+export interface GetPostsScheduledByUserSuccess {
   posts: RenderablePost[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToGetPostsScheduledByUserResponse {}
+export interface GetPostsScheduledByUserFailed {}
 
 export async function handleGetPostsScheduledByUser({
   controller,
@@ -27,11 +27,11 @@ export async function handleGetPostsScheduledByUser({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPostsScheduledByUserParams;
+  requestBody: GetPostsScheduledByUserRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToGetPostsScheduledByUserResponse,
-    SuccessfulGetPostsScheduledByUserResponse
+    GetPostsScheduledByUserFailed,
+    GetPostsScheduledByUserSuccess
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);

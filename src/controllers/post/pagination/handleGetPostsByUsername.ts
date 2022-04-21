@@ -7,32 +7,32 @@ import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserView
 import { decodeCursor, getNextPageOfPostsEncodedCursor } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
 
-export interface GetPostsByUserIdParams {
+export interface GetPostsByUserIdRequestBody {
   userId: string;
   cursor?: string;
   pageSize: number;
 }
 
-export interface GetPostsByUsernameParams {
+export interface GetPostsByUsernameRequestBody {
   username: string;
   cursor?: string;
   pageSize: number;
 }
 
-export interface SuccessfulGetPostsByUserResponse {
+export interface GetPostsByUsernameSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum FailedtoGetPostsByUserResponseReason {
+export enum GetPostsByUsernameFailedReason {
   UnknownCause = "Unknown Cause",
   UserPrivate = "This User's Posts Are Private",
   UnknownUser = "User Not Found",
 }
 
-export interface FailedtoGetPostsByUserResponse {
-  reason: FailedtoGetPostsByUserResponseReason;
+export interface GetPostsByUsernameFailed {
+  reason: GetPostsByUsernameFailedReason;
 }
 
 export async function handleGetPostsByUsername({
@@ -42,9 +42,9 @@ export async function handleGetPostsByUsername({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPostsByUsernameParams;
+  requestBody: GetPostsByUsernameRequestBody;
 }): Promise<
-  HTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
+  HTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>
 > {
   const { username, ...restRequestBody } = requestBody;
   const userId =
@@ -54,7 +54,7 @@ export async function handleGetPostsByUsername({
 
   if (!userId) {
     return {
-      error: { reason: FailedtoGetPostsByUserResponseReason.UnknownUser },
+      error: { reason: GetPostsByUsernameFailedReason.UnknownUser },
     };
   }
 
@@ -72,9 +72,9 @@ export async function handleGetPostsByUserId({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPostsByUserIdParams;
+  requestBody: GetPostsByUserIdRequestBody;
 }): Promise<
-  HTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
+  HTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>
 > {
   const { userId, pageSize, cursor } = requestBody;
 
@@ -92,7 +92,7 @@ export async function handleGetPostsByUserId({
 
   if (!canViewContent) {
     return {
-      error: { reason: FailedtoGetPostsByUserResponseReason.UserPrivate },
+      error: { reason: GetPostsByUsernameFailedReason.UserPrivate },
     };
   }
 

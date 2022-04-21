@@ -12,18 +12,18 @@ export interface GetPageOfCommentsByPostIdRequestBody {
   pageSize: number;
 }
 
-export interface SuccessfullyGotPageOfCommentsByPostIdResponse {
+export interface GetPageOfCommentsByPostIdSuccess {
   postComments: RenderablePostComment[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum FailedToGetPageOfCommentsByPostIdResponseReason {
+export enum GetPageOfCommentsByPostIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToGetPageOfCommentsByPostIdResponse {
-  reason: FailedToGetPageOfCommentsByPostIdResponseReason;
+export interface GetPageOfCommentsByPostIdFailure {
+  reason: GetPageOfCommentsByPostIdFailedReason;
 }
 
 export async function handleGetPageOfCommentsByPostId({
@@ -36,8 +36,8 @@ export async function handleGetPageOfCommentsByPostId({
   requestBody: GetPageOfCommentsByPostIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToGetPageOfCommentsByPostIdResponse,
-    SuccessfullyGotPageOfCommentsByPostIdResponse
+    GetPageOfCommentsByPostIdFailure,
+    GetPageOfCommentsByPostIdSuccess
   >
 > {
   const { postId, cursor, pageSize } = requestBody;

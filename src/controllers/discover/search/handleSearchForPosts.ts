@@ -12,7 +12,7 @@ import {
   mergeArraysOfUnrenderablePostWithoutElementsOrHashtags,
 } from "../../post/utilities";
 
-export interface SearchForPostsParams {
+export interface SearchForPostsRequestBody {
   query: string;
   cursor?: string;
   pageSize: number;
@@ -41,7 +41,7 @@ export async function handleSearchForPosts({
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: SearchForPostsParams;
+  requestBody: SearchForPostsRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
   const { cursor, query, pageSize } = requestBody;
   const trimmedQuery = query.trim();

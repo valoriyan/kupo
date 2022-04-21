@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { RenderableUser } from "src/controllers/user/models";
+import { RenderableUser } from "../../../src/controllers/user/models";
 import { NOTIFICATION_EVENTS } from "./eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 

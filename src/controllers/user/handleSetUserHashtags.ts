@@ -7,17 +7,17 @@ export interface SetUserHashtagsRequestBody {
   hashtags: string[];
 }
 
-export enum FailedToSetUserHashtagsResponseReason {
+export enum SetUserHashtagsFailedReason {
   NotFound = "User Not Found",
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToSetUserHashtagsResponse {
-  reason: FailedToSetUserHashtagsResponseReason;
+export interface SetUserHashtagsFailed {
+  reason: SetUserHashtagsFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullySetUserHashtagsResponse {}
+export interface SetUserHashtagsSuccess {}
 
 export async function handleSetUserHashtags({
   controller,
@@ -29,8 +29,8 @@ export async function handleSetUserHashtags({
   requestBody: SetUserHashtagsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToSetUserHashtagsResponse,
-    SuccessfullySetUserHashtagsResponse
+    SetUserHashtagsFailed,
+    SetUserHashtagsSuccess
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);

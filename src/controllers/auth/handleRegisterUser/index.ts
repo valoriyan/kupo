@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { encryptPassword } from "../utilities";
 import { AuthController } from "../authController";
 import { grantNewAccessToken } from "../utilities/grantNewAccessToken";
-import { SuccessfulAuthResponse } from "../models";
+import { AuthSuccess } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
 import { validateUsername } from "./validations";
 
@@ -13,13 +13,13 @@ export interface RegisterUserRequestBody {
   username: string;
 }
 
-export enum FailedToRegisterUserResponseReason {
+export enum RegisterUserFailedReason {
   UnknownCause = "Unknown Cause",
   ValidationError = "All Username Characters Must Be Lowercase English Letters Or Digits",
 }
 
-export interface FailedToRegisterUserResponse {
-  reason: FailedToRegisterUserResponseReason;
+export interface RegisterUserFailed {
+  reason: RegisterUserFailedReason;
 }
 
 export async function handleRegisterUser({
@@ -28,7 +28,7 @@ export async function handleRegisterUser({
 }: {
   requestBody: RegisterUserRequestBody;
   controller: AuthController;
-}): Promise<HTTPResponse<FailedToRegisterUserResponse, SuccessfulAuthResponse>> {
+}): Promise<HTTPResponse<RegisterUserFailed, AuthSuccess>> {
   const userId = uuidv4();
   const { email, username, password } = requestBody;
 
@@ -96,13 +96,13 @@ export async function handleRegisterUser({
     console.log(`Failed to create user ${username} | UnknownCause`);
     return {
       error: {
-        reason: FailedToRegisterUserResponseReason.UnknownCause,
+        reason: RegisterUserFailedReason.UnknownCause,
       },
     };
   } catch (error) {
     console.log(`Failed to create user ${username} | UnknownCause`);
     console.log("error", error);
     controller.setStatus(401);
-    return { error: { reason: FailedToRegisterUserResponseReason.UnknownCause } };
+    return { error: { reason: RegisterUserFailedReason.UnknownCause } };
   }
 }

@@ -4,16 +4,16 @@ import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 
-export enum CreateChatMessageInNewRoomFailureReasons {
+export enum CreateChatMessageInNewChatRoomFailedReason {
   UnknownCause = "Unknown Cause",
   RoomAlreadyExists = "Room Already Exists",
 }
 
-export interface FailedToCreateChatMessageInNewRoomResponse {
-  reason: CreateChatMessageInNewRoomFailureReasons;
+export interface CreateChatMessageInNewChatRoomFailed {
+  reason: CreateChatMessageInNewChatRoomFailedReason;
 }
 
-export interface SuccessfullyCreatedChatMessageInNewRoomResponse {
+export interface CreateChatMessageInNewChatRoomSuccess {
   chatRoomId: string;
 }
 
@@ -32,8 +32,8 @@ export async function handleCreateChatMessageInNewChatRoom({
   requestBody: CreateChatMessageInNewRoomRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToCreateChatMessageInNewRoomResponse,
-    SuccessfullyCreatedChatMessageInNewRoomResponse
+    CreateChatMessageInNewChatRoomFailed,
+    CreateChatMessageInNewChatRoomSuccess
   >
 > {
   const { userIds, chatMessageText } = requestBody;

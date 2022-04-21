@@ -13,20 +13,20 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import express from "express";
 import {
-  FailedToCreateShopItemResponse,
+  CreateShopItemFailed,
   handleCreateShopItem,
-  SuccessfulShopItemCreationResponse,
+  CreateShopItemSuccess,
 } from "./handleCreateShopItem";
 import {
-  FailedToUpdateShopItemResponse,
+  UpdateShopItemFailed,
   handleUpdateShopItem,
-  SuccessfulShopItemUpdateResponse,
+  UpdateShopItemSuccess,
 } from "./handleUpdateShopItem";
 import {
   DeleteShopItemRequestBody,
-  FailedToDeleteShopItemResponse,
+  DeleteShopItemFailed,
   handleDeleteShopItem,
-  SuccessfulShopItemDeletionResponse,
+  DeleteShopItemSuccess,
 } from "./handleDeleteShopItem";
 import { BlobStorageService } from "./../../services/blobStorageService";
 
@@ -57,8 +57,8 @@ export class ShopItemController extends Controller {
     @FormField() expirationTimestamp?: number,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToCreateShopItemResponse,
-      SuccessfulShopItemCreationResponse
+      CreateShopItemFailed,
+      CreateShopItemSuccess
     >
   > {
     return await handleCreateShopItem({
@@ -98,7 +98,7 @@ export class ShopItemController extends Controller {
     @FormField() collaboratorUserIds?: string[],
     @UploadedFiles() mediaFiles?: Express.Multer.File[],
   ): Promise<
-    SecuredHTTPResponse<FailedToUpdateShopItemResponse, SuccessfulShopItemUpdateResponse>
+    SecuredHTTPResponse<UpdateShopItemFailed, UpdateShopItemSuccess>
   > {
     return await handleUpdateShopItem({
       controller: this,
@@ -127,8 +127,8 @@ export class ShopItemController extends Controller {
     @Body() requestBody: DeleteShopItemRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToDeleteShopItemResponse,
-      SuccessfulShopItemDeletionResponse
+      DeleteShopItemFailed,
+      DeleteShopItemSuccess
     >
   > {
     return await handleDeleteShopItem({

@@ -5,10 +5,10 @@ import { checkAuthorization } from "../auth/utilities";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToDeletePostResponse {}
+export interface DeletePostFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulPostDeletionResponse {}
+export interface DeletePostSuccess {}
 
 export interface DeletePostRequestBody {
   postId: string;
@@ -23,7 +23,7 @@ export async function handleDeletePost({
   request: express.Request;
   requestBody: DeletePostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
+  SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>
 > {
   const { error, clientUserId } = await checkAuthorization(controller, request);
   if (error) return error;

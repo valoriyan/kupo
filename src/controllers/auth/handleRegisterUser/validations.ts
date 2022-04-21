@@ -1,12 +1,12 @@
-import { FailedToRegisterUserResponseReason } from ".";
+import { RegisterUserFailedReason } from ".";
 
 export function validateUsername({
   username,
 }: {
   username: string;
-}): null | FailedToRegisterUserResponseReason {
+}): null | RegisterUserFailedReason {
   if (!/^[0-9a-z]+$/.test(username)) {
-    return FailedToRegisterUserResponseReason.ValidationError;
+    return RegisterUserFailedReason.ValidationError;
   }
 
   return null;

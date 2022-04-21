@@ -9,15 +9,15 @@ export interface SetUserContentFeedFiltersRequestBody {
   requestedContentFeedFilters: UserContentFeedFilter[];
 }
 
-export enum FailedToSetUserContentFeedFiltersResponseReason {
+export enum SetUserContentFeedFiltersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToSetUserContentFeedFiltersResponse {
-  reason: FailedToSetUserContentFeedFiltersResponseReason;
+export interface SetUserContentFeedFiltersFailed {
+  reason: SetUserContentFeedFiltersFailedReason;
 }
 
-export interface SuccessfullySetUserContentFeedFiltersResponse {
+export interface SetUserContentFeedFiltersSuccess {
   userContentFeedFilters: UserContentFeedFilter[];
 }
 
@@ -31,8 +31,8 @@ export async function handleSetUserContentFeedFilters({
   requestBody: SetUserContentFeedFiltersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToSetUserContentFeedFiltersResponse,
-    SuccessfullySetUserContentFeedFiltersResponse
+    SetUserContentFeedFiltersFailed,
+    SetUserContentFeedFiltersSuccess
   >
 > {
   const { requestedContentFeedFilters } = requestBody;

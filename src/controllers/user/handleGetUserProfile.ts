@@ -6,18 +6,18 @@ import { RenderableUser, UnrenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities";
 
-export interface GetUserProfileParams {
+export interface GetUserProfileRequestBody {
   username?: string;
 }
-export type SuccessfulGetUserProfileResponse = RenderableUser;
+export type GetUserProfileSuccess = RenderableUser;
 
-export enum DeniedGetUserProfileResponseReason {
+export enum GetUserProfileFailedReason {
   Blocked = "Blocked",
   NotFound = "User Not Found",
 }
 
-export interface DeniedGetUserProfileResponse {
-  reason: DeniedGetUserProfileResponseReason;
+export interface GetUserProfileFailed {
+  reason: GetUserProfileFailedReason;
 }
 
 export async function handleGetUserProfile({
@@ -27,9 +27,9 @@ export async function handleGetUserProfile({
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: GetUserProfileParams;
+  requestBody: GetUserProfileRequestBody;
 }): Promise<
-  SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
+  SecuredHTTPResponse<GetUserProfileFailed, GetUserProfileSuccess>
 > {
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
@@ -54,7 +54,7 @@ export async function handleGetUserProfile({
 
   if (!unrenderableUser) {
     controller.setStatus(404);
-    return { error: { reason: DeniedGetUserProfileResponseReason.NotFound } };
+    return { error: { reason: GetUserProfileFailedReason.NotFound } };
   }
 
   const renderableUser = await constructRenderableUserFromParts({

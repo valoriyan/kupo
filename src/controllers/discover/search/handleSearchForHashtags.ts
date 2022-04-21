@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 
-export interface SearchForHashtagsParams {
+export interface SearchForHashtagsRequestBody {
   query: string;
   cursor?: string;
   pageSize: number;
@@ -32,7 +32,7 @@ export async function handleSearchForHashtags({
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: SearchForHashtagsParams;
+  requestBody: SearchForHashtagsRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;

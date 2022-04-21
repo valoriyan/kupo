@@ -8,7 +8,7 @@ import {
   mergeArraysOfUnrenderableUsers,
 } from "../../user/utilities";
 
-export interface SearchForUsersParams {
+export interface SearchForUsersRequestBody {
   query: string;
   cursor?: string;
   pageSize: number;
@@ -35,7 +35,7 @@ export async function handleSearchForUsers({
 }: {
   controller: DiscoverController;
   request: express.Request;
-  requestBody: SearchForUsersParams;
+  requestBody: SearchForUsersRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

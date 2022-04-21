@@ -4,40 +4,40 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
-  GetUserProfileParams,
-  SuccessfulGetUserProfileResponse,
-  DeniedGetUserProfileResponse,
+  GetUserProfileRequestBody,
+  GetUserProfileSuccess,
+  GetUserProfileFailed,
   handleGetUserProfile,
 } from "./handleGetUserProfile";
 import {
-  FailedToUpdateUserProfileResponse,
+  UpdateUserProfileFailed,
   handleUpdateUserProfile,
-  SuccessfulUpdateToUserProfileResponse,
+  UpdateUserProfileSuccess,
   UpdateUserProfileRequestBody,
 } from "./handleUpdateUserProfile";
 import {
-  FailedToSearchUserProfilesByUsernameResponse,
+  SearchUserProfilesByUsernameFailed,
   handleSearchUserProfilesByUsername,
-  SearchUserProfilesByUsernameParams,
-  SuccessfulSearchUserProfilesByUsernameResponse,
+  SearchUserProfilesByUsernameRequestBody,
+  SearchUserProfilesByUsernameSuccess,
 } from "./handleSearchUserProfilesByUsername";
 import {
-  FailedToSetUserHashtagsResponse,
+  SetUserHashtagsFailed,
   handleSetUserHashtags,
   SetUserHashtagsRequestBody,
-  SuccessfullySetUserHashtagsResponse,
+  SetUserHashtagsSuccess,
 } from "./handleSetUserHashtags";
 import {
-  FailedToGetUsersByIdsResponse,
+  GetUsersByIdsFailed,
   GetUsersByIdsRequestBody,
   handleGetUsersByIds,
-  SuccessfullyGotUsersByIdsRequestBodyResponse,
+  GetUsersByIdsSuccess,
 } from "./handleGetUsersByIds";
 import {
-  FailedToGetUsersByUsernamesResponse,
+  GetUsersByUsernamesFailed,
   GetUsersByUsernamesRequestBody,
   handleGetUsersByUsernames,
-  SuccessfullyGotUsersByUsernamesRequestBodyResponse,
+  GetUsersByUsernamesSuccess,
 } from "./handleGetUsersByUsernames";
 import { BlobStorageService } from "./../../services/blobStorageService";
 import {
@@ -74,9 +74,9 @@ export class UserPageController extends Controller {
   @Post("GetUserProfile")
   public async getUserProfile(
     @Request() request: express.Request,
-    @Body() requestBody: GetUserProfileParams,
+    @Body() requestBody: GetUserProfileRequestBody,
   ): Promise<
-    SecuredHTTPResponse<DeniedGetUserProfileResponse, SuccessfulGetUserProfileResponse>
+    SecuredHTTPResponse<GetUserProfileFailed, GetUserProfileSuccess>
   > {
     return await handleGetUserProfile({
       controller: this,
@@ -91,8 +91,8 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetUsersByIdsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetUsersByIdsResponse,
-      SuccessfullyGotUsersByIdsRequestBodyResponse
+      GetUsersByIdsFailed,
+      GetUsersByIdsSuccess
     >
   > {
     return await handleGetUsersByIds({
@@ -108,8 +108,8 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetUsersByUsernamesRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetUsersByUsernamesResponse,
-      SuccessfullyGotUsersByUsernamesRequestBodyResponse
+      GetUsersByUsernamesFailed,
+      GetUsersByUsernamesSuccess
     >
   > {
     return await handleGetUsersByUsernames({
@@ -122,11 +122,11 @@ export class UserPageController extends Controller {
   @Post("SearchUserProfilesByUsername")
   public async searchUserProfilesByUsername(
     @Request() request: express.Request,
-    @Body() requestBody: SearchUserProfilesByUsernameParams,
+    @Body() requestBody: SearchUserProfilesByUsernameRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToSearchUserProfilesByUsernameResponse,
-      SuccessfulSearchUserProfilesByUsernameResponse
+      SearchUserProfilesByUsernameFailed,
+      SearchUserProfilesByUsernameSuccess
     >
   > {
     return await handleSearchUserProfilesByUsername({
@@ -180,8 +180,8 @@ export class UserPageController extends Controller {
     @Body() requestBody: UpdateUserProfileRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToUpdateUserProfileResponse,
-      SuccessfulUpdateToUserProfileResponse
+      UpdateUserProfileFailed,
+      UpdateUserProfileSuccess
     >
   > {
     return await handleUpdateUserProfile({
@@ -197,8 +197,8 @@ export class UserPageController extends Controller {
     @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToUpdateUserProfileResponse,
-      SuccessfulUpdateToUserProfileResponse
+      UpdateUserProfileFailed,
+      UpdateUserProfileSuccess
     >
   > {
     return await handleUpdateUserProfile({
@@ -216,8 +216,8 @@ export class UserPageController extends Controller {
     @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToUpdateUserProfileResponse,
-      SuccessfulUpdateToUserProfileResponse
+      UpdateUserProfileFailed,
+      UpdateUserProfileSuccess
     >
   > {
     return await handleUpdateUserProfile({
@@ -235,8 +235,8 @@ export class UserPageController extends Controller {
     @Body() requestBody: SetUserHashtagsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToSetUserHashtagsResponse,
-      SuccessfullySetUserHashtagsResponse
+      SetUserHashtagsFailed,
+      SetUserHashtagsSuccess
     >
   > {
     return await handleSetUserHashtags({

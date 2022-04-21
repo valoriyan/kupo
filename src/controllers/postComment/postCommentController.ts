@@ -6,21 +6,21 @@ import { DatabaseService } from "../../services/databaseService";
 
 import {
   CommentOnPostRequestBody,
-  FailedToCommentOnPostResponse,
+  CommentOnPostFailed,
   handleCommentOnPost,
-  SuccessfullyCommentedOnPostResponse,
+  CommentOnPostSuccess,
 } from "./handleCommentOnPost";
 import {
-  FailedToGetPageOfCommentsByPostIdResponse,
+  GetPageOfCommentsByPostIdFailure,
   GetPageOfCommentsByPostIdRequestBody,
   handleGetPageOfCommentsByPostId,
-  SuccessfullyGotPageOfCommentsByPostIdResponse,
+  GetPageOfCommentsByPostIdSuccess,
 } from "./handleGetPageOfCommentsByPostId";
 import {
   DeleteCommentFromPostRequestBody,
-  FailedToDeleteCommentFromPostResponse,
+  DeleteCommentFromPostFailed,
   handleDeleteCommentFromPost,
-  SuccessfullyDeletedCommentFromPostResponse,
+  DeleteCommentFromPostSuccess,
 } from "./handleDeleteCommentFromPost";
 import { BlobStorageService } from "./../../services/blobStorageService";
 
@@ -44,8 +44,8 @@ export class PostCommentController extends Controller {
     @Body() requestBody: CommentOnPostRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToCommentOnPostResponse,
-      SuccessfullyCommentedOnPostResponse
+      CommentOnPostFailed,
+      CommentOnPostSuccess
     >
   > {
     return await handleCommentOnPost({
@@ -65,8 +65,8 @@ export class PostCommentController extends Controller {
     @Body() requestBody: GetPageOfCommentsByPostIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetPageOfCommentsByPostIdResponse,
-      SuccessfullyGotPageOfCommentsByPostIdResponse
+      GetPageOfCommentsByPostIdFailure,
+      GetPageOfCommentsByPostIdSuccess
     >
   > {
     return await handleGetPageOfCommentsByPostId({
@@ -90,8 +90,8 @@ export class PostCommentController extends Controller {
     @Body() requestBody: DeleteCommentFromPostRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToDeleteCommentFromPostResponse,
-      SuccessfullyDeletedCommentFromPostResponse
+      DeleteCommentFromPostFailed,
+      DeleteCommentFromPostSuccess
     >
   > {
     return await handleDeleteCommentFromPost({

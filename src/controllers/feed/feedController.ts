@@ -4,29 +4,29 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
 import {
-  FailedToGetPageOfPostFromFollowedHashtagResponse,
-  GetPageOfPostFromFollowedHashtagParams,
+  GetPageOfPostFromFollowedHashtagFailed,
+  GetPageOfPostFromFollowedHashtagRequestBody,
   handleGetPageOfPostFromFollowedHashtag,
-  SuccessfulGetPageOfPostFromFollowedHashtagResponse,
+  GetPageOfPostFromFollowedHashtagSuccess,
 } from "./handleGetPageOfPostFromFollowedHashtag";
 import {
-  FailedToGetPageOfPostFromFollowedUsersResponse,
-  GetPageOfPostFromFollowedUsersParams,
+  GetPageOfPostFromFollowedUsersFailed,
+  GetPageOfPostFromFollowedUsersRequestBody,
   handleGetPageOfPostFromFollowedUsers,
-  SuccessfulGetPageOfPostFromFollowedUsersResponse,
+  GetPageOfPostFromFollowedUsersSuccess,
 } from "./handleGetPageOfPostFromFollowedUsers";
 import { BlobStorageService } from "../../services/blobStorageService";
 import {
-  FailedToGetUserContentFeedFiltersResponse,
+  GetUserContentFeedFiltersFailed,
   GetUserContentFeedFiltersRequestBody,
   handleGetUserContentFeedFilters,
-  SuccessfullyGotUserContentFeedFiltersResponse,
+  GetUserContentFeedFiltersSuccess,
 } from "./handleGetUserContentFeedFilters";
 import {
-  FailedToSetUserContentFeedFiltersResponse,
+  SetUserContentFeedFiltersFailed,
   handleSetUserContentFeedFilters,
   SetUserContentFeedFiltersRequestBody,
-  SuccessfullySetUserContentFeedFiltersResponse,
+  SetUserContentFeedFiltersSuccess,
 } from "./handleSetUserContentFeedFilters";
 
 @injectable()
@@ -50,11 +50,11 @@ export class FeedController extends Controller {
   @Post("getPageOfPostFromFollowedUsers")
   public async getPageOfPostFromFollowedUsers(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfPostFromFollowedUsersParams,
+    @Body() requestBody: GetPageOfPostFromFollowedUsersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetPageOfPostFromFollowedUsersResponse,
-      SuccessfulGetPageOfPostFromFollowedUsersResponse
+      GetPageOfPostFromFollowedUsersFailed,
+      GetPageOfPostFromFollowedUsersSuccess
     >
   > {
     return await handleGetPageOfPostFromFollowedUsers({
@@ -67,11 +67,11 @@ export class FeedController extends Controller {
   @Post("getPageOfPostFromFollowedHashtag")
   public async getPageOfPostFromFollowedHashtag(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfPostFromFollowedHashtagParams,
+    @Body() requestBody: GetPageOfPostFromFollowedHashtagRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetPageOfPostFromFollowedHashtagResponse,
-      SuccessfulGetPageOfPostFromFollowedHashtagResponse
+      GetPageOfPostFromFollowedHashtagFailed,
+      GetPageOfPostFromFollowedHashtagSuccess
     >
   > {
     return await handleGetPageOfPostFromFollowedHashtag({
@@ -87,8 +87,8 @@ export class FeedController extends Controller {
     @Body() requestBody: GetUserContentFeedFiltersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetUserContentFeedFiltersResponse,
-      SuccessfullyGotUserContentFeedFiltersResponse
+      GetUserContentFeedFiltersFailed,
+      GetUserContentFeedFiltersSuccess
     >
   > {
     return await handleGetUserContentFeedFilters({
@@ -108,8 +108,8 @@ export class FeedController extends Controller {
     @Body() requestBody: SetUserContentFeedFiltersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToSetUserContentFeedFiltersResponse,
-      SuccessfullySetUserContentFeedFiltersResponse
+      SetUserContentFeedFiltersFailed,
+      SetUserContentFeedFiltersSuccess
     >
   > {
     return await handleSetUserContentFeedFilters({

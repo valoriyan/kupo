@@ -4,10 +4,10 @@ import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import {
-  FailedToFollowUserResponse,
+  FollowUserFailed,
   FollowUserRequestBody,
   handleFollowUser,
-  SuccessfullyFollowedUserResponse,
+  FollowUserSuccess,
 } from "./handleFollowUserProfile";
 import {
   FailedToUnfollowUserProfileResponse,
@@ -16,9 +16,9 @@ import {
   UnfollowUserRequestBody,
 } from "./handleUnfollowUserProfile";
 import {
-  FailedToLikePostByUserResponse,
+  UserLikesPostFailed,
   handleUserLikesPost,
-  SuccessfulUserLikesPostResponse,
+  UserLikesPostSuccess,
   UserLikesPostRequestBody,
 } from "./handleUserLikesPost";
 import {
@@ -59,7 +59,7 @@ export class UserInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: FollowUserRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>
+    SecuredHTTPResponse<FollowUserFailed, FollowUserSuccess>
   > {
     return await handleFollowUser({
       controller: this,
@@ -73,7 +73,7 @@ export class UserInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: UserLikesPostRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedToLikePostByUserResponse, SuccessfulUserLikesPostResponse>
+    SecuredHTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>
   > {
     return await handleUserLikesPost({
       controller: this,

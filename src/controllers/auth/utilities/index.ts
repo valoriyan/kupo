@@ -2,7 +2,7 @@ import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
 import { MD5 } from "crypto-js";
-import { AuthFailureReason, FailedAuthResponse } from "../models";
+import { AuthFailureReason, AuthFailed } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
@@ -70,7 +70,7 @@ export function validateTokenAndGetUserId({
 export async function checkAuthorization(
   controller: Controller,
   request: Request,
-): Promise<{ clientUserId: string; error?: { error: FailedAuthResponse } }> {
+): Promise<{ clientUserId: string; error?: { error: AuthFailed } }> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {
     const token =

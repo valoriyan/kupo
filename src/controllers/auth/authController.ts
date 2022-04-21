@@ -4,24 +4,24 @@ import { Body, Controller, Get, Post, Request, Route } from "tsoa";
 import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
 import { injectable } from "tsyringe";
 import {
-  FailedToRegisterUserResponse,
+  RegisterUserFailed,
   handleRegisterUser,
   RegisterUserRequestBody,
 } from "./handleRegisterUser";
 import {
-  FailedToUpdatePasswordResponse,
+  UpdatePasswordFailed,
   handleUpdatePassword,
-  SuccessfullyUpdatedPasswordResponse,
+  UpdatePasswordSuccess,
   UpdatePasswordRequestBody,
 } from "./handleUpdatePassword";
-import { FailedAuthResponse, SuccessfulAuthResponse } from "./models";
+import { AuthFailed, AuthSuccess } from "./models";
 import { handleLoginUser, LoginUserRequestBody } from "./handleLoginUser";
 import { handleRefreshAccessToken } from "./handleRefreshAccessToken";
 import {
-  FailedToGetPasswordResetEmailResponse,
+  GetPasswordResetEmailFailed,
   handleGetPasswordResetEmail,
   GetPasswordResetEmailRequestBody,
-  SuccessfullyGotPasswordResetEmailResponse,
+  GetPasswordResetEmailSuccess,
 } from "./handleGetPasswordResetEmail";
 import { handleLogout } from "./handleLogout";
 import { EmailService } from "../../services/emailService";
@@ -51,7 +51,7 @@ export class AuthController extends Controller {
   @Post("register")
   public async registerUser(
     @Body() requestBody: RegisterUserRequestBody,
-  ): Promise<HTTPResponse<FailedToRegisterUserResponse, SuccessfulAuthResponse>> {
+  ): Promise<HTTPResponse<RegisterUserFailed, AuthSuccess>> {
     return await handleRegisterUser({
       controller: this,
       requestBody,
@@ -61,7 +61,7 @@ export class AuthController extends Controller {
   @Post("login")
   public async loginUser(
     @Body() requestBody: LoginUserRequestBody,
-  ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
+  ): Promise<HTTPResponse<AuthFailed, AuthSuccess>> {
     return await handleLoginUser({
       controller: this,
       requestBody,
@@ -71,7 +71,7 @@ export class AuthController extends Controller {
   @Get("refresh-access-token")
   public async refreshAccessToken(
     @Request() request: express.Request,
-  ): Promise<HTTPResponse<FailedAuthResponse, SuccessfulAuthResponse>> {
+  ): Promise<HTTPResponse<AuthFailed, AuthSuccess>> {
     return await handleRefreshAccessToken({
       controller: this,
       request,
@@ -83,8 +83,8 @@ export class AuthController extends Controller {
     @Body() requestBody: GetPasswordResetEmailRequestBody,
   ): Promise<
     HTTPResponse<
-      FailedToGetPasswordResetEmailResponse,
-      SuccessfullyGotPasswordResetEmailResponse
+      GetPasswordResetEmailFailed,
+      GetPasswordResetEmailSuccess
     >
   > {
     return await handleGetPasswordResetEmail({
@@ -99,8 +99,8 @@ export class AuthController extends Controller {
     @Body() requestBody: UpdatePasswordRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToUpdatePasswordResponse,
-      SuccessfullyUpdatedPasswordResponse
+      UpdatePasswordFailed,
+      UpdatePasswordSuccess
     >
   > {
     return await handleUpdatePassword({

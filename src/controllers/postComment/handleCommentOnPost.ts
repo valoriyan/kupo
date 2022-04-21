@@ -12,11 +12,11 @@ export interface CommentOnPostRequestBody {
   text: string;
 }
 
-export interface SuccessfullyCommentedOnPostResponse {
+export interface CommentOnPostSuccess {
   postComment: RenderablePostComment;
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToCommentOnPostResponse {}
+export interface CommentOnPostFailed {}
 
 export async function handleCommentOnPost({
   controller,
@@ -27,7 +27,7 @@ export async function handleCommentOnPost({
   request: express.Request;
   requestBody: CommentOnPostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToCommentOnPostResponse, SuccessfullyCommentedOnPostResponse>
+  SecuredHTTPResponse<CommentOnPostFailed, CommentOnPostSuccess>
 > {
   const { postId, text } = requestBody;
 

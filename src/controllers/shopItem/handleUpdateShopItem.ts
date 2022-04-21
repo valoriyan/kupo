@@ -4,10 +4,10 @@ import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulShopItemUpdateResponse {}
+export interface UpdateShopItemSuccess {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToUpdateShopItemResponse {}
+export interface UpdateShopItemFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
@@ -31,7 +31,7 @@ export async function handleUpdateShopItem({
   request: express.Request;
   requestBody: HandlerRequestBody;
 }): Promise<
-  SecuredHTTPResponse<SuccessfulShopItemUpdateResponse, FailedToUpdateShopItemResponse>
+  SecuredHTTPResponse<UpdateShopItemSuccess, UpdateShopItemFailed>
 > {
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;

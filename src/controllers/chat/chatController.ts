@@ -6,45 +6,45 @@ import express from "express";
 import { WebSocketService } from "../../services/webSocketService";
 import {
   CreateChatMessageRequestBody,
-  FailedToCreateChatMessageResponse,
+  CreateChatMessageFailed,
   handleCreateChatMessage,
-  SuccessfulChatMessageCreationResponse,
+  CreateChatMessageSuccess,
 } from "./handleCreateChatMessage";
 import {
-  FailedtoGetPageOfChatMessagesResponse,
+  GetPageOfChatMessagesFailed,
   GetPageOfChatMessagesRequestBody,
   handleGetPageOfChatMessages,
-  SuccessfulGetPageOfChatMessagesResponse,
+  GetPageOfChatMessagesSuccess,
 } from "./handleGetPageOfChatMessages";
 import {
-  FailedtoGetPageOfChatRoomsResponse,
+  GetPageOfChatRoomsFailed,
   GetPageOfChatRoomsRequestBody,
   handleGetPageOfChatRooms,
-  SuccessfulGetPageOfChatRoomsResponse,
+  GetPageOfChatRoomsSuccess,
 } from "./handleGetPageOfChatRooms";
 import {
   DoesChatRoomExistWithUserIdsRequestBody,
-  FailedtoDetermineIfChatRoomExistsWithUserIds,
+  DoesChatRoomExistWithUserIdsFailed,
   handleDoesChatRoomExistWithUserIds,
-  SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse,
+  DoesChatRoomExistWithUserIdsSuccess,
 } from "./handleDoesChatRoomExistWithUserIds";
 import {
   CreateChatMessageInNewRoomRequestBody,
-  FailedToCreateChatMessageInNewRoomResponse,
+  CreateChatMessageInNewChatRoomFailed,
   handleCreateChatMessageInNewChatRoom,
-  SuccessfullyCreatedChatMessageInNewRoomResponse,
+  CreateChatMessageInNewChatRoomSuccess,
 } from "./handleCreateChatMessageInNewChatRoom";
 import {
   DeleteChatMessageRequestBody,
-  FailedToDeleteChatMessageResponse,
+  DeleteChatMessageFailed,
   handleDeleteChatMessage,
-  SuccessfullyDeletedChatMessageResponse,
+  DeleteChatMessageSuccess,
 } from "./handleDeleteChatMessage";
 import {
-  FailedtoGetChatRoomByIdResponse,
+  GetChatRoomByIdFailed,
   GetChatRoomByIdRequestBody,
   handleGetChatRoomById,
-  SuccessfullyGotChatRoomByIdResponse,
+  GetChatRoomByIdSuccess,
 } from "./handleGetChatRoomById";
 import { BlobStorageService } from "../../services/blobStorageService";
 
@@ -69,8 +69,8 @@ export class ChatController extends Controller {
     @Body() requestBody: CreateChatMessageRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToCreateChatMessageResponse,
-      SuccessfulChatMessageCreationResponse
+      CreateChatMessageFailed,
+      CreateChatMessageSuccess
     >
   > {
     return await handleCreateChatMessage({
@@ -86,8 +86,8 @@ export class ChatController extends Controller {
     @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToCreateChatMessageInNewRoomResponse,
-      SuccessfullyCreatedChatMessageInNewRoomResponse
+      CreateChatMessageInNewChatRoomFailed,
+      CreateChatMessageInNewChatRoomSuccess
     >
   > {
     return await handleCreateChatMessageInNewChatRoom({
@@ -107,8 +107,8 @@ export class ChatController extends Controller {
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedtoGetPageOfChatMessagesResponse,
-      SuccessfulGetPageOfChatMessagesResponse
+      GetPageOfChatMessagesFailed,
+      GetPageOfChatMessagesSuccess
     >
   > {
     return await handleGetPageOfChatMessages({
@@ -124,8 +124,8 @@ export class ChatController extends Controller {
     @Body() requestBody: GetChatRoomByIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedtoGetChatRoomByIdResponse,
-      SuccessfullyGotChatRoomByIdResponse
+      GetChatRoomByIdFailed,
+      GetChatRoomByIdSuccess
     >
   > {
     return await handleGetChatRoomById({
@@ -141,8 +141,8 @@ export class ChatController extends Controller {
     @Body() requestBody: GetPageOfChatRoomsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedtoGetPageOfChatRoomsResponse,
-      SuccessfulGetPageOfChatRoomsResponse
+      GetPageOfChatRoomsFailed,
+      GetPageOfChatRoomsSuccess
     >
   > {
     return await handleGetPageOfChatRooms({
@@ -158,8 +158,8 @@ export class ChatController extends Controller {
     @Body() requestBody: DoesChatRoomExistWithUserIdsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedtoDetermineIfChatRoomExistsWithUserIds,
-      SuccessfullyDeterminedIfChatRoomExistsWithUserIdsResponse
+      DoesChatRoomExistWithUserIdsFailed,
+      DoesChatRoomExistWithUserIdsSuccess
     >
   > {
     return await handleDoesChatRoomExistWithUserIds({
@@ -183,8 +183,8 @@ export class ChatController extends Controller {
     @Body() requestBody: DeleteChatMessageRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToDeleteChatMessageResponse,
-      SuccessfullyDeletedChatMessageResponse
+      DeleteChatMessageFailed,
+      DeleteChatMessageSuccess
     >
   > {
     return await handleDeleteChatMessage({

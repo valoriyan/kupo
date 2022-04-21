@@ -4,12 +4,12 @@ import { checkAuthorization } from "../auth/utilities";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToUpdatePostResponse {}
+export interface UpdatePostFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfulPostUpdateResponse {}
+export interface UpdatePostSuccess {}
 
-export interface UpdatePostParams {
+export interface UpdatePostRequestBody {
   postId: string;
 
   caption?: string;
@@ -25,9 +25,9 @@ export async function handleUpdatePost({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: UpdatePostParams;
+  requestBody: UpdatePostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
+  SecuredHTTPResponse<UpdatePostFailed, UpdatePostSuccess>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

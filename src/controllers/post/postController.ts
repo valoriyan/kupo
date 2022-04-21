@@ -15,48 +15,48 @@ import { DatabaseService } from "../../services/databaseService";
 import { WebSocketService } from "../../services/webSocketService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
-  FailedToCreatePostResponse,
+  CreatePostFailed,
   handleCreatePost,
-  SuccessfulPostCreationResponse,
+  CreatePostSuccess,
 } from "./handleCreatePost";
 import {
   DeletePostRequestBody,
-  FailedToDeletePostResponse,
+  DeletePostFailed,
   handleDeletePost,
-  SuccessfulPostDeletionResponse,
+  DeletePostSuccess,
 } from "./handleDeletePost";
 import {
-  FailedToGetPostByIdResponse,
+  GetPostByIdFailed,
   GetPostByIdRequestBody,
   handleGetPostById,
-  SuccessfullyGotPostByIdResponse,
+  GetPostByIdSuccess,
 } from "./handleGetPostById";
 import {
-  FailedToGetPostsScheduledByUserResponse,
-  GetPostsScheduledByUserParams,
+  GetPostsScheduledByUserFailed,
+  GetPostsScheduledByUserRequestBody,
   handleGetPostsScheduledByUser,
-  SuccessfulGetPostsScheduledByUserResponse,
+  GetPostsScheduledByUserSuccess,
 } from "./handleGetPostsScheduledByUser";
 import {
-  FailedToSharePostResponse,
+  SharePostFailed,
   handleSharePost,
   SharePostRequestBody,
-  SuccessfullySharedPostResponse,
+  SharePostSuccess,
 } from "./handleSharePost";
 import {
-  FailedToUpdatePostResponse,
+  UpdatePostFailed,
   handleUpdatePost,
-  SuccessfulPostUpdateResponse,
-  UpdatePostParams,
+  UpdatePostSuccess,
+  UpdatePostRequestBody,
 } from "./handleUpdatePost";
 import {
-  FailedtoGetPostsByUserResponse,
-  GetPostsByUserIdParams,
-  GetPostsByUsernameParams,
+  GetPostsByUsernameFailed,
+  GetPostsByUserIdRequestBody,
+  GetPostsByUsernameRequestBody,
   handleGetPostsByUserId,
   handleGetPostsByUsername,
-  SuccessfulGetPostsByUserResponse,
-} from "./pagination/handleGetPostsByUser";
+  GetPostsByUsernameSuccess,
+} from "./pagination/handleGetPostsByUsername";
 
 @injectable()
 @Route("post")
@@ -84,7 +84,7 @@ export class PostController extends Controller {
     @FormField() scheduledPublicationTimestamp?: string, // number
     @FormField() expirationTimestamp?: string, // number
   ): Promise<
-    SecuredHTTPResponse<FailedToCreatePostResponse, SuccessfulPostCreationResponse>
+    SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>
   > {
     return await handleCreatePost({
       controller: this,
@@ -108,7 +108,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: SharePostRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedToSharePostResponse, SuccessfullySharedPostResponse>
+    SecuredHTTPResponse<SharePostFailed, SharePostSuccess>
   > {
     return await handleSharePost({
       controller: this,
@@ -126,7 +126,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPostByIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedToGetPostByIdResponse, SuccessfullyGotPostByIdResponse>
+    SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>
   > {
     return await handleGetPostById({
       controller: this,
@@ -138,9 +138,9 @@ export class PostController extends Controller {
   @Post("getPostsByUserId")
   public async getPostsByUserId(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostsByUserIdParams,
+    @Body() requestBody: GetPostsByUserIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
+    SecuredHTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>
   > {
     return await handleGetPostsByUserId({
       controller: this,
@@ -152,9 +152,9 @@ export class PostController extends Controller {
   @Post("getPostsByUsername")
   public async getPostsByUsername(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostsByUsernameParams,
+    @Body() requestBody: GetPostsByUsernameRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedtoGetPostsByUserResponse, SuccessfulGetPostsByUserResponse>
+    SecuredHTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>
   > {
     return await handleGetPostsByUsername({
       controller: this,
@@ -166,11 +166,11 @@ export class PostController extends Controller {
   @Post("getPostsScheduledByUser")
   public async getPostsScheduledByUser(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostsScheduledByUserParams,
+    @Body() requestBody: GetPostsScheduledByUserRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToGetPostsScheduledByUserResponse,
-      SuccessfulGetPostsScheduledByUserResponse
+      GetPostsScheduledByUserFailed,
+      GetPostsScheduledByUserSuccess
     >
   > {
     return await handleGetPostsScheduledByUser({
@@ -187,9 +187,9 @@ export class PostController extends Controller {
   @Post("updatePost")
   public async updatePost(
     @Request() request: express.Request,
-    @Body() requestBody: UpdatePostParams,
+    @Body() requestBody: UpdatePostRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedToUpdatePostResponse, SuccessfulPostUpdateResponse>
+    SecuredHTTPResponse<UpdatePostFailed, UpdatePostSuccess>
   > {
     return await handleUpdatePost({
       controller: this,
@@ -206,7 +206,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: DeletePostRequestBody,
   ): Promise<
-    SecuredHTTPResponse<FailedToDeletePostResponse, SuccessfulPostDeletionResponse>
+    SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>
   > {
     return await handleDeletePost({
       controller: this,

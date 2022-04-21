@@ -9,16 +9,16 @@ export interface GetChatRoomByIdRequestBody {
   chatRoomId: string;
 }
 
-export interface SuccessfullyGotChatRoomByIdResponse {
+export interface GetChatRoomByIdSuccess {
   chatRoom: RenderableChatRoomPreview;
 }
 
-export enum FailedtoGetChatRoomByIdResponseReason {
+export enum GetChatRoomByIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedtoGetChatRoomByIdResponse {
-  reason: FailedtoGetChatRoomByIdResponseReason;
+export interface GetChatRoomByIdFailed {
+  reason: GetChatRoomByIdFailedReason;
 }
 
 export async function handleGetChatRoomById({
@@ -31,8 +31,8 @@ export async function handleGetChatRoomById({
   requestBody: GetChatRoomByIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedtoGetChatRoomByIdResponse,
-    SuccessfullyGotChatRoomByIdResponse
+    GetChatRoomByIdFailed,
+    GetChatRoomByIdSuccess
   >
 > {
   const { chatRoomId } = requestBody;

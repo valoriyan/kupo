@@ -5,15 +5,15 @@ import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableChatMessage } from "./models";
 
-export enum CreateChatMessageFailureReasons {
+export enum CreateChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToCreateChatMessageResponse {
-  reason: CreateChatMessageFailureReasons;
+export interface CreateChatMessageFailed {
+  reason: CreateChatMessageFailedReason;
 }
 
-export interface SuccessfulChatMessageCreationResponse {
+export interface CreateChatMessageSuccess {
   chatMessage: RenderableChatMessage;
 }
 
@@ -32,8 +32,8 @@ export async function handleCreateChatMessage({
   requestBody: CreateChatMessageRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToCreateChatMessageResponse,
-    SuccessfulChatMessageCreationResponse
+    CreateChatMessageFailed,
+    CreateChatMessageSuccess
   >
 > {
   const { chatRoomId, chatMessageText } = requestBody;

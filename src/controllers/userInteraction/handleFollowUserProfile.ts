@@ -10,9 +10,9 @@ export interface FollowUserRequestBody {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyFollowedUserResponse {}
+export interface FollowUserSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToFollowUserResponse {}
+export interface FollowUserFailed {}
 
 export async function handleFollowUser({
   controller,
@@ -22,7 +22,7 @@ export async function handleFollowUser({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: FollowUserRequestBody;
-}): Promise<HTTPResponse<FailedToFollowUserResponse, SuccessfullyFollowedUserResponse>> {
+}): Promise<HTTPResponse<FollowUserFailed, FollowUserSuccess>> {
   const { userIdBeingFollowed } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

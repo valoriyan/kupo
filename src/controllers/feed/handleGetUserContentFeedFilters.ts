@@ -7,15 +7,15 @@ import { UserContentFeedFilter } from "./models";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetUserContentFeedFiltersRequestBody {}
 
-export enum FailedToGetUserContentFeedFiltersResponseReason {
+export enum GetUserContentFeedFiltersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface FailedToGetUserContentFeedFiltersResponse {
-  reason: FailedToGetUserContentFeedFiltersResponseReason;
+export interface GetUserContentFeedFiltersFailed {
+  reason: GetUserContentFeedFiltersFailedReason;
 }
 
-export interface SuccessfullyGotUserContentFeedFiltersResponse {
+export interface GetUserContentFeedFiltersSuccess {
   userContentFeedFilters: UserContentFeedFilter[];
 }
 
@@ -30,8 +30,8 @@ export async function handleGetUserContentFeedFilters({
   requestBody: GetUserContentFeedFiltersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    FailedToGetUserContentFeedFiltersResponse,
-    SuccessfullyGotUserContentFeedFiltersResponse
+    GetUserContentFeedFiltersFailed,
+    GetUserContentFeedFiltersSuccess
   >
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);

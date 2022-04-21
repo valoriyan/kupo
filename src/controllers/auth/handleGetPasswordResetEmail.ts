@@ -6,14 +6,14 @@ export interface GetPasswordResetEmailRequestBody {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyGotPasswordResetEmailResponse {}
+export interface GetPasswordResetEmailSuccess {}
 
-export enum FailedToGetPasswordResetEmailResponseReason {
+export enum GetPasswordResetEmailFailedReason {
   TooManyAttempts = "Too Many Attempts",
 }
 
-export interface FailedToGetPasswordResetEmailResponse {
-  reason: FailedToGetPasswordResetEmailResponseReason;
+export interface GetPasswordResetEmailFailed {
+  reason: GetPasswordResetEmailFailedReason;
 }
 
 export async function handleGetPasswordResetEmail({
@@ -24,8 +24,8 @@ export async function handleGetPasswordResetEmail({
   requestBody: GetPasswordResetEmailRequestBody;
 }): Promise<
   HTTPResponse<
-    FailedToGetPasswordResetEmailResponse,
-    SuccessfullyGotPasswordResetEmailResponse
+    GetPasswordResetEmailFailed,
+    GetPasswordResetEmailSuccess
   >
 > {
   const { email } = requestBody;
