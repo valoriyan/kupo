@@ -94,10 +94,7 @@ export async function handleGetPageOfNotifications({
   request: express.Request;
   requestBody: GetPageOfNotificationsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    GetPageOfNotificationsFailed,
-    GetPageOfNotificationsSuccess
-  >
+  SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
 > {
   console.log(requestBody);
 

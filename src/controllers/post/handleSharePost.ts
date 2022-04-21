@@ -36,9 +36,7 @@ export async function handleSharePost({
   controller: PostController;
   request: express.Request;
   requestBody: SharePostRequestBody;
-}): Promise<
-  SecuredHTTPResponse<SharePostFailed, SharePostSuccess>
-> {
+}): Promise<SecuredHTTPResponse<SharePostFailed, SharePostSuccess>> {
   const {
     sharedPostId,
     caption,

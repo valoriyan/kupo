@@ -29,10 +29,7 @@ export async function handleGetPostsScheduledByUser({
   request: express.Request;
   requestBody: GetPostsScheduledByUserRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    GetPostsScheduledByUserFailed,
-    GetPostsScheduledByUserSuccess
-  >
+  SecuredHTTPResponse<GetPostsScheduledByUserFailed, GetPostsScheduledByUserSuccess>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

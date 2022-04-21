@@ -26,9 +26,7 @@ export async function handleCommentOnPost({
   controller: PostCommentController;
   request: express.Request;
   requestBody: CommentOnPostRequestBody;
-}): Promise<
-  SecuredHTTPResponse<CommentOnPostFailed, CommentOnPostSuccess>
-> {
+}): Promise<SecuredHTTPResponse<CommentOnPostFailed, CommentOnPostSuccess>> {
   const { postId, text } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

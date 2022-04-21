@@ -29,12 +29,7 @@ export async function handleGetUsersByIds({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetUsersByIdsRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    GetUsersByIdsFailed,
-    GetUsersByIdsSuccess
-  >
-> {
+}): Promise<SecuredHTTPResponse<GetUsersByIdsFailed, GetUsersByIdsSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

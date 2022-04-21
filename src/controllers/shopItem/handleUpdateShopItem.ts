@@ -30,9 +30,7 @@ export async function handleUpdateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<
-  SecuredHTTPResponse<UpdateShopItemSuccess, UpdateShopItemFailed>
-> {
+}): Promise<SecuredHTTPResponse<UpdateShopItemSuccess, UpdateShopItemFailed>> {
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 

@@ -37,9 +37,7 @@ export async function handleCreatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<
-  SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>
-> {
+}): Promise<SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>> {
   const {
     caption,
     scheduledPublicationTimestamp,

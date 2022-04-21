@@ -21,9 +21,7 @@ export async function handleDeleteShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: DeleteShopItemRequestBody;
-}): Promise<
-  SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>
-> {
+}): Promise<SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>> {
   const { shopItemId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

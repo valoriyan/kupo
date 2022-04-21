@@ -27,12 +27,7 @@ export async function handleSetUserHashtags({
   controller: UserPageController;
   request: express.Request;
   requestBody: SetUserHashtagsRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    SetUserHashtagsFailed,
-    SetUserHashtagsSuccess
-  >
-> {
+}): Promise<SecuredHTTPResponse<SetUserHashtagsFailed, SetUserHashtagsSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

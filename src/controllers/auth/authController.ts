@@ -81,12 +81,7 @@ export class AuthController extends Controller {
   @Post("getPasswordResetEmail")
   public async getPasswordResetEmail(
     @Body() requestBody: GetPasswordResetEmailRequestBody,
-  ): Promise<
-    HTTPResponse<
-      GetPasswordResetEmailFailed,
-      GetPasswordResetEmailSuccess
-    >
-  > {
+  ): Promise<HTTPResponse<GetPasswordResetEmailFailed, GetPasswordResetEmailSuccess>> {
     return await handleGetPasswordResetEmail({
       controller: this,
       requestBody,
@@ -97,12 +92,7 @@ export class AuthController extends Controller {
   public async updatePassword(
     @Request() request: express.Request,
     @Body() requestBody: UpdatePasswordRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      UpdatePasswordFailed,
-      UpdatePasswordSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>> {
     return await handleUpdatePassword({
       controller: this,
       request,

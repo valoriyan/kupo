@@ -28,9 +28,7 @@ export async function handleGetUserProfile({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetUserProfileRequestBody;
-}): Promise<
-  SecuredHTTPResponse<GetUserProfileFailed, GetUserProfileSuccess>
-> {
+}): Promise<SecuredHTTPResponse<GetUserProfileFailed, GetUserProfileSuccess>> {
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
   const clientUserId = await getClientUserId(request);

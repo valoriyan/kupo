@@ -36,12 +36,7 @@ export async function handleGetPageOfChatRooms({
   controller: ChatController;
   request: express.Request;
   requestBody: GetPageOfChatRoomsRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    GetPageOfChatRoomsFailed,
-    GetPageOfChatRoomsSuccess
-  >
-> {
+}): Promise<SecuredHTTPResponse<GetPageOfChatRoomsFailed, GetPageOfChatRoomsSuccess>> {
   const { pageSize, cursor, query } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

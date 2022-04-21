@@ -29,12 +29,7 @@ export async function handleGetChatRoomById({
   controller: ChatController;
   request: express.Request;
   requestBody: GetChatRoomByIdRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    GetChatRoomByIdFailed,
-    GetChatRoomByIdSuccess
-  >
-> {
+}): Promise<SecuredHTTPResponse<GetChatRoomByIdFailed, GetChatRoomByIdSuccess>> {
   const { chatRoomId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

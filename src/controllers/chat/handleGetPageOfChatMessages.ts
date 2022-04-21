@@ -35,10 +35,7 @@ export async function handleGetPageOfChatMessages({
   request: express.Request;
   requestBody: GetPageOfChatMessagesRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    GetPageOfChatMessagesFailed,
-    GetPageOfChatMessagesSuccess
-  >
+  SecuredHTTPResponse<GetPageOfChatMessagesFailed, GetPageOfChatMessagesSuccess>
 > {
   const { chatRoomId, pageSize, cursor } = requestBody;
 

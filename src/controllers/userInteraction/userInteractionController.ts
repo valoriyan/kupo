@@ -58,9 +58,7 @@ export class UserInteractionController extends Controller {
   public async followUser(
     @Request() request: express.Request,
     @Body() requestBody: FollowUserRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<FollowUserFailed, FollowUserSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<FollowUserFailed, FollowUserSuccess>> {
     return await handleFollowUser({
       controller: this,
       request,
@@ -72,9 +70,7 @@ export class UserInteractionController extends Controller {
   public async userLikesPost(
     @Request() request: express.Request,
     @Body() requestBody: UserLikesPostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>> {
     return await handleUserLikesPost({
       controller: this,
       request,

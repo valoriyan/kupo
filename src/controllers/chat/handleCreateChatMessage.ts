@@ -30,12 +30,7 @@ export async function handleCreateChatMessage({
   controller: ChatController;
   request: express.Request;
   requestBody: CreateChatMessageRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    CreateChatMessageFailed,
-    CreateChatMessageSuccess
-  >
-> {
+}): Promise<SecuredHTTPResponse<CreateChatMessageFailed, CreateChatMessageSuccess>> {
   const { chatRoomId, chatMessageText } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

@@ -23,10 +23,7 @@ export async function handleDeleteCommentFromPost({
   request: express.Request;
   requestBody: DeleteCommentFromPostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    DeleteCommentFromPostFailed,
-    DeleteCommentFromPostSuccess
-  >
+  SecuredHTTPResponse<DeleteCommentFromPostFailed, DeleteCommentFromPostSuccess>
 > {
   const { postCommentId } = requestBody;
 

@@ -36,10 +36,7 @@ export class NotificationController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfNotificationsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      GetPageOfNotificationsFailed,
-      GetPageOfNotificationsSuccess
-    >
+    SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
   > {
     return await handleGetPageOfNotifications({
       controller: this,

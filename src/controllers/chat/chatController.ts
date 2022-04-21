@@ -67,12 +67,7 @@ export class ChatController extends Controller {
   public async createChatMessage(
     @Request() request: express.Request,
     @Body() requestBody: CreateChatMessageRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      CreateChatMessageFailed,
-      CreateChatMessageSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<CreateChatMessageFailed, CreateChatMessageSuccess>> {
     return await handleCreateChatMessage({
       controller: this,
       request,
@@ -106,10 +101,7 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      GetPageOfChatMessagesFailed,
-      GetPageOfChatMessagesSuccess
-    >
+    SecuredHTTPResponse<GetPageOfChatMessagesFailed, GetPageOfChatMessagesSuccess>
   > {
     return await handleGetPageOfChatMessages({
       controller: this,
@@ -122,12 +114,7 @@ export class ChatController extends Controller {
   public async getChatRoomById(
     @Request() request: express.Request,
     @Body() requestBody: GetChatRoomByIdRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      GetChatRoomByIdFailed,
-      GetChatRoomByIdSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<GetChatRoomByIdFailed, GetChatRoomByIdSuccess>> {
     return await handleGetChatRoomById({
       controller: this,
       request,
@@ -139,12 +126,7 @@ export class ChatController extends Controller {
   public async getPageOfChatRooms(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatRoomsRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      GetPageOfChatRoomsFailed,
-      GetPageOfChatRoomsSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<GetPageOfChatRoomsFailed, GetPageOfChatRoomsSuccess>> {
     return await handleGetPageOfChatRooms({
       controller: this,
       request,
@@ -181,12 +163,7 @@ export class ChatController extends Controller {
   public async deleteChatMessage(
     @Request() request: express.Request,
     @Body() requestBody: DeleteChatMessageRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      DeleteChatMessageFailed,
-      DeleteChatMessageSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<DeleteChatMessageFailed, DeleteChatMessageSuccess>> {
     return await handleDeleteChatMessage({
       controller: this,
       request,

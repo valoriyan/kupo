@@ -26,12 +26,7 @@ export async function handleDeleteChatMessage({
   controller: ChatController;
   request: express.Request;
   requestBody: DeleteChatMessageRequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    DeleteChatMessageFailed,
-    DeleteChatMessageSuccess
-  >
-> {
+}): Promise<SecuredHTTPResponse<DeleteChatMessageFailed, DeleteChatMessageSuccess>> {
   const { chatMessageId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

@@ -42,12 +42,7 @@ export class PostCommentController extends Controller {
   public async commentOnPost(
     @Request() request: express.Request,
     @Body() requestBody: CommentOnPostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      CommentOnPostFailed,
-      CommentOnPostSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<CommentOnPostFailed, CommentOnPostSuccess>> {
     return await handleCommentOnPost({
       controller: this,
       request,
@@ -89,10 +84,7 @@ export class PostCommentController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: DeleteCommentFromPostRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      DeleteCommentFromPostFailed,
-      DeleteCommentFromPostSuccess
-    >
+    SecuredHTTPResponse<DeleteCommentFromPostFailed, DeleteCommentFromPostSuccess>
   > {
     return await handleDeleteCommentFromPost({
       controller: this,

@@ -86,10 +86,7 @@ export class FeedController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetUserContentFeedFiltersRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      GetUserContentFeedFiltersFailed,
-      GetUserContentFeedFiltersSuccess
-    >
+    SecuredHTTPResponse<GetUserContentFeedFiltersFailed, GetUserContentFeedFiltersSuccess>
   > {
     return await handleGetUserContentFeedFilters({
       controller: this,
@@ -107,10 +104,7 @@ export class FeedController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: SetUserContentFeedFiltersRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      SetUserContentFeedFiltersFailed,
-      SetUserContentFeedFiltersSuccess
-    >
+    SecuredHTTPResponse<SetUserContentFeedFiltersFailed, SetUserContentFeedFiltersSuccess>
   > {
     return await handleSetUserContentFeedFilters({
       controller: this,

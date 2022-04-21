@@ -22,12 +22,7 @@ export async function handleGetPasswordResetEmail({
 }: {
   controller: AuthController;
   requestBody: GetPasswordResetEmailRequestBody;
-}): Promise<
-  HTTPResponse<
-    GetPasswordResetEmailFailed,
-    GetPasswordResetEmailSuccess
-  >
-> {
+}): Promise<HTTPResponse<GetPasswordResetEmailFailed, GetPasswordResetEmailSuccess>> {
   const { email } = requestBody;
 
   const user =

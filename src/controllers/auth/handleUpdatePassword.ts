@@ -27,9 +27,7 @@ export async function handleUpdatePassword({
   controller: AuthController;
   request: express.Request;
   requestBody: UpdatePasswordRequestBody;
-}): Promise<
-  SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>
-> {
+}): Promise<SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

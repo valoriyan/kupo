@@ -29,9 +29,7 @@ export async function handleGetPostById({
   controller: PostController;
   request: express.Request;
   requestBody: GetPostByIdRequestBody;
-}): Promise<
-  SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>
-> {
+}): Promise<SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>> {
   const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

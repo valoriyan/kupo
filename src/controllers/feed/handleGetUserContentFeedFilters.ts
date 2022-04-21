@@ -29,10 +29,7 @@ export async function handleGetUserContentFeedFilters({
   request: express.Request;
   requestBody: GetUserContentFeedFiltersRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    GetUserContentFeedFiltersFailed,
-    GetUserContentFeedFiltersSuccess
-  >
+  SecuredHTTPResponse<GetUserContentFeedFiltersFailed, GetUserContentFeedFiltersSuccess>
 > {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;

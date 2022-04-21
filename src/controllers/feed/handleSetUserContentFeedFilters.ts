@@ -30,10 +30,7 @@ export async function handleSetUserContentFeedFilters({
   request: express.Request;
   requestBody: SetUserContentFeedFiltersRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    SetUserContentFeedFiltersFailed,
-    SetUserContentFeedFiltersSuccess
-  >
+  SecuredHTTPResponse<SetUserContentFeedFiltersFailed, SetUserContentFeedFiltersSuccess>
 > {
   const { requestedContentFeedFilters } = requestBody;
 

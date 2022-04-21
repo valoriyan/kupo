@@ -22,9 +22,7 @@ export async function handleUserLikesPost({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: UserLikesPostRequestBody;
-}): Promise<
-  HTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>
-> {
+}): Promise<HTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>> {
   const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

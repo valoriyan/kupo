@@ -32,9 +32,7 @@ export async function handleCreateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<
-  SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>
-> {
+}): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

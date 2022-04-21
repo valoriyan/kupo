@@ -55,12 +55,7 @@ export class ShopItemController extends Controller {
     @FormField() collaboratorUserIds: string[],
     @UploadedFiles() mediaFiles: Express.Multer.File[],
     @FormField() expirationTimestamp?: number,
-  ): Promise<
-    SecuredHTTPResponse<
-      CreateShopItemFailed,
-      CreateShopItemSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
     return await handleCreateShopItem({
       controller: this,
       request,
@@ -97,9 +92,7 @@ export class ShopItemController extends Controller {
     @FormField() expirationTimestamp?: number,
     @FormField() collaboratorUserIds?: string[],
     @UploadedFiles() mediaFiles?: Express.Multer.File[],
-  ): Promise<
-    SecuredHTTPResponse<UpdateShopItemFailed, UpdateShopItemSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<UpdateShopItemFailed, UpdateShopItemSuccess>> {
     return await handleUpdateShopItem({
       controller: this,
       request,
@@ -125,12 +118,7 @@ export class ShopItemController extends Controller {
   public async deleteShopItem(
     @Request() request: express.Request,
     @Body() requestBody: DeleteShopItemRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      DeleteShopItemFailed,
-      DeleteShopItemSuccess
-    >
-  > {
+  ): Promise<SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>> {
     return await handleDeleteShopItem({
       controller: this,
       request,

@@ -35,10 +35,7 @@ export async function handleGetPageOfCommentsByPostId({
   request: express.Request;
   requestBody: GetPageOfCommentsByPostIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    GetPageOfCommentsByPostIdFailure,
-    GetPageOfCommentsByPostIdSuccess
-  >
+  SecuredHTTPResponse<GetPageOfCommentsByPostIdFailure, GetPageOfCommentsByPostIdSuccess>
 > {
   const { postId, cursor, pageSize } = requestBody;
 

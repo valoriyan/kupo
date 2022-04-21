@@ -83,9 +83,7 @@ export class PostController extends Controller {
     @FormField() hashtags: string, // string[]
     @FormField() scheduledPublicationTimestamp?: string, // number
     @FormField() expirationTimestamp?: string, // number
-  ): Promise<
-    SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>> {
     return await handleCreatePost({
       controller: this,
       request,
@@ -107,9 +105,7 @@ export class PostController extends Controller {
   public async sharePost(
     @Request() request: express.Request,
     @Body() requestBody: SharePostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<SharePostFailed, SharePostSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<SharePostFailed, SharePostSuccess>> {
     return await handleSharePost({
       controller: this,
       request,
@@ -125,9 +121,7 @@ export class PostController extends Controller {
   public async getPostById(
     @Request() request: express.Request,
     @Body() requestBody: GetPostByIdRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>> {
     return await handleGetPostById({
       controller: this,
       request,
@@ -139,9 +133,7 @@ export class PostController extends Controller {
   public async getPostsByUserId(
     @Request() request: express.Request,
     @Body() requestBody: GetPostsByUserIdRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>> {
     return await handleGetPostsByUserId({
       controller: this,
       request,
@@ -153,9 +145,7 @@ export class PostController extends Controller {
   public async getPostsByUsername(
     @Request() request: express.Request,
     @Body() requestBody: GetPostsByUsernameRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>> {
     return await handleGetPostsByUsername({
       controller: this,
       request,
@@ -168,10 +158,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPostsScheduledByUserRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-      GetPostsScheduledByUserFailed,
-      GetPostsScheduledByUserSuccess
-    >
+    SecuredHTTPResponse<GetPostsScheduledByUserFailed, GetPostsScheduledByUserSuccess>
   > {
     return await handleGetPostsScheduledByUser({
       controller: this,
@@ -188,9 +175,7 @@ export class PostController extends Controller {
   public async updatePost(
     @Request() request: express.Request,
     @Body() requestBody: UpdatePostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<UpdatePostFailed, UpdatePostSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<UpdatePostFailed, UpdatePostSuccess>> {
     return await handleUpdatePost({
       controller: this,
       request,
@@ -205,9 +190,7 @@ export class PostController extends Controller {
   public async deletePost(
     @Request() request: express.Request,
     @Body() requestBody: DeletePostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>> {
     return await handleDeletePost({
       controller: this,
       request,
