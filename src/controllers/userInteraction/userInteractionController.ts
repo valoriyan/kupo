@@ -1,14 +1,27 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { BlobStorageService } from "./../../services/blobStorageService";
 import {
   FollowUserFailed,
   FollowUserRequestBody,
-  handleFollowUser,
   FollowUserSuccess,
+  handleFollowUser,
 } from "./handleFollowUserProfile";
+import {
+  GetPageOfSavedPostsFailed,
+  GetPageOfSavedPostsRequestBody,
+  GetPageOfSavedPostsSuccess,
+  handleGetPageOfSavedPosts,
+} from "./handleGetPageOfSavedPosts";
+import {
+  FailedToRemoveUserLikeFromPostResponse,
+  handleRemoveUserLikeFromPost,
+  RemoveUserLikeFromPostRequestBody,
+  SuccessfullyRemovedUserLikeFromPostResponse,
+} from "./handleRemoveUserLikeFromPost";
 import {
   FailedToUnfollowUserProfileResponse,
   handleUnfollowUser,
@@ -16,30 +29,18 @@ import {
   UnfollowUserRequestBody,
 } from "./handleUnfollowUserProfile";
 import {
-  UserLikesPostFailed,
   handleUserLikesPost,
-  UserLikesPostSuccess,
+  UserLikesPostFailed,
   UserLikesPostRequestBody,
+  UserLikesPostSuccess,
 } from "./handleUserLikesPost";
-import {
-  FailedToRemoveUserLikeFromPostResponse,
-  handleRemoveUserLikeFromPost,
-  RemoveUserLikeFromPostRequestBody,
-  SuccessfullyRemovedUserLikeFromPostResponse,
-} from "./handleRemoveUserLikeFromPost";
-import { BlobStorageService } from "./../../services/blobStorageService";
 import {
   handleUserSavesPost,
   UserSavesPostFailed,
   UserSavesPostRequestBody,
   UserSavesPostSuccess,
 } from "./handleUserSavesPost";
-import {
-  GetPageOfSavedPostsFailed,
-  GetPageOfSavedPostsRequestBody,
-  GetPageOfSavedPostsSuccess,
-  handleGetPageOfSavedPosts,
-} from "./handleGetPageOfSavedPosts";
+import { handleUserUnsavesPost } from "./handleUserUnsavesPost";
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
@@ -158,7 +159,7 @@ export class UserInteractionController extends Controller {
       SuccessfullyRemovedUserLikeFromPostResponse
     >
   > {
-    return await handleRemoveUserLikeFromPost({
+    return await handleUserUnsavesPost({
       controller: this,
       request,
       requestBody,

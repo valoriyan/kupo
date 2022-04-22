@@ -154,6 +154,15 @@ async function assemblePostComponents({
       },
     ));
 
+  const isSavedByClient =
+    !!clientUserId &&
+    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId(
+      {
+        userId: clientUserId,
+        itemId: postId,
+      },
+    ));
+
   return {
     postId,
     creationTimestamp,
@@ -170,6 +179,7 @@ async function assemblePostComponents({
       count: countOfCommentsOnPost,
     },
     isLikedByClient,
+    isSavedByClient,
   };
 }
 
