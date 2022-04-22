@@ -39,10 +39,10 @@ export const Comments = ({ postId }: CommentsProps) => {
   return (
     <Stack
       css={{
-        // TODO: Eventually re-work this to not need a magic number
+        // TODO: Eventually re-work this to not need magic numbers
         height: "calc(100vh - 114px)",
         "@supports (-webkit-touch-callout: none)": {
-          height: "calc(-webkit-fill-available - 114px)",
+          height: "calc(100vh - 114px - 81px)",
         },
       }}
     >
