@@ -96,10 +96,10 @@ export const SidePanel = () => {
               color={isActive("/my-lists") ? activeColor : inactiveColor}
             />
             <NavLink
-              href="/saved"
+              href="/saved-posts"
               Icon={BookmarkIcon}
               label="Saved Posts"
-              color={isActive("/saved") ? activeColor : inactiveColor}
+              color={isActive("/saved-posts") ? activeColor : inactiveColor}
             />
             <NavLink
               href="/settings"

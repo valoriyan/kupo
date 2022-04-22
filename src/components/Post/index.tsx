@@ -18,10 +18,18 @@ export interface PostProps {
 }
 
 export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
-  const { isLikedByClient, caption, contentElements, hashtags, likes, comments, shared } =
-    post;
+  const {
+    isLikedByClient,
+    isSavedByClient,
+    caption,
+    contentElements,
+    hashtags,
+    likes,
+    comments,
+    shared,
+  } = post;
 
-  const { handleClickOfLikeButton, menuActions, user } = usePostActions(post);
+  const { handleLikeButton, handleSaveButton, menuActions, user } = usePostActions(post);
 
   const [currentContentElement, setCurrentContentElement] = useState<
     ContentElement | undefined
@@ -59,7 +67,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         <PostAction
           Icon={HeartIcon}
           isSelected={isLikedByClient}
-          onClick={handleClickOfLikeButton}
+          onClick={handleLikeButton}
           metric={likes.count}
         />
         {handleClickOfCommentsButton ? (
@@ -84,7 +92,11 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
             />
           )}
         </VerticalSlideDialog>
-        <PostAction Icon={BookmarkIcon} />
+        <PostAction
+          Icon={BookmarkIcon}
+          isSelected={isSavedByClient}
+          onClick={handleSaveButton}
+        />
       </Flex>
       {!handleClickOfCommentsButton && <Comments postId={post.postId} />}
     </Box>
