@@ -18,6 +18,7 @@ export interface BaseUnrenderableUser {
 
   creationTimestamp: number;
 
+  isWaitListed: boolean;
   isAdmin: boolean;
 }
 export interface UnrenderableUser extends BaseUnrenderableUser {
