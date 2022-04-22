@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { styled } from "#/styling";
 import { ArrowLeftIcon } from "../Icons";
-import { Flex, Grid } from "../Layout";
+import { Box, Flex, Grid } from "../Layout";
 import { MainTitle } from "../Typography";
 
 export interface DetailLayoutProps {
@@ -22,7 +22,7 @@ export const DetailLayout = (props: DetailLayoutProps) => {
           </Flex>
         </Link>
       </Header>
-      {props.children}
+      <Box css={{ height: "100%" }}>{props.children}</Box>
     </Grid>
   );
 };
