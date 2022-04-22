@@ -52,6 +52,7 @@ export async function constructRenderableUserFromParts({
     preferredPagePrimaryColor,
     creationTimestamp,
     isAdmin,
+    isWaitListed,
   } = unrenderableUser;
 
   const backgroundImageTemporaryUrl = !!backgroundImageBlobFileKey
@@ -125,6 +126,7 @@ export async function constructRenderableUserFromParts({
     isBeingFollowedByClient,
     creationTimestamp,
     isAdmin,
+    isWaitListed,
   };
 }
 

@@ -69,6 +69,7 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     preferredPagePrimaryColor,
     creationTimestamp: parseInt(dbUser.creation_timestamp),
     isAdmin: dbUser.is_admin,
+    isWaitListed: dbUser.is_waitlisted,
   };
 }
 
