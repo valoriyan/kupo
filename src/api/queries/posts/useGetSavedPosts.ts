@@ -4,7 +4,7 @@ import { Api, GetPageOfSavedPostsSuccess } from "../..";
 
 export const useGetSavedPosts = () => {
   return useInfiniteQuery<GetPageOfSavedPostsSuccess, Error, GetPageOfSavedPostsSuccess>(
-    [CacheKeys.OldNotificationPages],
+    [CacheKeys.SavedPosts],
     fetchPageOfSavedPosts,
     {
       getNextPageParam: (lastPage) => {

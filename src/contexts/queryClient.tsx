@@ -26,6 +26,7 @@ export enum CacheKeys {
   SearchForUsers = "SearchForUsers",
   FollowingUsers = "FollowingUsers",
   FollowerUsers = "FollowerUsers",
+  SavedPosts = "SavedPosts",
 }
 
 export const queryClient = new QueryClient({
