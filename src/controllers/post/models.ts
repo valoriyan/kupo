@@ -27,6 +27,7 @@ export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHasht
     count: number;
   };
   isLikedByClient: boolean;
+  isSavedByClient: boolean;
 }
 
 export interface RenderablePost extends UnrenderablePost {

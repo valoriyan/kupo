@@ -103,7 +103,7 @@ export class SavedItemsTableService extends TableService {
     if (!!getItemsSavedBeforeTimestamp) {
       getItemsSavedBeforeTimestampClause = `
         AND
-          scheduled_publication_timestamp < $${queryValues.length + 1}
+          timestamp < $${queryValues.length + 1}
       `;
 
       queryValues.push(getItemsSavedBeforeTimestamp);
@@ -116,10 +116,10 @@ export class SavedItemsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          author_user_id = $1
+        user_id = $1
           ${getItemsSavedBeforeTimestampClause}
         ORDER BY
-          scheduled_publication_timestamp DESC
+          timestamp DESC
         ${limitClause}
         ;
       `,
@@ -129,6 +129,35 @@ export class SavedItemsTableService extends TableService {
     const response: QueryResult<DBSavedItem> = await this.datastorePool.query(query);
 
     return response.rows;
+  }
+
+  public async doesUserIdSaveItemId({
+    itemId,
+    userId,
+  }: {
+    itemId: string;
+    userId: string;
+  }): Promise<boolean> {
+    const query = {
+      text: `
+          SELECT
+            COUNT(*)
+          FROM
+            ${this.tableName}
+          WHERE
+            item_id = $1
+          AND
+            user_id = $2
+          ;
+        `,
+      values: [itemId, userId],
+    };
+
+    const response: QueryResult<{
+      count: string;
+    }> = await this.datastorePool.query(query);
+
+    return parseInt(response.rows[0].count) === 1;
   }
 
   //////////////////////////////////////////////////

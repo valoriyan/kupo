@@ -113,6 +113,7 @@ export async function handleSharePost({
             count: 0,
           },
           isLikedByClient: false,
+          isSavedByClient: false,
           shared: {
             type: SharedPostType.post,
             post: renderableSharedPost,

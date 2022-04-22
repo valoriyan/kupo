@@ -137,6 +137,7 @@ export async function handleCreatePost({
             count: 0,
           },
           isLikedByClient: false,
+          isSavedByClient: false,
         },
       },
     };

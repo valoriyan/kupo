@@ -13,7 +13,7 @@ export interface UserUnsavesPostSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UserUnsavesPostFailed {}
 
-export async function handleRemoveUserLikeFromPost({
+export async function handleUserUnsavesPost({
   controller,
   request,
   requestBody,
