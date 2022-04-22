@@ -24,7 +24,7 @@ export const SavedPosts = () => {
         ) : isLoading || !posts ? (
           <LoadingArea size="lg" />
         ) : !posts.length ? (
-          <ErrorMessage>You&apos;re all caught up!</ErrorMessage>
+          <ErrorMessage>You haven&apos;t saved any posts yet</ErrorMessage>
         ) : (
           <InfiniteScrollArea
             hasNextPage={hasNextPage ?? false}
