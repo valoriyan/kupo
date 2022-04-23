@@ -1,6 +1,6 @@
 {
   "name": "kupono-backend",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "resetDatabase": "tsc && node build/src/scripts/teardown.js && sleep 3 && node build/src/scripts/setup.js",
