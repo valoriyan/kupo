@@ -22,13 +22,17 @@ export const useUpdateOwnProfile = () => {
       profileVisibility?: ProfilePrivacySetting;
     }) => {
       return await Api.updateUserProfile({
-        username: username ?? undefined,
-        shortBio: shortBio ?? undefined,
-        userWebsite: userWebsite ?? undefined,
-        userEmail: userEmail ?? undefined,
-        phoneNumber: undefined,
-        preferredPagePrimaryColor: preferredPagePrimaryColor ?? undefined,
-        profileVisibility: profileVisibility ?? undefined,
+        username: username ?? "",
+        shortBio: shortBio ?? "",
+        userWebsite: userWebsite ?? "",
+        userEmail: userEmail ?? "",
+        phoneNumber: "",
+        preferredPagePrimaryColor: preferredPagePrimaryColor ?? {
+          red: 12,
+          green: 1,
+          blue: 12,
+        },
+        profileVisibility: profileVisibility ?? ProfilePrivacySetting.Public,
       });
     },
     {
