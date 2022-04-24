@@ -53,14 +53,14 @@ export async function handleSearchForUsers({
   const unrenderableUsersMatchingBio =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByShortBioMatchingSubstring(
       {
-        shortBioSubstring: trimmedQuery,
+        shortBioSubstring: lowercaseTrimmedQuery,
       },
     );
 
   const unrenderableUsersIdsMatchingHashtag =
     await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.getUserIdsWithHashtag(
       {
-        hashtag: trimmedQuery,
+        hashtag: lowercaseTrimmedQuery,
       },
     );
 
