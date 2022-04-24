@@ -27,7 +27,9 @@ export async function handleUpdateUserBackgroundImage({
   controller: UserPageController;
   request: express.Request;
   requestBody: UpdateUserBackgroundImageRequestBody;
-}): Promise<SecuredHTTPResponse<UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess>
+> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

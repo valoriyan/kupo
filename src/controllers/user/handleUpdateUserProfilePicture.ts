@@ -27,7 +27,9 @@ export async function handleUpdateUserProfilePicture({
   controller: UserPageController;
   request: express.Request;
   requestBody: UpdateUserProfilePictureRequestBody;
-}): Promise<SecuredHTTPResponse<UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess>
+> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

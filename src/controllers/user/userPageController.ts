@@ -52,8 +52,16 @@ import {
   GetPageOfUsersFollowingUserIdSuccess,
   handleGetPageOfUsersFollowingUserId,
 } from "./handleGetPageOfUsersFollowingUserId";
-import { handleUpdateUserProfilePicture, UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess } from "./handleUpdateUserProfilePicture";
-import { handleUpdateUserBackgroundImage, UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess } from "./handleUpdateUserBackgroundImage";
+import {
+  handleUpdateUserProfilePicture,
+  UpdateUserProfilePictureFailed,
+  UpdateUserProfilePictureSuccess,
+} from "./handleUpdateUserProfilePicture";
+import {
+  handleUpdateUserBackgroundImage,
+  UpdateUserBackgroundImageFailed,
+  UpdateUserBackgroundImageSuccess,
+} from "./handleUpdateUserBackgroundImage";
 
 @injectable()
 @Route("user")
@@ -180,7 +188,9 @@ export class UserPageController extends Controller {
   public async updateUserProfilePicture(
     @Request() request: express.Request,
     @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
-  ): Promise<SecuredHTTPResponse<UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess>
+  > {
     return await handleUpdateUserProfilePicture({
       controller: this,
       request,
@@ -194,7 +204,9 @@ export class UserPageController extends Controller {
   public async updateUserBackgroundImage(
     @Request() request: express.Request,
     @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
-  ): Promise<SecuredHTTPResponse<UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess>
+  > {
     return await handleUpdateUserBackgroundImage({
       controller: this,
       request,
