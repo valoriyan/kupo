@@ -90,7 +90,7 @@ export async function handleSharePost({
       sharedPostId,
     });
 
-    const lowercaseHashtags = hashtags.map(hashtag => hashtag.toLowerCase());
+    const lowercaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
       {

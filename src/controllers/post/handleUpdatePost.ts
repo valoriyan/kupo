@@ -36,7 +36,7 @@ export async function handleUpdatePost({
   await controller.databaseService.tableNameToServicesMap.postsTableService.updatePost({
     postId,
     authorUserId: clientUserId,
-    caption: caption? caption.toLowerCase() : caption,
+    caption: caption ? caption.toLowerCase() : caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
   });
