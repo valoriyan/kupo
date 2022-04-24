@@ -17,13 +17,13 @@ export interface UpdateUserProfileFailed {
 export type UpdateUserProfileSuccess = RenderableUser;
 
 export interface UpdateUserProfileRequestBody {
-  username?: string;
-  shortBio?: string;
-  userWebsite?: string;
-  userEmail?: string;
-  phoneNumber?: string;
-  preferredPagePrimaryColor?: Color;
-  profileVisibility?: ProfilePrivacySetting;
+  username: string;
+  shortBio: string;
+  userWebsite: string;
+  userEmail: string;
+  phoneNumber: string;
+  preferredPagePrimaryColor: Color;
+  profileVisibility: ProfilePrivacySetting;
 }
 
 export async function handleUpdateUserProfile({
@@ -33,24 +33,10 @@ export async function handleUpdateUserProfile({
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: UpdateUserProfileRequestBody & {
-    backgroundImage?: Express.Multer.File;
-    profilePicture?: Express.Multer.File;
-  };
+  requestBody: UpdateUserProfileRequestBody;
 }): Promise<SecuredHTTPResponse<UpdateUserProfileFailed, UpdateUserProfileSuccess>> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
-
-  const backgroundImageBlobItemPointer = requestBody.backgroundImage
-    ? await controller.blobStorageService.saveImage({
-        image: requestBody.backgroundImage?.buffer,
-      })
-    : null;
-  const profilePictureBlobItemPointer = requestBody.profilePicture
-    ? await controller.blobStorageService.saveImage({
-        image: requestBody.profilePicture?.buffer,
-      })
-    : null;
 
   const updatedUnrenderableUser =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
@@ -58,12 +44,10 @@ export async function handleUpdateUserProfile({
         userId: clientUserId,
 
         username: requestBody.username,
-        shortBio: requestBody.shortBio,
-        userWebsite: requestBody.userWebsite,
+        shortBio: requestBody.shortBio || "",
+        userWebsite: requestBody.userWebsite || "",
         profilePrivacySetting: requestBody.profileVisibility,
         email: requestBody.userEmail,
-        backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
-        profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
         preferredPagePrimaryColor: requestBody.preferredPagePrimaryColor,
       },
     );
