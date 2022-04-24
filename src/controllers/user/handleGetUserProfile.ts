@@ -33,7 +33,7 @@ export async function handleGetUserProfile({
   // IF Private hide posts and shop
   const clientUserId = await getClientUserId(request);
 
-  const {username} = requestBody;
+  const { username } = requestBody;
 
   let unrenderableUser: UnrenderableUser | undefined;
   if (username) {

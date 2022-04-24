@@ -35,7 +35,7 @@ export async function handleGetUsersByUsernames({
 
   const { usernames } = requestBody;
 
-  const lowercaseUsernames = usernames.map(username => username.toLowerCase());
+  const lowercaseUsernames = usernames.map((username) => username.toLowerCase());
 
   const unrenderableUsers =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
