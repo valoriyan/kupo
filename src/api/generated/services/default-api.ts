@@ -199,7 +199,11 @@ import { SecuredHTTPResponseUpdatePostFailedUpdatePostSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseUpdateShopItemFailedUpdateShopItemSuccess } from "../types";
 // @ts-ignore
+import { SecuredHTTPResponseUpdateUserBackgroundImageFailedUpdateUserBackgroundImageSuccess } from "../types";
+// @ts-ignore
 import { SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUpdateUserProfilePictureFailedUpdateUserProfilePictureSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess } from "../types";
 // @ts-ignore
@@ -4271,7 +4275,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess>
+      ) => AxiosPromise<SecuredHTTPResponseUpdateUserBackgroundImageFailedUpdateUserBackgroundImageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserBackgroundImage(
         backgroundImage,
@@ -4323,7 +4327,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess>
+      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfilePictureFailedUpdateUserProfilePictureSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfilePicture(
         profilePicture,
@@ -5174,7 +5178,7 @@ export const DefaultApiFactory = function (
     updateUserBackgroundImage(
       backgroundImage: any,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess> {
+    ): AxiosPromise<SecuredHTTPResponseUpdateUserBackgroundImageFailedUpdateUserBackgroundImageSuccess> {
       return localVarFp
         .updateUserBackgroundImage(backgroundImage, options)
         .then((request) => request(axios, basePath));
@@ -5202,7 +5206,7 @@ export const DefaultApiFactory = function (
     updateUserProfilePicture(
       profilePicture: any,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess> {
+    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfilePictureFailedUpdateUserProfilePictureSuccess> {
       return localVarFp
         .updateUserProfilePicture(profilePicture, options)
         .then((request) => request(axios, basePath));

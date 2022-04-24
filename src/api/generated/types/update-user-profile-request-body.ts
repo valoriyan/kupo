@@ -26,41 +26,41 @@ export interface UpdateUserProfileRequestBody {
    * @type {string}
    * @memberof UpdateUserProfileRequestBody
    */
-  username?: string;
+  username: string;
   /**
    *
    * @type {string}
    * @memberof UpdateUserProfileRequestBody
    */
-  shortBio?: string;
+  shortBio: string;
   /**
    *
    * @type {string}
    * @memberof UpdateUserProfileRequestBody
    */
-  userWebsite?: string;
+  userWebsite: string;
   /**
    *
    * @type {string}
    * @memberof UpdateUserProfileRequestBody
    */
-  userEmail?: string;
+  userEmail: string;
   /**
    *
    * @type {string}
    * @memberof UpdateUserProfileRequestBody
    */
-  phoneNumber?: string;
+  phoneNumber: string;
   /**
    *
    * @type {Color}
    * @memberof UpdateUserProfileRequestBody
    */
-  preferredPagePrimaryColor?: Color;
+  preferredPagePrimaryColor: Color;
   /**
    *
    * @type {ProfilePrivacySetting}
    * @memberof UpdateUserProfileRequestBody
    */
-  profileVisibility?: ProfilePrivacySetting;
+  profileVisibility: ProfilePrivacySetting;
 }
