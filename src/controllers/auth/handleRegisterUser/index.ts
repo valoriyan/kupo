@@ -58,10 +58,12 @@ export async function handleRegisterUser({
     const isAdmin = INSANELY_HARDCODED_ADMIN_EMAILS.includes(email);
     const isWaitlisted = !!isAdmin ? false : true;
 
+    const lowerCaseUsername = username.toLowerCase();
+
     await controller.databaseService.tableNameToServicesMap.usersTableService.createUser({
       userId,
       email,
-      username,
+      username: lowerCaseUsername,
       encryptedPassword,
       creationTimestamp: now,
       isAdmin,

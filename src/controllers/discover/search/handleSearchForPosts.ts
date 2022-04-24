@@ -44,14 +44,14 @@ export async function handleSearchForPosts({
   requestBody: SearchForPostsRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
   const { cursor, query, pageSize } = requestBody;
-  const trimmedQuery = query.trim();
+  const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const postIdsWithPossibleHashtags =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithOneOfHashtags(
-      { hashtagSubstring: trimmedQuery },
+      { hashtagSubstring: lowercaseTrimmedQuery },
     );
 
   const unrenderableHashtagMatchingPosts =
@@ -61,7 +61,7 @@ export async function handleSearchForPosts({
 
   const unrenderableCaptionMatchingPosts =
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCaptionMatchingSubstring(
-      { captionSubstring: trimmedQuery },
+      { captionSubstring: lowercaseTrimmedQuery },
     );
 
   const unrenderablePostsWithoutElementsOrHashtags =

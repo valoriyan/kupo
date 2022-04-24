@@ -54,12 +54,14 @@ export async function handleCreatePost({
 
   const creationTimestamp = now;
 
+  const lowerCaseCaption = caption.toLowerCase();
+
   try {
     await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
       creationTimestamp,
       authorUserId: clientUserId,
-      caption,
+      caption: lowerCaseCaption,
       scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
       expirationTimestamp,
     });
@@ -100,9 +102,11 @@ export async function handleCreatePost({
       );
     }
 
+    const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
+
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
       {
-        hashtags,
+        hashtags: lowerCaseHashtags,
         postId,
       },
     );
@@ -128,9 +132,9 @@ export async function handleCreatePost({
           creationTimestamp,
           contentElements,
           authorUserId: clientUserId,
-          caption,
+          caption: lowerCaseCaption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-          hashtags,
+          hashtags: lowerCaseHashtags,
           expirationTimestamp,
           likes: {
             count: 0,

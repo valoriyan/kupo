@@ -78,19 +78,23 @@ export async function handleSharePost({
     console.log("renderableSharedPost");
     console.log(renderableSharedPost);
 
+    const lowercaseCaption = caption.toLowerCase();
+
     await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
       creationTimestamp,
       authorUserId: clientUserId,
-      caption,
+      caption: lowercaseCaption,
       scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
       expirationTimestamp,
       sharedPostId,
     });
 
+    const lowercaseHashtags = hashtags.map(hashtag => hashtag.toLowerCase());
+
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
       {
-        hashtags,
+        hashtags: lowercaseHashtags,
         postId,
       },
     );
@@ -102,9 +106,9 @@ export async function handleSharePost({
           creationTimestamp,
           contentElements: [],
           authorUserId: clientUserId,
-          caption,
+          caption: lowercaseCaption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-          hashtags,
+          hashtags: lowercaseHashtags,
           expirationTimestamp,
           likes: {
             count: 0,

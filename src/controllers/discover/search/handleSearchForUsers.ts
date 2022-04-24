@@ -41,12 +41,12 @@ export async function handleSearchForUsers({
   if (error) return error;
 
   const { cursor, query, pageSize } = requestBody;
-  const trimmedQuery = query.trim();
+  const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const unrenderableUsersMatchingUsername =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
       {
-        usernameSubstring: trimmedQuery,
+        usernameSubstring: lowercaseTrimmedQuery,
       },
     );
 

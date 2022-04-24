@@ -38,12 +38,12 @@ export async function handleSearchForHashtags({
   if (error) return error;
 
   const { cursor, query, pageSize } = requestBody;
-  const trimmedQuery = query.trim();
+  const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const matchingHashtags =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
       {
-        hashtagSubstring: trimmedQuery,
+        hashtagSubstring: lowercaseTrimmedQuery,
       },
     );
 
