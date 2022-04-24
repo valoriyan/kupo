@@ -58,7 +58,12 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
               hide();
             }}
           />
-          <NavLink href="/saved" Icon={BookmarkIcon} label="Saved Posts" onClick={hide} />
+          <NavLink
+            href="/saved-posts"
+            Icon={BookmarkIcon}
+            label="Saved Posts"
+            onClick={hide}
+          />
           <NavLink
             href="/settings"
             Icon={OptionsIcon}

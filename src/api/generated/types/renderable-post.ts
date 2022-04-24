@@ -96,6 +96,12 @@ export interface RenderablePost {
   isLikedByClient: boolean;
   /**
    *
+   * @type {boolean}
+   * @memberof RenderablePost
+   */
+  isSavedByClient: boolean;
+  /**
+   *
    * @type {RenderablePostShared}
    * @memberof RenderablePost
    */

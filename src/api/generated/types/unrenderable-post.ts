@@ -93,4 +93,10 @@ export interface UnrenderablePost {
    * @memberof UnrenderablePost
    */
   isLikedByClient: boolean;
+  /**
+   *
+   * @type {boolean}
+   * @memberof UnrenderablePost
+   */
+  isSavedByClient: boolean;
 }
