@@ -43,7 +43,7 @@ export async function handleSetUserContentFeedFilters({
         contentFeedFilterId: uuidv4(),
         userId: clientUserId,
         type: requestedContentFeedFilter.type,
-        value: requestedContentFeedFilter.value,
+        value: requestedContentFeedFilter.value.toLowerCase(),
         creationTimestamp: Date.now(),
       };
     }),

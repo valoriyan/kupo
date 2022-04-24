@@ -41,12 +41,10 @@ export async function handleSearchUserProfilesByUsername({
 
   const { searchString } = requestBody;
 
-  console.log("HITTT");
-
   const unrenderableUsers =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
       {
-        usernameSubstring: searchString,
+        usernameSubstring: searchString.toLowerCase(),
       },
     );
 

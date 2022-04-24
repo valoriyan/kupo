@@ -36,11 +36,11 @@ export async function handleSetUserHashtags({
   await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.upsertHashtagsForUser(
     {
       userId: clientUserId,
-      hashtag1,
-      hashtag2,
-      hashtag3,
-      hashtag4,
-      hashtag5,
+      hashtag1: hashtag1.toLowerCase(),
+      hashtag2: hashtag2.toLowerCase(),
+      hashtag3: hashtag3.toLowerCase(),
+      hashtag4: hashtag4.toLowerCase(),
+      hashtag5: hashtag5.toLowerCase(),
     },
   );
 

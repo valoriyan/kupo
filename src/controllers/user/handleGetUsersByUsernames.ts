@@ -35,9 +35,11 @@ export async function handleGetUsersByUsernames({
 
   const { usernames } = requestBody;
 
+  const lowercaseUsernames = usernames.map(username => username.toLowerCase());
+
   const unrenderableUsers =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
-      { usernames },
+      { usernames: lowercaseUsernames },
     );
 
   const renderableUsers = await constructRenderableUsersFromParts({
@@ -51,7 +53,7 @@ export async function handleGetUsersByUsernames({
     renderableUsers.map((renderableUser) => [renderableUser.username, renderableUser]),
   );
 
-  const foundUsers = usernames.map((username) => {
+  const foundUsers = lowercaseUsernames.map((username) => {
     if (usernameToUserMap.has(username)) {
       return usernameToUserMap.get(username)!;
     }

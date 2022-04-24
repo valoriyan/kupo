@@ -33,12 +33,16 @@ export async function handleGetUserProfile({
   // IF Private hide posts and shop
   const clientUserId = await getClientUserId(request);
 
+  const {username} = requestBody;
+
   let unrenderableUser: UnrenderableUser | undefined;
-  if (requestBody.username) {
+  if (username) {
+    const lowercaseUsername = username.toLowerCase();
+
     // Fetch user profile by given username
     unrenderableUser =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
-        { username: requestBody.username },
+        { username: lowercaseUsername },
       );
   } else {
     // Fetch user profile by own userId
