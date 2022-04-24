@@ -98,9 +98,7 @@ export async function handleCreatePost({
           ),
         },
       );
-  
     }
-
 
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
       {
