@@ -1,5 +1,9 @@
 import { QueryConfig } from "pg";
-import { PSQLFieldAndArrayOfValues, PSQLFieldAndValue, PSQLUpdateFieldAndValue } from "./models";
+import {
+  PSQLFieldAndArrayOfValues,
+  PSQLFieldAndValue,
+  PSQLUpdateFieldAndValue,
+} from "./models";
 
 export function generatePostgreSQLCreateEnumTypeQueryString({
   typeName,

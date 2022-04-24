@@ -85,18 +85,22 @@ export async function handleCreatePost({
         filedAndRenderablePostContentElement.fileTemporaryUrl,
     );
 
-    await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
-      {
-        postContentElements: filedAndRenderablePostContentElements.map(
-          ({ blobFileKey, mimetype }, index) => ({
-            postId,
-            postContentElementIndex: index,
-            blobFileKey,
-            mimetype,
-          }),
-        ),
-      },
-    );
+    if (filedAndRenderablePostContentElements.length > 0) {
+      await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
+        {
+          postContentElements: filedAndRenderablePostContentElements.map(
+            ({ blobFileKey, mimetype }, index) => ({
+              postId,
+              postContentElementIndex: index,
+              blobFileKey,
+              mimetype,
+            }),
+          ),
+        },
+      );
+  
+    }
+
 
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
       {
