@@ -490,10 +490,11 @@ export class UsersTableService extends TableService {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
         { field: "username", value: username },
-        { field: "short_bio", value: shortBio },
+        { field: "short_bio", value: shortBio, settings: {includeIfEmpty: true} },
         {
           field: "user_website",
           value: userWebsite,
+          settings: {includeIfEmpty: true}
         },
         {
           field: "email",

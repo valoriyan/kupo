@@ -3,6 +3,12 @@ export interface PSQLFieldAndValue<T> {
   value: T | undefined;
 }
 
+export interface PSQLUpdateFieldAndValue<T> extends PSQLFieldAndValue<T> {
+  settings?: {
+    includeIfEmpty?: boolean;
+  }
+}
+
 export interface PSQLFieldAndArrayOfValues<T> {
   field: string;
   values: T[];

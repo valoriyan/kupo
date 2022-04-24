@@ -1,5 +1,5 @@
 import { QueryConfig } from "pg";
-import { PSQLFieldAndArrayOfValues, PSQLFieldAndValue } from "./models";
+import { PSQLFieldAndArrayOfValues, PSQLFieldAndValue, PSQLUpdateFieldAndValue } from "./models";
 
 export function generatePostgreSQLCreateEnumTypeQueryString({
   typeName,
@@ -26,7 +26,7 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
   fieldUsedToIdentifyUpdatedRow,
   tableName,
 }: {
-  updatedFields: PSQLFieldAndValue<T>[];
+  updatedFields: PSQLUpdateFieldAndValue<T>[];
   fieldUsedToIdentifyUpdatedRow: PSQLFieldAndValue<T>;
   tableName: string;
 }): QueryConfig {
@@ -40,8 +40,9 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       }
       return updatedField;
     })
-    .filter(({ value }) => {
-      return !!value;
+    .filter(({ value, settings }) => {
+      const includeIfEmpty = !!settings && !!settings.includeIfEmpty;
+      return includeIfEmpty || !!value;
     });
 
   if (filteredUpdatedFields.length === 0) {
