@@ -8,6 +8,7 @@ import {
   UnrenderablePostWithoutElementsOrHashtags,
 } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
+import { SavedItemType } from "../userInteraction/models";
 
 export async function constructRenderablePostsFromParts({
   blobStorageService,
@@ -160,6 +161,7 @@ async function assemblePostComponents({
       {
         userId: clientUserId,
         itemId: postId,
+        itemType: SavedItemType.post,
       },
     ));
 

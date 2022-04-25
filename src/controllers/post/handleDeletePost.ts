@@ -2,6 +2,7 @@ import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
+import { SavedItemType } from "../userInteraction/models";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -28,14 +29,10 @@ export async function handleDeletePost({
 
   const { postId } = requestBody;
 
-  console.log("HITTTTTTT");
-
   await controller.databaseService.tableNameToServicesMap.postsTableService.deletePost({
     postId,
     authorUserId: clientUserId,
   });
-
-  console.log("NOW THISSSSSSSSSSS\n\n");
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED BLOB FILES
@@ -75,6 +72,25 @@ export async function handleDeletePost({
       },
     );
   }
+
+  //////////////////////////////////////////////////
+  // DELETE ASSOCIATED SAVED POSTS
+  //////////////////////////////////////////////////
+
+  const userIdSavedItemId = await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId({
+    userId: clientUserId,
+    itemId: postId,
+    itemType: SavedItemType.post,
+  });
+
+  if (userIdSavedItemId) {
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem({
+      userId: clientUserId,
+      itemId: postId,
+      itemType: SavedItemType.post,  
+    });
+  }
+
 
   return {};
 }
