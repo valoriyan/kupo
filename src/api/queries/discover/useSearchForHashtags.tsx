@@ -4,23 +4,17 @@ import { Api, SearchForHashtagsRequestBody, SearchForHashtagsSuccess } from "../
 
 export const useSearchForHashtags = ({
   query,
-  cursor,
+  pageNumber,
   pageSize,
 }: SearchForHashtagsRequestBody) => {
   return useQuery<SearchForHashtagsSuccess, Error>(
-    [CacheKeys.SearchForHashtags, query, cursor, pageSize],
+    [CacheKeys.SearchForHashtags, query, pageNumber, pageSize],
     async () => {
-      const res = await Api.searchForHashtags({
-        query,
-        cursor,
-        pageSize,
-      });
+      const res = await Api.searchForHashtags({ query, pageNumber, pageSize });
 
-      if (res.data.success) {
-        return res.data.success;
-      }
+      if (res.data.success) return res.data.success;
       throw new Error(res.data.error?.reason ?? "Failed to search for hashtags");
     },
-    { enabled: !!query },
+    { enabled: !!query, keepPreviousData: true },
   );
 };

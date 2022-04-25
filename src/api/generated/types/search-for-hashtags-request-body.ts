@@ -26,10 +26,10 @@ export interface SearchForHashtagsRequestBody {
   query: string;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof SearchForHashtagsRequestBody
    */
-  cursor?: string;
+  pageNumber: number;
   /**
    *
    * @type {number}

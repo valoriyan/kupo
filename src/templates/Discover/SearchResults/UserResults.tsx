@@ -15,7 +15,7 @@ export interface UserResultsProps {
 }
 
 export const UserResults = ({ query }: UserResultsProps) => {
-  const { data, isLoading, isError } = useSearchForUsers({ query, pageSize: 5 });
+  const { data, isLoading, isError } = useSearchForUsers({ query, pageSize: 6 });
 
   return (
     <ResultsWrapper

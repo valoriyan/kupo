@@ -52,7 +52,7 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
           {text.length} / {COMMENT_CHAR_LIMIT}
         </Subtext>
       </Stack>
-      <SubmitButton type="submit">
+      <SubmitButton type="submit" disabled={!text}>
         <TextOrSpinner isLoading={isLoading}>
           <CommentIcon />
         </TextOrSpinner>

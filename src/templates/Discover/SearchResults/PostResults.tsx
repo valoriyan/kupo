@@ -14,7 +14,7 @@ export interface PostResultsProps {
 }
 
 export const PostResults = ({ query }: PostResultsProps) => {
-  const { data, isLoading, isError } = useSearchForPosts({ query, pageSize: 5 });
+  const { data, isLoading, isError } = useSearchForPosts({ query, pageSize: 6 });
 
   return (
     <ResultsWrapper
