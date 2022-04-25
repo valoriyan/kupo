@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { styled } from "#/styling";
 import { range } from "#/utils/range";
 import { ChevronLeftIcon, ChevronRightIcon } from "../Icons";
-import { Flex } from "../Layout";
+import { Box, Flex } from "../Layout";
 
 export interface PaginatorProps {
   currentPage: number;
@@ -59,30 +59,31 @@ export const Paginator = (props: PaginatorProps) => {
   return (
     <Flex css={{ alignItems: "center" }}>
       <Flex css={{ pr: "$7" }}>
-        <PageButton
+        <IconButton
           onClick={() => props.setCurrentPage((prev) => prev - 1)}
           disabled={props.currentPage === 0}
           aria-label="Previous Page"
         >
           <ChevronLeftIcon />
-        </PageButton>
+        </IconButton>
       </Flex>
       <Flex css={{ gap: "$6", alignItems: "center" }}>
         {pages.map((pageNumber, i) => {
           if (typeof pageNumber === "number") {
             return (
-              <PageButton
+              <Box
+                as="button"
                 key={pageNumber}
                 aria-current={props.currentPage === pageNumber ? "page" : undefined}
                 onClick={() => props.setCurrentPage(pageNumber)}
                 css={{ color: props.currentPage === pageNumber ? "$primary" : "$text" }}
               >
                 {pageNumber + 1}
-              </PageButton>
+              </Box>
             );
           } else {
             return (
-              <PageButton
+              <button
                 key={pageNumber + i}
                 onClick={() =>
                   props.setCurrentPage(
@@ -93,25 +94,25 @@ export const Paginator = (props: PaginatorProps) => {
                 }
               >
                 ...
-              </PageButton>
+              </button>
             );
           }
         })}
       </Flex>
       <Flex css={{ pl: "$7" }}>
-        <PageButton
+        <IconButton
           onClick={() => props.setCurrentPage((prev) => prev + 1)}
           disabled={props.currentPage >= props.totalPages - 1}
           aria-label="Next Page"
         >
           <ChevronRightIcon />
-        </PageButton>
+        </IconButton>
       </Flex>
     </Flex>
   );
 };
 
-const PageButton = styled("button", {
+const IconButton = styled("button", {
   lineHeight: 0,
   "&:disabled": {
     color: "$disabledText",
