@@ -125,9 +125,8 @@ export class UserHashtagsTableService extends TableService {
 
     const response: QueryResult<DBUserHashtag> = await this.datastorePool.query(query);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const userId = response.rows.map((row) => row.user_id!);
-    return userId;
+    const userIds = response.rows.map((row) => row.user_id);
+    return userIds;
   }
 
   public async getHashtagsForUserId({ userId }: { userId: string }): Promise<string[]> {

@@ -20,12 +20,10 @@ export enum GetPageOfPostFromFollowedHashtagFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPageOfPostFromFollowedHashtagFailed {
   reason: GetPageOfPostFromFollowedHashtagFailedReason;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPageOfPostFromFollowedHashtagSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;

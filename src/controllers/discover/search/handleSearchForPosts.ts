@@ -22,12 +22,10 @@ export enum SearchForPostsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchForPostsFailed {
   reason: SearchForPostsFailedReason;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchForPostsSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;
@@ -70,7 +68,6 @@ export async function handleSearchForPosts({
     });
 
   if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {
-    // controller.setStatus(404);
     return {
       success: {
         posts: [],
@@ -96,7 +93,7 @@ export async function handleSearchForPosts({
     renderablePosts.length > 0
       ? encodeCursor({
           timestamp:
-            renderablePosts[renderablePosts.length - 1]!.scheduledPublicationTimestamp,
+            renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
         })
       : undefined;
 

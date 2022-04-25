@@ -43,25 +43,14 @@ export async function handleSearchForUsers({
   const { cursor, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
-  const unrenderableUsersMatchingUsername =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
-      {
-        usernameSubstring: lowercaseTrimmedQuery,
-      },
-    );
-
-  const unrenderableUsersMatchingBio =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByShortBioMatchingSubstring(
-      {
-        shortBioSubstring: lowercaseTrimmedQuery,
-      },
+  const unrenderableUsersMatchingSearchString =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersBySearchString(
+      { searchString: lowercaseTrimmedQuery },
     );
 
   const unrenderableUsersIdsMatchingHashtag =
     await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.getUserIdsWithHashtag(
-      {
-        hashtag: lowercaseTrimmedQuery,
-      },
+      { hashtag: lowercaseTrimmedQuery },
     );
 
   const unrenderableUsersMatchingHashtag =
@@ -70,15 +59,10 @@ export async function handleSearchForUsers({
     );
 
   const unrenderableUsers = mergeArraysOfUnrenderableUsers({
-    arrays: [
-      unrenderableUsersMatchingUsername,
-      unrenderableUsersMatchingHashtag,
-      unrenderableUsersMatchingBio,
-    ],
+    arrays: [unrenderableUsersMatchingSearchString, unrenderableUsersMatchingHashtag],
   });
 
   if (unrenderableUsers.length === 0) {
-    // controller.setStatus(404);
     return {
       success: {
         users: [],

@@ -11,7 +11,6 @@ export enum SetUserHashtagsFailedReason {
   NotFound = "User Not Found",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SetUserHashtagsFailed {
   reason: SetUserHashtagsFailedReason;
 }
@@ -36,11 +35,11 @@ export async function handleSetUserHashtags({
   await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.upsertHashtagsForUser(
     {
       userId: clientUserId,
-      hashtag1: hashtag1.toLowerCase(),
-      hashtag2: hashtag2.toLowerCase(),
-      hashtag3: hashtag3.toLowerCase(),
-      hashtag4: hashtag4.toLowerCase(),
-      hashtag5: hashtag5.toLowerCase(),
+      hashtag1: hashtag1?.toLowerCase() ?? "",
+      hashtag2: hashtag2?.toLowerCase() ?? "",
+      hashtag3: hashtag3?.toLowerCase() ?? "",
+      hashtag4: hashtag4?.toLowerCase() ?? "",
+      hashtag5: hashtag5?.toLowerCase() ?? "",
     },
   );
 

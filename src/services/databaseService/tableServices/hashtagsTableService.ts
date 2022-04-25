@@ -144,11 +144,42 @@ export class HashtagsTableService extends TableService {
     return hashtags;
   }
 
-  public async getHashtagsMatchingSubstring({
+  public async getHashtagsCountBySubstring({
     hashtagSubstring,
   }: {
     hashtagSubstring: string;
+  }) {
+    const query: QueryConfig = {
+      text: `
+        SELECT
+          COUNT(DISTINCT hashtag) as count
+        FROM
+          ${this.tableName}
+        WHERE
+          hashtag LIKE CONCAT('%', $1::text, '%')
+        ;
+      `,
+      values: [hashtagSubstring],
+    };
+
+    const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+      query,
+    );
+
+    return parseInt(response.rows[0].count);
+  }
+
+  public async getHashtagsMatchingSubstring({
+    hashtagSubstring,
+    pageNumber,
+    pageSize,
+  }: {
+    hashtagSubstring: string;
+    pageNumber: number;
+    pageSize: number;
   }): Promise<string[]> {
+    const offset = pageSize * pageNumber - pageSize;
+
     const query: QueryConfig = {
       text: `
         SELECT DISTINCT
@@ -157,9 +188,13 @@ export class HashtagsTableService extends TableService {
           ${this.tableName}
         WHERE
           hashtag LIKE CONCAT('%', $1::text, '%')
+        LIMIT
+          $2
+        OFFSET
+          $3
         ;
       `,
-      values: [hashtagSubstring],
+      values: [hashtagSubstring, pageSize, offset],
     };
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);

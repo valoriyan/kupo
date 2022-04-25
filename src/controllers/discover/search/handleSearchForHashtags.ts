@@ -5,7 +5,7 @@ import { checkAuthorization } from "../../auth/utilities";
 
 export interface SearchForHashtagsRequestBody {
   query: string;
-  cursor?: string;
+  pageNumber: number;
   pageSize: number;
 }
 
@@ -13,16 +13,13 @@ export enum SearchForHashtagsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchForHashtagsFailed {
   reason: SearchForHashtagsFailedReason;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SearchForHashtagsSuccess {
   hashtags: string[];
-  previousPageCursor?: string;
-  nextPageCursor?: string;
+  totalCount: number;
 }
 
 export async function handleSearchForHashtags({
@@ -37,40 +34,36 @@ export async function handleSearchForHashtags({
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const { cursor, query, pageSize } = requestBody;
+  const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
+
+  const matchingHashtagsCount =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsCountBySubstring(
+      { hashtagSubstring: lowercaseTrimmedQuery },
+    );
+
+  if (!matchingHashtagsCount) {
+    return {
+      success: {
+        hashtags: [],
+        totalCount: 0,
+      },
+    };
+  }
 
   const matchingHashtags =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
       {
         hashtagSubstring: lowercaseTrimmedQuery,
+        pageNumber,
+        pageSize,
       },
     );
 
-  if (matchingHashtags.length === 0) {
-    // controller.setStatus(404);
-    return {
-      success: {
-        hashtags: [],
-        previousPageCursor: cursor,
-      },
-    };
-  }
-
-  const pageNumber = parseInt(cursor || "0") || 0;
-  const startIndexForPage = pageSize * pageNumber;
-  const endIndexForPage = startIndexForPage + pageSize;
-
-  const pageOfMatchingHashtags = matchingHashtags.slice(
-    startIndexForPage,
-    endIndexForPage,
-  );
-
   return {
     success: {
-      hashtags: pageOfMatchingHashtags,
-      previousPageCursor: cursor,
-      nextPageCursor: (pageNumber + 1).toString(),
+      hashtags: matchingHashtags,
+      totalCount: matchingHashtagsCount,
     },
   };
 }

@@ -51,9 +51,7 @@ export async function handleGetPageOfChatRooms({
       usernameSubstrings,
       async (usernameSubstring) => {
         return await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
-          {
-            usernameSubstring,
-          },
+          { usernameSubstring },
         );
       },
     ).reduce(

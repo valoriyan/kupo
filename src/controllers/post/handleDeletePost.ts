@@ -77,20 +77,24 @@ export async function handleDeletePost({
   // DELETE ASSOCIATED SAVED POSTS
   //////////////////////////////////////////////////
 
-  const userIdSavedItemId = await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId({
-    userId: clientUserId,
-    itemId: postId,
-    itemType: SavedItemType.post,
-  });
+  const userIdSavedItemId =
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId(
+      {
+        userId: clientUserId,
+        itemId: postId,
+        itemType: SavedItemType.post,
+      },
+    );
 
   if (userIdSavedItemId) {
-    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem({
-      userId: clientUserId,
-      itemId: postId,
-      itemType: SavedItemType.post,  
-    });
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
+      {
+        userId: clientUserId,
+        itemId: postId,
+        itemType: SavedItemType.post,
+      },
+    );
   }
-
 
   return {};
 }

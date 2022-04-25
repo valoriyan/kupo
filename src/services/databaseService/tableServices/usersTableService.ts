@@ -290,10 +290,10 @@ export class UsersTableService extends TableService {
     return map(rows, convertDBUserToUnrenderableUser);
   }
 
-  public async selectUsersByShortBioMatchingSubstring({
-    shortBioSubstring,
+  public async selectUsersBySearchString({
+    searchString,
   }: {
-    shortBioSubstring: string;
+    searchString: string;
   }): Promise<UnrenderableUser[]> {
     const query: QueryConfig = {
       text: `
@@ -302,17 +302,16 @@ export class UsersTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          short_bio LIKE CONCAT('%', $1::text, '%' )
+          short_bio LIKE CONCAT('%', $1::text, '%') OR
+          username LIKE CONCAT('%', $1::text, '%')
         ;
       `,
-      values: [shortBioSubstring],
+      values: [searchString],
     };
 
     const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
-
-    return rows.map(convertDBUserToUnrenderableUser);
+    return response.rows.map(convertDBUserToUnrenderableUser);
   }
 
   public async selectUsersByUsernameMatchingSubstring({

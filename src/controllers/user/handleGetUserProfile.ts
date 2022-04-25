@@ -46,7 +46,10 @@ export async function handleGetUserProfile({
       );
   } else {
     // Fetch user profile by own userId
-    if (!clientUserId) return { error: { reason: AuthFailureReason.AuthorizationError } };
+    if (!clientUserId) {
+      controller.setStatus(403);
+      return { error: { reason: AuthFailureReason.AuthorizationError } };
+    }
     const unrenderableUsers =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
         { userIds: [clientUserId] },
