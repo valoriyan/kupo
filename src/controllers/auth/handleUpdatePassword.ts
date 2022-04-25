@@ -11,7 +11,6 @@ export enum UpdatePasswordFailedReason {
   Unknown = "Unknown",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UpdatePasswordFailed {
   reason: UpdatePasswordFailedReason;
 }

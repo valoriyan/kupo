@@ -11,7 +11,6 @@ export enum SetUserHashtagsFailedReason {
   NotFound = "User Not Found",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SetUserHashtagsFailed {
   reason: SetUserHashtagsFailedReason;
 }

@@ -12,7 +12,6 @@ export interface GetPostsScheduledByUserRequestBody {
   rangeEndTimestamp: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPostsScheduledByUserSuccess {
   posts: RenderablePost[];
 }
