@@ -134,9 +134,11 @@ export class SavedItemsTableService extends TableService {
   public async doesUserIdSaveItemId({
     itemId,
     userId,
+    itemType,
   }: {
     itemId: string;
     userId: string;
+    itemType: string;
   }): Promise<boolean> {
     const query = {
       text: `
@@ -148,9 +150,11 @@ export class SavedItemsTableService extends TableService {
             item_id = $1
           AND
             user_id = $2
+          AND
+            item_type = $3
           ;
         `,
-      values: [itemId, userId],
+      values: [itemId, userId, itemType],
     };
 
     const response: QueryResult<{
