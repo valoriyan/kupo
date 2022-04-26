@@ -4,23 +4,17 @@ import { Api, SearchForUsersRequestBody, SearchForUsersSuccess } from "../..";
 
 export const useSearchForUsers = ({
   query,
-  cursor,
+  pageNumber,
   pageSize,
 }: SearchForUsersRequestBody) => {
   return useQuery<SearchForUsersSuccess, Error>(
-    [CacheKeys.SearchForUsers, query, cursor, pageSize],
+    [CacheKeys.SearchForUsers, query, pageNumber, pageSize],
     async () => {
-      const res = await Api.searchForUsers({
-        query,
-        cursor,
-        pageSize,
-      });
+      const res = await Api.searchForUsers({ query, pageNumber, pageSize });
 
-      if (res.data.success) {
-        return res.data.success;
-      }
+      if (res.data.success) return res.data.success;
       throw new Error(res.data.error?.reason ?? "Failed to search for users");
     },
-    { enabled: !!query },
+    { enabled: !!query, keepPreviousData: true },
   );
 };

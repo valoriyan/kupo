@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchForHashtags } from "#/api/queries/discover/useSearchForHashtags";
 import { HashTag } from "#/components/HashTags";
-import { Flex, Stack } from "#/components/Layout";
-import { Paginator } from "#/components/Paginator";
+import { Flex } from "#/components/Layout";
 import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface HashtagResultsProps {
@@ -34,22 +33,17 @@ export const HashtagResults = ({ query }: HashtagResultsProps) => {
           ? "No Results Found"
           : undefined
       }
+      totalCount={data?.totalCount}
+      pageSize={pageSize}
+      page={page}
+      setPage={setPage}
     >
       {!data ? null : (
-        <Stack css={{ gap: "$4", alignItems: "center" }}>
-          <Flex css={{ gap: "$3", flexWrap: "wrap", alignSelf: "flex-start" }}>
-            {data.hashtags.map((hashtag) => (
-              <HashTag key={hashtag} hashtag={hashtag} />
-            ))}
-          </Flex>
-          {Math.ceil(data.totalCount / pageSize) > 1 && (
-            <Paginator
-              currentPage={page}
-              setCurrentPage={setPage}
-              totalPages={Math.ceil(data.totalCount / pageSize)}
-            />
-          )}
-        </Stack>
+        <Flex css={{ gap: "$3", flexWrap: "wrap", alignSelf: "flex-start" }}>
+          {data.hashtags.map((hashtag) => (
+            <HashTag key={hashtag} hashtag={hashtag} />
+          ))}
+        </Flex>
       )}
     </ResultsWrapper>
   );
