@@ -28,14 +28,8 @@ export interface SearchForUsersSuccess {
   users: Array<RenderableUser>;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof SearchForUsersSuccess
    */
-  previousPageCursor?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SearchForUsersSuccess
-   */
-  nextPageCursor?: string;
+  totalCount: number;
 }

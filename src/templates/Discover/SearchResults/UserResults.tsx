@@ -1,4 +1,5 @@
 import Router from "next/router";
+import { useEffect, useState } from "react";
 import { RenderableUser } from "#/api";
 import { useSearchForUsers } from "#/api/queries/discover/useSearchForUsers";
 import { Avatar } from "#/components/Avatar";
@@ -15,7 +16,18 @@ export interface UserResultsProps {
 }
 
 export const UserResults = ({ query }: UserResultsProps) => {
-  const { data, isLoading, isError } = useSearchForUsers({ query, pageSize: 5 });
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+
+  const { data, isLoading, isError } = useSearchForUsers({
+    query,
+    pageNumber: page + 1,
+    pageSize,
+  });
+
+  useEffect(() => {
+    setPage(0);
+  }, [query]);
 
   return (
     <ResultsWrapper
@@ -28,9 +40,13 @@ export const UserResults = ({ query }: UserResultsProps) => {
           ? "No Results Found"
           : undefined
       }
+      totalCount={data?.totalCount}
+      pageSize={pageSize}
+      page={page}
+      setPage={setPage}
     >
       {!data ? null : (
-        <Stack css={{ gap: "$3" }}>
+        <Stack css={{ gap: "$3", width: "100%" }}>
           {data.users.map((user) => (
             <UserPreview key={user.userId} user={user} />
           ))}

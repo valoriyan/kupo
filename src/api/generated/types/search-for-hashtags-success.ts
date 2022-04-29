@@ -26,14 +26,8 @@ export interface SearchForHashtagsSuccess {
   hashtags: Array<string>;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof SearchForHashtagsSuccess
    */
-  previousPageCursor?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SearchForHashtagsSuccess
-   */
-  nextPageCursor?: string;
+  totalCount: number;
 }

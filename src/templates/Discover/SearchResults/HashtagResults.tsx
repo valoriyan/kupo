@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useSearchForHashtags } from "#/api/queries/discover/useSearchForHashtags";
 import { HashTag } from "#/components/HashTags";
 import { Flex } from "#/components/Layout";
@@ -8,7 +9,18 @@ export interface HashtagResultsProps {
 }
 
 export const HashtagResults = ({ query }: HashtagResultsProps) => {
-  const { data, isLoading, isError } = useSearchForHashtags({ query, pageSize: 10 });
+  const [page, setPage] = useState(0);
+  const pageSize = 10;
+
+  const { data, isLoading, isError } = useSearchForHashtags({
+    query,
+    pageNumber: page + 1,
+    pageSize,
+  });
+
+  useEffect(() => {
+    setPage(0);
+  }, [query]);
 
   return (
     <ResultsWrapper
@@ -21,9 +33,13 @@ export const HashtagResults = ({ query }: HashtagResultsProps) => {
           ? "No Results Found"
           : undefined
       }
+      totalCount={data?.totalCount}
+      pageSize={pageSize}
+      page={page}
+      setPage={setPage}
     >
       {!data ? null : (
-        <Flex css={{ gap: "$3", flexWrap: "wrap" }}>
+        <Flex css={{ gap: "$3", flexWrap: "wrap", alignSelf: "flex-start" }}>
           {data.hashtags.map((hashtag) => (
             <HashTag key={hashtag} hashtag={hashtag} />
           ))}

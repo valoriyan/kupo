@@ -26,10 +26,10 @@ export interface SearchForUsersRequestBody {
   query: string;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof SearchForUsersRequestBody
    */
-  cursor?: string;
+  pageNumber: number;
   /**
    *
    * @type {number}

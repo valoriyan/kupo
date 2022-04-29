@@ -28,14 +28,8 @@ export interface SearchForPostsSuccess {
   posts: Array<RenderablePost>;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof SearchForPostsSuccess
    */
-  previousPageCursor?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SearchForPostsSuccess
-   */
-  nextPageCursor?: string;
+  totalCount: number;
 }

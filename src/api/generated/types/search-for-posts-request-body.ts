@@ -26,10 +26,10 @@ export interface SearchForPostsRequestBody {
   query: string;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof SearchForPostsRequestBody
    */
-  cursor?: string;
+  pageNumber: number;
   /**
    *
    * @type {number}

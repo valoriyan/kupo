@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { RenderablePost } from "#/api";
 import { useSearchForPosts } from "#/api/queries/discover/useSearchForPosts";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
@@ -14,7 +15,18 @@ export interface PostResultsProps {
 }
 
 export const PostResults = ({ query }: PostResultsProps) => {
-  const { data, isLoading, isError } = useSearchForPosts({ query, pageSize: 5 });
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+
+  const { data, isLoading, isError } = useSearchForPosts({
+    query,
+    pageNumber: page + 1,
+    pageSize,
+  });
+
+  useEffect(() => {
+    setPage(0);
+  }, [query]);
 
   return (
     <ResultsWrapper
@@ -27,10 +39,15 @@ export const PostResults = ({ query }: PostResultsProps) => {
           ? "No Results Found"
           : undefined
       }
+      totalCount={data?.totalCount}
+      pageSize={pageSize}
+      page={page}
+      setPage={setPage}
     >
       {!data ? null : (
         <Grid
           css={{
+            width: "100%",
             gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
             columnGap: "$3",
             rowGap: "$3",

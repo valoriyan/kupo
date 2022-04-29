@@ -2,6 +2,7 @@ import { ComponentType, useState } from "react";
 import { ContentElement, RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import { HashTag } from "../HashTags";
 import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { Body } from "../Typography";
@@ -10,7 +11,6 @@ import { Comments } from "./Comments";
 import { PostBody } from "./PostBody";
 import { ShareMenu } from "./ShareMenu";
 import { usePostActions } from "./usePostActions";
-import { HashTag } from "../HashTags";
 
 export interface PostProps {
   post: RenderablePost;
@@ -104,12 +104,11 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
 };
 
 const HashTagsWrapper = styled(Flex, {
+  flexWrap: "wrap",
   gap: "$3",
   px: "$4",
   pt: "$4",
   pb: "$2",
-  width: "100%",
-  overflow: "auto",
 });
 
 interface PostActionProps {
