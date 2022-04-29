@@ -31,21 +31,19 @@ export const CommentList = (props: CommentListProps) => {
   }
 
   return (
-    <Stack css={{ height: "100%", width: "100%" }}>
-      <InfiniteScrollArea
-        hasNextPage={props.hasNextPage ?? false}
-        isNextPageLoading={props.isFetchingNextPage}
-        loadNextPage={props.fetchNextPage}
-        // eslint-disable-next-line react/display-name
-        items={props.comments.map((comment) => ({ updateItemHeight }) => (
-          <Comment
-            key={comment.postCommentId}
-            comment={comment}
-            updateItemHeight={updateItemHeight}
-          />
-        ))}
-      />
-    </Stack>
+    <InfiniteScrollArea
+      hasNextPage={props.hasNextPage ?? false}
+      isNextPageLoading={props.isFetchingNextPage}
+      loadNextPage={props.fetchNextPage}
+      // eslint-disable-next-line react/display-name
+      items={props.comments.map((comment) => ({ updateItemHeight }) => (
+        <Comment
+          key={comment.postCommentId}
+          comment={comment}
+          updateItemHeight={updateItemHeight}
+        />
+      ))}
+    />
   );
 };
 

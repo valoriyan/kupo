@@ -1,10 +1,9 @@
 import { useGetSavedPosts } from "#/api/queries/posts/useGetSavedPosts";
+import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
-import { MainTitle } from "#/components/Typography";
-import { styled } from "#/styling";
 import { goToPostPage } from "../SinglePost";
 
 export const SavedPosts = () => {
@@ -14,10 +13,8 @@ export const SavedPosts = () => {
   const posts = data?.pages.flatMap((page) => page.posts);
 
   return (
-    <Wrapper>
-      <Header>
-        <MainTitle as="h1">Saved Posts</MainTitle>
-      </Header>
+    <BasicListWrapper>
+      <BasicListHeader>Saved Posts</BasicListHeader>
       <div>
         {error && !isLoading ? (
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
@@ -40,20 +37,6 @@ export const SavedPosts = () => {
           />
         )}
       </div>
-    </Wrapper>
+    </BasicListWrapper>
   );
 };
-
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  height: "100%",
-});
-
-const Header = styled("div", {
-  display: "flex",
-  px: "$6",
-  py: "$5",
-  gap: "$5",
-  borderBottom: "solid $borderWidths$1 $text",
-});

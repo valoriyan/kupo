@@ -36,6 +36,10 @@ const Wrapper = styled(Flex, {
   alignItems: "center",
   p: "$3",
   borderBottom: "solid $borderWidths$1 $border",
+  bg: "$background1",
+  position: "sticky",
+  top: 0,
+  zIndex: 1,
 });
 
 const SearchBox = styled("input", {

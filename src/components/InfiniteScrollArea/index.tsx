@@ -1,17 +1,12 @@
-import {
-  CSSProperties,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import { ReactElement, ReactNode, useCallback, useEffect, useRef } from "react";
 import mergeRefs from "react-merge-refs";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { VariableSizeList } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
+import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
+import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
+import List, { ListRowProps } from "react-virtualized/dist/commonjs/List";
+import WindowScroller from "react-virtualized/dist/commonjs/WindowScroller";
 import { useWindowSize } from "#/utils/useWindowSize";
 import { Body } from "../Typography";
+import "react-virtualized/styles.css";
 
 export interface InfiniteScrollItemRenderProps {
   updateItemHeight: () => void;
@@ -33,20 +28,23 @@ export const InfiniteScrollArea = ({
   items,
 }: InfiniteScrollAreaProps) => {
   const { height: windowHeight, width: windowWidth } = useWindowSize();
-  const listRef = useRef<VariableSizeList<unknown>>(null);
+  const listRef = useRef<List>(null);
   const rowHeights = useRef<Record<number, number>>({});
 
   useEffect(() => {
-    listRef.current?.resetAfterIndex(0);
+    listRef.current?.recomputeRowHeights(0);
   }, [windowHeight, windowWidth]);
 
   const itemCount = hasNextPage ? items.length + 1 : items.length;
 
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
+  const loadMoreItems = async () => {
+    if (!isNextPageLoading) loadNextPage();
+  };
 
-  const isItemLoaded = (index: number) => !hasNextPage || index < items.length;
+  const isItemLoaded = ({ index }: { index: number }) =>
+    !hasNextPage || index < items.length;
 
-  const Item = ({ index, style }: { index: number; style: CSSProperties }) => {
+  const Item = ({ index, style }: ListRowProps) => {
     const rowRef = useRef<HTMLDivElement>(null);
 
     const updateItemHeight = useCallback(() => {
@@ -55,7 +53,7 @@ export const InfiniteScrollArea = ({
           ...rowHeights.current,
           [index]: rowRef.current.clientHeight,
         };
-        listRef.current?.resetAfterIndex(index);
+        listRef.current?.recomputeRowHeights(index);
       }
     }, [index]);
 
@@ -64,7 +62,7 @@ export const InfiniteScrollArea = ({
     }, [updateItemHeight]);
 
     let content: ReactNode;
-    if (!isItemLoaded(index)) {
+    if (!isItemLoaded({ index })) {
       content = <Body css={{ textAlign: "center", p: "$3" }}>Loading...</Body>;
     } else {
       const currentItem = items[index];
@@ -82,27 +80,32 @@ export const InfiniteScrollArea = ({
   };
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <InfiniteLoader
-          isItemLoaded={isItemLoaded}
-          itemCount={itemCount}
-          loadMoreItems={loadMoreItems}
-        >
-          {({ onItemsRendered, ref }) => (
-            <VariableSizeList
-              ref={mergeRefs([ref, listRef])}
-              height={height}
-              width={width}
-              itemCount={itemCount}
-              itemSize={(index) => rowHeights.current[index] ?? 30}
-              onItemsRendered={onItemsRendered}
+    <WindowScroller>
+      {({ height, scrollTop }) => (
+        <AutoSizer disableHeight>
+          {({ width }) => (
+            <InfiniteLoader
+              isRowLoaded={isItemLoaded}
+              rowCount={itemCount}
+              loadMoreRows={loadMoreItems}
             >
-              {Item}
-            </VariableSizeList>
+              {({ onRowsRendered, registerChild }) => (
+                <List
+                  ref={mergeRefs([registerChild, listRef])}
+                  autoHeight
+                  height={height}
+                  width={width}
+                  scrollTop={scrollTop}
+                  rowCount={itemCount}
+                  rowHeight={({ index }) => rowHeights.current[index] ?? 30}
+                  onRowsRendered={onRowsRendered}
+                  rowRenderer={(rowProps) => <Item {...rowProps} />}
+                />
+              )}
+            </InfiniteLoader>
           )}
-        </InfiniteLoader>
+        </AutoSizer>
       )}
-    </AutoSizer>
+    </WindowScroller>
   );
 };
