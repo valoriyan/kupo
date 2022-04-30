@@ -11,6 +11,7 @@ import { openModal } from "#/components/Modal";
 import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { MainTitle } from "#/components/Typography";
+import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { styled } from "#/styling";
 import { CloseButton, Header } from "#/templates/AddContent";
 import { SectionWrapper } from "#/templates/AddContent/NewPost";
@@ -109,7 +110,7 @@ const Wrapper = styled("div", {
   gridTemplateRows: "auto minmax(0, 1fr)",
   height: "100vh",
   width: "100vw",
-  maxWidth: "600px",
+  maxWidth: MAX_APP_CONTENT_WIDTH,
   bg: "$pageBackground",
 });
 

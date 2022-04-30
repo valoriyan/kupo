@@ -10,6 +10,8 @@ const ProfilePage = () => {
   return <UserProfile username={username} />;
 };
 
-ProfilePage.getLayout = (page: ReactElement) => <AppLayout>{page}</AppLayout>;
+ProfilePage.getLayout = (page: ReactElement) => (
+  <AppLayout trackContentScroll>{page}</AppLayout>
+);
 
 export default ProfilePage;
