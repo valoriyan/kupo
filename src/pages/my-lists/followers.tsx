@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
@@ -5,7 +6,14 @@ import { Followers } from "#/templates/MyLists/Followers";
 import { getMyListsCloseHref } from ".";
 
 const MyListsFollowersPage = ProtectedPage(() => {
-  return <Followers />;
+  return (
+    <>
+      <Head>
+        <title>Followers / Kupo</title>
+      </Head>
+      <Followers />
+    </>
+  );
 });
 
 MyListsFollowersPage.getLayout = (page) => (

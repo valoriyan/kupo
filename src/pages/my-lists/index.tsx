@@ -1,4 +1,5 @@
 import Router from "next/router";
+import Head from "next/head";
 import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
@@ -15,7 +16,14 @@ export const setPreviousLocationForMyLists = () => {
 export const getMyListsCloseHref = () => previousLocation.get() ?? "/feed";
 
 const MyListsPage = ProtectedPage(() => {
-  return <MyLists />;
+  return (
+    <>
+      <Head>
+        <title>My Lists / Kupo</title>
+      </Head>
+      <MyLists />
+    </>
+  );
 });
 
 MyListsPage.getLayout = (page) => (

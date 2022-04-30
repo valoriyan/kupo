@@ -1,7 +1,6 @@
 import { RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Flex } from "#/components/Layout";
-import { Heading } from "#/components/Typography";
 import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { styled } from "#/styling";
 import { FollowButton } from "./FollowButton";
@@ -54,4 +53,9 @@ const Wrapper = styled("div", {
   transition: "transform $1 ease",
 });
 
-const Username = styled(Heading, { fontWeight: "$bold" });
+// TODO: Make bold variants of regular fonts
+const Username = styled("div", {
+  fontFamily: "$body",
+  fontWeight: "$bold",
+  fontSize: "$3",
+});

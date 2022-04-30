@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
@@ -9,7 +10,14 @@ const ChatRoomPage = ProtectedPage(() => {
   const router = useRouter();
   const chatRoomId = router.query.chatRoomId as string;
 
-  return <ChatRoom chatRoomId={chatRoomId} />;
+  return (
+    <>
+      <Head>
+        <title>Chat Room / Kupo</title>
+      </Head>
+      <ChatRoom chatRoomId={chatRoomId} />
+    </>
+  );
 });
 
 ChatRoomPage.getLayout = (page) => (

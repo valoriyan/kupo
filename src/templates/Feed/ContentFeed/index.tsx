@@ -2,6 +2,7 @@ import { UserContentFeedFilter } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { goToPostPage } from "#/templates/SinglePost";
@@ -22,7 +23,11 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
   }
 
   if (isLoading || !data) {
-    return <LoadingArea size="lg" />;
+    return (
+      <Flex css={{ p: "$6" }}>
+        <LoadingArea size="lg" />
+      </Flex>
+    );
   }
 
   const posts = data.pages.flatMap((page) => page.posts);

@@ -18,7 +18,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const KuponoApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+const KupoApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   globalStyles();
 
   const page = Component.getLayout?.(<Component {...pageProps} />) ?? (
@@ -37,4 +37,4 @@ const KuponoApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   );
 };
 
-export default KuponoApp;
+export default KupoApp;

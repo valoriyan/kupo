@@ -1,4 +1,5 @@
 import Router from "next/router";
+import Head from "next/head";
 import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
@@ -15,7 +16,14 @@ export const setPreviousLocationForSettings = () => {
 export const getSettingsCloseHref = () => previousLocation.get() ?? "/feed";
 
 const SettingsPage = ProtectedPage(() => {
-  return <Settings />;
+  return (
+    <>
+      <Head>
+        <title>Settings / Kupo</title>
+      </Head>
+      <Settings />
+    </>
+  );
 });
 
 SettingsPage.getLayout = (page) => {

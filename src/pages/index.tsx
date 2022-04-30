@@ -1,7 +1,15 @@
+import Head from "next/head";
 import { Home } from "#/templates/Home";
 
 const HomePage = () => {
-  return <Home />;
+  return (
+    <>
+      <Head>
+        <title>Kupo</title>
+      </Head>
+      <Home />
+    </>
+  );
 };
 
 export default HomePage;

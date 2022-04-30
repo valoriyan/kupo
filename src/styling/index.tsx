@@ -35,7 +35,7 @@ const themedStitches = createStitches({
       background2: "hsla(242, 16%, 98%, 1)", // Backgrounds that sit on top of background1
       background3: "hsla(242, 16%, 94%, 1)", // Backgrounds that sit on top of background2
       overlay: "rgba(0,0,0,0.25)",
-      heavyOverlay: "rgba(0,0,0,0.6)",
+      heavyOverlay: "rgba(255,255,255,0.6)",
       mediaOverlay: "rgba(115, 115, 115, 0.5)",
 
       text: "hsla(242, 14%, 8%, 1)", // Text that sits on the background colors
@@ -113,7 +113,6 @@ const themedStitches = createStitches({
       12: "6rem", // 96px
     },
     fonts: {
-      heading: "AbhayaLibre, serif",
       body: "'Nunito Sans', Helvetica, sans-serif",
     },
     fontWeights: {

@@ -1,7 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { darkTheme, getCssText } from "#/styling";
 
-export default class KuponoDocument extends Document {
+export default class KupoDocument extends Document {
   render() {
     return (
       <Html lang="en" className={darkTheme.className}>
