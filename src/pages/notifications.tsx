@@ -1,8 +1,11 @@
+import { AppLayout } from "#/components/AppLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Notifications } from "#/templates/Notifications";
 
-const NotificationsPage = () => {
+const NotificationsPage = ProtectedPage(() => {
   return <Notifications />;
-};
+});
 
-export default ProtectedPage(NotificationsPage);
+NotificationsPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default NotificationsPage;

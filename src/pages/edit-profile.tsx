@@ -1,10 +1,11 @@
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { AppLayout } from "#/components/AppLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
 import { ProtectedPage } from "#/contexts/auth";
 import { EditProfile } from "#/templates/EditProfile";
 
-const EditProfilePage = () => {
+const EditProfilePage = ProtectedPage(() => {
   const { data, isLoading, error } = useGetClientUserProfile();
 
   return !isLoading && error ? (
@@ -14,6 +15,8 @@ const EditProfilePage = () => {
   ) : (
     <EditProfile user={data} />
   );
-};
+});
 
-export default ProtectedPage(EditProfilePage);
+EditProfilePage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default EditProfilePage;

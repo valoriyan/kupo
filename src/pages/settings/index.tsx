@@ -1,9 +1,9 @@
-import { ReactElement } from "react";
 import Router from "next/router";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { ProtectedPage } from "#/contexts/auth";
 import { Settings } from "#/templates/Settings";
 import { SessionStorageItem } from "#/utils/storage";
-import { ProtectedPage } from "#/contexts/auth";
 
 const previousLocation = SessionStorageItem<string>("settings");
 
@@ -18,11 +18,13 @@ const SettingsPage = ProtectedPage(() => {
   return <Settings />;
 });
 
-SettingsPage.getLayout = (page: ReactElement) => {
+SettingsPage.getLayout = (page) => {
   return (
-    <NestedPageLayout heading="Settings" closeHref={getSettingsCloseHref()}>
-      {page}
-    </NestedPageLayout>
+    <AppLayout>
+      <NestedPageLayout heading="Settings" closeHref={getSettingsCloseHref()}>
+        {page}
+      </NestedPageLayout>
+    </AppLayout>
   );
 };
 

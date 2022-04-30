@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { ReactElement } from "react";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Messages } from "#/templates/Messages";
@@ -18,12 +18,12 @@ const MessagesPage = ProtectedPage(() => {
   return <Messages />;
 });
 
-MessagesPage.getLayout = (page: ReactElement) => {
-  return (
+MessagesPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout heading="Messages" closeHref={getMessagesCloseHref()}>
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default MessagesPage;

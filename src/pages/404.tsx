@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+import { AppLayout } from "#/components/AppLayout";
 import { Stack } from "#/components/Layout";
 import { Heading, MainTitle } from "#/components/Typography";
 
@@ -13,5 +15,7 @@ export const Kupono404 = () => {
     </Stack>
   );
 };
+
+Kupono404.getLayout = (page: ReactElement) => <AppLayout>{page}</AppLayout>;
 
 export default Kupono404;

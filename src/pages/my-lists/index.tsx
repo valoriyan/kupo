@@ -1,9 +1,9 @@
-import { ReactElement } from "react";
 import Router from "next/router";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { ProtectedPage } from "#/contexts/auth";
 import { MyLists } from "#/templates/MyLists";
 import { SessionStorageItem } from "#/utils/storage";
-import { ProtectedPage } from "#/contexts/auth";
 
 const previousLocation = SessionStorageItem<string>("my-lists");
 
@@ -18,12 +18,12 @@ const MyListsPage = ProtectedPage(() => {
   return <MyLists />;
 });
 
-MyListsPage.getLayout = (page: ReactElement) => {
-  return (
+MyListsPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout heading="My Lists" closeHref={getMyListsCloseHref()}>
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default MyListsPage;

@@ -1,8 +1,11 @@
+import { AppLayout } from "#/components/AppLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { AddContent } from "#/templates/AddContent";
 
-const AddContentPage = () => {
+const AddContentPage = ProtectedPage(() => {
   return <AddContent />;
-};
+});
 
-export default ProtectedPage(AddContentPage);
+AddContentPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default AddContentPage;

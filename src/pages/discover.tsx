@@ -1,8 +1,11 @@
+import { AppLayout } from "#/components/AppLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Discover } from "#/templates/Discover";
 
-const DiscoverPage = () => {
+const DiscoverPage = ProtectedPage(() => {
   return <Discover />;
-};
+});
 
-export default ProtectedPage(DiscoverPage);
+DiscoverPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default DiscoverPage;

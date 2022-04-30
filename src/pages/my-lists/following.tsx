@@ -1,15 +1,15 @@
-import { ReactElement } from "react";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { ProtectedPage } from "#/contexts/auth";
 import { Following } from "#/templates/MyLists/Following";
 import { getMyListsCloseHref } from ".";
-import { ProtectedPage } from "#/contexts/auth";
 
 const MyListsFollowingPage = ProtectedPage(() => {
   return <Following />;
 });
 
-MyListsFollowingPage.getLayout = (page: ReactElement) => {
-  return (
+MyListsFollowingPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout
       heading="My Lists - Following"
       closeHref={getMyListsCloseHref()}
@@ -17,7 +17,7 @@ MyListsFollowingPage.getLayout = (page: ReactElement) => {
     >
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default MyListsFollowingPage;

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Account } from "#/templates/Settings/Account";
@@ -8,15 +8,17 @@ const AccountSettingsPage = ProtectedPage(() => {
   return <Account />;
 });
 
-AccountSettingsPage.getLayout = (page: ReactElement) => {
+AccountSettingsPage.getLayout = (page) => {
   return (
-    <NestedPageLayout
-      heading="Settings - Account"
-      closeHref={getSettingsCloseHref()}
-      backHref="/settings"
-    >
-      {page}
-    </NestedPageLayout>
+    <AppLayout>
+      <NestedPageLayout
+        heading="Settings - Account"
+        closeHref={getSettingsCloseHref()}
+        backHref="/settings"
+      >
+        {page}
+      </NestedPageLayout>
+    </AppLayout>
   );
 };
 

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Followers } from "#/templates/MyLists/Followers";
@@ -8,8 +8,8 @@ const MyListsFollowersPage = ProtectedPage(() => {
   return <Followers />;
 });
 
-MyListsFollowersPage.getLayout = (page: ReactElement) => {
-  return (
+MyListsFollowersPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout
       heading="My Lists - Followers"
       closeHref={getMyListsCloseHref()}
@@ -17,7 +17,7 @@ MyListsFollowersPage.getLayout = (page: ReactElement) => {
     >
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default MyListsFollowersPage;
