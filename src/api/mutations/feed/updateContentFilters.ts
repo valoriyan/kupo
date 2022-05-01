@@ -7,8 +7,6 @@ export const useUpdateContentFilters = () => {
 
   return useMutation(
     async (updatedContentFilters: UserContentFeedFilter[]) => {
-      // TODO: Send new filters to the backend
-
       return await Api.setUserContentFeedFilters({
         requestedContentFeedFilters: updatedContentFilters,
       });

@@ -99,6 +99,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           p: "$3",
           pl: "$5",
           justifyContent: "space-between",
+          borderBottom: "solid $borderWidths$1 $background1",
         }}
       >
         <MainTitle>Feeds</MainTitle>
