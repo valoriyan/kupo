@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { styled } from "#/styling";
+import { translucentBg } from "#/styling/mixins";
 import { ArrowLeftIcon } from "../Icons";
 import { Box, Flex, Grid } from "../Layout";
 import { MainTitle } from "../Typography";
@@ -27,12 +28,11 @@ export const DetailLayout = (props: DetailLayoutProps) => {
   );
 };
 
-const Header = styled(Flex, {
+const Header = styled(Flex, translucentBg, {
   position: "sticky",
   top: 0,
   zIndex: 1,
   alignItems: "center",
-  bg: "$pageBackground",
   borderBottom: "solid $borderWidths$1 $border",
   px: "$4",
   py: "$5",

@@ -89,3 +89,11 @@ export const Button = styled("button", {
     size: "md",
   },
 });
+
+export const IconButton = styled("button", {
+  lineHeight: 0,
+  "&:disabled": {
+    color: "$disabledText",
+    cursor: "not-allowed",
+  },
+});

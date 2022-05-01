@@ -1,18 +1,14 @@
-import { FormEventHandler, useState } from "react";
 import { motion } from "framer-motion";
-import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
-import {
-  ChevronDownRIcon,
-  ChevronUpIcon,
-  ChevronUpRIcon,
-  MathPlusIcon,
-  TrashIcon,
-} from "#/components/Icons";
-import { Flex, Grid, Stack } from "#/components/Layout";
-import { Body, bodyStyles, MainTitle } from "#/components/Typography";
-import { styled } from "#/styling";
+import { FormEventHandler, useState } from "react";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
+import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
+import { IconButton } from "#/components/Button";
+import { ChevronUpIcon, MathPlusIcon } from "#/components/Icons";
+import { Flex, Grid, Stack } from "#/components/Layout";
+import { bodyStyles, MainTitle } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
+import { styled } from "#/styling";
+import { FilterRow } from "./FilterRow";
 
 export interface FeedListEditorProps {
   hide: () => void;
@@ -173,62 +169,3 @@ const AddButton = styled("button", {
     cursor: "not-allowed",
   },
 });
-
-interface FilterRowProps {
-  filter: UserContentFeedFilter;
-  actions?: {
-    moveUp?: () => void;
-    moveDown?: () => void;
-    delete?: () => void;
-  };
-}
-
-const FilterRow = ({ filter, actions }: FilterRowProps) => {
-  let filterDisplayName;
-
-  if (filter.type === UserContentFeedFilterType.Username) {
-    filterDisplayName = `@${filter.value}`;
-  } else if (filter.type === UserContentFeedFilterType.Hashtag) {
-    filterDisplayName = `#${filter.value}`;
-  } else if (filter.type === UserContentFeedFilterType.FollowingUsers) {
-    filterDisplayName = `Following`;
-  }
-
-  return (
-    <FilterRowWrapper layout transition={{ duration: 0.2 }}>
-      <Body>{filterDisplayName}</Body>
-      {actions && (
-        <Flex css={{ gap: "$3" }}>
-          {actions.moveUp && (
-            <IconButton onClick={actions.moveUp}>
-              <ChevronUpRIcon />
-            </IconButton>
-          )}
-          {actions.moveDown && (
-            <IconButton onClick={actions.moveDown}>
-              <ChevronDownRIcon />
-            </IconButton>
-          )}
-          {actions.delete && (
-            <IconButton onClick={actions.delete} css={{ color: "$failure" }}>
-              <TrashIcon />
-            </IconButton>
-          )}
-        </Flex>
-      )}
-    </FilterRowWrapper>
-  );
-};
-
-const FilterRowWrapper = styled(motion.div, {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  borderTop: "solid $borderWidths$1 $border",
-  borderBottom: "solid $borderWidths$1 $border",
-  p: "$5",
-  bg: "$background1",
-  marginTop: "-1px",
-});
-
-const IconButton = styled("button", { lineHeight: 0 });
