@@ -3,6 +3,7 @@ import { Avatar } from "#/components/Avatar";
 import { Flex } from "#/components/Layout";
 import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { styled } from "#/styling";
+import { translucentBg } from "#/styling/mixins";
 import { FollowButton } from "./FollowButton";
 
 export interface ProfileBannerProps {
@@ -37,7 +38,7 @@ export const ProfileBanner = ({
   );
 };
 
-const Wrapper = styled("div", {
+const Wrapper = styled("div", translucentBg, {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -48,8 +49,6 @@ const Wrapper = styled("div", {
   maxWidth: MAX_APP_CONTENT_WIDTH,
   zIndex: 1,
   p: "$4",
-  bg: "$heavyOverlay",
-  backdropFilter: "blur($sizes$4)",
   transition: "transform $1 ease",
 });
 
