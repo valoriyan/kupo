@@ -54,14 +54,12 @@ export async function handleCreatePost({
 
   const creationTimestamp = now;
 
-  const lowerCaseCaption = caption.toLowerCase();
-
   try {
     await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
       postId,
       creationTimestamp,
       authorUserId: clientUserId,
-      caption: lowerCaseCaption,
+      caption,
       scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
       expirationTimestamp,
     });
@@ -132,7 +130,7 @@ export async function handleCreatePost({
           creationTimestamp,
           contentElements,
           authorUserId: clientUserId,
-          caption: lowerCaseCaption,
+          caption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
           hashtags: lowerCaseHashtags,
           expirationTimestamp,
