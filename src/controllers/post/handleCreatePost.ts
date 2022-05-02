@@ -5,7 +5,8 @@ import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { checkAuthorization } from "../auth/utilities";
 import { ContentElement, RenderablePost } from "./models";
-import { uploadMediaFile } from "../utilities/uploadMediaFile";
+import { uploadMediaFile } from "../utilities/mediaFiles/uploadMediaFile";
+import { checkValidityOfMediaFiles } from "../utilities/mediaFiles/checkValidityOfMediaFiles";
 
 export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -65,6 +66,13 @@ export async function handleCreatePost({
       scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
       expirationTimestamp,
     });
+
+    const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
+    if (mediaFileErrors.length > 0) {
+      return {
+        error: { reason: CreatePostFailedReason.UnknownCause },
+      };
+    }
 
     const filedAndRenderablePostContentElements = await BluebirdPromise.map(
       mediaFiles,

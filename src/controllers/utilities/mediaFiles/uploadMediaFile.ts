@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 
 export async function uploadMediaFile({
   file,
@@ -12,7 +12,7 @@ export async function uploadMediaFile({
   fileTemporaryUrl: string;
   mimetype: string;
 }> {
-  const mimetype = file.mimetype;
+  const { mimetype } = file;
 
   const permittedImageTypes = ["image/jpeg", "image/png"];
 

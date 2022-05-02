@@ -4,7 +4,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 import { v4 as uuidv4 } from "uuid";
 import { Promise as BluebirdPromise } from "bluebird";
-import { uploadMediaFile } from "../utilities/uploadMediaFile";
+import { uploadMediaFile } from "../utilities/mediaFiles/uploadMediaFile";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CreateShopItemSuccess {}
