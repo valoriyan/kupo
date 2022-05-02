@@ -1,20 +1,16 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
-import { RenderablePost } from "../../post/models";
-import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
-import {
-  encodeCursor,
-  getPageOfPostsFromAllPosts,
-} from "../../post/pagination/utilities";
+import { RenderablePost } from "../../post/models";
 import {
   constructRenderablePostsFromParts,
   mergeArraysOfUnrenderablePostWithoutElementsOrHashtags,
 } from "../../post/utilities";
+import { DiscoverController } from "../discoverController";
 
 export interface SearchForPostsRequestBody {
   query: string;
-  cursor?: string;
+  pageNumber: number;
   pageSize: number;
 }
 
@@ -28,8 +24,7 @@ export interface SearchForPostsFailed {
 
 export interface SearchForPostsSuccess {
   posts: RenderablePost[];
-  previousPageCursor?: string;
-  nextPageCursor?: string;
+  totalCount: number;
 }
 
 export async function handleSearchForPosts({
@@ -41,11 +36,11 @@ export async function handleSearchForPosts({
   request: express.Request;
   requestBody: SearchForPostsRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
-  const { cursor, query, pageSize } = requestBody;
-  const lowercaseTrimmedQuery = query.trim().toLowerCase();
-
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
+
+  const { pageNumber, query, pageSize } = requestBody;
+  const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const postIdsWithPossibleHashtags =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithOneOfHashtags(
@@ -71,37 +66,27 @@ export async function handleSearchForPosts({
     return {
       success: {
         posts: [],
-        previousPageCursor: cursor,
+        totalCount: 0,
       },
     };
   }
 
-  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
-    unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: cursor,
-    pageSize: pageSize,
-  });
+  const pageOfUnrenderablePosts = unrenderablePostsWithoutElementsOrHashtags.slice(
+    pageSize * pageNumber - pageSize,
+    pageSize * pageNumber,
+  );
 
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: filteredUnrenderablePostsWithoutElements,
+    posts: pageOfUnrenderablePosts,
     clientUserId,
   });
-
-  const nextPageCursor =
-    renderablePosts.length > 0
-      ? encodeCursor({
-          timestamp:
-            renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
-        })
-      : undefined;
 
   return {
     success: {
       posts: renderablePosts,
-      previousPageCursor: cursor,
-      nextPageCursor,
+      totalCount: unrenderablePostsWithoutElementsOrHashtags.length,
     },
   };
 }

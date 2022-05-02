@@ -10,7 +10,7 @@ import {
 
 export interface SearchForUsersRequestBody {
   query: string;
-  cursor?: string;
+  pageNumber: number;
   pageSize: number;
 }
 
@@ -24,8 +24,7 @@ export interface SearchForUsersFailed {
 
 export interface SearchForUsersSuccess {
   users: RenderableUser[];
-  previousPageCursor?: string;
-  nextPageCursor?: string;
+  totalCount: number;
 }
 
 export async function handleSearchForUsers({
@@ -40,7 +39,7 @@ export async function handleSearchForUsers({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const { cursor, query, pageSize } = requestBody;
+  const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const unrenderableUsersMatchingSearchString =
@@ -66,29 +65,27 @@ export async function handleSearchForUsers({
     return {
       success: {
         users: [],
-        previousPageCursor: cursor,
+        totalCount: 0,
       },
     };
   }
 
+  const pageOfUnrenderableUsers = unrenderableUsers.slice(
+    pageSize * pageNumber - pageSize,
+    pageSize * pageNumber,
+  );
+
   const renderableUsers = await constructRenderableUsersFromParts({
     clientUserId,
-    unrenderableUsers,
+    unrenderableUsers: pageOfUnrenderableUsers,
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
   });
 
-  const pageNumber = parseInt(cursor || "0") || 0;
-  const startIndexForPage = pageSize * pageNumber;
-  const endIndexForPage = startIndexForPage + pageSize;
-
-  const pageOfRenderableUsers = renderableUsers.slice(startIndexForPage, endIndexForPage);
-
   return {
     success: {
-      users: pageOfRenderableUsers,
-      previousPageCursor: cursor,
-      nextPageCursor: (pageNumber + 1).toString(),
+      users: renderableUsers,
+      totalCount: unrenderableUsers.length,
     },
   };
 }
