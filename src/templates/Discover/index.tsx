@@ -70,8 +70,8 @@ const SearchBar = styled("label", {
   svg: { color: "$border", transition: "color $1 ease" },
 
   "&:focus-within": {
-    borderColor: "$link",
-    svg: { color: "$link" },
+    borderColor: "$primary",
+    svg: { color: "$primary" },
   },
 });
 

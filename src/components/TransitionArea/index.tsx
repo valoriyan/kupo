@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, Variant, Variants } from "framer-motion";
 import { Key, ReactNode } from "react";
 import { CSS, styled, usePrefersMotion } from "#/styling";
+import { Box } from "../Layout";
 import { ScrollArea } from "../ScrollArea";
 
 export type Transition = Record<"initial" | "animate" | "exit", Variant> & {
@@ -11,6 +12,7 @@ export interface TransitionAreaProps {
   transitionKey: Key;
   animation: Transition | undefined;
   children: ReactNode;
+  handleScroll?: boolean;
   css?: CSS;
   // custom is defined as being any by framer-motion
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,6 +23,7 @@ export const TransitionArea = (props: TransitionAreaProps) => {
   const prefersMotion = usePrefersMotion();
   const { duration, ...animation } = props.animation ?? noAnimation;
   const transitionAnimation = prefersMotion ? animation : noAnimation;
+  const handleScroll = props.handleScroll ?? true;
 
   return (
     <ContentArea css={props.css as Record<string, string>}>
@@ -34,7 +37,11 @@ export const TransitionArea = (props: TransitionAreaProps) => {
           animate="animate"
           exit="exit"
         >
-          <CurrentContent>{props.children}</CurrentContent>
+          {handleScroll ? (
+            <FullScrollArea>{props.children}</FullScrollArea>
+          ) : (
+            <Box css={{ size: "100%" }}>{props.children}</Box>
+          )}
         </TransitionWrapper>
       </AnimatePresence>
     </ContentArea>
@@ -42,26 +49,19 @@ export const TransitionArea = (props: TransitionAreaProps) => {
 };
 
 const ContentArea = styled("div", {
-  height: "100%",
-  width: "100%",
+  size: "100%",
   overflow: "hidden",
   position: "relative",
 });
 
 const TransitionWrapper = styled(motion.div, {
-  height: "100%",
-  width: "100%",
+  size: "100%",
   overflow: "hidden",
   position: "absolute",
-  top: 0,
-  left: 0,
-  bottom: 0,
-  right: 0,
+  inset: 0,
 });
 
-const CurrentContent = styled(ScrollArea, {
-  size: "100%",
-});
+const FullScrollArea = styled(ScrollArea, { size: "100%" });
 
 const noAnimation: Transition = {
   initial: { translateX: 0, translateY: 0 },

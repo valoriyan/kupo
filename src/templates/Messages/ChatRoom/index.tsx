@@ -1,18 +1,17 @@
 import { useEffect } from "react";
 import { RenderableChatMessage } from "#/api";
-import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGetPageOfChatMessagesFromChatRoomId";
-import { FormStateProvider, useFormState } from "./FormContext";
-import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
+import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
-import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
-import { styled } from "#/styling";
-import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
-import { ChatMessagesDisplay } from "./ChatMessagesDisplay";
-import { NewMessageInput } from "./NewMessageInput";
-import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
-import { ChatMessageActionRow } from "./ChatMessageActionRow";
+import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGetPageOfChatMessagesFromChatRoomId";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
+import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
+import { styled } from "#/styling";
+import { ChatMessagesDisplay } from "./ChatMessagesDisplay";
+import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
+import { FormStateProvider, useFormState } from "./FormContext";
+import { MessageComposer } from "./MessageComposer";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
 const DELETED_CHAT_MESSAGE_EVENT_NAME = "DELETED_CHAT_MESSAGE_EVENT_NAME";
@@ -148,7 +147,6 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
         chatRoomMembers={chatRoomMembersData}
         clientUser={clientUserData}
       />
-
       <ChatMessagesDisplay
         chatMessages={chatMessages}
         clientUser={clientUserData}
@@ -156,14 +154,13 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
           infiniteQueryResultOfFetchingPageOfChatMessages
         }
       />
-      <NewMessageInput onSubmitNewChatMessage={onSubmitNewChatMessage} />
-      <ChatMessageActionRow onSubmitNewChatMessage={onSubmitNewChatMessage} />
+      <MessageComposer onSubmitNewChatMessage={onSubmitNewChatMessage} />
     </Grid>
   );
 };
 
 const Grid = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto 13fr 4fr 1fr",
   height: "100%",
+  display: "grid",
+  gridTemplateRows: "auto minmax(0, 1fr) auto",
 });

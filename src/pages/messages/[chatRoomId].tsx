@@ -26,6 +26,7 @@ ChatRoomPage.getLayout = (page) => (
       heading="Messages"
       backHref="/messages"
       closeHref={getMessagesCloseHref()}
+      handleScroll={false}
     >
       {page}
     </NestedPageLayout>

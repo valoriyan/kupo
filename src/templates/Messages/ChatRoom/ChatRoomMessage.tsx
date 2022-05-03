@@ -71,6 +71,7 @@ const MessageText = styled("div", {
 
 const Timestamp = styled("span", {
   fontSize: "$1",
+  color: "$secondaryText",
 });
 
 const DeletePostButton = styled("span", {

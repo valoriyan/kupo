@@ -42,9 +42,9 @@ export const ChatRoomMembersDisplay = ({
 };
 
 const Wrapper = styled("div", {
-  padding: "$5",
   display: "flex",
   alignItems: "center",
   gap: "$4",
+  p: "$4",
   borderBottom: "solid $borderWidths$1 $border",
 });

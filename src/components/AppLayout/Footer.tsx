@@ -2,9 +2,8 @@ import Link from "next/link";
 import { PropsWithChildren } from "react";
 import { styled } from "#/styling";
 import { setPreviousLocationForAddContent } from "#/templates/AddContent";
-import { Avatar } from "../Avatar";
 import { Drawer } from "../Drawer";
-import { BellIcon, HomeIcon, MailIcon, MathPlusIcon } from "../Icons";
+import { BellIcon, HomeIcon, MailIcon, MathPlusIcon, UserIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadLink } from "./shared";
@@ -27,7 +26,7 @@ export const Footer = () => {
         <MailIcon />
       </IconLink>
       <Drawer
-        trigger={<Avatar src="" alt="User Avatar" size="$7" />}
+        trigger={<UserIcon />}
         position={{ top: "0", bottom: "57px" /* Top of Footer */ }}
       >
         {({ hide }) => <NavigationDrawer hide={hide} />}

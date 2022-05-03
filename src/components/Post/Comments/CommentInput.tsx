@@ -36,7 +36,7 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
       <Stack css={{ flex: 1 }}>
         <TextArea
           rows={3}
-          placeholder="Add comment"
+          placeholder="leave a comment..."
           value={text}
           onChange={(e) => setText(e.currentTarget.value.slice(0, COMMENT_CHAR_LIMIT))}
         />
