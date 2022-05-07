@@ -1,13 +1,11 @@
 import { IdProvider } from "@radix-ui/react-id";
-import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import { ReactElement, ReactNode } from "react";
 import { NextPage } from "next";
-import { AppLayout } from "#/components/AppLayout";
+import type { AppProps } from "next/app";
+import { ReactElement, ReactNode } from "react";
+import { ModalContainer } from "#/components/Modal";
 import { QueryClientProvider } from "#/contexts/queryClient";
 import { globalStyles } from "#/styling/globalStyles";
 import { ThemeProvider } from "#/styling/ThemeProvider";
-import { ModalContainer } from "#/components/Modal";
 import "#/styling/modernNormalize.css";
 
 export interface WithPageWithLayout {
@@ -20,30 +18,23 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const KuponoApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+const KupoApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   globalStyles();
-  const router = useRouter();
 
-  /** These routes aren't a part of the app experience and should not include the footer, etc. */
-  const noAppLayout = ["/login", "/sign-up", "/forgot-password", "/"].includes(
-    router.pathname,
+  const page = Component.getLayout?.(<Component {...pageProps} />) ?? (
+    <Component {...pageProps} />
   );
-
-  /** Use the layout defined at the page level, if available */
-  const getLayout = Component.getLayout ?? ((page) => page);
-
-  const page = getLayout(<Component {...pageProps} />);
 
   return (
     <ThemeProvider>
       <IdProvider>
         <QueryClientProvider>
           <ModalContainer />
-          {noAppLayout ? page : <AppLayout>{page}</AppLayout>}
+          {page}
         </QueryClientProvider>
       </IdProvider>
     </ThemeProvider>
   );
 };
 
-export default KuponoApp;
+export default KupoApp;

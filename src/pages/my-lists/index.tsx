@@ -1,9 +1,10 @@
-import { ReactElement } from "react";
 import Router from "next/router";
+import Head from "next/head";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { ProtectedPage } from "#/contexts/auth";
 import { MyLists } from "#/templates/MyLists";
 import { SessionStorageItem } from "#/utils/storage";
-import { ProtectedPage } from "#/contexts/auth";
 
 const previousLocation = SessionStorageItem<string>("my-lists");
 
@@ -15,15 +16,22 @@ export const setPreviousLocationForMyLists = () => {
 export const getMyListsCloseHref = () => previousLocation.get() ?? "/feed";
 
 const MyListsPage = ProtectedPage(() => {
-  return <MyLists />;
+  return (
+    <>
+      <Head>
+        <title>My Lists / Kupo</title>
+      </Head>
+      <MyLists />
+    </>
+  );
 });
 
-MyListsPage.getLayout = (page: ReactElement) => {
-  return (
+MyListsPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout heading="My Lists" closeHref={getMyListsCloseHref()}>
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default MyListsPage;

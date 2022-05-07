@@ -1,4 +1,5 @@
 import { MouseEventHandler } from "react";
+import { IconButton } from "#/components/Button";
 import {
   ChevronDownRIcon,
   ChevronUpRIcon,
@@ -107,5 +108,3 @@ const ActionsBanner = styled("div", {
   color: "$accentText",
   svg: { flexShrink: 0 },
 });
-
-const IconButton = styled("button", { lineHeight: 0 });

@@ -1,9 +1,10 @@
 import { UseInfiniteQueryResult } from "react-query";
 import {
+  GetPageOfChatMessagesSuccess,
   RenderableChatMessage,
   RenderableUser,
-  GetPageOfChatMessagesSuccess,
 } from "#/api";
+import { ScrollArea } from "#/components/ScrollArea";
 import { styled } from "#/styling";
 import { ChatRoomMessage } from "./ChatRoomMessage";
 
@@ -64,34 +65,31 @@ export const ChatMessagesDisplay = ({
   return (
     <Wrapper>
       {loadPreviousPageItem}
-
       {renderedMessages}
     </Wrapper>
   );
 };
 
-const Wrapper = styled("div", {
+const Wrapper = styled(ScrollArea, {
   display: "flex",
   flexDirection: "column",
-  padding: "$5",
-  overflowY: "scroll",
+  p: "$4",
 });
 
 const ClientUserMessage = styled("div", {
-  marginLeft: "30%",
-  padding: "$3",
+  ml: "30%",
+  p: "$3",
   backgroundColor: "$primaryTranslucent",
   color: "$text",
-  marginTop: "$5",
-
+  mt: "$5",
   borderRadius: "$4",
 });
 
 const OtherUserMessage = styled("div", {
-  marginRight: "30%",
-  backgroundColor: "$primary",
+  mr: "30%",
+  p: "$3",
+  backgroundColor: "$background3",
   color: "$text",
-  padding: "$3",
+  mt: "$5",
   borderRadius: "$4",
-  marginTop: "$5",
 });

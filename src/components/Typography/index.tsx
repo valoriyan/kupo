@@ -2,13 +2,6 @@ import { css, styled } from "#/styling";
 
 export * from "./utils";
 
-export const brandTitleStyles = css({
-  fontFamily: "$heading",
-  fontWeight: "$bold",
-  fontSize: "$7",
-});
-export const BrandTitle = styled("div", brandTitleStyles);
-
 export const sloganStyles = css({
   fontFamily: "$body",
   fontWeight: "$regular",

@@ -14,7 +14,6 @@ export const useGetContentFilters = ({ clientUserId }: { clientUserId: string })
   ];
 
   const { data, ...queryResult } = useQuery([CacheKeys.ContentFilters], async () => {
-    // TODO: Fetch filters from the backend
     const response = await Api.getUserContentFeedFilters({});
     if (response.data.success) return response.data.success.userContentFeedFilters;
     throw new Error(response.data.error?.reason ?? "Unknown Error");

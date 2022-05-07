@@ -1,8 +1,19 @@
+import Head from "next/head";
+import { AppLayout } from "#/components/AppLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Feed } from "#/templates/Feed";
 
-const FeedPage = () => {
-  return <Feed />;
-};
+const FeedPage = ProtectedPage(() => {
+  return (
+    <>
+      <Head>
+        <title>Feed / Kupo</title>
+      </Head>
+      <Feed />
+    </>
+  );
+});
 
-export default ProtectedPage(FeedPage);
+FeedPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default FeedPage;

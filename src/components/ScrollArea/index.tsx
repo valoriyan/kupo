@@ -1,5 +1,5 @@
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import { ReactNode } from "react";
+import { forwardRef, ReactNode } from "react";
 import { styled } from "#/styling";
 
 export interface ScrollAreaProps {
@@ -7,20 +7,25 @@ export interface ScrollAreaProps {
   className?: string;
 }
 
-export const ScrollArea = ({ children, className }: ScrollAreaProps) => {
-  return (
-    <StyledScrollArea>
-      <StyledViewport className={className}>{children}</StyledViewport>
-      <StyledScrollbar orientation="vertical">
-        <StyledThumb />
-      </StyledScrollbar>
-      <StyledScrollbar orientation="horizontal">
-        <StyledThumb />
-      </StyledScrollbar>
-      <StyledCorner />
-    </StyledScrollArea>
-  );
-};
+export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
+  ({ children, className }, ref) => {
+    return (
+      <StyledScrollArea>
+        <StyledViewport ref={ref} className={className}>
+          {children}
+        </StyledViewport>
+        <StyledScrollbar orientation="vertical">
+          <StyledThumb />
+        </StyledScrollbar>
+        <StyledScrollbar orientation="horizontal">
+          <StyledThumb />
+        </StyledScrollbar>
+        <StyledCorner />
+      </StyledScrollArea>
+    );
+  },
+);
+ScrollArea.displayName = "ScrollArea";
 
 const SCROLLBAR_SIZE = 10;
 

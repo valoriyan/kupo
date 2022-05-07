@@ -1,8 +1,19 @@
+import Head from "next/head";
+import { AppLayout } from "#/components/AppLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { SavedPosts } from "#/templates/SavedPosts";
 
-const SavedPostsPage = () => {
-  return <SavedPosts />;
-};
+const SavedPostsPage = ProtectedPage(() => {
+  return (
+    <>
+      <Head>
+        <title>Saved Posts / Kupo</title>
+      </Head>
+      <SavedPosts />
+    </>
+  );
+});
 
-export default ProtectedPage(SavedPostsPage);
+SavedPostsPage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
+
+export default SavedPostsPage;

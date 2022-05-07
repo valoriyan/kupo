@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useGetPageOfChatRooms } from "#/api/queries/chat/useGetPageOfChatRooms";
+import { BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { LoadingArea } from "#/components/LoadingArea";
 import { useCurrentUserId } from "#/contexts/auth";
-import { styled } from "#/styling";
 import { ChatRoomListItem } from "./ChatRoomListItem";
 import { ChatRoomsHeader } from "./ChatRoomsHeader";
 
@@ -17,7 +17,7 @@ export const Messages = () => {
   const chatRooms = data?.pages.flatMap((page) => page.chatRooms);
 
   return (
-    <Wrapper>
+    <BasicListWrapper>
       <ChatRoomsHeader query={query} setQuery={setQuery} />
       <div>
         {error && !isLoading ? (
@@ -43,12 +43,6 @@ export const Messages = () => {
           />
         )}
       </div>
-    </Wrapper>
+    </BasicListWrapper>
   );
 };
-
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  size: "100%",
-});

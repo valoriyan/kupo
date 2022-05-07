@@ -2,10 +2,9 @@ import { UserContentFeedFilter } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
-import { Stack } from "#/components/Layout";
+import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
-import { styled } from "#/styling";
 import { goToPostPage } from "#/templates/SinglePost";
 
 export interface ContentFeedProps {
@@ -24,35 +23,29 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
   }
 
   if (isLoading || !data) {
-    return <LoadingArea size="lg" />;
+    return (
+      <Flex css={{ p: "$6" }}>
+        <LoadingArea size="lg" />
+      </Flex>
+    );
   }
 
-  const posts = data.pages.flatMap((page) => {
-    return page.posts;
-  });
+  const posts = data.pages.flatMap((page) => page.posts);
 
-  const renderedPosts =
-    posts.length === 0 ? (
-      <ErrorMessage>No Posts Found</ErrorMessage>
-    ) : (
-      <InfiniteScrollArea
-        hasNextPage={hasNextPage ?? false}
-        isNextPageLoading={isFetchingNextPage}
-        loadNextPage={fetchNextPage}
-        items={posts.map((post) => (
-          <Post
-            key={post.postId}
-            post={post}
-            handleClickOfCommentsButton={() => goToPostPage(post.postId)}
-          />
-        ))}
-      />
-    );
-
-  return <Wrapper>{renderedPosts}</Wrapper>;
+  return posts.length === 0 ? (
+    <ErrorMessage>No Posts Found</ErrorMessage>
+  ) : (
+    <InfiniteScrollArea
+      hasNextPage={hasNextPage ?? false}
+      isNextPageLoading={isFetchingNextPage}
+      loadNextPage={fetchNextPage}
+      items={posts.map((post) => (
+        <Post
+          key={post.postId}
+          post={post}
+          handleClickOfCommentsButton={() => goToPostPage(post.postId)}
+        />
+      ))}
+    />
+  );
 };
-
-const Wrapper = styled(Stack, {
-  height: "100%",
-  overflow: "auto",
-});

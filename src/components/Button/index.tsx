@@ -48,6 +48,7 @@ export const Button = styled("button", {
         fontSize: "$4",
       },
     },
+    round: { true: { borderRadius: "$round" } },
   },
   compoundVariants: [
     {
@@ -87,5 +88,15 @@ export const Button = styled("button", {
   defaultVariants: {
     variant: "primary",
     size: "md",
+    outlined: false,
+    round: false,
+  },
+});
+
+export const IconButton = styled("button", {
+  lineHeight: 0,
+  "&:disabled": {
+    color: "$disabledText",
+    cursor: "not-allowed",
   },
 });

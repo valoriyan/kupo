@@ -36,7 +36,7 @@ export const ShareMenu = ({ hide, post, currentContentElement }: ShareMenuProps)
     const dlAnchor = document.createElement("a");
     dlAnchor.style.display = "none";
     // TODO: support different file types and move to util function
-    dlAnchor.download = "kupono-media.jpg";
+    dlAnchor.download = "kupo-media.jpg";
     dlAnchor.href = blobUrl;
     document.body.appendChild(dlAnchor);
     dlAnchor.click();

@@ -20,9 +20,10 @@ export const Feed = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <Flex ref={containerRef} css={{ position: "relative", height: "100%" }}>
+    <Flex ref={containerRef} css={{ position: "relative" }}>
       <Tabs
         ariaLabel="Content Filters"
+        stickyTabList
         tabs={contentFilters.map((userContentFeedFilter) => ({
           id: userContentFeedFilter.contentFeedFilterId,
           trigger: generateContentFeedFilterDisplayName({ userContentFeedFilter }),

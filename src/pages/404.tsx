@@ -1,7 +1,9 @@
+import { ReactElement } from "react";
+import { AppLayout } from "#/components/AppLayout";
 import { Stack } from "#/components/Layout";
 import { Heading, MainTitle } from "#/components/Typography";
 
-export const Kupono404 = () => {
+export const Kupo404 = () => {
   return (
     <Stack
       css={{ justifyContent: "center", alignItems: "center", pt: "30vh", gap: "$4" }}
@@ -14,4 +16,6 @@ export const Kupono404 = () => {
   );
 };
 
-export default Kupono404;
+Kupo404.getLayout = (page: ReactElement) => <AppLayout>{page}</AppLayout>;
+
+export default Kupo404;

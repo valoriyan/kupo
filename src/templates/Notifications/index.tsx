@@ -1,9 +1,8 @@
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
+import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { LoadingArea } from "#/components/LoadingArea";
-import { MainTitle } from "#/components/Typography";
-import { styled } from "#/styling";
 import { Notification } from "./Notification";
 
 export const Notifications = () => {
@@ -13,10 +12,8 @@ export const Notifications = () => {
   const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
 
   return (
-    <Wrapper>
-      <Header>
-        <MainTitle as="h1">Notifications</MainTitle>
-      </Header>
+    <BasicListWrapper>
+      <BasicListHeader>Notifications</BasicListHeader>
       <div>
         {error && !isLoading ? (
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
@@ -35,20 +32,6 @@ export const Notifications = () => {
           />
         )}
       </div>
-    </Wrapper>
+    </BasicListWrapper>
   );
 };
-
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  height: "100%",
-});
-
-const Header = styled("div", {
-  display: "flex",
-  px: "$6",
-  py: "$5",
-  gap: "$5",
-  borderBottom: "solid $borderWidths$1 $text",
-});

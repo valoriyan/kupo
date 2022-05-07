@@ -16,6 +16,7 @@ export interface TabsProps {
   tabs: Tab[];
   headerRightContent?: ReactNode;
   stretchTabs?: boolean;
+  stickyTabList?: boolean;
 }
 
 export const Tabs = (props: TabsProps) => {
@@ -23,7 +24,15 @@ export const Tabs = (props: TabsProps) => {
 
   return (
     <TabRoot value={selectedTab} onValueChange={setTab} orientation="horizontal">
-      <TabList aria-label={props.ariaLabel} hasRightContent={!!props.headerRightContent}>
+      <TabList
+        aria-label={props.ariaLabel}
+        hasRightContent={!!props.headerRightContent}
+        css={
+          props.stickyTabList
+            ? { bg: "$pageBackground", position: "sticky", top: 0, zIndex: 1 }
+            : undefined
+        }
+      >
         <ScrollArea>
           <Flex>
             {props.tabs.map((tab) => (
@@ -48,8 +57,7 @@ export const Tabs = (props: TabsProps) => {
 };
 
 const TabRoot = styled(TabsPrimitive.Root, {
-  size: "100%",
-  overflow: "auto",
+  width: "100%",
   display: "grid",
   gridTemplateRows: "auto minmax(0, 1fr)",
 });

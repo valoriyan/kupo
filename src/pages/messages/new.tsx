@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
+import Head from "next/head";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { NewChatRoom } from "#/templates/Messages/CreateChatRoom";
@@ -9,11 +10,18 @@ const CreateChatRoomPage = ProtectedPage(() => {
   const router = useRouter();
   const userIds = router.query.userIds as string[];
 
-  return <NewChatRoom userIds={userIds} />;
+  return (
+    <>
+      <Head>
+        <title>New Chat Room / Kupo</title>
+      </Head>
+      <NewChatRoom userIds={userIds} />
+    </>
+  );
 });
 
-CreateChatRoomPage.getLayout = (page: ReactElement) => {
-  return (
+CreateChatRoomPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout
       heading="New Message"
       backHref="/messages"
@@ -21,7 +29,7 @@ CreateChatRoomPage.getLayout = (page: ReactElement) => {
     >
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default CreateChatRoomPage;

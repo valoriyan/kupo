@@ -2,10 +2,6 @@ import { globalCss } from ".";
 import "react-toastify/dist/ReactToastify.css";
 
 export const globalStyles = globalCss({
-  "@font-face": {
-    fontFamily: "AbhayaLibre",
-    src: 'local("AbhayaLibre"), url("/fonts/AbhayaLibre-SemiBold.ttf")',
-  },
   body: {
     p: "0 !important",
     fontFamily: "$body !important",

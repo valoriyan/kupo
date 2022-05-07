@@ -12,6 +12,7 @@ export interface NestedPageLayoutProps {
   heading: string;
   closeHref: string;
   backHref?: string;
+  handleScroll?: boolean;
 }
 
 export const NestedPageLayout = (props: NestedPageLayoutProps) => {
@@ -47,6 +48,7 @@ export const NestedPageLayout = (props: NestedPageLayoutProps) => {
       </Header>
       <TransitionArea
         transitionKey={currentRoute}
+        handleScroll={props.handleScroll}
         custom={isGoingBack}
         animation={{
           initial: (isGoingBack: boolean) => ({
@@ -76,7 +78,7 @@ const Header = styled(Stack, {
   gap: "$1",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
-  borderBottomColor: "$text",
+  borderBottomColor: "$border",
 });
 
 const NavButton = styled("a", {

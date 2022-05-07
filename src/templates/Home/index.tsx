@@ -1,16 +1,17 @@
 import Link from "next/link";
-import { Stack } from "#/components/Layout";
-import { Body, Heading, MainTitle, Subtext } from "#/components/Typography";
-import { useIsAuthenticated, logout } from "#/contexts/auth";
 import { BrandWithSlogan } from "#/components/BrandWithSlogan";
 import { Button } from "#/components/Button";
+import { Stack } from "#/components/Layout";
+import { Body, Heading, MainTitle, Subtext } from "#/components/Typography";
+import { MAX_APP_CONTENT_WIDTH } from "#/constants";
+import { logout, useIsAuthenticated } from "#/contexts/auth";
 
 export const Home = () => {
   const isAuthenticated = useIsAuthenticated();
 
   return (
     <Stack css={{ alignItems: "center", minHeight: "100vh" }}>
-      <Stack css={{ p: "$6", width: "100%", maxWidth: "600px", gap: "$9" }}>
+      <Stack css={{ p: "$6", width: "100%", maxWidth: MAX_APP_CONTENT_WIDTH, gap: "$9" }}>
         <Heading css={{ alignSelf: "flex-end", button: { color: "$link" } }}>
           {isAuthenticated ? (
             <button onClick={logout}>log out</button>

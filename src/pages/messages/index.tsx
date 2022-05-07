@@ -1,5 +1,6 @@
 import Router from "next/router";
-import { ReactElement } from "react";
+import Head from "next/head";
+import { AppLayout } from "#/components/AppLayout";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Messages } from "#/templates/Messages";
@@ -15,15 +16,22 @@ export const setPreviousLocationForMessages = () => {
 export const getMessagesCloseHref = () => previousLocation.get() ?? "/feed";
 
 const MessagesPage = ProtectedPage(() => {
-  return <Messages />;
+  return (
+    <>
+      <Head>
+        <title>Messages / Kupo</title>
+      </Head>
+      <Messages />
+    </>
+  );
 });
 
-MessagesPage.getLayout = (page: ReactElement) => {
-  return (
+MessagesPage.getLayout = (page) => (
+  <AppLayout>
     <NestedPageLayout heading="Messages" closeHref={getMessagesCloseHref()}>
       {page}
     </NestedPageLayout>
-  );
-};
+  </AppLayout>
+);
 
 export default MessagesPage;

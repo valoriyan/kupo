@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
 import { setPreviousLocationForAddContent } from "#/templates/AddContent";
 import { Avatar } from "../Avatar";
@@ -10,6 +11,8 @@ import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadLink } from "./shared";
 
 export const Footer = () => {
+  const { data } = useGetClientUserProfile();
+
   return (
     <Wrapper>
       <IconLink href="/feed">
@@ -27,7 +30,9 @@ export const Footer = () => {
         <MailIcon />
       </IconLink>
       <Drawer
-        trigger={<Avatar src="" alt="User Avatar" size="$7" />}
+        trigger={
+          <Avatar alt="User Avatar" src={data?.profilePictureTemporaryUrl} size="$7" />
+        }
         position={{ top: "0", bottom: "57px" /* Top of Footer */ }}
       >
         {({ hide }) => <NavigationDrawer hide={hide} />}

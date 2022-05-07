@@ -1,26 +1,47 @@
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
+import create from "zustand";
 import { Box, Flex, Grid } from "#/components/Layout";
+import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { getAccessToken, useIsAuthenticated } from "#/contexts/auth";
 import { styled } from "#/styling";
+import { useScrollPosition } from "#/utils/useScrollPosition";
+import { ScrollArea } from "../ScrollArea";
 import { Footer } from "./Footer";
 import { NoAuthFooter } from "./NoAuthFooter";
 import { NoAuthSidePanel } from "./NoAuthSidePanel";
 import { SidePanel } from "./SidePanel";
 import { useWebsocketState, WebsocketStateProvider } from "./WebsocketContext";
-import { ScrollArea } from "../ScrollArea";
 
-export const AppLayout = ({ children }: PropsWithChildren<unknown>) => {
+export interface AppLayoutScrollPositionState {
+  scrollPosition: number;
+  setScrollPosition: (scrollPosition: number) => void;
+}
+
+export const useAppLayoutState = create<AppLayoutScrollPositionState>((set) => ({
+  scrollPosition: 0,
+  setScrollPosition: (scrollPosition) => set({ scrollPosition }),
+}));
+
+export interface AppLayoutProps {
+  trackContentScroll?: boolean;
+}
+
+export const AppLayout = (props: PropsWithChildren<AppLayoutProps>) => {
   return (
     <WebsocketStateProvider>
-      <AppLayoutInner>{children}</AppLayoutInner>
+      <AppLayoutInner {...props} />
     </WebsocketStateProvider>
   );
 };
 
-const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
+const AppLayoutInner = ({
+  children,
+  trackContentScroll,
+}: PropsWithChildren<AppLayoutProps>) => {
   const isAuthenticated = useIsAuthenticated();
   const generateSocket = useWebsocketState((state) => state.generateSocket);
   const hasAccessToken = isAuthenticated === true;
+  const setScrollPosition = useAppLayoutState((store) => store.setScrollPosition);
 
   useEffect(() => {
     getAccessToken().then((accessToken) => {
@@ -28,6 +49,9 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
       generateSocket({ accessToken });
     });
   }, [generateSocket, hasAccessToken]);
+
+  const [container, ref] = useState<HTMLDivElement | null>(null);
+  useScrollPosition(trackContentScroll ? container : null, setScrollPosition);
 
   return (
     <Wrapper>
@@ -38,7 +62,7 @@ const AppLayoutInner = ({ children }: PropsWithChildren<unknown>) => {
           <NoAuthSidePanel />
         )}
       </SidePanelWrapper>
-      <Content>{children}</Content>
+      <Content ref={ref}>{children}</Content>
       <Box css={{ zIndex: 1, "@md": { display: "none" } }}>
         {isAuthenticated === "unset" ? null : isAuthenticated ? (
           <Footer />
@@ -64,12 +88,12 @@ const SidePanelWrapper = styled(Flex, {
   height: "100%",
   minWidth: "260px",
   width: "100vw",
-  maxWidth: "calc((100vw - 600px) / 2)",
+  maxWidth: `calc((100vw - ${MAX_APP_CONTENT_WIDTH}) / 2)`,
   display: "none",
   "@md": { display: "block" },
 });
 
 const Content = styled(ScrollArea, {
-  "@md": { maxWidth: "600px" },
+  "@md": { maxWidth: MAX_APP_CONTENT_WIDTH },
   height: "100%",
 });

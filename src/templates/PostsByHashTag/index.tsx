@@ -4,7 +4,6 @@ import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentF
 import { DetailLayout } from "#/components/DetailLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
-import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { getPostsByHashtagUrl } from "#/utils/generateLinkUrls";
@@ -41,20 +40,18 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
       ) : isLoading || !posts ? (
         <LoadingArea size="lg" />
       ) : (
-        <Stack css={{ height: "100%", width: "100%" }}>
-          <InfiniteScrollArea
-            hasNextPage={hasNextPage ?? false}
-            isNextPageLoading={isFetchingNextPage}
-            loadNextPage={fetchNextPage}
-            items={posts.map((post) => (
-              <Post
-                key={post.postId}
-                post={post}
-                handleClickOfCommentsButton={() => goToPostPage(post.postId)}
-              />
-            ))}
-          />
-        </Stack>
+        <InfiniteScrollArea
+          hasNextPage={hasNextPage ?? false}
+          isNextPageLoading={isFetchingNextPage}
+          loadNextPage={fetchNextPage}
+          items={posts.map((post) => (
+            <Post
+              key={post.postId}
+              post={post}
+              handleClickOfCommentsButton={() => goToPostPage(post.postId)}
+            />
+          ))}
+        />
       )}
     </DetailLayout>
   );
