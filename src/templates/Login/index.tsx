@@ -26,6 +26,7 @@ export const Login = () => {
           size="lg"
           required
           placeholder="username"
+          name="username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value.toLocaleLowerCase())}
         />
@@ -34,6 +35,7 @@ export const Login = () => {
           required
           type="password"
           placeholder="password"
+          name="password"
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
         />
