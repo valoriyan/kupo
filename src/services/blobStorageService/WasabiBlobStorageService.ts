@@ -10,8 +10,8 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   static bucket: string = getEnvironmentVariable("WASABI_BUCKET");
   static accessKey: string = getEnvironmentVariable("WASABI_ACCESS_KEY");
   static secretKey: string = getEnvironmentVariable("WASABI_SECRET_ACCESS_KEY");
-  static bucketLocation: string;
-
+  static bucketLocation: string  = getEnvironmentVariable("WASABI_BUCKET_REGION");
+  
   constructor() {
     super();
   }
@@ -24,21 +24,6 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
         secretAccessKey: WasabiBlobStorageService.secretKey,
       });
 
-      const bucketLocation = await new Promise(
-        (resolve: (location: string) => void, reject) => {
-          WasabiBlobStorageService.connection.getBucketLocation((error, data) => {
-            console.log("getBucketLocation", data);
-            if (error) return reject(error);
-            if (!data.LocationConstraint)
-              return reject("Failed to lookup bucket location.");
-            resolve(data.LocationConstraint);
-          });
-        },
-      );
-      if (!bucketLocation) {
-        throw new Error("Failed to lookup bucket location.");
-      }
-      WasabiBlobStorageService.bucketLocation = bucketLocation;
     }
 
     return this.connection;
