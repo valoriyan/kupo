@@ -4,6 +4,8 @@ import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
+import { constructRenderableUserFromParts } from "../user/utilities";
+import { constructRenderablePostFromParts } from "../post/utilities";
 
 export interface UserLikesPostRequestBody {
   postId: string;
@@ -71,6 +73,34 @@ export async function handleUserLikesPost({
       );
     }
   }
+
+  const unrenderableClientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+    userId: clientUserId,
+  });
+
+  if (!!unrenderableClientUser) {
+    const clientUser = await constructRenderableUserFromParts({
+      clientUserId,
+      unrenderableUser: unrenderableClientUser,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });  
+
+    const post = await constructRenderablePostFromParts({
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      unrenderablePostWithoutElementsOrHashtags,
+      clientUserId,    
+    });
+
+    await controller.webSocketService.notifyUserIdOfNewLikeOnPost({
+      userThatLikedPost: clientUser,
+      post,
+      userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+    });
+  }
+
+
 
   return {};
 }

@@ -1,4 +1,5 @@
 import express from "express";
+import { WebSocketService } from "../../services/webSocketService";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
@@ -47,6 +48,7 @@ export class UserInteractionController extends Controller {
   constructor(
     public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
+    public webSocketService: WebSocketService,
   ) {
     super();
   }

@@ -6,6 +6,8 @@ import { PostCommentController } from "./postCommentController";
 import { RenderablePostComment } from "./models";
 import { constructRenderablePostCommentFromParts } from "./utilities";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
+import { constructRenderableUserFromParts } from "../user/utilities";
+import { constructRenderablePostFromParts } from "../post/utilities";
 
 export interface CommentOnPostRequestBody {
   postId: string;
@@ -73,7 +75,53 @@ export async function handleCommentOnPost({
         referenceTableId: postCommentId,
       },
     );
+
+    const unrenderableClientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId: clientUserId,
+    });
+
+    if (!!unrenderableClientUser) {
+      const clientUser = await constructRenderableUserFromParts({
+        clientUserId,
+        unrenderableUser: unrenderableClientUser,
+        blobStorageService: controller.blobStorageService,
+        databaseService: controller.databaseService,
+      });    
+
+      const unrenderablePostWithoutElementsOrHashtags =
+      await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+        { postId },
+      );
+  
+      const post = await constructRenderablePostFromParts({
+        blobStorageService: controller.blobStorageService,
+        databaseService: controller.databaseService,
+        unrenderablePostWithoutElementsOrHashtags,
+        clientUserId,    
+      });
+  
+      const renderableNewCommentOnPostNotification = {
+        type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+        eventTimestamp: Date.now(),
+        userThatCommented: clientUser,
+        post,
+        postComment: renderablePostComment,    
+      }
+  
+      await controller.webSocketService.notifyUserIdOfNewCommentOnPost({
+        userId: recipientUserId,
+        renderableNewCommentOnPostNotification,
+      });  
+
+
+    }
+  
+
+
+  
+
   }
+
 
   return {
     success: { postComment: renderablePostComment },

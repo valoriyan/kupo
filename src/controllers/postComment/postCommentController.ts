@@ -23,6 +23,7 @@ import {
   DeleteCommentFromPostSuccess,
 } from "./handleDeleteCommentFromPost";
 import { BlobStorageService } from "./../../services/blobStorageService";
+import { WebSocketService } from "../../services/webSocketService";
 
 @injectable()
 @Route("PostComment")
@@ -30,6 +31,7 @@ export class PostCommentController extends Controller {
   constructor(
     public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
+    public webSocketService: WebSocketService,
   ) {
     super();
   }

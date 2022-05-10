@@ -4,6 +4,7 @@ import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
+import { constructRenderableUserFromParts } from "../user/utilities";
 
 export interface FollowUserRequestBody {
   userIdBeingFollowed: string;
@@ -48,6 +49,33 @@ export async function handleFollowUser({
         referenceTableId: userFollowEventId,
       },
     );
+
+    const unrenderableClientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId: clientUserId,
+    });
+
+    if (!!unrenderableClientUser) {
+      const clientUser = await constructRenderableUserFromParts({
+        clientUserId,
+        unrenderableUser: unrenderableClientUser,
+        blobStorageService: controller.blobStorageService,
+        databaseService: controller.databaseService,
+      });
+      
+      const renderableNewFollowerNotification = {
+        type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+        eventTimestamp: Date.now(),    
+        userDoingFollowing: clientUser,
+      };
+  
+      await controller.webSocketService.notifyUserIdOfNewFollower({
+        userId: userIdBeingFollowed,
+        renderableNewFollowerNotification,
+      });        
+    }
+
+
+
   }
 
   return {

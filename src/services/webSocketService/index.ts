@@ -10,6 +10,12 @@ import { notifyUserIdsOfDeletedChatMessage } from "./chat/notifyUserIdsOfDeleted
 import { getEnvironmentVariable } from "../../utilities";
 import { NewChatNotification } from "./chat/models";
 import { NOTIFICATION_EVENTS } from "./eventsConfig";
+import { notifyUserIdOfNewLikeOnPost } from "./content/notifyUserIdOfNewLikeOnPost";
+import { RenderablePost } from "../../controllers/post/models";
+import { RenderableUser } from "../../controllers/user/models";
+import { notifyUserIdOfNewCommentOnPost } from "./content/notifyUserIdOfNewCommentOnPost";
+import { RenderableNewCommentOnPostNotification, RenderableNewFollowerNotification } from "../../controllers/notification/models";
+import { notifyUserIdOfNewFollower } from "./content/notifyUserIdOfNewFollower";
 
 @singleton()
 export class WebSocketService {
@@ -102,4 +108,51 @@ export class WebSocketService {
       });
     });
   }
+
+  public async notifyUserIdOfNewLikeOnPost({
+    userThatLikedPost,
+    post,
+    userId,
+  }: {
+    userThatLikedPost: RenderableUser;
+    post: RenderablePost;
+    userId: string;  
+  }) {
+    await notifyUserIdOfNewLikeOnPost({
+      userId,
+      io: WebSocketService.io,
+      userThatLikedPost,
+      post,
+    });
+}
+
+public async notifyUserIdOfNewCommentOnPost({
+    renderableNewCommentOnPostNotification,
+    userId,
+  }: {
+    renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification;
+    userId: string;  
+  }) {
+    await notifyUserIdOfNewCommentOnPost({
+      userId,
+      io: WebSocketService.io,
+      renderableNewCommentOnPostNotification,
+    });
+}
+
+public async notifyUserIdOfNewFollower({
+  renderableNewFollowerNotification,
+    userId,
+  }: {
+    renderableNewFollowerNotification: RenderableNewFollowerNotification;
+    userId: string;  
+  }) {
+    await notifyUserIdOfNewFollower({
+      userId,
+      io: WebSocketService.io,
+      renderableNewFollowerNotification,
+    });
+}
+
+
 }

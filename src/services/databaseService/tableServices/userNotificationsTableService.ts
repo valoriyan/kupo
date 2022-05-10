@@ -151,6 +151,34 @@ export class UserNotificationsTableService extends TableService {
     return rows.length === 1;
   }
 
+  public async selectCountOfUnreadUserNotificationsByUserId({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<number> {
+    const queryString = {
+      text: `
+        SELECT
+          COUNT(*)
+        FROM
+          ${this.tableName}
+        WHERE
+          recipient_user_id = $1
+        ;
+      `,
+      values: [userId],
+    };
+
+    const response: QueryResult<{
+      count: string;
+    }> = await this.datastorePool.query(
+      queryString,
+    );
+
+    return parseInt(response.rows[0].count);
+  }
+
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
