@@ -24,13 +24,16 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
         secretAccessKey: WasabiBlobStorageService.secretKey,
       });
 
-      const bucketLocation = await new Promise((resolve: (location: string) => void, reject) => {
-        WasabiBlobStorageService.connection.getBucketLocation((error, data) => {
-          if (error) return reject(error);
-          if (!data.LocationConstraint) return reject("Failed to lookup bucket location.");
-          resolve(data.LocationConstraint);
-        });
-      });
+      const bucketLocation = await new Promise(
+        (resolve: (location: string) => void, reject) => {
+          WasabiBlobStorageService.connection.getBucketLocation((error, data) => {
+            if (error) return reject(error);
+            if (!data.LocationConstraint)
+              return reject("Failed to lookup bucket location.");
+            resolve(data.LocationConstraint);
+          });
+        },
+      );
       if (!bucketLocation) {
         throw new Error("Failed to lookup bucket location.");
       }
@@ -76,11 +79,9 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
       const fileName = blobItemPointer.fileKey;
 
       return `https://s3.${bucketLocation}.wasabisys.com/${bucketName}/${fileName}`;
-
     } else {
       throw new Error("Missing bucket location");
     }
-
 
     // const temporaryImageUrlDurationSeconds = 60;
 
