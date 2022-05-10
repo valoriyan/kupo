@@ -27,6 +27,7 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
       const bucketLocation = await new Promise(
         (resolve: (location: string) => void, reject) => {
           WasabiBlobStorageService.connection.getBucketLocation((error, data) => {
+            console.log("getBucketLocation", data);
             if (error) return reject(error);
             if (!data.LocationConstraint)
               return reject("Failed to lookup bucket location.");
