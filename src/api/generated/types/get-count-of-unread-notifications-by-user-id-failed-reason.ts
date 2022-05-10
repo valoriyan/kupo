@@ -17,13 +17,6 @@
  * @export
  * @enum {string}
  */
-export enum NOTIFICATIONEVENTS {
-  DeletedChatMessage = "DELETED_CHAT_MESSAGE",
-  NewChatMessage = "NEW_CHAT_MESSAGE",
-  NewLikeOnPost = "NEW_LIKE_ON_POST",
-  NewCommentOnPost = "NEW_COMMENT_ON_POST",
-  NewFollower = "NEW_FOLLOWER",
-  NewPost = "NEW_POST",
-  NewMentionInPost = "NEW_MENTION_IN_POST",
-  NewMentionInPostComment = "NEW_MENTION_IN_POST_COMMENT",
+export enum GetCountOfUnreadNotificationsByUserIdFailedReason {
+  UnknownCause = "Unknown Cause",
 }

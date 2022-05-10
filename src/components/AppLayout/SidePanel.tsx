@@ -27,16 +27,20 @@ import { useWebsocketState } from "./WebsocketContext";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
-  const { notificationsReceived } = useWebsocketState();
+  const { notificationsReceived, countOfExistingUnreadNotifications } =
+    useWebsocketState();
   const router = useRouter();
 
   const isActive = (href: string) => {
     return router.asPath.includes(href);
   };
 
-  const notificationsIndicator = !notificationsReceived.length ? null : (
+  const countOfUnreadNotifications =
+    countOfExistingUnreadNotifications + notificationsReceived.length;
+
+  const notificationsIndicator = !countOfUnreadNotifications ? null : (
     <NotificationBadge>
-      {notificationsReceived.length > 99 ? "99+" : notificationsReceived.length}
+      {countOfUnreadNotifications > 99 ? "99+" : countOfUnreadNotifications}
     </NotificationBadge>
   );
 

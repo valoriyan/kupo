@@ -34,6 +34,10 @@ export * from "./get-chat-room-by-id-failed";
 export * from "./get-chat-room-by-id-failed-reason";
 export * from "./get-chat-room-by-id-request-body";
 export * from "./get-chat-room-by-id-success";
+export * from "./get-count-of-unread-notifications-by-user-id-failed";
+export * from "./get-count-of-unread-notifications-by-user-id-failed-reason";
+export * from "./get-count-of-unread-notifications-by-user-id-request-body";
+export * from "./get-count-of-unread-notifications-by-user-id-success";
 export * from "./get-page-of-chat-messages-failed";
 export * from "./get-page-of-chat-messages-failed-reason";
 export * from "./get-page-of-chat-messages-request-body";
@@ -153,6 +157,7 @@ export * from "./secured-httpresponse-failed-to-remove-user-like-from-post-respo
 export * from "./secured-httpresponse-failed-to-unfollow-user-profile-response-successfully-unfollowed-user-profile-response";
 export * from "./secured-httpresponse-follow-user-failed-follow-user-success";
 export * from "./secured-httpresponse-get-chat-room-by-id-failed-get-chat-room-by-id-success";
+export * from "./secured-httpresponse-get-count-of-unread-notifications-by-user-id-failed-get-count-of-unread-notifications-by-user-id-success";
 export * from "./secured-httpresponse-get-page-of-chat-messages-failed-get-page-of-chat-messages-success";
 export * from "./secured-httpresponse-get-page-of-chat-rooms-failed-get-page-of-chat-rooms-success";
 export * from "./secured-httpresponse-get-page-of-comments-by-post-id-failure-get-page-of-comments-by-post-id-success";

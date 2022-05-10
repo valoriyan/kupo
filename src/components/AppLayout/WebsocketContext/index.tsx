@@ -3,15 +3,28 @@ import { io, Socket } from "socket.io-client";
 import create, { GetState, SetState } from "zustand";
 import createContext from "zustand/context";
 import getConfig from "next/config";
+import {
+  RenderableNewCommentOnPostNotification,
+  RenderableNewFollowerNotification,
+  RenderableNewLikeOnPostNotification,
+  RenderableUserNotification,
+} from "#/api";
+
+const NEW_LIKE_ON_POST_EVENT_NAME = "NEW_LIKE_ON_POST";
+const NEW_COMMENT_ON_POST_EVENT_NAME = "NEW_COMMENT_ON_POST";
+const NEW_FOLLOWER_EVENT_NAME = "NEW_FOLLOWER";
 
 export interface WebsocketState {
   socket: Socket | undefined;
   generateSocket: ({ accessToken }: { accessToken: string }) => void;
-  notificationsReceived: string[];
+  countOfExistingUnreadNotifications: number;
+  notificationsReceived: RenderableUserNotification[];
 }
 
 const generateSocket = ({
   accessToken,
+  set,
+  get,
 }: {
   accessToken: string;
   set: SetState<WebsocketState>;
@@ -25,8 +38,47 @@ const generateSocket = ({
   newSocket.on("connect", () => {
     // const notificationsReceived = get().notificationsReceived;
     // set({ notificationsReceived: [...notificationsReceived, "CONNECTED"] });
-    console.log("CONNECTED!");
+    console.log("CONNECTED TO WEBSOCKET!");
   });
+
+  newSocket.on(
+    NEW_LIKE_ON_POST_EVENT_NAME,
+    (renderableNewLikeOnPostNotification: RenderableNewLikeOnPostNotification) => {
+      const notificationsReceived = get().notificationsReceived;
+      set({
+        notificationsReceived: [
+          ...notificationsReceived,
+          renderableNewLikeOnPostNotification as RenderableUserNotification,
+        ],
+      });
+    },
+  );
+
+  newSocket.on(
+    NEW_COMMENT_ON_POST_EVENT_NAME,
+    (renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification) => {
+      const notificationsReceived = get().notificationsReceived;
+      set({
+        notificationsReceived: [
+          ...notificationsReceived,
+          renderableNewCommentOnPostNotification as RenderableUserNotification,
+        ],
+      });
+    },
+  );
+
+  newSocket.on(
+    NEW_FOLLOWER_EVENT_NAME,
+    (renderableNewFollowerNotification: RenderableNewFollowerNotification) => {
+      const notificationsReceived = get().notificationsReceived;
+      set({
+        notificationsReceived: [
+          ...notificationsReceived,
+          renderableNewFollowerNotification as RenderableUserNotification,
+        ],
+      });
+    },
+  );
 
   return newSocket;
 };
@@ -41,6 +93,7 @@ const createFormStateStore = () =>
         set({ socket });
       }
     },
+    countOfExistingUnreadNotifications: 0,
     notificationsReceived: [],
   }));
 
