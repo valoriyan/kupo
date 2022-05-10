@@ -10,8 +10,8 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   static bucket: string = getEnvironmentVariable("WASABI_BUCKET");
   static accessKey: string = getEnvironmentVariable("WASABI_ACCESS_KEY");
   static secretKey: string = getEnvironmentVariable("WASABI_SECRET_ACCESS_KEY");
-  static bucketLocation: string  = getEnvironmentVariable("WASABI_BUCKET_REGION");
-  
+  static bucketLocation: string = getEnvironmentVariable("WASABI_BUCKET_REGION");
+
   constructor() {
     super();
   }
@@ -23,7 +23,6 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
         accessKeyId: WasabiBlobStorageService.accessKey,
         secretAccessKey: WasabiBlobStorageService.secretKey,
       });
-
     }
 
     return this.connection;
@@ -59,15 +58,11 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   }): Promise<string> {
     // TODO: REPLACE WITH CDN
 
-    if (!!WasabiBlobStorageService.bucketLocation) {
-      const bucketLocation = WasabiBlobStorageService.bucketLocation;
-      const bucketName = WasabiBlobStorageService.bucket;
-      const fileName = blobItemPointer.fileKey;
+    const bucketLocation = WasabiBlobStorageService.bucketLocation;
+    const bucketName = WasabiBlobStorageService.bucket;
+    const fileName = blobItemPointer.fileKey;
 
-      return `https://s3.${bucketLocation}.wasabisys.com/${bucketName}/${fileName}`;
-    } else {
-      throw new Error("Missing bucket location");
-    }
+    return `https://s3.${bucketLocation}.wasabisys.com/${bucketName}/${fileName}`;
 
     // const temporaryImageUrlDurationSeconds = 60;
 
