@@ -35,7 +35,7 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
       Bucket: WasabiBlobStorageService.bucket,
       Key: fileKey,
       Body: image,
-      ACL:'public-read',
+      ACL: "public-read",
     };
 
     const uploadOptions: ManagedUpload.ManagedUploadOptions = {
