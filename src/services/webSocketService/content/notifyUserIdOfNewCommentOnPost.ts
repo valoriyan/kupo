@@ -14,5 +14,8 @@ export async function notifyUserIdOfNewCommentOnPost({
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
 
-  io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST, renderableNewCommentOnPostNotification);
+  io.to([roomName]).emit(
+    NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+    renderableNewCommentOnPostNotification,
+  );
 }

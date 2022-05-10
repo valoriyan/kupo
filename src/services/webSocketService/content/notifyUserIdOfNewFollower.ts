@@ -14,5 +14,8 @@ export async function notifyUserIdOfNewFollower({
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
 
-  io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_FOLLOWER, renderableNewFollowerNotification);
+  io.to([roomName]).emit(
+    NOTIFICATION_EVENTS.NEW_FOLLOWER,
+    renderableNewFollowerNotification,
+  );
 }

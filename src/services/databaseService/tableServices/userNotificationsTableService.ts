@@ -171,13 +171,10 @@ export class UserNotificationsTableService extends TableService {
 
     const response: QueryResult<{
       count: string;
-    }> = await this.datastorePool.query(
-      queryString,
-    );
+    }> = await this.datastorePool.query(queryString);
 
     return parseInt(response.rows[0].count);
   }
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////

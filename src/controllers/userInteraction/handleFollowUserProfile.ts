@@ -50,9 +50,12 @@ export async function handleFollowUser({
       },
     );
 
-    const unrenderableClientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      userId: clientUserId,
-    });
+    const unrenderableClientUser =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+        {
+          userId: clientUserId,
+        },
+      );
 
     if (!!unrenderableClientUser) {
       const clientUser = await constructRenderableUserFromParts({
@@ -61,21 +64,18 @@ export async function handleFollowUser({
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
       });
-      
+
       const renderableNewFollowerNotification = {
         type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-        eventTimestamp: Date.now(),    
+        eventTimestamp: Date.now(),
         userDoingFollowing: clientUser,
       };
-  
+
       await controller.webSocketService.notifyUserIdOfNewFollower({
         userId: userIdBeingFollowed,
         renderableNewFollowerNotification,
-      });        
+      });
     }
-
-
-
   }
 
   return {

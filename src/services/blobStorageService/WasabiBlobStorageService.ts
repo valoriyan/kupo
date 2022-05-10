@@ -10,6 +10,7 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   static bucket: string = getEnvironmentVariable("WASABI_BUCKET");
   static accessKey: string = getEnvironmentVariable("WASABI_ACCESS_KEY");
   static secretKey: string = getEnvironmentVariable("WASABI_SECRET_ACCESS_KEY");
+  static bucketLocation: string;
 
   constructor() {
     super();
@@ -22,6 +23,18 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
         accessKeyId: WasabiBlobStorageService.accessKey,
         secretAccessKey: WasabiBlobStorageService.secretKey,
       });
+
+      const bucketLocation = await new Promise((resolve: (location: string) => void, reject) => {
+        WasabiBlobStorageService.connection.getBucketLocation((error, data) => {
+          if (error) return reject(error);
+          if (!data.LocationConstraint) return reject("Failed to lookup bucket location.");
+          resolve(data.LocationConstraint);
+        });
+      });
+      if (!bucketLocation) {
+        throw new Error("Failed to lookup bucket location.");
+      }
+      WasabiBlobStorageService.bucketLocation = bucketLocation;
     }
 
     return this.connection;
@@ -55,18 +68,32 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   }: {
     blobItemPointer: BlobItemPointer;
   }): Promise<string> {
-    const temporaryImageUrlDurationSeconds = 60;
+    // TODO: REPLACE WITH CDN
 
-    const temporaryUrl: string = WasabiBlobStorageService.connection.getSignedUrl(
-      "getObject",
-      {
-        Bucket: WasabiBlobStorageService.bucket,
-        Key: blobItemPointer.fileKey,
-        Expires: temporaryImageUrlDurationSeconds,
-      },
-    );
+    if (!!WasabiBlobStorageService.bucketLocation) {
+      const bucketLocation = WasabiBlobStorageService.bucketLocation;
+      const bucketName = WasabiBlobStorageService.bucket;
+      const fileName = blobItemPointer.fileKey;
 
-    return temporaryUrl;
+      return `https://s3.${bucketLocation}.wasabisys.com/${bucketName}/${fileName}`;
+
+    } else {
+      throw new Error("Missing bucket location");
+    }
+
+
+    // const temporaryImageUrlDurationSeconds = 60;
+
+    // const temporaryUrl: string = WasabiBlobStorageService.connection.getSignedUrl(
+    //   "getObject",
+    //   {
+    //     Bucket: WasabiBlobStorageService.bucket,
+    //     Key: blobItemPointer.fileKey,
+    //     Expires: temporaryImageUrlDurationSeconds,
+    //   },
+    // );
+
+    // return temporaryUrl;
   }
 
   async deleteImages({

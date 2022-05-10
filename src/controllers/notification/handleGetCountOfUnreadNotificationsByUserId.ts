@@ -8,7 +8,7 @@ export interface GetCountOfUnreadNotificationsByUserIdRequestBody {
 }
 
 export interface GetCountOfUnreadNotificationsByUserIdSuccess {
-    count: number;
+  count: number;
 }
 
 export enum GetCountOfUnreadNotificationsByUserIdFailedReason {
@@ -19,7 +19,6 @@ export interface GetCountOfUnreadNotificationsByUserIdFailed {
   reason: GetCountOfUnreadNotificationsByUserIdFailedReason;
 }
 
-
 export async function handleGetCountOfUnreadNotificationsByUserId({
   controller,
   request,
@@ -29,7 +28,10 @@ export async function handleGetCountOfUnreadNotificationsByUserId({
   request: express.Request;
   requestBody: GetCountOfUnreadNotificationsByUserIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetCountOfUnreadNotificationsByUserIdFailed, GetCountOfUnreadNotificationsByUserIdSuccess>
+  SecuredHTTPResponse<
+    GetCountOfUnreadNotificationsByUserIdFailed,
+    GetCountOfUnreadNotificationsByUserIdSuccess
+  >
 > {
   console.log(requestBody);
 

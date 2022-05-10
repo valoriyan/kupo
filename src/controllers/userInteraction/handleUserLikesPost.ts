@@ -74,9 +74,12 @@ export async function handleUserLikesPost({
     }
   }
 
-  const unrenderableClientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-    userId: clientUserId,
-  });
+  const unrenderableClientUser =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      {
+        userId: clientUserId,
+      },
+    );
 
   if (!!unrenderableClientUser) {
     const clientUser = await constructRenderableUserFromParts({
@@ -84,13 +87,13 @@ export async function handleUserLikesPost({
       unrenderableUser: unrenderableClientUser,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-    });  
+    });
 
     const post = await constructRenderablePostFromParts({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       unrenderablePostWithoutElementsOrHashtags,
-      clientUserId,    
+      clientUserId,
     });
 
     await controller.webSocketService.notifyUserIdOfNewLikeOnPost({
@@ -99,8 +102,6 @@ export async function handleUserLikesPost({
       userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
     });
   }
-
-
 
   return {};
 }

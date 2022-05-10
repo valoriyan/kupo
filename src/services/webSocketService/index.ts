@@ -14,7 +14,10 @@ import { notifyUserIdOfNewLikeOnPost } from "./content/notifyUserIdOfNewLikeOnPo
 import { RenderablePost } from "../../controllers/post/models";
 import { RenderableUser } from "../../controllers/user/models";
 import { notifyUserIdOfNewCommentOnPost } from "./content/notifyUserIdOfNewCommentOnPost";
-import { RenderableNewCommentOnPostNotification, RenderableNewFollowerNotification } from "../../controllers/notification/models";
+import {
+  RenderableNewCommentOnPostNotification,
+  RenderableNewFollowerNotification,
+} from "../../controllers/notification/models";
 import { notifyUserIdOfNewFollower } from "./content/notifyUserIdOfNewFollower";
 
 @singleton()
@@ -116,7 +119,7 @@ export class WebSocketService {
   }: {
     userThatLikedPost: RenderableUser;
     post: RenderablePost;
-    userId: string;  
+    userId: string;
   }) {
     await notifyUserIdOfNewLikeOnPost({
       userId,
@@ -124,35 +127,33 @@ export class WebSocketService {
       userThatLikedPost,
       post,
     });
-}
+  }
 
-public async notifyUserIdOfNewCommentOnPost({
+  public async notifyUserIdOfNewCommentOnPost({
     renderableNewCommentOnPostNotification,
     userId,
   }: {
     renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification;
-    userId: string;  
+    userId: string;
   }) {
     await notifyUserIdOfNewCommentOnPost({
       userId,
       io: WebSocketService.io,
       renderableNewCommentOnPostNotification,
     });
-}
+  }
 
-public async notifyUserIdOfNewFollower({
-  renderableNewFollowerNotification,
+  public async notifyUserIdOfNewFollower({
+    renderableNewFollowerNotification,
     userId,
   }: {
     renderableNewFollowerNotification: RenderableNewFollowerNotification;
-    userId: string;  
+    userId: string;
   }) {
     await notifyUserIdOfNewFollower({
       userId,
       io: WebSocketService.io,
       renderableNewFollowerNotification,
     });
-}
-
-
+  }
 }

@@ -76,9 +76,12 @@ export async function handleCommentOnPost({
       },
     );
 
-    const unrenderableClientUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      userId: clientUserId,
-    });
+    const unrenderableClientUser =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+        {
+          userId: clientUserId,
+        },
+      );
 
     if (!!unrenderableClientUser) {
       const clientUser = await constructRenderableUserFromParts({
@@ -86,42 +89,34 @@ export async function handleCommentOnPost({
         unrenderableUser: unrenderableClientUser,
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
-      });    
+      });
 
       const unrenderablePostWithoutElementsOrHashtags =
-      await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-        { postId },
-      );
-  
+        await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+          { postId },
+        );
+
       const post = await constructRenderablePostFromParts({
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
         unrenderablePostWithoutElementsOrHashtags,
-        clientUserId,    
+        clientUserId,
       });
-  
+
       const renderableNewCommentOnPostNotification = {
         type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
         eventTimestamp: Date.now(),
         userThatCommented: clientUser,
         post,
-        postComment: renderablePostComment,    
-      }
-  
+        postComment: renderablePostComment,
+      };
+
       await controller.webSocketService.notifyUserIdOfNewCommentOnPost({
         userId: recipientUserId,
         renderableNewCommentOnPostNotification,
-      });  
-
-
+      });
     }
-  
-
-
-  
-
   }
-
 
   return {
     success: { postComment: renderablePostComment },
