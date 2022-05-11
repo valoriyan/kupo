@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { ContentElement } from "./content-element";
+import { MediaElement } from "./media-element";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
 /**
@@ -65,10 +65,10 @@ export interface UnrenderablePost {
   sharedPostId?: string;
   /**
    *
-   * @type {Array<ContentElement>}
+   * @type {Array<MediaElement>}
    * @memberof UnrenderablePost
    */
-  contentElements: Array<ContentElement>;
+  mediaElements: Array<MediaElement>;
   /**
    *
    * @type {Array<string>}

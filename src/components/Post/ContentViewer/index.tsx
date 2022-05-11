@@ -4,27 +4,27 @@ import { styled } from "#/styling";
 import { Content } from "./Content";
 import { range } from "#/utils/range";
 import { ChevronLeftIcon, ChevronRightIcon } from "#/components/Icons";
-import { ContentElement } from "#/api";
+import { MediaElement } from "#/api";
 
 export interface ContentViewerProps {
-  contentElements: ContentElement[];
-  setCurrentContentElement?: (elem: ContentElement | undefined) => void;
+  mediaElements: MediaElement[];
+  setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   contentHeight?: string;
 }
 
 export const ContentViewer = ({
-  contentElements,
-  setCurrentContentElement,
+  mediaElements,
+  setCurrentMediaElement,
   contentHeight,
 }: ContentViewerProps) => {
-  const { page, direction, paginate } = usePagination([0, 0], contentElements.length);
+  const { page, direction, paginate } = usePagination([0, 0], mediaElements.length);
 
-  const currentContentElement = contentElements[page];
-  const hasMultiple = contentElements.length > 1;
+  const currentMediaElement = mediaElements[page];
+  const hasMultiple = mediaElements.length > 1;
 
   useEffect(() => {
-    setCurrentContentElement?.(currentContentElement);
-  }, [currentContentElement, setCurrentContentElement]);
+    setCurrentMediaElement?.(currentMediaElement);
+  }, [currentMediaElement, setCurrentMediaElement]);
 
   return (
     <AnimatePresence initial={false} custom={direction}>
@@ -59,7 +59,7 @@ export const ContentViewer = ({
             }
           }}
         >
-          <Content contentElement={currentContentElement} />
+          <Content mediaElement={currentMediaElement} />
         </motion.div>
         {hasMultiple && (
           <>
@@ -69,11 +69,11 @@ export const ContentViewer = ({
               </ArrowButton>
             )}
             <IndexDots>
-              {range(contentElements.length).map((index) => (
+              {range(mediaElements.length).map((index) => (
                 <IndexDot key={index} active={page === index} />
               ))}
             </IndexDots>
-            {page < contentElements.length - 1 && (
+            {page < mediaElements.length - 1 && (
               <ArrowButton direction="right" onClick={() => paginate(1)}>
                 <ChevronRightIcon />
               </ArrowButton>

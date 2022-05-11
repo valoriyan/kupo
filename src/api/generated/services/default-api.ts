@@ -89,6 +89,10 @@ import { GetPostsByUsernameRequestBody } from "../types";
 // @ts-ignore
 import { GetPostsScheduledByUserRequestBody } from "../types";
 // @ts-ignore
+import { GetShopItemsByUserIdRequestBody } from "../types";
+// @ts-ignore
+import { GetShopItemsByUsernameRequestBody } from "../types";
+// @ts-ignore
 import { GetUserProfileRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByIdsRequestBody } from "../types";
@@ -172,6 +176,8 @@ import { SecuredHTTPResponseGetPostByIdFailedGetPostByIdSuccess } from "../types
 import { SecuredHTTPResponseGetPostsByUsernameFailedGetPostsByUsernameSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetShopItemsByUsernameFailedGetShopItemsByUsernameSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetUserContentFeedFiltersFailedGetUserContentFeedFiltersSuccess } from "../types";
 // @ts-ignore
@@ -465,7 +471,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} caption
+     * @param {string} description
      * @param {string} hashtags
      * @param {string} title
      * @param {string} price
@@ -477,7 +483,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     createShopItem: async (
-      caption: string,
+      description: string,
       hashtags: string,
       title: string,
       price: string,
@@ -487,8 +493,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       expirationTimestamp?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'caption' is not null or undefined
-      assertParamExists("createShopItem", "caption", caption);
+      // verify required parameter 'description' is not null or undefined
+      assertParamExists("createShopItem", "description", description);
       // verify required parameter 'hashtags' is not null or undefined
       assertParamExists("createShopItem", "hashtags", hashtags);
       // verify required parameter 'title' is not null or undefined
@@ -519,8 +525,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
 
-      if (caption !== undefined) {
-        localVarFormParams.append("caption", caption as any);
+      if (description !== undefined) {
+        localVarFormParams.append("description", description as any);
       }
 
       if (hashtags !== undefined) {
@@ -1689,6 +1695,104 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {GetShopItemsByUserIdRequestBody} getShopItemsByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getShopItemsByUserId: async (
+      getShopItemsByUserIdRequestBody: GetShopItemsByUserIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getShopItemsByUserIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getShopItemsByUserId",
+        "getShopItemsByUserIdRequestBody",
+        getShopItemsByUserIdRequestBody,
+      );
+      const localVarPath = `/shopitem/getShopItemsByUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getShopItemsByUserIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetShopItemsByUsernameRequestBody} getShopItemsByUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getShopItemsByUsername: async (
+      getShopItemsByUsernameRequestBody: GetShopItemsByUsernameRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getShopItemsByUsernameRequestBody' is not null or undefined
+      assertParamExists(
+        "getShopItemsByUsername",
+        "getShopItemsByUsernameRequestBody",
+        getShopItemsByUsernameRequestBody,
+      );
+      const localVarPath = `/shopitem/getShopItemsByUsername`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getShopItemsByUsernameRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2620,7 +2724,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @param {string} shopItemId
-     * @param {string} [caption]
+     * @param {string} [description]
      * @param {string} [hashtags]
      * @param {string} [title]
      * @param {string} [price]
@@ -2633,7 +2737,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      */
     updateShopItem: async (
       shopItemId: string,
-      caption?: string,
+      description?: string,
       hashtags?: string,
       title?: string,
       price?: string,
@@ -2663,8 +2767,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarFormParams.append("shopItemId", shopItemId as any);
       }
 
-      if (caption !== undefined) {
-        localVarFormParams.append("caption", caption as any);
+      if (description !== undefined) {
+        localVarFormParams.append("description", description as any);
       }
 
       if (hashtags !== undefined) {
@@ -3135,7 +3239,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} caption
+     * @param {string} description
      * @param {string} hashtags
      * @param {string} title
      * @param {string} price
@@ -3147,7 +3251,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async createShopItem(
-      caption: string,
+      description: string,
       hashtags: string,
       title: string,
       price: string,
@@ -3163,7 +3267,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
-        caption,
+        description,
         hashtags,
         title,
         price,
@@ -3786,6 +3890,58 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetShopItemsByUserIdRequestBody} getShopItemsByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getShopItemsByUserId(
+      getShopItemsByUserIdRequestBody: GetShopItemsByUserIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedGetShopItemsByUsernameSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getShopItemsByUserId(
+        getShopItemsByUserIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetShopItemsByUsernameRequestBody} getShopItemsByUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getShopItemsByUsername(
+      getShopItemsByUsernameRequestBody: GetShopItemsByUsernameRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedGetShopItemsByUsernameSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getShopItemsByUsername(
+        getShopItemsByUsernameRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4295,7 +4451,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {string} shopItemId
-     * @param {string} [caption]
+     * @param {string} [description]
      * @param {string} [hashtags]
      * @param {string} [title]
      * @param {string} [price]
@@ -4308,7 +4464,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async updateShopItem(
       shopItemId: string,
-      caption?: string,
+      description?: string,
       hashtags?: string,
       title?: string,
       price?: string,
@@ -4325,7 +4481,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
         shopItemId,
-        caption,
+        description,
         hashtags,
         title,
         price,
@@ -4585,7 +4741,7 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} caption
+     * @param {string} description
      * @param {string} hashtags
      * @param {string} title
      * @param {string} price
@@ -4597,7 +4753,7 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     createShopItem(
-      caption: string,
+      description: string,
       hashtags: string,
       title: string,
       price: string,
@@ -4609,7 +4765,7 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess> {
       return localVarFp
         .createShopItem(
-          caption,
+          description,
           hashtags,
           title,
           price,
@@ -4957,6 +5113,34 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetShopItemsByUserIdRequestBody} getShopItemsByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getShopItemsByUserId(
+      getShopItemsByUserIdRequestBody: GetShopItemsByUserIdRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedGetShopItemsByUsernameSuccess> {
+      return localVarFp
+        .getShopItemsByUserId(getShopItemsByUserIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetShopItemsByUsernameRequestBody} getShopItemsByUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getShopItemsByUsername(
+      getShopItemsByUsernameRequestBody: GetShopItemsByUsernameRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedGetShopItemsByUsernameSuccess> {
+      return localVarFp
+        .getShopItemsByUsername(getShopItemsByUsernameRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5228,7 +5412,7 @@ export const DefaultApiFactory = function (
     /**
      *
      * @param {string} shopItemId
-     * @param {string} [caption]
+     * @param {string} [description]
      * @param {string} [hashtags]
      * @param {string} [title]
      * @param {string} [price]
@@ -5241,7 +5425,7 @@ export const DefaultApiFactory = function (
      */
     updateShopItem(
       shopItemId: string,
-      caption?: string,
+      description?: string,
       hashtags?: string,
       title?: string,
       price?: string,
@@ -5254,7 +5438,7 @@ export const DefaultApiFactory = function (
       return localVarFp
         .updateShopItem(
           shopItemId,
-          caption,
+          description,
           hashtags,
           title,
           price,
@@ -5441,7 +5625,7 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} caption
+   * @param {string} description
    * @param {string} hashtags
    * @param {string} title
    * @param {string} price
@@ -5454,7 +5638,7 @@ export class DefaultApi extends BaseAPI {
    * @memberof DefaultApi
    */
   public createShopItem(
-    caption: string,
+    description: string,
     hashtags: string,
     title: string,
     price: string,
@@ -5466,7 +5650,7 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .createShopItem(
-        caption,
+        description,
         hashtags,
         title,
         price,
@@ -5846,6 +6030,38 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {GetShopItemsByUserIdRequestBody} getShopItemsByUserIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getShopItemsByUserId(
+    getShopItemsByUserIdRequestBody: GetShopItemsByUserIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getShopItemsByUserId(getShopItemsByUserIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetShopItemsByUsernameRequestBody} getShopItemsByUsernameRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getShopItemsByUsername(
+    getShopItemsByUsernameRequestBody: GetShopItemsByUsernameRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getShopItemsByUsername(getShopItemsByUsernameRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {object} body
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6141,7 +6357,7 @@ export class DefaultApi extends BaseAPI {
   /**
    *
    * @param {string} shopItemId
-   * @param {string} [caption]
+   * @param {string} [description]
    * @param {string} [hashtags]
    * @param {string} [title]
    * @param {string} [price]
@@ -6155,7 +6371,7 @@ export class DefaultApi extends BaseAPI {
    */
   public updateShopItem(
     shopItemId: string,
-    caption?: string,
+    description?: string,
     hashtags?: string,
     title?: string,
     price?: string,
@@ -6168,7 +6384,7 @@ export class DefaultApi extends BaseAPI {
     return DefaultApiFp(this.configuration)
       .updateShopItem(
         shopItemId,
-        caption,
+        description,
         hashtags,
         title,
         price,

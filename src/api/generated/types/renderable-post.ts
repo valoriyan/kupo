@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { ContentElement } from "./content-element";
+import { MediaElement } from "./media-element";
 import { RenderablePostShared } from "./renderable-post-shared";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
@@ -66,10 +66,10 @@ export interface RenderablePost {
   sharedPostId?: string;
   /**
    *
-   * @type {Array<ContentElement>}
+   * @type {Array<MediaElement>}
    * @memberof RenderablePost
    */
-  contentElements: Array<ContentElement>;
+  mediaElements: Array<MediaElement>;
   /**
    *
    * @type {Array<string>}

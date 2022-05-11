@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { ContentElement, RenderablePostShared } from "#/api";
+import { MediaElement, RenderablePostShared } from "#/api";
 import { styled } from "#/styling";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { Avatar } from "../Avatar";
@@ -15,8 +15,8 @@ export interface PostBodyProps {
   authorUserAvatar: string | undefined;
   relativeTimestamp: string;
   caption: string;
-  contentElements: ContentElement[];
-  setCurrentContentElement?: (elem: ContentElement | undefined) => void;
+  mediaElements: MediaElement[];
+  setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   shared?: RenderablePostShared;
   menuActions?: MenuAction[];
   onPostClick?: () => void;
@@ -57,13 +57,13 @@ export const PostBody = (props: PostBodyProps) => {
       {props.shared && props.shared.type === "post" ? (
         <SharedPost
           post={props.shared.post}
-          setCurrentContentElement={props.setCurrentContentElement}
+          setCurrentMediaElement={props.setCurrentMediaElement}
         />
       ) : (
-        !!props.contentElements?.length && (
+        !!props.mediaElements?.length && (
           <ContentViewer
-            contentElements={props.contentElements}
-            setCurrentContentElement={props.setCurrentContentElement}
+            mediaElements={props.mediaElements}
+            setCurrentMediaElement={props.setCurrentMediaElement}
             contentHeight={props.contentHeight}
           />
         )

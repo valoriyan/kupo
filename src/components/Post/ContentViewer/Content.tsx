@@ -1,26 +1,26 @@
 import Image from "next/image";
-import { ContentElement } from "#/api";
+import { MediaElement } from "#/api";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { styled } from "#/styling";
 
 export interface ContentProps {
-  contentElement: ContentElement;
+  mediaElement: MediaElement;
 }
 
-export const Content = ({ contentElement }: ContentProps) => {
-  if (contentElement.mimeType.includes("image")) {
+export const Content = ({ mediaElement }: ContentProps) => {
+  if (mediaElement.mimeType.includes("image")) {
     return (
       <ImageWrapper>
         <BlurredImage
           alt="Blurred Post Media"
-          src={contentElement.temporaryUrl}
+          src={mediaElement.temporaryUrl}
           layout="fill"
           unoptimized // Optimization caching is broken because signed urls aren't stable
           priority
         />
         <Image
           alt="Post Media"
-          src={contentElement.temporaryUrl}
+          src={mediaElement.temporaryUrl}
           layout="fill"
           objectFit="contain"
           unoptimized // Optimization caching is broken because signed urls aren't stable
@@ -30,10 +30,10 @@ export const Content = ({ contentElement }: ContentProps) => {
     );
   }
 
-  if (contentElement.mimeType.includes("video")) {
+  if (mediaElement.mimeType.includes("video")) {
     return (
       <ImageWrapper>
-        <Video src={contentElement.temporaryUrl} controls />
+        <Video src={mediaElement.temporaryUrl} controls />
       </ImageWrapper>
     );
   }

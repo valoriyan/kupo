@@ -1,5 +1,5 @@
 import { ComponentType, useState } from "react";
-import { ContentElement, RenderablePost } from "#/api";
+import { MediaElement, RenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { HashTag } from "../HashTags";
@@ -22,7 +22,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
     isLikedByClient,
     isSavedByClient,
     caption,
-    contentElements,
+    mediaElements,
     hashtags,
     likes,
     comments,
@@ -31,9 +31,9 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
 
   const { handleLikeButton, handleSaveButton, menuActions, user } = usePostActions(post);
 
-  const [currentContentElement, setCurrentContentElement] = useState<
-    ContentElement | undefined
-  >(contentElements.length > 0 ? contentElements[0] : undefined);
+  const [currentMediaElement, setCurrentMediaElement] = useState<
+    MediaElement | undefined
+  >(mediaElements.length > 0 ? mediaElements[0] : undefined);
 
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
@@ -44,8 +44,8 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
-        contentElements={contentElements}
-        setCurrentContentElement={setCurrentContentElement}
+        mediaElements={mediaElements}
+        setCurrentMediaElement={setCurrentMediaElement}
         shared={shared}
         menuActions={menuActions}
       />
@@ -88,7 +88,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
             <ShareMenu
               hide={hide}
               post={shared?.post ?? post}
-              currentContentElement={currentContentElement}
+              currentMediaElement={currentMediaElement}
             />
           )}
         </VerticalSlideDialog>

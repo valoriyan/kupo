@@ -1,4 +1,4 @@
-import { ContentElement, RenderablePost } from "#/api";
+import { MediaElement, RenderablePost } from "#/api";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { styled } from "#/styling";
 import { goToPostPage } from "#/templates/SinglePost";
@@ -7,16 +7,16 @@ import { PostBody } from "./PostBody";
 
 export interface SharedPostProps {
   post: RenderablePost;
-  setCurrentContentElement?: (elem: ContentElement | undefined) => void;
+  setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   contentHeight?: string;
 }
 
 export const SharedPost = ({
   post,
-  setCurrentContentElement,
+  setCurrentMediaElement,
   contentHeight,
 }: SharedPostProps) => {
-  const { authorUserId, caption, contentElements, shared } = post;
+  const { authorUserId, caption, mediaElements, shared } = post;
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
@@ -27,8 +27,8 @@ export const SharedPost = ({
         authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
-        contentElements={contentElements}
-        setCurrentContentElement={setCurrentContentElement}
+        mediaElements={mediaElements}
+        setCurrentMediaElement={setCurrentMediaElement}
         shared={shared}
         onPostClick={() => goToPostPage(post.postId)}
         contentHeight={contentHeight}

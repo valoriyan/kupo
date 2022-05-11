@@ -36,8 +36,6 @@ const generateSocket = ({
   const newSocket = io(websocketUrl, { auth: { accessToken }, secure: true });
 
   newSocket.on("connect", () => {
-    // const notificationsReceived = get().notificationsReceived;
-    // set({ notificationsReceived: [...notificationsReceived, "CONNECTED"] });
     console.log("CONNECTED TO WEBSOCKET!");
   });
 

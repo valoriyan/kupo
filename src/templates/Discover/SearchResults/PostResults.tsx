@@ -67,9 +67,7 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
 
   return (
     <PostWrapper onClick={() => goToPostPage(post.postId)}>
-      {!!post.contentElements[0] && (
-        <PostImage src={post.contentElements[0].temporaryUrl} />
-      )}
+      {!!post.mediaElements[0] && <PostImage src={post.mediaElements[0].temporaryUrl} />}
       <Stack css={{ gap: "$4", px: "$5", py: "$5" }}>
         <Flex css={{ alignItems: "center", gap: "$4" }}>
           <UserName username={user?.username} />
