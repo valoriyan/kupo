@@ -1,7 +1,6 @@
 import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
 import { DatabaseService } from "../../services/databaseService";
 import {
-  ContentElement,
   RenderablePost,
   SharedPostType,
   UnrenderablePost,
@@ -9,6 +8,7 @@ import {
 } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { SavedItemType } from "../userInteraction/models";
+import { MediaElement } from "../models";
 
 export async function constructRenderablePostsFromParts({
   blobStorageService,
@@ -104,25 +104,25 @@ async function assemblePostComponents({
     expirationTimestamp,
   } = unrenderablePostWithoutElementsOrHashtags;
 
-  const filedPostContentElements =
+  const filedPostMediaElements =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
       {
         postId: postId,
       },
     );
 
-  const contentElements: ContentElement[] = await BluebirdPromise.map(
-    filedPostContentElements,
-    async (filedPostContentElement): Promise<ContentElement> => {
+  const mediaElements: MediaElement[] = await BluebirdPromise.map(
+    filedPostMediaElements,
+    async (filedPostMediaElement): Promise<MediaElement> => {
       const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
         blobItemPointer: {
-          fileKey: filedPostContentElement.blobFileKey,
+          fileKey: filedPostMediaElement.blobFileKey,
         },
       });
 
       return {
         temporaryUrl: fileTemporaryUrl,
-        mimeType: filedPostContentElement.mimeType,
+        mimeType: filedPostMediaElement.mimeType,
       };
     },
   );
@@ -172,7 +172,7 @@ async function assemblePostComponents({
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
-    contentElements,
+    mediaElements,
     hashtags,
     likes: {
       count: countOfLikesOnPost,

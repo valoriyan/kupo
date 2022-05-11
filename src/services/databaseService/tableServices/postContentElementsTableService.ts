@@ -1,4 +1,5 @@
 import { Pool, QueryResult } from "pg";
+import { FiledMediaElement } from "../../../controllers/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
@@ -74,12 +75,11 @@ export class PostContentElementsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostContentElementsByPostId({ postId }: { postId: string }): Promise<
-    {
-      blobFileKey: string;
-      mimeType: string;
-    }[]
-  > {
+  public async getPostContentElementsByPostId({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<FiledMediaElement[]> {
     const queryString = {
       text: `
         SELECT

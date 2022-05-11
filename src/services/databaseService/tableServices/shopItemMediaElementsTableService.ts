@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { ShopItemMediaElement } from "../../../controllers/shopItem/models";
+import { FiledMediaElement } from "../../../controllers/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
@@ -77,7 +77,7 @@ export class ShopItemMediaElementsTableService extends TableService {
     shopItemId,
   }: {
     shopItemId: string;
-  }): Promise<ShopItemMediaElement[]> {
+  }): Promise<FiledMediaElement[]> {
     const query = {
       text: `
         SELECT
@@ -103,6 +103,7 @@ export class ShopItemMediaElementsTableService extends TableService {
       )
       .map((dbShopItemMediaElement) => ({
         blobFileKey: dbShopItemMediaElement.blob_file_key,
+        mimeType: dbShopItemMediaElement.mimetype,
       }));
   }
 

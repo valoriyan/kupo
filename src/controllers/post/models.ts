@@ -1,3 +1,5 @@
+import { MediaElement } from "../models";
+
 export enum SharedPostType {
   post = "post",
 }
@@ -12,13 +14,8 @@ export interface UnrenderablePostWithoutElementsOrHashtags {
   sharedPostId?: string;
 }
 
-export interface ContentElement {
-  temporaryUrl: string;
-  mimeType: string;
-}
-
 export interface UnrenderablePost extends UnrenderablePostWithoutElementsOrHashtags {
-  contentElements: ContentElement[];
+  mediaElements: MediaElement[];
   hashtags: string[];
   likes: {
     count: number;

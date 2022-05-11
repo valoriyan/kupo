@@ -14,7 +14,7 @@ export interface CreateShopItemFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
-  caption: string;
+  description: string;
   hashtags: string[];
   title: string;
   price: number;
@@ -36,10 +36,21 @@ export async function handleCreateShopItem({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const {
+    description,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
+    title,
+    price,
+    mediaFiles,
+    hashtags,
+  } = requestBody;
+
   const shopItemId = uuidv4();
+  const creationTimestamp = Date.now();
 
   const shopItemMediaElements = await BluebirdPromise.map(
-    requestBody.mediaFiles,
+    mediaFiles,
     async (
       mediaFile,
       index,
@@ -65,6 +76,15 @@ export async function handleCreateShopItem({
     },
   );
 
+  const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
+
+  await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToShopItem(
+    {
+      hashtags: lowerCaseHashtags,
+      shopItemId,
+    },
+  );
+
   await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
     {
       shopItemMediaElements: shopItemMediaElements.map(
@@ -82,11 +102,12 @@ export async function handleCreateShopItem({
     {
       shopItemId,
       authorUserId: clientUserId,
-      caption: requestBody.caption,
-      title: requestBody.title,
-      price: requestBody.price,
-      scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
-      expirationTimestamp: requestBody.expirationTimestamp,
+      description: description,
+      creationTimestamp,
+      scheduledPublicationTimestamp: scheduledPublicationTimestamp,
+      expirationTimestamp: expirationTimestamp,
+      title: title,
+      price: price,
     },
   );
 

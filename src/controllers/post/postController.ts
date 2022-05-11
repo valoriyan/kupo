@@ -56,7 +56,7 @@ import {
   handleGetPostsByUserId,
   handleGetPostsByUsername,
   GetPostsByUsernameSuccess,
-} from "./pagination/handleGetPostsByUsername";
+} from "./pagination/handleGetPosts";
 
 @injectable()
 @Route("post")

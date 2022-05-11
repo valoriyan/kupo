@@ -4,7 +4,7 @@ import { PostController } from "../postController";
 import { HTTPResponse } from "../../../types/httpResponse";
 import { getClientUserId } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
-import { decodeCursor, getNextPageOfPostsEncodedCursor } from "./utilities";
+import { decodeCursor, getNextPageOfSequentialFeedItemsEncodedCursor } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
 
 export interface GetPostsByUserIdRequestBody {
@@ -113,8 +113,8 @@ export async function handleGetPostsByUserId({
     success: {
       posts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getNextPageOfPostsEncodedCursor({
-        posts: unrenderablePostsWithoutElementsOrHashtags,
+      nextPageCursor: getNextPageOfSequentialFeedItemsEncodedCursor({
+        sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
       }),
     },
   };

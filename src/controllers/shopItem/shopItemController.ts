@@ -29,6 +29,14 @@ import {
   DeleteShopItemSuccess,
 } from "./handleDeleteShopItem";
 import { BlobStorageService } from "./../../services/blobStorageService";
+import {
+  GetShopItemsByUserIdRequestBody,
+  GetShopItemsByUsernameFailed,
+  GetShopItemsByUsernameRequestBody,
+  GetShopItemsByUsernameSuccess,
+  handleGetShopItemsByUserId,
+  handleGetShopItemsByUsername,
+} from "./handleGetShopItems";
 
 @injectable()
 @Route("shopitem")
@@ -47,7 +55,7 @@ export class ShopItemController extends Controller {
   @Post("create")
   public async createShopItem(
     @Request() request: express.Request,
-    @FormField() caption: string,
+    @FormField() description: string,
     @FormField() hashtags: string[],
     @FormField() title: string,
     @FormField() price: number,
@@ -60,7 +68,7 @@ export class ShopItemController extends Controller {
       controller: this,
       request,
       requestBody: {
-        caption,
+        description,
         hashtags,
         title,
         price,
@@ -76,6 +84,34 @@ export class ShopItemController extends Controller {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  @Post("getShopItemsByUserId")
+  public async getShopItemsByUserId(
+    @Request() request: express.Request,
+    @Body() requestBody: GetShopItemsByUserIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<GetShopItemsByUsernameFailed, GetShopItemsByUsernameSuccess>
+  > {
+    return await handleGetShopItemsByUserId({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getShopItemsByUsername")
+  public async getShopItemsByUsername(
+    @Request() request: express.Request,
+    @Body() requestBody: GetShopItemsByUsernameRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<GetShopItemsByUsernameFailed, GetShopItemsByUsernameSuccess>
+  > {
+    return await handleGetShopItemsByUsername({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -84,7 +120,7 @@ export class ShopItemController extends Controller {
   public async updateShopItem(
     @Request() request: express.Request,
     @FormField() shopItemId: string,
-    @FormField() caption?: string,
+    @FormField() description?: string,
     @FormField() hashtags?: string[],
     @FormField() title?: string,
     @FormField() price?: number,
@@ -98,7 +134,7 @@ export class ShopItemController extends Controller {
       request,
       requestBody: {
         shopItemId,
-        caption,
+        description,
         hashtags,
         title,
         price,

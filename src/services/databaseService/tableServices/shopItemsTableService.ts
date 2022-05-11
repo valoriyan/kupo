@@ -12,11 +12,12 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBShopItem {
   shop_item_id: string;
   author_user_id: string;
-  caption: string;
-  title: string;
-  price: number;
+  description: string;
+  creation_timestamp: string;
   scheduled_publication_timestamp: string;
   expiration_timestamp?: string;
+  title: string;
+  price: string;
 }
 
 function convertDBShopItemToUnrenderableShopItemPreview(
@@ -25,13 +26,14 @@ function convertDBShopItemToUnrenderableShopItemPreview(
   return {
     shopItemId: dbShopItem.shop_item_id,
     authorUserId: dbShopItem.author_user_id,
-    caption: dbShopItem.caption,
-    title: dbShopItem.title,
-    price: dbShopItem.price,
+    description: dbShopItem.description,
+    creationTimestamp: parseInt(dbShopItem.creation_timestamp),
     scheduledPublicationTimestamp: parseInt(dbShopItem.scheduled_publication_timestamp),
     expirationTimestamp: !!dbShopItem.expiration_timestamp
       ? parseInt(dbShopItem.expiration_timestamp)
       : undefined,
+    title: dbShopItem.title,
+    price: parseFloat(dbShopItem.price),
   };
 }
 
@@ -48,11 +50,12 @@ export class ShopItemsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         shop_item_id VARCHAR(64) UNIQUE NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
-        caption VARCHAR(64) NOT NULL,
-        title VARCHAR(64) NOT NULL,
-        price DECIMAL(12,2) NOT NULL,
+        description VARCHAR(64) NOT NULL,
+        creation_timestamp BIGINT NOT NULL,
         scheduled_publication_timestamp BIGINT NOT NULL,
-        expiration_timestamp BIGINT
+        expiration_timestamp BIGINT,
+        title VARCHAR(64) NOT NULL,
+        price DECIMAL(12,2) NOT NULL
       )
       ;
     `;
@@ -67,33 +70,36 @@ export class ShopItemsTableService extends TableService {
   public async createShopItem({
     shopItemId,
     authorUserId,
-    caption,
-    title,
-    price,
+    description,
+    creationTimestamp,
     scheduledPublicationTimestamp,
     expirationTimestamp,
+    title,
+    price,
   }: {
     shopItemId: string;
     authorUserId: string;
-    caption: string;
-    title: string;
-    price: number;
+    description: string;
+    creationTimestamp: number;
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
+    title: string;
+    price: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
           { field: "shop_item_id", value: shopItemId },
           { field: "author_user_id", value: authorUserId },
-          { field: "caption", value: caption },
-          { field: "title", value: title },
-          { field: "price", value: price },
+          { field: "description", value: description },
+          { field: "creation_timestamp", value: creationTimestamp },
           {
             field: "scheduled_publication_timestamp",
             value: scheduledPublicationTimestamp,
           },
           { field: "expiration_timestamp", value: expirationTimestamp },
+          { field: "title", value: title },
+          { field: "price", value: price },
         ],
       ],
       tableName: this.tableName,
@@ -108,9 +114,58 @@ export class ShopItemsTableService extends TableService {
 
   public async getShopItemsByCreatorUserId({
     creatorUserId,
+    filterOutExpiredAndUnscheduledShopItems,
+    limit,
+    getShopItemsBeforeTimestamp,
   }: {
     creatorUserId: string;
+    filterOutExpiredAndUnscheduledShopItems: boolean;
+    limit?: number;
+    getShopItemsBeforeTimestamp?: number;
   }): Promise<UnrenderableShopItemPreview[]> {
+    const queryValues: (string | number)[] = [creatorUserId];
+    const currentTimestamp = Date.now();
+
+    let filteringWhereClause = "";
+    if (!!filterOutExpiredAndUnscheduledShopItems) {
+      filteringWhereClause = `
+        AND
+          (
+            scheduled_publication_timestamp IS NULL
+              OR
+            scheduled_publication_timestamp < $${queryValues.length + 1}
+          ) 
+        AND
+          (
+              expiration_timestamp IS NULL
+            OR
+              expiration_timestamp > $${queryValues.length + 2}
+          )
+      `;
+
+      queryValues.push(currentTimestamp);
+      queryValues.push(currentTimestamp);
+    }
+
+    let limitClause = "";
+    if (!!limit) {
+      limitClause = `
+        LIMIT $${queryValues.length + 1}
+      `;
+
+      queryValues.push(limit);
+    }
+
+    let getPostsBeforeTimestampClause = "";
+    if (!!getShopItemsBeforeTimestamp) {
+      getPostsBeforeTimestampClause = `
+        AND
+          scheduled_publication_timestamp < $${queryValues.length + 1}
+      `;
+
+      queryValues.push(getShopItemsBeforeTimestamp);
+    }
+
     const query = {
       text: `
         SELECT
@@ -119,9 +174,15 @@ export class ShopItemsTableService extends TableService {
           ${this.tableName}
         WHERE
           author_user_id = $1
+          ${filteringWhereClause}
+          ${getPostsBeforeTimestampClause}
+        ORDER BY
+          scheduled_publication_timestamp DESC
+        ${limitClause}
+
         ;
       `,
-      values: [creatorUserId],
+      values: queryValues,
     };
 
     const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
@@ -135,29 +196,29 @@ export class ShopItemsTableService extends TableService {
 
   public async updateShopItemByShopItemId({
     shopItemId,
-    caption,
-    title,
-    price,
+    description,
     scheduledPublicationTimestamp,
     expirationTimestamp,
+    title,
+    price,
   }: {
     shopItemId: string;
-    caption?: string;
-    title?: string;
-    price?: number;
+    description?: string;
     scheduledPublicationTimestamp?: number;
     expirationTimestamp?: number;
+    title?: string;
+    price?: number;
   }): Promise<void> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [
-        { field: "caption", value: caption },
-        { field: "title", value: title },
-        { field: "price", value: price },
+        { field: "description", value: description },
         {
           field: "scheduled_publication_timestamp",
           value: scheduledPublicationTimestamp,
         },
         { field: "expiration_timestamp", value: expirationTimestamp },
+        { field: "title", value: title },
+        { field: "price", value: price },
       ],
       fieldUsedToIdentifyUpdatedRow: {
         field: "shop_item_id",

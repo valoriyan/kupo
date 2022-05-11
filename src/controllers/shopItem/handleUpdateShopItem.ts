@@ -12,7 +12,7 @@ export interface UpdateShopItemFailed {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
   shopItemId: string;
-  caption?: string;
+  description?: string;
   title?: string;
   price?: number;
   scheduledPublicationTimestamp?: number;
@@ -34,14 +34,23 @@ export async function handleUpdateShopItem({
   const { error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const {
+    shopItemId,
+    description,
+    title,
+    price,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
+  } = requestBody;
+
   await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByShopItemId(
     {
-      shopItemId: requestBody.shopItemId,
-      caption: requestBody.caption,
-      title: requestBody.title,
-      price: requestBody.price,
-      scheduledPublicationTimestamp: requestBody.scheduledPublicationTimestamp,
-      expirationTimestamp: requestBody.expirationTimestamp,
+      shopItemId: shopItemId,
+      description: description,
+      title: title,
+      price: price,
+      scheduledPublicationTimestamp: scheduledPublicationTimestamp,
+      expirationTimestamp: expirationTimestamp,
     },
   );
 

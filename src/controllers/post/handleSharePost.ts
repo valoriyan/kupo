@@ -104,7 +104,7 @@ export async function handleSharePost({
         renderablePost: {
           postId,
           creationTimestamp,
-          contentElements: [],
+          mediaElements: [],
           authorUserId: clientUserId,
           caption: lowercaseCaption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,

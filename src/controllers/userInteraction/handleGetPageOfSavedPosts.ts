@@ -3,7 +3,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
 import {
   decodeCursor,
-  getNextPageOfPostsEncodedCursor,
+  getNextPageOfSequentialFeedItemsEncodedCursor,
 } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { SecuredHTTPResponse } from "./../../../src/types/httpResponse";
@@ -78,8 +78,8 @@ export async function handleGetPageOfSavedPosts({
     success: {
       posts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getNextPageOfPostsEncodedCursor({
-        posts: unrenderablePostsWithoutElementsOrHashtags,
+      nextPageCursor: getNextPageOfSequentialFeedItemsEncodedCursor({
+        sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
       }),
     },
   };

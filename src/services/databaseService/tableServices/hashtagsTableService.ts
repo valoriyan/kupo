@@ -66,6 +66,35 @@ export class HashtagsTableService extends TableService {
     await this.datastorePool.query<DBHashtag>(query);
   }
 
+  public async addHashtagsToShopItem({
+    hashtags,
+    shopItemId,
+  }: {
+    hashtags: string[];
+    shopItemId: string;
+  }): Promise<void> {
+    console.log(`${this.tableName} | addHashtagsToShopItem`);
+
+    if (hashtags.length === 0) {
+      return;
+    }
+
+    const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
+      { field: "hashtag", value: hashtag },
+      {
+        field: "shop_item_id",
+        value: `${shopItemId}`,
+      },
+    ]);
+
+    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+      rowsOfFieldsAndValues,
+      tableName: this.tableName,
+    });
+
+    await this.datastorePool.query<DBHashtag>(query);
+  }
+
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -136,6 +165,30 @@ export class HashtagsTableService extends TableService {
         ;
       `,
       values: [postId],
+    };
+
+    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+
+    const hashtags = response.rows.map((row) => row.hashtag);
+    return hashtags;
+  }
+
+  public async getHashtagsForShopItemId({
+    shopItemId,
+  }: {
+    shopItemId: string;
+  }): Promise<string[]> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+        shop_item_id = $1
+        ;
+      `,
+      values: [shopItemId],
     };
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);

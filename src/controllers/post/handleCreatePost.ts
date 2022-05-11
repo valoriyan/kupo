@@ -4,9 +4,10 @@ import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { checkAuthorization } from "../auth/utilities";
-import { ContentElement, RenderablePost } from "./models";
+import { RenderablePost } from "./models";
 import { uploadMediaFile } from "../utilities/mediaFiles/uploadMediaFile";
 import { checkValidityOfMediaFiles } from "../utilities/mediaFiles/checkValidityOfMediaFiles";
+import { MediaElement } from "../models";
 
 export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -72,7 +73,7 @@ export async function handleCreatePost({
       };
     }
 
-    const filedAndRenderablePostContentElements = await BluebirdPromise.map(
+    const filedAndRenderablePostMediaElements = await BluebirdPromise.map(
       mediaFiles,
       async (file) =>
         uploadMediaFile({
@@ -81,22 +82,22 @@ export async function handleCreatePost({
         }),
     );
 
-    const contentElements: ContentElement[] = filedAndRenderablePostContentElements.map(
-      (filedAndRenderablePostContentElement) => ({
-        temporaryUrl: filedAndRenderablePostContentElement.fileTemporaryUrl,
-        mimeType: filedAndRenderablePostContentElement.mimetype,
+    const mediaElements: MediaElement[] = filedAndRenderablePostMediaElements.map(
+      (filedAndRenderablePostMediaElement) => ({
+        temporaryUrl: filedAndRenderablePostMediaElement.fileTemporaryUrl,
+        mimeType: filedAndRenderablePostMediaElement.mimetype,
       }),
     );
 
-    const contentElementTemporaryUrls = filedAndRenderablePostContentElements.map(
-      (filedAndRenderablePostContentElement) =>
-        filedAndRenderablePostContentElement.fileTemporaryUrl,
+    const mediaElementTemporaryUrls = filedAndRenderablePostMediaElements.map(
+      (filedAndRenderablePostMediaElement) =>
+        filedAndRenderablePostMediaElement.fileTemporaryUrl,
     );
 
-    if (filedAndRenderablePostContentElements.length > 0) {
+    if (filedAndRenderablePostMediaElements.length > 0) {
       await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
         {
-          postContentElements: filedAndRenderablePostContentElements.map(
+          postContentElements: filedAndRenderablePostMediaElements.map(
             ({ blobFileKey, mimetype }, index) => ({
               postId,
               postContentElementIndex: index,
@@ -126,7 +127,7 @@ export async function handleCreatePost({
 
     await controller.webSocketService.notifyOfNewPost({
       recipientUserId: clientUserId,
-      previewTemporaryUrl: contentElementTemporaryUrls[0],
+      previewTemporaryUrl: mediaElementTemporaryUrls[0],
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       username: unrenderableUser!.username,
     });
@@ -136,7 +137,7 @@ export async function handleCreatePost({
         renderablePost: {
           postId,
           creationTimestamp,
-          contentElements,
+          mediaElements,
           authorUserId: clientUserId,
           caption,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,

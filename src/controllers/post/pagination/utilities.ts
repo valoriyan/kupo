@@ -1,12 +1,11 @@
 import { UnrenderablePostWithoutElementsOrHashtags } from "../models";
 
-export function getNextPageOfPostsEncodedCursor({
-  posts,
-}: {
-  posts: UnrenderablePostWithoutElementsOrHashtags[];
-}): string | undefined {
-  if (posts.length > 0) {
-    const timestamp = posts[posts.length - 1].scheduledPublicationTimestamp;
+export function getNextPageOfSequentialFeedItemsEncodedCursor<
+  T extends { scheduledPublicationTimestamp: number },
+>({ sequentialFeedItems }: { sequentialFeedItems: T[] }): string | undefined {
+  if (sequentialFeedItems.length > 0) {
+    const timestamp =
+      sequentialFeedItems[sequentialFeedItems.length - 1].scheduledPublicationTimestamp;
     return encodeCursor({ timestamp });
   }
 

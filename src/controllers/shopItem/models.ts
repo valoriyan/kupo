@@ -1,23 +1,23 @@
-export interface ShopItemMediaElement {
-  blobFileKey: string;
-}
+import { MediaElement } from "../models";
 
 export interface UnrenderableShopItemPreview {
   shopItemId: string;
   authorUserId: string;
-  caption: string;
-  title: string;
-  price: number;
+  description: string;
+  creationTimestamp: number;
   scheduledPublicationTimestamp: number;
   expirationTimestamp?: number;
+  title: string;
+  price: number;
 }
 
 export interface RenderableShopItemPreview extends UnrenderableShopItemPreview {
-  countSold: number;
-
   hashtags: string[];
-  collaboratorUserIds: string[];
+  mediaElements: MediaElement[];
 
-  likesCount: number;
-  tipsSum: number;
+  // countSold: number;
+  // collaboratorUserIds: string[];
+
+  // likesCount: number;
+  // tipsSum: number;
 }
