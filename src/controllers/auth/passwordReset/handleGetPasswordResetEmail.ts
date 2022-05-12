@@ -1,5 +1,5 @@
-import { HTTPResponse } from "../../types/httpResponse";
-import { AuthController } from "./authController";
+import { HTTPResponse } from "../../../types/httpResponse";
+import { AuthController } from "../authController";
 
 export interface GetPasswordResetEmailRequestBody {
   email: string;
@@ -24,8 +24,6 @@ export async function handleGetPasswordResetEmail({
   requestBody: GetPasswordResetEmailRequestBody;
 }): Promise<HTTPResponse<GetPasswordResetEmailFailed, GetPasswordResetEmailSuccess>> {
   const { email } = requestBody;
-
-  console.log("handleGetPasswordResetEmail WAS CALLED!!");
 
   const user =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByEmail(

@@ -1,6 +1,6 @@
 import { getEnvironmentVariable } from "../../utilities";
 import { EmailServiceInterface } from "./models";
-import { generateResetPasswordToken } from "./utilities";
+import { generateResetPasswordToken, generateResetPasswordURL } from "./utilities";
 import SendgridMailer from "@sendgrid/mail";
 import { UnrenderableUser } from "../../controllers/user/models";
 import { generateForgotPasswordEmailHtml } from "./templates/generateForgotPasswordEmailHtml";
@@ -27,7 +27,10 @@ export class SendGridEmailService extends EmailServiceInterface {
       jwtPrivateKey: SendGridEmailService.JWT_PRIVATE_KEY,
     });
 
-    const resetPasswordUrlWithToken = `${SendGridEmailService.FRONTEND_BASE_URL}/reset-password?token=${resetPasswordToken}`;
+    const resetPasswordUrlWithToken = generateResetPasswordURL({
+      frontendBaseUrl: SendGridEmailService.FRONTEND_BASE_URL,
+      resetPasswordToken,
+    });
 
     const message = {
       to: email,

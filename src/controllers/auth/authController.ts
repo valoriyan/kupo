@@ -22,7 +22,7 @@ import {
   handleGetPasswordResetEmail,
   GetPasswordResetEmailRequestBody,
   GetPasswordResetEmailSuccess,
-} from "./handleGetPasswordResetEmail";
+} from "./passwordReset/handleGetPasswordResetEmail";
 import { handleLogout } from "./handleLogout";
 import { EmailService } from "../../services/emailService";
 import {
@@ -37,6 +37,18 @@ import {
   RemoveUserFromWaitlistRequestBody,
   RemoveUserFromWaitlistSuccess,
 } from "./handleRemoveUserFromWaitlist";
+import {
+  CheckResetPasswordTokenValidityFailed,
+  CheckResetPasswordTokenValidityRequestBody,
+  CheckResetPasswordTokenValiditySuccess,
+  handleCheckResetPasswordTokenValidity,
+} from "./passwordReset/handleCheckResetPasswordTokenValidity";
+import {
+  handleResetPassword,
+  ResetPasswordFailed,
+  ResetPasswordRequestBody,
+  ResetPasswordSuccess,
+} from "./passwordReset/handleResetPassword";
 
 @injectable()
 @Route("auth")
@@ -47,6 +59,10 @@ export class AuthController extends Controller {
   ) {
     super();
   }
+
+  //////////////////////////////////////////////////
+  // CREATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Post("register")
   public async registerUser(
@@ -88,6 +104,29 @@ export class AuthController extends Controller {
     });
   }
 
+  @Post("checkResetPasswordTokenValidity")
+  public async checkResetPasswordTokenValidity(
+    @Body() requestBody: CheckResetPasswordTokenValidityRequestBody,
+  ): Promise<
+    HTTPResponse<
+      CheckResetPasswordTokenValidityFailed,
+      CheckResetPasswordTokenValiditySuccess
+    >
+  > {
+    return await handleCheckResetPasswordTokenValidity({
+      controller: this,
+      requestBody,
+    });
+  }
+
+  //////////////////////////////////////////////////
+  // READ //////////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////
+  // UPDATE ////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   @Post("updatePassword")
   public async updatePassword(
     @Request() request: express.Request,
@@ -96,6 +135,16 @@ export class AuthController extends Controller {
     return await handleUpdatePassword({
       controller: this,
       request,
+      requestBody,
+    });
+  }
+
+  @Post("resetPassword")
+  public async resetPassword(
+    @Body() requestBody: ResetPasswordRequestBody,
+  ): Promise<HTTPResponse<ResetPasswordFailed, ResetPasswordSuccess>> {
+    return await handleResetPassword({
+      controller: this,
       requestBody,
     });
   }
@@ -125,6 +174,10 @@ export class AuthController extends Controller {
       requestBody,
     });
   }
+
+  //////////////////////////////////////////////////
+  // DELETE ////////////////////////////////////////
+  //////////////////////////////////////////////////
 
   @Get("logout")
   public async logout(): Promise<void> {

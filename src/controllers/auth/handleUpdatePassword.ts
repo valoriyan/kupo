@@ -1,6 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization, encryptPassword } from "../auth/utilities";
+import { checkAuthorization, encryptPassword } from "./utilities";
 import { AuthController } from "./authController";
 
 export interface UpdatePasswordRequestBody {

@@ -9,7 +9,7 @@ import { getEnvironmentVariable } from "./utilities";
 
 export const app = express();
 
-const origin = getEnvironmentVariable("FRONTEND_BASE_URL") || "http://localhost:3000";
+const origin = getEnvironmentVariable("FRONTEND_BASE_URL");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
