@@ -15,19 +15,13 @@
 /**
  *
  * @export
- * @interface ResetPasswordRequestBody
+ * @interface CheckResetPasswordTokenValidityRequestBody
  */
-export interface ResetPasswordRequestBody {
+export interface CheckResetPasswordTokenValidityRequestBody {
   /**
    *
    * @type {string}
-   * @memberof ResetPasswordRequestBody
+   * @memberof CheckResetPasswordTokenValidityRequestBody
    */
   token: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
-   */
-  password: string;
 }

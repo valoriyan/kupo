@@ -15,19 +15,9 @@
 /**
  *
  * @export
- * @interface ResetPasswordRequestBody
+ * @enum {string}
  */
-export interface ResetPasswordRequestBody {
-  /**
-   *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
-   */
-  token: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
-   */
-  password: string;
+export enum ResetPasswordFailedReason {
+  InvalidToken = "InvalidToken",
+  InvalidPassword = "InvalidPassword",
 }

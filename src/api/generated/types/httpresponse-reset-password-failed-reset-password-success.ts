@@ -12,22 +12,24 @@
  * Do not edit the class manually.
  */
 
+import { ResetPasswordFailed } from "./reset-password-failed";
+
 /**
  *
  * @export
- * @interface ResetPasswordRequestBody
+ * @interface HTTPResponseResetPasswordFailedResetPasswordSuccess
  */
-export interface ResetPasswordRequestBody {
+export interface HTTPResponseResetPasswordFailedResetPasswordSuccess {
   /**
    *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
+   * @type {ResetPasswordFailed}
+   * @memberof HTTPResponseResetPasswordFailedResetPasswordSuccess
    */
-  token: string;
+  error?: ResetPasswordFailed;
   /**
    *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
+   * @type {object}
+   * @memberof HTTPResponseResetPasswordFailedResetPasswordSuccess
    */
-  password: string;
+  success?: object;
 }

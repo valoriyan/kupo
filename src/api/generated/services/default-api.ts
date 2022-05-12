@@ -37,6 +37,8 @@ import {
   RequiredError,
 } from "../base";
 // @ts-ignore
+import { CheckResetPasswordTokenValidityRequestBody } from "../types";
+// @ts-ignore
 import { CommentOnPostRequestBody } from "../types";
 // @ts-ignore
 import { CreateChatMessageInNewRoomRequestBody } from "../types";
@@ -101,9 +103,13 @@ import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
 import { HTTPResponseAuthFailedAuthSuccess } from "../types";
 // @ts-ignore
+import { HTTPResponseCheckResetPasswordTokenValidityFailedCheckResetPasswordTokenValiditySuccess } from "../types";
+// @ts-ignore
 import { HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess } from "../types";
 // @ts-ignore
 import { HTTPResponseRegisterUserFailedAuthSuccess } from "../types";
+// @ts-ignore
+import { HTTPResponseResetPasswordFailedResetPasswordSuccess } from "../types";
 // @ts-ignore
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
@@ -112,6 +118,8 @@ import { RegisterUserRequestBody } from "../types";
 import { RemoveUserFromWaitlistRequestBody } from "../types";
 // @ts-ignore
 import { RemoveUserLikeFromPostRequestBody } from "../types";
+// @ts-ignore
+import { ResetPasswordRequestBody } from "../types";
 // @ts-ignore
 import { SearchForHashtagsRequestBody } from "../types";
 // @ts-ignore
@@ -242,6 +250,55 @@ import { UserSavesPostRequestBody } from "../types";
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     *
+     * @param {CheckResetPasswordTokenValidityRequestBody} checkResetPasswordTokenValidityRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    checkResetPasswordTokenValidity: async (
+      checkResetPasswordTokenValidityRequestBody: CheckResetPasswordTokenValidityRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'checkResetPasswordTokenValidityRequestBody' is not null or undefined
+      assertParamExists(
+        "checkResetPasswordTokenValidity",
+        "checkResetPasswordTokenValidityRequestBody",
+        checkResetPasswordTokenValidityRequestBody,
+      );
+      const localVarPath = `/auth/checkResetPasswordTokenValidity`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        checkResetPasswordTokenValidityRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @param {CommentOnPostRequestBody} commentOnPostRequestBody
@@ -2241,6 +2298,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetPassword: async (
+      resetPasswordRequestBody: ResetPasswordRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'resetPasswordRequestBody' is not null or undefined
+      assertParamExists(
+        "resetPassword",
+        "resetPasswordRequestBody",
+        resetPasswordRequestBody,
+      );
+      const localVarPath = `/auth/resetPassword`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        resetPasswordRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3120,6 +3226,33 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 export const DefaultApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration);
   return {
+    /**
+     *
+     * @param {CheckResetPasswordTokenValidityRequestBody} checkResetPasswordTokenValidityRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async checkResetPasswordTokenValidity(
+      checkResetPasswordTokenValidityRequestBody: CheckResetPasswordTokenValidityRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<HTTPResponseCheckResetPasswordTokenValidityFailedCheckResetPasswordTokenValiditySuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.checkResetPasswordTokenValidity(
+          checkResetPasswordTokenValidityRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
     /**
      *
      * @param {CommentOnPostRequestBody} commentOnPostRequestBody
@@ -4189,6 +4322,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async resetPassword(
+      resetPasswordRequestBody: ResetPasswordRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<HTTPResponseResetPasswordFailedResetPasswordSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword(
+        resetPasswordRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4668,6 +4827,23 @@ export const DefaultApiFactory = function (
 ) {
   const localVarFp = DefaultApiFp(configuration);
   return {
+    /**
+     *
+     * @param {CheckResetPasswordTokenValidityRequestBody} checkResetPasswordTokenValidityRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    checkResetPasswordTokenValidity(
+      checkResetPasswordTokenValidityRequestBody: CheckResetPasswordTokenValidityRequestBody,
+      options?: any,
+    ): AxiosPromise<HTTPResponseCheckResetPasswordTokenValidityFailedCheckResetPasswordTokenValiditySuccess> {
+      return localVarFp
+        .checkResetPasswordTokenValidity(
+          checkResetPasswordTokenValidityRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
     /**
      *
      * @param {CommentOnPostRequestBody} commentOnPostRequestBody
@@ -5271,6 +5447,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {ResetPasswordRequestBody} resetPasswordRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resetPassword(
+      resetPasswordRequestBody: ResetPasswordRequestBody,
+      options?: any,
+    ): AxiosPromise<HTTPResponseResetPasswordFailedResetPasswordSuccess> {
+      return localVarFp
+        .resetPassword(resetPasswordRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {SearchForHashtagsRequestBody} searchForHashtagsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5544,6 +5734,25 @@ export const DefaultApiFactory = function (
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+  /**
+   *
+   * @param {CheckResetPasswordTokenValidityRequestBody} checkResetPasswordTokenValidityRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public checkResetPasswordTokenValidity(
+    checkResetPasswordTokenValidityRequestBody: CheckResetPasswordTokenValidityRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .checkResetPasswordTokenValidity(
+        checkResetPasswordTokenValidityRequestBody,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @param {CommentOnPostRequestBody} commentOnPostRequestBody
@@ -6200,6 +6409,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {ResetPasswordRequestBody} resetPasswordRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public resetPassword(
+    resetPasswordRequestBody: ResetPasswordRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .resetPassword(resetPasswordRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

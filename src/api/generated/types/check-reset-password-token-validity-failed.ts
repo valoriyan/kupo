@@ -12,22 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { CheckResetPasswordTokenValidityFailedReason } from "./check-reset-password-token-validity-failed-reason";
+
 /**
  *
  * @export
- * @interface ResetPasswordRequestBody
+ * @interface CheckResetPasswordTokenValidityFailed
  */
-export interface ResetPasswordRequestBody {
+export interface CheckResetPasswordTokenValidityFailed {
   /**
    *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
+   * @type {CheckResetPasswordTokenValidityFailedReason}
+   * @memberof CheckResetPasswordTokenValidityFailed
    */
-  token: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResetPasswordRequestBody
-   */
-  password: string;
+  reason: CheckResetPasswordTokenValidityFailedReason;
 }
