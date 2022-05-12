@@ -25,6 +25,8 @@ export async function handleGetPasswordResetEmail({
 }): Promise<HTTPResponse<GetPasswordResetEmailFailed, GetPasswordResetEmailSuccess>> {
   const { email } = requestBody;
 
+  console.log("handleGetPasswordResetEmail WAS CALLED!!");
+
   const user =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByEmail(
       { email },
