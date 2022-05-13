@@ -37,7 +37,6 @@ export async function handleResetPassword({
     const jwtData = verify(token, jwtPrivateKey) as ResetPasswordJWTData;
     const userId = jwtData.resetPasswordData.userId;
 
-
     const encryptedPassword = encryptPassword({ password });
 
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
