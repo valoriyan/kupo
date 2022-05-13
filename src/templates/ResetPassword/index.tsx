@@ -28,7 +28,7 @@ const ResetPasswordInner = ({ resetPasswordToken }: { resetPasswordToken: string
     if (!!isTokenValid || isError) return;
 
     checkResetPasswordTokenValidity();
-  }, [resetPasswordToken]);
+  }, [checkResetPasswordTokenValidity, isError, isTokenValid, resetPasswordToken]);
 
   console.log(`isTokenValid: ${isTokenValid}`);
 
