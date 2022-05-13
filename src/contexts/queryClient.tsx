@@ -28,6 +28,7 @@ export enum CacheKeys {
   FollowerUsers = "FollowerUsers",
   SavedPosts = "SavedPosts",
   ResetPasswordTokenValidity = "ResetPasswordTokenValidity",
+  CountOfUnreadNotifications = "CountOfUnreadNotifications",
 }
 
 export const queryClient = new QueryClient({

@@ -61,8 +61,6 @@ import { FollowUserRequestBody } from "../types";
 // @ts-ignore
 import { GetChatRoomByIdRequestBody } from "../types";
 // @ts-ignore
-import { GetCountOfUnreadNotificationsByUserIdRequestBody } from "../types";
-// @ts-ignore
 import { GetPageOfChatMessagesRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfChatRoomsRequestBody } from "../types";
@@ -159,7 +157,7 @@ import { SecuredHTTPResponseFollowUserFailedFollowUserSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetChatRoomByIdFailedGetChatRoomByIdSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseGetCountOfUnreadNotificationsByUserIdFailedGetCountOfUnreadNotificationsByUserIdSuccess } from "../types";
+import { SecuredHTTPResponseGetCountOfUnreadNotificationsFailedGetCountOfUnreadNotificationsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPageOfChatMessagesFailedGetPageOfChatMessagesSuccess } from "../types";
 // @ts-ignore
@@ -1021,21 +1019,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetCountOfUnreadNotificationsByUserIdRequestBody} getCountOfUnreadNotificationsByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getCountOfUnreadNotificationsByUserId: async (
-      getCountOfUnreadNotificationsByUserIdRequestBody: GetCountOfUnreadNotificationsByUserIdRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getCountOfUnreadNotificationsByUserIdRequestBody' is not null or undefined
-      assertParamExists(
-        "getCountOfUnreadNotificationsByUserId",
-        "getCountOfUnreadNotificationsByUserIdRequestBody",
-        getCountOfUnreadNotificationsByUserIdRequestBody,
-      );
-      const localVarPath = `/notification/getCountOfUnreadNotificationsByUserId`;
+    getCountOfUnreadNotifications: async (options: any = {}): Promise<RequestArgs> => {
+      const localVarPath = `/notification/getCountOfUnreadNotifications`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1047,8 +1035,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1057,11 +1043,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getCountOfUnreadNotificationsByUserIdRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -3628,24 +3609,19 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetCountOfUnreadNotificationsByUserIdRequestBody} getCountOfUnreadNotificationsByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getCountOfUnreadNotificationsByUserId(
-      getCountOfUnreadNotificationsByUserIdRequestBody: GetCountOfUnreadNotificationsByUserIdRequestBody,
+    async getCountOfUnreadNotifications(
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsByUserIdFailedGetCountOfUnreadNotificationsByUserIdSuccess>
+      ) => AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsFailedGetCountOfUnreadNotificationsSuccess>
     > {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getCountOfUnreadNotificationsByUserId(
-          getCountOfUnreadNotificationsByUserIdRequestBody,
-          options,
-        );
+        await localVarAxiosParamCreator.getCountOfUnreadNotifications(options);
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -5067,19 +5043,14 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {GetCountOfUnreadNotificationsByUserIdRequestBody} getCountOfUnreadNotificationsByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getCountOfUnreadNotificationsByUserId(
-      getCountOfUnreadNotificationsByUserIdRequestBody: GetCountOfUnreadNotificationsByUserIdRequestBody,
+    getCountOfUnreadNotifications(
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsByUserIdFailedGetCountOfUnreadNotificationsByUserIdSuccess> {
+    ): AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsFailedGetCountOfUnreadNotificationsSuccess> {
       return localVarFp
-        .getCountOfUnreadNotificationsByUserId(
-          getCountOfUnreadNotificationsByUserIdRequestBody,
-          options,
-        )
+        .getCountOfUnreadNotifications(options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5996,20 +5967,13 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetCountOfUnreadNotificationsByUserIdRequestBody} getCountOfUnreadNotificationsByUserIdRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getCountOfUnreadNotificationsByUserId(
-    getCountOfUnreadNotificationsByUserIdRequestBody: GetCountOfUnreadNotificationsByUserIdRequestBody,
-    options?: any,
-  ) {
+  public getCountOfUnreadNotifications(options?: any) {
     return DefaultApiFp(this.configuration)
-      .getCountOfUnreadNotificationsByUserId(
-        getCountOfUnreadNotificationsByUserIdRequestBody,
-        options,
-      )
+      .getCountOfUnreadNotifications(options)
       .then((request) => request(this.axios, this.basePath));
   }
 

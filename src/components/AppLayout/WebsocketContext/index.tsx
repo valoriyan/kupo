@@ -17,7 +17,6 @@ const NEW_FOLLOWER_EVENT_NAME = "NEW_FOLLOWER";
 export interface WebsocketState {
   socket: Socket | undefined;
   generateSocket: ({ accessToken }: { accessToken: string }) => void;
-  countOfExistingUnreadNotifications: number;
   notificationsReceived: RenderableUserNotification[];
 }
 
@@ -91,7 +90,6 @@ const createFormStateStore = () =>
         set({ socket });
       }
     },
-    countOfExistingUnreadNotifications: 0,
     notificationsReceived: [],
   }));
 

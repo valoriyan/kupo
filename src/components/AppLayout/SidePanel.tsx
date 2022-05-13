@@ -23,26 +23,15 @@ import { LoadingArea } from "../LoadingArea";
 import { ScrollArea } from "../ScrollArea";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
-import { useWebsocketState } from "./WebsocketContext";
+import { NotificationsIndicator } from "./NotificationsIndicator";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
-  const { notificationsReceived, countOfExistingUnreadNotifications } =
-    useWebsocketState();
   const router = useRouter();
 
   const isActive = (href: string) => {
     return router.asPath.includes(href);
   };
-
-  const countOfUnreadNotifications =
-    countOfExistingUnreadNotifications + notificationsReceived.length;
-
-  const notificationsIndicator = !countOfUnreadNotifications ? null : (
-    <NotificationBadge>
-      {countOfUnreadNotifications > 99 ? "99+" : countOfUnreadNotifications}
-    </NotificationBadge>
-  );
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;
@@ -80,7 +69,7 @@ export const SidePanel = () => {
               label={
                 <Flex css={{ alignItems: "center", gap: "$3" }}>
                   Notifications
-                  {notificationsIndicator}
+                  <NotificationsIndicator />
                 </Flex>
               }
               color={isActive("/notifications") ? activeColor : inactiveColor}
@@ -140,17 +129,4 @@ const UserInfoWrapper = styled("div", {
   gridTemplateColumns: "auto auto",
   alignItems: "start",
   columnGap: "$5",
-});
-
-const NotificationBadge = styled(Flex, {
-  justifyContent: "center",
-  alignItems: "center",
-  height: "20px",
-  minWidth: "20px",
-  px: "$",
-  fontSize: "$0",
-  fontWeight: "$bold",
-  bg: "$failure",
-  color: "$accentText",
-  borderRadius: "$round",
 });
