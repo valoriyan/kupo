@@ -3,38 +3,30 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 
-export interface GetCountOfUnreadNotificationsByUserIdRequestBody {
-  userId: number;
-}
-
-export interface GetCountOfUnreadNotificationsByUserIdSuccess {
+export interface GetCountOfUnreadNotificationsSuccess {
   count: number;
 }
 
-export enum GetCountOfUnreadNotificationsByUserIdFailedReason {
+export enum GetCountOfUnreadNotificationsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetCountOfUnreadNotificationsByUserIdFailed {
-  reason: GetCountOfUnreadNotificationsByUserIdFailedReason;
+export interface GetCountOfUnreadNotificationsFailed {
+  reason: GetCountOfUnreadNotificationsFailedReason;
 }
 
-export async function handleGetCountOfUnreadNotificationsByUserId({
+export async function handleGetCountOfUnreadNotifications({
   controller,
   request,
-  requestBody,
 }: {
   controller: NotificationController;
   request: express.Request;
-  requestBody: GetCountOfUnreadNotificationsByUserIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetCountOfUnreadNotificationsByUserIdFailed,
-    GetCountOfUnreadNotificationsByUserIdSuccess
+    GetCountOfUnreadNotificationsFailed,
+    GetCountOfUnreadNotificationsSuccess
   >
 > {
-  console.log(requestBody);
-
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 

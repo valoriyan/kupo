@@ -12,11 +12,10 @@ import {
 } from "./handleGetPageOfNotifications";
 import { BlobStorageService } from "./../../services/blobStorageService";
 import {
-  GetCountOfUnreadNotificationsByUserIdFailed,
-  GetCountOfUnreadNotificationsByUserIdRequestBody,
-  GetCountOfUnreadNotificationsByUserIdSuccess,
-  handleGetCountOfUnreadNotificationsByUserId,
-} from "./handleGetCountOfUnreadNotificationsByUserId";
+  GetCountOfUnreadNotificationsFailed,
+  GetCountOfUnreadNotificationsSuccess,
+  handleGetCountOfUnreadNotifications,
+} from "./handleGetCountOfUnreadNotifications";
 
 @injectable()
 @Route("notification")
@@ -51,20 +50,18 @@ export class NotificationController extends Controller {
     });
   }
 
-  @Post("getCountOfUnreadNotificationsByUserId")
-  public async getCountOfUnreadNotificationsByUserId(
+  @Post("getCountOfUnreadNotifications")
+  public async getCountOfUnreadNotifications(
     @Request() request: express.Request,
-    @Body() requestBody: GetCountOfUnreadNotificationsByUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetCountOfUnreadNotificationsByUserIdFailed,
-      GetCountOfUnreadNotificationsByUserIdSuccess
+      GetCountOfUnreadNotificationsFailed,
+      GetCountOfUnreadNotificationsSuccess
     >
   > {
-    return await handleGetCountOfUnreadNotificationsByUserId({
+    return await handleGetCountOfUnreadNotifications({
       controller: this,
       request,
-      requestBody,
     });
   }
 
