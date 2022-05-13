@@ -2,7 +2,7 @@ import { ResetPasswordJWTData } from "./models";
 import { sign } from "jsonwebtoken";
 import { RESET_PASSWORD_URL_PATH } from "../../config";
 
-const RESET_PASSWORD_TOKEN_EXPIRATION_TIME = 60 * 60 * 2; // one week
+const RESET_PASSWORD_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 
 export function generateResetPasswordToken({
   userId,
@@ -19,7 +19,7 @@ export function generateResetPasswordToken({
     },
   };
 
-  return sign({ jwtData }, jwtPrivateKey, { expiresIn });
+  return sign(jwtData, jwtPrivateKey, { expiresIn });
 }
 
 export const generateResetPasswordURL = ({

@@ -37,6 +37,7 @@ export async function handleResetPassword({
     const jwtData = verify(token, jwtPrivateKey) as ResetPasswordJWTData;
     const userId = jwtData.resetPasswordData.userId;
 
+
     const encryptedPassword = encryptPassword({ password });
 
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
@@ -49,7 +50,8 @@ export async function handleResetPassword({
     return {
       success: {},
     };
-  } catch {
+  } catch (error) {
+    console.log(`handleResetPassword error: ${error}`);
     return { error: { reason: ResetPasswordFailedReason.InvalidToken } };
   }
 }
