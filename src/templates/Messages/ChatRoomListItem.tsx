@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { RenderableChatRoom } from "#/api/generated/types/renderable-chat-room";
-import { Avatar } from "#/components/Avatar";
+import { StackedAvatars } from "#/components/Avatar/StackedAvatars";
 import { bodyStyles } from "#/components/Typography";
 import { styled } from "#/styling";
 
@@ -14,10 +14,6 @@ export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) 
 
   const nonClientMembers = members.filter((member) => member.userId !== clientUserId);
 
-  const firstMemberUserProfilePicture = nonClientMembers.length
-    ? nonClientMembers[0].profilePictureTemporaryUrl
-    : undefined;
-
   const chatRoomMembersDisplay = nonClientMembers.map((member, index, list) => (
     <Username key={index}>
       @{member.username}
@@ -28,10 +24,12 @@ export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) 
   return (
     <Link href={`/messages/${chatRoomId}`} passHref>
       <Wrapper>
-        <Avatar
+        <StackedAvatars
           size="$8"
-          src={firstMemberUserProfilePicture}
-          alt="Chat Room Avatar Image"
+          images={nonClientMembers.map((member) => ({
+            alt: `${member.username}'s profile picture`,
+            src: member.profilePictureTemporaryUrl,
+          }))}
         />
         <div>{chatRoomMembersDisplay}</div>
       </Wrapper>

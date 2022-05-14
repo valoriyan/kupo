@@ -7,12 +7,26 @@ import { useGetChatRoomIdWithUserIds } from "#/api/queries/chat/useGetChatRoomId
 import { NewMessageInNewChatRoom } from "./NewMessageInNewChatRoom";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 
-const NewChatRoomUsernameListItem = ({ user }: { user: RenderableUser | null }) => {
-  if (!!user) {
-    return <span style={{ color: "green" }}>{user.username}</span>;
-  } else {
-    return <span>{user}</span>;
+export const NewChatRoom = ({ userIds }: { userIds?: string[] }) => {
+  const { data, error, isLoading } = useGetClientUserProfile();
+
+  if (!!userIds) {
+    return <NewMessageInNewChatRoom userIds={userIds} />;
   }
+
+  if (error && !isLoading) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !data) {
+    return <div>Loading</div>;
+  }
+
+  return (
+    <FormStateProvider>
+      <NewChatRoomInner clientUser={data} />
+    </FormStateProvider>
+  );
 };
 
 export const NewChatRoomInner = ({ clientUser }: { clientUser: RenderableUser }) => {
@@ -94,24 +108,10 @@ export const NewChatRoomInner = ({ clientUser }: { clientUser: RenderableUser })
   );
 };
 
-export const NewChatRoom = ({ userIds }: { userIds?: string[] }) => {
-  const { data, error, isLoading } = useGetClientUserProfile();
-
-  if (!!userIds) {
-    return <NewMessageInNewChatRoom userIds={userIds} />;
+const NewChatRoomUsernameListItem = ({ user }: { user: RenderableUser | null }) => {
+  if (!!user) {
+    return <span style={{ color: "green" }}>{user.username}</span>;
+  } else {
+    return <span>{user}</span>;
   }
-
-  if (error && !isLoading) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
-
-  return (
-    <FormStateProvider>
-      <NewChatRoomInner clientUser={data} />
-    </FormStateProvider>
-  );
 };

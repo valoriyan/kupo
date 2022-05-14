@@ -1,15 +1,20 @@
 import { KeyboardEvent } from "react";
-import { styled } from "#/styling";
-import { useFormState } from "./FormContext";
 import { Button } from "#/components/Button";
+import { styled } from "#/styling";
 
 export interface MessageComposerProps {
+  newChatMessage: string;
+  setNewChatMessage: (newChatMessage: string) => void;
   onSubmitNewChatMessage: (event: React.FormEvent) => Promise<void>;
+  disabled?: boolean;
 }
 
-export const MessageComposer = ({ onSubmitNewChatMessage }: MessageComposerProps) => {
-  const { newChatMessage, setNewChatMessage } = useFormState();
-
+export const MessageComposer = ({
+  newChatMessage,
+  setNewChatMessage,
+  onSubmitNewChatMessage,
+  disabled,
+}: MessageComposerProps) => {
   function onUpdateNewChatMessage(event: React.ChangeEvent<HTMLTextAreaElement>) {
     event.preventDefault();
     setNewChatMessage(event.currentTarget.value);
@@ -35,7 +40,7 @@ export const MessageComposer = ({ onSubmitNewChatMessage }: MessageComposerProps
           round
           size="sm"
           onClick={onSubmitNewChatMessage}
-          disabled={!newChatMessage}
+          disabled={!newChatMessage || disabled}
         >
           Send
         </Button>
