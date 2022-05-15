@@ -50,23 +50,23 @@ export async function handleUnfollowUser({
   );
 
   const countOfUnreadNotifications =
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-    { userId: userIdBeingUnfollowed },
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: userIdBeingUnfollowed },
+    );
+
+  const unrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification =
+    {
+      countOfUnreadNotifications,
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_FOLLOWER,
+      userIdDoingUnfollowing: clientUserId,
+    };
+
+  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewFollower(
+    {
+      userId: userIdBeingUnfollowed,
+      unrenderableCanceledNewFollowerNotification,
+    },
   );
-
-  const unrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification = {
-    countOfUnreadNotifications,
-    type: NOTIFICATION_EVENTS.CANCELED_NEW_FOLLOWER,
-    userIdDoingUnfollowing: clientUserId,
-  };
-
-
-
-  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewFollower({
-    userId: userIdBeingUnfollowed,
-    unrenderableCanceledNewFollowerNotification,
-  });
-
 
   return {
     success: {},

@@ -64,7 +64,6 @@ export async function assembleRenderableNewCommentOnPostNotification({
       { userId: clientUserId },
     );
 
-
   return {
     countOfUnreadNotifications,
     userThatCommented,

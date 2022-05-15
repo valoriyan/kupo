@@ -4,4 +4,3 @@ export interface BaseUserNotification {
   type: NOTIFICATION_EVENTS;
   countOfUnreadNotifications: number;
 }
-

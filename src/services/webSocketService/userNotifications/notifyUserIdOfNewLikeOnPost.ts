@@ -13,5 +13,8 @@ export async function notifyUserIdOfNewLikeOnPost({
   userId: string;
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
-  io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_LIKE_ON_POST, renderableNewLikeOnPostNotification);
+  io.to([roomName]).emit(
+    NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+    renderableNewLikeOnPostNotification,
+  );
 }

@@ -55,25 +55,24 @@ export async function handleRemoveUserLikeFromPost({
   );
 
   const countOfUnreadNotifications =
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-    { userId: unrenderablePost.authorUserId },
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: unrenderablePost.authorUserId },
+    );
+
+  const unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification =
+    {
+      countOfUnreadNotifications,
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_POST,
+      userIdUnlikingPost: clientUserId,
+      postId,
+    };
+
+  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewLikeOnPost(
+    {
+      userId: unrenderablePost.authorUserId,
+      unrenderableCanceledNewLikeOnPostNotification,
+    },
   );
-  
-
-  const unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification = {
-    countOfUnreadNotifications,
-    type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_POST,
-    userIdUnlikingPost: clientUserId,
-    postId,
-  };
-
-
-
-  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewLikeOnPost({
-    userId: unrenderablePost.authorUserId,
-    unrenderableCanceledNewLikeOnPostNotification,
-  });
-
 
   return {};
 }

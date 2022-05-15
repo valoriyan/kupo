@@ -108,7 +108,6 @@ export async function handleCommentOnPost({
           { userId: post.authorUserId },
         );
 
-
       const renderableNewCommentOnPostNotification = {
         countOfUnreadNotifications,
         type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
@@ -118,12 +117,12 @@ export async function handleCommentOnPost({
         postComment: renderablePostComment,
       };
 
-  
-
-      await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewCommentOnPost({
-        userId: recipientUserId,
-        renderableNewCommentOnPostNotification,
-      });
+      await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewCommentOnPost(
+        {
+          userId: recipientUserId,
+          renderableNewCommentOnPostNotification,
+        },
+      );
     }
   }
 

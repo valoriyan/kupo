@@ -16,7 +16,8 @@ import { UserNotificationsWebsocketService } from "./userNotifications";
 export class WebSocketService {
   static io: Server;
 
-  public userNotificationsWebsocketService: UserNotificationsWebsocketService = new UserNotificationsWebsocketService(WebSocketService.io);
+  public userNotificationsWebsocketService: UserNotificationsWebsocketService =
+    new UserNotificationsWebsocketService(WebSocketService.io);
 
   static async start(httpServer: httpServer): Promise<void> {
     const origin = getEnvironmentVariable("FRONTEND_BASE_URL", "http://localhost:3000");
@@ -105,7 +106,4 @@ export class WebSocketService {
       });
     });
   }
-
-
-
 }

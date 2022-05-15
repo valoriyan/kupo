@@ -66,10 +66,9 @@ export async function handleFollowUser({
       });
 
       const countOfUnreadNotifications =
-      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-        { userId: userIdBeingFollowed },
-      );
-
+        await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+          { userId: userIdBeingFollowed },
+        );
 
       const renderableNewFollowerNotification = {
         countOfUnreadNotifications,
@@ -78,12 +77,12 @@ export async function handleFollowUser({
         userDoingFollowing: clientUser,
       };
 
-  
-
-      await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewFollower({
-        userId: userIdBeingFollowed,
-        renderableNewFollowerNotification,
-      });
+      await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewFollower(
+        {
+          userId: userIdBeingFollowed,
+          renderableNewFollowerNotification,
+        },
+      );
     }
   }
 

@@ -57,22 +57,23 @@ export async function handleDeleteCommentFromPost({
   );
 
   const countOfUnreadNotifications =
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-    { userId: postAuthorUserId },
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: postAuthorUserId },
+    );
+
+  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification =
+    {
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_POST,
+      countOfUnreadNotifications,
+      postCommentId,
+    };
+
+  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost(
+    {
+      userId: postAuthorUserId,
+      unrenderableCanceledCommentOnPostNotification,
+    },
   );
-
-  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification = {
-    type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_POST,
-    countOfUnreadNotifications,
-    postCommentId,
-  };
-
-  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost({
-    userId: postAuthorUserId,
-    unrenderableCanceledCommentOnPostNotification,
-  });
-
-
 
   return {
     success: {},

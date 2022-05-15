@@ -47,7 +47,6 @@ export async function assembleRenderableNewFollowerNotification({
       { userId: clientUserId },
     );
 
-
   return {
     countOfUnreadNotifications,
     userDoingFollowing,

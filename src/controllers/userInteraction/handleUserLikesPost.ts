@@ -28,7 +28,6 @@ export async function handleUserLikesPost({
 }): Promise<HTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>> {
   const now = Date.now();
 
-
   const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -101,9 +100,9 @@ export async function handleUserLikesPost({
     });
 
     const countOfUnreadNotifications =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: unrenderablePostWithoutElementsOrHashtags.authorUserId },
-    );
+      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+        { userId: unrenderablePostWithoutElementsOrHashtags.authorUserId },
+      );
 
     const renderableNewLikeOnPostNotification: RenderableNewLikeOnPostNotification = {
       eventTimestamp: now,
@@ -111,12 +110,14 @@ export async function handleUserLikesPost({
       countOfUnreadNotifications,
       userThatLikedPost: clientUser,
       post,
-    }
+    };
 
-    await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPost({
-      renderableNewLikeOnPostNotification,
-      userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-    });
+    await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPost(
+      {
+        renderableNewLikeOnPostNotification,
+        userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+      },
+    );
   }
 
   return {};
