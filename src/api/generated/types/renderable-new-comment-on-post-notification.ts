@@ -34,6 +34,12 @@ export interface RenderableNewCommentOnPostNotification {
    * @type {number}
    * @memberof RenderableNewCommentOnPostNotification
    */
+  countOfUnreadNotifications: number;
+  /**
+   *
+   * @type {number}
+   * @memberof RenderableNewCommentOnPostNotification
+   */
   eventTimestamp: number;
   /**
    *

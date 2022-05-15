@@ -113,6 +113,8 @@ export * from "./httpresponse-check-reset-password-token-validity-failed-check-r
 export * from "./httpresponse-get-password-reset-email-failed-get-password-reset-email-success";
 export * from "./httpresponse-register-user-failed-auth-success";
 export * from "./httpresponse-reset-password-failed-reset-password-success";
+export * from "./inline-object5";
+export * from "./inline-response200";
 export * from "./login-user-request-body";
 export * from "./media-element";
 export * from "./notificationevents";
@@ -217,6 +219,9 @@ export * from "./share-post-request-body";
 export * from "./share-post-success";
 export * from "./shared-post-type";
 export * from "./unfollow-user-request-body";
+export * from "./unrenderable-canceled-comment-on-post-notification";
+export * from "./unrenderable-canceled-new-follower-notification";
+export * from "./unrenderable-canceled-new-like-on-post-notification";
 export * from "./unrenderable-post";
 export * from "./update-password-failed";
 export * from "./update-password-failed-reason";

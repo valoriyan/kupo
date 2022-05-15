@@ -13,42 +13,29 @@
  */
 
 import { NOTIFICATIONEVENTS } from "./notificationevents";
-import { RenderableUser } from "./renderable-user";
 
 /**
  *
  * @export
- * @interface RenderableNewFollowerNotification
+ * @interface UnrenderableCanceledCommentOnPostNotification
  */
-export interface RenderableNewFollowerNotification {
+export interface UnrenderableCanceledCommentOnPostNotification {
   /**
    *
    * @type {NOTIFICATIONEVENTS}
-   * @memberof RenderableNewFollowerNotification
+   * @memberof UnrenderableCanceledCommentOnPostNotification
    */
   type: NOTIFICATIONEVENTS;
   /**
    *
    * @type {number}
-   * @memberof RenderableNewFollowerNotification
+   * @memberof UnrenderableCanceledCommentOnPostNotification
    */
   countOfUnreadNotifications: number;
   /**
    *
-   * @type {number}
-   * @memberof RenderableNewFollowerNotification
+   * @type {string}
+   * @memberof UnrenderableCanceledCommentOnPostNotification
    */
-  eventTimestamp: number;
-  /**
-   *
-   * @type {number}
-   * @memberof RenderableNewFollowerNotification
-   */
-  timestampSeenByUser?: number;
-  /**
-   *
-   * @type {RenderableUser}
-   * @memberof RenderableNewFollowerNotification
-   */
-  userDoingFollowing: RenderableUser;
+  postCommentId: string;
 }

@@ -3,21 +3,19 @@ import { io, Socket } from "socket.io-client";
 import create, { GetState, SetState } from "zustand";
 import createContext from "zustand/context";
 import getConfig from "next/config";
-import {
-  RenderableNewCommentOnPostNotification,
-  RenderableNewFollowerNotification,
-  RenderableNewLikeOnPostNotification,
-  RenderableUserNotification,
-} from "#/api";
-
-const NEW_LIKE_ON_POST_EVENT_NAME = "NEW_LIKE_ON_POST";
-const NEW_COMMENT_ON_POST_EVENT_NAME = "NEW_COMMENT_ON_POST";
-const NEW_FOLLOWER_EVENT_NAME = "NEW_FOLLOWER";
+import { NOTIFICATIONEVENTS, RenderableUserNotification } from "#/api";
+import { generateRenderableNewCommentOnPostNotificationHandler } from "./renderableNewCommentOnPostNotificationHandler";
+import { generateRenderableNewLikeOnPostNotificationHandler } from "./renderableNewLikeOnPostNotificationHandler";
+import { generateRenderableNewFollowerNotificationHandler } from "./renderableNewFollowerNotificationHandler";
+import { generateUnrenderableCanceledCommentOnPostNotificationHandler } from "./unrenderableCanceledCommentOnPostNotificationHandler";
+import { generateUnrenderableCanceledNewFollowerNotificationHandler } from "./unrenderableCanceledNewFollowerNotificationHandler";
+import { generateUnrenderableCanceledNewLikeOnPostNotificationHandler } from "./unrenderableCanceledNewLikeOnPostNotificationHandler";
 
 export interface WebsocketState {
   socket: Socket | undefined;
   generateSocket: ({ accessToken }: { accessToken: string }) => void;
   notificationsReceived: RenderableUserNotification[];
+  updatedCountOfUnreadNotifications: number | undefined;
 }
 
 const generateSocket = ({
@@ -39,42 +37,31 @@ const generateSocket = ({
   });
 
   newSocket.on(
-    NEW_LIKE_ON_POST_EVENT_NAME,
-    (renderableNewLikeOnPostNotification: RenderableNewLikeOnPostNotification) => {
-      const notificationsReceived = get().notificationsReceived;
-      set({
-        notificationsReceived: [
-          ...notificationsReceived,
-          renderableNewLikeOnPostNotification as RenderableUserNotification,
-        ],
-      });
-    },
+    NOTIFICATIONEVENTS.NewCommentOnPost,
+    generateRenderableNewCommentOnPostNotificationHandler({ set, get }),
   );
 
   newSocket.on(
-    NEW_COMMENT_ON_POST_EVENT_NAME,
-    (renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification) => {
-      const notificationsReceived = get().notificationsReceived;
-      set({
-        notificationsReceived: [
-          ...notificationsReceived,
-          renderableNewCommentOnPostNotification as RenderableUserNotification,
-        ],
-      });
-    },
+    NOTIFICATIONEVENTS.NewLikeOnPost,
+    generateRenderableNewLikeOnPostNotificationHandler({ set, get }),
   );
 
   newSocket.on(
-    NEW_FOLLOWER_EVENT_NAME,
-    (renderableNewFollowerNotification: RenderableNewFollowerNotification) => {
-      const notificationsReceived = get().notificationsReceived;
-      set({
-        notificationsReceived: [
-          ...notificationsReceived,
-          renderableNewFollowerNotification as RenderableUserNotification,
-        ],
-      });
-    },
+    NOTIFICATIONEVENTS.NewFollower,
+    generateRenderableNewFollowerNotificationHandler({ set, get }),
+  );
+
+  newSocket.on(
+    NOTIFICATIONEVENTS.CanceledNewCommentOnPost,
+    generateUnrenderableCanceledCommentOnPostNotificationHandler({ set, get }),
+  );
+  newSocket.on(
+    NOTIFICATIONEVENTS.CanceledNewFollower,
+    generateUnrenderableCanceledNewFollowerNotificationHandler({ set, get }),
+  );
+  newSocket.on(
+    NOTIFICATIONEVENTS.CanceledNewLikeOnPost,
+    generateUnrenderableCanceledNewLikeOnPostNotificationHandler({ set, get }),
   );
 
   return newSocket;
@@ -91,6 +78,7 @@ const createFormStateStore = () =>
       }
     },
     notificationsReceived: [],
+    updatedCountOfUnreadNotifications: undefined,
   }));
 
 const { Provider, useStore } = createContext<WebsocketState>();

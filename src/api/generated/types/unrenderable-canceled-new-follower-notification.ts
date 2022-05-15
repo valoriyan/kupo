@@ -13,42 +13,29 @@
  */
 
 import { NOTIFICATIONEVENTS } from "./notificationevents";
-import { RenderableUser } from "./renderable-user";
 
 /**
  *
  * @export
- * @interface RenderableNewFollowerNotification
+ * @interface UnrenderableCanceledNewFollowerNotification
  */
-export interface RenderableNewFollowerNotification {
+export interface UnrenderableCanceledNewFollowerNotification {
   /**
    *
    * @type {NOTIFICATIONEVENTS}
-   * @memberof RenderableNewFollowerNotification
+   * @memberof UnrenderableCanceledNewFollowerNotification
    */
   type: NOTIFICATIONEVENTS;
   /**
    *
    * @type {number}
-   * @memberof RenderableNewFollowerNotification
+   * @memberof UnrenderableCanceledNewFollowerNotification
    */
   countOfUnreadNotifications: number;
   /**
    *
-   * @type {number}
-   * @memberof RenderableNewFollowerNotification
+   * @type {string}
+   * @memberof UnrenderableCanceledNewFollowerNotification
    */
-  eventTimestamp: number;
-  /**
-   *
-   * @type {number}
-   * @memberof RenderableNewFollowerNotification
-   */
-  timestampSeenByUser?: number;
-  /**
-   *
-   * @type {RenderableUser}
-   * @memberof RenderableNewFollowerNotification
-   */
-  userDoingFollowing: RenderableUser;
+  userIdDoingUnfollowing: string;
 }

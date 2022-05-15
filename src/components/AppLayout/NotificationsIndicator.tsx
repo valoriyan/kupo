@@ -4,11 +4,12 @@ import { Flex } from "../Layout";
 import { useWebsocketState } from "./WebsocketContext";
 
 export const NotificationsIndicator = () => {
-  const { notificationsReceived } = useWebsocketState();
+  const { updatedCountOfUnreadNotifications } = useWebsocketState();
 
-  const { data } = useGetCountOfUnreadNotifications();
+  const { data: staleCountOfUnreadNotifications } = useGetCountOfUnreadNotifications();
 
-  const countOfUnreadNotifications = (data ?? 0) + notificationsReceived.length;
+  const countOfUnreadNotifications =
+    updatedCountOfUnreadNotifications ?? staleCountOfUnreadNotifications ?? 0;
 
   return !countOfUnreadNotifications ? null : (
     <NotificationBadge>

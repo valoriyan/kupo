@@ -109,6 +109,10 @@ import { HTTPResponseRegisterUserFailedAuthSuccess } from "../types";
 // @ts-ignore
 import { HTTPResponseResetPasswordFailedResetPasswordSuccess } from "../types";
 // @ts-ignore
+import { InlineObject5 } from "../types";
+// @ts-ignore
+import { InlineResponse200 } from "../types";
+// @ts-ignore
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
 import { RegisterUserRequestBody } from "../types";
@@ -2524,6 +2528,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {InlineObject5} inlineObject5
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sendDataTypesToFrontend1: async (
+      inlineObject5: InlineObject5,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'inlineObject5' is not null or undefined
+      assertParamExists("sendDataTypesToFrontend1", "inlineObject5", inlineObject5);
+      const localVarPath = `/utilities/sendDataTypesToFrontend1`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        inlineObject5,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4429,6 +4478,29 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {InlineObject5} inlineObject5
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async sendDataTypesToFrontend1(
+      inlineObject5: InlineObject5,
+      options?: any,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<InlineResponse200>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.sendDataTypesToFrontend1(
+        inlineObject5,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5488,6 +5560,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {InlineObject5} inlineObject5
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    sendDataTypesToFrontend1(
+      inlineObject5: InlineObject5,
+      options?: any,
+    ): AxiosPromise<InlineResponse200> {
+      return localVarFp
+        .sendDataTypesToFrontend1(inlineObject5, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {SetUserContentFeedFiltersRequestBody} setUserContentFeedFiltersRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6453,6 +6539,19 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .searchUserProfilesByUsername(searchUserProfilesByUsernameRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {InlineObject5} inlineObject5
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public sendDataTypesToFrontend1(inlineObject5: InlineObject5, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .sendDataTypesToFrontend1(inlineObject5, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

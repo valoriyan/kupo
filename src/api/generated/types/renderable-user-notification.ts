@@ -37,6 +37,12 @@ export interface RenderableUserNotification {
    * @type {number}
    * @memberof RenderableUserNotification
    */
+  countOfUnreadNotifications: number;
+  /**
+   *
+   * @type {number}
+   * @memberof RenderableUserNotification
+   */
   eventTimestamp: number;
   /**
    *
