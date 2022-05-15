@@ -1,10 +1,10 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { RenderableNewLikeOnPostNotification } from "../models";
 import { constructRenderablePostFromParts } from "../../post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { RenderableNewLikeOnPostNotification } from "../models/renderableUserNotifications";
 
 export async function assembleRenderableNewLikeOnPostNotification({
   userNotification,
@@ -56,7 +56,14 @@ export async function assembleRenderableNewLikeOnPostNotification({
     databaseService,
   });
 
+  const countOfUnreadNotifications =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: clientUserId },
+    );
+
+
   return {
+    countOfUnreadNotifications,
     userThatLikedPost,
     post,
     timestampSeenByUser,

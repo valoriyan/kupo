@@ -6,6 +6,7 @@ import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromParts } from "../user/utilities";
 import { constructRenderablePostFromParts } from "../post/utilities";
+import { RenderableNewLikeOnPostNotification } from "../notification/models/renderableUserNotifications";
 
 export interface UserLikesPostRequestBody {
   postId: string;
@@ -25,6 +26,9 @@ export async function handleUserLikesPost({
   request: express.Request;
   requestBody: UserLikesPostRequestBody;
 }): Promise<HTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>> {
+  const now = Date.now();
+
+
   const { postId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -37,7 +41,7 @@ export async function handleUserLikesPost({
       postLikeId,
       postId,
       userId: clientUserId,
-      timestamp: Date.now(),
+      timestamp: now,
     },
   );
 
@@ -58,7 +62,7 @@ export async function handleUserLikesPost({
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.setLastUpdatedTimestamp(
       {
         userNotificationId: uuidv4(),
-        newUpdateTimestamp: Date.now(),
+        newUpdateTimestamp: now,
       },
     );
   } else {
@@ -96,9 +100,21 @@ export async function handleUserLikesPost({
       clientUserId,
     });
 
-    await controller.webSocketService.notifyUserIdOfNewLikeOnPost({
+    const countOfUnreadNotifications =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: unrenderablePostWithoutElementsOrHashtags.authorUserId },
+    );
+
+    const renderableNewLikeOnPostNotification: RenderableNewLikeOnPostNotification = {
+      eventTimestamp: now,
+      type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+      countOfUnreadNotifications,
       userThatLikedPost: clientUser,
       post,
+    }
+
+    await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPost({
+      renderableNewLikeOnPostNotification,
       userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
     });
   }

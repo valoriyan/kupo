@@ -1,10 +1,10 @@
 import { Server } from "socket.io";
-import { RenderableUser } from "../../../../src/controllers/user/models";
-import { NOTIFICATION_EVENTS } from "../eventsConfig";
-import { NewMentionInPostCommentNotification } from "./models";
-import { generatePrivateUserWebSocketRoomName } from "../utilities";
-import { RenderablePost } from "../../../controllers/post/models";
-import { RenderablePostComment } from "../../../controllers/postComment/models";
+import { RenderableUser } from "../../../../controllers/user/models";
+import { NOTIFICATION_EVENTS } from "../../eventsConfig";
+import { NewMentionInPostCommentNotification } from "../models";
+import { generatePrivateUserWebSocketRoomName } from "../../utilities";
+import { RenderablePost } from "../../../../controllers/post/models";
+import { RenderablePostComment } from "../../../../controllers/postComment/models";
 
 export async function notifyUserIdOfNewMentionInPostComment({
   io,

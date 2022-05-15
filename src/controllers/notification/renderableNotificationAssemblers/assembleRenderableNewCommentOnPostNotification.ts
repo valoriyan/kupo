@@ -2,10 +2,10 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePostCommentFromParts } from "../../postComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { RenderableNewCommentOnPostNotification } from "../models";
 import { constructRenderablePostFromParts } from "../../post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { RenderableNewCommentOnPostNotification } from "../models/renderableUserNotifications";
 
 export async function assembleRenderableNewCommentOnPostNotification({
   userNotification,
@@ -59,7 +59,14 @@ export async function assembleRenderableNewCommentOnPostNotification({
     databaseService,
   });
 
+  const countOfUnreadNotifications =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: clientUserId },
+    );
+
+
   return {
+    countOfUnreadNotifications,
     userThatCommented,
     post,
     postComment,

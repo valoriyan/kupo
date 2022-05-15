@@ -2,6 +2,7 @@ import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
+import { UnrenderableCanceledCommentOnPostNotification } from "../notification/models/unrenderableCanceledUserNotifications";
 import { PostCommentController } from "./postCommentController";
 
 export interface DeleteCommentFromPostRequestBody {
@@ -54,6 +55,24 @@ export async function handleDeleteCommentFromPost({
       recipientUserId: postAuthorUserId,
     },
   );
+
+  const countOfUnreadNotifications =
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+    { userId: postAuthorUserId },
+  );
+
+  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification = {
+    type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_POST,
+    countOfUnreadNotifications,
+    postCommentId,
+  };
+
+  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost({
+    userId: postAuthorUserId,
+    unrenderableCanceledCommentOnPostNotification,
+  });
+
+
 
   return {
     success: {},

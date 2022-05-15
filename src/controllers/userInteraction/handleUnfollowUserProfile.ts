@@ -2,6 +2,7 @@ import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { HTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
+import { UnrenderableCanceledNewFollowerNotification } from "../notification/models/unrenderableCanceledUserNotifications";
 import { UserInteractionController } from "./userInteractionController";
 
 export interface UnfollowUserRequestBody {
@@ -47,6 +48,25 @@ export async function handleUnfollowUser({
       recipientUserId: userIdBeingUnfollowed,
     },
   );
+
+  const countOfUnreadNotifications =
+  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+    { userId: userIdBeingUnfollowed },
+  );
+
+  const unrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification = {
+    countOfUnreadNotifications,
+    type: NOTIFICATION_EVENTS.CANCELED_NEW_FOLLOWER,
+    userIdDoingUnfollowing: clientUserId,
+  };
+
+
+
+  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewFollower({
+    userId: userIdBeingUnfollowed,
+    unrenderableCanceledNewFollowerNotification,
+  });
+
 
   return {
     success: {},

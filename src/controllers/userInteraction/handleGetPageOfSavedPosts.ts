@@ -6,7 +6,7 @@ import {
   getNextPageOfSequentialFeedItemsEncodedCursor,
 } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
-import { SecuredHTTPResponse } from "./../../../src/types/httpResponse";
+import { SecuredHTTPResponse } from "./../../types/httpResponse";
 import { SavedItemType } from "./models";
 import { UserInteractionController } from "./userInteractionController";
 

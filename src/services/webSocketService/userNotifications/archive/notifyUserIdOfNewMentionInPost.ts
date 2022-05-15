@@ -1,9 +1,9 @@
 import { Server } from "socket.io";
-import { RenderableUser } from "../../../../src/controllers/user/models";
-import { NOTIFICATION_EVENTS } from "../eventsConfig";
-import { NewMentionInPostNotification } from "./models";
-import { generatePrivateUserWebSocketRoomName } from "../utilities";
-import { RenderablePost } from "../../../controllers/post/models";
+import { RenderableUser } from "../../../../controllers/user/models";
+import { NOTIFICATION_EVENTS } from "../../eventsConfig";
+import { NewMentionInPostNotification } from "../models";
+import { generatePrivateUserWebSocketRoomName } from "../../utilities";
+import { RenderablePost } from "../../../../controllers/post/models";
 
 export async function notifyUserIdOfNewMentionInPost({
   io,

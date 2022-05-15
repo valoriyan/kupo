@@ -1,14 +1,14 @@
 import express from "express";
-import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
-import { checkAuthorization } from "../../auth/utilities";
-import { RenderableUserNotification } from "../models";
-import { NotificationController } from "../notificationController";
+import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
+import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { checkAuthorization } from "../auth/utilities";
+import { NotificationController } from "./notificationController";
 import { Promise as BluebirdPromise } from "bluebird";
-import { assembleRenderableNewCommentOnPostNotification } from "./assembleRenderableNewCommentOnPostNotification";
-import { assembleRenderableNewFollowerNotification } from "./assembleRenderableNewFollowerNotification";
-import { assembleRenderableNewLikeOnPostNotification } from "./assembleRenderableNewLikeOnPostNotification";
-import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
+import { assembleRenderableNewCommentOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewCommentOnPostNotification";
+import { DBUserNotification } from "../../services/databaseService/tableServices/userNotificationsTableService";
+import { assembleRenderableNewFollowerNotification } from "./renderableNotificationAssemblers/assembleRenderableNewFollowerNotification";
+import { assembleRenderableNewLikeOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewLikeOnPostNotification";
+import { RenderableUserNotification } from "./models/renderableUserNotifications";
 
 export interface GetPageOfNotificationsRequestBody {
   cursor?: string;
@@ -28,6 +28,40 @@ export enum GetPageOfNotificationsFailedReason {
 
 export interface GetPageOfNotificationsFailed {
   reason: GetPageOfNotificationsFailedReason;
+}
+
+export async function handleGetPageOfNotifications({
+  controller,
+  request,
+  requestBody,
+}: {
+  controller: NotificationController;
+  request: express.Request;
+  requestBody: GetPageOfNotificationsRequestBody;
+}): Promise<
+  SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
+> {
+  console.log(requestBody);
+
+  const { clientUserId, error } = await checkAuthorization(controller, request);
+  if (error) return error;
+
+  const userNotifications =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId(
+      { userId: clientUserId },
+    );
+
+  const renderableUserNotifications = await assembleNotifcations({
+    userNotifications,
+    clientUserId,
+    controller,
+  });
+
+  return {
+    success: {
+      userNotifications: renderableUserNotifications,
+    },
+  };
 }
 
 async function assembleNotifcations({
@@ -83,38 +117,4 @@ async function assembleNotifcations({
   return renderableUserNotifications.filter(
     (renderableUserNotification) => !!renderableUserNotification,
   ) as RenderableUserNotification[];
-}
-
-export async function handleGetPageOfNotifications({
-  controller,
-  request,
-  requestBody,
-}: {
-  controller: NotificationController;
-  request: express.Request;
-  requestBody: GetPageOfNotificationsRequestBody;
-}): Promise<
-  SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
-> {
-  console.log(requestBody);
-
-  const { clientUserId, error } = await checkAuthorization(controller, request);
-  if (error) return error;
-
-  const userNotifications =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId(
-      { userId: clientUserId },
-    );
-
-  const renderableUserNotifications = await assembleNotifcations({
-    userNotifications,
-    clientUserId,
-    controller,
-  });
-
-  return {
-    success: {
-      userNotifications: renderableUserNotifications,
-    },
-  };
 }

@@ -1,9 +1,9 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { RenderableNewFollowerNotification } from "../models";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { RenderableNewFollowerNotification } from "../models/renderableUserNotifications";
 
 export async function assembleRenderableNewFollowerNotification({
   userNotification,
@@ -42,7 +42,14 @@ export async function assembleRenderableNewFollowerNotification({
     databaseService,
   });
 
+  const countOfUnreadNotifications =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: clientUserId },
+    );
+
+
   return {
+    countOfUnreadNotifications,
     userDoingFollowing,
     timestampSeenByUser,
     type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
