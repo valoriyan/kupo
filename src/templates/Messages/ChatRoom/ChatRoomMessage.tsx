@@ -1,82 +1,39 @@
-import { MouseEvent } from "react";
 import { DateTime } from "luxon";
-import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
-import { useDeleteChatMessage } from "#/api/mutations/chat/deleteChatMessage";
+import { RenderableChatMessage } from "#/api";
+import { Stack } from "#/components/Layout";
+import { Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
-import { RenderableChatMessage, RenderableUser } from "#/api";
 
-export const ChatRoomMessage = ({
-  message,
-  clientUserData,
-}: {
-  clientUserData: RenderableUser;
+export interface ChatRoomMessageProps {
   message: RenderableChatMessage;
-}) => {
-  const { authorUserId, text, creationTimestamp } = message;
+  isClientMessage: boolean;
+}
 
-  const { userId: clientUserId } = clientUserData;
-
-  const {
-    data: userData,
-    isLoading: isLoadingUserData,
-    isError: isErrorFromAcquiringUserData,
-    error: errorFromAcquiringUserData,
-  } = useGetUserByUserId({
-    userId: authorUserId,
-  });
-
-  const { mutateAsync: deleteChatMessage } = useDeleteChatMessage({
-    chatRoomId: message.chatRoomId,
-  });
-
-  if (isErrorFromAcquiringUserData && !isLoadingUserData) {
-    return <div>Error: {(errorFromAcquiringUserData as Error).message}</div>;
-  }
-
-  if (isLoadingUserData || !userData) {
-    return <div>Loading</div>;
-  }
-
-  const onClickDelete = async (event: MouseEvent<HTMLSpanElement>) => {
-    event.preventDefault();
-    await deleteChatMessage({
-      chatMessageId: message.chatMessageId,
-      isInformedByWebsocketMessage: false,
-    });
-  };
-
-  const deleteButton =
-    clientUserId === authorUserId ? <span onClick={onClickDelete}>x</span> : null;
-
-  const formattedTimestamp = DateTime.fromMillis(creationTimestamp).toLocaleString(
-    DateTime.TIME_SIMPLE,
-  );
+export const ChatRoomMessage = ({ message, isClientMessage }: ChatRoomMessageProps) => {
+  const formattedTimestamp = DateTime.fromMillis(
+    message.creationTimestamp,
+  ).toLocaleString(DateTime.TIME_SIMPLE);
 
   return (
-    <Wrapper>
-      <MessageText>{text}</MessageText>
-      <div>
-        <Timestamp>{formattedTimestamp}</Timestamp>
-        <DeletePostButton>{deleteButton}</DeletePostButton>
-      </div>
+    <Wrapper css={{ bg: isClientMessage ? "$primaryTranslucent" : "$background3" }}>
+      <div>{message.text}</div>
+      <Subtext
+        css={{
+          fontSize: "$0",
+          color: "$secondaryText",
+          alignSelf: isClientMessage ? "flex-end" : "flex-start",
+        }}
+      >
+        {formattedTimestamp}
+      </Subtext>
     </Wrapper>
   );
 };
 
-const Wrapper = styled("div", {});
-
-const MessageText = styled("div", {
-  marginBottom: "$5",
-});
-
-const Timestamp = styled("span", {
-  fontSize: "$1",
-  color: "$secondaryText",
-});
-
-const DeletePostButton = styled("span", {
-  display: "block",
-  float: "right",
-  color: "PaleVioletRed",
-  cursor: "pointer",
+const Wrapper = styled(Stack, {
+  maxWidth: "70%",
+  color: "$text",
+  borderRadius: "$4",
+  p: "$4",
+  gap: "$3",
 });

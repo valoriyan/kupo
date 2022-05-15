@@ -11,7 +11,7 @@ export interface ChatRoomsHeaderProps {
 export const ChatRoomsHeader = (props: ChatRoomsHeaderProps) => {
   return (
     <Wrapper>
-      <Flex css={{ gap: "$2", alignItems: "center", flex: 1, color: "$secondaryText" }}>
+      <SearchWrapper>
         <SearchIcon />
         <SearchBox
           type="text"
@@ -19,7 +19,7 @@ export const ChatRoomsHeader = (props: ChatRoomsHeaderProps) => {
           value={props.query}
           onChange={(e) => props.setQuery(e.currentTarget.value)}
         />
-      </Flex>
+      </SearchWrapper>
       <Flex css={{ gap: "$5", alignItems: "center" }}>
         <Link href="/messages/new" passHref>
           <Flex as="a" css={{ color: "$text", p: "$2" }}>
@@ -42,9 +42,23 @@ const Wrapper = styled(Flex, {
   zIndex: 1,
 });
 
+const SearchWrapper = styled(Flex, {
+  gap: "$2",
+  alignItems: "center",
+  flex: 1,
+  color: "$secondaryText",
+
+  "&:focus-within": {
+    svg: {
+      color: "$primary",
+    },
+  },
+});
+
 const SearchBox = styled("input", {
   width: "100%",
   background: "transparent",
   border: "none",
   p: "$3",
+  outline: "none",
 });

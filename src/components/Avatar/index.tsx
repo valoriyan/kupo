@@ -14,18 +14,18 @@ export const Avatar = (props: AvatarProps) => {
     <Img
       alt={props.alt}
       src={props.src}
-      css={{ size: props.size, cursor: props.onClick ? "pointer" : "default" }}
+      css={{ size: props.size, cursor: props.onClick ? "pointer" : "inherit" }}
       onClick={props.onClick}
     />
   ) : (
-    <Fallback
+    <AvatarFallback
       role="img"
       aria-label="Avatar Fallback Icon"
-      css={{ size: props.size, cursor: props.onClick ? "pointer" : "default" }}
+      css={{ size: props.size, cursor: props.onClick ? "pointer" : "inherit" }}
       onClick={props.onClick}
     >
       <FallBackIcon />
-    </Fallback>
+    </AvatarFallback>
   );
 };
 
@@ -43,6 +43,6 @@ const Img = styled("img", baseStyles, {
   objectFit: "cover",
 });
 
-const Fallback = styled("div", baseStyles);
+export const AvatarFallback = styled("div", baseStyles);
 
 const FallBackIcon = styled(UserIcon, { minHeight: "50%", minWidth: "50%" });

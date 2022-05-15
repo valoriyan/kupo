@@ -1,24 +1,21 @@
 import { RenderableUser } from "#/api";
-import { Avatar } from "#/components/Avatar";
+import { StackedAvatars } from "#/components/Avatar/StackedAvatars";
 import { Box } from "#/components/Layout";
 import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
 
+export interface ChatRoomMembersDisplayProps {
+  chatRoomMembers: Array<RenderableUser | null>;
+  clientUser: RenderableUser;
+}
+
 export const ChatRoomMembersDisplay = ({
   chatRoomMembers,
   clientUser,
-}: {
-  chatRoomMembers: (RenderableUser | null)[];
-  clientUser: RenderableUser;
-}) => {
-  const nonClientChatRoomMembersWithData = chatRoomMembers.filter(
-    (chatRoomMember) => !!chatRoomMember && chatRoomMember.userId !== clientUser.userId,
+}: ChatRoomMembersDisplayProps) => {
+  const nonClientChatRoomMembersWithData = chatRoomMembers.flatMap((member) =>
+    !!member && member.userId !== clientUser.userId ? [member] : [],
   );
-
-  const chatRoomAvatarImage =
-    nonClientChatRoomMembersWithData.length > 0
-      ? nonClientChatRoomMembersWithData[0]?.profilePictureTemporaryUrl
-      : undefined;
 
   const chatRoomMemberUsernames = nonClientChatRoomMembersWithData.flatMap(
     (chatRoomMember, index) => {
@@ -35,7 +32,13 @@ export const ChatRoomMembersDisplay = ({
 
   return (
     <Wrapper>
-      <Avatar src={chatRoomAvatarImage} alt="Chat Room Avatar Image" size="$7" />
+      <StackedAvatars
+        size="$7"
+        images={nonClientChatRoomMembersWithData.map((member) => ({
+          alt: `${member.username}'s profile picture`,
+          src: member.profilePictureTemporaryUrl,
+        }))}
+      />
       <div>{chatRoomMemberUsernames}</div>
     </Wrapper>
   );
