@@ -15,7 +15,11 @@ export const useGetPageOfOldNotifications = () => {
 };
 
 async function fetchPageOfOldNotifications({ pageParam = undefined }) {
-  const res = await Api.getPageOfNotifications({ cursor: pageParam, pageSize: 25 });
+  const res = await Api.getPageOfNotifications({
+    cursor: pageParam,
+    pageSize: 25,
+    isUserReadingNotifications: true,
+  });
 
   if (res.data && res.data.success) return res.data.success;
   throw new Error(res.data.error?.reason ?? "Failed to fetch notifications");

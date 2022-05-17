@@ -30,4 +30,10 @@ export interface GetPageOfNotificationsRequestBody {
    * @memberof GetPageOfNotificationsRequestBody
    */
   pageSize: number;
+  /**
+   *
+   * @type {boolean}
+   * @memberof GetPageOfNotificationsRequestBody
+   */
+  isUserReadingNotifications?: boolean;
 }

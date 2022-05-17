@@ -16,6 +16,7 @@ export interface WebsocketState {
   generateSocket: ({ accessToken }: { accessToken: string }) => void;
   notificationsReceived: RenderableUserNotification[];
   updatedCountOfUnreadNotifications: number | undefined;
+  markAllNotificationsAsSeen: () => void;
 }
 
 const generateSocket = ({
@@ -79,6 +80,9 @@ const createFormStateStore = () =>
     },
     notificationsReceived: [],
     updatedCountOfUnreadNotifications: undefined,
+    markAllNotificationsAsSeen: () => {
+      set({ updatedCountOfUnreadNotifications: 0 });
+    },
   }));
 
 const { Provider, useStore } = createContext<WebsocketState>();
