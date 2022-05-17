@@ -3,8 +3,14 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { PostController } from "./postController";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UpdatePostFailed {}
+export enum UpdatePostFailedReason {
+  IllegalAccess = "Illegal Access",  
+}
+
+
+export interface UpdatePostFailed {
+  reason: UpdatePostFailedReason;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UpdatePostSuccess {}
@@ -32,6 +38,16 @@ export async function handleUpdatePost({
 
   const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
     requestBody;
+
+  const unrenderablePostWithoutElementsOrHashtags = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+
+  if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
+    return {
+      error: {
+        reason: UpdatePostFailedReason.IllegalAccess,
+      }
+    }
+  }
 
   await controller.databaseService.tableNameToServicesMap.postsTableService.updatePost({
     postId,

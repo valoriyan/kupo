@@ -4,7 +4,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { PostCommentController } from "./postCommentController";
 import { RenderablePostComment, UnrenderablePostComment } from "./models";
 import { constructRenderablePostCommentsFromParts } from "./utilities";
-import { decodeCursor, encodeCursor } from "../post/pagination/utilities";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 
 export interface GetPageOfCommentsByPostIdRequestBody {
   postId: string;
@@ -46,7 +46,7 @@ export async function handleGetPageOfCommentsByPostId({
     await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentsByPostId(
       {
         postId,
-        afterTimestamp: cursor ? decodeCursor({ encodedCursor: cursor }) : undefined,
+        afterTimestamp: cursor ? decodeTimestampCursor({ encodedCursor: cursor }) : undefined,
         pageSize,
       },
     );
@@ -60,7 +60,7 @@ export async function handleGetPageOfCommentsByPostId({
 
   const nextPageCursor =
     renderablePostComments.length === pageSize
-      ? encodeCursor({
+      ? encodeTimestampCursor({
           timestamp:
             unrenderablePostComments[unrenderablePostComments.length - 1]
               .creationTimestamp,

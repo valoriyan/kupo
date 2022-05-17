@@ -3,9 +3,9 @@ import { HTTPResponse } from "../../types/httpResponse";
 import { getClientUserId } from "../auth/utilities";
 import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
 import {
-  decodeCursor,
-  getNextPageOfSequentialFeedItemsEncodedCursor,
+  getEncodedCursorOfNextPageOfSequentialItems,
 } from "../post/pagination/utilities";
+import { decodeTimestampCursor } from "../utilities/pagination";
 import { RenderableShopItemPreview } from "./models";
 import { ShopItemController } from "./shopItemController";
 import { constructRenderableShopItemPreviewsFromParts } from "./utilities";
@@ -80,7 +80,7 @@ export async function handleGetShopItemsByUserId({
   const clientUserId = await getClientUserId(request);
 
   const pageTimestamp = cursor
-    ? decodeCursor({ encodedCursor: cursor })
+    ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
   const canViewContent = await canUserViewUserContentByUserId({
@@ -116,7 +116,7 @@ export async function handleGetShopItemsByUserId({
     success: {
       shopItems: renderableShopItemPreview,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getNextPageOfSequentialFeedItemsEncodedCursor({
+      nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
         sequentialFeedItems: renderableShopItemPreview,
       }),
     },

@@ -4,8 +4,9 @@ import { PostController } from "../postController";
 import { HTTPResponse } from "../../../types/httpResponse";
 import { getClientUserId } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
-import { decodeCursor, getNextPageOfSequentialFeedItemsEncodedCursor } from "./utilities";
+import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
+import { decodeTimestampCursor } from "../../../controllers/utilities/pagination";
 
 export interface GetPostsByUserIdRequestBody {
   userId: string;
@@ -77,7 +78,7 @@ export async function handleGetPostsByUserId({
   const clientUserId = await getClientUserId(request);
 
   const pageTimestamp = cursor
-    ? decodeCursor({ encodedCursor: cursor })
+    ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
   const canViewContent = await canUserViewUserContentByUserId({
@@ -113,7 +114,7 @@ export async function handleGetPostsByUserId({
     success: {
       posts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getNextPageOfSequentialFeedItemsEncodedCursor({
+      nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
         sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
       }),
     },

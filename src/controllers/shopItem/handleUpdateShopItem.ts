@@ -6,8 +6,13 @@ import { ShopItemController } from "./shopItemController";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UpdateShopItemSuccess {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UpdateShopItemFailed {}
+export enum UpdateShopItemFailedReason {
+  IllegalAccess = "Illegal Access",  
+}
+
+export interface UpdateShopItemFailed {
+  reason: UpdateShopItemFailedReason;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
@@ -30,8 +35,8 @@ export async function handleUpdateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<UpdateShopItemSuccess, UpdateShopItemFailed>> {
-  const { error } = await checkAuthorization(controller, request);
+}): Promise<SecuredHTTPResponse<UpdateShopItemFailed, UpdateShopItemSuccess>> {
+  const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const {
@@ -42,6 +47,19 @@ export async function handleUpdateShopItem({
     scheduledPublicationTimestamp,
     expirationTimestamp,
   } = requestBody;
+
+  const unrenderableShopItemPreview = await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByShopItemId({shopItemId})
+
+  if (unrenderableShopItemPreview.authorUserId !== clientUserId) {
+    return {
+      error: {
+        reason: UpdateShopItemFailedReason.IllegalAccess,
+      }
+    }
+  }
+
+
+
 
   await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByShopItemId(
     {

@@ -3,11 +3,10 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
 import {
-  decodeCursor,
-  encodeCursor,
   getPageOfPostsFromAllPosts,
 } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
 export interface GetPageOfPostFromFollowedHashtagRequestBody {
@@ -50,7 +49,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   const { cursor, hashtag, pageSize } = requestBody;
 
   const pageTimestamp = cursor
-    ? decodeCursor({ encodedCursor: cursor })
+    ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
   const postIdsWithHashtag =
@@ -82,7 +81,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
 
   const nextPageCursor =
     renderablePosts.length > 0
-      ? encodeCursor({
+      ? encodeTimestampCursor({
           timestamp:
             renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
         })

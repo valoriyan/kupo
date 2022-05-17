@@ -9,7 +9,7 @@ import { DBUserNotification } from "../../services/databaseService/tableServices
 import { assembleRenderableNewFollowerNotification } from "./renderableNotificationAssemblers/assembleRenderableNewFollowerNotification";
 import { assembleRenderableNewLikeOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewLikeOnPostNotification";
 import { RenderableUserNotification } from "./models/renderableUserNotifications";
-import { decodeCursor } from "../post/pagination/utilities";
+import { decodeTimestampCursor } from "../utilities/pagination";
 
 export interface GetPageOfNotificationsRequestBody {
   cursor?: string;
@@ -45,26 +45,31 @@ export async function handleGetPageOfNotifications({
 > {
   const now = Date.now();
 
-  const {isUserReadingNotifications, cursor, pageSize} = requestBody;
+  const { isUserReadingNotifications, cursor, pageSize } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const pageTimestamp = cursor
-    ? decodeCursor({ encodedCursor: cursor })
+    ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
-
   if (isUserReadingNotifications) {
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.markAllUserNotificationsAsSeen({
-      recipientUserId: clientUserId,
-      timestampSeenByUser: now,
-    });
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.markAllUserNotificationsAsSeen(
+      {
+        recipientUserId: clientUserId,
+        timestampSeenByUser: now,
+      },
+    );
   }
 
   const userNotifications =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId(
-      { userId: clientUserId, limit: pageSize, getNotificationsUpdatedBeforeTimestamp: pageTimestamp },
+      {
+        userId: clientUserId,
+        limit: pageSize,
+        getNotificationsUpdatedBeforeTimestamp: pageTimestamp,
+      },
     );
 
   const renderableUserNotifications = await assembleNotifcations({

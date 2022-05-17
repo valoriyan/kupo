@@ -2,10 +2,10 @@ import express from "express";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
 import {
-  decodeCursor,
-  getNextPageOfSequentialFeedItemsEncodedCursor,
+  getEncodedCursorOfNextPageOfSequentialItems,
 } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
+import { decodeTimestampCursor } from "../utilities/pagination";
 import { SecuredHTTPResponse } from "./../../types/httpResponse";
 import { SavedItemType } from "./models";
 import { UserInteractionController } from "./userInteractionController";
@@ -44,7 +44,7 @@ export async function handleGetPageOfSavedPosts({
   if (error) return error;
 
   const pageTimestamp = cursor
-    ? decodeCursor({ encodedCursor: cursor })
+    ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
   const db_saved_items =
@@ -78,7 +78,7 @@ export async function handleGetPageOfSavedPosts({
     success: {
       posts,
       previousPageCursor: requestBody.cursor,
-      nextPageCursor: getNextPageOfSequentialFeedItemsEncodedCursor({
+      nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
         sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
       }),
     },

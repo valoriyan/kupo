@@ -4,6 +4,34 @@ import { canUserViewUserContent } from "../auth/utilities/canUserViewUserContent
 import { RenderableUser, UnrenderableUser } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 
+export async function constructRenderableUsersFromPartsByUserIds({
+  clientUserId,
+  userIds,
+  blobStorageService,
+  databaseService,
+}: {
+  clientUserId: string;
+  userIds: string[];
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+}): Promise<RenderableUser[]> {
+  const unrenderableUsers =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+      {
+        userIds,
+      },
+    );
+
+    return await constructRenderableUsersFromParts({
+      clientUserId,
+      unrenderableUsers,
+      blobStorageService: blobStorageService,
+      databaseService: databaseService,
+    });
+  
+
+}
+
 export async function constructRenderableUsersFromParts({
   clientUserId,
   unrenderableUsers,

@@ -1,7 +1,7 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import { constructRenderableUsersFromParts } from "../user/utilities";
+import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
 import { RenderableChatRoomPreview, UnrenderableChatRoomPreview } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -80,16 +80,9 @@ export async function handleGetPageOfChatRooms({
     });
   });
 
-  const unrenderableUsers =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-      {
-        userIds: [...setOfUserIds],
-      },
-    );
-
-  const renderableUsers = await constructRenderableUsersFromParts({
+  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
     clientUserId,
-    unrenderableUsers,
+    userIds: [...setOfUserIds],
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
   });

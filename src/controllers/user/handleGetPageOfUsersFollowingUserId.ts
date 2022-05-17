@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUsersFromParts } from "./utilities";
+import { constructRenderableUsersFromPartsByUserIds } from "./utilities";
 
 export interface GetPageOfUsersFollowingUserIdRequestBody {
   userIdBeingFollowed: string;
@@ -53,12 +53,7 @@ export async function handleGetPageOfUsersFollowingUserId({
     ({ userIdDoingFollowing }) => userIdDoingFollowing,
   );
 
-  const unrenderableUsers =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-      { userIds: userIdsDoingFollowing },
-    );
-
-  if (unrenderableUsers.length === 0) {
+  if (userIdsDoingFollowing.length === 0) {
     // controller.setStatus(404);
     return {
       success: {
@@ -68,9 +63,9 @@ export async function handleGetPageOfUsersFollowingUserId({
     };
   }
 
-  const renderableUsers = await constructRenderableUsersFromParts({
+  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
     clientUserId,
-    unrenderableUsers,
+    userIds: userIdsDoingFollowing,
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
   });

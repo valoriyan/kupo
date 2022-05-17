@@ -112,6 +112,34 @@ export class ShopItemsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async getShopItemByShopItemId({
+    shopItemId,
+  }: {
+    shopItemId: string;
+  }): Promise<UnrenderableShopItemPreview> {
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          shop_item_id = $1
+        ;
+      `,
+      values: [shopItemId],
+    };
+
+    const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
+
+    if (response.rows.length < 1) {
+      throw new Error("Missing shop item");
+    }
+
+    return convertDBShopItemToUnrenderableShopItemPreview(response.rows[0]);
+  }
+
+
   public async getShopItemsByCreatorUserId({
     creatorUserId,
     filterOutExpiredAndUnscheduledShopItems,

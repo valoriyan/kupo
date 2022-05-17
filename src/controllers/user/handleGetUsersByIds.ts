@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUsersFromParts } from "./utilities";
+import { constructRenderableUsersFromPartsByUserIds } from "./utilities";
 
 export interface GetUsersByIdsRequestBody {
   userIds: string[];
@@ -35,14 +35,9 @@ export async function handleGetUsersByIds({
 
   const { userIds } = requestBody;
 
-  const unrenderableUsers =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-      { userIds },
-    );
-
-  const renderableUsers = await constructRenderableUsersFromParts({
+  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
     clientUserId,
-    unrenderableUsers,
+    userIds,
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
   });

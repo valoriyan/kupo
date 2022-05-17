@@ -96,7 +96,7 @@ export class UserNotificationsTableService extends TableService {
     limit?: number;
     getNotificationsUpdatedBeforeTimestamp?: number;
   }): Promise<DBUserNotification[]> {
-    const queryValues: (number|string)[] = [userId];
+    const queryValues: (number | string)[] = [userId];
 
     let limitClause = "";
     if (!!limit) {
@@ -116,7 +116,6 @@ export class UserNotificationsTableService extends TableService {
 
       queryValues.push(getNotificationsUpdatedBeforeTimestamp);
     }
-
 
     const queryString = {
       text: `

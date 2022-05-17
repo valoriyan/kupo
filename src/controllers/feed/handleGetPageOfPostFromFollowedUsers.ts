@@ -2,8 +2,8 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import { decodeCursor, encodeCursor } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
 export interface GetPageOfPostFromFollowedUsersRequestBody {
@@ -54,7 +54,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserIds(
       {
         creatorUserIds: [...userIdsBeingFollowed, clientUserId],
-        beforeTimestamp: cursor ? decodeCursor({ encodedCursor: cursor }) : undefined,
+        beforeTimestamp: cursor ? decodeTimestampCursor({ encodedCursor: cursor }) : undefined,
         pageSize,
       },
     );
@@ -68,7 +68,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
 
   const nextPageCursor =
     renderablePosts.length > 0
-      ? encodeCursor({
+      ? encodeTimestampCursor({
           timestamp:
             renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
         })
