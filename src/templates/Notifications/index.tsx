@@ -19,8 +19,6 @@ export const Notifications = () => {
     }
   }, [data, error, isLoading, markAllNotificationsAsSeen]);
 
-  // markAllNotificationsAsSeen();
-
   const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
 
   return (
