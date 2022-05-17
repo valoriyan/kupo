@@ -13,6 +13,7 @@
  */
 
 import { AuthFailed } from "./auth-failed";
+import { UpdatePostFailed } from "./update-post-failed";
 
 /**
  *
@@ -22,10 +23,10 @@ import { AuthFailed } from "./auth-failed";
 export interface SecuredHTTPResponseUpdatePostFailedUpdatePostSuccess {
   /**
    *
-   * @type {object | AuthFailed}
+   * @type {UpdatePostFailed | AuthFailed}
    * @memberof SecuredHTTPResponseUpdatePostFailedUpdatePostSuccess
    */
-  error?: object | AuthFailed;
+  error?: UpdatePostFailed | AuthFailed;
   /**
    *
    * @type {object}
