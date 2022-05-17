@@ -89,9 +89,35 @@ export class UserNotificationsTableService extends TableService {
 
   public async selectUserNotificationsByUserId({
     userId,
+    limit,
+    getNotificationsUpdatedBeforeTimestamp,
   }: {
     userId: string;
+    limit?: number;
+    getNotificationsUpdatedBeforeTimestamp?: number;
   }): Promise<DBUserNotification[]> {
+    const queryValues: (number|string)[] = [userId];
+
+    let limitClause = "";
+    if (!!limit) {
+      limitClause = `
+        LIMIT $${queryValues.length + 1}
+      `;
+
+      queryValues.push(limit);
+    }
+
+    let getNotificationsUpdatedBeforeTimestampClause = "";
+    if (!!getNotificationsUpdatedBeforeTimestamp) {
+      getNotificationsUpdatedBeforeTimestampClause = `
+        AND
+          last_updated_timestamp < $${queryValues.length + 1}
+      `;
+
+      queryValues.push(getNotificationsUpdatedBeforeTimestamp);
+    }
+
+
     const queryString = {
       text: `
         SELECT
@@ -100,11 +126,13 @@ export class UserNotificationsTableService extends TableService {
           ${this.tableName}
         WHERE
           recipient_user_id = $1
+          ${getNotificationsUpdatedBeforeTimestampClause}
         ORDER BY
           last_updated_timestamp DESC
+        ${limitClause}
         ;
       `,
-      values: [userId],
+      values: queryValues,
     };
 
     const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
@@ -132,7 +160,7 @@ export class UserNotificationsTableService extends TableService {
         WHERE
             recipient_user_id = $1
           AND
-          reference_table_id = $2
+            reference_table_id = $2
         ORDER BY
           last_updated_timestamp DESC
         LIMIT
@@ -156,14 +184,16 @@ export class UserNotificationsTableService extends TableService {
   }: {
     userId: string;
   }): Promise<number> {
-    const queryString = {
+    const query = {
       text: `
         SELECT
           COUNT(*)
         FROM
           ${this.tableName}
         WHERE
-          recipient_user_id = $1
+            recipient_user_id = $1
+          AND
+            timestamp_seen_by_user IS NULL
         ;
       `,
       values: [userId],
@@ -171,7 +201,7 @@ export class UserNotificationsTableService extends TableService {
 
     const response: QueryResult<{
       count: string;
-    }> = await this.datastorePool.query(queryString);
+    }> = await this.datastorePool.query(query);
 
     return parseInt(response.rows[0].count);
   }
@@ -180,21 +210,36 @@ export class UserNotificationsTableService extends TableService {
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async markUserNotificationAsSeen({
-    userNotificationId,
+  public async markAllUserNotificationsAsSeen({
+    recipientUserId,
     timestampSeenByUser,
   }: {
-    userNotificationId: string;
+    recipientUserId: string;
     timestampSeenByUser: number;
   }): Promise<void> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "timestamp_seen_by_user", value: timestampSeenByUser }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "user_notification_id",
-        value: userNotificationId,
-      },
-      tableName: this.tableName,
-    });
+    const query = {
+      text: `
+        UPDATE
+          ${this.tableName}
+        SET
+          timestamp_seen_by_user = $1
+        WHERE
+            timestamp_seen_by_user IS NULL
+          AND
+            recipient_user_id = $2
+        ;
+      `,
+      values: [timestampSeenByUser, recipientUserId],
+    };
+
+    // const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+    //   updatedFields: [{ field: "timestamp_seen_by_user", value: timestampSeenByUser }],
+    //   fieldUsedToIdentifyUpdatedRow: {
+    //     field: "user_notification_id",
+    //     value: userNotificationId,
+    //   },
+    //   tableName: this.tableName,
+    // });
 
     await this.datastorePool.query(query);
   }

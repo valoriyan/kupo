@@ -9,10 +9,12 @@ import { DBUserNotification } from "../../services/databaseService/tableServices
 import { assembleRenderableNewFollowerNotification } from "./renderableNotificationAssemblers/assembleRenderableNewFollowerNotification";
 import { assembleRenderableNewLikeOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewLikeOnPostNotification";
 import { RenderableUserNotification } from "./models/renderableUserNotifications";
+import { decodeCursor } from "../post/pagination/utilities";
 
 export interface GetPageOfNotificationsRequestBody {
   cursor?: string;
   pageSize: number;
+  isUserReadingNotifications?: boolean;
 }
 
 export interface GetPageOfNotificationsSuccess {
@@ -41,14 +43,28 @@ export async function handleGetPageOfNotifications({
 }): Promise<
   SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
 > {
-  console.log(requestBody);
+  const now = Date.now();
+
+  const {isUserReadingNotifications, cursor, pageSize} = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const pageTimestamp = cursor
+    ? decodeCursor({ encodedCursor: cursor })
+    : 999999999999999;
+
+
+  if (isUserReadingNotifications) {
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.markAllUserNotificationsAsSeen({
+      recipientUserId: clientUserId,
+      timestampSeenByUser: now,
+    });
+  }
+
   const userNotifications =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId(
-      { userId: clientUserId },
+      { userId: clientUserId, limit: pageSize, getNotificationsUpdatedBeforeTimestamp: pageTimestamp },
     );
 
   const renderableUserNotifications = await assembleNotifcations({

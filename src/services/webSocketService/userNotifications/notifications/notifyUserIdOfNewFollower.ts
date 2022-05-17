@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
-import { RenderableNewFollowerNotification } from "../../../controllers/notification/models/renderableUserNotifications";
-import { NOTIFICATION_EVENTS } from "../eventsConfig";
-import { generatePrivateUserWebSocketRoomName } from "../utilities";
+import { RenderableNewFollowerNotification } from "../../../../controllers/notification/models/renderableUserNotifications";
+import { NOTIFICATION_EVENTS } from "../../eventsConfig";
+import { generatePrivateUserWebSocketRoomName } from "../../utilities";
 
 export async function notifyUserIdOfNewFollower({
   io,

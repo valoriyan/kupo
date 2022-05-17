@@ -10,9 +10,9 @@ import {
   RenderableNewLikeOnPostNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
-import { notifyUserIdOfNewCommentOnPost } from "./notifyUserIdOfNewCommentOnPost";
-import { notifyUserIdOfNewFollower } from "./notifyUserIdOfNewFollower";
-import { notifyUserIdOfNewLikeOnPost } from "./notifyUserIdOfNewLikeOnPost";
+import { notifyUserIdOfNewCommentOnPost } from "./notifications/notifyUserIdOfNewCommentOnPost";
+import { notifyUserIdOfNewFollower } from "./notifications/notifyUserIdOfNewFollower";
+import { notifyUserIdOfNewLikeOnPost } from "./notifications/notifyUserIdOfNewLikeOnPost";
 import { notifyUserIdOfCanceledNewCommentOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewCommentOnPost";
 import { notifyUserIdOfCanceledNewFollower } from "./canceledNotifications/notifyUserIdOfCanceledNewFollower";
 
