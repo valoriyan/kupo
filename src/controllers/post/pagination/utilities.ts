@@ -1,4 +1,7 @@
-import { decodeTimestampCursor, encodeTimestampCursor } from "../../../controllers/utilities/pagination";
+import {
+  decodeTimestampCursor,
+  encodeTimestampCursor,
+} from "../../../controllers/utilities/pagination";
 import { UnrenderablePostWithoutElementsOrHashtags } from "../models";
 
 export function getEncodedCursorOfNextPageOfSequentialItems<
@@ -12,7 +15,6 @@ export function getEncodedCursorOfNextPageOfSequentialItems<
 
   return undefined;
 }
-
 
 export function getPageOfPostsFromAllPosts({
   unrenderablePostsWithoutElementsOrHashtags,

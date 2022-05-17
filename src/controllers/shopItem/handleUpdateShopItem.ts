@@ -7,7 +7,7 @@ import { ShopItemController } from "./shopItemController";
 export interface UpdateShopItemSuccess {}
 
 export enum UpdateShopItemFailedReason {
-  IllegalAccess = "Illegal Access",  
+  IllegalAccess = "Illegal Access",
 }
 
 export interface UpdateShopItemFailed {
@@ -48,18 +48,18 @@ export async function handleUpdateShopItem({
     expirationTimestamp,
   } = requestBody;
 
-  const unrenderableShopItemPreview = await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByShopItemId({shopItemId})
+  const unrenderableShopItemPreview =
+    await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByShopItemId(
+      { shopItemId },
+    );
 
   if (unrenderableShopItemPreview.authorUserId !== clientUserId) {
     return {
       error: {
         reason: UpdateShopItemFailedReason.IllegalAccess,
-      }
-    }
+      },
+    };
   }
-
-
-
 
   await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByShopItemId(
     {

@@ -1,9 +1,7 @@
 import express from "express";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import {
-  getEncodedCursorOfNextPageOfSequentialItems,
-} from "../post/pagination/utilities";
+import { getEncodedCursorOfNextPageOfSequentialItems } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { SecuredHTTPResponse } from "./../../types/httpResponse";

@@ -45,7 +45,6 @@ export async function handleGetChatRoomById({
     setOfUserIds.add(memberUserId);
   });
 
-
   const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
     clientUserId,
     userIds: [...setOfUserIds],

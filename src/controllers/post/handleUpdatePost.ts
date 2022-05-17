@@ -4,9 +4,8 @@ import { checkAuthorization } from "../auth/utilities";
 import { PostController } from "./postController";
 
 export enum UpdatePostFailedReason {
-  IllegalAccess = "Illegal Access",  
+  IllegalAccess = "Illegal Access",
 }
-
 
 export interface UpdatePostFailed {
   reason: UpdatePostFailedReason;
@@ -39,14 +38,17 @@ export async function handleUpdatePost({
   const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
     requestBody;
 
-  const unrenderablePostWithoutElementsOrHashtags = await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({postId});
+  const unrenderablePostWithoutElementsOrHashtags =
+    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
+      { postId },
+    );
 
   if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
     return {
       error: {
         reason: UpdatePostFailedReason.IllegalAccess,
-      }
-    }
+      },
+    };
   }
 
   await controller.databaseService.tableNameToServicesMap.postsTableService.updatePost({

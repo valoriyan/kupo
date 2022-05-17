@@ -139,7 +139,6 @@ export class ShopItemsTableService extends TableService {
     return convertDBShopItemToUnrenderableShopItemPreview(response.rows[0]);
   }
 
-
   public async getShopItemsByCreatorUserId({
     creatorUserId,
     filterOutExpiredAndUnscheduledShopItems,

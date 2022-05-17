@@ -16,20 +16,16 @@ export async function constructRenderableUsersFromPartsByUserIds({
   databaseService: DatabaseService;
 }): Promise<RenderableUser[]> {
   const unrenderableUsers =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-      {
-        userIds,
-      },
-    );
-
-    return await constructRenderableUsersFromParts({
-      clientUserId,
-      unrenderableUsers,
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
+    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
+      userIds,
     });
-  
 
+  return await constructRenderableUsersFromParts({
+    clientUserId,
+    unrenderableUsers,
+    blobStorageService: blobStorageService,
+    databaseService: databaseService,
+  });
 }
 
 export async function constructRenderableUsersFromParts({

@@ -2,9 +2,7 @@ import express from "express";
 import { HTTPResponse } from "../../types/httpResponse";
 import { getClientUserId } from "../auth/utilities";
 import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
-import {
-  getEncodedCursorOfNextPageOfSequentialItems,
-} from "../post/pagination/utilities";
+import { getEncodedCursorOfNextPageOfSequentialItems } from "../post/pagination/utilities";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { RenderableShopItemPreview } from "./models";
 import { ShopItemController } from "./shopItemController";

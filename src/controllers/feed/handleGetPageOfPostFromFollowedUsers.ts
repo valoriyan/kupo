@@ -54,7 +54,9 @@ export async function handleGetPageOfPostFromFollowedUsers({
     await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserIds(
       {
         creatorUserIds: [...userIdsBeingFollowed, clientUserId],
-        beforeTimestamp: cursor ? decodeTimestampCursor({ encodedCursor: cursor }) : undefined,
+        beforeTimestamp: cursor
+          ? decodeTimestampCursor({ encodedCursor: cursor })
+          : undefined,
         pageSize,
       },
     );

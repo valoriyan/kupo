@@ -2,9 +2,7 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../post/models";
-import {
-  getPageOfPostsFromAllPosts,
-} from "../post/pagination/utilities";
+import { getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
 import { constructRenderablePostsFromParts } from "../post/utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";

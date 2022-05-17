@@ -46,7 +46,9 @@ export async function handleGetPageOfCommentsByPostId({
     await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentsByPostId(
       {
         postId,
-        afterTimestamp: cursor ? decodeTimestampCursor({ encodedCursor: cursor }) : undefined,
+        afterTimestamp: cursor
+          ? decodeTimestampCursor({ encodedCursor: cursor })
+          : undefined,
         pageSize,
       },
     );
