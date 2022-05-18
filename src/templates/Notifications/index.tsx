@@ -14,7 +14,6 @@ export const Notifications = () => {
 
   useEffect(() => {
     if (!!data && !error && !isLoading) {
-      console.log("HIT!");
       markAllNotificationsAsSeen();
     }
   }, [data, error, isLoading, markAllNotificationsAsSeen]);

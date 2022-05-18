@@ -10,20 +10,11 @@ export const useCreateNewChatMessageInNewChatRoom = () => {
       chatMessageText: string;
       userIds: string[];
     }) => {
-      console.log("useCreateNewChatMessageInNewChatRoom");
-      console.log(chatMessageText);
-      console.log(userIds);
+      const res = await Api.createChatMessageInNewChatRoom({ chatMessageText, userIds });
 
-      const res = await Api.createChatMessageInNewChatRoom({
-        chatMessageText,
-        userIds,
-      });
+      if (res.data.success) return res.data.success.chatRoomId;
 
-      if (res.data.success) {
-        return res.data.success.chatRoomId;
-      }
-
-      throw new Error(res.data.error?.reason ?? "Failed to send message");
+      throw new Error(res.data.error?.reason ?? "Failed to create new chat room");
     },
   );
 };

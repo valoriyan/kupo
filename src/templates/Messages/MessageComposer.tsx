@@ -36,12 +36,7 @@ export const MessageComposer = ({
         onChange={onUpdateNewChatMessage}
       />
       <ActionBar>
-        <Button
-          round
-          size="sm"
-          onClick={onSubmitNewChatMessage}
-          disabled={!newChatMessage || disabled}
-        >
+        <Button round size="sm" disabled={!newChatMessage || disabled}>
           Send
         </Button>
       </ActionBar>
