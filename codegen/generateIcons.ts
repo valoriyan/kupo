@@ -40,6 +40,7 @@ const ICONS_TO_GENERATE = [
   "share",
   "software-download",
   "support",
+  "tag",
   "trash",
   "user",
 ];

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Router from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { SHORT_MONTHS, useCalendarState } from "#/components/Calendar";
 import { CloseIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { TransitionArea } from "#/components/TransitionArea";
@@ -12,8 +11,6 @@ import { SessionStorageItem } from "#/utils/storage";
 import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
 import { NewPost } from "./NewPost";
-import { PostSchedule } from "./PostSchedule";
-import { ScheduleByDay } from "./ScheduleByDay";
 
 const previousLocation = SessionStorageItem<string>("add-content");
 
@@ -25,13 +22,15 @@ export const setPreviousLocationForAddContent = () => {
 export enum AddContentScreen {
   Initial = "Initial",
   Post = "Post",
-  PostSchedule = "PostSchedule",
+  ShopItem = "Shop Item",
+  // PostSchedule = "PostSchedule",
 }
 
 const screenToHeading = {
   [AddContentScreen.Initial]: "Add Content",
   [AddContentScreen.Post]: "New Post",
-  [AddContentScreen.PostSchedule]: "View Post Schedule",
+  [AddContentScreen.ShopItem]: "New Shop Item",
+  // [AddContentScreen.PostSchedule]: "View Post Schedule",
 };
 
 export interface AdditionalScreen {
@@ -43,18 +42,18 @@ export const AddContent = () => {
   const [currentScreen, setCurrentScreen] = useState(AddContentScreen.Initial);
   const [additionalScreen, setAdditionalScreen] = useState<AdditionalScreen | null>(null);
 
-  const calendarState = useCalendarState({
-    initialSelectedDate: null,
-    shouldNotSelectDate: true,
-    onDateSelection: (newDate) => {
-      setAdditionalScreen({
-        node: <ScheduleByDay date={newDate} />,
-        heading: `Post Schedule > ${
-          SHORT_MONTHS[newDate.getMonth()]
-        } ${newDate.getDate()}, ${newDate.getFullYear()}`,
-      });
-    },
-  });
+  // const calendarState = useCalendarState({
+  //   initialSelectedDate: null,
+  //   shouldNotSelectDate: true,
+  //   onDateSelection: (newDate) => {
+  //     setAdditionalScreen({
+  //       node: <ScheduleByDay date={newDate} />,
+  //       heading: `Post Schedule > ${
+  //         SHORT_MONTHS[newDate.getMonth()]
+  //       } ${newDate.getDate()}, ${newDate.getFullYear()}`,
+  //     });
+  //   },
+  // });
 
   const lastScreen = useRef<string>();
   useEffect(() => {
@@ -69,9 +68,12 @@ export const AddContent = () => {
     case AddContentScreen.Post:
       bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
-    case AddContentScreen.PostSchedule:
-      bodyNode = <PostSchedule calendarState={calendarState} />;
+    case AddContentScreen.ShopItem:
+      bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
+    // case AddContentScreen.PostSchedule:
+    //   bodyNode = <PostSchedule calendarState={calendarState} />;
+    //   break;
     default:
       assertUnreachable(currentScreen, "Unknown screen received");
   }

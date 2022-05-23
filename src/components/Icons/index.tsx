@@ -33,6 +33,7 @@ export * from "./generated/SearchIcon";
 export * from "./generated/ShareIcon";
 export * from "./generated/SoftwareDownloadIcon";
 export * from "./generated/SupportIcon";
+export * from "./generated/TagIcon";
 export * from "./generated/TrashIcon";
 export * from "./generated/UserIcon";
 export * from "./provided/PaperPlaneIcon";

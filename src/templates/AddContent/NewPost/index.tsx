@@ -70,9 +70,6 @@ export const NewPost = (props: NewPostProps) => {
           >
             <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>
           </Button>
-          <Button size="lg" variant="secondary" outlined disabled={!canSubmit}>
-            Schedule For Later
-          </Button>
         </Stack>
       </Wrapper>
     </ScrollArea>

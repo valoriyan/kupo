@@ -6,11 +6,13 @@ import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGe
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
+import { ErrorMessage } from "#/components/ErrorArea";
+import { LoadingArea } from "#/components/LoadingArea";
 import { styled } from "#/styling";
+import { MessageComposer } from "../MessageComposer";
 import { ChatMessagesList } from "./ChatMessagesList";
 import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 import { FormStateProvider, useFormState } from "./FormContext";
-import { MessageComposer } from "../MessageComposer";
 
 const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
 
@@ -85,7 +87,11 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     (isErrorAcquiringClientUserData && !isLoadingClientUserData) ||
     (isErrorAcquiringChatRoomMembersData && !isLoadingChatRoomMembersData)
   ) {
-    return <div>Error: {(chatMessagesQuery.error as Error).message}</div>;
+    return (
+      <ErrorMessage>
+        {chatMessagesQuery.error?.message ?? "An Error Occurred"}
+      </ErrorMessage>
+    );
   }
 
   if (
@@ -96,7 +102,7 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     isLoadingChatRoomMembersData ||
     !chatRoomMembersData
   ) {
-    return <div>Loading</div>;
+    return <LoadingArea size="lg" />;
   }
 
   async function onSubmitNewChatMessage(event: React.FormEvent) {
