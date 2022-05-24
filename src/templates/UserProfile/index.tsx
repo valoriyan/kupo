@@ -1,6 +1,8 @@
 import { useGetUserByUsername } from "#/api/queries/users/useGetUserByUsername";
 import { useAppLayoutState } from "#/components/AppLayout";
 import { ErrorArea } from "#/components/ErrorArea";
+import { MenuBoxedIcon } from "#/components/Icons/generated/MenuBoxedIcon";
+import { ShoppingBagIcon } from "#/components/Icons/generated/ShoppingBagIcon";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
@@ -34,12 +36,12 @@ export const UserProfile = ({ username }: { username: string }) => {
         tabs={[
           {
             id: "posts",
-            trigger: "Posts",
+            trigger: <MenuBoxedIcon />,
             content: <UserPosts user={data} />,
           },
           {
             id: "shopItems",
-            trigger: "Shop Items",
+            trigger: <ShoppingBagIcon />,
             content: <UserPosts user={data} />,
           },
         ]}

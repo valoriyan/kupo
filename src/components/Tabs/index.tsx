@@ -88,7 +88,6 @@ const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
   "&:hover": { filter: "brightness(0.9)" },
 
   '&[data-state="active"]': {
-    fontWeight: "$bold",
     color: "$primary",
     boxShadow: "inset 0 -3px 0 0 currentColor, 0 1px 0 0 currentColor",
   },

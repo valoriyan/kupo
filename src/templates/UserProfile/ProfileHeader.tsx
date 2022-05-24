@@ -106,7 +106,7 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
           </Stack>
         </AvatarAndName>
       </Wrapper>
-      <Stack css={{ mt: "107px", pt: "$4", px: "$6", gap: "$4" }}>
+      <Stack css={{ mt: "107px", py: "$4", px: "$6", gap: "$4" }}>
         {!!shortBio && <Body>{shortBio}</Body>}
         {!!userWebsite && (
           <ExternalLink target="_blank" rel="noopener noreferrer" href={userWebsite}>
