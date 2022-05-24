@@ -37,6 +37,11 @@ export const UserProfile = ({ username }: { username: string }) => {
             trigger: "Posts",
             content: <UserPosts user={data} />,
           },
+          {
+            id: "shopItems",
+            trigger: "Shop Items",
+            content: <UserPosts user={data} />,
+          },
         ]}
       />
     </Stack>
