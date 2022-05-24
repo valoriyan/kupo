@@ -32,14 +32,16 @@ export const ContentViewer = ({
     Array.from(listRef.current.children).map((child, index) => {
       if (!listRef.current) return;
       const containerRect = listRef.current.getBoundingClientRect();
-      if (Math.abs(child.getBoundingClientRect().left - containerRect.left) < 10) {
+      if (Math.abs(child.getBoundingClientRect().left - containerRect.left) < 40) {
         setCurIndex(index);
       }
     });
   };
 
   return (
-    <Wrapper css={{ height: contentHeight ?? "62vh" }}>
+    <Wrapper
+      css={{ height: contentHeight ?? "62vh", maxHeight: contentHeight ?? "600px" }}
+    >
       <ContentList ref={listRef} onScroll={onScroll}>
         {mediaElements.map((mediaElement, i) => (
           <ContentItem

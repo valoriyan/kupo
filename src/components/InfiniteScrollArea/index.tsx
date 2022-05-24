@@ -5,6 +5,7 @@ import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
 import List, { ListRowProps } from "react-virtualized/dist/commonjs/List";
 import WindowScroller from "react-virtualized/dist/commonjs/WindowScroller";
 import { useWindowSize } from "#/utils/useWindowSize";
+import { useAppLayoutState } from "../AppLayout";
 import { Body } from "../Typography";
 import "react-virtualized/styles.css";
 
@@ -19,6 +20,7 @@ export interface InfiniteScrollAreaProps {
   items: Array<
     ReactElement | ((renderProps: InfiniteScrollItemRenderProps) => ReactElement)
   >;
+  scrollContainer?: Element | undefined;
 }
 
 export const InfiniteScrollArea = ({
@@ -26,8 +28,10 @@ export const InfiniteScrollArea = ({
   isNextPageLoading,
   loadNextPage,
   items,
+  scrollContainer,
 }: InfiniteScrollAreaProps) => {
   const { height: windowHeight, width: windowWidth } = useWindowSize();
+  const contentContainer = useAppLayoutState((store) => store.contentContainer);
   const listRef = useRef<List>(null);
   const rowHeights = useRef<Record<number, number>>({});
 
@@ -80,7 +84,7 @@ export const InfiniteScrollArea = ({
   };
 
   return (
-    <WindowScroller>
+    <WindowScroller scrollElement={scrollContainer ?? contentContainer}>
       {({ height, scrollTop }) => (
         <AutoSizer disableHeight>
           {({ width }) => (
