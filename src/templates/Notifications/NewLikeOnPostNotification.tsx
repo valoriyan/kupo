@@ -1,12 +1,11 @@
-import Router from "next/router";
 import { RenderableNewLikeOnPostNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Stack } from "#/components/Layout";
 import { PostThumbnail } from "#/components/PostThumbnail";
 import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import { goToUserProfilePage } from "../UserProfile";
 import { NotificationWrapper } from "./shared";
 
 export const NewLikeOnPostNotification = ({
@@ -26,7 +25,7 @@ export const NewLikeOnPostNotification = ({
         alt={`@${username}'s profile picture`}
         src={profilePictureTemporaryUrl}
         size="$8"
-        onClick={() => Router.push(getProfilePageUrl({ username }))}
+        onClick={() => goToUserProfilePage(username)}
       />
 
       <Stack css={{ gap: "$2" }}>

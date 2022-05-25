@@ -1,4 +1,3 @@
-import Router from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { RenderablePostComment } from "#/api";
 import { useDeleteCommentFromPost } from "#/api/mutations/posts/deleteCommentFromPost";
@@ -14,7 +13,7 @@ import { Body, truncateByLines } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { goToUserProfilePage } from "#/templates/UserProfile";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { ActionMenu } from "../ActionMenu";
 
@@ -103,7 +102,7 @@ const Comment = ({ comment, updateItemHeight }: CommentProps) => {
         size="$7"
         src={userAvatarUrl}
         alt={`@${username}'s profile picture`}
-        onClick={() => Router.push(getProfilePageUrl({ username }))}
+        onClick={() => goToUserProfilePage(username)}
       />
       <Stack css={{ gap: "$3" }}>
         <Flex css={{ justifyContent: "space-between", alignItems: "center" }}>

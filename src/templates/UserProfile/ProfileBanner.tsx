@@ -1,7 +1,9 @@
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
-import { Flex } from "#/components/Layout";
-import { MAX_APP_CONTENT_WIDTH } from "#/constants";
+import { ArrowLeftIcon } from "#/components/Icons";
+import { Box, Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 import { translucentBg } from "#/styling/mixins";
 import { FollowButton } from "./FollowButton";
@@ -10,16 +12,25 @@ export interface ProfileBannerProps {
   isOwnProfile: boolean | undefined;
   user: RenderableUser;
   scrollPosition: number;
+  backRoute: string | null;
 }
 
 export const ProfileBanner = ({
   isOwnProfile,
   user,
   scrollPosition,
+  backRoute,
 }: ProfileBannerProps) => {
   return (
-    <Wrapper css={{ transform: `translateY(${scrollPosition > 0 ? "0%" : "-100%"})` }}>
+    <Wrapper>
       <Flex css={{ gap: "$3", alignItems: "center" }}>
+        {backRoute && (
+          <Link href={backRoute} passHref>
+            <Box as="a" css={{ color: "$text" }}>
+              <ArrowLeftIcon />
+            </Box>
+          </Link>
+        )}
         <Avatar
           alt={`@${user.username ?? "User"}'s profile picture`}
           src={user.profilePictureTemporaryUrl}
@@ -27,29 +38,35 @@ export const ProfileBanner = ({
         />
         <Username>@{user.username}</Username>
       </Flex>
-      {!isOwnProfile && (
-        <FollowButton
-          userId={user.userId}
-          username={user.username}
-          isBeingFollowedByClient={user.isBeingFollowedByClient}
-        />
-      )}
+      <AnimatePresence>
+        {scrollPosition > 0 && !isOwnProfile && (
+          <motion.div
+            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <FollowButton
+              userId={user.userId}
+              username={user.username}
+              isBeingFollowedByClient={user.isBeingFollowedByClient}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 };
 
 const Wrapper = styled("div", translucentBg, {
+  position: "sticky",
+  top: 0,
+  zIndex: 2,
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  position: "absolute",
-  top: 0,
-  left: 0,
   width: "100%",
-  maxWidth: MAX_APP_CONTENT_WIDTH,
-  zIndex: 1,
   p: "$4",
-  transition: "transform $1 ease",
 });
 
 // TODO: Make bold variants of regular fonts

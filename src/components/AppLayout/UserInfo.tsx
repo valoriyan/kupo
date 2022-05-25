@@ -1,8 +1,7 @@
-import Router from "next/router";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
+import { goToUserProfilePage } from "#/templates/UserProfile";
 import { formatStat } from "#/utils/formatStat";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
@@ -21,11 +20,7 @@ export const UserInfo = (props: UserInfoProps) => {
       <Avatar
         alt="User Avatar"
         src={data?.profilePictureTemporaryUrl}
-        onClick={
-          data?.username
-            ? () => Router.push(getProfilePageUrl({ username: data.username }))
-            : undefined
-        }
+        onClick={data?.username ? () => goToUserProfilePage(data.username) : undefined}
       />
       {isLoading || !data ? (
         <UserStatsPlaceholder>

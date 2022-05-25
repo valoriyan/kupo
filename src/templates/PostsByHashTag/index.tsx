@@ -10,7 +10,7 @@ import { getPostsByHashtagUrl } from "#/utils/generateLinkUrls";
 import { SessionStorage } from "#/utils/storage";
 import { goToPostPage } from "../SinglePost";
 
-const PREVIOUS_LOCATION_BASE_KEY = "previous-location-post-by-hashtag-";
+const PREVIOUS_LOCATION_BASE_KEY = "previous-location-post-by-hashtag";
 
 export const goToPostByHashTagPage = (hashtag: string) => {
   SessionStorage.setItem<string>(PREVIOUS_LOCATION_BASE_KEY + hashtag, Router.asPath);

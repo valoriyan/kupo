@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Router from "next/router";
 import { RenderableNewFollowerNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
@@ -8,6 +7,10 @@ import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import {
+  goToUserProfilePage,
+  setPreviousLocationForUserProfilePage,
+} from "../UserProfile";
 import { NotificationWrapper } from "./shared";
 
 export const NewFollowerNotification = ({
@@ -26,7 +29,7 @@ export const NewFollowerNotification = ({
         alt={`@${username}'s profile picture`}
         src={profilePictureTemporaryUrl}
         size="$8"
-        onClick={() => Router.push(getProfilePageUrl({ username }))}
+        onClick={() => goToUserProfilePage(username)}
       />
 
       <Stack css={{ gap: "$2" }}>
@@ -39,7 +42,11 @@ export const NewFollowerNotification = ({
       </Stack>
 
       <Link href={getProfilePageUrl({ username })} passHref>
-        <Button as="a" size="sm">
+        <Button
+          as="a"
+          size="sm"
+          onClick={() => setPreviousLocationForUserProfilePage(username)}
+        >
           View Profile
         </Button>
       </Link>

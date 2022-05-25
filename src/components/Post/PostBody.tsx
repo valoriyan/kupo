@@ -1,7 +1,6 @@
-import Router from "next/router";
 import { MediaElement, RenderablePostShared } from "#/api";
 import { styled } from "#/styling";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { goToUserProfilePage } from "#/templates/UserProfile";
 import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { Body } from "../Typography";
@@ -44,7 +43,7 @@ export const PostBody = (props: PostBodyProps) => {
           onClick={(e) => {
             if (!props.authorUserName) return;
             e.stopPropagation();
-            Router.push(getProfilePageUrl({ username: props.authorUserName }));
+            goToUserProfilePage(props.authorUserName);
           }}
         />
         <UserName username={props.authorUserName} />

@@ -1,8 +1,7 @@
-import Router from "next/router";
 import { SetStateAction, useState } from "react";
 import isEqual from "react-fast-compare";
-import { toast } from "react-toastify";
 import { useQueryClient } from "react-query";
+import { toast } from "react-toastify";
 import { RenderableUser } from "#/api";
 import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
 import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";
@@ -11,12 +10,12 @@ import { useUpdateOwnProfilePicture } from "#/api/mutations/profile/updateOwnPro
 import { Button } from "#/components/Button";
 import { Box, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { CacheKeys } from "#/contexts/queryClient";
 import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
+import { goToUserProfilePage } from "../UserProfile";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
 import { ProfileSettings } from "./ProfileSettings";
-import { CacheKeys } from "#/contexts/queryClient";
 
 export interface EditProfileProps {
   user: RenderableUser;
@@ -119,7 +118,7 @@ export const EditProfile = ({ user }: EditProfileProps) => {
         queryClient.removeQueries([CacheKeys.UserByUsername, user.username]);
         queryClient.removeQueries([CacheKeys.UserByUsername, username]);
         toast.success("Profile updated successfully");
-        Router.push(getProfilePageUrl({ username }));
+        goToUserProfilePage(username);
       } else {
         setIsProfileUpdating(false);
         toast.error("Failed to update profile");
