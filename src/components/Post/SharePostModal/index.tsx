@@ -95,9 +95,6 @@ export const SharePostModal = ({
             >
               <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>
             </Button>
-            <Button size="lg" variant="secondary" outlined disabled={!caption}>
-              Schedule For Later
-            </Button>
           </Stack>
         </FormWrapper>
       </ScrollArea>

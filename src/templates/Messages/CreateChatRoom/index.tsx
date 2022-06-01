@@ -1,117 +1,92 @@
-import { ChangeEvent, MouseEvent } from "react";
+import Link from "next/link";
 import Router from "next/router";
-import { FormStateProvider, useFormState } from "./FormContext";
-import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
-import { RenderableUser } from "#/api";
+import { FormEvent, useState } from "react";
+import { useCreateNewChatMessageInNewChatRoom } from "#/api/mutations/chat/createNewChatMessageInNewChatRoom";
 import { useGetChatRoomIdWithUserIds } from "#/api/queries/chat/useGetChatRoomIdWithUserIds";
-import { NewMessageInNewChatRoom } from "./NewMessageInNewChatRoom";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
+import { Button } from "#/components/Button";
+import { Flex, Grid } from "#/components/Layout";
+import { styled } from "#/styling";
+import { MessageComposer } from "../MessageComposer";
+import { UsersInput } from "./UsersInput";
+import { ExistingChatMessages } from "./ExistingChatMessages";
 
-export const NewChatRoom = ({ userIds }: { userIds?: string[] }) => {
-  const { data, error, isLoading } = useGetClientUserProfile();
+export const NewChatRoom = () => {
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [newChatMessage, setNewChatMessage] = useState("");
 
-  if (!!userIds) {
-    return <NewMessageInNewChatRoom userIds={userIds} />;
-  }
-
-  if (error && !isLoading) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (isLoading || !data) {
-    return <div>Loading</div>;
-  }
-
-  return (
-    <FormStateProvider>
-      <NewChatRoomInner clientUser={data} />
-    </FormStateProvider>
-  );
-};
-
-export const NewChatRoomInner = ({ clientUser }: { clientUser: RenderableUser }) => {
-  const { usernamesInChatRoom, setUsernamesInChatRoom } = useFormState();
-
-  const {
-    data: users,
-    isLoading,
-    isError,
-    error,
-  } = useGetUsersByUsernames({ usernames: usernamesInChatRoom });
-
-  const userIds = !!users
-    ? users.flatMap((user) => (user ? [user.userId] : [])).concat([clientUser.userId])
-    : [clientUser.userId];
-
-  const { data: doesChatRoomExistData } = useGetChatRoomIdWithUserIds({
-    userIds,
+  const { data: clientUser, isLoading: isClientUserLoading } = useGetClientUserProfile();
+  const { data: users, isLoading: areUsersLoading } = useGetUsersByUsernames({
+    usernames,
   });
 
-  if (isError && !isLoading) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
+  const resolvedUsers = !!users ? users?.flatMap((user) => (user ? [user] : [])) : [];
 
-  let renderedUsersInChatRoom;
-  if (isLoading || !users) {
-    renderedUsersInChatRoom = <div>Loading</div>;
-  } else {
-    renderedUsersInChatRoom = users.map((user, index) => (
-      <span key={index}>
-        <NewChatRoomUsernameListItem user={user} />
-        {index < usernamesInChatRoom.length - 1 ? ", " : ""}
-      </span>
-    ));
-  }
+  const userIds =
+    !!users && clientUser
+      ? resolvedUsers.map((user) => user.userId).concat([clientUser.userId])
+      : [];
 
-  async function onChangeUsernamesInChatRoom(event: ChangeEvent<HTMLInputElement>) {
+  const { data: existingChatRoom, isLoading: isExistingChatRoomLoading } =
+    useGetChatRoomIdWithUserIds({ userIds });
+  const { mutateAsync: createNewChatMessageInNewChatRoom } =
+    useCreateNewChatMessageInNewChatRoom();
+
+  const isLoading = isClientUserLoading || areUsersLoading || isExistingChatRoomLoading;
+
+  const onSubmitNewChatMessage = async (event: FormEvent) => {
     event.preventDefault();
-    const updatedUsersInChatRoom = event.currentTarget.value.split(", ");
+    if (isLoading) return;
 
-    setUsernamesInChatRoom(updatedUsersInChatRoom);
-  }
+    const newChatRoomId = await createNewChatMessageInNewChatRoom({
+      userIds,
+      chatMessageText: newChatMessage,
+    });
 
-  const isCompleteUserList = !!users && users.every((user) => !!user);
-
-  const handleClickSubmit = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log(doesChatRoomExistData);
-    event.preventDefault();
-    if (!!doesChatRoomExistData) {
-      if (doesChatRoomExistData.doesChatRoomExist && !!doesChatRoomExistData.chatRoomId) {
-        Router.push(`/messages/${doesChatRoomExistData.chatRoomId}`);
-      } else {
-        Router.push({
-          pathname: `/messages/new`,
-          query: { userIds },
-        });
-      }
-    }
+    await Router.push({
+      pathname: "/messages/[chatRoomId]",
+      query: { chatRoomId: newChatRoomId },
+    });
   };
 
   return (
-    <div>
-      <br />
-      <br />
-      Users: {renderedUsersInChatRoom}
-      <br />
-      <input onChange={onChangeUsernamesInChatRoom} type="text" />
-      <br />
-      <br />
-      <br />
-      <button
-        onClick={handleClickSubmit}
-        disabled={!isCompleteUserList}
-        style={{ color: isCompleteUserList ? "green" : "red" }}
-      >
-        Enter Chat Room
-      </button>
-    </div>
+    <Grid css={{ height: "100%", gridTemplateRows: "auto 1fr auto" }}>
+      <UsersInput
+        usernames={usernames}
+        setUsernames={setUsernames}
+        resolvedUsers={resolvedUsers}
+      />
+      {existingChatRoom?.chatRoomId ? (
+        <ExistingChatMessages
+          clientUserId={clientUser?.userId}
+          chatRoomId={existingChatRoom.chatRoomId}
+        />
+      ) : (
+        <div />
+      )}
+      {existingChatRoom?.chatRoomId ? (
+        <Footer>
+          <Link href={`/messages/${existingChatRoom.chatRoomId}`} passHref>
+            <Button as="a">Enter Chat Room</Button>
+          </Link>
+        </Footer>
+      ) : (
+        <MessageComposer
+          newChatMessage={newChatMessage}
+          setNewChatMessage={setNewChatMessage}
+          onSubmitNewChatMessage={onSubmitNewChatMessage}
+          disabled={isLoading}
+        />
+      )}
+    </Grid>
   );
 };
 
-const NewChatRoomUsernameListItem = ({ user }: { user: RenderableUser | null }) => {
-  if (!!user) {
-    return <span style={{ color: "green" }}>{user.username}</span>;
-  } else {
-    return <span>{user}</span>;
-  }
-};
+const Footer = styled(Flex, {
+  justifyContent: "center",
+  alignItems: "center",
+  p: "$4",
+  bg: "$background2",
+  borderTop: "solid $borderWidths$1 $border",
+});

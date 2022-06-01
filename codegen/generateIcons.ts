@@ -31,6 +31,7 @@ const ICONS_TO_GENERATE = [
   "options",
   "mail",
   "menu",
+  "menu-boxed",
   "math-plus",
   "pen",
   "more-vertical-alt",
@@ -38,8 +39,10 @@ const ICONS_TO_GENERATE = [
   "remove",
   "search",
   "share",
+  "shopping-bag",
   "software-download",
   "support",
+  "tag",
   "trash",
   "user",
 ];

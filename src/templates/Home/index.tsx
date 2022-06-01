@@ -20,22 +20,17 @@ export const Home = () => {
           )}
         </Heading>
         <BrandWithSlogan />
-        <Stack css={{ gap: "$7" }}>
-          <MainTitle css={{ textAlign: "center", fontSize: "$8" }}>
-            Coming Soon...
-          </MainTitle>
-          <Stack css={{ gap: "$6" }}>
-            <Body as="p">A social media platform made for creators by creators.</Body>
-            <Body as="p">
-              Leading social medias often threaten small and medium sized businesses by
-              compromising information, or failing to help business owners reach their
-              audience. We know the frustration and we&apos;re here to change it.
-            </Body>
-          </Stack>
+        <Stack css={{ gap: "$6" }}>
+          <Body as="p">A social media platform made for creators by creators.</Body>
+          <Body as="p">
+            Leading social medias often threaten small and medium sized businesses by
+            compromising information, or failing to help business owners reach their
+            audience. We know the frustration and we&apos;re here to change it.
+          </Body>
         </Stack>
         <Link href={isAuthenticated ? "/feed" : "/sign-up"} passHref>
           <Button as="a" size="lg">
-            {isAuthenticated ? "View Your Feed" : "Join the Waitlist"}
+            {isAuthenticated ? "View Your Feed" : "Create An Account"}
           </Button>
         </Link>
         <Stack css={{ gap: "$7" }}>

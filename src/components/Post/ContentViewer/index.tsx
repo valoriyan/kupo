@@ -1,10 +1,9 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { styled } from "#/styling";
-import { Content } from "./Content";
-import { range } from "#/utils/range";
-import { ChevronLeftIcon, ChevronRightIcon } from "#/components/Icons";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { MediaElement } from "#/api";
+import { ChevronLeftIcon, ChevronRightIcon } from "#/components/Icons";
+import { styled } from "#/styling";
+import { range } from "#/utils/range";
+import { Content } from "./Content";
 
 export interface ContentViewerProps {
   mediaElements: MediaElement[];
@@ -17,127 +16,144 @@ export const ContentViewer = ({
   setCurrentMediaElement,
   contentHeight,
 }: ContentViewerProps) => {
-  const { page, direction, paginate } = usePagination([0, 0], mediaElements.length);
+  const [curIndex, setCurIndex] = useState(0);
+  const listRef = useRef<HTMLDivElement>(null);
+  const registeredItems = useRef<Record<number, HTMLDivElement>>({});
 
-  const currentMediaElement = mediaElements[page];
+  const currentMediaElement = mediaElements[curIndex];
   const hasMultiple = mediaElements.length > 1;
 
   useEffect(() => {
     setCurrentMediaElement?.(currentMediaElement);
   }, [currentMediaElement, setCurrentMediaElement]);
 
-  return (
-    <AnimatePresence initial={false} custom={direction}>
-      <MotionWrapper
-        css={{
-          height: contentHeight ?? "62vh",
-          cursor: hasMultiple ? "grab" : "default",
-        }}
-      >
-        <motion.div
-          key={page}
-          style={{ height: "100%", width: "100%" }}
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-            opacity: { duration: 0.2 },
-          }}
-          drag={hasMultiple ? "x" : undefined}
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={1}
-          onDragEnd={(_, { offset, velocity }) => {
-            const swipe = swipePower(offset.x, velocity.x);
+  const onScroll = () => {
+    if (!listRef.current) return;
+    Array.from(listRef.current.children).map((child, index) => {
+      if (!listRef.current) return;
+      const containerRect = listRef.current.getBoundingClientRect();
+      if (Math.abs(child.getBoundingClientRect().left - containerRect.left) < 40) {
+        setCurIndex(index);
+      }
+    });
+  };
 
-            if (swipe < -swipeConfidenceThreshold) {
-              paginate(1);
-            } else if (swipe > swipeConfidenceThreshold) {
-              paginate(-1);
-            }
-          }}
-        >
-          <Content mediaElement={currentMediaElement} />
-        </motion.div>
-        {hasMultiple && (
-          <>
-            {page > 0 && (
-              <ArrowButton direction="left" onClick={() => paginate(-1)}>
-                <ChevronLeftIcon />
-              </ArrowButton>
-            )}
-            <IndexDots>
-              {range(mediaElements.length).map((index) => (
-                <IndexDot key={index} active={page === index} />
-              ))}
-            </IndexDots>
-            {page < mediaElements.length - 1 && (
-              <ArrowButton direction="right" onClick={() => paginate(1)}>
-                <ChevronRightIcon />
-              </ArrowButton>
-            )}
-          </>
-        )}
-      </MotionWrapper>
-    </AnimatePresence>
+  return (
+    <Wrapper
+      css={{ height: contentHeight ?? "62vh", maxHeight: contentHeight ?? "600px" }}
+    >
+      <ContentList ref={listRef} onScroll={onScroll}>
+        {mediaElements.map((mediaElement, i) => (
+          <ContentItem
+            key={i}
+            index={i}
+            registeredItems={registeredItems}
+            mediaElement={mediaElement}
+          />
+        ))}
+      </ContentList>
+      {hasMultiple && (
+        <>
+          {curIndex > 0 && (
+            <ArrowButton
+              direction="left"
+              onClick={() =>
+                setCurIndex((prev) => {
+                  const newIndex = prev - 1;
+                  scrollIntoView(registeredItems.current[newIndex]);
+                  return newIndex;
+                })
+              }
+            >
+              <ChevronLeftIcon />
+            </ArrowButton>
+          )}
+          <IndexDots>
+            {range(mediaElements.length).map((index) => (
+              <IndexDot key={index} active={curIndex === index} />
+            ))}
+          </IndexDots>
+          {curIndex < mediaElements.length - 1 && (
+            <ArrowButton
+              direction="right"
+              onClick={() =>
+                setCurIndex((prev) => {
+                  const newIndex = prev + 1;
+                  scrollIntoView(registeredItems.current[newIndex]);
+                  return newIndex;
+                })
+              }
+            >
+              <ChevronRightIcon />
+            </ArrowButton>
+          )}
+        </>
+      )}
+    </Wrapper>
   );
 };
 
-export const usePagination = (
-  initialState: [number, number] | (() => [number, number]),
-  totalLength: number,
-) => {
-  const [[page, direction], setPage] = useState<[number, number]>(initialState);
-
-  const paginate = (newDirection: number) => {
-    if (page + newDirection < 0 || page + newDirection >= totalLength) return;
-    setPage([page + newDirection, newDirection]);
-  };
-
-  return { page, direction, paginate } as const;
+const scrollIntoView = (element: HTMLDivElement | undefined) => {
+  element?.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest",
+    inline: "nearest",
+  });
 };
 
-const variants = {
-  enter: (direction: number) => {
-    return {
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-    };
-  },
-  center: {
-    zIndex: 1,
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => {
-    return {
-      zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
-    };
-  },
+const ContentItem = ({
+  index,
+  registeredItems,
+  mediaElement,
+}: {
+  index: number;
+  registeredItems: MutableRefObject<Record<number, HTMLDivElement>>;
+  mediaElement: MediaElement;
+}) => {
+  const [elem, setElem] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (elem) registeredItems.current[index] = elem;
+  }, [elem, index, registeredItems]);
+
+  return (
+    <ContentWrapper ref={setElem}>
+      <Content mediaElement={mediaElement} />
+    </ContentWrapper>
+  );
 };
 
-const swipeConfidenceThreshold = 10000;
-const swipePower = (offset: number, velocity: number) => {
-  return Math.abs(offset) * velocity;
-};
-
-const MotionWrapper = styled("div", {
-  overflow: "hidden",
+const Wrapper = styled("div", {
   position: "relative",
-  bg: "$background3",
-  img: {
-    "user-select": "none",
-    "-webkit-user-drag": "none",
-  },
+  width: "100%",
   "&:hover": {
     "> button": {
       display: "flex",
     },
   },
+});
+
+const ContentList = styled("div", {
+  display: "flex",
+  size: "100%",
+  overflowX: "auto",
+  "user-select": "none",
+  "&::-webkit-scrollbar": { display: "none" },
+  " -ms-overflow-style": "none",
+  " scrollbar-width": "none",
+  scrollSnapType: "x mandatory",
+  img: {
+    "user-select": "none",
+    "-webkit-user-drag": "none",
+  },
+});
+
+const ContentWrapper = styled("div", {
+  height: "100%",
+  width: "100%",
+  flexShrink: 0,
+  scrollSnapAlign: "start",
+  bg: "$background3",
 });
 
 const ArrowButton = styled("button", {

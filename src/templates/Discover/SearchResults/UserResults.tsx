@@ -1,4 +1,3 @@
-import Router from "next/router";
 import { useEffect, useState } from "react";
 import { RenderableUser } from "#/api";
 import { useSearchForUsers } from "#/api/queries/discover/useSearchForUsers";
@@ -8,7 +7,7 @@ import { Flex, Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { goToUserProfilePage } from "#/templates/UserProfile";
 import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface UserResultsProps {
@@ -58,7 +57,6 @@ export const UserResults = ({ query }: UserResultsProps) => {
 
 const UserPreview = ({ user }: { user: RenderableUser }) => {
   const hashtags = user.hashtags.filter((x) => x);
-  const profileUrl = getProfilePageUrl({ username: user.username });
 
   return (
     <UserWrapper>
@@ -67,7 +65,7 @@ const UserPreview = ({ user }: { user: RenderableUser }) => {
           src={user.profilePictureTemporaryUrl}
           alt={`${user.username}'s profile picture`}
           size="$8"
-          onClick={() => Router.push(profileUrl)}
+          onClick={() => goToUserProfilePage(user.username)}
         />
         <UserName username={user.username} />
       </Flex>

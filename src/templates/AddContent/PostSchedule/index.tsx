@@ -4,22 +4,25 @@ import { Box, Stack } from "#/components/Layout";
 import { Body, MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 
+const CUR_YEAR = new Date().getFullYear();
+const CUR_MONTH = new Date().getMonth();
+
 export interface PostScheduleProps {
   calendarState: CalendarState;
 }
 
 export const PostSchedule = (props: PostScheduleProps) => {
   const datesWithAdditions = [
-    new Date(2021, 9, 11),
-    new Date(2021, 9, 20),
-    new Date(2021, 9, 23),
-    new Date(2021, 9, 31),
+    new Date(CUR_YEAR, CUR_MONTH, 11),
+    new Date(CUR_YEAR, CUR_MONTH, 20),
+    new Date(CUR_YEAR, CUR_MONTH, 23),
+    new Date(CUR_YEAR, CUR_MONTH, 27),
   ];
   const datesWithRemovals = [
-    new Date(2021, 9, 12),
-    new Date(2021, 9, 20),
-    new Date(2021, 9, 17),
-    new Date(2021, 9, 29),
+    new Date(CUR_YEAR, CUR_MONTH, 12),
+    new Date(CUR_YEAR, CUR_MONTH, 20),
+    new Date(CUR_YEAR, CUR_MONTH, 17),
+    new Date(CUR_YEAR, CUR_MONTH, 28),
   ];
 
   return (

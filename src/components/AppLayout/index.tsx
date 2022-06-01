@@ -15,11 +15,15 @@ import { useWebsocketState, WebsocketStateProvider } from "./WebsocketContext";
 export interface AppLayoutScrollPositionState {
   scrollPosition: number;
   setScrollPosition: (scrollPosition: number) => void;
+  contentContainer: HTMLDivElement | undefined;
+  setContentContainer: (contentContainer: HTMLDivElement | undefined) => void;
 }
 
 export const useAppLayoutState = create<AppLayoutScrollPositionState>((set) => ({
   scrollPosition: 0,
   setScrollPosition: (scrollPosition) => set({ scrollPosition }),
+  contentContainer: undefined,
+  setContentContainer: (contentContainer) => set({ contentContainer }),
 }));
 
 export interface AppLayoutProps {
@@ -42,6 +46,7 @@ const AppLayoutInner = ({
   const generateSocket = useWebsocketState((state) => state.generateSocket);
   const hasAccessToken = isAuthenticated === true;
   const setScrollPosition = useAppLayoutState((store) => store.setScrollPosition);
+  const setContentContainer = useAppLayoutState((store) => store.setContentContainer);
 
   useEffect(() => {
     getAccessToken().then((accessToken) => {
@@ -52,6 +57,10 @@ const AppLayoutInner = ({
 
   const [container, ref] = useState<HTMLDivElement | null>(null);
   useScrollPosition(trackContentScroll ? container : null, setScrollPosition);
+
+  useEffect(() => {
+    setContentContainer(container ?? undefined);
+  }, [container, setContentContainer]);
 
   return (
     <Wrapper>
