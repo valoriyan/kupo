@@ -37,6 +37,8 @@ import {
   handleGetShopItemsByUserId,
   handleGetShopItemsByUsername,
 } from "./handleGetShopItems";
+import { PaymentProcessingService } from "../../services/paymentProcessingService";
+import { handlePurchaseShopItem, PurchaseShopItemFailed, PurchaseShopItemRequestBody, PurchaseShopItemSuccess } from "./handlePurchaseShopItem";
 
 @injectable()
 @Route("shopitem")
@@ -44,6 +46,7 @@ export class ShopItemController extends Controller {
   constructor(
     public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
+    public paymentProcessingService: PaymentProcessingService,
   ) {
     super();
   }
@@ -77,6 +80,18 @@ export class ShopItemController extends Controller {
         collaboratorUserIds,
         mediaFiles,
       },
+    });
+  }
+
+  @Post("purchaseShopItem")
+  public async purchaseShopItem(
+    @Request() request: express.Request,
+    @Body() requestBody: PurchaseShopItemRequestBody,
+  ): Promise<SecuredHTTPResponse<PurchaseShopItemFailed, PurchaseShopItemSuccess>> {
+    return await handlePurchaseShopItem({
+      controller: this,
+      request,
+      requestBody,
     });
   }
 

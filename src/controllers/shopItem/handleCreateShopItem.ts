@@ -46,6 +46,10 @@ export async function handleCreateShopItem({
     hashtags,
   } = requestBody;
 
+  console.log("apple");
+  console.log("hashtags", hashtags);
+  console.log("hashtags", Array.isArray(hashtags)  );
+
   const shopItemId = uuidv4();
   const creationTimestamp = Date.now();
 
