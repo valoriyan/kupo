@@ -1,4 +1,3 @@
-import { logout } from "#/contexts/auth";
 import { setPreviousLocationForMessages } from "#/pages/messages";
 import { setPreviousLocationForMyLists } from "#/pages/my-lists";
 import { setPreviousLocationForSettings } from "#/pages/settings";
@@ -15,6 +14,7 @@ import {
   SupportIcon,
 } from "../Icons";
 import { Flex, Stack } from "../Layout";
+import { openLogOutModal } from "../LogOutModal";
 import { NavItem, NavLink } from "./shared";
 import { UserInfo } from "./UserInfo";
 
@@ -80,8 +80,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
             as="button"
             css={{ color: "$text" }}
             onClick={() => {
-              hide();
-              logout();
+              openLogOutModal({ onLogout: hide });
             }}
           >
             <LogOutIcon />

@@ -2,9 +2,10 @@ import Link from "next/link";
 import { BrandWithSlogan } from "#/components/BrandWithSlogan";
 import { Button } from "#/components/Button";
 import { Stack } from "#/components/Layout";
+import { openLogOutModal } from "#/components/LogOutModal";
 import { Body, Heading, MainTitle, Subtext } from "#/components/Typography";
 import { MAX_APP_CONTENT_WIDTH } from "#/constants";
-import { logout, useIsAuthenticated } from "#/contexts/auth";
+import { useIsAuthenticated } from "#/contexts/auth";
 
 export const Home = () => {
   const isAuthenticated = useIsAuthenticated();
@@ -14,7 +15,7 @@ export const Home = () => {
       <Stack css={{ p: "$6", width: "100%", maxWidth: MAX_APP_CONTENT_WIDTH, gap: "$9" }}>
         <Heading css={{ alignSelf: "flex-end", button: { color: "$link" } }}>
           {isAuthenticated ? (
-            <button onClick={logout}>log out</button>
+            <button onClick={() => openLogOutModal()}>log out</button>
           ) : (
             <Link href="/login">log in</Link>
           )}
