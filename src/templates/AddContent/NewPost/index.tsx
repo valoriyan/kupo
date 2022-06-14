@@ -4,13 +4,13 @@ import { CaptionTextArea } from "#/components/CaptionTextArea";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
 import { Flex, Stack } from "#/components/Layout";
+import { MediaUpload } from "#/components/MediaUpload";
 import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 import { AdditionalScreen } from "..";
 import { useFormState } from "../FormContext";
-import { MediaUpload } from "./MediaUpload";
 
 export interface NewPostProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
@@ -18,9 +18,11 @@ export interface NewPostProps {
 
 export const NewPost = (props: NewPostProps) => {
   const {
+    mediaFiles,
+    addMedia,
+    getMediaActions,
     caption,
     setCaption,
-    mediaFiles,
     hashTags,
     setHashTags,
     expirationDate,
@@ -35,7 +37,12 @@ export const NewPost = (props: NewPostProps) => {
       <Wrapper>
         <Stack>
           <SectionWrapper>
-            <MediaUpload setAdditionalScreen={props.setAdditionalScreen} />
+            <MediaUpload
+              mediaFiles={mediaFiles}
+              addMedia={addMedia}
+              getMediaActions={getMediaActions}
+              setAdditionalScreen={props.setAdditionalScreen}
+            />
           </SectionWrapper>
           <SectionWrapper>
             <CaptionTextArea caption={caption} setCaption={setCaption} />

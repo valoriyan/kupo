@@ -13,6 +13,7 @@ import { SessionStorage } from "#/utils/storage";
 import { ProfileBanner } from "./ProfileBanner";
 import { ProfileHeader } from "./ProfileHeader";
 import { UserPosts } from "./UserPosts";
+import { UserShopItems } from "./UserShopItems";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-user-profile";
 
@@ -61,7 +62,7 @@ export const UserProfile = ({ username }: { username: string }) => {
           {
             id: "shopItems",
             trigger: <ShoppingBagIcon />,
-            content: <UserPosts user={data} />,
+            content: <UserShopItems user={data} />,
           },
         ]}
       />

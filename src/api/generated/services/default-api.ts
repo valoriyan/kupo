@@ -115,6 +115,8 @@ import { InlineResponse200 } from "../types";
 // @ts-ignore
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
+import { PurchaseShopItemRequestBody } from "../types";
+// @ts-ignore
 import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
 import { RemoveUserFromWaitlistRequestBody } from "../types";
@@ -196,6 +198,8 @@ import { SecuredHTTPResponseGetUserProfileFailedGetUserProfileSuccess } from "..
 import { SecuredHTTPResponseGetUsersByIdsFailedGetUsersByIdsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetUsersByUsernamesFailedGetUsersByUsernamesSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess } from "../types";
 // @ts-ignore
@@ -530,46 +534,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} description
-     * @param {string} hashtags
-     * @param {string} title
-     * @param {string} price
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} collaboratorUserIds
      * @param {Array<any>} mediaFiles
+     * @param {string} title
+     * @param {string} description
+     * @param {string} price
+     * @param {string} hashtags
+     * @param {string} collaboratorUserIds
+     * @param {string} [scheduledPublicationTimestamp]
      * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createShopItem: async (
-      description: string,
-      hashtags: string,
-      title: string,
-      price: string,
-      scheduledPublicationTimestamp: string,
-      collaboratorUserIds: string,
       mediaFiles: Array<any>,
+      title: string,
+      description: string,
+      price: string,
+      hashtags: string,
+      collaboratorUserIds: string,
+      scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'description' is not null or undefined
-      assertParamExists("createShopItem", "description", description);
-      // verify required parameter 'hashtags' is not null or undefined
-      assertParamExists("createShopItem", "hashtags", hashtags);
-      // verify required parameter 'title' is not null or undefined
-      assertParamExists("createShopItem", "title", title);
-      // verify required parameter 'price' is not null or undefined
-      assertParamExists("createShopItem", "price", price);
-      // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
-      assertParamExists(
-        "createShopItem",
-        "scheduledPublicationTimestamp",
-        scheduledPublicationTimestamp,
-      );
-      // verify required parameter 'collaboratorUserIds' is not null or undefined
-      assertParamExists("createShopItem", "collaboratorUserIds", collaboratorUserIds);
       // verify required parameter 'mediaFiles' is not null or undefined
       assertParamExists("createShopItem", "mediaFiles", mediaFiles);
+      // verify required parameter 'title' is not null or undefined
+      assertParamExists("createShopItem", "title", title);
+      // verify required parameter 'description' is not null or undefined
+      assertParamExists("createShopItem", "description", description);
+      // verify required parameter 'price' is not null or undefined
+      assertParamExists("createShopItem", "price", price);
+      // verify required parameter 'hashtags' is not null or undefined
+      assertParamExists("createShopItem", "hashtags", hashtags);
+      // verify required parameter 'collaboratorUserIds' is not null or undefined
+      assertParamExists("createShopItem", "collaboratorUserIds", collaboratorUserIds);
       const localVarPath = `/shopitem/create`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -584,20 +582,30 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
 
-      if (description !== undefined) {
-        localVarFormParams.append("description", description as any);
-      }
-
-      if (hashtags !== undefined) {
-        localVarFormParams.append("hashtags", hashtags as any);
+      if (mediaFiles) {
+        mediaFiles.forEach((element) => {
+          localVarFormParams.append("mediaFiles", element as any);
+        });
       }
 
       if (title !== undefined) {
         localVarFormParams.append("title", title as any);
       }
 
+      if (description !== undefined) {
+        localVarFormParams.append("description", description as any);
+      }
+
       if (price !== undefined) {
         localVarFormParams.append("price", price as any);
+      }
+
+      if (hashtags !== undefined) {
+        localVarFormParams.append("hashtags", hashtags as any);
+      }
+
+      if (collaboratorUserIds !== undefined) {
+        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
       }
 
       if (scheduledPublicationTimestamp !== undefined) {
@@ -605,15 +613,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
           "scheduledPublicationTimestamp",
           scheduledPublicationTimestamp as any,
         );
-      }
-
-      if (collaboratorUserIds !== undefined) {
-        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
-      }
-      if (mediaFiles) {
-        mediaFiles.forEach((element) => {
-          localVarFormParams.append("mediaFiles", element as any);
-        });
       }
 
       if (expirationTimestamp !== undefined) {
@@ -2104,6 +2103,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {PurchaseShopItemRequestBody} purchaseShopItemRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchaseShopItem: async (
+      purchaseShopItemRequestBody: PurchaseShopItemRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'purchaseShopItemRequestBody' is not null or undefined
+      assertParamExists(
+        "purchaseShopItem",
+        "purchaseShopItemRequestBody",
+        purchaseShopItemRequestBody,
+      );
+      const localVarPath = `/shopitem/purchaseShopItem`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        purchaseShopItemRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3402,25 +3450,25 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} description
-     * @param {string} hashtags
-     * @param {string} title
-     * @param {string} price
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} collaboratorUserIds
      * @param {Array<any>} mediaFiles
+     * @param {string} title
+     * @param {string} description
+     * @param {string} price
+     * @param {string} hashtags
+     * @param {string} collaboratorUserIds
+     * @param {string} [scheduledPublicationTimestamp]
      * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createShopItem(
-      description: string,
-      hashtags: string,
-      title: string,
-      price: string,
-      scheduledPublicationTimestamp: string,
-      collaboratorUserIds: string,
       mediaFiles: Array<any>,
+      title: string,
+      description: string,
+      price: string,
+      hashtags: string,
+      collaboratorUserIds: string,
+      scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options?: any,
     ): Promise<
@@ -3430,13 +3478,13 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
-        description,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        collaboratorUserIds,
         mediaFiles,
+        title,
+        description,
+        price,
+        hashtags,
+        collaboratorUserIds,
+        scheduledPublicationTimestamp,
         expirationTimestamp,
         options,
       );
@@ -4246,6 +4294,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {PurchaseShopItemRequestBody} purchaseShopItemRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async purchaseShopItem(
+      purchaseShopItemRequestBody: PurchaseShopItemRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.purchaseShopItem(
+        purchaseShopItemRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4965,37 +5039,37 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} description
-     * @param {string} hashtags
-     * @param {string} title
-     * @param {string} price
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} collaboratorUserIds
      * @param {Array<any>} mediaFiles
+     * @param {string} title
+     * @param {string} description
+     * @param {string} price
+     * @param {string} hashtags
+     * @param {string} collaboratorUserIds
+     * @param {string} [scheduledPublicationTimestamp]
      * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createShopItem(
-      description: string,
-      hashtags: string,
-      title: string,
-      price: string,
-      scheduledPublicationTimestamp: string,
-      collaboratorUserIds: string,
       mediaFiles: Array<any>,
+      title: string,
+      description: string,
+      price: string,
+      hashtags: string,
+      collaboratorUserIds: string,
+      scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess> {
       return localVarFp
         .createShopItem(
-          description,
-          hashtags,
-          title,
-          price,
-          scheduledPublicationTimestamp,
-          collaboratorUserIds,
           mediaFiles,
+          title,
+          description,
+          price,
+          hashtags,
+          collaboratorUserIds,
+          scheduledPublicationTimestamp,
           expirationTimestamp,
           options,
         )
@@ -5435,6 +5509,20 @@ export const DefaultApiFactory = function (
      */
     logout(options?: any): AxiosPromise<void> {
       return localVarFp.logout(options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {PurchaseShopItemRequestBody} purchaseShopItemRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchaseShopItem(
+      purchaseShopItemRequestBody: PurchaseShopItemRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess> {
+      return localVarFp
+        .purchaseShopItem(purchaseShopItemRequestBody, options)
+        .then((request) => request(axios, basePath));
     },
     /**
      *
@@ -5891,38 +5979,38 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} description
-   * @param {string} hashtags
-   * @param {string} title
-   * @param {string} price
-   * @param {string} scheduledPublicationTimestamp
-   * @param {string} collaboratorUserIds
    * @param {Array<any>} mediaFiles
+   * @param {string} title
+   * @param {string} description
+   * @param {string} price
+   * @param {string} hashtags
+   * @param {string} collaboratorUserIds
+   * @param {string} [scheduledPublicationTimestamp]
    * @param {string} [expirationTimestamp]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createShopItem(
-    description: string,
-    hashtags: string,
-    title: string,
-    price: string,
-    scheduledPublicationTimestamp: string,
-    collaboratorUserIds: string,
     mediaFiles: Array<any>,
+    title: string,
+    description: string,
+    price: string,
+    hashtags: string,
+    collaboratorUserIds: string,
+    scheduledPublicationTimestamp?: string,
     expirationTimestamp?: string,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
       .createShopItem(
-        description,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        collaboratorUserIds,
         mediaFiles,
+        title,
+        description,
+        price,
+        hashtags,
+        collaboratorUserIds,
+        scheduledPublicationTimestamp,
         expirationTimestamp,
         options,
       )
@@ -6402,6 +6490,22 @@ export class DefaultApi extends BaseAPI {
   public logout(options?: any) {
     return DefaultApiFp(this.configuration)
       .logout(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {PurchaseShopItemRequestBody} purchaseShopItemRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public purchaseShopItem(
+    purchaseShopItemRequestBody: PurchaseShopItemRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .purchaseShopItem(purchaseShopItemRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

@@ -11,6 +11,7 @@ export enum CacheKeys {
   UserByUsername = "UserByUsername",
   ClientProfile = "ClientProfile",
   UserPostPages = "UserPostPages",
+  UserShopItemPages = "UserShopItemPages",
   ChatRoomsPages = "ChatRoomsPages",
   ChatRoomMessagePages = "ChatRoomMessagePages",
   OldNotificationPages = "OldNotificationPages",

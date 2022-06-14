@@ -13,24 +13,23 @@
  */
 
 import { AuthFailed } from "./auth-failed";
-import { CreateShopItemFailed } from "./create-shop-item-failed";
 
 /**
  *
  * @export
- * @interface SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess
+ * @interface SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess
  */
-export interface SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess {
+export interface SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess {
   /**
    *
-   * @type {CreateShopItemFailed | AuthFailed}
-   * @memberof SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess
+   * @type {object | AuthFailed}
+   * @memberof SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess
    */
-  error?: CreateShopItemFailed | AuthFailed;
+  error?: object | AuthFailed;
   /**
    *
    * @type {object}
-   * @memberof SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess
+   * @memberof SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess
    */
   success?: object;
 }

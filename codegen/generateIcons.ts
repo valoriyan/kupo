@@ -20,6 +20,7 @@ const ICONS_TO_GENERATE = [
   "close",
   "comment",
   "duplicate",
+  "eye",
   "file-document",
   "heart",
   "home",

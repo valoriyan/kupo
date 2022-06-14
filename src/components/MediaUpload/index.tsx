@@ -2,17 +2,32 @@ import { ChangeEvent } from "react";
 import { HiddenInput } from "#/components/HiddenInput";
 import { DuplicateIcon } from "#/components/Icons";
 import { styled } from "#/styling";
-import { PreviewImage, MediaPreview } from "../../MediaPreview";
-import { useFormState } from "../../FormContext";
-import { AdditionalScreen } from "../..";
+import { AdditionalScreen } from "#/templates/AddContent";
+import { Media } from "#/templates/AddContent/FormContext";
+import { MediaPreview, PreviewImage } from "#/templates/AddContent/MediaPreview";
+import { EyeIcon } from "../Icons/generated/EyeIcon";
+import { Flex, Stack } from "../Layout";
+import { Heading } from "../Typography";
 
 export interface MediaUploadProps {
+  mediaFiles: Media[];
+  addMedia: (media: Media) => void;
+  getMediaActions: (media: Media) => {
+    moveUp: () => void;
+    moveDown: () => void;
+    delete: () => void;
+  };
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
+  heading?: { label: string; Icon: typeof EyeIcon };
 }
 
-export const MediaUpload = (props: MediaUploadProps) => {
-  const { mediaFiles, addMedia, getMediaActions } = useFormState();
-
+export const MediaUpload = ({
+  mediaFiles,
+  addMedia,
+  getMediaActions,
+  setAdditionalScreen,
+  heading,
+}: MediaUploadProps) => {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.currentTarget;
     if (!files?.length) return;
@@ -33,7 +48,7 @@ export const MediaUpload = (props: MediaUploadProps) => {
   );
 
   const onImageClick = (id?: string) => {
-    props.setAdditionalScreen({
+    setAdditionalScreen({
       node: <MediaPreview initialId={id} />,
       heading: "New Post",
     });
@@ -41,7 +56,7 @@ export const MediaUpload = (props: MediaUploadProps) => {
 
   const additionalImagesCount = mediaFiles.length - 3;
 
-  return (
+  const mediaUploadNode = (
     <ImageGrid>
       {mediaFiles.length < 3 ? (
         <>
@@ -90,6 +105,18 @@ export const MediaUpload = (props: MediaUploadProps) => {
         </>
       )}
     </ImageGrid>
+  );
+
+  return heading ? (
+    <Stack css={{ gap: "$4" }}>
+      <Flex css={{ gap: "$4", alignItems: "center" }}>
+        <Heading css={{ fontWeight: "bold" }}>{heading.label}</Heading>
+        <heading.Icon height={20} width={20} />
+      </Flex>
+      {mediaUploadNode}
+    </Stack>
+  ) : (
+    mediaUploadNode
   );
 };
 

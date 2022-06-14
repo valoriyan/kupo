@@ -13,6 +13,7 @@ export * from "./generated/ChevronUpRIcon";
 export * from "./generated/CloseIcon";
 export * from "./generated/CommentIcon";
 export * from "./generated/DuplicateIcon";
+export * from "./generated/EyeIcon";
 export * from "./generated/FileDocumentIcon";
 export * from "./generated/HeartIcon";
 export * from "./generated/HomeIcon";

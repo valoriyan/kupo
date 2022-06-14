@@ -14,7 +14,7 @@ export const Initial = (props: InitialProps) => {
       <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.Post)}>
         <DuplicateIcon /> New Post
       </NewItemButton>
-      <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.Post)}>
+      <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.ShopItem)}>
         <TagIcon /> New Shop Item
       </NewItemButton>
       {/* <NewItemButton
