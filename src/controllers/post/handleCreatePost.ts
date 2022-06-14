@@ -156,7 +156,7 @@ export async function handleCreatePost({
     };
   } catch (error) {
     console.log("error", error);
-    controller.setStatus(401);
+    controller.setStatus(500);
     return { error: { reason: CreatePostFailedReason.UnknownCause } };
   }
 }

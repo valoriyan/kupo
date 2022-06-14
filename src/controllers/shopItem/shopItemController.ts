@@ -38,7 +38,12 @@ import {
   handleGetShopItemsByUsername,
 } from "./handleGetShopItems";
 import { PaymentProcessingService } from "../../services/paymentProcessingService";
-import { handlePurchaseShopItem, PurchaseShopItemFailed, PurchaseShopItemRequestBody, PurchaseShopItemSuccess } from "./handlePurchaseShopItem";
+import {
+  handlePurchaseShopItem,
+  PurchaseShopItemFailed,
+  PurchaseShopItemRequestBody,
+  PurchaseShopItemSuccess,
+} from "./handlePurchaseShopItem";
 
 @injectable()
 @Route("shopitem")
@@ -58,27 +63,33 @@ export class ShopItemController extends Controller {
   @Post("create")
   public async createShopItem(
     @Request() request: express.Request,
-    @FormField() description: string,
-    @FormField() hashtags: string[],
-    @FormField() title: string,
-    @FormField() price: number,
-    @FormField() scheduledPublicationTimestamp: number,
-    @FormField() collaboratorUserIds: string[],
     @UploadedFiles() mediaFiles: Express.Multer.File[],
-    @FormField() expirationTimestamp?: number,
+    @FormField() title: string,
+    @FormField() description: string,
+    // @FormField() only supports strings so we'll have to do some parsing
+    // for the following fields
+    @FormField() price: string, // number
+    @FormField() hashtags: string, // string[]
+    @FormField() collaboratorUserIds: string, // string[]
+    @FormField() scheduledPublicationTimestamp?: string, // number
+    @FormField() expirationTimestamp?: string, // number
   ): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
     return await handleCreateShopItem({
       controller: this,
       request,
       requestBody: {
-        description,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        collaboratorUserIds,
         mediaFiles,
+        title,
+        description,
+        price: parseInt(price, 10),
+        hashtags: JSON.parse(hashtags),
+        collaboratorUserIds: JSON.parse(collaboratorUserIds),
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp
+          ? parseInt(scheduledPublicationTimestamp, 10)
+          : undefined,
+        expirationTimestamp: expirationTimestamp
+          ? parseInt(expirationTimestamp, 10)
+          : undefined,
       },
     });
   }
