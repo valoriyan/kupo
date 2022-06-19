@@ -29,7 +29,9 @@ export const UserPosts = ({ user }: UserPostsProps) => {
 
   const posts = data.pages.flatMap((page) => page.posts);
 
-  return (
+  return posts.length === 0 ? (
+    <ErrorMessage>No Posts Yet</ErrorMessage>
+  ) : (
     <InfiniteScrollArea
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}

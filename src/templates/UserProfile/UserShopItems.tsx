@@ -44,7 +44,9 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
       isSavedByClient: false,
     }));
 
-  return (
+  return shopItems.length === 0 ? (
+    <ErrorMessage>No Shop Items Yet</ErrorMessage>
+  ) : (
     <InfiniteScrollArea
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}

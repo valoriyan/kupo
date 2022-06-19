@@ -52,7 +52,7 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
             }}
           >
             {isOwnProfile ? (
-              <Link href="/edit-profile" passHref>
+              <Link href="/settings/profile" passHref>
                 <Button
                   as="a"
                   size="sm"
