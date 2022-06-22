@@ -1,8 +1,8 @@
 import express from "express";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "../post/models";
-import { getEncodedCursorOfNextPageOfSequentialItems } from "../post/pagination/utilities";
-import { constructRenderablePostsFromParts } from "../post/utilities";
+import { RenderablePost } from "../publishedItem/post/models";
+import { getEncodedCursorOfNextPageOfSequentialItems } from "../publishedItem/post/pagination/utilities";
+import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { SecuredHTTPResponse } from "./../../types/httpResponse";
 import { SavedItemType } from "./models";
@@ -59,16 +59,16 @@ export async function handleGetPageOfSavedPosts({
     .map(({ item_id }) => item_id);
 
   const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
-        postIds,
+        ids: postIds,
       },
     );
 
   const posts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: unrenderablePostsWithoutElementsOrHashtags,
+    uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
     clientUserId,
   });
 

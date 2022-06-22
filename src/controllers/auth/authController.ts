@@ -32,12 +32,6 @@ import {
   handleElevateUserToAdmin,
 } from "./handleElevateUserToAdmin";
 import {
-  handleRemoveUserFromWaitlist,
-  RemoveUserFromWaitlistFailed,
-  RemoveUserFromWaitlistRequestBody,
-  RemoveUserFromWaitlistSuccess,
-} from "./handleRemoveUserFromWaitlist";
-import {
   CheckResetPasswordTokenValidityFailed,
   CheckResetPasswordTokenValidityRequestBody,
   CheckResetPasswordTokenValiditySuccess,
@@ -49,6 +43,7 @@ import {
   ResetPasswordRequestBody,
   ResetPasswordSuccess,
 } from "./passwordReset/handleResetPassword";
+import { PaymentProcessingService } from "../../services/paymentProcessingService";
 
 @injectable()
 @Route("auth")
@@ -56,6 +51,7 @@ export class AuthController extends Controller {
   constructor(
     public emailService: EmailService,
     public databaseService: DatabaseService,
+    public paymentProcessingService: PaymentProcessingService,
   ) {
     super();
   }
@@ -155,20 +151,6 @@ export class AuthController extends Controller {
     @Body() requestBody: ElevateUserToAdminRequestBody,
   ): Promise<SecuredHTTPResponse<ElevateUserToAdminFailed, ElevateUserToAdminSuccess>> {
     return await handleElevateUserToAdmin({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
-  @Post("removeUserFromWaitlist")
-  public async removeUserFromWaitlist(
-    @Request() request: express.Request,
-    @Body() requestBody: RemoveUserFromWaitlistRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<RemoveUserFromWaitlistFailed, RemoveUserFromWaitlistSuccess>
-  > {
-    return await handleRemoveUserFromWaitlist({
       controller: this,
       request,
       requestBody,

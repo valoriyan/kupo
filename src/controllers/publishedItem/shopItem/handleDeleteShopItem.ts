@@ -1,6 +1,6 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -10,7 +10,7 @@ export interface DeleteShopItemFailed {}
 export interface DeleteShopItemSuccess {}
 
 export interface DeleteShopItemRequestBody {
-  shopItemId: string;
+  publishedItemId: string;
 }
 
 export async function handleDeleteShopItem({
@@ -22,22 +22,22 @@ export async function handleDeleteShopItem({
   request: express.Request;
   requestBody: DeleteShopItemRequestBody;
 }): Promise<SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>> {
-  const { shopItemId } = requestBody;
+  const { publishedItemId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
     {
-      shopItemId: requestBody.shopItemId,
+      publishedItemId,
       authorUserId: clientUserId,
     },
   );
 
   const blobPointers =
-    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByShopItemId(
+    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByPublishedItemId(
       {
-        shopItemId,
+        publishedItemId,
       },
     );
 

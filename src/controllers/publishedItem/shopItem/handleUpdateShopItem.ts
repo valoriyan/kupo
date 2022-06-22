@@ -1,6 +1,6 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -16,7 +16,7 @@ export interface UpdateShopItemFailed {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
-  shopItemId: string;
+  publishedItemId: string;
   description?: string;
   title?: string;
   price?: number;
@@ -40,7 +40,7 @@ export async function handleUpdateShopItem({
   if (error) return error;
 
   const {
-    shopItemId,
+    publishedItemId,
     description,
     title,
     price,
@@ -48,12 +48,14 @@ export async function handleUpdateShopItem({
     expirationTimestamp,
   } = requestBody;
 
-  const unrenderableShopItemPreview =
-    await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByShopItemId(
-      { shopItemId },
+  const uncompiledBasePublishedItem =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: publishedItemId },
     );
 
-  if (unrenderableShopItemPreview.authorUserId !== clientUserId) {
+
+
+  if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
     return {
       error: {
         reason: UpdateShopItemFailedReason.IllegalAccess,
@@ -61,9 +63,9 @@ export async function handleUpdateShopItem({
     };
   }
 
-  await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByShopItemId(
+  await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByPublishedItemId(
     {
-      shopItemId: shopItemId,
+      publishedItemId: uncompiledBasePublishedItem.id,
       description: description,
       title: title,
       price: price,

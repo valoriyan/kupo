@@ -1,7 +1,7 @@
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
 import { constructRenderablePostFromParts } from "./utilities";
 
@@ -36,14 +36,14 @@ export async function handleGetPostById({
   if (error) return error;
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: postId },
     );
 
   const post = await constructRenderablePostFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    unrenderablePostWithoutElementsOrHashtags,
+    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
     clientUserId,
   });
 

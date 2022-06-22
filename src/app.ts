@@ -11,6 +11,9 @@ export const app = express();
 
 const origin = getEnvironmentVariable("FRONTEND_BASE_URL");
 
+// https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
+app.set('trust proxy', true);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 app.use(cookieParser());

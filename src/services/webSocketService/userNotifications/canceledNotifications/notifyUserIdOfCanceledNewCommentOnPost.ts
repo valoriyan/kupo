@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { UnrenderableCanceledCommentOnPostNotification } from "src/controllers/notification/models/unrenderableCanceledUserNotifications";
+import { UnrenderableCanceledCommentOnPostNotification } from "../../../../controllers/notification/models/unrenderableCanceledUserNotifications";
 import { NOTIFICATION_EVENTS } from "../../eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "../../utilities";
 

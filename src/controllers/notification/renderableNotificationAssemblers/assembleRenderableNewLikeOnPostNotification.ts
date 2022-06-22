@@ -1,7 +1,7 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderablePostFromParts } from "../../post/utilities";
+import { constructRenderablePostFromParts } from "../../publishedItem/post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewLikeOnPostNotification } from "../models/renderableUserNotifications";
@@ -29,14 +29,14 @@ export async function assembleRenderableNewLikeOnPostNotification({
   );
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({
-      postId,
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById({
+      id: postId,
     });
 
   const post = await constructRenderablePostFromParts({
     blobStorageService,
     databaseService,
-    unrenderablePostWithoutElementsOrHashtags,
+    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
     clientUserId,
   });
 

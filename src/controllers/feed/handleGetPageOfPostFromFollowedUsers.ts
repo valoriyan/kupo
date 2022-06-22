@@ -1,8 +1,8 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "../post/models";
-import { constructRenderablePostsFromParts } from "../post/utilities";
+import { RenderablePost } from "../publishedItem/post/models";
+import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
@@ -51,7 +51,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
     );
 
   const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserIds(
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCreatorUserIds(
       {
         creatorUserIds: [...userIdsBeingFollowed, clientUserId],
         beforeTimestamp: cursor
@@ -64,7 +64,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: unrenderablePostsWithoutElementsOrHashtags,
+    uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
     clientUserId,
   });
 

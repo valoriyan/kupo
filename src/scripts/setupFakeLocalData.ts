@@ -15,6 +15,7 @@ async function run() {
     username: "richard",
     encryptedPassword: "adfohfhallk1323ban9323",
     creationTimestamp: Date.now(),
+    paymentProcessorCustomerId: "789",
   });
 
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
@@ -23,6 +24,7 @@ async function run() {
     username: "gloria",
     encryptedPassword: "a;jfdsaidfsioadfsadfh",
     creationTimestamp: Date.now(),
+    paymentProcessorCustomerId: "456",
   });
 
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
@@ -31,6 +33,7 @@ async function run() {
     username: "jay",
     encryptedPassword: "a;adfadkadjhluiehaKSdf",
     creationTimestamp: Date.now(),
+    paymentProcessorCustomerId: "123",
   });
 }
 

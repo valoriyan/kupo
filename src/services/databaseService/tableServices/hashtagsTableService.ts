@@ -5,8 +5,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 
 interface DBHashtag {
   hashtag: string;
-  post_id?: string;
-  shop_item_id?: string;
+  published_item_id: string;
 }
 
 export class HashtagsTableService extends TableService {
@@ -22,10 +21,7 @@ export class HashtagsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         hashtag VARCHAR(64) NOT NULL,
 
-        post_id VARCHAR(64),
-        shop_item_id VARCHAR(64),
-
-        CHECK ((post_id IS NULL) <> (shop_item_id IS NULL))
+        published_item_id VARCHAR(64) NOT NULL
       )
       ;
     `;
@@ -37,14 +33,13 @@ export class HashtagsTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async addHashtagsToPost({
+  public async addHashtagsToPublishedItem({
     hashtags,
-    postId,
+    publishedItemId,
   }: {
     hashtags: string[];
-    postId: string;
+    publishedItemId: string;
   }): Promise<void> {
-    console.log(`${this.tableName} | addHashtagsToPost`);
 
     if (hashtags.length === 0) {
       return;
@@ -53,37 +48,8 @@ export class HashtagsTableService extends TableService {
     const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
       { field: "hashtag", value: hashtag },
       {
-        field: "post_id",
-        value: `${postId}`,
-      },
-    ]);
-
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues,
-      tableName: this.tableName,
-    });
-
-    await this.datastorePool.query<DBHashtag>(query);
-  }
-
-  public async addHashtagsToShopItem({
-    hashtags,
-    shopItemId,
-  }: {
-    hashtags: string[];
-    shopItemId: string;
-  }): Promise<void> {
-    console.log(`${this.tableName} | addHashtagsToShopItem`);
-
-    if (hashtags.length === 0) {
-      return;
-    }
-
-    const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
-      { field: "hashtag", value: hashtag },
-      {
-        field: "shop_item_id",
-        value: `${shopItemId}`,
+        field: "published_item_id",
+        value: `${publishedItemId}`,
       },
     ]);
 
@@ -99,7 +65,7 @@ export class HashtagsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostIdsWithHashtag({
+  public async getPublishedItemsWithHashtag({
     hashtag,
   }: {
     hashtag: string;
@@ -112,8 +78,6 @@ export class HashtagsTableService extends TableService {
           ${this.tableName}
         WHERE
             hashtag = $1
-          AND
-            post_id IS NOT NULL
         ;
       `,
       values: [hashtag],
@@ -121,12 +85,11 @@ export class HashtagsTableService extends TableService {
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const postIds = response.rows.map((row) => row.post_id!);
-    return postIds;
+    const publishedItemIds = response.rows.map((row) => row.published_item_id);
+    return publishedItemIds;
   }
 
-  public async getPostIdsWithOneOfHashtags({
+  public async getPublishedItemIdsWithOneOfHashtags({
     hashtagSubstring,
   }: {
     hashtagSubstring: string;
@@ -139,8 +102,6 @@ export class HashtagsTableService extends TableService {
           ${this.tableName}
         WHERE
             hashtag LIKE CONCAT('%', $1::text, '%')
-          AND
-            post_id IS NOT NULL
         ;
       `,
       values: [hashtagSubstring],
@@ -148,12 +109,11 @@ export class HashtagsTableService extends TableService {
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const postIds = response.rows.map((row) => row.post_id!);
-    return postIds;
+    const publishedItemIds = response.rows.map((row) => row.published_item_id);
+    return publishedItemIds;
   }
 
-  public async getHashtagsForPostId({ postId }: { postId: string }): Promise<string[]> {
+  public async getHashtagsForPublishedItemId({ publishedItemId }: { publishedItemId: string }): Promise<string[]> {
     const query = {
       text: `
         SELECT
@@ -161,34 +121,10 @@ export class HashtagsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          post_id = $1
+        published_item_id = $1
         ;
       `,
-      values: [postId],
-    };
-
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
-
-    const hashtags = response.rows.map((row) => row.hashtag);
-    return hashtags;
-  }
-
-  public async getHashtagsForShopItemId({
-    shopItemId,
-  }: {
-    shopItemId: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-        shop_item_id = $1
-        ;
-      `,
-      values: [shopItemId],
+      values: [publishedItemId],
     };
 
     const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);

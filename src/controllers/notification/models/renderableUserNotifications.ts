@@ -1,5 +1,5 @@
 import { BaseUserNotification } from ".";
-import { RenderablePost } from "../../post/models";
+import { RenderablePost } from "../../publishedItem/post/models";
 import { RenderablePostComment } from "../../postComment/models";
 import { RenderableUser } from "../../user/models";
 

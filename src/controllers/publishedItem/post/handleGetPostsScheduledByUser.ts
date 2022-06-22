@@ -1,7 +1,7 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost, UnrenderablePostWithoutElementsOrHashtags } from "./models";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
+import { RenderablePost } from "./models";
 import { PostController } from "./postController";
 import { constructRenderablePostsFromParts } from "./utilities";
 
@@ -35,8 +35,8 @@ export async function handleGetPostsScheduledByUser({
 
   const { rangeStartTimestamp, rangeEndTimestamp } = requestBody;
 
-  const unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[] =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
+  const uncompiledBasePublishedItem =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
       {
         creatorUserId: clientUserId,
         rangeEndTimestamp,
@@ -47,7 +47,7 @@ export async function handleGetPostsScheduledByUser({
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: unrenderablePostsWithoutRenderableDatesTimesElementsOrHashtags,
+    uncompiledBasePublishedItems: uncompiledBasePublishedItem,
     clientUserId,
   });
 

@@ -42,8 +42,8 @@ export async function handleRemoveUserLikeFromPost({
     );
 
   const unrenderablePost =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: postId },
     );
 
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(

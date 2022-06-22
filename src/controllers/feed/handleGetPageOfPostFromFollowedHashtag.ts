@@ -1,9 +1,9 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "../post/models";
-import { getPageOfPostsFromAllPosts } from "../post/pagination/utilities";
-import { constructRenderablePostsFromParts } from "../post/utilities";
+import { RenderablePost } from "../publishedItem/post/models";
+import { getPageOfPostsFromAllPosts } from "../publishedItem/post/pagination/utilities";
+import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
@@ -51,16 +51,16 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     : 999999999999999;
 
   const postIdsWithHashtag =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithHashtag(
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemsWithHashtag(
       { hashtag: hashtag },
     );
 
   const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
-        postIds: postIdsWithHashtag,
+        ids: postIdsWithHashtag,
         limit: pageSize,
-        getPostsBeforeTimestamp: pageTimestamp,
+        getPublishedItemsBeforeTimestamp: pageTimestamp,
       },
     );
 
@@ -73,7 +73,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: filteredUnrenderablePostsWithoutElements,
+    uncompiledBasePublishedItems: filteredUnrenderablePostsWithoutElements,
     clientUserId,
   });
 

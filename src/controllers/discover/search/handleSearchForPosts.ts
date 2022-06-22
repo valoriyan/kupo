@@ -1,11 +1,11 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { checkAuthorization } from "../../auth/utilities";
-import { RenderablePost } from "../../post/models";
+import { RenderablePost } from "../../publishedItem/post/models";
 import {
   constructRenderablePostsFromParts,
-  mergeArraysOfUnrenderablePostWithoutElementsOrHashtags,
-} from "../../post/utilities";
+  mergeArraysOfUncompiledBasePublishedItem,
+} from "../../publishedItem/post/utilities";
 import { DiscoverController } from "../discoverController";
 
 export interface SearchForPostsRequestBody {
@@ -43,22 +43,22 @@ export async function handleSearchForPosts({
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const postIdsWithPossibleHashtags =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPostIdsWithOneOfHashtags(
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemIdsWithOneOfHashtags(
       { hashtagSubstring: lowercaseTrimmedQuery },
     );
 
   const unrenderableHashtagMatchingPosts =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByPostIds(
-      { postIds: postIdsWithPossibleHashtags },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
+      { ids: postIdsWithPossibleHashtags },
     );
 
   const unrenderableCaptionMatchingPosts =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCaptionMatchingSubstring(
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring(
       { captionSubstring: lowercaseTrimmedQuery },
     );
 
   const unrenderablePostsWithoutElementsOrHashtags =
-    mergeArraysOfUnrenderablePostWithoutElementsOrHashtags({
+    mergeArraysOfUncompiledBasePublishedItem({
       arrays: [unrenderableHashtagMatchingPosts, unrenderableCaptionMatchingPosts],
     });
 
@@ -79,7 +79,7 @@ export async function handleSearchForPosts({
   const renderablePosts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: pageOfUnrenderablePosts,
+    uncompiledBasePublishedItems: pageOfUnrenderablePosts,
     clientUserId,
   });
 

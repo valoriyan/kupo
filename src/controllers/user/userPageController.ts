@@ -62,6 +62,7 @@ import {
   UpdateUserBackgroundImageFailed,
   UpdateUserBackgroundImageSuccess,
 } from "./handleUpdateUserBackgroundImage";
+import { PaymentProcessingService } from "../../services/paymentProcessingService";
 
 @injectable()
 @Route("user")
@@ -69,6 +70,7 @@ export class UserPageController extends Controller {
   constructor(
     public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
+    public paymentProcessingService: PaymentProcessingService,
   ) {
     super();
   }

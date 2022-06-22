@@ -56,9 +56,10 @@ export async function handleRegisterUser({
     ];
 
     const isAdmin = INSANELY_HARDCODED_ADMIN_EMAILS.includes(email);
-    const isWaitlisted = !!isAdmin ? false : true;
 
     const lowerCaseUsername = username.toLowerCase();
+
+    const paymentProcessorCustomerId = await controller.paymentProcessingService.registerCustomer({customerEmail: email});
 
     await controller.databaseService.tableNameToServicesMap.usersTableService.createUser({
       userId,
@@ -67,7 +68,7 @@ export async function handleRegisterUser({
       encryptedPassword,
       creationTimestamp: now,
       isAdmin,
-      isWaitlisted,
+      paymentProcessorCustomerId,
     });
 
     const newAccessTokenResponse = grantNewAccessToken({

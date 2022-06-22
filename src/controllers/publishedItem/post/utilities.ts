@@ -1,33 +1,31 @@
-import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
-import { DatabaseService } from "../../services/databaseService";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { DatabaseService } from "../../../services/databaseService";
 import {
-  RenderablePost,
-  SharedPostType,
-  UnrenderablePost,
-  UnrenderablePostWithoutElementsOrHashtags,
+  RootRenderablePost,
 } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
-import { SavedItemType } from "../userInteraction/models";
-import { MediaElement } from "../models";
+import { SavedItemType } from "../../userInteraction/models";
+import { MediaElement } from "../../models";
+import { PublishedItemType, UncompiledBasePublishedItem } from "../models";
 
 export async function constructRenderablePostsFromParts({
   blobStorageService,
   databaseService,
-  posts,
+  uncompiledBasePublishedItems,
   clientUserId,
 }: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  posts: UnrenderablePostWithoutElementsOrHashtags[];
+  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   clientUserId: string | undefined;
-}): Promise<RenderablePost[]> {
+}): Promise<RootRenderablePost[]> {
   const renderablePosts = await BluebirdPromise.map(
-    posts,
-    async (unrenderablePostWithoutElementsOrHashtags) =>
+    uncompiledBasePublishedItems,
+    async (uncompiledBasePublishedItem) =>
       await constructRenderablePostFromParts({
         blobStorageService,
         databaseService,
-        unrenderablePostWithoutElementsOrHashtags,
+        uncompiledBasePublishedItem,
         clientUserId,
       }),
   );
@@ -38,76 +36,28 @@ export async function constructRenderablePostsFromParts({
 export async function constructRenderablePostFromParts({
   blobStorageService,
   databaseService,
-  unrenderablePostWithoutElementsOrHashtags,
+  uncompiledBasePublishedItem,
   clientUserId,
 }: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  unrenderablePostWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags;
+  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
-}): Promise<RenderablePost> {
-  const { sharedPostId } = unrenderablePostWithoutElementsOrHashtags;
+}): Promise<RootRenderablePost> {
 
-  const unrenderableSharedPostWithoutElementsOrHashtags = !!sharedPostId
-    ? await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({
-        postId: sharedPostId,
-      })
-    : undefined;
-
-  const sharedPost = !!unrenderableSharedPostWithoutElementsOrHashtags
-    ? await assemblePostComponents({
-        blobStorageService,
-        databaseService,
-        unrenderablePostWithoutElementsOrHashtags:
-          unrenderableSharedPostWithoutElementsOrHashtags,
-        clientUserId,
-      })
-    : undefined;
-
-  const post = await assemblePostComponents({
-    blobStorageService,
-    databaseService,
-    unrenderablePostWithoutElementsOrHashtags,
-    clientUserId,
-  });
-
-  const shared = !!sharedPost
-    ? {
-        type: SharedPostType.post,
-        post: sharedPost,
-      }
-    : undefined;
-
-  return {
-    ...post,
-    shared,
-  };
-}
-
-async function assemblePostComponents({
-  blobStorageService,
-  databaseService,
-  unrenderablePostWithoutElementsOrHashtags,
-  clientUserId,
-}: {
-  blobStorageService: BlobStorageServiceInterface;
-  databaseService: DatabaseService;
-  unrenderablePostWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags;
-  clientUserId: string | undefined;
-}): Promise<UnrenderablePost> {
   const {
-    postId,
+    id,
     creationTimestamp,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
-  } = unrenderablePostWithoutElementsOrHashtags;
+  } = uncompiledBasePublishedItem;
 
   const filedPostMediaElements =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
       {
-        postId: postId,
+        postId: id,
       },
     );
 
@@ -128,21 +78,21 @@ async function assemblePostComponents({
   );
 
   const hashtags =
-    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPostId(
-      { postId },
+    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
+      { publishedItemId: id },
     );
 
   const countOfLikesOnPost =
     await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
       {
-        postId,
+        postId: id,
       },
     );
 
   const countOfCommentsOnPost =
     await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
       {
-        postId,
+        postId: id,
       },
     );
 
@@ -151,7 +101,7 @@ async function assemblePostComponents({
     (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
       {
         userId: clientUserId,
-        postId,
+        postId: id,
       },
     ));
 
@@ -160,13 +110,14 @@ async function assemblePostComponents({
     (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId(
       {
         userId: clientUserId,
-        itemId: postId,
+        itemId: id,
         itemType: SavedItemType.post,
       },
     ));
 
   return {
-    postId,
+    id,
+    type: PublishedItemType.POST,
     creationTimestamp,
     authorUserId,
     caption,
@@ -182,22 +133,23 @@ async function assemblePostComponents({
     },
     isLikedByClient,
     isSavedByClient,
-  };
-}
+  };}
 
-export function mergeArraysOfUnrenderablePostWithoutElementsOrHashtags({
+
+
+export function mergeArraysOfUncompiledBasePublishedItem({
   arrays,
 }: {
-  arrays: UnrenderablePostWithoutElementsOrHashtags[][];
+  arrays: UncompiledBasePublishedItem[][];
 }) {
-  const mergedArray: UnrenderablePostWithoutElementsOrHashtags[] = [];
-  const setOfIncludedPostIds = new Set();
+  const mergedArray: UncompiledBasePublishedItem[] = [];
+  const setOfIncludedPublishedItemIds = new Set();
 
   arrays.forEach((array) => {
     array.forEach((element) => {
-      const { postId } = element;
-      if (!setOfIncludedPostIds.has(postId)) {
-        setOfIncludedPostIds.add(postId);
+      const { id } = element;
+      if (!setOfIncludedPublishedItemIds.has(id)) {
+        setOfIncludedPublishedItemIds.add(id);
         mergedArray.push(element);
       }
     });

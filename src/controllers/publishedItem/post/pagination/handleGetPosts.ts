@@ -1,12 +1,12 @@
 import express from "express";
 import { RenderablePost } from "../models";
 import { PostController } from "../postController";
-import { HTTPResponse } from "../../../types/httpResponse";
-import { getClientUserId } from "../../auth/utilities";
-import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
+import { HTTPResponse } from "../../../../types/httpResponse";
+import { getClientUserId } from "../../../auth/utilities";
+import { canUserViewUserContentByUserId } from "../../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
 import { constructRenderablePostsFromParts } from "../utilities";
-import { decodeTimestampCursor } from "../../../controllers/utilities/pagination";
+import { decodeTimestampCursor } from "../../../utilities/pagination";
 
 export interface GetPostsByUserIdRequestBody {
   userId: string;
@@ -94,19 +94,19 @@ export async function handleGetPostsByUserId({
   }
 
   const unrenderablePostsWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostsByCreatorUserId(
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId(
       {
-        creatorUserId: userId,
-        filterOutExpiredAndUnscheduledPosts: true,
+        authorUserId: userId,
+        filterOutExpiredAndUnscheduledPublishedItems: true,
         limit: pageSize,
-        getPostsBeforeTimestamp: pageTimestamp,
+        getPublishedItemsBeforeTimestamp: pageTimestamp,
       },
     );
 
   const posts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    posts: unrenderablePostsWithoutElementsOrHashtags,
+    uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
     clientUserId,
   });
 

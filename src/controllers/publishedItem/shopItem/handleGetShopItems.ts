@@ -1,12 +1,12 @@
 import express from "express";
-import { HTTPResponse } from "../../types/httpResponse";
-import { getClientUserId } from "../auth/utilities";
-import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
+import { HTTPResponse } from "../../../types/httpResponse";
+import { getClientUserId } from "../../auth/utilities";
+import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "../post/pagination/utilities";
-import { decodeTimestampCursor } from "../utilities/pagination";
-import { RenderableShopItemPreview } from "./models";
+import { decodeTimestampCursor } from "../../utilities/pagination";
+import { RenderableShopItem } from "./models";
 import { ShopItemController } from "./shopItemController";
-import { constructRenderableShopItemPreviewsFromParts } from "./utilities";
+import { constructRenderableShopItemsFromParts } from "./utilities";
 
 export interface GetShopItemsByUserIdRequestBody {
   userId: string;
@@ -21,7 +21,7 @@ export interface GetShopItemsByUsernameRequestBody {
 }
 
 export interface GetShopItemsByUsernameSuccess {
-  shopItems: RenderableShopItemPreview[];
+  shopItems: RenderableShopItem[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
@@ -93,20 +93,18 @@ export async function handleGetShopItemsByUserId({
     };
   }
 
-  const unrenderableShopItemPreviews =
-    await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemsByCreatorUserId(
-      {
-        creatorUserId: userId,
-        filterOutExpiredAndUnscheduledShopItems: true,
-        limit: pageSize,
-        getShopItemsBeforeTimestamp: pageTimestamp,
-      },
-    );
+  const uncompiledBasePublishedItems = await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId({
+    authorUserId: userId,
+    filterOutExpiredAndUnscheduledPublishedItems: true,
+    limit: pageSize,
+    getPublishedItemsBeforeTimestamp: pageTimestamp,
+  });
 
-  const renderableShopItemPreview = await constructRenderableShopItemPreviewsFromParts({
+
+  const renderableShopItemPreview = await constructRenderableShopItemsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    unrenderableShopItemPreviews,
+    uncompiledBasePublishedItems,
     clientUserId,
   });
 

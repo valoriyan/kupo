@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
-import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost, SharedPostType } from "./models";
+import { checkAuthorization } from "../../auth/utilities";
+import { RenderablePost } from "./models";
 import { constructRenderablePostFromParts } from "./utilities";
+import { PublishedItemType } from "../models";
 
 export enum SharePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -56,53 +57,53 @@ export async function handleSharePost({
 
   try {
     let unrenderableSharedPostWithoutElementsOrHashtags =
-      await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-        { postId: sharedPostId },
+      await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+        { id: sharedPostId },
       );
 
-    if (!!unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId) {
+    if (!!unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared) {
       unrenderableSharedPostWithoutElementsOrHashtags =
-        await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-          { postId: unrenderableSharedPostWithoutElementsOrHashtags.sharedPostId },
+        await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+          { id: unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared },
         );
     }
 
     const renderableSharedPost = await constructRenderablePostFromParts({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      unrenderablePostWithoutElementsOrHashtags:
+      uncompiledBasePublishedItem:
         unrenderableSharedPostWithoutElementsOrHashtags,
       clientUserId,
     });
 
-    console.log("renderableSharedPost");
-    console.log(renderableSharedPost);
 
     const lowercaseCaption = caption.toLowerCase();
 
-    await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
-      postId,
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
+      publishedItemId: postId,
+      type: PublishedItemType.POST,
       creationTimestamp,
       authorUserId: clientUserId,
       caption: lowercaseCaption,
       scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
       expirationTimestamp,
-      sharedPostId,
+      idOfPublishedItemBeingShared: sharedPostId,
     });
 
     const lowercaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
       {
         hashtags: lowercaseHashtags,
-        postId,
+        publishedItemId: postId,
       },
     );
 
     return {
       success: {
         renderablePost: {
-          postId,
+          id: postId,
+          type: PublishedItemType.POST,
           creationTimestamp,
           mediaElements: [],
           authorUserId: clientUserId,
@@ -118,10 +119,7 @@ export async function handleSharePost({
           },
           isLikedByClient: false,
           isSavedByClient: false,
-          shared: {
-            type: SharedPostType.post,
-            post: renderableSharedPost,
-          },
+          sharedItem: renderableSharedPost,
         },
       },
     };

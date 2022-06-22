@@ -2,7 +2,7 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePostCommentFromParts } from "../../postComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderablePostFromParts } from "../../post/utilities";
+import { constructRenderablePostFromParts } from "../../publishedItem/post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewCommentOnPostNotification } from "../models/renderableUserNotifications";
@@ -36,14 +36,14 @@ export async function assembleRenderableNewCommentOnPostNotification({
   });
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await databaseService.tableNameToServicesMap.postsTableService.getPostByPostId({
-      postId: postComment.postId,
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById({
+      id: postComment.postId,
     });
 
   const post = await constructRenderablePostFromParts({
     blobStorageService,
     databaseService,
-    unrenderablePostWithoutElementsOrHashtags,
+    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
     clientUserId,
   });
 

@@ -9,7 +9,7 @@ import { HashtagsTableService } from "./tableServices/hashtagsTableService";
 import { PostCommentsTableService } from "./tableServices/postCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PostLikesTableService } from "./tableServices/postLikesTableService";
-import { PostsTableService } from "./tableServices/postsTableService";
+import { PublishedItemsTableService } from "./tableServices/publishedItemsTableService";
 import { ShopItemMediaElementsTableService } from "./tableServices/shopItemMediaElementsTableService";
 import { ShopItemsTableService } from "./tableServices/shopItemsTableService";
 import { UserContentFeedFiltersTableService } from "./tableServices/userContentFeedFiltersTableService";
@@ -20,6 +20,7 @@ import { teardownDatabaseService } from "./teardown";
 import { DatabaseServiceType } from "./models";
 import { UserNotificationsTableService } from "./tableServices/userNotificationsTableService";
 import { SavedItemsTableService } from "./tableServices/savedItemsTableService";
+import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCardDataTableService";
 
 @singleton()
 export class DatabaseService {
@@ -30,7 +31,7 @@ export class DatabaseService {
 
   public tableNameToServicesMap = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
-    postsTableService: new PostsTableService(DatabaseService.datastorePool),
+    publishedItemsTableService: new PublishedItemsTableService(DatabaseService.datastorePool),
     postContentElementsTableService: new PostContentElementsTableService(
       DatabaseService.datastorePool,
     ),
@@ -52,6 +53,7 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     savedItemsTableService: new SavedItemsTableService(DatabaseService.datastorePool),
+    storedCreditCardDataTableService: new StoredCreditCardDataTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

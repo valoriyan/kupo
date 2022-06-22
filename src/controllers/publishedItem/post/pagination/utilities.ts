@@ -1,8 +1,8 @@
 import {
   decodeTimestampCursor,
   encodeTimestampCursor,
-} from "../../../controllers/utilities/pagination";
-import { UnrenderablePostWithoutElementsOrHashtags } from "../models";
+} from "../../../utilities/pagination";
+import { UncompiledBasePublishedItem } from "../../models";
 
 export function getEncodedCursorOfNextPageOfSequentialItems<
   T extends { scheduledPublicationTimestamp: number },
@@ -21,14 +21,14 @@ export function getPageOfPostsFromAllPosts({
   encodedCursor,
   pageSize,
 }: {
-  unrenderablePostsWithoutElementsOrHashtags: UnrenderablePostWithoutElementsOrHashtags[];
+  unrenderablePostsWithoutElementsOrHashtags: UncompiledBasePublishedItem[];
   encodedCursor?: string;
   pageSize: number;
-}): UnrenderablePostWithoutElementsOrHashtags[] {
+}): UncompiledBasePublishedItem[] {
   if (!!encodedCursor) {
     const timestamp = decodeTimestampCursor({ encodedCursor });
 
-    const filteredUnrenderablePostsWithoutElements: UnrenderablePostWithoutElementsOrHashtags[] =
+    const filteredUnrenderablePostsWithoutElements =
       unrenderablePostsWithoutElementsOrHashtags
         .filter((unrenderablePostWithoutElementsOrHashtags) => {
           const { scheduledPublicationTimestamp } =

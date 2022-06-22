@@ -38,17 +38,43 @@ export async function handleUpdateUserProfile({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  const {
+    username,
+    shortBio,
+    userWebsite,
+    profileVisibility,
+    userEmail,
+    preferredPagePrimaryColor,
+  } = requestBody;
+
+  if (!!userEmail) { 
+    const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID({
+        userId: clientUserId,
+      });
+
+      if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+        await controller.paymentProcessingService.updateCustomerEmail({
+          paymentProcessorCustomerId: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID?.paymentProcessorCustomerId,
+          updatedEmail: userEmail,
+
+        });
+      }
+
+
+  }
+
   const updatedUnrenderableUser =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
       {
         userId: clientUserId,
 
-        username: requestBody.username,
-        shortBio: requestBody.shortBio || "",
-        userWebsite: requestBody.userWebsite || "",
-        profilePrivacySetting: requestBody.profileVisibility,
-        email: requestBody.userEmail,
-        preferredPagePrimaryColor: requestBody.preferredPagePrimaryColor,
+        username: username,
+        shortBio: shortBio || "",
+        userWebsite: userWebsite || "",
+        profilePrivacySetting: profileVisibility,
+        email: userEmail,
+        preferredPagePrimaryColor: preferredPagePrimaryColor,
       },
     );
 

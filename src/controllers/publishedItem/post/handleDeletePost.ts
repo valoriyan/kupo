@@ -1,8 +1,8 @@
 import express from "express";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
-import { SavedItemType } from "../userInteraction/models";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
+import { SavedItemType } from "../../userInteraction/models";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -29,8 +29,8 @@ export async function handleDeletePost({
 
   const { postId } = requestBody;
 
-  await controller.databaseService.tableNameToServicesMap.postsTableService.deletePost({
-    postId,
+  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem({
+    id: postId,
     authorUserId: clientUserId,
   });
 

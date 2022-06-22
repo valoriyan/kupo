@@ -5,9 +5,15 @@ import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
+export enum DBShopItemElementType {
+  PREVIEW_MEDIA_ELEMENT = "PREVIEW_MEDIA_ELEMENT",
+  PURCHASED_MEDIA_ELEMENT = "PURCHASED_MEDIA_ELEMENT",
+}
+
 interface DBShopItemMediaElement {
-  shop_item_id: string;
+  published_item_id: string;
   shop_item_element_index: number;
+  type: DBShopItemElementType;
   blob_file_key: string;
   mimetype: string;
 }
@@ -23,11 +29,12 @@ export class ShopItemMediaElementsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        shop_item_id VARCHAR(64) NOT NULL,
+        published_item_id VARCHAR(64) NOT NULL,
         shop_item_element_index SMALLINT NOT NULL,
+        type VARCHAR(64) NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         mimetype VARCHAR(64) NOT NULL,
-        UNIQUE (shop_item_id, shop_item_element_index)
+        UNIQUE (published_item_id, type, shop_item_element_index)
       )
       ;
     `;
@@ -43,19 +50,21 @@ export class ShopItemMediaElementsTableService extends TableService {
     shopItemMediaElements,
   }: {
     shopItemMediaElements: {
-      shopItemId: string;
+      publishedItemId: string;
       shopItemElementIndex: number;
+      shopItemType: DBShopItemElementType;
       blobFileKey: string;
       mimetype: string;
     }[];
   }): Promise<void> {
     const rowsOfFieldsAndValues = shopItemMediaElements.map(
-      ({ shopItemId, shopItemElementIndex, blobFileKey, mimetype }) => [
-        { field: "shop_item_id", value: shopItemId },
+      ({ publishedItemId, shopItemElementIndex, shopItemType, blobFileKey, mimetype }) => [
+        { field: "published_item_id", value: publishedItemId },
         {
           field: "shop_item_element_index",
           value: `${shopItemElementIndex}`,
         },
+        { field: "type", value: shopItemType },
         { field: "blob_file_key", value: blobFileKey },
         { field: "mimetype", value: mimetype },
       ],
@@ -73,10 +82,12 @@ export class ShopItemMediaElementsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getShopItemMediaElementsByShopItemId({
-    shopItemId,
+  public async getShopItemMediaElementsByPublishedItemId({
+    publishedItemId,
+    shopItemType,
   }: {
-    shopItemId: string;
+    publishedItemId: string;
+    shopItemType: DBShopItemElementType;
   }): Promise<FiledMediaElement[]> {
     const query = {
       text: `
@@ -85,10 +96,12 @@ export class ShopItemMediaElementsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          shop_item_id = $1
+          published_item_id = $1
+          AND
+            type = $2
         ;
       `,
-      values: [shopItemId],
+      values: [publishedItemId, shopItemType],
     };
 
     const response: QueryResult<DBShopItemMediaElement> = await this.datastorePool.query(
@@ -115,17 +128,17 @@ export class ShopItemMediaElementsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deleteShopItemMediaElementsByShopItemId({
-    shopItemId,
+  public async deleteShopItemMediaElementsByPublishedItemId({
+    publishedItemId,
   }: {
-    shopItemId: string;
+    publishedItemId: string;
   }): Promise<
     {
       fileKey: string;
     }[]
   > {
     const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [{ field: "shop_item_id", value: shopItemId }],
+      fieldsUsedToIdentifyRowsToDelete: [{ field: "published_item_id", value: publishedItemId }],
       tableName: this.tableName,
     });
 

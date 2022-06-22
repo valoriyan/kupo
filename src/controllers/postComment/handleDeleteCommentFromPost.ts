@@ -37,8 +37,8 @@ export async function handleDeleteCommentFromPost({
     );
 
   const { authorUserId: postAuthorUserId } =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: postId },
     );
 
   await controller.databaseService.tableNameToServicesMap.postCommentsTableService.deletePostComment(

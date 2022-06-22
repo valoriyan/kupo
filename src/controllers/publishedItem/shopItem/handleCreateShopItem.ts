@@ -1,10 +1,12 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 import { v4 as uuidv4 } from "uuid";
 import { Promise as BluebirdPromise } from "bluebird";
-import { uploadMediaFile } from "../utilities/mediaFiles/uploadMediaFile";
+import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
+import { PublishedItemType } from "../models";
+import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CreateShopItemSuccess {}
@@ -14,7 +16,7 @@ export interface CreateShopItemFailed {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
-  description: string;
+  caption: string;
   hashtags: string[];
   title: string;
   price: number;
@@ -37,7 +39,7 @@ export async function handleCreateShopItem({
   if (error) return error;
 
   const {
-    description,
+    caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
     title,
@@ -46,12 +48,28 @@ export async function handleCreateShopItem({
     hashtags,
   } = requestBody;
 
-  console.log("apple");
-  console.log("hashtags", hashtags);
-  console.log("hashtags", Array.isArray(hashtags)  );
-
-  const shopItemId = uuidv4();
+  const publishedItemId = uuidv4();
   const creationTimestamp = Date.now();
+
+  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
+    type: PublishedItemType.SHOP_ITEM,
+    publishedItemId,
+    creationTimestamp,
+    authorUserId: clientUserId,
+    caption,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
+  });
+
+  await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
+    {
+      publishedItemId,
+      title: title,
+      price: price,
+    },
+  );
+
+
 
   const shopItemMediaElements = await BluebirdPromise.map(
     mediaFiles,
@@ -59,7 +77,7 @@ export async function handleCreateShopItem({
       mediaFile,
       index,
     ): Promise<{
-      shopItemId: string;
+      publishedItemId: string;
       shopItemElementIndex: number;
       blobFileKey: string;
       fileTemporaryUrl: string;
@@ -71,7 +89,7 @@ export async function handleCreateShopItem({
       });
 
       return {
-        shopItemId,
+        publishedItemId,
         shopItemElementIndex: index,
         blobFileKey,
         fileTemporaryUrl,
@@ -82,19 +100,20 @@ export async function handleCreateShopItem({
 
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
-  await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToShopItem(
+  await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
     {
       hashtags: lowerCaseHashtags,
-      shopItemId,
+      publishedItemId,
     },
   );
 
   await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
     {
       shopItemMediaElements: shopItemMediaElements.map(
-        ({ shopItemId, shopItemElementIndex, blobFileKey, mimetype }) => ({
-          shopItemId,
+        ({ publishedItemId, shopItemElementIndex, blobFileKey, mimetype }) => ({
+          publishedItemId,
           shopItemElementIndex,
+          shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
           blobFileKey,
           mimetype,
         }),
@@ -102,18 +121,7 @@ export async function handleCreateShopItem({
     },
   );
 
-  await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
-    {
-      shopItemId,
-      authorUserId: clientUserId,
-      description: description,
-      creationTimestamp,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp,
-      expirationTimestamp: expirationTimestamp,
-      title: title,
-      price: price,
-    },
-  );
+
 
   return {};
 }

@@ -1,5 +1,4 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderableShopItemPreview } from "../../../controllers/shopItem/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
@@ -10,31 +9,9 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBShopItem {
-  shop_item_id: string;
-  author_user_id: string;
-  description: string;
-  creation_timestamp: string;
-  scheduled_publication_timestamp: string;
-  expiration_timestamp?: string;
+  published_item_id: string;
   title: string;
-  price: string;
-}
-
-function convertDBShopItemToUnrenderableShopItemPreview(
-  dbShopItem: DBShopItem,
-): UnrenderableShopItemPreview {
-  return {
-    shopItemId: dbShopItem.shop_item_id,
-    authorUserId: dbShopItem.author_user_id,
-    description: dbShopItem.description,
-    creationTimestamp: parseInt(dbShopItem.creation_timestamp),
-    scheduledPublicationTimestamp: parseInt(dbShopItem.scheduled_publication_timestamp),
-    expirationTimestamp: !!dbShopItem.expiration_timestamp
-      ? parseInt(dbShopItem.expiration_timestamp)
-      : undefined,
-    title: dbShopItem.title,
-    price: parseFloat(dbShopItem.price),
-  };
+  price: string;  
 }
 
 export class ShopItemsTableService extends TableService {
@@ -48,12 +25,7 @@ export class ShopItemsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        shop_item_id VARCHAR(64) UNIQUE NOT NULL,
-        author_user_id VARCHAR(64) NOT NULL,
-        description VARCHAR(64) NOT NULL,
-        creation_timestamp BIGINT NOT NULL,
-        scheduled_publication_timestamp BIGINT NOT NULL,
-        expiration_timestamp BIGINT,
+        published_item_id VARCHAR(64) UNIQUE NOT NULL,
         title VARCHAR(64) NOT NULL,
         price DECIMAL(12,2) NOT NULL
       )
@@ -68,36 +40,18 @@ export class ShopItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createShopItem({
-    shopItemId,
-    authorUserId,
-    description,
-    creationTimestamp,
-    scheduledPublicationTimestamp,
-    expirationTimestamp,
+    publishedItemId,
     title,
     price,
   }: {
-    shopItemId: string;
-    authorUserId: string;
-    description: string;
-    creationTimestamp: number;
-    scheduledPublicationTimestamp: number;
-    expirationTimestamp?: number;
+    publishedItemId: string;
     title: string;
     price: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
-          { field: "shop_item_id", value: shopItemId },
-          { field: "author_user_id", value: authorUserId },
-          { field: "description", value: description },
-          { field: "creation_timestamp", value: creationTimestamp },
-          {
-            field: "scheduled_publication_timestamp",
-            value: scheduledPublicationTimestamp,
-          },
-          { field: "expiration_timestamp", value: expirationTimestamp },
+          { field: "published_item_id", value: publishedItemId },
           { field: "title", value: title },
           { field: "price", value: price },
         ],
@@ -112,11 +66,11 @@ export class ShopItemsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getShopItemByShopItemId({
-    shopItemId,
+  public async getShopItemByPublishedItemId({
+    publishedItemId,
   }: {
-    shopItemId: string;
-  }): Promise<UnrenderableShopItemPreview> {
+    publishedItemId: string;
+  }): Promise<DBShopItem> {
     const query = {
       text: `
         SELECT
@@ -124,10 +78,10 @@ export class ShopItemsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          shop_item_id = $1
+        published_item_id = $1
         ;
       `,
-      values: [shopItemId],
+      values: [publishedItemId],
     };
 
     const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
@@ -136,62 +90,24 @@ export class ShopItemsTableService extends TableService {
       throw new Error("Missing shop item");
     }
 
-    return convertDBShopItemToUnrenderableShopItemPreview(response.rows[0]);
+    return response.rows[0];
   }
 
-  public async getShopItemsByCreatorUserId({
-    creatorUserId,
-    filterOutExpiredAndUnscheduledShopItems,
-    limit,
-    getShopItemsBeforeTimestamp,
+  public async getShopItemsByPublishedItemIds({
+    publishedItemIds,
   }: {
-    creatorUserId: string;
-    filterOutExpiredAndUnscheduledShopItems: boolean;
-    limit?: number;
-    getShopItemsBeforeTimestamp?: number;
-  }): Promise<UnrenderableShopItemPreview[]> {
-    const queryValues: (string | number)[] = [creatorUserId];
-    const currentTimestamp = Date.now();
-
-    let filteringWhereClause = "";
-    if (!!filterOutExpiredAndUnscheduledShopItems) {
-      filteringWhereClause = `
-        AND
-          (
-            scheduled_publication_timestamp IS NULL
-              OR
-            scheduled_publication_timestamp < $${queryValues.length + 1}
-          ) 
-        AND
-          (
-              expiration_timestamp IS NULL
-            OR
-              expiration_timestamp > $${queryValues.length + 2}
-          )
-      `;
-
-      queryValues.push(currentTimestamp);
-      queryValues.push(currentTimestamp);
+    publishedItemIds: string[];
+  }): Promise<DBShopItem[]> {
+    if (publishedItemIds.length === 0) {
+      return [];
     }
 
-    let limitClause = "";
-    if (!!limit) {
-      limitClause = `
-        LIMIT $${queryValues.length + 1}
-      `;
+    const queryValues: Array<string> = [...publishedItemIds];
 
-      queryValues.push(limit);
-    }
+    const publishedItemIdsQueryString = publishedItemIds
+      .map((_, index) => `$${index + 1}`)
+      .join(", ");
 
-    let getPostsBeforeTimestampClause = "";
-    if (!!getShopItemsBeforeTimestamp) {
-      getPostsBeforeTimestampClause = `
-        AND
-          scheduled_publication_timestamp < $${queryValues.length + 1}
-      `;
-
-      queryValues.push(getShopItemsBeforeTimestamp);
-    }
 
     const query = {
       text: `
@@ -200,13 +116,7 @@ export class ShopItemsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          author_user_id = $1
-          ${filteringWhereClause}
-          ${getPostsBeforeTimestampClause}
-        ORDER BY
-          scheduled_publication_timestamp DESC
-        ${limitClause}
-
+          published_item_id IN (${publishedItemIdsQueryString})
         ;
       `,
       values: queryValues,
@@ -214,22 +124,24 @@ export class ShopItemsTableService extends TableService {
 
     const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBShopItemToUnrenderableShopItemPreview);
+    return response.rows;
   }
+
+
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async updateShopItemByShopItemId({
-    shopItemId,
+  public async updateShopItemByPublishedItemId({
+    publishedItemId,
     description,
     scheduledPublicationTimestamp,
     expirationTimestamp,
     title,
     price,
   }: {
-    shopItemId: string;
+    publishedItemId: string;
     description?: string;
     scheduledPublicationTimestamp?: number;
     expirationTimestamp?: number;
@@ -248,8 +160,8 @@ export class ShopItemsTableService extends TableService {
         { field: "price", value: price },
       ],
       fieldUsedToIdentifyUpdatedRow: {
-        field: "shop_item_id",
-        value: shopItemId,
+        field: "published_item_id",
+        value: publishedItemId,
       },
       tableName: this.tableName,
     });
@@ -264,15 +176,15 @@ export class ShopItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deleteShopItem({
-    shopItemId,
+    publishedItemId,
     authorUserId,
   }: {
-    shopItemId: string;
+    publishedItemId: string;
     authorUserId: string;
   }): Promise<void> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
-        { field: "shop_item_id", value: shopItemId },
+        { field: "published_item_id", value: publishedItemId },
         { field: "author_user_id", value: authorUserId },
       ],
       tableName: this.tableName,

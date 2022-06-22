@@ -1,6 +1,6 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
 import { PostController } from "./postController";
 
 export enum UpdatePostFailedReason {
@@ -39,8 +39,8 @@ export async function handleUpdatePost({
     requestBody;
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: postId },
     );
 
   if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
@@ -51,8 +51,8 @@ export async function handleUpdatePost({
     };
   }
 
-  await controller.databaseService.tableNameToServicesMap.postsTableService.updatePost({
-    postId,
+  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById({
+    id: postId,
     authorUserId: clientUserId,
     caption: caption ? caption.toLowerCase() : caption,
     scheduledPublicationTimestamp,

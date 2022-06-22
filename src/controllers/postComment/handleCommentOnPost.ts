@@ -7,7 +7,7 @@ import { RenderablePostComment } from "./models";
 import { constructRenderablePostCommentFromParts } from "./utilities";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromParts } from "../user/utilities";
-import { constructRenderablePostFromParts } from "../post/utilities";
+import { constructRenderablePostFromParts } from "../publishedItem/post/utilities";
 
 export interface CommentOnPostRequestBody {
   postId: string;
@@ -62,8 +62,8 @@ export async function handleCommentOnPost({
   });
 
   const { authorUserId: recipientUserId } =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: postId },
     );
 
   if (recipientUserId !== clientUserId) {
@@ -92,14 +92,14 @@ export async function handleCommentOnPost({
       });
 
       const unrenderablePostWithoutElementsOrHashtags =
-        await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-          { postId },
+        await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+          { id: postId },
         );
 
       const post = await constructRenderablePostFromParts({
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
-        unrenderablePostWithoutElementsOrHashtags,
+        uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
         clientUserId,
       });
 

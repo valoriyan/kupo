@@ -5,6 +5,7 @@ import {
   ProfilePrivacySetting,
   UnrenderableUser,
   UnrenderableUser_WITH_PASSWORD,
+  UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID,
 } from "../../../controllers/user/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
@@ -32,7 +33,8 @@ interface DBUser {
   preferred_page_primary_color_green?: number;
   preferred_page_primary_color_blue?: number;
 
-  is_waitlisted: boolean;
+  payment_processor_customer_id: string;
+
   is_admin: boolean;
 
   creation_timestamp: string;
@@ -69,11 +71,21 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     preferredPagePrimaryColor,
     creationTimestamp: parseInt(dbUser.creation_timestamp),
     isAdmin: dbUser.is_admin,
-    isWaitListed: dbUser.is_waitlisted,
   };
 }
 
-function convertDBUserToUnrenderableUserWITHPASSWORD(
+function convertDBUserToUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+  dbUser: DBUser,
+): UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID {
+  return {
+    ...convertDBUserToUnrenderableUser(dbUser),
+    paymentProcessorCustomerId: dbUser.payment_processor_customer_id,
+  };
+}
+
+
+
+function convertDBUserToUnrenderableUser_WITH_PASSWORD(
   dbUser: DBUser,
 ): UnrenderableUser_WITH_PASSWORD {
   return {
@@ -111,6 +123,8 @@ export class UsersTableService extends TableService {
         preferred_page_primary_color_red SMALLINT,
         preferred_page_primary_color_green SMALLINT,
         preferred_page_primary_color_blue SMALLINT,
+        
+        payment_processor_customer_id VARCHAR(64) UNIQUE NOT NULL,
 
         is_waitlisted boolean NOT NULL,
         is_admin boolean NOT NULL,
@@ -132,20 +146,19 @@ export class UsersTableService extends TableService {
     email,
     username,
     encryptedPassword,
+    paymentProcessorCustomerId,
     creationTimestamp,
     isAdmin,
-    isWaitlisted,
   }: {
     userId: string;
     email: string;
     username: string;
     encryptedPassword: string;
+    paymentProcessorCustomerId: string;
     creationTimestamp: number;
     isAdmin?: boolean;
-    isWaitlisted?: boolean;
   }): Promise<void> {
     const is_admin_value = !!isAdmin ? "true" : "false";
-    const is_waitlisted_value = !!isWaitlisted ? "true" : "false";
 
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
@@ -156,10 +169,14 @@ export class UsersTableService extends TableService {
           { field: "encrypted_password", value: encryptedPassword },
           { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
 
-          { field: "is_waitlisted", value: is_waitlisted_value },
-          { field: "is_admin", value: is_admin_value },
+
+
+          { field: "payment_processor_customer_id", value: paymentProcessorCustomerId },
 
           { field: "creation_timestamp", value: creationTimestamp },
+
+          { field: "is_admin", value: is_admin_value },
+
         ],
       ],
       tableName: this.tableName,
@@ -197,7 +214,7 @@ export class UsersTableService extends TableService {
     const rows = response.rows;
 
     if (rows.length === 1) {
-      return convertDBUserToUnrenderableUserWITHPASSWORD(rows[0]);
+      return convertDBUserToUnrenderableUser_WITH_PASSWORD(rows[0]);
     }
     return;
   }
@@ -365,6 +382,36 @@ export class UsersTableService extends TableService {
 
     if (rows.length === 1) {
       return convertDBUserToUnrenderableUser(rows[0]);
+    }
+    return;
+  }
+
+  public async selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID | undefined> {
+    console.log(`${this.tableName} | selectUsersByUserIds`);
+
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          user_id = $1
+        ;
+      `,
+      values: [userId],
+    };
+
+    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+    const rows = response.rows;
+
+    if (rows.length === 1) {
+      return convertDBUserToUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(rows[0]);
     }
     return;
   }

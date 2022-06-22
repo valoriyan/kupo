@@ -1,5 +1,5 @@
 import { RenderablePostComment } from "../../../controllers/postComment/models";
-import { RenderablePost } from "../../../controllers/post/models";
+import { RenderablePost } from "../../../controllers/publishedItem/post/models";
 import { RenderableUser } from "../../../controllers/user/models";
 
 // TO DO: REMOVE/MOVE TO CONTROLLER

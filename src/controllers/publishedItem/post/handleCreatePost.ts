@@ -1,13 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
-import { uploadMediaFile } from "../utilities/mediaFiles/uploadMediaFile";
-import { checkValidityOfMediaFiles } from "../utilities/mediaFiles/checkValidityOfMediaFiles";
-import { MediaElement } from "../models";
+import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
+import { checkValidityOfMediaFiles } from "../../utilities/mediaFiles/checkValidityOfMediaFiles";
+import { MediaElement } from "../../models";
+import { PublishedItemType } from "../models";
 
 export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -57,8 +58,9 @@ export async function handleCreatePost({
   const creationTimestamp = now;
 
   try {
-    await controller.databaseService.tableNameToServicesMap.postsTableService.createPost({
-      postId,
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
+      publishedItemId: postId,
+      type: PublishedItemType.POST,
       creationTimestamp,
       authorUserId: clientUserId,
       caption,
@@ -111,10 +113,10 @@ export async function handleCreatePost({
 
     const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPost(
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
       {
         hashtags: lowerCaseHashtags,
-        postId,
+        publishedItemId: postId,
       },
     );
 
@@ -135,14 +137,15 @@ export async function handleCreatePost({
     return {
       success: {
         renderablePost: {
-          postId,
-          creationTimestamp,
-          mediaElements,
+          type: PublishedItemType.POST,
+          id: postId,
           authorUserId: clientUserId,
           caption,
+          creationTimestamp,
           scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-          hashtags: lowerCaseHashtags,
           expirationTimestamp,
+          mediaElements,
+          hashtags: lowerCaseHashtags,
           likes: {
             count: 0,
           },

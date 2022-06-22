@@ -1,5 +1,4 @@
 import { Pool, QueryConfig, QueryResult } from "pg";
-import { UnrenderablePostWithoutElementsOrHashtags } from "../../../controllers/post/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
@@ -9,36 +8,39 @@ import {
 } from "./utilities";
 import { assertIsNumber } from "./utilities/validations";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemType, UncompiledBasePublishedItem } from "../../../controllers/publishedItem/models";
 
-interface DBPost {
-  post_id: string;
+interface DBPublishedItem {
+  type: PublishedItemType;
+  id: string;
   author_user_id: string;
   caption: string;
   creation_timestamp: string;
   scheduled_publication_timestamp: string;
   expiration_timestamp?: string;
-  shared_post_id?: string;
+  id_of_published_item_being_shared?: string;
 }
 
-function convertDBPostToUnrenderablePostWithoutElementsOrHashtags(
-  dbPost: DBPost,
-): UnrenderablePostWithoutElementsOrHashtags {
+function convertDBPublishedItemToUncompiledBasePublishedItem(
+  dbPublishedItem: DBPublishedItem,
+): UncompiledBasePublishedItem {
   return {
-    postId: dbPost.post_id,
-    authorUserId: dbPost.author_user_id,
-    caption: dbPost.caption,
-    creationTimestamp: parseInt(dbPost.creation_timestamp),
-    scheduledPublicationTimestamp: parseInt(dbPost.scheduled_publication_timestamp),
-    expirationTimestamp: !!dbPost.expiration_timestamp
-      ? parseInt(dbPost.expiration_timestamp)
+    type: dbPublishedItem.type,
+    id: dbPublishedItem.id,
+    authorUserId: dbPublishedItem.author_user_id,
+    caption: dbPublishedItem.caption,
+    creationTimestamp: parseInt(dbPublishedItem.creation_timestamp),
+    scheduledPublicationTimestamp: parseInt(dbPublishedItem.scheduled_publication_timestamp),
+    expirationTimestamp: !!dbPublishedItem.expiration_timestamp
+      ? parseInt(dbPublishedItem.expiration_timestamp)
       : undefined,
-    sharedPostId: dbPost.shared_post_id,
+    idOfPublishedItemBeingShared: dbPublishedItem.id_of_published_item_being_shared,
   };
 }
 
-export class PostsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_posts`;
-  public readonly tableName = PostsTableService.tableName;
+export class PublishedItemsTableService extends TableService {
+  public static readonly tableName = `${TABLE_NAME_PREFIX}_published_items`;
+  public readonly tableName = PublishedItemsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
@@ -47,14 +49,14 @@ export class PostsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        post_id VARCHAR(64) UNIQUE NOT NULL,
-        creation_timestamp BIGINT NOT NULL,
+        type VARCHAR(64) NOT NULL,
+        id VARCHAR(64) UNIQUE NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
         caption VARCHAR(512) NOT NULL,
+        creation_timestamp BIGINT NOT NULL,
         scheduled_publication_timestamp BIGINT NOT NULL,
         expiration_timestamp BIGINT,
-        
-        shared_post_id VARCHAR(64)
+        id_of_published_item_being_shared VARCHAR(64)
       )
       ;
     `;
@@ -66,38 +68,40 @@ export class PostsTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async createPost({
-    postId,
+  public async createPublishedItem({
+    type,
+    publishedItemId,
     creationTimestamp,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
-    sharedPostId,
+    idOfPublishedItemBeingShared,
   }: {
-    postId: string;
+    type: PublishedItemType,
+    publishedItemId: string;
     creationTimestamp: number;
     authorUserId: string;
     caption: string;
     scheduledPublicationTimestamp: number;
     expirationTimestamp?: number;
-    sharedPostId?: string;
+    idOfPublishedItemBeingShared?: string;
   }): Promise<void> {
-    console.log(`${this.tableName} | createPost`);
 
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
-          { field: "post_id", value: postId },
-          { field: "creation_timestamp", value: creationTimestamp },
+          { field: "type", value: type },
+          { field: "id", value: publishedItemId },
           { field: "author_user_id", value: authorUserId },
           { field: "caption", value: caption },
+          { field: "creation_timestamp", value: creationTimestamp },
           {
             field: "scheduled_publication_timestamp",
             value: scheduledPublicationTimestamp,
           },
           { field: "expiration_timestamp", value: expirationTimestamp },
-          { field: "shared_post_id", value: sharedPostId },
+          { field: "id_of_published_item_being_shared", value: idOfPublishedItemBeingShared },
         ],
       ],
       tableName: this.tableName,
@@ -110,23 +114,34 @@ export class PostsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostsByCreatorUserId({
-    creatorUserId,
-    filterOutExpiredAndUnscheduledPosts,
+  public async getPublishedItemsByAuthorUserId({
+    authorUserId,
+    filterOutExpiredAndUnscheduledPublishedItems,
     limit,
-    getPostsBeforeTimestamp,
+    getPublishedItemsBeforeTimestamp,
+    type,
   }: {
-    creatorUserId: string;
-    filterOutExpiredAndUnscheduledPosts: boolean;
+    authorUserId: string;
+    filterOutExpiredAndUnscheduledPublishedItems: boolean;
     limit?: number;
-    getPostsBeforeTimestamp?: number;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    const queryValues: (string | number)[] = [creatorUserId];
-
+    getPublishedItemsBeforeTimestamp?: number;
+    type?: PublishedItemType;
+  }): Promise<UncompiledBasePublishedItem[]> {
+    const queryValues: (string | number)[] = [authorUserId];
     const currentTimestamp = Date.now();
 
+    let typeConstraintClause = ""
+    if (!!type) {
+      queryValues.push(type);
+      typeConstraintClause = `
+        AND
+          type = $${queryValues.length + 1}
+      `;
+    }
+
+
     let filteringWhereClause = "";
-    if (!!filterOutExpiredAndUnscheduledPosts) {
+    if (!!filterOutExpiredAndUnscheduledPublishedItems) {
       filteringWhereClause = `
         AND
           (
@@ -155,14 +170,14 @@ export class PostsTableService extends TableService {
       queryValues.push(limit);
     }
 
-    let getPostsBeforeTimestampClause = "";
-    if (!!getPostsBeforeTimestamp) {
-      getPostsBeforeTimestampClause = `
+    let getPublishedItemsBeforeTimestampClause = "";
+    if (!!getPublishedItemsBeforeTimestamp) {
+      getPublishedItemsBeforeTimestampClause = `
         AND
           scheduled_publication_timestamp < $${queryValues.length + 1}
       `;
 
-      queryValues.push(getPostsBeforeTimestamp);
+      queryValues.push(getPublishedItemsBeforeTimestamp);
     }
 
     const query = {
@@ -173,8 +188,9 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           author_user_id = $1
+          ${typeConstraintClause}
           ${filteringWhereClause}
-          ${getPostsBeforeTimestampClause}
+          ${getPublishedItemsBeforeTimestampClause}
         ORDER BY
           scheduled_publication_timestamp DESC
         ${limitClause}
@@ -183,22 +199,37 @@ export class PostsTableService extends TableService {
       values: queryValues,
     };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+    return response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
   }
 
-  public async getPostsWithScheduledPublicationTimestampWithinRangeByCreatorUserId({
+  public async getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserId({
     creatorUserId,
     rangeEndTimestamp,
     rangeStartTimestamp,
+    type,
   }: {
     creatorUserId: string;
     rangeEndTimestamp: number;
     rangeStartTimestamp: number;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    type?: PublishedItemType;
+  }): Promise<UncompiledBasePublishedItem[]> {
     assertIsNumber(rangeEndTimestamp);
     assertIsNumber(rangeStartTimestamp);
+
+    const queryValues: (string | number)[] = [creatorUserId, rangeStartTimestamp, rangeEndTimestamp];
+
+
+    let typeConstraintClause = ""
+    if (!!type) {
+      queryValues.push(type);
+      typeConstraintClause = `
+        AND
+          type = $${queryValues.length + 1}
+      `;
+    }
+
 
     const query = {
       text: `
@@ -214,37 +245,49 @@ export class PostsTableService extends TableService {
             scheduled_publication_timestamp >= $2
           AND
             scheduled_publication_timestamp <= $3
+          ${typeConstraintClause}
         ;
       `,
-      values: [creatorUserId, rangeStartTimestamp, rangeEndTimestamp],
+      values: queryValues,
     };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+    return response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
   }
 
-  public async getPostsByCreatorUserIds({
+  public async getPublishedItemsByCreatorUserIds({
     creatorUserIds,
     beforeTimestamp,
     pageSize,
+    type,
   }: {
     creatorUserIds: string[];
     beforeTimestamp?: number;
     pageSize: number;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    type?: PublishedItemType;
+  }): Promise<UncompiledBasePublishedItem[]> {
     if (creatorUserIds.length === 0) {
       return [];
     }
 
-    const values: Array<string | number> = [...creatorUserIds, pageSize];
+    const queryValues: Array<string | number> = [...creatorUserIds, pageSize];
+
+    let typeConstraintClause = ""
+    if (!!type) {
+      queryValues.push(type);
+      typeConstraintClause = `
+        AND
+          type = $${queryValues.length + 1}
+      `;
+    }
 
     let beforeTimestampCondition = "";
     if (!!beforeTimestamp) {
       beforeTimestampCondition = `AND scheduled_publication_timestamp < $${
-        creatorUserIds.length + 2
+        queryValues.length + 1
       }`;
-      values.push(beforeTimestamp);
+      queryValues.push(beforeTimestamp);
     }
 
     const creatorUserIdsQueryString = creatorUserIds
@@ -259,6 +302,7 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           author_user_id IN (${creatorUserIdsQueryString})
+          ${typeConstraintClause}
           ${beforeTimestampCondition}
         ORDER BY
           scheduled_publication_timestamp DESC
@@ -266,19 +310,19 @@ export class PostsTableService extends TableService {
           $${creatorUserIds.length + 1}
         ;
       `,
-      values,
+      values: queryValues,
     };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+    return response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
   }
 
-  public async getPostByPostId({
-    postId,
+  public async getPublishedItemById({
+    id,
   }: {
-    postId: string;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags> {
+    id: string;
+  }): Promise<UncompiledBasePublishedItem> {
     const query = {
       text: `
         SELECT
@@ -286,37 +330,37 @@ export class PostsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          post_id = $1
+          id = $1
         ;
       `,
-      values: [postId],
+      values: [id],
     };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
     if (response.rows.length < 1) {
-      throw new Error("Missing post");
+      throw new Error("Missing published item");
     }
 
-    return convertDBPostToUnrenderablePostWithoutElementsOrHashtags(response.rows[0]);
+    return convertDBPublishedItemToUncompiledBasePublishedItem(response.rows[0]);
   }
 
-  public async getPostsByPostIds({
-    postIds,
+  public async getPublishedItemsByIds({
+    ids,
     limit,
-    getPostsBeforeTimestamp,
+    getPublishedItemsBeforeTimestamp,
   }: {
-    postIds: string[];
+    ids: string[];
     limit?: number;
-    getPostsBeforeTimestamp?: number;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
-    const queryValues = ([] as string[]).concat(postIds);
+    getPublishedItemsBeforeTimestamp?: number;
+  }): Promise<UncompiledBasePublishedItem[]> {
+    const queryValues = ([] as string[]).concat(ids);
 
-    if (postIds.length === 0) {
+    if (ids.length === 0) {
       return [];
     }
 
-    const postIdsQueryString = `( ${postIds
+    const idsQueryString = `( ${ids
       .map((_, index) => `$${index + 1}`)
       .join(", ")} )`;
 
@@ -329,14 +373,14 @@ export class PostsTableService extends TableService {
       queryValues.push(limit.toString());
     }
 
-    let getPostsBeforeTimestampClause = "";
-    if (!!getPostsBeforeTimestamp) {
-      getPostsBeforeTimestampClause = `
+    let getPublishedItemsBeforeTimestampClause = "";
+    if (!!getPublishedItemsBeforeTimestamp) {
+      getPublishedItemsBeforeTimestampClause = `
         AND
           scheduled_publication_timestamp < $${queryValues.length + 1}
       `;
 
-      queryValues.push(getPostsBeforeTimestamp.toString());
+      queryValues.push(getPublishedItemsBeforeTimestamp.toString());
     }
 
     const query = {
@@ -346,8 +390,8 @@ export class PostsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
-          post_id IN ${postIdsQueryString}
-          ${getPostsBeforeTimestampClause}
+          id IN ${idsQueryString}
+          ${getPublishedItemsBeforeTimestampClause}
         ORDER BY
           scheduled_publication_timestamp DESC
         ${limitClause}
@@ -356,16 +400,31 @@ export class PostsTableService extends TableService {
       values: queryValues,
     };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+    return response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
   }
 
-  public async getPostsByCaptionMatchingSubstring({
+  public async getPublishedItemsByCaptionMatchingSubstring({
     captionSubstring,
+    type,
   }: {
     captionSubstring: string;
-  }): Promise<UnrenderablePostWithoutElementsOrHashtags[]> {
+    type?: PublishedItemType;
+  }): Promise<UncompiledBasePublishedItem[]> {
+    
+    const queryValues = [captionSubstring];
+
+    let typeConstraintClause = ""
+    if (!!type) {
+      queryValues.push(type);
+      typeConstraintClause = `
+        AND
+          type = $${queryValues.length + 1}
+      `;
+    }
+
+
     const query: QueryConfig = {
       text: `
         SELECT
@@ -374,30 +433,31 @@ export class PostsTableService extends TableService {
           ${this.tableName}
         WHERE
           caption LIKE CONCAT('%', $1::text, '%' )
+          ${typeConstraintClause}
         ;
       `,
-      values: [captionSubstring],
+      values: queryValues,
     };
 
-    const response: QueryResult<DBPost> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
     const rows = response.rows;
 
-    return rows.map(convertDBPostToUnrenderablePostWithoutElementsOrHashtags);
+    return rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
   }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async updatePost({
-    postId,
+  public async updateContentItemById({
+    id,
     authorUserId,
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
   }: {
-    postId: string;
+    id: string;
     authorUserId?: string;
     caption?: string;
     scheduledPublicationTimestamp?: number;
@@ -414,8 +474,8 @@ export class PostsTableService extends TableService {
         { field: "expirationTimestamp", value: expirationTimestamp },
       ],
       fieldUsedToIdentifyUpdatedRow: {
-        field: "post_id",
-        value: postId,
+        field: "id",
+        value: id,
       },
       tableName: this.tableName,
     });
@@ -429,16 +489,16 @@ export class PostsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deletePost({
-    postId,
+  public async deletePublishedItem({
+    id,
     authorUserId,
   }: {
-    postId: string;
+    id: string;
     authorUserId: string;
   }): Promise<void> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
-        { field: "post_id", value: postId },
+        { field: "id", value: id },
         { field: "author_user_id", value: authorUserId },
       ],
       tableName: this.tableName,

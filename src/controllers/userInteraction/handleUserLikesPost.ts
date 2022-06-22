@@ -5,7 +5,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromParts } from "../user/utilities";
-import { constructRenderablePostFromParts } from "../post/utilities";
+import { constructRenderablePostFromParts } from "../publishedItem/post/utilities";
 import { RenderableNewLikeOnPostNotification } from "../notification/models/renderableUserNotifications";
 
 export interface UserLikesPostRequestBody {
@@ -45,8 +45,8 @@ export async function handleUserLikesPost({
   );
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await controller.databaseService.tableNameToServicesMap.postsTableService.getPostByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: postId },
     );
 
   const doesNotificationExist =
@@ -95,7 +95,7 @@ export async function handleUserLikesPost({
     const post = await constructRenderablePostFromParts({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      unrenderablePostWithoutElementsOrHashtags,
+      uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
       clientUserId,
     });
 

@@ -8,9 +8,9 @@ import {
   Delete,
   Body,
 } from "tsoa";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { injectable } from "tsyringe";
-import { DatabaseService } from "../../services/databaseService";
+import { DatabaseService } from "../../../services/databaseService";
 import express from "express";
 import {
   CreateShopItemFailed,
@@ -28,7 +28,7 @@ import {
   handleDeleteShopItem,
   DeleteShopItemSuccess,
 } from "./handleDeleteShopItem";
-import { BlobStorageService } from "./../../services/blobStorageService";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import {
   GetShopItemsByUserIdRequestBody,
   GetShopItemsByUsernameFailed,
@@ -37,8 +37,15 @@ import {
   handleGetShopItemsByUserId,
   handleGetShopItemsByUsername,
 } from "./handleGetShopItems";
-import { PaymentProcessingService } from "../../services/paymentProcessingService";
-import { handlePurchaseShopItem, PurchaseShopItemFailed, PurchaseShopItemRequestBody, PurchaseShopItemSuccess } from "./handlePurchaseShopItem";
+import { PaymentProcessingService } from "../../../services/paymentProcessingService";
+import {
+  handlePurchaseShopItem,
+  PurchaseShopItemFailed,
+  PurchaseShopItemRequestBody,
+  PurchaseShopItemSuccess,
+} from "./handlePurchaseShopItem";
+import { GetCreditCardsStoredByUserIdFailed, GetCreditCardsStoredByUserIdRequestBody, GetCreditCardsStoredByUserIdSuccess, handleGetCreditCardsStoredByUserId } from "./payments/getCreditCardsStoredByUserId";
+import { handleRemoveCreditCard, RemoveCreditCardFailed, RemoveCreditCardRequestBody, RemoveCreditCardSuccess } from "./payments/removeCreditCard";
 
 @injectable()
 @Route("shopitem")
@@ -58,7 +65,7 @@ export class ShopItemController extends Controller {
   @Post("create")
   public async createShopItem(
     @Request() request: express.Request,
-    @FormField() description: string,
+    @FormField() caption: string,
     @FormField() hashtags: string[],
     @FormField() title: string,
     @FormField() price: number,
@@ -71,7 +78,7 @@ export class ShopItemController extends Controller {
       controller: this,
       request,
       requestBody: {
-        description,
+        caption,
         hashtags,
         title,
         price,
@@ -127,6 +134,20 @@ export class ShopItemController extends Controller {
     });
   }
 
+  @Post("getCreditCardsStoredByUserId")
+  public async getCreditCardsStoredByUserId(
+    @Request() request: express.Request,
+    @Body() requestBody: GetCreditCardsStoredByUserIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<GetCreditCardsStoredByUserIdFailed, GetCreditCardsStoredByUserIdSuccess>
+  > {
+    return await handleGetCreditCardsStoredByUserId({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -134,7 +155,7 @@ export class ShopItemController extends Controller {
   @Post("update")
   public async updateShopItem(
     @Request() request: express.Request,
-    @FormField() shopItemId: string,
+    @FormField() publishedItemId: string,
     @FormField() description?: string,
     @FormField() hashtags?: string[],
     @FormField() title?: string,
@@ -148,7 +169,7 @@ export class ShopItemController extends Controller {
       controller: this,
       request,
       requestBody: {
-        shopItemId,
+        publishedItemId,
         description,
         hashtags,
         title,
@@ -171,6 +192,18 @@ export class ShopItemController extends Controller {
     @Body() requestBody: DeleteShopItemRequestBody,
   ): Promise<SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>> {
     return await handleDeleteShopItem({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Delete("removeCreditCard")
+  public async removeCreditCard(
+    @Request() request: express.Request,
+    @Body() requestBody: RemoveCreditCardRequestBody,
+  ): Promise<SecuredHTTPResponse<RemoveCreditCardFailed, RemoveCreditCardSuccess>> {
+    return await handleRemoveCreditCard({
       controller: this,
       request,
       requestBody,
