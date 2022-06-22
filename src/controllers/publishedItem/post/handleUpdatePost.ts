@@ -51,13 +51,15 @@ export async function handleUpdatePost({
     };
   }
 
-  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById({
-    id: postId,
-    authorUserId: clientUserId,
-    caption: caption ? caption.toLowerCase() : caption,
-    scheduledPublicationTimestamp,
-    expirationTimestamp,
-  });
+  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById(
+    {
+      id: postId,
+      authorUserId: clientUserId,
+      caption: caption ? caption.toLowerCase() : caption,
+      scheduledPublicationTimestamp,
+      expirationTimestamp,
+    },
+  );
 
   return {};
 }

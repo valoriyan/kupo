@@ -11,5 +11,4 @@ export interface SharedRenderablePost extends BasePublishedItem {
   sharedItem: RootRenderablePost;
 }
 
-
-export type RenderablePost  = RootRenderablePost | SharedRenderablePost;
+export type RenderablePost = RootRenderablePost | SharedRenderablePost;

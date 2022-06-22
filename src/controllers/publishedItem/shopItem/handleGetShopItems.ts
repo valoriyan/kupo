@@ -93,13 +93,15 @@ export async function handleGetShopItemsByUserId({
     };
   }
 
-  const uncompiledBasePublishedItems = await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId({
-    authorUserId: userId,
-    filterOutExpiredAndUnscheduledPublishedItems: true,
-    limit: pageSize,
-    getPublishedItemsBeforeTimestamp: pageTimestamp,
-  });
-
+  const uncompiledBasePublishedItems =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId(
+      {
+        authorUserId: userId,
+        filterOutExpiredAndUnscheduledPublishedItems: true,
+        limit: pageSize,
+        getPublishedItemsBeforeTimestamp: pageTimestamp,
+      },
+    );
 
   const renderableShopItemPreview = await constructRenderableShopItemsFromParts({
     blobStorageService: controller.blobStorageService,

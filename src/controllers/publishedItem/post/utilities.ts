@@ -1,8 +1,6 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
-import {
-  RootRenderablePost,
-} from "./models";
+import { RootRenderablePost } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { SavedItemType } from "../../userInteraction/models";
 import { MediaElement } from "../../models";
@@ -44,7 +42,6 @@ export async function constructRenderablePostFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
 }): Promise<RootRenderablePost> {
-
   const {
     id,
     creationTimestamp,
@@ -133,9 +130,8 @@ export async function constructRenderablePostFromParts({
     },
     isLikedByClient,
     isSavedByClient,
-  };}
-
-
+  };
+}
 
 export function mergeArraysOfUncompiledBasePublishedItem({
   arrays,

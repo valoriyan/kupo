@@ -1,8 +1,8 @@
 import express from "express";
+import { checkAuthorization } from "../../../controllers/auth/utilities";
+import { SavedItemType } from "../../../controllers/userInteraction/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
-import { checkAuthorization } from "../../auth/utilities";
-import { SavedItemType } from "../../userInteraction/models";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

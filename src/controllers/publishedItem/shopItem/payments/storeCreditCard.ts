@@ -28,7 +28,8 @@ export async function handleStoreCreditCard({
 }): Promise<SecuredHTTPResponse<StoreCreditCardFailed, StoreCreditCardSuccess>> {
   const now = Date.now();
 
-  const ipAddressOfRequestor = (request.headers['x-real-ip'] || request.socket.remoteAddress) as string;
+  const ipAddressOfRequestor = (request.headers["x-real-ip"] ||
+    request.socket.remoteAddress) as string;
 
   const {
     CREDIT_CARD_NUMBER,
@@ -46,9 +47,11 @@ export async function handleStoreCreditCard({
       { userId: clientUserId },
     );
 
-    if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-      const paymentProcessorCardId = await controller.paymentProcessingService.storeCustomerCreditCard({
-        paymentProcessorCustomerId: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+  if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+    const paymentProcessorCardId =
+      await controller.paymentProcessingService.storeCustomerCreditCard({
+        paymentProcessorCustomerId:
+          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
         CREDIT_CARD_NUMBER,
         CREDIT_CARD_EXPIRATION_MONTH,
         CREDIT_CARD_EXPIRATION_YEAR,
@@ -56,22 +59,23 @@ export async function handleStoreCreditCard({
         CREDIT_CARD_OWNER_NAME,
         ipAddressOfRequestor,
       });
-      
-      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData({
+
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
+      {
         userId: clientUserId,
         localCreditCardId: uuidv4(),
         creditCardLastFourDigits: CREDIT_CARD_NUMBER.slice(-4),
-        paymentProcessorCustomerId: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+        paymentProcessorCustomerId:
+          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
         paymentProcessorCardId,
         creationTimestamp: now,
-      });
-      
-      return {
-        success: {},
-      };
-  
+      },
+    );
 
-    }
+    return {
+      success: {},
+    };
+  }
 
   return {
     error: {},

@@ -64,31 +64,33 @@ export async function handleSharePost({
     if (!!unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared) {
       unrenderableSharedPostWithoutElementsOrHashtags =
         await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-          { id: unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared },
+          {
+            id: unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared,
+          },
         );
     }
 
     const renderableSharedPost = await constructRenderablePostFromParts({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      uncompiledBasePublishedItem:
-        unrenderableSharedPostWithoutElementsOrHashtags,
+      uncompiledBasePublishedItem: unrenderableSharedPostWithoutElementsOrHashtags,
       clientUserId,
     });
 
-
     const lowercaseCaption = caption.toLowerCase();
 
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
-      publishedItemId: postId,
-      type: PublishedItemType.POST,
-      creationTimestamp,
-      authorUserId: clientUserId,
-      caption: lowercaseCaption,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-      expirationTimestamp,
-      idOfPublishedItemBeingShared: sharedPostId,
-    });
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
+      {
+        publishedItemId: postId,
+        type: PublishedItemType.POST,
+        creationTimestamp,
+        authorUserId: clientUserId,
+        caption: lowercaseCaption,
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+        expirationTimestamp,
+        idOfPublishedItemBeingShared: sharedPostId,
+      },
+    );
 
     const lowercaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 

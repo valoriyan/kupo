@@ -53,8 +53,6 @@ export async function handleUpdateShopItem({
       { id: publishedItemId },
     );
 
-
-
   if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
     return {
       error: {

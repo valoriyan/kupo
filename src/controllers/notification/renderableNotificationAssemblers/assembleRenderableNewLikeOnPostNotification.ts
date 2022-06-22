@@ -29,9 +29,11 @@ export async function assembleRenderableNewLikeOnPostNotification({
   );
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById({
-      id: postId,
-    });
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      {
+        id: postId,
+      },
+    );
 
   const post = await constructRenderablePostFromParts({
     blobStorageService,

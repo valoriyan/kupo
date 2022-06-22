@@ -17,44 +17,45 @@ export class PaymentProcessingService {
   // CUSTOMERS /////////////////////////////////////
   //////////////////////////////////////////////////
 
-  async registerCustomer({
-    customerEmail,
-  }: {
-    customerEmail: string,
-  }): Promise<string> {
+  async registerCustomer({ customerEmail }: { customerEmail: string }): Promise<string> {
     const customer = await PaymentProcessingService.securionPayApi.customers.create({
       email: customerEmail,
     });
 
     return customer.id;
-  };
+  }
 
   async removeCustomer({
     paymentProcessorCustomerId,
   }: {
-    paymentProcessorCustomerId: string,
+    paymentProcessorCustomerId: string;
   }): Promise<string> {
-    const removedPaymentProcessorCustomerId = await PaymentProcessingService.securionPayApi.customers.delete(paymentProcessorCustomerId);
+    const removedPaymentProcessorCustomerId =
+      await PaymentProcessingService.securionPayApi.customers.delete(
+        paymentProcessorCustomerId,
+      );
 
     return removedPaymentProcessorCustomerId;
-  };
+  }
 
   async updateCustomerEmail({
     paymentProcessorCustomerId,
     updatedEmail,
   }: {
-    paymentProcessorCustomerId: string,
-    updatedEmail: string,
+    paymentProcessorCustomerId: string;
+    updatedEmail: string;
   }): Promise<void> {
-    await PaymentProcessingService.securionPayApi.customers.update(paymentProcessorCustomerId, {
-      email: updatedEmail,
-    });
-  };
+    await PaymentProcessingService.securionPayApi.customers.update(
+      paymentProcessorCustomerId,
+      {
+        email: updatedEmail,
+      },
+    );
+  }
 
   //////////////////////////////////////////////////
   // CARDS /////////////////////////////////////////
   //////////////////////////////////////////////////
-
 
   async storeCustomerCreditCard({
     paymentProcessorCustomerId,
@@ -70,8 +71,8 @@ export class PaymentProcessingService {
     CREDIT_CARD_EXPIRATION_MONTH: string;
     CREDIT_CARD_EXPIRATION_YEAR: string;
     CREDIT_CARD_VERIFICATION_CODE: string;
-    CREDIT_CARD_OWNER_NAME: string;    
-    ipAddressOfRequestor: string;    
+    CREDIT_CARD_OWNER_NAME: string;
+    ipAddressOfRequestor: string;
   }): Promise<string> {
     const card = await PaymentProcessingService.securionPayApi.cards.create(
       paymentProcessorCustomerId,
@@ -83,8 +84,9 @@ export class PaymentProcessingService {
         cardholderName: CREDIT_CARD_OWNER_NAME,
         fraudCheckData: {
           ipAddress: ipAddressOfRequestor,
-        }
-    });
+        },
+      },
+    );
 
     return card.id;
   }
@@ -96,10 +98,11 @@ export class PaymentProcessingService {
     paymentProcessorCustomerId: string;
     paymentProcessorCardId: string;
   }): Promise<string> {
-    const deletedPaymentProcessorCardId = await PaymentProcessingService.securionPayApi.cards.delete(
-      paymentProcessorCustomerId,
-      paymentProcessorCardId,
-    );
+    const deletedPaymentProcessorCardId =
+      await PaymentProcessingService.securionPayApi.cards.delete(
+        paymentProcessorCustomerId,
+        paymentProcessorCardId,
+      );
 
     return deletedPaymentProcessorCardId;
   }
@@ -107,7 +110,6 @@ export class PaymentProcessingService {
   //////////////////////////////////////////////////
   // TRANSACTIONS //////////////////////////////////
   //////////////////////////////////////////////////
-
 
   async chargeCustomerWithCachedCreditCard({
     paymentProcessingCustomerId,
@@ -128,5 +130,4 @@ export class PaymentProcessingService {
 
     return charge.id;
   }
-
 }

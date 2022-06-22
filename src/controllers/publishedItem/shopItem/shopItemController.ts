@@ -66,25 +66,31 @@ export class ShopItemController extends Controller {
   public async createShopItem(
     @Request() request: express.Request,
     @FormField() caption: string,
-    @FormField() hashtags: string[],
+    @FormField() hashtags: string, // split by " "
     @FormField() title: string,
-    @FormField() price: number,
-    @FormField() scheduledPublicationTimestamp: number,
-    @FormField() collaboratorUserIds: string[],
+    // @FormField() only supports strings so we'll have to do some parsing
+    // for the following fields
+    @FormField() price: string,
+    @FormField() scheduledPublicationTimestamp: string,
+    @FormField() collaboratorUserIds: string,
     @UploadedFiles() mediaFiles: Express.Multer.File[],
-    @FormField() expirationTimestamp?: number,
+    @FormField() expirationTimestamp?: string, // number
   ): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
     return await handleCreateShopItem({
       controller: this,
       request,
       requestBody: {
         caption,
-        hashtags,
+        hashtags: JSON.parse(hashtags),
         title,
-        price,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        collaboratorUserIds,
+        price: parseInt(price, 10),
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp
+          ? parseInt(scheduledPublicationTimestamp, 10)
+          : undefined,
+          expirationTimestamp: expirationTimestamp
+          ? parseInt(expirationTimestamp, 10)
+          : undefined,
+        collaboratorUserIds: JSON.parse(collaboratorUserIds),
         mediaFiles,
       },
     });

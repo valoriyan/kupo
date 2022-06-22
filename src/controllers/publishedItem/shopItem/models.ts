@@ -1,8 +1,6 @@
 import { MediaElement } from "../../models";
 import { BasePublishedItem, PublishedItemType } from "../models";
 
-
-
 export enum RenderableShopItemType {
   SHOP_ITEM_PREVIEW = "SHOP_ITEM_PREVIEW",
   PURCHASED_SHOP_ITEM_DETAILS = "PURCHASED_SHOP_ITEM_DETAILS",
@@ -14,7 +12,6 @@ export interface BaseShopItem extends BasePublishedItem {
   price: number;
   previewMediaElements: MediaElement[];
 }
-
 
 export interface RootShopItemPreview extends BaseShopItem {
   renderableShopItemType: RenderableShopItemType.SHOP_ITEM_PREVIEW;
@@ -32,4 +29,7 @@ export interface SharedShopItem extends BasePublishedItem {
   sharedItem: RootShopItemPreview | RootPurchasedShopItemDetails;
 }
 
-export type RenderableShopItem = RootShopItemPreview | RootPurchasedShopItemDetails | SharedShopItem;
+export type RenderableShopItem =
+  | RootShopItemPreview
+  | RootPurchasedShopItemDetails
+  | SharedShopItem;

@@ -47,21 +47,21 @@ export async function handleUpdateUserProfile({
     preferredPagePrimaryColor,
   } = requestBody;
 
-  if (!!userEmail) { 
+  if (!!userEmail) {
     const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID({
-        userId: clientUserId,
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+        {
+          userId: clientUserId,
+        },
+      );
+
+    if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+      await controller.paymentProcessingService.updateCustomerEmail({
+        paymentProcessorCustomerId:
+          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID?.paymentProcessorCustomerId,
+        updatedEmail: userEmail,
       });
-
-      if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-        await controller.paymentProcessingService.updateCustomerEmail({
-          paymentProcessorCustomerId: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID?.paymentProcessorCustomerId,
-          updatedEmail: userEmail,
-
-        });
-      }
-
-
+    }
   }
 
   const updatedUnrenderableUser =

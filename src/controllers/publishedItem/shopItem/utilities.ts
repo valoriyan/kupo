@@ -1,7 +1,11 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { Promise as BluebirdPromise } from "bluebird";
-import { RenderableShopItem, RenderableShopItemType, RootShopItemPreview } from "./models";
+import {
+  RenderableShopItem,
+  RenderableShopItemType,
+  RootShopItemPreview,
+} from "./models";
 import { MediaElement } from "../../models";
 import { PublishedItemType, UncompiledBasePublishedItem } from "../models";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
@@ -35,8 +39,8 @@ export async function constructRenderableShopItemFromParts({
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItem,
-  // clientUserId,
-}: {
+}: // clientUserId,
+{
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
@@ -51,9 +55,12 @@ export async function constructRenderableShopItemFromParts({
     expirationTimestamp,
   } = uncompiledBasePublishedItem;
 
-  const dbShopItem = await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId({
-    publishedItemId,
-  });
+  const dbShopItem =
+    await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
+      {
+        publishedItemId,
+      },
+    );
 
   const filedShopItemMediaElements =
     await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemMediaElementsByPublishedItemId(
@@ -84,7 +91,7 @@ export async function constructRenderableShopItemFromParts({
   const hashtags =
     await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
       { publishedItemId },
-  );
+    );
 
   const rootShopItemPreview: RootShopItemPreview = {
     renderableShopItemType: RenderableShopItemType.SHOP_ITEM_PREVIEW,
@@ -109,7 +116,5 @@ export async function constructRenderableShopItemFromParts({
     previewMediaElements,
   };
 
-
   return rootShopItemPreview;
 }
-

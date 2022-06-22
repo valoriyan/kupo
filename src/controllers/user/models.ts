@@ -29,7 +29,8 @@ export interface UnrenderableUser_WITH_PASSWORD extends UnrenderableUser {
   encryptedPassword?: string;
 }
 
-export interface UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID extends UnrenderableUser {
+export interface UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID
+  extends UnrenderableUser {
   paymentProcessorCustomerId: string;
 }
 

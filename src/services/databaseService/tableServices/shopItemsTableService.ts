@@ -11,7 +11,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBShopItem {
   published_item_id: string;
   title: string;
-  price: string;  
+  price: string;
 }
 
 export class ShopItemsTableService extends TableService {
@@ -108,7 +108,6 @@ export class ShopItemsTableService extends TableService {
       .map((_, index) => `$${index + 1}`)
       .join(", ");
 
-
     const query = {
       text: `
         SELECT
@@ -126,8 +125,6 @@ export class ShopItemsTableService extends TableService {
 
     return response.rows;
   }
-
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////

@@ -40,7 +40,6 @@ export class HashtagsTableService extends TableService {
     hashtags: string[];
     publishedItemId: string;
   }): Promise<void> {
-
     if (hashtags.length === 0) {
       return;
     }
@@ -113,7 +112,11 @@ export class HashtagsTableService extends TableService {
     return publishedItemIds;
   }
 
-  public async getHashtagsForPublishedItemId({ publishedItemId }: { publishedItemId: string }): Promise<string[]> {
+  public async getHashtagsForPublishedItemId({
+    publishedItemId,
+  }: {
+    publishedItemId: string;
+  }): Promise<string[]> {
     const query = {
       text: `
         SELECT

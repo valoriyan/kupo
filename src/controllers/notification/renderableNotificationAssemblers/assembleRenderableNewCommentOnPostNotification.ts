@@ -36,9 +36,11 @@ export async function assembleRenderableNewCommentOnPostNotification({
   });
 
   const unrenderablePostWithoutElementsOrHashtags =
-    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById({
-      id: postComment.postId,
-    });
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      {
+        id: postComment.postId,
+      },
+    );
 
   const post = await constructRenderablePostFromParts({
     blobStorageService,

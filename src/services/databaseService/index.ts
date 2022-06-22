@@ -31,7 +31,9 @@ export class DatabaseService {
 
   public tableNameToServicesMap = {
     usersTableService: new UsersTableService(DatabaseService.datastorePool),
-    publishedItemsTableService: new PublishedItemsTableService(DatabaseService.datastorePool),
+    publishedItemsTableService: new PublishedItemsTableService(
+      DatabaseService.datastorePool,
+    ),
     postContentElementsTableService: new PostContentElementsTableService(
       DatabaseService.datastorePool,
     ),
@@ -53,7 +55,9 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     savedItemsTableService: new SavedItemsTableService(DatabaseService.datastorePool),
-    storedCreditCardDataTableService: new StoredCreditCardDataTableService(DatabaseService.datastorePool),
+    storedCreditCardDataTableService: new StoredCreditCardDataTableService(
+      DatabaseService.datastorePool,
+    ),
   };
 
   static async start(): Promise<void> {

@@ -8,7 +8,10 @@ import {
 } from "./utilities";
 import { assertIsNumber } from "./utilities/validations";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
-import { PublishedItemType, UncompiledBasePublishedItem } from "../../../controllers/publishedItem/models";
+import {
+  PublishedItemType,
+  UncompiledBasePublishedItem,
+} from "../../../controllers/publishedItem/models";
 
 interface DBPublishedItem {
   type: PublishedItemType;
@@ -30,7 +33,9 @@ function convertDBPublishedItemToUncompiledBasePublishedItem(
     authorUserId: dbPublishedItem.author_user_id,
     caption: dbPublishedItem.caption,
     creationTimestamp: parseInt(dbPublishedItem.creation_timestamp),
-    scheduledPublicationTimestamp: parseInt(dbPublishedItem.scheduled_publication_timestamp),
+    scheduledPublicationTimestamp: parseInt(
+      dbPublishedItem.scheduled_publication_timestamp,
+    ),
     expirationTimestamp: !!dbPublishedItem.expiration_timestamp
       ? parseInt(dbPublishedItem.expiration_timestamp)
       : undefined,
@@ -78,7 +83,7 @@ export class PublishedItemsTableService extends TableService {
     expirationTimestamp,
     idOfPublishedItemBeingShared,
   }: {
-    type: PublishedItemType,
+    type: PublishedItemType;
     publishedItemId: string;
     creationTimestamp: number;
     authorUserId: string;
@@ -87,7 +92,6 @@ export class PublishedItemsTableService extends TableService {
     expirationTimestamp?: number;
     idOfPublishedItemBeingShared?: string;
   }): Promise<void> {
-
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
@@ -101,7 +105,10 @@ export class PublishedItemsTableService extends TableService {
             value: scheduledPublicationTimestamp,
           },
           { field: "expiration_timestamp", value: expirationTimestamp },
-          { field: "id_of_published_item_being_shared", value: idOfPublishedItemBeingShared },
+          {
+            field: "id_of_published_item_being_shared",
+            value: idOfPublishedItemBeingShared,
+          },
         ],
       ],
       tableName: this.tableName,
@@ -130,7 +137,7 @@ export class PublishedItemsTableService extends TableService {
     const queryValues: (string | number)[] = [authorUserId];
     const currentTimestamp = Date.now();
 
-    let typeConstraintClause = ""
+    let typeConstraintClause = "";
     if (!!type) {
       queryValues.push(type);
       typeConstraintClause = `
@@ -138,7 +145,6 @@ export class PublishedItemsTableService extends TableService {
           type = $${queryValues.length + 1}
       `;
     }
-
 
     let filteringWhereClause = "";
     if (!!filterOutExpiredAndUnscheduledPublishedItems) {
@@ -218,10 +224,13 @@ export class PublishedItemsTableService extends TableService {
     assertIsNumber(rangeEndTimestamp);
     assertIsNumber(rangeStartTimestamp);
 
-    const queryValues: (string | number)[] = [creatorUserId, rangeStartTimestamp, rangeEndTimestamp];
+    const queryValues: (string | number)[] = [
+      creatorUserId,
+      rangeStartTimestamp,
+      rangeEndTimestamp,
+    ];
 
-
-    let typeConstraintClause = ""
+    let typeConstraintClause = "";
     if (!!type) {
       queryValues.push(type);
       typeConstraintClause = `
@@ -229,7 +238,6 @@ export class PublishedItemsTableService extends TableService {
           type = $${queryValues.length + 1}
       `;
     }
-
 
     const query = {
       text: `
@@ -273,7 +281,7 @@ export class PublishedItemsTableService extends TableService {
 
     const queryValues: Array<string | number> = [...creatorUserIds, pageSize];
 
-    let typeConstraintClause = ""
+    let typeConstraintClause = "";
     if (!!type) {
       queryValues.push(type);
       typeConstraintClause = `
@@ -360,9 +368,7 @@ export class PublishedItemsTableService extends TableService {
       return [];
     }
 
-    const idsQueryString = `( ${ids
-      .map((_, index) => `$${index + 1}`)
-      .join(", ")} )`;
+    const idsQueryString = `( ${ids.map((_, index) => `$${index + 1}`).join(", ")} )`;
 
     let limitClause = "";
     if (!!limit) {
@@ -412,10 +418,9 @@ export class PublishedItemsTableService extends TableService {
     captionSubstring: string;
     type?: PublishedItemType;
   }): Promise<UncompiledBasePublishedItem[]> {
-    
     const queryValues = [captionSubstring];
 
-    let typeConstraintClause = ""
+    let typeConstraintClause = "";
     if (!!type) {
       queryValues.push(type);
       typeConstraintClause = `
@@ -423,7 +428,6 @@ export class PublishedItemsTableService extends TableService {
           type = $${queryValues.length + 1}
       `;
     }
-
 
     const query: QueryConfig = {
       text: `

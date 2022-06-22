@@ -69,7 +69,7 @@ export class StoredCreditCardDataTableService extends TableService {
   }: {
     userId: string;
     localCreditCardId: string;
-    creditCardLastFourDigits: string,
+    creditCardLastFourDigits: string;
     paymentProcessorCustomerId: string;
     paymentProcessorCardId: string;
     creationTimestamp: number;
@@ -113,7 +113,9 @@ export class StoredCreditCardDataTableService extends TableService {
       values: [localCreditCardId],
     };
 
-    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(query);
+    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(
+      query,
+    );
 
     return response.rows[0];
   }
@@ -136,11 +138,12 @@ export class StoredCreditCardDataTableService extends TableService {
       values: [userId],
     };
 
-    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(query);
+    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(
+      query,
+    );
 
     return response.rows.map(convertDBStoredCreditCardDatumToCreditCardSummary);
   }
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
@@ -159,13 +162,15 @@ export class StoredCreditCardDataTableService extends TableService {
   }): Promise<DBStoredCreditCardDatum> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
-          { field: "user_id", value: userId },
-          { field: "local_credit_card_id", value: localCreditCardId },
-        ],
+        { field: "user_id", value: userId },
+        { field: "local_credit_card_id", value: localCreditCardId },
+      ],
       tableName: this.tableName,
     });
 
-    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(query);
+    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(
+      query,
+    );
 
     if (response.rows.length < 1) {
       throw new Error("Missing cached credit card - none to delete");

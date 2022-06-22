@@ -58,7 +58,13 @@ export class ShopItemMediaElementsTableService extends TableService {
     }[];
   }): Promise<void> {
     const rowsOfFieldsAndValues = shopItemMediaElements.map(
-      ({ publishedItemId, shopItemElementIndex, shopItemType, blobFileKey, mimetype }) => [
+      ({
+        publishedItemId,
+        shopItemElementIndex,
+        shopItemType,
+        blobFileKey,
+        mimetype,
+      }) => [
         { field: "published_item_id", value: publishedItemId },
         {
           field: "shop_item_element_index",
@@ -138,7 +144,9 @@ export class ShopItemMediaElementsTableService extends TableService {
     }[]
   > {
     const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [{ field: "published_item_id", value: publishedItemId }],
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "published_item_id", value: publishedItemId },
+      ],
       tableName: this.tableName,
     });
 

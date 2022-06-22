@@ -83,8 +83,6 @@ function convertDBUserToUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
   };
 }
 
-
-
 function convertDBUserToUnrenderableUser_WITH_PASSWORD(
   dbUser: DBUser,
 ): UnrenderableUser_WITH_PASSWORD {
@@ -169,14 +167,11 @@ export class UsersTableService extends TableService {
           { field: "encrypted_password", value: encryptedPassword },
           { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
 
-
-
           { field: "payment_processor_customer_id", value: paymentProcessorCustomerId },
 
           { field: "creation_timestamp", value: creationTimestamp },
 
           { field: "is_admin", value: is_admin_value },
-
         ],
       ],
       tableName: this.tableName,

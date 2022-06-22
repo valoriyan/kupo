@@ -5,13 +5,11 @@ import { ShopItemController } from "../shopItemController";
 import { CreditCardSummary } from "./models";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GetCreditCardsStoredByUserIdRequestBody {
-}
+export interface GetCreditCardsStoredByUserIdRequestBody {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetCreditCardsStoredByUserIdSuccess {
-  cards: CreditCardSummary[],
-
+  cards: CreditCardSummary[];
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetCreditCardsStoredByUserIdFailed {}
@@ -23,19 +21,25 @@ export async function handleGetCreditCardsStoredByUserId({
   controller: ShopItemController;
   request: express.Request;
   requestBody: GetCreditCardsStoredByUserIdRequestBody;
-}): Promise<SecuredHTTPResponse<GetCreditCardsStoredByUserIdFailed, GetCreditCardsStoredByUserIdSuccess>> {
-
+}): Promise<
+  SecuredHTTPResponse<
+    GetCreditCardsStoredByUserIdFailed,
+    GetCreditCardsStoredByUserIdSuccess
+  >
+> {
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-
-  const creditCardSummaries = await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId({
-    userId: clientUserId,
-  });
+  const creditCardSummaries =
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
+      {
+        userId: clientUserId,
+      },
+    );
 
   return {
     success: {
       cards: creditCardSummaries,
-    }
+    },
   };
 }

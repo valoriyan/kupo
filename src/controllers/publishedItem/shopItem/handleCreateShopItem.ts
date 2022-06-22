@@ -8,11 +8,16 @@ import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
 import { PublishedItemType } from "../models";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 
+export enum CreateShopItemFailedReason {
+  UnknownCause = "Unknown Cause",
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CreateShopItemSuccess {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CreateShopItemFailed {}
+export interface CreateShopItemFailed {
+  reason: CreateShopItemFailedReason;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
@@ -20,9 +25,9 @@ interface HandlerRequestBody {
   hashtags: string[];
   title: string;
   price: number;
-  scheduledPublicationTimestamp: number;
+  collaboratorUserIds: string[];
+  scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
-  collaboratorUserIds?: string[];
   mediaFiles: Express.Multer.File[];
 }
 
@@ -49,79 +54,87 @@ export async function handleCreateShopItem({
   } = requestBody;
 
   const publishedItemId = uuidv4();
-  const creationTimestamp = Date.now();
-
-  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
-    type: PublishedItemType.SHOP_ITEM,
-    publishedItemId,
-    creationTimestamp,
-    authorUserId: clientUserId,
-    caption,
-    scheduledPublicationTimestamp,
-    expirationTimestamp,
-  });
-
-  await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
-    {
+  const now = Date.now();
+ 
+  try {
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
+      type: PublishedItemType.SHOP_ITEM,
       publishedItemId,
-      title: title,
-      price: price,
-    },
-  );
-
-
-
-  const shopItemMediaElements = await BluebirdPromise.map(
-    mediaFiles,
-    async (
-      mediaFile,
-      index,
-    ): Promise<{
-      publishedItemId: string;
-      shopItemElementIndex: number;
-      blobFileKey: string;
-      fileTemporaryUrl: string;
-      mimetype: string;
-    }> => {
-      const { blobFileKey, fileTemporaryUrl, mimetype } = await uploadMediaFile({
-        file: mediaFile,
-        blobStorageService: controller.blobStorageService,
-      });
-
-      return {
+      creationTimestamp: now,
+      authorUserId: clientUserId,
+      caption,
+      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+      expirationTimestamp,
+    });
+  
+    await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
+      {
         publishedItemId,
-        shopItemElementIndex: index,
-        blobFileKey,
-        fileTemporaryUrl,
-        mimetype,
-      };
-    },
-  );
-
-  const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
-
-  await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
-    {
-      hashtags: lowerCaseHashtags,
-      publishedItemId,
-    },
-  );
-
-  await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
-    {
-      shopItemMediaElements: shopItemMediaElements.map(
-        ({ publishedItemId, shopItemElementIndex, blobFileKey, mimetype }) => ({
+        title: title,
+        price: price,
+      },
+    );
+  
+  
+  
+    const shopItemMediaElements = await BluebirdPromise.map(
+      mediaFiles,
+      async (
+        mediaFile,
+        index,
+      ): Promise<{
+        publishedItemId: string;
+        shopItemElementIndex: number;
+        blobFileKey: string;
+        fileTemporaryUrl: string;
+        mimetype: string;
+      }> => {
+        const { blobFileKey, fileTemporaryUrl, mimetype } = await uploadMediaFile({
+          file: mediaFile,
+          blobStorageService: controller.blobStorageService,
+        });
+  
+        return {
           publishedItemId,
-          shopItemElementIndex,
-          shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
+          shopItemElementIndex: index,
           blobFileKey,
+          fileTemporaryUrl,
           mimetype,
-        }),
-      ),
-    },
-  );
+        };
+      },
+    );
+  
+    const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
+  
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
+      {
+        hashtags: lowerCaseHashtags,
+        publishedItemId,
+      },
+    );
+  
+    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
+      {
+        shopItemMediaElements: shopItemMediaElements.map(
+          ({ publishedItemId, shopItemElementIndex, blobFileKey, mimetype }) => ({
+            publishedItemId,
+            shopItemElementIndex,
+            shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
+            blobFileKey,
+            mimetype,
+          }),
+          ),
+        },
+      );
+    
+  
+      return { success: {} };    
+  }
 
 
-
-  return {};
+  catch (e) {
+    console.log("error", error);
+    controller.setStatus(500);
+    return { error: { reason: CreateShopItemFailedReason.UnknownCause } };
+  }
 }
