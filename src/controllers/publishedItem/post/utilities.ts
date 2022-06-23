@@ -56,60 +56,63 @@ export async function constructRenderablePostFromParts({
       blobStorageService,
       databaseService,
       uncompiledBasePublishedItem,
-      clientUserId,    
+      clientUserId,
     });
 
     return rootRenderablePost;
   } else {
-    const uncompiledSharedBasePublishedItem = await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById({
-      id:idOfPublishedItemBeingShared
-    });
+    const uncompiledSharedBasePublishedItem =
+      await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+        {
+          id: idOfPublishedItemBeingShared,
+        },
+      );
 
-    const sharedRootRenderablePost: RootRenderablePost = await assembleRootRenderablePost({
-      blobStorageService,
-      databaseService,
-      uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
-      clientUserId,    
-    });
-
+    const sharedRootRenderablePost: RootRenderablePost = await assembleRootRenderablePost(
+      {
+        blobStorageService,
+        databaseService,
+        uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
+        clientUserId,
+      },
+    );
 
     const hashtags =
-    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
-      { publishedItemId: id },
-    );
-  
-  const countOfLikesOnPost =
-    await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
-      {
-        postId: id,
-      },
-    );
-  
-  const countOfCommentsOnPost =
-    await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
-      {
-        postId: id,
-      },
-    );
-  
-  const isLikedByClient =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
-      {
-        userId: clientUserId,
-        postId: id,
-      },
-    ));
-  
-  const isSavedByClient =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-      {
-        userId: clientUserId,
-        publishedItemId: id,
-      },
-    ));
+      await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
+        { publishedItemId: id },
+      );
 
+    const countOfLikesOnPost =
+      await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
+        {
+          postId: id,
+        },
+      );
+
+    const countOfCommentsOnPost =
+      await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
+        {
+          postId: id,
+        },
+      );
+
+    const isLikedByClient =
+      !!clientUserId &&
+      (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
+        {
+          userId: clientUserId,
+          postId: id,
+        },
+      ));
+
+    const isSavedByClient =
+      !!clientUserId &&
+      (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
+        {
+          userId: clientUserId,
+          publishedItemId: id,
+        },
+      ));
 
     const sharedRenderablePost: SharedRenderablePost = {
       type: PublishedItemType.POST,
@@ -132,9 +135,7 @@ export async function constructRenderablePostFromParts({
       sharedItem: sharedRootRenderablePost,
     };
     return sharedRenderablePost;
-
   }
-
 }
 
 async function assembleRootRenderablePost({
@@ -161,44 +162,44 @@ async function assembleRootRenderablePost({
     publishedItemId: id,
     blobStorageService,
     databaseService,
-    });
+  });
 
-const hashtags =
-  await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
-    { publishedItemId: id },
-  );
+  const hashtags =
+    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
+      { publishedItemId: id },
+    );
 
-const countOfLikesOnPost =
-  await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
-    {
-      postId: id,
-    },
-  );
+  const countOfLikesOnPost =
+    await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
+      {
+        postId: id,
+      },
+    );
 
-const countOfCommentsOnPost =
-  await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
-    {
-      postId: id,
-    },
-  );
+  const countOfCommentsOnPost =
+    await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
+      {
+        postId: id,
+      },
+    );
 
-const isLikedByClient =
-  !!clientUserId &&
-  (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
-    {
-      userId: clientUserId,
-      postId: id,
-    },
-  ));
+  const isLikedByClient =
+    !!clientUserId &&
+    (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
+      {
+        userId: clientUserId,
+        postId: id,
+      },
+    ));
 
-const isSavedByClient =
-  !!clientUserId &&
-  (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-    {
-      userId: clientUserId,
-      publishedItemId: id,
-    },
-  ));
+  const isSavedByClient =
+    !!clientUserId &&
+    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
+      {
+        userId: clientUserId,
+        publishedItemId: id,
+      },
+    ));
 
   const rootRenderablePost: RootRenderablePost = {
     type: PublishedItemType.POST,
@@ -229,8 +230,8 @@ export async function assemblePostMediaElements({
   databaseService,
 }: {
   publishedItemId: string;
-  blobStorageService: BlobStorageServiceInterface,
-  databaseService: DatabaseService,
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
 }) {
   const filedPostMediaElements =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
@@ -238,7 +239,6 @@ export async function assemblePostMediaElements({
         postId: publishedItemId,
       },
     );
-
 
   const mediaElements: MediaElement[] = await BluebirdPromise.map(
     filedPostMediaElements,
@@ -257,7 +257,6 @@ export async function assemblePostMediaElements({
   );
 
   return mediaElements;
-
 }
 
 export function mergeArraysOfUncompiledBasePublishedItem({

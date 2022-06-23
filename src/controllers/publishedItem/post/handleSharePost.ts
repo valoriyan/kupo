@@ -121,7 +121,7 @@ export async function handleSharePost({
           },
           isLikedByClient: false,
           isSavedByClient: false,
-          sharedItem: (renderableSharedPost as RootRenderablePost),
+          sharedItem: renderableSharedPost as RootRenderablePost,
         },
       },
     };
