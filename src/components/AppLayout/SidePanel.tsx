@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
-import { logout } from "#/contexts/auth";
 import { setPreviousLocationForMessages } from "#/pages/messages";
 import { setPreviousLocationForMyLists } from "#/pages/my-lists";
 import { setPreviousLocationForSettings } from "#/pages/settings";
@@ -20,10 +19,11 @@ import {
 } from "../Icons";
 import { Flex, Stack } from "../Layout";
 import { LoadingArea } from "../LoadingArea";
+import { openLogOutModal } from "../LogOutModal";
 import { ScrollArea } from "../ScrollArea";
+import { NotificationsIndicator } from "./NotificationsIndicator";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
-import { NotificationsIndicator } from "./NotificationsIndicator";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
@@ -112,7 +112,7 @@ export const SidePanel = () => {
             <NavItem
               as="button"
               css={{ color: "$secondaryText", pb: "$8" }}
-              onClick={logout}
+              onClick={() => openLogOutModal()}
             >
               <LogOutIcon />
               <div>Log Out</div>

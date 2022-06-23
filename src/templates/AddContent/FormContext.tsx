@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import create from "zustand";
 import createContext from "zustand/context";
+import { RenderableUser } from "#/api";
 
 export interface Media {
   file: File;
@@ -19,6 +20,20 @@ export interface FormState {
   mediaFiles: Media[];
   addMedia: (media: Media) => void;
   getMediaActions: (media: Media) => {
+    moveUp: () => void;
+    moveDown: () => void;
+    delete: () => void;
+  };
+  // Shop Item Exclusive Fields
+  title: string;
+  setTitle: (title: string) => void;
+  price: number;
+  setPrice: (price: number) => void;
+  collaboratorUsers: RenderableUser[];
+  setCollaboratorUsers: (collaboratorUsers: RenderableUser[]) => void;
+  purchasedMediaFiles: Media[];
+  addPurchasedMedia: (media: Media) => void;
+  getPurchasedMediaActions: (media: Media) => {
     moveUp: () => void;
     moveDown: () => void;
     delete: () => void;
@@ -74,6 +89,52 @@ const createFormStateStore = () =>
         set((prev) => ({
           ...prev,
           mediaFiles: prev.mediaFiles.filter((curMedia) => curMedia.src !== media.src),
+        })),
+    }),
+
+    title: "",
+    setTitle: (title) => set({ title }),
+
+    price: 0,
+    setPrice: (price) => set({ price }),
+
+    collaboratorUsers: [],
+    setCollaboratorUsers: (collaboratorUsers) => set({ collaboratorUsers }),
+
+    purchasedMediaFiles: [],
+
+    addPurchasedMedia: (media) => {
+      set((prev) => ({
+        ...prev,
+        purchasedMediaFiles: [...prev.purchasedMediaFiles, media],
+      }));
+    },
+
+    getPurchasedMediaActions: (media) => ({
+      moveUp: () =>
+        set((prev) => {
+          const next = [...prev.purchasedMediaFiles];
+          const currentIndex = next.findIndex((curMedia) => curMedia.src === media.src);
+          if (currentIndex === 0) return prev;
+          next.splice(currentIndex, 1);
+          next.splice(currentIndex - 1, 0, media);
+          return { ...prev, purchasedMediaFiles: next };
+        }),
+      moveDown: () =>
+        set((prev) => {
+          const next = [...prev.purchasedMediaFiles];
+          const currentIndex = next.findIndex((curMedia) => curMedia.src === media.src);
+          if (currentIndex === next.length - 1) return prev;
+          next.splice(currentIndex, 1);
+          next.splice(currentIndex + 1, 0, media);
+          return { ...prev, purchasedMediaFiles: next };
+        }),
+      delete: () =>
+        set((prev) => ({
+          ...prev,
+          purchasedMediaFiles: prev.purchasedMediaFiles.filter(
+            (curMedia) => curMedia.src !== media.src,
+          ),
         })),
     }),
   }));

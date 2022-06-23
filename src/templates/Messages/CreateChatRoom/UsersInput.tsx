@@ -17,6 +17,7 @@ export interface UsersInputProps {
   usernames: string[];
   setUsernames: Dispatch<SetStateAction<string[]>>;
   resolvedUsers: RenderableUser[];
+  noBg?: boolean;
 }
 
 export const UsersInput = (props: UsersInputProps) => {
@@ -67,7 +68,7 @@ export const UsersInput = (props: UsersInputProps) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper hasBg={!props.noBg}>
       {props.usernames.map((username) => {
         const user = props.resolvedUsers.find(
           (resolvedUser) => resolvedUser.username === username,
@@ -103,14 +104,22 @@ export const UsersInput = (props: UsersInputProps) => {
 const Wrapper = styled(Flex, {
   flexWrap: "wrap",
   gap: "$3",
-  bg: "$background2",
-  p: "$4",
-  borderBottom: "solid $borderWidths$1 $border",
-  transition: "border-color $1 ease",
 
-  "&:focus-within": {
-    outline: "none",
-    borderColor: "$primary",
+  variants: {
+    hasBg: {
+      true: {
+        bg: "$background2",
+        p: "$4",
+        borderBottom: "solid $borderWidths$1 $border",
+        transition: "border-color $1 ease",
+
+        "&:focus-within": {
+          outline: "none",
+          borderColor: "$primary",
+        },
+        "> input": { "&:focus": { outline: "none" } },
+      },
+    },
   },
 });
 
@@ -123,5 +132,4 @@ const Input = styled("input", {
   lineHeight: 1.5,
 
   "&::placeholder": { color: "$secondaryText" },
-  "&:focus": { outline: "none" },
 });

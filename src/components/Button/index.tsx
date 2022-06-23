@@ -30,6 +30,7 @@ export const Button = styled("button", {
     variant: {
       primary: {},
       secondary: { bg: "$text", color: "$inverseText" },
+      danger: { bg: "$failure", color: "$accentText" },
     },
     outlined: { true: {} },
     size: {
@@ -81,6 +82,22 @@ export const Button = styled("button", {
           borderColor: "$text",
           color: "$text",
           filter: "opacity(0.5)",
+        },
+      },
+    },
+    {
+      variant: "danger",
+      outlined: true,
+      css: {
+        bg: "transparent",
+        borderStyle: "solid",
+        borderWidth: "$1",
+        borderColor: "$failure",
+        color: "$failure",
+        "&:disabled": {
+          bg: "transparent",
+          borderColor: "$disabled",
+          color: "$disabledText",
         },
       },
     },

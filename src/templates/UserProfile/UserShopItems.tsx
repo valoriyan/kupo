@@ -1,5 +1,5 @@
 import { RenderableUser } from "#/api";
-import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
+import { useGetPageOfShopItemsByUserId } from "#/api/queries/shopItems/useGetPageOfShopItemsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
@@ -7,13 +7,13 @@ import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
 import { goToPostPage } from "#/templates/SinglePost";
 
-export interface UserPostsProps {
+export interface UserShopItemsProps {
   user: RenderableUser;
 }
 
-export const UserPosts = ({ user }: UserPostsProps) => {
+export const UserShopItems = ({ user }: UserShopItemsProps) => {
   const { data, isLoading, error, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useGetPageOfPostsByUserId({ userId: user.userId });
+    useGetPageOfShopItemsByUserId({ userId: user.userId });
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;
@@ -27,16 +27,31 @@ export const UserPosts = ({ user }: UserPostsProps) => {
     );
   }
 
-  const posts = data.pages.flatMap((page) => page.posts);
+  const shopItems = data.pages
+    .flatMap((page) => page.shopItems)
+    .map((shopItem) => ({
+      postId: shopItem.shopItemId,
+      authorUserId: shopItem.authorUserId,
+      caption: shopItem.description,
+      creationTimestamp: shopItem.creationTimestamp,
+      scheduledPublicationTimestamp: shopItem.scheduledPublicationTimestamp,
+      expirationTimestamp: shopItem.expirationTimestamp,
+      mediaElements: shopItem.mediaElements,
+      hashtags: shopItem.hashtags,
+      likes: { count: 0 },
+      comments: { count: 0 },
+      isLikedByClient: false,
+      isSavedByClient: false,
+    }));
 
-  return posts.length === 0 ? (
-    <ErrorMessage>No Posts Yet</ErrorMessage>
+  return shopItems.length === 0 ? (
+    <ErrorMessage>No Shop Items Yet</ErrorMessage>
   ) : (
     <InfiniteScrollArea
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={posts.map((post) => (
+      items={shopItems.map((post) => (
         <Post
           key={post.postId}
           post={post}

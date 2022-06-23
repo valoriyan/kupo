@@ -11,6 +11,7 @@ import { SessionStorageItem } from "#/utils/storage";
 import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
 import { NewPost } from "./NewPost";
+import { NewShopItem } from "./NewShopItem";
 
 const previousLocation = SessionStorageItem<string>("add-content");
 
@@ -69,7 +70,7 @@ export const AddContent = () => {
       bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
       break;
     case AddContentScreen.ShopItem:
-      bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
+      bodyNode = <NewShopItem setAdditionalScreen={setAdditionalScreen} />;
       break;
     // case AddContentScreen.PostSchedule:
     //   bodyNode = <PostSchedule calendarState={calendarState} />;
