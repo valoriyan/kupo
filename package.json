@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "git add -A; git commit -m 'deploy'; git push heroku main --force",
+    "deploy": "heroku git:remote -a kupono-beta-frontend; git add -A; git commit -m 'deploy'; git push heroku main --force",
     "generate:api": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node --script-mode --files ./codegen/generateApiClient.ts",
     "generate:icons": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node --script-mode --files ./codegen/generateIcons.ts",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",
