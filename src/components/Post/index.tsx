@@ -33,9 +33,11 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
 
   const [currentMediaElement, setCurrentMediaElement] = useState<
     MediaElement | undefined
-  >(mediaElements.length > 0 ? mediaElements[0] : undefined);
+  >(mediaElements && mediaElements.length > 0 ? mediaElements[0] : undefined);
 
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
+
+  console.log("POST", post);
 
   return (
     <Box>
