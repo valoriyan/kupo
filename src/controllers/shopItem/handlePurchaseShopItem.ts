@@ -22,10 +22,7 @@ export async function handlePurchaseShopItem({
   request: express.Request;
   requestBody: PurchaseShopItemRequestBody;
 }): Promise<SecuredHTTPResponse<PurchaseShopItemFailed, PurchaseShopItemSuccess>> {
-  const {
-    publishedItemId,
-    localCreditCardId,
-  } = requestBody;
+  const { publishedItemId, localCreditCardId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -41,7 +38,10 @@ export async function handlePurchaseShopItem({
         { publishedItemId },
       );
 
-    const dbStoredCreditCardDatum = await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getStoredCreditCardByLocalId({localCreditCardId});
+    const dbStoredCreditCardDatum =
+      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getStoredCreditCardByLocalId(
+        { localCreditCardId },
+      );
 
     console.log("unrenderableShopItemPreview", unrenderableShopItemPreview);
 
@@ -49,7 +49,8 @@ export async function handlePurchaseShopItem({
     const chargeAmountMinorCurrencyUnits = parseInt(chargeAmountMajorCurrencyUnits) * 100;
 
     await controller.paymentProcessingService.chargeCustomerWithCachedCreditCard({
-      paymentProcessingCustomerId: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+      paymentProcessingCustomerId:
+        unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
       paymentProcessingCreditCardId: dbStoredCreditCardDatum.payment_processor_card_id,
       chargeAmount: chargeAmountMinorCurrencyUnits,
     });

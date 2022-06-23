@@ -1,12 +1,12 @@
 import express from "express";
-import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "../publishedItem/post/models";
-import { getEncodedCursorOfNextPageOfSequentialItems } from "../publishedItem/post/pagination/utilities";
-import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
-import { decodeTimestampCursor } from "../utilities/pagination";
-import { SecuredHTTPResponse } from "./../../types/httpResponse";
-import { SavedItemType } from "./models";
-import { UserInteractionController } from "./userInteractionController";
+import { checkAuthorization } from "../../auth/utilities";
+import { PublishedItemType } from "../models";
+import { RenderablePost } from "./models";
+import { getEncodedCursorOfNextPageOfSequentialItems } from "./pagination/utilities";
+import { constructRenderablePostsFromParts } from "./utilities";
+import { decodeTimestampCursor } from "../../utilities/pagination";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { PostController } from "./postController";
 
 export interface GetPageOfSavedPostsRequestBody {
   cursor?: string;
@@ -32,7 +32,7 @@ export async function handleGetPageOfSavedPosts({
   request,
   requestBody,
 }: {
-  controller: UserInteractionController;
+  controller: PostController;
   request: express.Request;
   requestBody: GetPageOfSavedPostsRequestBody;
 }): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
@@ -54,21 +54,22 @@ export async function handleGetPageOfSavedPosts({
       },
     );
 
-  const postIds = db_saved_items
-    .filter(({ item_type }) => item_type === SavedItemType.post)
-    .map(({ item_id }) => item_id);
+  const publishedItemIds = db_saved_items.map((db_saved_item) => db_saved_item.published_item_id);
 
-  const unrenderablePostsWithoutElementsOrHashtags =
+
+  const uncompiledBasePublishedItems =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
-        ids: postIds,
+        ids: publishedItemIds,
       },
     );
+
+  const uncompiledSavedPosts = uncompiledBasePublishedItems.filter((uncompiledBasePublishedItem) => uncompiledBasePublishedItem.type === PublishedItemType.POST);
 
   const posts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
+    uncompiledBasePublishedItems: uncompiledSavedPosts,
     clientUserId,
   });
 
@@ -77,7 +78,7 @@ export async function handleGetPageOfSavedPosts({
       posts,
       previousPageCursor: requestBody.cursor,
       nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
-        sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
+        sequentialFeedItems: posts,
       }),
     },
   };

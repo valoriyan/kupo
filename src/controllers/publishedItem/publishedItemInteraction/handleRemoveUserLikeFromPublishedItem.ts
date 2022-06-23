@@ -1,34 +1,34 @@
 import express from "express";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { HTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
-import { UnrenderableCanceledNewLikeOnPostNotification } from "../notification/models/unrenderableCanceledUserNotifications";
-import { UserInteractionController } from "./userInteractionController";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { HTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
+import { UnrenderableCanceledNewLikeOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
+import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
-export interface RemoveUserLikeFromPostRequestBody {
-  postId: string;
+export interface RemoveUserLikeFromPublishedItemRequestBody {
+  publishedItemId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SuccessfullyRemovedUserLikeFromPostResponse {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToRemoveUserLikeFromPostResponse {}
+export interface FailedToRemoveUserLikeFromPublishedItemResponse {}
 
-export async function handleRemoveUserLikeFromPost({
+export async function handleRemoveUserLikeFromPublishedItem({
   controller,
   request,
   requestBody,
 }: {
-  controller: UserInteractionController;
+  controller: PublishedItemInteractionController;
   request: express.Request;
-  requestBody: RemoveUserLikeFromPostRequestBody;
+  requestBody: RemoveUserLikeFromPublishedItemRequestBody;
 }): Promise<
   HTTPResponse<
-    FailedToRemoveUserLikeFromPostResponse,
+    FailedToRemoveUserLikeFromPublishedItemResponse,
     SuccessfullyRemovedUserLikeFromPostResponse
   >
 > {
-  const { postId } = requestBody;
+  const { publishedItemId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -36,14 +36,14 @@ export async function handleRemoveUserLikeFromPost({
   const deletedPostLike =
     await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
       {
-        postId,
+        postId: publishedItemId,
         userId: clientUserId,
       },
     );
 
   const unrenderablePost =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: postId },
+      { id: publishedItemId },
     );
 
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
@@ -64,7 +64,7 @@ export async function handleRemoveUserLikeFromPost({
       countOfUnreadNotifications,
       type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_POST,
       userIdUnlikingPost: clientUserId,
-      postId,
+      postId: publishedItemId,
     };
 
   await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewLikeOnPost(

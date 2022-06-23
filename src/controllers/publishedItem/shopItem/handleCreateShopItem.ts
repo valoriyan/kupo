@@ -55,18 +55,20 @@ export async function handleCreateShopItem({
 
   const publishedItemId = uuidv4();
   const now = Date.now();
- 
+
   try {
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
-      type: PublishedItemType.SHOP_ITEM,
-      publishedItemId,
-      creationTimestamp: now,
-      authorUserId: clientUserId,
-      caption,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-      expirationTimestamp,
-    });
-  
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
+      {
+        type: PublishedItemType.SHOP_ITEM,
+        publishedItemId,
+        creationTimestamp: now,
+        authorUserId: clientUserId,
+        caption,
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+        expirationTimestamp,
+      },
+    );
+
     await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
       {
         publishedItemId,
@@ -74,9 +76,7 @@ export async function handleCreateShopItem({
         price: price,
       },
     );
-  
-  
-  
+
     const shopItemMediaElements = await BluebirdPromise.map(
       mediaFiles,
       async (
@@ -93,7 +93,7 @@ export async function handleCreateShopItem({
           file: mediaFile,
           blobStorageService: controller.blobStorageService,
         });
-  
+
         return {
           publishedItemId,
           shopItemElementIndex: index,
@@ -103,16 +103,16 @@ export async function handleCreateShopItem({
         };
       },
     );
-  
+
     const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
-  
+
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
       {
         hashtags: lowerCaseHashtags,
         publishedItemId,
       },
     );
-  
+
     await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
       {
         shopItemMediaElements: shopItemMediaElements.map(
@@ -123,16 +123,12 @@ export async function handleCreateShopItem({
             blobFileKey,
             mimetype,
           }),
-          ),
-        },
-      );
-    
-  
-      return { success: {} };    
-  }
+        ),
+      },
+    );
 
-
-  catch (e) {
+    return { success: {} };
+  } catch (e) {
     console.log("error", error);
     controller.setStatus(500);
     return { error: { reason: CreateShopItemFailedReason.UnknownCause } };

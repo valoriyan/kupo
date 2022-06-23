@@ -2,7 +2,6 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { DatabaseService } from "../../../services/databaseService";
 import { RootRenderablePost } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
-import { SavedItemType } from "../../userInteraction/models";
 import { MediaElement } from "../../models";
 import { PublishedItemType, UncompiledBasePublishedItem } from "../models";
 
@@ -104,11 +103,10 @@ export async function constructRenderablePostFromParts({
 
   const isSavedByClient =
     !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId(
+    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
       {
         userId: clientUserId,
-        itemId: id,
-        itemType: SavedItemType.post,
+        publishedItemId: id,
       },
     ));
 

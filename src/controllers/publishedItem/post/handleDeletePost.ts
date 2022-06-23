@@ -1,6 +1,5 @@
 import express from "express";
 import { checkAuthorization } from "../../../controllers/auth/utilities";
-import { SavedItemType } from "../../../controllers/userInteraction/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { PostController } from "./postController";
@@ -29,10 +28,12 @@ export async function handleDeletePost({
 
   const { postId } = requestBody;
 
-  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem({
-    id: postId,
-    authorUserId: clientUserId,
-  });
+  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
+    {
+      id: postId,
+      authorUserId: clientUserId,
+    },
+  );
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED BLOB FILES
@@ -78,11 +79,10 @@ export async function handleDeletePost({
   //////////////////////////////////////////////////
 
   const userIdSavedItemId =
-    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSaveItemId(
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
       {
         userId: clientUserId,
-        itemId: postId,
-        itemType: SavedItemType.post,
+        publishedItemId: postId,
       },
     );
 
@@ -90,8 +90,7 @@ export async function handleDeletePost({
     await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
       {
         userId: clientUserId,
-        itemId: postId,
-        itemType: SavedItemType.post,
+        publishedItemId: postId,
       },
     );
   }

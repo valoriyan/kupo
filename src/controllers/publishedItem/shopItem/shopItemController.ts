@@ -44,8 +44,18 @@ import {
   PurchaseShopItemRequestBody,
   PurchaseShopItemSuccess,
 } from "./handlePurchaseShopItem";
-import { GetCreditCardsStoredByUserIdFailed, GetCreditCardsStoredByUserIdRequestBody, GetCreditCardsStoredByUserIdSuccess, handleGetCreditCardsStoredByUserId } from "./payments/getCreditCardsStoredByUserId";
-import { handleRemoveCreditCard, RemoveCreditCardFailed, RemoveCreditCardRequestBody, RemoveCreditCardSuccess } from "./payments/removeCreditCard";
+import {
+  GetCreditCardsStoredByUserIdFailed,
+  GetCreditCardsStoredByUserIdRequestBody,
+  GetCreditCardsStoredByUserIdSuccess,
+  handleGetCreditCardsStoredByUserId,
+} from "./payments/getCreditCardsStoredByUserId";
+import {
+  handleRemoveCreditCard,
+  RemoveCreditCardFailed,
+  RemoveCreditCardRequestBody,
+  RemoveCreditCardSuccess,
+} from "./payments/removeCreditCard";
 
 @injectable()
 @Route("shopitem")
@@ -87,7 +97,7 @@ export class ShopItemController extends Controller {
         scheduledPublicationTimestamp: scheduledPublicationTimestamp
           ? parseInt(scheduledPublicationTimestamp, 10)
           : undefined,
-          expirationTimestamp: expirationTimestamp
+        expirationTimestamp: expirationTimestamp
           ? parseInt(expirationTimestamp, 10)
           : undefined,
         collaboratorUserIds: JSON.parse(collaboratorUserIds),
@@ -145,7 +155,10 @@ export class ShopItemController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetCreditCardsStoredByUserIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetCreditCardsStoredByUserIdFailed, GetCreditCardsStoredByUserIdSuccess>
+    SecuredHTTPResponse<
+      GetCreditCardsStoredByUserIdFailed,
+      GetCreditCardsStoredByUserIdSuccess
+    >
   > {
     return await handleGetCreditCardsStoredByUserId({
       controller: this,

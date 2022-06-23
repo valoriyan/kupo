@@ -1,34 +1,34 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { HTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
-import { UserInteractionController } from "./userInteractionController";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromParts } from "../user/utilities";
-import { constructRenderablePostFromParts } from "../publishedItem/post/utilities";
-import { RenderableNewLikeOnPostNotification } from "../notification/models/renderableUserNotifications";
+import { HTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { constructRenderableUserFromParts } from "../../user/utilities";
+import { constructRenderablePostFromParts } from "../post/utilities";
+import { RenderableNewLikeOnPostNotification } from "../../notification/models/renderableUserNotifications";
+import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
-export interface UserLikesPostRequestBody {
-  postId: string;
+export interface UserLikesPublishedItemRequestBody {
+  publishedItemId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UserLikesPostSuccess {}
+export interface UserLikesPublishedItemSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UserLikesPostFailed {}
+export interface UserLikesPublishedItemFailed {}
 
-export async function handleUserLikesPost({
+export async function handleUserLikesPublishedItem({
   controller,
   request,
   requestBody,
 }: {
-  controller: UserInteractionController;
+  controller: PublishedItemInteractionController;
   request: express.Request;
-  requestBody: UserLikesPostRequestBody;
-}): Promise<HTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>> {
+  requestBody: UserLikesPublishedItemRequestBody;
+}): Promise<HTTPResponse<UserLikesPublishedItemFailed, UserLikesPublishedItemSuccess>> {
   const now = Date.now();
 
-  const { postId } = requestBody;
+  const { publishedItemId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -38,7 +38,7 @@ export async function handleUserLikesPost({
   await controller.databaseService.tableNameToServicesMap.postLikesTableService.createPostLikeFromUserId(
     {
       postLikeId,
-      postId,
+      postId: publishedItemId,
       userId: clientUserId,
       timestamp: now,
     },
@@ -46,14 +46,14 @@ export async function handleUserLikesPost({
 
   const unrenderablePostWithoutElementsOrHashtags =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: postId },
+      { id: publishedItemId },
     );
 
   const doesNotificationExist =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.doesUserNotificationExist(
       {
         userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-        referenceTableId: postId,
+        referenceTableId: publishedItemId,
       },
     );
 

@@ -58,15 +58,17 @@ export async function handleCreatePost({
   const creationTimestamp = now;
 
   try {
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem({
-      publishedItemId: postId,
-      type: PublishedItemType.POST,
-      creationTimestamp,
-      authorUserId: clientUserId,
-      caption,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-      expirationTimestamp,
-    });
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
+      {
+        publishedItemId: postId,
+        type: PublishedItemType.POST,
+        creationTimestamp,
+        authorUserId: clientUserId,
+        caption,
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+        expirationTimestamp,
+      },
+    );
 
     const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
     if (mediaFileErrors.length > 0) {

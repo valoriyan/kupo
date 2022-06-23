@@ -11,37 +11,14 @@ import {
   FollowUserSuccess,
   handleFollowUser,
 } from "./handleFollowUserProfile";
-import {
-  GetPageOfSavedPostsFailed,
-  GetPageOfSavedPostsRequestBody,
-  GetPageOfSavedPostsSuccess,
-  handleGetPageOfSavedPosts,
-} from "./handleGetPageOfSavedPosts";
-import {
-  FailedToRemoveUserLikeFromPostResponse,
-  handleRemoveUserLikeFromPost,
-  RemoveUserLikeFromPostRequestBody,
-  SuccessfullyRemovedUserLikeFromPostResponse,
-} from "./handleRemoveUserLikeFromPost";
+
 import {
   FailedToUnfollowUserProfileResponse,
   handleUnfollowUser,
   SuccessfullyUnfollowedUserProfileResponse,
   UnfollowUserRequestBody,
 } from "./handleUnfollowUserProfile";
-import {
-  handleUserLikesPost,
-  UserLikesPostFailed,
-  UserLikesPostRequestBody,
-  UserLikesPostSuccess,
-} from "./handleUserLikesPost";
-import {
-  handleUserSavesPost,
-  UserSavesPostFailed,
-  UserSavesPostRequestBody,
-  UserSavesPostSuccess,
-} from "./handleUserSavesPost";
-import { handleUserUnsavesPost } from "./handleUserUnsavesPost";
+
 @injectable()
 @Route("userInteractions")
 export class UserInteractionController extends Controller {
@@ -69,45 +46,9 @@ export class UserInteractionController extends Controller {
     });
   }
 
-  @Post("userLikesPost")
-  public async userLikesPost(
-    @Request() request: express.Request,
-    @Body() requestBody: UserLikesPostRequestBody,
-  ): Promise<SecuredHTTPResponse<UserLikesPostFailed, UserLikesPostSuccess>> {
-    return await handleUserLikesPost({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
-  @Post("userSavesPost")
-  public async userSavesPost(
-    @Request() request: express.Request,
-    @Body() requestBody: UserSavesPostRequestBody,
-  ): Promise<SecuredHTTPResponse<UserSavesPostFailed, UserSavesPostSuccess>> {
-    return await handleUserSavesPost({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
-
-  @Post("getPageOfSavedPosts")
-  public async getPageOfSavedPosts(
-    @Request() request: express.Request,
-    @Body() requestBody: GetPageOfSavedPostsRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
-    return await handleGetPageOfSavedPosts({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
@@ -134,37 +75,5 @@ export class UserInteractionController extends Controller {
     });
   }
 
-  @Delete("removeUserLikeFromPost")
-  public async removeUserLikeFromPost(
-    @Request() request: express.Request,
-    @Body() requestBody: RemoveUserLikeFromPostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToRemoveUserLikeFromPostResponse,
-      SuccessfullyRemovedUserLikeFromPostResponse
-    >
-  > {
-    return await handleRemoveUserLikeFromPost({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
 
-  @Delete("userUnsavesPost")
-  public async userUnsavesPost(
-    @Request() request: express.Request,
-    @Body() requestBody: RemoveUserLikeFromPostRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      FailedToRemoveUserLikeFromPostResponse,
-      SuccessfullyRemovedUserLikeFromPostResponse
-    >
-  > {
-    return await handleUserUnsavesPost({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
 }

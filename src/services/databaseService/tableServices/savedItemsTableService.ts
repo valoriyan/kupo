@@ -1,5 +1,4 @@
 import { Pool, QueryResult } from "pg";
-import { SavedItemType } from "../../../controllers/userInteraction/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
@@ -8,13 +7,11 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 interface DBSavedItem {
   save_id: string;
 
-  item_id: string;
-
-  item_type: SavedItemType;
+  published_item_id: string;
 
   user_id: string;
 
-  timestamp: string;
+  creation_timestamp: string;
 }
 
 export class SavedItemsTableService extends TableService {
@@ -30,11 +27,11 @@ export class SavedItemsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         save_id VARCHAR(64) UNIQUE NOT NULL,
         
-        item_id VARCHAR(64) NOT NULL,
+        published_item_id VARCHAR(64) NOT NULL,
         item_type VARCHAR(64) NOT NULL,
         user_id VARCHAR(64) NOT NULL,
         
-        timestamp BIGINT NOT NULL
+        creation_timestamp BIGINT NOT NULL
       )
       ;
     `;
@@ -48,25 +45,22 @@ export class SavedItemsTableService extends TableService {
 
   public async saveItem({
     saveId,
-    itemId,
-    itemType,
+    publishedItemId,
     userId,
-    timestamp,
+    creationTimestamp,
   }: {
     saveId: string;
-    itemId: string;
-    itemType: SavedItemType;
+    publishedItemId: string;
     userId: string;
-    timestamp: number;
+    creationTimestamp: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
         [
           { field: "save_id", value: saveId },
-          { field: "item_id", value: itemId },
-          { field: "item_type", value: itemType },
+          { field: "published_item_id", value: publishedItemId },
           { field: "user_id", value: userId },
-          { field: "timestamp", value: timestamp },
+          { field: "creation_timestamp", value: creationTimestamp },
         ],
       ],
       tableName: this.tableName,
@@ -103,7 +97,7 @@ export class SavedItemsTableService extends TableService {
     if (!!getItemsSavedBeforeTimestamp) {
       getItemsSavedBeforeTimestampClause = `
         AND
-          timestamp < $${queryValues.length + 1}
+          creation_timestamp < $${queryValues.length + 1}
       `;
 
       queryValues.push(getItemsSavedBeforeTimestamp);
@@ -119,7 +113,7 @@ export class SavedItemsTableService extends TableService {
         user_id = $1
           ${getItemsSavedBeforeTimestampClause}
         ORDER BY
-          timestamp DESC
+          creation_timestamp DESC
         ${limitClause}
         ;
       `,
@@ -131,14 +125,12 @@ export class SavedItemsTableService extends TableService {
     return response.rows;
   }
 
-  public async doesUserIdSaveItemId({
-    itemId,
+  public async doesUserIdSavePublishedItemId({
+    publishedItemId,
     userId,
-    itemType,
   }: {
-    itemId: string;
+    publishedItemId: string;
     userId: string;
-    itemType: string;
   }): Promise<boolean> {
     const query = {
       text: `
@@ -147,14 +139,12 @@ export class SavedItemsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            item_id = $1
+          published_item_id = $1
           AND
             user_id = $2
-          AND
-            item_type = $3
           ;
         `,
-      values: [itemId, userId, itemType],
+      values: [publishedItemId, userId],
     };
 
     const response: QueryResult<{
@@ -174,18 +164,15 @@ export class SavedItemsTableService extends TableService {
 
   public async unSaveItem({
     userId,
-    itemType,
-    itemId,
+    publishedItemId,
   }: {
     userId: string;
-    itemType: SavedItemType;
-    itemId: string;
+    publishedItemId: string;
   }): Promise<void> {
     const query = generatePSQLGenericDeleteRowsQueryString({
       fieldsUsedToIdentifyRowsToDelete: [
         { field: "user_id", value: userId },
-        { field: "item_type", value: itemType },
-        { field: "item_id", value: itemId },
+        { field: "published_item_id", value: publishedItemId },
       ],
       tableName: this.tableName,
     });
