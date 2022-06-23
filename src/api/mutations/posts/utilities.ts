@@ -31,10 +31,10 @@ export const updateCachedPost = ({
         ...page,
         posts: postUpdater
           ? page.posts.map((post) => {
-              if (post.postId === postId) return postUpdater(post);
+              if (post.id === postId) return postUpdater(post);
               return post;
             })
-          : page.posts.filter((post) => post.postId !== postId),
+          : page.posts.filter((post) => post.id !== postId),
       })),
     };
     queryClient.setQueryData(queryKey, updatedQueryData);
@@ -47,10 +47,10 @@ export const updateCachedPost = ({
         ...page,
         posts: postUpdater
           ? page.posts.map((post) => {
-              if (post.postId === postId) return postUpdater(post);
+              if (post.id === postId) return postUpdater(post);
               return post;
             })
-          : page.posts.filter((post) => post.postId !== postId),
+          : page.posts.filter((post) => post.id !== postId),
       })),
     };
     queryClient.setQueryData(userPostsCacheKey, updatedUserPostsData);

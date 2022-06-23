@@ -1,4 +1,4 @@
-import { RenderableUser } from "#/api";
+import { RenderablePost, RenderableUser } from "#/api";
 import { useGetPageOfShopItemsByUserId } from "#/api/queries/shopItems/useGetPageOfShopItemsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
@@ -30,13 +30,13 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
   const shopItems = data.pages
     .flatMap((page) => page.shopItems)
     .map((shopItem) => ({
-      postId: shopItem.shopItemId,
+      postId: shopItem.id,
       authorUserId: shopItem.authorUserId,
-      caption: shopItem.description,
+      caption: shopItem.caption,
       creationTimestamp: shopItem.creationTimestamp,
       scheduledPublicationTimestamp: shopItem.scheduledPublicationTimestamp,
       expirationTimestamp: shopItem.expirationTimestamp,
-      mediaElements: shopItem.mediaElements,
+      mediaElements: shopItem.previewMediaElements,
       hashtags: shopItem.hashtags,
       likes: { count: 0 },
       comments: { count: 0 },
@@ -54,7 +54,7 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
       items={shopItems.map((post) => (
         <Post
           key={post.postId}
-          post={post}
+          post={post as unknown as RenderablePost}
           handleClickOfCommentsButton={() => goToPostPage(post.postId)}
         />
       ))}

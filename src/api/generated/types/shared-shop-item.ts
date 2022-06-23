@@ -12,106 +12,99 @@
  * Do not edit the class manually.
  */
 
-import { MediaElement } from "./media-element";
-import { PublishedItemTypePOST } from "./published-item-type-post";
+import { PublishedItemTypeSHOPITEM } from "./published-item-type-shopitem";
 import { RenderableUserFollowers } from "./renderable-user-followers";
-import { RootRenderablePost } from "./root-renderable-post";
-import { SharedRenderablePost } from "./shared-renderable-post";
+import { RootPurchasedShopItemDetails } from "./root-purchased-shop-item-details";
+import { RootShopItemPreview } from "./root-shop-item-preview";
 
 /**
  *
  * @export
- * @interface RenderablePost
+ * @interface SharedShopItem
  */
-export interface RenderablePost {
+export interface SharedShopItem {
   /**
    *
-   * @type {PublishedItemTypePOST}
-   * @memberof RenderablePost
+   * @type {PublishedItemTypeSHOPITEM}
+   * @memberof SharedShopItem
    */
-  type: PublishedItemTypePOST;
+  type: PublishedItemTypeSHOPITEM;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   authorUserId: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   caption: string;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   creationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   scheduledPublicationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   expirationTimestamp?: number;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   idOfPublishedItemBeingShared?: string;
   /**
    *
    * @type {Array<string>}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   hashtags: Array<string>;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   likes: RenderableUserFollowers;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   comments: RenderableUserFollowers;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   isLikedByClient: boolean;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof SharedShopItem
    */
   isSavedByClient: boolean;
   /**
    *
-   * @type {Array<MediaElement>}
-   * @memberof RenderablePost
+   * @type {RootShopItemPreview | RootPurchasedShopItemDetails}
+   * @memberof SharedShopItem
    */
-  mediaElements: Array<MediaElement>;
-  /**
-   *
-   * @type {RootRenderablePost}
-   * @memberof RenderablePost
-   */
-  sharedItem: RootRenderablePost;
+  sharedItem: RootShopItemPreview | RootPurchasedShopItemDetails;
 }

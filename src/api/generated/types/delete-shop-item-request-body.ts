@@ -23,5 +23,5 @@ export interface DeleteShopItemRequestBody {
    * @type {string}
    * @memberof DeleteShopItemRequestBody
    */
-  shopItemId: string;
+  publishedItemId: string;
 }

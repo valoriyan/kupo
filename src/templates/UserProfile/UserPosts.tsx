@@ -38,9 +38,9 @@ export const UserPosts = ({ user }: UserPostsProps) => {
       loadNextPage={fetchNextPage}
       items={posts.map((post) => (
         <Post
-          key={post.postId}
+          key={post.id}
           post={post}
-          handleClickOfCommentsButton={() => goToPostPage(post.postId)}
+          handleClickOfCommentsButton={() => goToPostPage(post.id)}
         />
       ))}
     />

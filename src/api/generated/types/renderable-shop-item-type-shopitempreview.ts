@@ -15,19 +15,8 @@
 /**
  *
  * @export
- * @interface PurchaseShopItemRequestBody
+ * @enum {string}
  */
-export interface PurchaseShopItemRequestBody {
-  /**
-   *
-   * @type {string}
-   * @memberof PurchaseShopItemRequestBody
-   */
-  publishedItemId: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PurchaseShopItemRequestBody
-   */
-  localCreditCardId: string;
+export enum RenderableShopItemTypeSHOPITEMPREVIEW {
+  ShopItemPreview = "SHOP_ITEM_PREVIEW",
 }

@@ -11,7 +11,7 @@ export interface PostThumbnailProps {
 
 export const PostThumbnail = ({ post }: PostThumbnailProps) => {
   return post.mediaElements[0] ? (
-    <ImageWrapper onClick={() => goToPostPage(post.postId)}>
+    <ImageWrapper onClick={() => goToPostPage(post.id)}>
       <Image
         alt="Post Media"
         src={post.mediaElements[0].temporaryUrl}
@@ -24,7 +24,7 @@ export const PostThumbnail = ({ post }: PostThumbnailProps) => {
   ) : (
     <Flex
       as="button"
-      onClick={() => goToPostPage(post.postId)}
+      onClick={() => goToPostPage(post.id)}
       css={{
         justifyContent: "center",
         alignItems: "center",

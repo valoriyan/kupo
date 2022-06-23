@@ -119,9 +119,9 @@ import { PurchaseShopItemRequestBody } from "../types";
 // @ts-ignore
 import { RegisterUserRequestBody } from "../types";
 // @ts-ignore
-import { RemoveUserFromWaitlistRequestBody } from "../types";
+import { RemoveCreditCardRequestBody } from "../types";
 // @ts-ignore
-import { RemoveUserLikeFromPostRequestBody } from "../types";
+import { RemoveUserLikeFromPublishedItemRequestBody } from "../types";
 // @ts-ignore
 import { ResetPasswordRequestBody } from "../types";
 // @ts-ignore
@@ -155,7 +155,7 @@ import { SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedDoesChatRoomExistW
 // @ts-ignore
 import { SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
+import { SecuredHTTPResponseFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse } from "../types";
 // @ts-ignore
@@ -164,6 +164,8 @@ import { SecuredHTTPResponseFollowUserFailedFollowUserSuccess } from "../types";
 import { SecuredHTTPResponseGetChatRoomByIdFailedGetChatRoomByIdSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetCountOfUnreadNotificationsFailedGetCountOfUnreadNotificationsSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedGetCreditCardsStoredByUserIdSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPageOfChatMessagesFailedGetPageOfChatMessagesSuccess } from "../types";
 // @ts-ignore
@@ -201,7 +203,7 @@ import { SecuredHTTPResponseGetUsersByUsernamesFailedGetUsersByUsernamesSuccess 
 // @ts-ignore
 import { SecuredHTTPResponsePurchaseShopItemFailedPurchaseShopItemSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess } from "../types";
+import { SecuredHTTPResponseRemoveCreditCardFailedRemoveCreditCardSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseSearchForHashtagsFailedSearchForHashtagsSuccess } from "../types";
 // @ts-ignore
@@ -229,9 +231,11 @@ import { SecuredHTTPResponseUpdateUserProfileFailedUpdateUserProfileSuccess } fr
 // @ts-ignore
 import { SecuredHTTPResponseUpdateUserProfilePictureFailedUpdateUserProfilePictureSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess } from "../types";
+import { SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess } from "../types";
 // @ts-ignore
-import { SecuredHTTPResponseUserSavesPostFailedUserSavesPostSuccess } from "../types";
+import { SecuredHTTPResponseUserSavesPublishedItemFailedUserSavesPublishedItemSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess } from "../types";
 // @ts-ignore
 import { SetUserContentFeedFiltersRequestBody } from "../types";
 // @ts-ignore
@@ -247,9 +251,9 @@ import { UpdatePostRequestBody } from "../types";
 // @ts-ignore
 import { UpdateUserProfileRequestBody } from "../types";
 // @ts-ignore
-import { UserLikesPostRequestBody } from "../types";
+import { UserLikesPublishedItemRequestBody } from "../types";
 // @ts-ignore
-import { UserSavesPostRequestBody } from "../types";
+import { UserSavesPublishedItemRequestBody } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -535,37 +539,43 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     /**
      *
      * @param {Array<any>} mediaFiles
-     * @param {string} title
-     * @param {string} description
-     * @param {string} price
+     * @param {string} caption
      * @param {string} hashtags
+     * @param {string} title
+     * @param {string} price
+     * @param {string} scheduledPublicationTimestamp
      * @param {string} collaboratorUserIds
-     * @param {string} [scheduledPublicationTimestamp]
      * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createShopItem: async (
       mediaFiles: Array<any>,
-      title: string,
-      description: string,
-      price: string,
+      caption: string,
       hashtags: string,
+      title: string,
+      price: string,
+      scheduledPublicationTimestamp: string,
       collaboratorUserIds: string,
-      scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'mediaFiles' is not null or undefined
       assertParamExists("createShopItem", "mediaFiles", mediaFiles);
-      // verify required parameter 'title' is not null or undefined
-      assertParamExists("createShopItem", "title", title);
-      // verify required parameter 'description' is not null or undefined
-      assertParamExists("createShopItem", "description", description);
-      // verify required parameter 'price' is not null or undefined
-      assertParamExists("createShopItem", "price", price);
+      // verify required parameter 'caption' is not null or undefined
+      assertParamExists("createShopItem", "caption", caption);
       // verify required parameter 'hashtags' is not null or undefined
       assertParamExists("createShopItem", "hashtags", hashtags);
+      // verify required parameter 'title' is not null or undefined
+      assertParamExists("createShopItem", "title", title);
+      // verify required parameter 'price' is not null or undefined
+      assertParamExists("createShopItem", "price", price);
+      // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
+      assertParamExists(
+        "createShopItem",
+        "scheduledPublicationTimestamp",
+        scheduledPublicationTimestamp,
+      );
       // verify required parameter 'collaboratorUserIds' is not null or undefined
       assertParamExists("createShopItem", "collaboratorUserIds", collaboratorUserIds);
       const localVarPath = `/shopitem/create`;
@@ -588,24 +598,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         });
       }
 
-      if (title !== undefined) {
-        localVarFormParams.append("title", title as any);
-      }
-
-      if (description !== undefined) {
-        localVarFormParams.append("description", description as any);
-      }
-
-      if (price !== undefined) {
-        localVarFormParams.append("price", price as any);
+      if (caption !== undefined) {
+        localVarFormParams.append("caption", caption as any);
       }
 
       if (hashtags !== undefined) {
         localVarFormParams.append("hashtags", hashtags as any);
       }
 
-      if (collaboratorUserIds !== undefined) {
-        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
+      if (title !== undefined) {
+        localVarFormParams.append("title", title as any);
+      }
+
+      if (price !== undefined) {
+        localVarFormParams.append("price", price as any);
       }
 
       if (scheduledPublicationTimestamp !== undefined) {
@@ -613,6 +619,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
           "scheduledPublicationTimestamp",
           scheduledPublicationTimestamp as any,
         );
+      }
+
+      if (collaboratorUserIds !== undefined) {
+        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
       }
 
       if (expirationTimestamp !== undefined) {
@@ -1054,6 +1064,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCreditCardsStoredByUserId: async (
+      body: object,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists("getCreditCardsStoredByUserId", "body", body);
+      const localVarPath = `/shopitem/getCreditCardsStoredByUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1362,7 +1417,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         "getPageOfSavedPostsRequestBody",
         getPageOfSavedPostsRequestBody,
       );
-      const localVarPath = `/userInteractions/getPageOfSavedPosts`;
+      const localVarPath = `/post/getPageOfSavedPosts`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2233,70 +2288,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+     * @param {RemoveCreditCardRequestBody} removeCreditCardRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    removeUserFromWaitlist: async (
-      removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+    removeCreditCard: async (
+      removeCreditCardRequestBody: RemoveCreditCardRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'removeUserFromWaitlistRequestBody' is not null or undefined
+      // verify required parameter 'removeCreditCardRequestBody' is not null or undefined
       assertParamExists(
-        "removeUserFromWaitlist",
-        "removeUserFromWaitlistRequestBody",
-        removeUserFromWaitlistRequestBody,
+        "removeCreditCard",
+        "removeCreditCardRequestBody",
+        removeCreditCardRequestBody,
       );
-      const localVarPath = `/auth/removeUserFromWaitlist`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        removeUserFromWaitlistRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    removeUserLikeFromPost: async (
-      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'removeUserLikeFromPostRequestBody' is not null or undefined
-      assertParamExists(
-        "removeUserLikeFromPost",
-        "removeUserLikeFromPostRequestBody",
-        removeUserLikeFromPostRequestBody,
-      );
-      const localVarPath = `/userInteractions/removeUserLikeFromPost`;
+      const localVarPath = `/shopitem/removeCreditCard`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2319,7 +2325,56 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        removeUserLikeFromPostRequestBody,
+        removeCreditCardRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserLikeFromPublishedItem: async (
+      removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'removeUserLikeFromPublishedItemRequestBody' is not null or undefined
+      assertParamExists(
+        "removeUserLikeFromPublishedItem",
+        "removeUserLikeFromPublishedItemRequestBody",
+        removeUserLikeFromPublishedItemRequestBody,
+      );
+      const localVarPath = `/publishedItemInteractions/removeUserLikeFromPublishedItem`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "DELETE", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        removeUserLikeFromPublishedItemRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2907,7 +2962,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} shopItemId
+     * @param {string} publishedItemId
      * @param {string} [description]
      * @param {string} [hashtags]
      * @param {string} [title]
@@ -2920,7 +2975,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     updateShopItem: async (
-      shopItemId: string,
+      publishedItemId: string,
       description?: string,
       hashtags?: string,
       title?: string,
@@ -2931,8 +2986,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       mediaFiles?: Array<any>,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'shopItemId' is not null or undefined
-      assertParamExists("updateShopItem", "shopItemId", shopItemId);
+      // verify required parameter 'publishedItemId' is not null or undefined
+      assertParamExists("updateShopItem", "publishedItemId", publishedItemId);
       const localVarPath = `/shopitem/update`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2947,8 +3002,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
 
-      if (shopItemId !== undefined) {
-        localVarFormParams.append("shopItemId", shopItemId as any);
+      if (publishedItemId !== undefined) {
+        localVarFormParams.append("publishedItemId", publishedItemId as any);
       }
 
       if (description !== undefined) {
@@ -3149,21 +3204,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+     * @param {UserLikesPublishedItemRequestBody} userLikesPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userLikesPost: async (
-      userLikesPostRequestBody: UserLikesPostRequestBody,
+    userLikesPublishedItem: async (
+      userLikesPublishedItemRequestBody: UserLikesPublishedItemRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'userLikesPostRequestBody' is not null or undefined
+      // verify required parameter 'userLikesPublishedItemRequestBody' is not null or undefined
       assertParamExists(
-        "userLikesPost",
-        "userLikesPostRequestBody",
-        userLikesPostRequestBody,
+        "userLikesPublishedItem",
+        "userLikesPublishedItemRequestBody",
+        userLikesPublishedItemRequestBody,
       );
-      const localVarPath = `/userInteractions/userLikesPost`;
+      const localVarPath = `/publishedItemInteractions/userLikesPublishedItem`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3186,7 +3241,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        userLikesPostRequestBody,
+        userLikesPublishedItemRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -3198,21 +3253,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+     * @param {UserSavesPublishedItemRequestBody} userSavesPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userSavesPost: async (
-      userSavesPostRequestBody: UserSavesPostRequestBody,
+    userSavesPublishedItem: async (
+      userSavesPublishedItemRequestBody: UserSavesPublishedItemRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'userSavesPostRequestBody' is not null or undefined
+      // verify required parameter 'userSavesPublishedItemRequestBody' is not null or undefined
       assertParamExists(
-        "userSavesPost",
-        "userSavesPostRequestBody",
-        userSavesPostRequestBody,
+        "userSavesPublishedItem",
+        "userSavesPublishedItemRequestBody",
+        userSavesPublishedItemRequestBody,
       );
-      const localVarPath = `/userInteractions/userSavesPost`;
+      const localVarPath = `/publishedItemInteractions/userSavesPublishedItem`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3235,7 +3290,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        userSavesPostRequestBody,
+        userSavesPublishedItemRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -3247,21 +3302,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userUnsavesPost: async (
-      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    userUnsavesPublishedItem: async (
+      removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'removeUserLikeFromPostRequestBody' is not null or undefined
+      // verify required parameter 'removeUserLikeFromPublishedItemRequestBody' is not null or undefined
       assertParamExists(
-        "userUnsavesPost",
-        "removeUserLikeFromPostRequestBody",
-        removeUserLikeFromPostRequestBody,
+        "userUnsavesPublishedItem",
+        "removeUserLikeFromPublishedItemRequestBody",
+        removeUserLikeFromPublishedItemRequestBody,
       );
-      const localVarPath = `/userInteractions/userUnsavesPost`;
+      const localVarPath = `/publishedItemInteractions/userUnsavesPublishedItem`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3284,7 +3339,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        removeUserLikeFromPostRequestBody,
+        removeUserLikeFromPublishedItemRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -3451,24 +3506,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {Array<any>} mediaFiles
-     * @param {string} title
-     * @param {string} description
-     * @param {string} price
+     * @param {string} caption
      * @param {string} hashtags
+     * @param {string} title
+     * @param {string} price
+     * @param {string} scheduledPublicationTimestamp
      * @param {string} collaboratorUserIds
-     * @param {string} [scheduledPublicationTimestamp]
      * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createShopItem(
       mediaFiles: Array<any>,
-      title: string,
-      description: string,
-      price: string,
+      caption: string,
       hashtags: string,
+      title: string,
+      price: string,
+      scheduledPublicationTimestamp: string,
       collaboratorUserIds: string,
-      scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options?: any,
     ): Promise<
@@ -3479,12 +3534,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
         mediaFiles,
-        title,
-        description,
-        price,
+        caption,
         hashtags,
-        collaboratorUserIds,
+        title,
+        price,
         scheduledPublicationTimestamp,
+        collaboratorUserIds,
         expirationTimestamp,
         options,
       );
@@ -3719,6 +3774,30 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getCountOfUnreadNotifications(options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getCreditCardsStoredByUserId(
+      body: object,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedGetCreditCardsStoredByUserIdSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getCreditCardsStoredByUserId(body, options);
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -4369,21 +4448,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+     * @param {RemoveCreditCardRequestBody} removeCreditCardRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async removeUserFromWaitlist(
-      removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+    async removeCreditCard(
+      removeCreditCardRequestBody: RemoveCreditCardRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess>
+      ) => AxiosPromise<SecuredHTTPResponseRemoveCreditCardFailedRemoveCreditCardSuccess>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserFromWaitlist(
-        removeUserFromWaitlistRequestBody,
+      const localVarAxiosArgs = await localVarAxiosParamCreator.removeCreditCard(
+        removeCreditCardRequestBody,
         options,
       );
       return createRequestFunction(
@@ -4395,23 +4474,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async removeUserLikeFromPost(
-      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    async removeUserLikeFromPublishedItem(
+      removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse>
+      ) => AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserLikeFromPost(
-        removeUserLikeFromPostRequestBody,
-        options,
-      );
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.removeUserLikeFromPublishedItem(
+          removeUserLikeFromPublishedItemRequestBody,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -4731,7 +4811,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} shopItemId
+     * @param {string} publishedItemId
      * @param {string} [description]
      * @param {string} [hashtags]
      * @param {string} [title]
@@ -4744,7 +4824,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async updateShopItem(
-      shopItemId: string,
+      publishedItemId: string,
       description?: string,
       hashtags?: string,
       title?: string,
@@ -4761,7 +4841,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<SecuredHTTPResponseUpdateShopItemFailedUpdateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
-        shopItemId,
+        publishedItemId,
         description,
         hashtags,
         title,
@@ -4859,21 +4939,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+     * @param {UserLikesPublishedItemRequestBody} userLikesPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async userLikesPost(
-      userLikesPostRequestBody: UserLikesPostRequestBody,
+    async userLikesPublishedItem(
+      userLikesPublishedItemRequestBody: UserLikesPublishedItemRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess>
+      ) => AxiosPromise<SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.userLikesPost(
-        userLikesPostRequestBody,
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userLikesPublishedItem(
+        userLikesPublishedItemRequestBody,
         options,
       );
       return createRequestFunction(
@@ -4885,21 +4965,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+     * @param {UserSavesPublishedItemRequestBody} userSavesPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async userSavesPost(
-      userSavesPostRequestBody: UserSavesPostRequestBody,
+    async userSavesPublishedItem(
+      userSavesPublishedItemRequestBody: UserSavesPublishedItemRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUserSavesPostFailedUserSavesPostSuccess>
+      ) => AxiosPromise<SecuredHTTPResponseUserSavesPublishedItemFailedUserSavesPublishedItemSuccess>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.userSavesPost(
-        userSavesPostRequestBody,
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userSavesPublishedItem(
+        userSavesPublishedItemRequestBody,
         options,
       );
       return createRequestFunction(
@@ -4911,21 +4991,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async userUnsavesPost(
-      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    async userUnsavesPublishedItem(
+      removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse>
+      ) => AxiosPromise<SecuredHTTPResponseUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.userUnsavesPost(
-        removeUserLikeFromPostRequestBody,
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userUnsavesPublishedItem(
+        removeUserLikeFromPublishedItemRequestBody,
         options,
       );
       return createRequestFunction(
@@ -5040,36 +5120,36 @@ export const DefaultApiFactory = function (
     /**
      *
      * @param {Array<any>} mediaFiles
-     * @param {string} title
-     * @param {string} description
-     * @param {string} price
+     * @param {string} caption
      * @param {string} hashtags
+     * @param {string} title
+     * @param {string} price
+     * @param {string} scheduledPublicationTimestamp
      * @param {string} collaboratorUserIds
-     * @param {string} [scheduledPublicationTimestamp]
      * @param {string} [expirationTimestamp]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createShopItem(
       mediaFiles: Array<any>,
-      title: string,
-      description: string,
-      price: string,
+      caption: string,
       hashtags: string,
+      title: string,
+      price: string,
+      scheduledPublicationTimestamp: string,
       collaboratorUserIds: string,
-      scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options?: any,
     ): AxiosPromise<SecuredHTTPResponseCreateShopItemFailedCreateShopItemSuccess> {
       return localVarFp
         .createShopItem(
           mediaFiles,
-          title,
-          description,
-          price,
+          caption,
           hashtags,
-          collaboratorUserIds,
+          title,
+          price,
           scheduledPublicationTimestamp,
+          collaboratorUserIds,
           expirationTimestamp,
           options,
         )
@@ -5197,6 +5277,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsFailedGetCountOfUnreadNotificationsSuccess> {
       return localVarFp
         .getCountOfUnreadNotifications(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCreditCardsStoredByUserId(
+      body: object,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedGetCreditCardsStoredByUserIdSuccess> {
+      return localVarFp
+        .getCreditCardsStoredByUserId(body, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5550,30 +5644,33 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+     * @param {RemoveCreditCardRequestBody} removeCreditCardRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    removeUserFromWaitlist(
-      removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+    removeCreditCard(
+      removeCreditCardRequestBody: RemoveCreditCardRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseRemoveUserFromWaitlistFailedRemoveUserFromWaitlistSuccess> {
+    ): AxiosPromise<SecuredHTTPResponseRemoveCreditCardFailedRemoveCreditCardSuccess> {
       return localVarFp
-        .removeUserFromWaitlist(removeUserFromWaitlistRequestBody, options)
+        .removeCreditCard(removeCreditCardRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    removeUserLikeFromPost(
-      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    removeUserLikeFromPublishedItem(
+      removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse> {
+    ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse> {
       return localVarFp
-        .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+        .removeUserLikeFromPublishedItem(
+          removeUserLikeFromPublishedItemRequestBody,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5746,7 +5843,7 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} shopItemId
+     * @param {string} publishedItemId
      * @param {string} [description]
      * @param {string} [hashtags]
      * @param {string} [title]
@@ -5759,7 +5856,7 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     updateShopItem(
-      shopItemId: string,
+      publishedItemId: string,
       description?: string,
       hashtags?: string,
       title?: string,
@@ -5772,7 +5869,7 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<SecuredHTTPResponseUpdateShopItemFailedUpdateShopItemSuccess> {
       return localVarFp
         .updateShopItem(
-          shopItemId,
+          publishedItemId,
           description,
           hashtags,
           title,
@@ -5829,44 +5926,44 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+     * @param {UserLikesPublishedItemRequestBody} userLikesPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userLikesPost(
-      userLikesPostRequestBody: UserLikesPostRequestBody,
+    userLikesPublishedItem(
+      userLikesPublishedItemRequestBody: UserLikesPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUserLikesPostFailedUserLikesPostSuccess> {
+    ): AxiosPromise<SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess> {
       return localVarFp
-        .userLikesPost(userLikesPostRequestBody, options)
+        .userLikesPublishedItem(userLikesPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+     * @param {UserSavesPublishedItemRequestBody} userSavesPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userSavesPost(
-      userSavesPostRequestBody: UserSavesPostRequestBody,
+    userSavesPublishedItem(
+      userSavesPublishedItemRequestBody: UserSavesPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUserSavesPostFailedUserSavesPostSuccess> {
+    ): AxiosPromise<SecuredHTTPResponseUserSavesPublishedItemFailedUserSavesPublishedItemSuccess> {
       return localVarFp
-        .userSavesPost(userSavesPostRequestBody, options)
+        .userSavesPublishedItem(userSavesPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+     * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userUnsavesPost(
-      removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+    userUnsavesPublishedItem(
+      removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPostResponseSuccessfullyRemovedUserLikeFromPostResponse> {
+    ): AxiosPromise<SecuredHTTPResponseUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess> {
       return localVarFp
-        .userUnsavesPost(removeUserLikeFromPostRequestBody, options)
+        .userUnsavesPublishedItem(removeUserLikeFromPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -5980,12 +6077,12 @@ export class DefaultApi extends BaseAPI {
   /**
    *
    * @param {Array<any>} mediaFiles
-   * @param {string} title
-   * @param {string} description
-   * @param {string} price
+   * @param {string} caption
    * @param {string} hashtags
+   * @param {string} title
+   * @param {string} price
+   * @param {string} scheduledPublicationTimestamp
    * @param {string} collaboratorUserIds
-   * @param {string} [scheduledPublicationTimestamp]
    * @param {string} [expirationTimestamp]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -5993,24 +6090,24 @@ export class DefaultApi extends BaseAPI {
    */
   public createShopItem(
     mediaFiles: Array<any>,
-    title: string,
-    description: string,
-    price: string,
+    caption: string,
     hashtags: string,
+    title: string,
+    price: string,
+    scheduledPublicationTimestamp: string,
     collaboratorUserIds: string,
-    scheduledPublicationTimestamp?: string,
     expirationTimestamp?: string,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
       .createShopItem(
         mediaFiles,
-        title,
-        description,
-        price,
+        caption,
         hashtags,
-        collaboratorUserIds,
+        title,
+        price,
         scheduledPublicationTimestamp,
+        collaboratorUserIds,
         expirationTimestamp,
         options,
       )
@@ -6148,6 +6245,19 @@ export class DefaultApi extends BaseAPI {
   public getCountOfUnreadNotifications(options?: any) {
     return DefaultApiFp(this.configuration)
       .getCountOfUnreadNotifications(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getCreditCardsStoredByUserId(body: object, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getCreditCardsStoredByUserId(body, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -6536,33 +6646,36 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {RemoveUserFromWaitlistRequestBody} removeUserFromWaitlistRequestBody
+   * @param {RemoveCreditCardRequestBody} removeCreditCardRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public removeUserFromWaitlist(
-    removeUserFromWaitlistRequestBody: RemoveUserFromWaitlistRequestBody,
+  public removeCreditCard(
+    removeCreditCardRequestBody: RemoveCreditCardRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .removeUserFromWaitlist(removeUserFromWaitlistRequestBody, options)
+      .removeCreditCard(removeCreditCardRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+   * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public removeUserLikeFromPost(
-    removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+  public removeUserLikeFromPublishedItem(
+    removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .removeUserLikeFromPost(removeUserLikeFromPostRequestBody, options)
+      .removeUserLikeFromPublishedItem(
+        removeUserLikeFromPublishedItemRequestBody,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -6748,7 +6861,7 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} shopItemId
+   * @param {string} publishedItemId
    * @param {string} [description]
    * @param {string} [hashtags]
    * @param {string} [title]
@@ -6762,7 +6875,7 @@ export class DefaultApi extends BaseAPI {
    * @memberof DefaultApi
    */
   public updateShopItem(
-    shopItemId: string,
+    publishedItemId: string,
     description?: string,
     hashtags?: string,
     title?: string,
@@ -6775,7 +6888,7 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .updateShopItem(
-        shopItemId,
+        publishedItemId,
         description,
         hashtags,
         title,
@@ -6833,49 +6946,49 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {UserLikesPostRequestBody} userLikesPostRequestBody
+   * @param {UserLikesPublishedItemRequestBody} userLikesPublishedItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public userLikesPost(
-    userLikesPostRequestBody: UserLikesPostRequestBody,
+  public userLikesPublishedItem(
+    userLikesPublishedItemRequestBody: UserLikesPublishedItemRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .userLikesPost(userLikesPostRequestBody, options)
+      .userLikesPublishedItem(userLikesPublishedItemRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {UserSavesPostRequestBody} userSavesPostRequestBody
+   * @param {UserSavesPublishedItemRequestBody} userSavesPublishedItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public userSavesPost(
-    userSavesPostRequestBody: UserSavesPostRequestBody,
+  public userSavesPublishedItem(
+    userSavesPublishedItemRequestBody: UserSavesPublishedItemRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .userSavesPost(userSavesPostRequestBody, options)
+      .userSavesPublishedItem(userSavesPublishedItemRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {RemoveUserLikeFromPostRequestBody} removeUserLikeFromPostRequestBody
+   * @param {RemoveUserLikeFromPublishedItemRequestBody} removeUserLikeFromPublishedItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public userUnsavesPost(
-    removeUserLikeFromPostRequestBody: RemoveUserLikeFromPostRequestBody,
+  public userUnsavesPublishedItem(
+    removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .userUnsavesPost(removeUserLikeFromPostRequestBody, options)
+      .userUnsavesPublishedItem(removeUserLikeFromPublishedItemRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

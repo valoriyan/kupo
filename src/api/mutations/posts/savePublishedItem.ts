@@ -2,31 +2,28 @@ import { useMutation, useQueryClient } from "react-query";
 import { Api } from "../..";
 import { updateCachedPost } from "./utilities";
 
-export const useLikePost = ({
-  postId,
+export const useSavePublishedItem = ({
+  publishedItemId,
   authorUserId,
 }: {
-  postId: string;
+  publishedItemId: string;
   authorUserId: string;
 }) => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async () => {
-      return await Api.userLikesPost({ postId });
+      return await Api.userSavesPublishedItem({ publishedItemId });
     },
     {
       onSuccess: () => {
         updateCachedPost({
           queryClient,
           authorUserId,
-          postId,
+          postId: publishedItemId,
           postUpdater: (prev) => ({
             ...prev,
-            isLikedByClient: true,
-            likes: {
-              count: prev.likes.count + 1,
-            },
+            isSavedByClient: true,
           }),
         });
       },

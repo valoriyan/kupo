@@ -1,4 +1,4 @@
-import { MediaElement, RenderablePostShared } from "#/api";
+import { MediaElement, PublishedItemType, RootRenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { goToUserProfilePage } from "#/templates/UserProfile";
 import { Avatar } from "../Avatar";
@@ -16,7 +16,7 @@ export interface PostBodyProps {
   caption: string;
   mediaElements: MediaElement[];
   setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
-  shared?: RenderablePostShared;
+  sharedItem?: RootRenderablePost;
   menuActions?: MenuAction[];
   onPostClick?: () => void;
   contentHeight?: string;
@@ -53,9 +53,11 @@ export const PostBody = (props: PostBodyProps) => {
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2", mb: "$3" }}>{props.caption}</Body>
-      {props.shared && props.shared.type === "post" ? (
+      {props.sharedItem &&
+      (props.sharedItem.type as unknown as PublishedItemType) ===
+        PublishedItemType.Post ? (
         <SharedPost
-          post={props.shared.post}
+          post={props.sharedItem}
           setCurrentMediaElement={props.setCurrentMediaElement}
         />
       ) : (

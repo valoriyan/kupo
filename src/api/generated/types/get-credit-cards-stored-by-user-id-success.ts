@@ -12,22 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { CreditCardSummary } from "./credit-card-summary";
+
 /**
  *
  * @export
- * @interface PurchaseShopItemRequestBody
+ * @interface GetCreditCardsStoredByUserIdSuccess
  */
-export interface PurchaseShopItemRequestBody {
+export interface GetCreditCardsStoredByUserIdSuccess {
   /**
    *
-   * @type {string}
-   * @memberof PurchaseShopItemRequestBody
+   * @type {Array<CreditCardSummary>}
+   * @memberof GetCreditCardsStoredByUserIdSuccess
    */
-  publishedItemId: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PurchaseShopItemRequestBody
-   */
-  localCreditCardId: string;
+  cards: Array<CreditCardSummary>;
 }

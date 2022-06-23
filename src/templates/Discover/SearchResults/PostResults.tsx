@@ -54,7 +54,7 @@ export const PostResults = ({ query }: PostResultsProps) => {
           }}
         >
           {data.posts.map((post) => (
-            <PostPreview key={post.postId} post={post} />
+            <PostPreview key={post.id} post={post} />
           ))}
         </Grid>
       )}
@@ -66,7 +66,7 @@ const PostPreview = ({ post }: { post: RenderablePost }) => {
   const { data: user } = useGetUserByUserId({ userId: post.authorUserId });
 
   return (
-    <PostWrapper onClick={() => goToPostPage(post.postId)}>
+    <PostWrapper onClick={() => goToPostPage(post.id)}>
       {!!post.mediaElements[0] && <PostImage src={post.mediaElements[0].temporaryUrl} />}
       <Stack css={{ gap: "$4", px: "$5", py: "$5" }}>
         <Flex css={{ alignItems: "center", gap: "$4" }}>

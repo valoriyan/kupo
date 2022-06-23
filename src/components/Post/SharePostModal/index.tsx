@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RenderablePost } from "#/api";
+import { RootRenderablePost } from "#/api";
 import { useSharePost } from "#/api/mutations/posts/sharePost";
 import { Button } from "#/components/Button";
 import { CaptionTextArea } from "#/components/CaptionTextArea";
@@ -24,7 +24,7 @@ export const openSharePostModal = (props: SharePostModalProps) =>
   });
 
 export interface SharePostModalProps {
-  post: RenderablePost;
+  post: RootRenderablePost;
 }
 
 export const SharePostModal = ({
@@ -39,7 +39,7 @@ export const SharePostModal = ({
 
   const postNow = async () => {
     await sharePost({
-      sharedPostId: post.postId,
+      sharedPostId: post.id,
       caption,
       hashtags,
       expirationTimestamp: expirationDate?.valueOf(),

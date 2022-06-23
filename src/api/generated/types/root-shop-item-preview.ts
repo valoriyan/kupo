@@ -13,105 +13,116 @@
  */
 
 import { MediaElement } from "./media-element";
-import { PublishedItemTypePOST } from "./published-item-type-post";
+import { PublishedItemType } from "./published-item-type";
+import { RenderableShopItemTypeSHOPITEMPREVIEW } from "./renderable-shop-item-type-shopitempreview";
 import { RenderableUserFollowers } from "./renderable-user-followers";
-import { RootRenderablePost } from "./root-renderable-post";
-import { SharedRenderablePost } from "./shared-renderable-post";
 
 /**
  *
  * @export
- * @interface RenderablePost
+ * @interface RootShopItemPreview
  */
-export interface RenderablePost {
+export interface RootShopItemPreview {
   /**
    *
-   * @type {PublishedItemTypePOST}
-   * @memberof RenderablePost
+   * @type {PublishedItemType}
+   * @memberof RootShopItemPreview
    */
-  type: PublishedItemTypePOST;
+  type: PublishedItemType;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   authorUserId: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   caption: string;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   creationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   scheduledPublicationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   expirationTimestamp?: number;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   idOfPublishedItemBeingShared?: string;
   /**
    *
    * @type {Array<string>}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   hashtags: Array<string>;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   likes: RenderableUserFollowers;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   comments: RenderableUserFollowers;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   isLikedByClient: boolean;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof RootShopItemPreview
    */
   isSavedByClient: boolean;
   /**
    *
-   * @type {Array<MediaElement>}
-   * @memberof RenderablePost
+   * @type {RenderableShopItemTypeSHOPITEMPREVIEW}
+   * @memberof RootShopItemPreview
    */
-  mediaElements: Array<MediaElement>;
+  renderableShopItemType: RenderableShopItemTypeSHOPITEMPREVIEW;
   /**
    *
-   * @type {RootRenderablePost}
-   * @memberof RenderablePost
+   * @type {string}
+   * @memberof RootShopItemPreview
    */
-  sharedItem: RootRenderablePost;
+  title: string;
+  /**
+   *
+   * @type {number}
+   * @memberof RootShopItemPreview
+   */
+  price: number;
+  /**
+   *
+   * @type {Array<MediaElement>}
+   * @memberof RootShopItemPreview
+   */
+  previewMediaElements: Array<MediaElement>;
 }

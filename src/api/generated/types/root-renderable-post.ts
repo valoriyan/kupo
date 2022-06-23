@@ -15,103 +15,95 @@
 import { MediaElement } from "./media-element";
 import { PublishedItemTypePOST } from "./published-item-type-post";
 import { RenderableUserFollowers } from "./renderable-user-followers";
-import { RootRenderablePost } from "./root-renderable-post";
-import { SharedRenderablePost } from "./shared-renderable-post";
 
 /**
  *
  * @export
- * @interface RenderablePost
+ * @interface RootRenderablePost
  */
-export interface RenderablePost {
+export interface RootRenderablePost {
   /**
    *
    * @type {PublishedItemTypePOST}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   type: PublishedItemTypePOST;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   authorUserId: string;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   caption: string;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   creationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   scheduledPublicationTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   expirationTimestamp?: number;
   /**
    *
    * @type {string}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   idOfPublishedItemBeingShared?: string;
   /**
    *
    * @type {Array<string>}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   hashtags: Array<string>;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   likes: RenderableUserFollowers;
   /**
    *
    * @type {RenderableUserFollowers}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   comments: RenderableUserFollowers;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   isLikedByClient: boolean;
   /**
    *
    * @type {boolean}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   isSavedByClient: boolean;
   /**
    *
    * @type {Array<MediaElement>}
-   * @memberof RenderablePost
+   * @memberof RootRenderablePost
    */
   mediaElements: Array<MediaElement>;
-  /**
-   *
-   * @type {RootRenderablePost}
-   * @memberof RenderablePost
-   */
-  sharedItem: RootRenderablePost;
 }

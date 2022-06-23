@@ -1,5 +1,5 @@
 import { ComponentType, useState } from "react";
-import { MediaElement, RenderablePost } from "#/api";
+import { MediaElement, RenderablePost, RootRenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { HashTag } from "../HashTags";
@@ -26,7 +26,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
     hashtags,
     likes,
     comments,
-    shared,
+    sharedItem,
   } = post;
 
   const { handleLikeButton, handleSaveButton, menuActions, user } = usePostActions(post);
@@ -46,7 +46,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         caption={caption}
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
-        shared={shared}
+        sharedItem={sharedItem}
         menuActions={menuActions}
       />
       {!!hashtags.length && (
@@ -87,7 +87,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
           {({ hide }) => (
             <ShareMenu
               hide={hide}
-              post={shared?.post ?? post}
+              post={sharedItem ?? (post as RootRenderablePost)}
               currentMediaElement={currentMediaElement}
             />
           )}
@@ -98,7 +98,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
           onClick={handleSaveButton}
         />
       </Flex>
-      {!handleClickOfCommentsButton && <Comments postId={post.postId} />}
+      {!handleClickOfCommentsButton && <Comments postId={post.id} />}
     </Box>
   );
 };

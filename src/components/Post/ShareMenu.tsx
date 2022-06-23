@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MediaElement, RenderablePost } from "#/api";
+import { MediaElement, RootRenderablePost } from "#/api";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { getSinglePostUrl } from "#/utils/generateLinkUrls";
@@ -11,7 +11,7 @@ import { openSharePostModal } from "./SharePostModal";
 
 export interface ShareMenuProps {
   hide: () => void;
-  post: RenderablePost;
+  post: RootRenderablePost;
   currentMediaElement: MediaElement | undefined;
 }
 
@@ -24,7 +24,7 @@ export const ShareMenu = ({ hide, post, currentMediaElement }: ShareMenuProps) =
   };
 
   const copyLink = () => {
-    const link = `${location.origin}${getSinglePostUrl(post.postId)}`;
+    const link = `${location.origin}${getSinglePostUrl(post.id)}`;
     copyTextToClipboard(link, "Link");
   };
 

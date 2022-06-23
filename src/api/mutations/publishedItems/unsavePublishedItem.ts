@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from "react-query";
 import { Api } from "../..";
-import { updateCachedPost } from "./utilities";
+import { updateCachedPost } from "../posts/utilities";
 
-export const useUnsavePost = ({
-  postId,
+export const useUnsavePublishedItem = ({
+  publishedItemId,
   authorUserId,
 }: {
-  postId: string;
+  publishedItemId: string;
   authorUserId: string;
 }) => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async () => {
-      return await Api.userUnsavesPost({ postId });
+      return await Api.userUnsavesPublishedItem({ publishedItemId });
     },
     {
       onSuccess: () => {
         updateCachedPost({
           queryClient,
           authorUserId,
-          postId,
+          postId: publishedItemId,
           postUpdater: (prev) => ({
             ...prev,
             isSavedByClient: false,

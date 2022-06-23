@@ -15,19 +15,13 @@
 /**
  *
  * @export
- * @interface PurchaseShopItemRequestBody
+ * @interface UserLikesPublishedItemRequestBody
  */
-export interface PurchaseShopItemRequestBody {
+export interface UserLikesPublishedItemRequestBody {
   /**
    *
    * @type {string}
-   * @memberof PurchaseShopItemRequestBody
+   * @memberof UserLikesPublishedItemRequestBody
    */
   publishedItemId: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PurchaseShopItemRequestBody
-   */
-  localCreditCardId: string;
 }

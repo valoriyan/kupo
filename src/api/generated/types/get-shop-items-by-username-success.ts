@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { RenderableShopItemPreview } from "./renderable-shop-item-preview";
+import { RenderableShopItem } from "./renderable-shop-item";
 
 /**
  *
@@ -22,10 +22,10 @@ import { RenderableShopItemPreview } from "./renderable-shop-item-preview";
 export interface GetShopItemsByUsernameSuccess {
   /**
    *
-   * @type {Array<RenderableShopItemPreview>}
+   * @type {Array<RenderableShopItem>}
    * @memberof GetShopItemsByUsernameSuccess
    */
-  shopItems: Array<RenderableShopItemPreview>;
+  shopItems: Array<RenderableShopItem>;
   /**
    *
    * @type {string}

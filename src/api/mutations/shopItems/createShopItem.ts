@@ -14,12 +14,12 @@ export const useCreateShopItem = () => {
     async () => {
       return await Api.createShopItem(
         formState.mediaFiles.map((media) => media.file),
-        formState.title,
         formState.caption,
-        formState.price.toString(),
         JSON.stringify(formState.hashTags),
+        formState.title,
+        formState.price.toString(),
+        formState.publicationDate?.valueOf().toString() || Date.now().toString(),
         JSON.stringify(formState.collaboratorUsers.map((user) => user.userId)),
-        formState.publicationDate?.valueOf().toString(),
         formState.expirationDate?.valueOf().toString(),
       );
     },

@@ -15,19 +15,31 @@
 /**
  *
  * @export
- * @interface PurchaseShopItemRequestBody
+ * @interface CreditCardSummary
  */
-export interface PurchaseShopItemRequestBody {
+export interface CreditCardSummary {
   /**
    *
    * @type {string}
-   * @memberof PurchaseShopItemRequestBody
-   */
-  publishedItemId: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PurchaseShopItemRequestBody
+   * @memberof CreditCardSummary
    */
   localCreditCardId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  userId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  creditCardLastFourDigits: string;
+  /**
+   *
+   * @type {number}
+   * @memberof CreditCardSummary
+   */
+  creationTimestamp: number;
 }

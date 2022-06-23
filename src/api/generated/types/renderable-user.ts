@@ -81,12 +81,6 @@ export interface RenderableUser {
    * @type {boolean}
    * @memberof RenderableUser
    */
-  isWaitListed: boolean;
-  /**
-   *
-   * @type {boolean}
-   * @memberof RenderableUser
-   */
   isAdmin: boolean;
   /**
    *

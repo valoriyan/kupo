@@ -1,23 +1,35 @@
 import { RenderablePost } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
-import { useLikePost } from "#/api/mutations/posts/likePost";
-import { useSavePost } from "#/api/mutations/posts/savePost";
-import { useUnlikePost } from "#/api/mutations/posts/unlikePost";
-import { useUnsavePost } from "#/api/mutations/posts/unsavePost";
+import { useLikePublishedItem } from "#/api/mutations/posts/likePublishedItem";
+import { useSavePublishedItem } from "#/api/mutations/posts/savePublishedItem";
+import { useUnlikePublishedItem } from "#/api/mutations/publishedItems/unlikePublishedItem";
+import { useUnsavePublishedItem } from "#/api/mutations/publishedItems/unsavePublishedItem";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { useCurrentUserId } from "#/contexts/auth";
 import { InfoIcon, TrashIcon } from "../Icons";
 
 export const usePostActions = (post: RenderablePost) => {
-  const { postId, authorUserId, isLikedByClient, isSavedByClient } = post;
+  const { id: postId, authorUserId, isLikedByClient, isSavedByClient } = post;
 
   const userId = useCurrentUserId();
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
 
-  const { mutateAsync: likePost } = useLikePost({ postId, authorUserId });
-  const { mutateAsync: unlikePost } = useUnlikePost({ postId, authorUserId });
-  const { mutateAsync: savePost } = useSavePost({ postId, authorUserId });
-  const { mutateAsync: unsavePost } = useUnsavePost({ postId, authorUserId });
+  const { mutateAsync: likePost } = useLikePublishedItem({
+    publishedItemId: postId,
+    authorUserId,
+  });
+  const { mutateAsync: unlikePost } = useUnlikePublishedItem({
+    publishedItemId: postId,
+    authorUserId,
+  });
+  const { mutateAsync: savePost } = useSavePublishedItem({
+    publishedItemId: postId,
+    authorUserId,
+  });
+  const { mutateAsync: unsavePost } = useUnsavePublishedItem({
+    publishedItemId: postId,
+    authorUserId,
+  });
   const { mutateAsync: deletePost } = useDeletePost({ postId, authorUserId });
 
   async function handleLikeButton() {
