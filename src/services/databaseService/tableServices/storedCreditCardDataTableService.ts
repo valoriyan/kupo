@@ -45,7 +45,7 @@ export class StoredCreditCardDataTableService extends TableService {
 
           payment_processor_card_id VARCHAR(64) UNIQUE NOT NULL,
 
-          creation_timestamp BIGINT NOT NULL
+          creation_timestamp BIGINT NOT NULL,
 
           PRIMARY KEY (user_id, payment_processor_card_id)
         )

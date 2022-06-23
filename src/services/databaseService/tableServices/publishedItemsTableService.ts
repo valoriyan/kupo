@@ -139,11 +139,11 @@ export class PublishedItemsTableService extends TableService {
 
     let typeConstraintClause = "";
     if (!!type) {
-      queryValues.push(type);
       typeConstraintClause = `
         AND
           type = $${queryValues.length + 1}
       `;
+      queryValues.push(type);
     }
 
     let filteringWhereClause = "";
@@ -232,11 +232,11 @@ export class PublishedItemsTableService extends TableService {
 
     let typeConstraintClause = "";
     if (!!type) {
-      queryValues.push(type);
       typeConstraintClause = `
         AND
           type = $${queryValues.length + 1}
       `;
+      queryValues.push(type);
     }
 
     const query = {
@@ -283,11 +283,11 @@ export class PublishedItemsTableService extends TableService {
 
     let typeConstraintClause = "";
     if (!!type) {
-      queryValues.push(type);
       typeConstraintClause = `
         AND
           type = $${queryValues.length + 1}
       `;
+      queryValues.push(type);
     }
 
     let beforeTimestampCondition = "";
@@ -393,13 +393,12 @@ export class PublishedItemsTableService extends TableService {
 
     let typeConstraintClause = "";
     if (!!restrictedToType) {
-      queryValues.push(restrictedToType);
       typeConstraintClause = `
         AND
           type = $${queryValues.length + 1}
       `;
+      queryValues.push(restrictedToType);
     }
-
 
     const query = {
       text: `
@@ -435,11 +434,11 @@ export class PublishedItemsTableService extends TableService {
 
     let typeConstraintClause = "";
     if (!!type) {
-      queryValues.push(type);
       typeConstraintClause = `
         AND
           type = $${queryValues.length + 1}
       `;
+      queryValues.push(type);
     }
 
     const query: QueryConfig = {

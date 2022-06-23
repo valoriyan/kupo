@@ -28,7 +28,6 @@ export class SavedItemsTableService extends TableService {
         save_id VARCHAR(64) UNIQUE NOT NULL,
         
         published_item_id VARCHAR(64) NOT NULL,
-        item_type VARCHAR(64) NOT NULL,
         user_id VARCHAR(64) NOT NULL,
         
         creation_timestamp BIGINT NOT NULL

@@ -75,6 +75,7 @@ export class ShopItemController extends Controller {
   @Post("create")
   public async createShopItem(
     @Request() request: express.Request,
+    @UploadedFiles() mediaFiles: Express.Multer.File[],
     @FormField() caption: string,
     @FormField() hashtags: string, // split by " "
     @FormField() title: string,
@@ -83,7 +84,6 @@ export class ShopItemController extends Controller {
     @FormField() price: string,
     @FormField() scheduledPublicationTimestamp: string,
     @FormField() collaboratorUserIds: string,
-    @UploadedFiles() mediaFiles: Express.Multer.File[],
     @FormField() expirationTimestamp?: string, // number
   ): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
     return await handleCreateShopItem({

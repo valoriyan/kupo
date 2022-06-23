@@ -124,7 +124,6 @@ export class UsersTableService extends TableService {
         
         payment_processor_customer_id VARCHAR(64) UNIQUE NOT NULL,
 
-        is_waitlisted boolean NOT NULL,
         is_admin boolean NOT NULL,
 
         creation_timestamp BIGINT NOT NULL
@@ -585,30 +584,6 @@ export class UsersTableService extends TableService {
   }): Promise<UnrenderableUser | undefined> {
     const query = generatePSQLGenericUpdateRowQueryString<string | number>({
       updatedFields: [{ field: "is_admin", value: "true" }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "user_id",
-        value: userId,
-      },
-      tableName: this.tableName,
-    });
-
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
-
-    const rows = response.rows;
-
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser(rows[0]);
-    }
-    return;
-  }
-
-  public async removeUserFromWaitlist({
-    userId,
-  }: {
-    userId: string;
-  }): Promise<UnrenderableUser | undefined> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "is_waitlisted", value: "false" }],
       fieldUsedToIdentifyUpdatedRow: {
         field: "user_id",
         value: userId,

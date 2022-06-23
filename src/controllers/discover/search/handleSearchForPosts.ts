@@ -58,6 +58,8 @@ export async function handleSearchForPosts({
       { captionSubstring: lowercaseTrimmedQuery, type: PublishedItemType.POST },
     );
 
+  console.log("\n\n\n\n\nTHIS WAS HIT!!!!!");
+
   const unrenderablePostsWithoutElementsOrHashtags =
     mergeArraysOfUncompiledBasePublishedItem({
       arrays: [unrenderablePostsMatchingHashtag, unrenderablePostsMatchingCaption],

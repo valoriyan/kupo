@@ -3,7 +3,7 @@ import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { PostController } from "./postController";
 import express from "express";
 import { checkAuthorization } from "../../auth/utilities";
-import { RenderablePost } from "./models";
+import { RenderablePost, RootRenderablePost } from "./models";
 import { constructRenderablePostFromParts } from "./utilities";
 import { PublishedItemType } from "../models";
 
@@ -121,7 +121,7 @@ export async function handleSharePost({
           },
           isLikedByClient: false,
           isSavedByClient: false,
-          sharedItem: renderableSharedPost,
+          sharedItem: (renderableSharedPost as RootRenderablePost),
         },
       },
     };
