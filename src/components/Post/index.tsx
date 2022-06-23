@@ -37,8 +37,6 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
 
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
-  console.log("POST", post);
-
   return (
     <Box>
       <PostBody
