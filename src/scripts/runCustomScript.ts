@@ -7,10 +7,8 @@ import { PaymentProcessingService } from "../services/paymentProcessingService";
 async function teardownScript(): Promise<void> {
   const paymentProcessingService = new PaymentProcessingService();
 
-
-
   const customerId = await paymentProcessingService.registerCustomer({
-    customerEmail: "julian.trajanson@gmail.com",
+    customerEmail: "_______",
   });
 
   console.log(`customerId: ${customerId}`);
