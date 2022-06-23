@@ -1,4 +1,5 @@
 import express from "express";
+import { PublishedItemType } from "../../../controllers/publishedItem/models";
 import { SecuredHTTPResponse } from "../../../types/httpResponse";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "../../publishedItem/post/models";
@@ -42,24 +43,24 @@ export async function handleSearchForPosts({
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
-  const postIdsWithPossibleHashtags =
+  const publishedItemIds =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemIdsWithOneOfHashtags(
       { hashtagSubstring: lowercaseTrimmedQuery },
     );
 
-  const unrenderableHashtagMatchingPosts =
+  const unrenderablePostsMatchingHashtag =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
-      { ids: postIdsWithPossibleHashtags },
+      { ids: publishedItemIds, restrictedToType: PublishedItemType.POST },
     );
 
-  const unrenderableCaptionMatchingPosts =
+  const unrenderablePostsMatchingCaption =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring(
-      { captionSubstring: lowercaseTrimmedQuery },
+      { captionSubstring: lowercaseTrimmedQuery, type: PublishedItemType.POST },
     );
 
   const unrenderablePostsWithoutElementsOrHashtags =
     mergeArraysOfUncompiledBasePublishedItem({
-      arrays: [unrenderableHashtagMatchingPosts, unrenderableCaptionMatchingPosts],
+      arrays: [unrenderablePostsMatchingHashtag, unrenderablePostsMatchingCaption],
     });
 
   if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {

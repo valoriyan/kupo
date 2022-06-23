@@ -25,7 +25,12 @@ import {
   handleDeletePost,
   DeletePostSuccess,
 } from "./handleDeletePost";
-import { GetPageOfSavedPostsFailed, GetPageOfSavedPostsRequestBody, GetPageOfSavedPostsSuccess, handleGetPageOfSavedPosts } from "./handleGetPageOfSavedPosts";
+import {
+  GetPageOfSavedPostsFailed,
+  GetPageOfSavedPostsRequestBody,
+  GetPageOfSavedPostsSuccess,
+  handleGetPageOfSavedPosts,
+} from "./handleGetPageOfSavedPosts";
 import {
   GetPostByIdFailed,
   GetPostByIdRequestBody,
@@ -172,9 +177,7 @@ export class PostController extends Controller {
   public async getPageOfSavedPosts(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfSavedPostsRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>
-  > {
+  ): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
     return await handleGetPageOfSavedPosts({
       controller: this,
       request,

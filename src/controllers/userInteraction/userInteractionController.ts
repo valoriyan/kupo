@@ -74,6 +74,4 @@ export class UserInteractionController extends Controller {
       requestBody,
     });
   }
-
-
 }

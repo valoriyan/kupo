@@ -54,8 +54,9 @@ export async function handleGetPageOfSavedPosts({
       },
     );
 
-  const publishedItemIds = db_saved_items.map((db_saved_item) => db_saved_item.published_item_id);
-
+  const publishedItemIds = db_saved_items.map(
+    (db_saved_item) => db_saved_item.published_item_id,
+  );
 
   const uncompiledBasePublishedItems =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
@@ -64,7 +65,10 @@ export async function handleGetPageOfSavedPosts({
       },
     );
 
-  const uncompiledSavedPosts = uncompiledBasePublishedItems.filter((uncompiledBasePublishedItem) => uncompiledBasePublishedItem.type === PublishedItemType.POST);
+  const uncompiledSavedPosts = uncompiledBasePublishedItems.filter(
+    (uncompiledBasePublishedItem) =>
+      uncompiledBasePublishedItem.type === PublishedItemType.POST,
+  );
 
   const posts = await constructRenderablePostsFromParts({
     blobStorageService: controller.blobStorageService,

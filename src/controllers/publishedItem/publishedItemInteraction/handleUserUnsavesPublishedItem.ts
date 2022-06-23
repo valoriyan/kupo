@@ -20,7 +20,9 @@ export async function handleUserUnsavesPublishedItem({
   controller: PublishedItemInteractionController;
   request: express.Request;
   requestBody: UserUnsavesPublishedItemRequestBody;
-}): Promise<HTTPResponse<UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess>> {
+}): Promise<
+  HTTPResponse<UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess>
+> {
   const { publishedItemId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

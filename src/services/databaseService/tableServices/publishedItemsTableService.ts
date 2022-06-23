@@ -357,10 +357,12 @@ export class PublishedItemsTableService extends TableService {
     ids,
     limit,
     getPublishedItemsBeforeTimestamp,
+    restrictedToType,
   }: {
     ids: string[];
     limit?: number;
     getPublishedItemsBeforeTimestamp?: number;
+    restrictedToType?: PublishedItemType;
   }): Promise<UncompiledBasePublishedItem[]> {
     const queryValues = ([] as string[]).concat(ids);
 
@@ -389,6 +391,16 @@ export class PublishedItemsTableService extends TableService {
       queryValues.push(getPublishedItemsBeforeTimestamp.toString());
     }
 
+    let typeConstraintClause = "";
+    if (!!restrictedToType) {
+      queryValues.push(restrictedToType);
+      typeConstraintClause = `
+        AND
+          type = $${queryValues.length + 1}
+      `;
+    }
+
+
     const query = {
       text: `
         SELECT
@@ -398,6 +410,7 @@ export class PublishedItemsTableService extends TableService {
         WHERE
           id IN ${idsQueryString}
           ${getPublishedItemsBeforeTimestampClause}
+          ${typeConstraintClause}
         ORDER BY
           scheduled_publication_timestamp DESC
         ${limitClause}

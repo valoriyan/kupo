@@ -5,12 +5,29 @@ import { WebSocketService } from "../../../services/webSocketService";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { SecuredHTTPResponse } from "src/types/httpResponse";
-import { handleUserSavesPublishedItem, UserSavesPublishedItemFailed, UserSavesPublishedItemRequestBody, UserSavesPublishedItemSuccess } from "./handleUserSavesPublishedItem";
-import { FailedToRemoveUserLikeFromPublishedItemResponse, handleRemoveUserLikeFromPublishedItem, RemoveUserLikeFromPublishedItemRequestBody, SuccessfullyRemovedUserLikeFromPostResponse } from "./handleRemoveUserLikeFromPublishedItem";
-import { handleUserUnsavesPublishedItem, UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess } from "./handleUserUnsavesPublishedItem";
-import { handleUserLikesPublishedItem, UserLikesPublishedItemFailed, UserLikesPublishedItemRequestBody, UserLikesPublishedItemSuccess } from "./handleUserLikesPublishedItem";
-
-
+import {
+  handleUserSavesPublishedItem,
+  UserSavesPublishedItemFailed,
+  UserSavesPublishedItemRequestBody,
+  UserSavesPublishedItemSuccess,
+} from "./handleUserSavesPublishedItem";
+import {
+  FailedToRemoveUserLikeFromPublishedItemResponse,
+  handleRemoveUserLikeFromPublishedItem,
+  RemoveUserLikeFromPublishedItemRequestBody,
+  SuccessfullyRemovedUserLikeFromPostResponse,
+} from "./handleRemoveUserLikeFromPublishedItem";
+import {
+  handleUserUnsavesPublishedItem,
+  UserUnsavesPublishedItemFailed,
+  UserUnsavesPublishedItemSuccess,
+} from "./handleUserUnsavesPublishedItem";
+import {
+  handleUserLikesPublishedItem,
+  UserLikesPublishedItemFailed,
+  UserLikesPublishedItemRequestBody,
+  UserLikesPublishedItemSuccess,
+} from "./handleUserLikesPublishedItem";
 
 @injectable()
 @Route("publishedItemInteractions")
@@ -30,7 +47,9 @@ export class PublishedItemInteractionController extends Controller {
   public async userLikesPublishedItem(
     @Request() request: express.Request,
     @Body() requestBody: UserLikesPublishedItemRequestBody,
-  ): Promise<SecuredHTTPResponse<UserLikesPublishedItemFailed, UserLikesPublishedItemSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<UserLikesPublishedItemFailed, UserLikesPublishedItemSuccess>
+  > {
     return await handleUserLikesPublishedItem({
       controller: this,
       request,
@@ -42,7 +61,9 @@ export class PublishedItemInteractionController extends Controller {
   public async userSavesPublishedItem(
     @Request() request: express.Request,
     @Body() requestBody: UserSavesPublishedItemRequestBody,
-  ): Promise<SecuredHTTPResponse<UserSavesPublishedItemFailed, UserSavesPublishedItemSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<UserSavesPublishedItemFailed, UserSavesPublishedItemSuccess>
+  > {
     return await handleUserSavesPublishedItem({
       controller: this,
       request,
@@ -53,7 +74,6 @@ export class PublishedItemInteractionController extends Controller {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
@@ -85,9 +105,7 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: RemoveUserLikeFromPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<
-    UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess
-    >
+    SecuredHTTPResponse<UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess>
   > {
     return await handleUserUnsavesPublishedItem({
       controller: this,
