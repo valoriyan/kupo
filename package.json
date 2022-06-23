@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "runCustomScript": "tsc && node build/src/scripts/runCustomScript.js",
     "resetDatabase": "tsc && node build/src/scripts/teardown.js && sleep 3 && node build/src/scripts/setup.js",
     "resetFakeLocalData": "tsc && yarn run resetDatabase && node build/src/scripts/setupFakeLocalData.js",
     "dev": "yarn run killRunningDev && sleep 4 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
