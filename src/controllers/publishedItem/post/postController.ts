@@ -123,11 +123,13 @@ export class PostController extends Controller {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("getPostById")
-  public async getPostById(
+  @Post("getPublishedItemById")
+  public async getPublishedItemById(
     @Request() request: express.Request,
     @Body() requestBody: GetPublishedItemByIdRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>
+  > {
     return await handleGetPublishedItemById({
       controller: this,
       request,
