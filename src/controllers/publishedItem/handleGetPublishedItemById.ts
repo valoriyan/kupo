@@ -32,7 +32,9 @@ export async function handleGetPublishedItemById({
   controller: PostController;
   request: express.Request;
   requestBody: GetPublishedItemByIdRequestBody;
-}): Promise<SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>
+> {
   const { publishedItemId } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -63,8 +65,5 @@ export async function handleGetPublishedItemById({
     return {
       success: { publishedItem: shopItem },
     };
-
   }
-
-
 }

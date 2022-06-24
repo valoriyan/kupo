@@ -32,10 +32,10 @@ import {
   handleGetPageOfSavedPosts,
 } from "./handleGetPageOfSavedPosts";
 import {
-  GetPostByIdFailed,
-  GetPostByIdRequestBody,
-  handleGetPostById,
-  GetPostByIdSuccess,
+  GetPublishedItemByIdFailed,
+  GetPublishedItemByIdRequestBody,
+  handleGetPublishedItemById,
+  GetPublishedItemByIdSuccess,
 } from "../handleGetPublishedItemById";
 import {
   GetPostsScheduledByUserFailed,
@@ -126,9 +126,9 @@ export class PostController extends Controller {
   @Post("getPostById")
   public async getPostById(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostByIdRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPostByIdFailed, GetPostByIdSuccess>> {
-    return await handleGetPostById({
+    @Body() requestBody: GetPublishedItemByIdRequestBody,
+  ): Promise<SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>> {
+    return await handleGetPublishedItemById({
       controller: this,
       request,
       requestBody,
