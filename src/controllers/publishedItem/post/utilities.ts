@@ -3,7 +3,11 @@ import { DatabaseService } from "../../../services/databaseService";
 import { RenderablePost, RootRenderablePost, SharedRenderablePost } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { MediaElement } from "../../models";
-import { BaseRenderablePublishedItem, PublishedItemType, UncompiledBasePublishedItem } from "../models";
+import {
+  BaseRenderablePublishedItem,
+  PublishedItemType,
+  UncompiledBasePublishedItem,
+} from "../models";
 import { assembleBaseRenderablePublishedItem } from "../utilities";
 
 export async function constructRenderablePostsFromParts({
@@ -42,7 +46,6 @@ export async function constructRenderablePostFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
 }): Promise<RenderablePost> {
-
   const baseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
     databaseService,
     uncompiledBasePublishedItem,
@@ -64,7 +67,6 @@ export async function constructRenderablePostFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-
   if (!idOfPublishedItemBeingShared) {
     const rootRenderablePost: RootRenderablePost = await assembleRootRenderablePost({
       blobStorageService,
@@ -81,12 +83,11 @@ export async function constructRenderablePostFromParts({
         },
       );
 
-      const sharedBaseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
-        databaseService,
-        uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
-        clientUserId,
+    const sharedBaseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
+      databaseService,
+      uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
+      clientUserId,
     });
-    
 
     const sharedRootRenderablePost: RootRenderablePost = await assembleRootRenderablePost(
       {
@@ -95,7 +96,6 @@ export async function constructRenderablePostFromParts({
         baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
       },
     );
-
 
     const sharedRenderablePost: SharedRenderablePost = {
       type: PublishedItemType.POST,

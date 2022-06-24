@@ -9,7 +9,11 @@ import {
   SharedShopItem,
 } from "./models";
 import { MediaElement } from "../../models";
-import { BaseRenderablePublishedItem, PublishedItemType, UncompiledBasePublishedItem } from "../models";
+import {
+  BaseRenderablePublishedItem,
+  PublishedItemType,
+  UncompiledBasePublishedItem,
+} from "../models";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 import { assembleBaseRenderablePublishedItem } from "../utilities";
 
@@ -43,29 +47,22 @@ export async function constructRenderableShopItemFromParts({
   databaseService,
   uncompiledBasePublishedItem,
   clientUserId,
-}:
-{
+}: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
 }): Promise<RenderableShopItem> {
-
   const baseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
     databaseService,
     uncompiledBasePublishedItem,
     clientUserId,
-  });  
+  });
 
-  const {
-    id,
-    idOfPublishedItemBeingShared,
-  } = baseRenderablePublishedItem;
-
-
+  const { id, idOfPublishedItemBeingShared } = baseRenderablePublishedItem;
 
   if (!!idOfPublishedItemBeingShared) {
-    const sharedShopItem =  await assembleSharedShopItemFromParts({
+    const sharedShopItem = await assembleSharedShopItemFromParts({
       blobStorageService,
       databaseService,
       baseRenderablePublishedItem,
@@ -74,17 +71,22 @@ export async function constructRenderableShopItemFromParts({
 
     return sharedShopItem;
   } else {
-    const hasPublishedItemBeenPurchasedByUserId = !!clientUserId && await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId({
-      publishedItemId: id,
-      nonCreatorUserId: clientUserId,
-    });
+    const hasPublishedItemBeenPurchasedByUserId =
+      !!clientUserId &&
+      (await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId(
+        {
+          publishedItemId: id,
+          nonCreatorUserId: clientUserId,
+        },
+      ));
 
     if (hasPublishedItemBeenPurchasedByUserId) {
-      const rootPurchasedShopItemDetails = await assembleRootPurchasedShopItemDetailsFromParts({
-        blobStorageService,
-        databaseService,
-        baseRenderablePublishedItem,
-      });
+      const rootPurchasedShopItemDetails =
+        await assembleRootPurchasedShopItemDetailsFromParts({
+          blobStorageService,
+          databaseService,
+          baseRenderablePublishedItem,
+        });
       return rootPurchasedShopItemDetails;
     } else {
       const rootShopItemPreview = await assembleRootShopItemPreviewFromParts({
@@ -95,25 +97,19 @@ export async function constructRenderableShopItemFromParts({
       return rootShopItemPreview;
     }
   }
-
-
 }
-
-
 
 async function assembleSharedShopItemFromParts({
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
   clientUserId,
-}:
-{
+}: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
   clientUserId: string | undefined;
 }): Promise<SharedShopItem> {
-
   const {
     id,
     creationTimestamp,
@@ -126,10 +122,13 @@ async function assembleSharedShopItemFromParts({
     comments,
     isLikedByClient,
     isSavedByClient,
-    idOfPublishedItemBeingShared
+    idOfPublishedItemBeingShared,
   } = baseRenderablePublishedItem;
 
-  const sharedUncompiledBasePublishedItem = await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById({id: idOfPublishedItemBeingShared!});
+  const sharedUncompiledBasePublishedItem =
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: idOfPublishedItemBeingShared! },
+    );
 
   const sharedBaseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
     databaseService,
@@ -137,28 +136,26 @@ async function assembleSharedShopItemFromParts({
     clientUserId,
   });
 
-  const hasSharedPublishedItemBeenPurchasedByUserId = !!clientUserId && await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId({
-    publishedItemId: sharedBaseRenderablePublishedItem.id,
-    nonCreatorUserId: clientUserId,
-  });
+  const hasSharedPublishedItemBeenPurchasedByUserId =
+    !!clientUserId &&
+    (await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId(
+      {
+        publishedItemId: sharedBaseRenderablePublishedItem.id,
+        nonCreatorUserId: clientUserId,
+      },
+    ));
 
-    
-  const sharedItem =
-    (hasSharedPublishedItemBeenPurchasedByUserId) ?
-      await assembleRootPurchasedShopItemDetailsFromParts({
+  const sharedItem = hasSharedPublishedItemBeenPurchasedByUserId
+    ? await assembleRootPurchasedShopItemDetailsFromParts({
         blobStorageService,
         databaseService,
         baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
-      }) :
-      await assembleRootShopItemPreviewFromParts({
+      })
+    : await assembleRootShopItemPreviewFromParts({
         blobStorageService,
         databaseService,
         baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
-      })      
-      ;
-
-
-
+      });
   const sharedShopItem: SharedShopItem = {
     type: PublishedItemType.SHOP_ITEM,
     id,
@@ -181,8 +178,7 @@ async function assembleRootShopItemPreviewFromParts({
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
-}:
-{
+}: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
@@ -201,7 +197,6 @@ async function assembleRootShopItemPreviewFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-
   const dbShopItem =
     await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
       {
@@ -212,7 +207,7 @@ async function assembleRootShopItemPreviewFromParts({
   const previewMediaElements = await assembleShopItemPreviewMediaElements({
     publishedItemId: id,
     blobStorageService,
-    databaseService,  
+    databaseService,
   });
 
   const rootShopItemPreview: RootShopItemPreview = {
@@ -237,18 +232,15 @@ async function assembleRootShopItemPreviewFromParts({
   return rootShopItemPreview;
 }
 
-
 async function assembleRootPurchasedShopItemDetailsFromParts({
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
-}:
-{
+}: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
 }): Promise<RootPurchasedShopItemDetails> {
-
   const {
     id,
     creationTimestamp,
@@ -263,7 +255,6 @@ async function assembleRootPurchasedShopItemDetailsFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-
   const dbShopItem =
     await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
       {
@@ -274,7 +265,7 @@ async function assembleRootPurchasedShopItemDetailsFromParts({
   const previewMediaElements = await assembleShopItemPreviewMediaElements({
     publishedItemId: id,
     blobStorageService,
-    databaseService,  
+    databaseService,
   });
 
   const rootPurchasedShopItemDetails: RootPurchasedShopItemDetails = {
@@ -298,9 +289,7 @@ async function assembleRootPurchasedShopItemDetailsFromParts({
   };
 
   return rootPurchasedShopItemDetails;
-
 }
-
 
 async function assembleShopItemPreviewMediaElements({
   publishedItemId,
@@ -309,7 +298,7 @@ async function assembleShopItemPreviewMediaElements({
 }: {
   publishedItemId: string;
   blobStorageService: BlobStorageServiceInterface;
-  databaseService: DatabaseService;  
+  databaseService: DatabaseService;
 }): Promise<MediaElement[]> {
   const filedShopItemPreviewMediaElements =
     await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemMediaElementsByPublishedItemId(

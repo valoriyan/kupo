@@ -52,7 +52,6 @@ export async function handlePurchaseShopItem({
     const chargeAmountMajorCurrencyUnits = parseInt(unrenderableShopItemPreview.price); // i.e. charge amount in US Dollars
     const chargeAmountMinorCurrencyUnits = chargeAmountMajorCurrencyUnits * 100; // i.e. charge amount in US Cents
 
-
     await controller.paymentProcessingService.chargeCustomerWithCachedCreditCard({
       paymentProcessingCustomerId:
         unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
@@ -60,12 +59,14 @@ export async function handlePurchaseShopItem({
       chargeAmount: chargeAmountMinorCurrencyUnits,
     });
 
-    await controller.databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.recordTransaction({
-      transactionId,
-      publishedItemId,
-      nonCreatorUserId: clientUserId,
-      creationTimestamp: now,
-    });
+    await controller.databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.recordTransaction(
+      {
+        transactionId,
+        publishedItemId,
+        nonCreatorUserId: clientUserId,
+        creationTimestamp: now,
+      },
+    );
 
     return {
       success: {},

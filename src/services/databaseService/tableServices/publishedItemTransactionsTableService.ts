@@ -4,10 +4,10 @@ import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBPublishedItemTransaction {
-    transaction_id: string;
-    published_item_id: string;
-    non_creator_user_id: string;
-    creation_timestamp: string;
+  transaction_id: string;
+  published_item_id: string;
+  non_creator_user_id: string;
+  creation_timestamp: string;
 }
 
 export class PublishedItemTransactionsTableService extends TableService {
@@ -41,11 +41,11 @@ export class PublishedItemTransactionsTableService extends TableService {
     publishedItemId,
     nonCreatorUserId,
     creationTimestamp,
-}: {
-    transactionId: string,
-    publishedItemId: string,
-    nonCreatorUserId: string,
-    creationTimestamp: number,
+  }: {
+    transactionId: string;
+    publishedItemId: string;
+    nonCreatorUserId: string;
+    creationTimestamp: number;
   }): Promise<void> {
     const query = generatePSQLGenericCreateRowsQuery<string | number>({
       rowsOfFieldsAndValues: [
@@ -54,7 +54,6 @@ export class PublishedItemTransactionsTableService extends TableService {
           { field: "published_item_id", value: publishedItemId },
           { field: "non_creator_user_id", value: nonCreatorUserId },
           { field: "creation_timestamp", value: creationTimestamp },
-
         ],
       ],
       tableName: this.tableName,
@@ -71,11 +70,11 @@ export class PublishedItemTransactionsTableService extends TableService {
     publishedItemId,
     nonCreatorUserId,
   }: {
-    publishedItemId: string,
-    nonCreatorUserId: string,
+    publishedItemId: string;
+    nonCreatorUserId: string;
   }) {
     const query = {
-        text: `
+      text: `
           SELECT
             *
           FROM
@@ -88,12 +87,13 @@ export class PublishedItemTransactionsTableService extends TableService {
             1
           ;
         `,
-        values: [publishedItemId, nonCreatorUserId],
-      };
-  
-      const response: QueryResult<DBPublishedItemTransaction> = await this.datastorePool.query(query);
+      values: [publishedItemId, nonCreatorUserId],
+    };
 
-      return response.rows.length === 1;  
+    const response: QueryResult<DBPublishedItemTransaction> =
+      await this.datastorePool.query(query);
+
+    return response.rows.length === 1;
   }
 
   //////////////////////////////////////////////////
@@ -103,6 +103,4 @@ export class PublishedItemTransactionsTableService extends TableService {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
-
-
 }

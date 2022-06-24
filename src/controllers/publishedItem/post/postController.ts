@@ -36,7 +36,7 @@ import {
   GetPostByIdRequestBody,
   handleGetPostById,
   GetPostByIdSuccess,
-} from "./handleGetPostById";
+} from "../handleGetPublishedItemById";
 import {
   GetPostsScheduledByUserFailed,
   GetPostsScheduledByUserRequestBody,
