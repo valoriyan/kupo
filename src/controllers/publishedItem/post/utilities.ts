@@ -3,7 +3,8 @@ import { DatabaseService } from "../../../services/databaseService";
 import { RenderablePost, RootRenderablePost, SharedRenderablePost } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { MediaElement } from "../../models";
-import { PublishedItemType, UncompiledBasePublishedItem } from "../models";
+import { BaseRenderablePublishedItem, PublishedItemType, UncompiledBasePublishedItem } from "../models";
+import { assembleBaseRenderablePublishedItem } from "../utilities";
 
 export async function constructRenderablePostsFromParts({
   blobStorageService,
@@ -41,6 +42,13 @@ export async function constructRenderablePostFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
 }): Promise<RenderablePost> {
+
+  const baseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
+    databaseService,
+    uncompiledBasePublishedItem,
+    clientUserId,
+  });
+
   const {
     id,
     creationTimestamp,
@@ -49,14 +57,19 @@ export async function constructRenderablePostFromParts({
     scheduledPublicationTimestamp,
     expirationTimestamp,
     idOfPublishedItemBeingShared,
-  } = uncompiledBasePublishedItem;
+    hashtags,
+    likes,
+    comments,
+    isLikedByClient,
+    isSavedByClient,
+  } = baseRenderablePublishedItem;
+
 
   if (!idOfPublishedItemBeingShared) {
     const rootRenderablePost: RootRenderablePost = await assembleRootRenderablePost({
       blobStorageService,
       databaseService,
-      uncompiledBasePublishedItem,
-      clientUserId,
+      baseRenderablePublishedItem,
     });
 
     return rootRenderablePost;
@@ -68,51 +81,21 @@ export async function constructRenderablePostFromParts({
         },
       );
 
+      const sharedBaseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
+        databaseService,
+        uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
+        clientUserId,
+    });
+    
+
     const sharedRootRenderablePost: RootRenderablePost = await assembleRootRenderablePost(
       {
         blobStorageService,
         databaseService,
-        uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
-        clientUserId,
+        baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
       },
     );
 
-    const hashtags =
-      await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
-        { publishedItemId: id },
-      );
-
-    const countOfLikesOnPost =
-      await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
-        {
-          postId: id,
-        },
-      );
-
-    const countOfCommentsOnPost =
-      await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
-        {
-          postId: id,
-        },
-      );
-
-    const isLikedByClient =
-      !!clientUserId &&
-      (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
-        {
-          userId: clientUserId,
-          postId: id,
-        },
-      ));
-
-    const isSavedByClient =
-      !!clientUserId &&
-      (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-        {
-          userId: clientUserId,
-          publishedItemId: id,
-        },
-      ));
 
     const sharedRenderablePost: SharedRenderablePost = {
       type: PublishedItemType.POST,
@@ -124,12 +107,8 @@ export async function constructRenderablePostFromParts({
       expirationTimestamp,
       idOfPublishedItemBeingShared,
       hashtags,
-      likes: {
-        count: countOfLikesOnPost,
-      },
-      comments: {
-        count: countOfCommentsOnPost,
-      },
+      likes,
+      comments,
       isLikedByClient,
       isSavedByClient,
       sharedItem: sharedRootRenderablePost,
@@ -141,13 +120,11 @@ export async function constructRenderablePostFromParts({
 async function assembleRootRenderablePost({
   blobStorageService,
   databaseService,
-  uncompiledBasePublishedItem,
-  clientUserId,
+  baseRenderablePublishedItem,
 }: {
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
-  clientUserId: string | undefined;
+  baseRenderablePublishedItem: BaseRenderablePublishedItem;
 }): Promise<RootRenderablePost> {
   const {
     id,
@@ -156,50 +133,18 @@ async function assembleRootRenderablePost({
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
-  } = uncompiledBasePublishedItem;
+    hashtags,
+    likes,
+    comments,
+    isLikedByClient,
+    isSavedByClient,
+  } = baseRenderablePublishedItem;
 
   const mediaElements = await assemblePostMediaElements({
     publishedItemId: id,
     blobStorageService,
     databaseService,
   });
-
-  const hashtags =
-    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
-      { publishedItemId: id },
-    );
-
-  const countOfLikesOnPost =
-    await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
-      {
-        postId: id,
-      },
-    );
-
-  const countOfCommentsOnPost =
-    await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
-      {
-        postId: id,
-      },
-    );
-
-  const isLikedByClient =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
-      {
-        userId: clientUserId,
-        postId: id,
-      },
-    ));
-
-  const isSavedByClient =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-      {
-        userId: clientUserId,
-        publishedItemId: id,
-      },
-    ));
 
   const rootRenderablePost: RootRenderablePost = {
     type: PublishedItemType.POST,
@@ -211,12 +156,8 @@ async function assembleRootRenderablePost({
     expirationTimestamp,
     mediaElements,
     hashtags,
-    likes: {
-      count: countOfLikesOnPost,
-    },
-    comments: {
-      count: countOfCommentsOnPost,
-    },
+    likes,
+    comments,
     isLikedByClient,
     isSavedByClient,
   };
@@ -232,7 +173,7 @@ export async function assemblePostMediaElements({
   publishedItemId: string;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-}) {
+}): Promise<MediaElement[]> {
   const filedPostMediaElements =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
       {

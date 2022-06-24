@@ -14,7 +14,7 @@ export interface UncompiledBasePublishedItem {
   idOfPublishedItemBeingShared?: string;
 }
 
-export interface BasePublishedItem extends UncompiledBasePublishedItem {
+export interface BaseRenderablePublishedItem extends UncompiledBasePublishedItem {
   hashtags: string[];
   likes: {
     count: number;

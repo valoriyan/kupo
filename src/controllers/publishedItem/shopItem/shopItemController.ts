@@ -43,7 +43,7 @@ import {
   PurchaseShopItemFailed,
   PurchaseShopItemRequestBody,
   PurchaseShopItemSuccess,
-} from "./handlePurchaseShopItem";
+} from "./payments/handlePurchaseShopItem";
 import {
   GetCreditCardsStoredByUserIdFailed,
   GetCreditCardsStoredByUserIdRequestBody,

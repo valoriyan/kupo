@@ -21,6 +21,7 @@ import { DatabaseServiceType } from "./models";
 import { UserNotificationsTableService } from "./tableServices/userNotificationsTableService";
 import { SavedItemsTableService } from "./tableServices/savedItemsTableService";
 import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCardDataTableService";
+import { PublishedItemTransactionsTableService } from "./tableServices/publishedItemTransactionsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -56,6 +57,9 @@ export class DatabaseService {
     ),
     savedItemsTableService: new SavedItemsTableService(DatabaseService.datastorePool),
     storedCreditCardDataTableService: new StoredCreditCardDataTableService(
+      DatabaseService.datastorePool,
+    ),
+    publishedItemTransactionsTableService: new PublishedItemTransactionsTableService(
       DatabaseService.datastorePool,
     ),
   };
