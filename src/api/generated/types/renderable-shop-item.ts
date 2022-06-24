@@ -136,18 +136,6 @@ export interface RenderableShopItem {
   purchasedMediaElements: Array<MediaElement>;
   /**
    *
-   * @type {string}
-   * @memberof RenderableShopItem
-   */
-  transactionId: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RenderableShopItem
-   */
-  purchasedTimestamp: number;
-  /**
-   *
    * @type {RootShopItemPreview | RootPurchasedShopItemDetails}
    * @memberof RenderableShopItem
    */

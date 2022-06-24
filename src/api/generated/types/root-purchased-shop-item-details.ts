@@ -131,16 +131,4 @@ export interface RootPurchasedShopItemDetails {
    * @memberof RootPurchasedShopItemDetails
    */
   purchasedMediaElements: Array<MediaElement>;
-  /**
-   *
-   * @type {string}
-   * @memberof RootPurchasedShopItemDetails
-   */
-  transactionId: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RootPurchasedShopItemDetails
-   */
-  purchasedTimestamp: number;
 }
