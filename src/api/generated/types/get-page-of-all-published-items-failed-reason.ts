@@ -17,9 +17,7 @@
  * @export
  * @enum {string}
  */
-export enum UserContentFeedFilterType {
-  Hashtag = "HASHTAG",
-  Username = "USERNAME",
-  FollowingUsers = "FOLLOWING_USERS",
-  AllPostsForAdmins = "ALL_POSTS_FOR_ADMINS",
+export enum GetPageOfAllPublishedItemsFailedReason {
+  IllegalAccess = "ILLEGAL_ACCESS",
+  UnknownCause = "Unknown Cause",
 }

@@ -61,6 +61,8 @@ import { FollowUserRequestBody } from "../types";
 // @ts-ignore
 import { GetChatRoomByIdRequestBody } from "../types";
 // @ts-ignore
+import { GetPageOfAllPublishedItemsRequestBody } from "../types";
+// @ts-ignore
 import { GetPageOfChatMessagesRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfChatRoomsRequestBody } from "../types";
@@ -166,6 +168,8 @@ import { SecuredHTTPResponseGetChatRoomByIdFailedGetChatRoomByIdSuccess } from "
 import { SecuredHTTPResponseGetCountOfUnreadNotificationsFailedGetCountOfUnreadNotificationsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedGetCreditCardsStoredByUserIdSuccess } from "../types";
+// @ts-ignore
+import { SecuredHTTPResponseGetPageOfAllPublishedItemsFailedGetPageOfAllPublishedItemsSuccess } from "../types";
 // @ts-ignore
 import { SecuredHTTPResponseGetPageOfChatMessagesFailedGetPageOfChatMessagesSuccess } from "../types";
 // @ts-ignore
@@ -1098,6 +1102,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         body,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfALLPUBLISHEDITEMS: async (
+      getPageOfAllPublishedItemsRequestBody: GetPageOfAllPublishedItemsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPageOfAllPublishedItemsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPageOfALLPUBLISHEDITEMS",
+        "getPageOfAllPublishedItemsRequestBody",
+        getPageOfAllPublishedItemsRequestBody,
+      );
+      const localVarPath = `/feed/getPageOf_ALL_PUBLISHED_ITEMS`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPageOfAllPublishedItemsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -3811,6 +3864,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPageOfALLPUBLISHEDITEMS(
+      getPageOfAllPublishedItemsRequestBody: GetPageOfAllPublishedItemsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SecuredHTTPResponseGetPageOfAllPublishedItemsFailedGetPageOfAllPublishedItemsSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPageOfALLPUBLISHEDITEMS(
+          getPageOfAllPublishedItemsRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5299,6 +5379,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPageOfALLPUBLISHEDITEMS(
+      getPageOfAllPublishedItemsRequestBody: GetPageOfAllPublishedItemsRequestBody,
+      options?: any,
+    ): AxiosPromise<SecuredHTTPResponseGetPageOfAllPublishedItemsFailedGetPageOfAllPublishedItemsSuccess> {
+      return localVarFp
+        .getPageOfALLPUBLISHEDITEMS(getPageOfAllPublishedItemsRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPageOfChatMessagesRequestBody} getPageOfChatMessagesRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6262,6 +6356,22 @@ export class DefaultApi extends BaseAPI {
   public getCreditCardsStoredByUserId(body: object, options?: any) {
     return DefaultApiFp(this.configuration)
       .getCreditCardsStoredByUserId(body, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPageOfALLPUBLISHEDITEMS(
+    getPageOfAllPublishedItemsRequestBody: GetPageOfAllPublishedItemsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPageOfALLPUBLISHEDITEMS(getPageOfAllPublishedItemsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

@@ -15,11 +15,19 @@
 /**
  *
  * @export
- * @enum {string}
+ * @interface GetPageOfAllPublishedItemsRequestBody
  */
-export enum UserContentFeedFilterType {
-  Hashtag = "HASHTAG",
-  Username = "USERNAME",
-  FollowingUsers = "FOLLOWING_USERS",
-  AllPostsForAdmins = "ALL_POSTS_FOR_ADMINS",
+export interface GetPageOfAllPublishedItemsRequestBody {
+  /**
+   *
+   * @type {string}
+   * @memberof GetPageOfAllPublishedItemsRequestBody
+   */
+  cursor?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof GetPageOfAllPublishedItemsRequestBody
+   */
+  pageSize: number;
 }

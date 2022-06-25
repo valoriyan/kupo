@@ -12,14 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { GetPageOfAllPublishedItemsFailedReason } from "./get-page-of-all-published-items-failed-reason";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface GetPageOfAllPublishedItemsFailed
  */
-export enum UserContentFeedFilterType {
-  Hashtag = "HASHTAG",
-  Username = "USERNAME",
-  FollowingUsers = "FOLLOWING_USERS",
-  AllPostsForAdmins = "ALL_POSTS_FOR_ADMINS",
+export interface GetPageOfAllPublishedItemsFailed {
+  /**
+   *
+   * @type {GetPageOfAllPublishedItemsFailedReason}
+   * @memberof GetPageOfAllPublishedItemsFailed
+   */
+  reason: GetPageOfAllPublishedItemsFailedReason;
 }
