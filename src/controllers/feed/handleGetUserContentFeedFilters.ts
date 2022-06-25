@@ -48,15 +48,14 @@ export async function handleGetUserContentFeedFilters({
 
   // ADD ALL_POSTS_FOR_REVIEW_BY_ADMINS FILTER FOR ADMINS
   if (!!unrenderableUser && !!unrenderableUser.isAdmin) {
-      userContentFeedFilters.push({
-        contentFeedFilterId: "",
-        userId: clientUserId,
-        type: UserContentFeedFilterType.ALL_POSTS_FOR_REVIEW_BY_ADMINS,
-        value: "",
-        creationTimestamp: now,
-      })
-    }
-
+    userContentFeedFilters.push({
+      contentFeedFilterId: "",
+      userId: clientUserId,
+      type: UserContentFeedFilterType.ALL_POSTS_FOR_REVIEW_BY_ADMINS,
+      value: "",
+      creationTimestamp: now,
+    });
+  }
 
   return {
     success: {
