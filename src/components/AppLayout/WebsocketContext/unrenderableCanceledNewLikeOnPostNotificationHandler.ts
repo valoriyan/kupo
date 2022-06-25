@@ -19,7 +19,8 @@ export const generateUnrenderableCanceledNewLikeOnPostNotificationHandler =
 
     notificationsReceived.forEach((notificationReceived) => {
       const isCancelledNotification =
-        notificationReceived.type === NOTIFICATIONEVENTS.NewLikeOnPost &&
+        (notificationReceived.type as unknown as NOTIFICATIONEVENTS) ===
+          NOTIFICATIONEVENTS.NewLikeOnPost &&
         notificationReceived.userThatLikedPost.userId === userIdUnlikingPost &&
         notificationReceived.post.id === postId;
 

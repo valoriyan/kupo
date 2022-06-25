@@ -11,7 +11,7 @@ export const generateRenderableNewFollowerNotificationHandler =
         renderableNewFollowerNotification.countOfUnreadNotifications,
       notificationsReceived: [
         ...notificationsReceived,
-        renderableNewFollowerNotification as RenderableUserNotification,
+        renderableNewFollowerNotification as unknown as RenderableUserNotification,
       ],
     });
   };

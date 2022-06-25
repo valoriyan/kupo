@@ -26,7 +26,7 @@ export enum NOTIFICATIONEVENTS {
   CanceledNewFollower = "CANCELED_NEW_FOLLOWER",
   NewLikeOnPost = "NEW_LIKE_ON_POST",
   CanceledNewLikeOnPost = "CANCELED_NEW_LIKE_ON_POST",
+  NewTagInPublishedItemComment = "NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
+  CanceledNewTagInPublishedItemComment = "CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
   NewPost = "NEW_POST",
-  NewMentionInPost = "NEW_MENTION_IN_POST",
-  NewMentionInPostComment = "NEW_MENTION_IN_POST_COMMENT",
 }

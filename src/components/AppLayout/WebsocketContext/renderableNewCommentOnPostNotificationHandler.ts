@@ -14,7 +14,7 @@ export const generateRenderableNewCommentOnPostNotificationHandler =
         renderableNewCommentOnPostNotification.countOfUnreadNotifications,
       notificationsReceived: [
         ...notificationsReceived,
-        renderableNewCommentOnPostNotification as RenderableUserNotification,
+        renderableNewCommentOnPostNotification as unknown as RenderableUserNotification,
       ],
     });
   };

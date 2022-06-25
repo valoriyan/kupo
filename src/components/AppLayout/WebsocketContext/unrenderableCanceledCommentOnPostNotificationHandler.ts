@@ -19,7 +19,8 @@ export const generateUnrenderableCanceledCommentOnPostNotificationHandler =
 
     notificationsReceived.forEach((notificationReceived) => {
       const isCancelledNotification =
-        notificationReceived.type === NOTIFICATIONEVENTS.NewCommentOnPost &&
+        (notificationReceived.type as unknown as NOTIFICATIONEVENTS) ===
+          NOTIFICATIONEVENTS.NewCommentOnPost &&
         notificationReceived.postComment.postCommentId === postCommentId;
 
       if (!isCancelledNotification) {

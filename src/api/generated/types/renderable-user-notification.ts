@@ -12,10 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { NOTIFICATIONEVENTS } from "./notificationevents";
+import { NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT } from "./notificationeventsnewtaginpublisheditemcomment";
 import { RenderableNewCommentOnPostNotification } from "./renderable-new-comment-on-post-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
 import { RenderableNewLikeOnPostNotification } from "./renderable-new-like-on-post-notification";
+import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable-new-tag-in-published-item-comment-notification";
 import { RenderablePost } from "./renderable-post";
 import { RenderablePostComment } from "./renderable-post-comment";
 import { RenderableUser } from "./renderable-user";
@@ -28,10 +29,10 @@ import { RenderableUser } from "./renderable-user";
 export interface RenderableUserNotification {
   /**
    *
-   * @type {NOTIFICATIONEVENTS}
+   * @type {NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT}
    * @memberof RenderableUserNotification
    */
-  type: NOTIFICATIONEVENTS;
+  type: NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT;
   /**
    *
    * @type {number}
@@ -80,4 +81,22 @@ export interface RenderableUserNotification {
    * @memberof RenderableUserNotification
    */
   userThatLikedPost: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
+  userTaggingClient: RenderableUser;
+  /**
+   *
+   * @type {RenderablePost}
+   * @memberof RenderableUserNotification
+   */
+  publishedItem: RenderablePost;
+  /**
+   *
+   * @type {RenderablePostComment}
+   * @memberof RenderableUserNotification
+   */
+  publishedItemComment: RenderablePostComment;
 }

@@ -12,7 +12,7 @@ export const generateRenderableNewLikeOnPostNotificationHandler =
         renderableNewLikeOnPostNotification.countOfUnreadNotifications,
       notificationsReceived: [
         ...notificationsReceived,
-        renderableNewLikeOnPostNotification as RenderableUserNotification,
+        renderableNewLikeOnPostNotification as unknown as RenderableUserNotification,
       ],
     });
   };

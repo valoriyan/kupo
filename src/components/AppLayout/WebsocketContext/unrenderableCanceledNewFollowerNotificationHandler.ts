@@ -19,7 +19,8 @@ export const generateUnrenderableCanceledNewFollowerNotificationHandler =
 
     notificationsReceived.forEach((notificationReceived) => {
       const isCancelledNotification =
-        notificationReceived.type === NOTIFICATIONEVENTS.NewFollower &&
+        (notificationReceived.type as unknown as NOTIFICATIONEVENTS) ===
+          NOTIFICATIONEVENTS.NewFollower &&
         notificationReceived.userDoingFollowing.userId === userIdDoingUnfollowing;
 
       if (!isCancelledNotification) {
