@@ -47,7 +47,9 @@ export class DatabaseService {
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
     chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
     userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
-    publishedItemLikesTableService: new PublishedItemLikesTableService(DatabaseService.datastorePool),
+    publishedItemLikesTableService: new PublishedItemLikesTableService(
+      DatabaseService.datastorePool,
+    ),
     postCommentsTableService: new PostCommentsTableService(DatabaseService.datastorePool),
     userContentFeedFiltersTableService: new UserContentFeedFiltersTableService(
       DatabaseService.datastorePool,

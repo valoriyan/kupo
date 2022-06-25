@@ -88,7 +88,9 @@ export class PublishedItemLikesTableService extends TableService {
       values: [publishedItemLikeId],
     };
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+      query,
+    );
 
     if (response.rows.length < 1) {
       throw new Error("Missing post like - getPostLikeByPublishedItemLikeId");
@@ -115,12 +117,18 @@ export class PublishedItemLikesTableService extends TableService {
       values: [publishedItemId],
     };
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+      query,
+    );
 
     return response.rows;
   }
 
-  public async getUserIdsLikingPublishedItemId({ publishedItemId }: { publishedItemId: string }): Promise<string[]> {
+  public async getUserIdsLikingPublishedItemId({
+    publishedItemId,
+  }: {
+    publishedItemId: string;
+  }): Promise<string[]> {
     const query = {
       text: `
           SELECT
@@ -134,13 +142,19 @@ export class PublishedItemLikesTableService extends TableService {
       values: [publishedItemId],
     };
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+      query,
+    );
     const rows = response.rows;
 
     return rows.map((row) => row.user_id);
   }
 
-  public async countLikesOnPublishedItemId({ publishedItemId }: { publishedItemId: string }): Promise<number> {
+  public async countLikesOnPublishedItemId({
+    publishedItemId,
+  }: {
+    publishedItemId: string;
+  }): Promise<number> {
     const query = {
       text: `
           SELECT
@@ -213,7 +227,9 @@ export class PublishedItemLikesTableService extends TableService {
       tableName: this.tableName,
     });
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+      query,
+    );
 
     if (response.rows.length < 1) {
       throw new Error("Missing post like - none to delete");
@@ -228,11 +244,15 @@ export class PublishedItemLikesTableService extends TableService {
     publishedItemId: string;
   }): Promise<DBPublishedItemLike> {
     const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [{ field: "published_item_id", value: publishedItemId }],
+      fieldsUsedToIdentifyRowsToDelete: [
+        { field: "published_item_id", value: publishedItemId },
+      ],
       tableName: this.tableName,
     });
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(query);
+    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+      query,
+    );
 
     if (response.rows.length < 1) {
       throw new Error("Missing post like - none to delete");

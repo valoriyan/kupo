@@ -17,8 +17,10 @@ export async function assembleRenderableNewLikeOnPostNotification({
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<RenderableNewLikeOnPostNotification> {
-  const { reference_table_id: publishedItemLikeId, timestamp_seen_by_user: timestampSeenByUser } =
-    userNotification;
+  const {
+    reference_table_id: publishedItemLikeId,
+    timestamp_seen_by_user: timestampSeenByUser,
+  } = userNotification;
 
   const {
     published_item_id: postId,
