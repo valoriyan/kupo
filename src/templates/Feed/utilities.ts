@@ -11,6 +11,8 @@ export function generateContentFeedFilterDisplayName({
     return `#${userContentFeedFilter.value}`;
   } else if (userContentFeedFilter.type === UserContentFeedFilterType.FollowingUsers) {
     return `Following`;
+  } else if (userContentFeedFilter.type === UserContentFeedFilterType.AllPostsForAdmins) {
+    return `ALL POSTS`;
   } else {
     throw new Error(`Unknown content feed filter type: ${userContentFeedFilter.type}`);
   }
