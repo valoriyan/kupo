@@ -53,7 +53,7 @@ export class FeedController extends Controller {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("getPageOfPostFromFollowedUsers")
+  @Post("getPageOf_ALL_PUBLISHED_ITEMS")
   public async getPageOf_ALL_PUBLISHED_ITEMS(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfAllPublishedItemsRequestBody,
