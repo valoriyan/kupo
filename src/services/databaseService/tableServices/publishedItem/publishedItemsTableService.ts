@@ -1,17 +1,17 @@
 import { Pool, QueryConfig, QueryResult } from "pg";
-import { TABLE_NAME_PREFIX } from "../config";
-import { TableService } from "./models";
+import { TABLE_NAME_PREFIX } from "../../config";
+import { TableService } from "../models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
   generatePSQLGenericUpdateRowQueryString,
   isQueryEmpty,
-} from "./utilities";
-import { assertIsNumber } from "./utilities/validations";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../utilities";
+import { assertIsNumber } from "../utilities/validations";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import {
   PublishedItemType,
   UncompiledBasePublishedItem,
-} from "../../../controllers/publishedItem/models";
+} from "../../../../controllers/publishedItem/models";
 
 interface DBPublishedItem {
   type: PublishedItemType;

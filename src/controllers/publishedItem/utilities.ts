@@ -26,9 +26,9 @@ export async function assembleBaseRenderablePublishedItem({
     );
 
   const countOfLikesOnPost =
-    await databaseService.tableNameToServicesMap.postLikesTableService.countLikesOnPostId(
+    await databaseService.tableNameToServicesMap.publishedItemLikesTableService.countLikesOnPublishedItemId(
       {
-        postId: id,
+        publishedItemId: id,
       },
     );
 
@@ -41,10 +41,10 @@ export async function assembleBaseRenderablePublishedItem({
 
   const isLikedByClient =
     !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.postLikesTableService.doesUserIdLikePostId(
+    (await databaseService.tableNameToServicesMap.publishedItemLikesTableService.doesUserIdLikePublishedItemId(
       {
         userId: clientUserId,
-        postId: id,
+        publishedItemId: id,
       },
     ));
 

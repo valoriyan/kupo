@@ -35,10 +35,10 @@ export async function handleUserLikesPublishedItem({
 
   const postLikeId = uuidv4();
 
-  await controller.databaseService.tableNameToServicesMap.postLikesTableService.createPostLikeFromUserId(
+  await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.createPublishedItemLikeFromUserId(
     {
-      postLikeId,
-      postId: publishedItemId,
+      publishedItemLikeId: postLikeId,
+      publishedItemId,
       userId: clientUserId,
       timestamp: now,
     },

@@ -50,14 +50,14 @@ export async function handleDeletePost({
   //////////////////////////////////////////////////
 
   const dbPostLikes =
-    await controller.databaseService.tableNameToServicesMap.postLikesTableService.getPostLikesByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPostLikesByPublishedItemId(
+      { publishedItemId: postId },
     );
-  const postLikeIds = dbPostLikes.map(({ post_like_id }) => post_like_id);
+  const postLikeIds = dbPostLikes.map(({ published_item_like_id: post_like_id }) => post_like_id);
 
   if (dbPostLikes.length > 0) {
-    await controller.databaseService.tableNameToServicesMap.postLikesTableService.removeAllPostLikesByPostId(
-      { postId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.removeAllPostLikesByPublishedItemId(
+      { publishedItemId: postId },
     );
   }
 

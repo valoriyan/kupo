@@ -8,8 +8,8 @@ import { ChatRoomsTableService } from "./tableServices/chatRoomsTableService";
 import { HashtagsTableService } from "./tableServices/hashtagsTableService";
 import { PostCommentsTableService } from "./tableServices/postCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
-import { PostLikesTableService } from "./tableServices/postLikesTableService";
-import { PublishedItemsTableService } from "./tableServices/publishedItemsTableService";
+import { PublishedItemLikesTableService } from "./tableServices/publishedItem/publishedItemLikesTableService";
+import { PublishedItemsTableService } from "./tableServices/publishedItem/publishedItemsTableService";
 import { ShopItemMediaElementsTableService } from "./tableServices/shopItemMediaElementsTableService";
 import { ShopItemsTableService } from "./tableServices/shopItemsTableService";
 import { UserContentFeedFiltersTableService } from "./tableServices/userContentFeedFiltersTableService";
@@ -47,7 +47,7 @@ export class DatabaseService {
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
     chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
     userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
-    postLikesTableService: new PostLikesTableService(DatabaseService.datastorePool),
+    publishedItemLikesTableService: new PublishedItemLikesTableService(DatabaseService.datastorePool),
     postCommentsTableService: new PostCommentsTableService(DatabaseService.datastorePool),
     userContentFeedFiltersTableService: new UserContentFeedFiltersTableService(
       DatabaseService.datastorePool,

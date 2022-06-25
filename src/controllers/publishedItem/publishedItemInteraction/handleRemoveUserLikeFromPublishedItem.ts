@@ -34,9 +34,9 @@ export async function handleRemoveUserLikeFromPublishedItem({
   if (error) return error;
 
   const deletedPostLike =
-    await controller.databaseService.tableNameToServicesMap.postLikesTableService.removePostLikeByUserId(
+    await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.removePublishedItemLikeByUserId(
       {
-        postId: publishedItemId,
+        publishedItemId,
         userId: clientUserId,
       },
     );
@@ -50,7 +50,7 @@ export async function handleRemoveUserLikeFromPublishedItem({
     {
       recipientUserId: unrenderablePost.authorUserId,
       notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-      referenceTableId: deletedPostLike.post_like_id,
+      referenceTableId: deletedPostLike.published_item_like_id,
     },
   );
 
