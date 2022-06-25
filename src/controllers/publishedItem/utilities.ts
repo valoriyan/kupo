@@ -1,5 +1,63 @@
-import { DatabaseService } from "src/services/databaseService";
-import { BaseRenderablePublishedItem, UncompiledBasePublishedItem } from "./models";
+import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
+import { DatabaseService } from "../../services/databaseService";
+import { BaseRenderablePublishedItem, PublishedItemType, UncompiledBasePublishedItem } from "./models";
+import { RenderablePost } from "./post/models";
+import { constructRenderablePostFromParts } from "./post/utilities";
+import { RenderableShopItem } from "./shopItem/models";
+import { constructRenderableShopItemFromParts } from "./shopItem/utilities";
+import { Promise as BluebirdPromise } from "bluebird";
+
+export async function constructPublishedItemsFromParts({
+  blobStorageService,
+  databaseService,
+  uncompiledBasePublishedItems,
+  clientUserId,
+}: {
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
+  clientUserId: string | undefined;
+}): Promise<(RenderablePost | RenderableShopItem)[]> {
+  return await BluebirdPromise.map(
+    uncompiledBasePublishedItems,
+    async (uncompiledBasePublishedItem) =>
+      await constructRenderableShopItemFromParts({
+        blobStorageService,
+        databaseService,
+        uncompiledBasePublishedItem,
+        clientUserId,
+      }),
+  );
+}
+
+export async function constructPublishedItemFromParts({
+  blobStorageService,
+  databaseService,
+  uncompiledBasePublishedItem,
+  clientUserId,
+}: {
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
+  clientUserId: string | undefined;
+}): Promise<RenderablePost | RenderableShopItem> {
+
+  if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
+    return await constructRenderablePostFromParts({
+      blobStorageService,
+      databaseService,
+      uncompiledBasePublishedItem,
+      clientUserId,    
+    });
+  } else {
+    return await constructRenderableShopItemFromParts({
+      blobStorageService,
+      databaseService,
+      uncompiledBasePublishedItem,
+      clientUserId,
+    });
+  }
+}
 
 export async function assembleBaseRenderablePublishedItem({
   databaseService,

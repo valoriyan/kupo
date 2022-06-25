@@ -28,6 +28,7 @@ import {
   SetUserContentFeedFiltersRequestBody,
   SetUserContentFeedFiltersSuccess,
 } from "./handleSetUserContentFeedFilters";
+import { GetPageOfAllPublishedItemsFailed, GetPageOfAllPublishedItemsRequestBody, GetPageOfAllPublishedItemsSuccess, handleGetPageOfAllPublishedItems } from "./handleGetPageOfAllPublishedItems";
 
 @injectable()
 @Route("feed")
@@ -47,6 +48,23 @@ export class FeedController extends Controller {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  @Post("getPageOfPostFromFollowedUsers")
+  public async getPageOf_ALL_PUBLISHED_ITEMS(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPageOfAllPublishedItemsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+    GetPageOfAllPublishedItemsFailed,
+    GetPageOfAllPublishedItemsSuccess
+    >
+  > {
+    return await handleGetPageOfAllPublishedItems({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+  
   @Post("getPageOfPostFromFollowedUsers")
   public async getPageOfPostFromFollowedUsers(
     @Request() request: express.Request,

@@ -121,6 +121,92 @@ export class PublishedItemsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async GET_ALL_PUBLISHED_ITEMS({
+    filterOutExpiredAndUnscheduledPublishedItems,
+    limit,
+    getPublishedItemsBeforeTimestamp,
+    type,
+  }: {
+    filterOutExpiredAndUnscheduledPublishedItems: boolean;
+    limit?: number;
+    getPublishedItemsBeforeTimestamp?: number;
+    type?: PublishedItemType;
+  }): Promise<UncompiledBasePublishedItem[]> {
+    const queryValues: (string | number)[] = [];
+    const currentTimestamp = Date.now();
+
+    let typeConstraintClause = "";
+    if (!!type) {
+      typeConstraintClause = `
+        AND
+          type = $${queryValues.length + 1}
+      `;
+      queryValues.push(type);
+    }
+
+    let filteringWhereClause = "";
+    if (!!filterOutExpiredAndUnscheduledPublishedItems) {
+      filteringWhereClause = `
+        AND
+          (
+            scheduled_publication_timestamp IS NULL
+              OR
+            scheduled_publication_timestamp < $${queryValues.length + 1}
+          ) 
+        AND
+          (
+              expiration_timestamp IS NULL
+            OR
+              expiration_timestamp > $${queryValues.length + 2}
+          )
+      `;
+
+      queryValues.push(currentTimestamp);
+      queryValues.push(currentTimestamp);
+    }
+
+    let limitClause = "";
+    if (!!limit) {
+      limitClause = `
+        LIMIT $${queryValues.length + 1}
+      `;
+
+      queryValues.push(limit);
+    }
+
+    let getPublishedItemsBeforeTimestampClause = "";
+    if (!!getPublishedItemsBeforeTimestamp) {
+      getPublishedItemsBeforeTimestampClause = `
+        AND
+          scheduled_publication_timestamp < $${queryValues.length + 1}
+      `;
+
+      queryValues.push(getPublishedItemsBeforeTimestamp);
+    }
+
+    const query = {
+      text: `
+        SELECT
+          *
+        FROM
+          ${this.tableName}
+        WHERE
+          ${typeConstraintClause}
+          ${filteringWhereClause}
+          ${getPublishedItemsBeforeTimestampClause}
+        ORDER BY
+          scheduled_publication_timestamp DESC
+        ${limitClause}
+        ;
+      `,
+      values: queryValues,
+    };
+
+    const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
+
+    return response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
+  }
+
   public async getPublishedItemsByAuthorUserId({
     authorUserId,
     filterOutExpiredAndUnscheduledPublishedItems,

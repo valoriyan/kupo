@@ -1,3 +1,6 @@
+import { RenderablePost } from "./post/models";
+import { RenderableShopItem } from "./shopItem/models";
+
 export enum PublishedItemType {
   POST = "POST",
   SHOP_ITEM = "SHOP_ITEM",
@@ -25,3 +28,6 @@ export interface BaseRenderablePublishedItem extends UncompiledBasePublishedItem
   isLikedByClient: boolean;
   isSavedByClient: boolean;
 }
+
+
+export type RenderablePublishedItem = RenderablePost | RenderableShopItem;
