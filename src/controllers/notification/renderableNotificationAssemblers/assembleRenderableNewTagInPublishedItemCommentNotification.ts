@@ -18,65 +18,61 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<RenderableNewTagInPublishedItemCommentNotification> {
-    const {
-        reference_table_id: publishedItemCommentId,
-        timestamp_seen_by_user: timestampSeenByUser,
-    } = userNotification;
+  const {
+    reference_table_id: publishedItemCommentId,
+    timestamp_seen_by_user: timestampSeenByUser,
+  } = userNotification;
 
-    const countOfUnreadNotifications =
-        await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-            { userId: clientUserId },
-        );
-
-
-    const unrenderablePublishedItemComment =
-        await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
-            { postCommentId: publishedItemCommentId },
+  const countOfUnreadNotifications =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { userId: clientUserId },
     );
 
-    const publishedItemComment = await constructRenderablePostCommentFromParts({
-        blobStorageService,
-        databaseService,
-        unrenderablePostComment: unrenderablePublishedItemComment,
-        clientUserId,
+  const unrenderablePublishedItemComment =
+    await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
+      { postCommentId: publishedItemCommentId },
+    );
+
+  const publishedItemComment = await constructRenderablePostCommentFromParts({
+    blobStorageService,
+    databaseService,
+    unrenderablePostComment: unrenderablePublishedItemComment,
+    clientUserId,
+  });
+
+  const unrenderableUserTaggingClient =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId: unrenderablePublishedItemComment.authorUserId,
     });
 
-    const unrenderableUserTaggingClient =
-        await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-            userId: unrenderablePublishedItemComment.authorUserId,
-        });
+  const userTaggingClient = await constructRenderableUserFromParts({
+    clientUserId,
+    unrenderableUser: unrenderableUserTaggingClient!,
+    blobStorageService,
+    databaseService,
+  });
 
-    
-    const userTaggingClient = await constructRenderableUserFromParts({
-        clientUserId,
-        unrenderableUser: unrenderableUserTaggingClient!,
-        blobStorageService,
-        databaseService,
-      });
-    
-    const unrenderablePostWithoutElementsOrHashtags =
-        await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-            {
-                id: publishedItemComment.postId,
-            },
-        );
-  
-      
-    const publishedItem = await constructRenderablePostFromParts({
-        blobStorageService,
-        databaseService,
-        uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-        clientUserId,
-    });
-        
+  const unrenderablePostWithoutElementsOrHashtags =
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      {
+        id: publishedItemComment.postId,
+      },
+    );
 
-    return {
-        type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
-        countOfUnreadNotifications,
-        eventTimestamp: publishedItemComment.creationTimestamp,
-        timestampSeenByUser,
-        userTaggingClient,
-        publishedItem,
-        publishedItemComment,
-      };
+  const publishedItem = await constructRenderablePostFromParts({
+    blobStorageService,
+    databaseService,
+    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
+    clientUserId,
+  });
+
+  return {
+    type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+    countOfUnreadNotifications,
+    eventTimestamp: publishedItemComment.creationTimestamp,
+    timestampSeenByUser,
+    userTaggingClient,
+    publishedItem,
+    publishedItemComment,
+  };
 }

@@ -126,14 +126,17 @@ async function assembleNotifcations({
             databaseService: controller.databaseService,
             clientUserId,
           });
-        } else if (userNotification.notification_type === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT) {
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
+        ) {
           return await assembleRenderableNewTagInPublishedItemCommentNotification({
             userNotification,
             blobStorageService: controller.blobStorageService,
             databaseService: controller.databaseService,
             clientUserId,
           });
-        }else {
+        } else {
           throw new Error("Unknown event type");
         }
       } catch (error) {

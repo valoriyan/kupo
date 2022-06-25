@@ -21,20 +21,19 @@ export async function constructRenderablePostFromPartsById({
   publishedItemId: string;
   clientUserId: string | undefined;
 }): Promise<RenderablePost> {
-
   const uncompiledBasePublishedItem =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { id: publishedItemId },
     );
 
-    const post = await constructRenderablePostFromParts({
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
-      uncompiledBasePublishedItem,
-      clientUserId,
-    });
+  const post = await constructRenderablePostFromParts({
+    blobStorageService: blobStorageService,
+    databaseService: databaseService,
+    uncompiledBasePublishedItem,
+    clientUserId,
+  });
 
-    return post;
+  return post;
 }
 
 export async function constructRenderablePostsFromParts({

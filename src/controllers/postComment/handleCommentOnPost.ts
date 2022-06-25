@@ -70,15 +70,13 @@ export async function handleCommentOnPost({
       { id: postId },
     );
 
-    await considerAndExecuteNotifications({
-      renderablePostComment,
-      authorOfPublishedItemUserId: authorOfPublishedItemUserId,
-      databaseService: controller.databaseService,
-      blobStorageService: controller.blobStorageService,
-      webSocketService: controller.webSocketService,
-    
-    })
-
+  await considerAndExecuteNotifications({
+    renderablePostComment,
+    authorOfPublishedItemUserId: authorOfPublishedItemUserId,
+    databaseService: controller.databaseService,
+    blobStorageService: controller.blobStorageService,
+    webSocketService: controller.webSocketService,
+  });
 
   return {
     success: { postComment: renderablePostComment },
@@ -100,24 +98,28 @@ async function considerAndExecuteNotifications({
 }): Promise<void> {
   const authorOfCommentUserId = renderablePostComment.authorUserId;
 
+  const tags = collectTagsFromText({ text: renderablePostComment.text });
 
-
-  const tags = collectTagsFromText({text: renderablePostComment.text});
-
-  const foundUnrenderableUsersMatchingTags = await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames({usernames: tags});
-  const foundUserIdsMatchingTags = foundUnrenderableUsersMatchingTags.map(({userId}) => userId).filter((userId) => userId !== authorOfCommentUserId);
+  const foundUnrenderableUsersMatchingTags =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
+      { usernames: tags },
+    );
+  const foundUserIdsMatchingTags = foundUnrenderableUsersMatchingTags
+    .map(({ userId }) => userId)
+    .filter((userId) => userId !== authorOfCommentUserId);
 
   // IF THE AUTHOR WAS NOT TAGGED, THEN SEND NEW COMMENT MESSAGE
-  if (!(authorOfPublishedItemUserId === authorOfCommentUserId) &&  !foundUserIdsMatchingTags.includes(authorOfPublishedItemUserId)) {
-
+  if (
+    !(authorOfPublishedItemUserId === authorOfCommentUserId) &&
+    !foundUserIdsMatchingTags.includes(authorOfPublishedItemUserId)
+  ) {
     await assembleRecordAndSendNewCommentOnPostNotification({
       publishedItemId: renderablePostComment.postId,
       publishedItemCommentId: renderablePostComment.postCommentId,
       recipientUserId: authorOfPublishedItemUserId,
       databaseService,
       blobStorageService,
-      webSocketService
-  
+      webSocketService,
     });
   }
   await BluebirdPromise.map(
@@ -129,7 +131,7 @@ async function considerAndExecuteNotifications({
         recipientUserId: taggedUserId,
         databaseService,
         blobStorageService,
-        webSocketService
+        webSocketService,
       }),
   );
 }

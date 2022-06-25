@@ -18,18 +18,19 @@ export async function constructRenderablePostCommentFromPartsById({
   postCommentId: string;
   clientUserId: string;
 }): Promise<RenderablePostComment> {
-
-  const unrenderablePostComment = await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById({
-    postCommentId,
-  });
+  const unrenderablePostComment =
+    await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
+      {
+        postCommentId,
+      },
+    );
 
   return await constructRenderablePostCommentFromParts({
     blobStorageService,
     databaseService,
     unrenderablePostComment,
-    clientUserId,  
+    clientUserId,
   });
-
 }
 
 export async function constructRenderablePostCommentFromParts({
