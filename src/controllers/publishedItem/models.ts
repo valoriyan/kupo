@@ -29,5 +29,4 @@ export interface BaseRenderablePublishedItem extends UncompiledBasePublishedItem
   isSavedByClient: boolean;
 }
 
-
 export type RenderablePublishedItem = RenderablePost | RenderableShopItem;

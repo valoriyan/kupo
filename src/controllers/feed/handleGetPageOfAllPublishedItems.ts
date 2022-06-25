@@ -36,57 +36,58 @@ export async function handleGetPageOfAllPublishedItems({
   request: express.Request;
   requestBody: GetPageOfAllPublishedItemsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<
-    GetPageOfAllPublishedItemsFailed,
-    GetPageOfAllPublishedItemsSuccess
-  >
+  SecuredHTTPResponse<GetPageOfAllPublishedItemsFailed, GetPageOfAllPublishedItemsSuccess>
 > {
   const { cursor, pageSize } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const unrenderableUser = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({userId: clientUserId});
+  const unrenderableUser =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      { userId: clientUserId },
+    );
 
   if (!!unrenderableUser && !!unrenderableUser.isAdmin) {
-    const uncompiledBasePublishedItems = await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.GET_ALL_PUBLISHED_ITEMS({
-        filterOutExpiredAndUnscheduledPublishedItems: true,
-        limit: pageSize,
-        getPublishedItemsBeforeTimestamp: cursor
+    const uncompiledBasePublishedItems =
+      await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.GET_ALL_PUBLISHED_ITEMS(
+        {
+          filterOutExpiredAndUnscheduledPublishedItems: true,
+          limit: pageSize,
+          getPublishedItemsBeforeTimestamp: cursor
             ? decodeTimestampCursor({ encodedCursor: cursor })
             : undefined,
-    });
+        },
+      );
 
     const renderablePublishedItems = await constructPublishedItemsFromParts({
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-        uncompiledBasePublishedItems,
-        clientUserId,
-      });
-    
-      const nextPageCursor =
-        renderablePublishedItems.length > 0
-          ? encodeTimestampCursor({
-              timestamp:
-                renderablePublishedItems[renderablePublishedItems.length - 1].scheduledPublicationTimestamp,
-            })
-          : undefined;
-    
-      return {
-        success: {
-          renderablePublishedItems,
-          previousPageCursor: cursor,
-          nextPageCursor,
-        },
-      };
-  } else{
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems,
+      clientUserId,
+    });
+
+    const nextPageCursor =
+      renderablePublishedItems.length > 0
+        ? encodeTimestampCursor({
+            timestamp:
+              renderablePublishedItems[renderablePublishedItems.length - 1]
+                .scheduledPublicationTimestamp,
+          })
+        : undefined;
+
     return {
-        error: {
-            reason: GetPageOfAllPublishedItemsFailedReason.ILLEGAL_ACCESS,
-        }
-    }
+      success: {
+        renderablePublishedItems,
+        previousPageCursor: cursor,
+        nextPageCursor,
+      },
+    };
+  } else {
+    return {
+      error: {
+        reason: GetPageOfAllPublishedItemsFailedReason.ILLEGAL_ACCESS,
+      },
+    };
   }
-
-
-
 }

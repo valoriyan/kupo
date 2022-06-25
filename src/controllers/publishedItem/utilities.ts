@@ -1,6 +1,10 @@
 import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
 import { DatabaseService } from "../../services/databaseService";
-import { BaseRenderablePublishedItem, PublishedItemType, UncompiledBasePublishedItem } from "./models";
+import {
+  BaseRenderablePublishedItem,
+  PublishedItemType,
+  UncompiledBasePublishedItem,
+} from "./models";
 import { RenderablePost } from "./post/models";
 import { constructRenderablePostFromParts } from "./post/utilities";
 import { RenderableShopItem } from "./shopItem/models";
@@ -41,13 +45,12 @@ export async function constructPublishedItemFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
 }): Promise<RenderablePost | RenderableShopItem> {
-
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
     return await constructRenderablePostFromParts({
       blobStorageService,
       databaseService,
       uncompiledBasePublishedItem,
-      clientUserId,    
+      clientUserId,
     });
   } else {
     return await constructRenderableShopItemFromParts({
