@@ -5,9 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 import { PostCommentController } from "./postCommentController";
 import { RenderablePostComment } from "./models";
 import { constructRenderablePostCommentFromParts } from "./utilities";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromParts } from "../user/utilities";
-import { constructRenderablePostFromParts } from "../publishedItem/post/utilities";
+import { DatabaseService } from "../../services/databaseService";
+import { collectTagsFromText } from "../utilities/collectTagsFromText";
+import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
+import { WebSocketService } from "../../services/webSocketService";
+import { assembleRecordAndSendNewCommentOnPostNotification } from "../notification/notificationSenders/assembleRecordAndSendNewCommentOnPostNotification";
+import { Promise as BluebirdPromise } from "bluebird";
+import { assembleRecordAndSendNewTagInPublishedItemCommentNotification } from "../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCommentNotification";
 
 export interface CommentOnPostRequestBody {
   postId: string;
@@ -61,72 +65,71 @@ export async function handleCommentOnPost({
     clientUserId,
   });
 
-  const { authorUserId: recipientUserId } =
+  const { authorUserId: authorOfPublishedItemUserId } =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { id: postId },
     );
 
-  if (recipientUserId !== clientUserId) {
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
-      {
-        userNotificationId: uuidv4(),
-        recipientUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-        referenceTableId: postCommentId,
-      },
-    );
+    await considerAndExecuteNotifications({
+      renderablePostComment,
+      authorOfPublishedItemUserId: authorOfPublishedItemUserId,
+      databaseService: controller.databaseService,
+      blobStorageService: controller.blobStorageService,
+      webSocketService: controller.webSocketService,
+    
+    })
 
-    const unrenderableClientUser =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-        {
-          userId: clientUserId,
-        },
-      );
-
-    if (!!unrenderableClientUser) {
-      const clientUser = await constructRenderableUserFromParts({
-        clientUserId,
-        unrenderableUser: unrenderableClientUser,
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-      });
-
-      const unrenderablePostWithoutElementsOrHashtags =
-        await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-          { id: postId },
-        );
-
-      const post = await constructRenderablePostFromParts({
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-        uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-        clientUserId,
-      });
-
-      const countOfUnreadNotifications =
-        await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-          { userId: post.authorUserId },
-        );
-
-      const renderableNewCommentOnPostNotification = {
-        countOfUnreadNotifications,
-        type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-        eventTimestamp: Date.now(),
-        userThatCommented: clientUser,
-        post,
-        postComment: renderablePostComment,
-      };
-
-      await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewCommentOnPost(
-        {
-          userId: recipientUserId,
-          renderableNewCommentOnPostNotification,
-        },
-      );
-    }
-  }
 
   return {
     success: { postComment: renderablePostComment },
   };
+}
+
+async function considerAndExecuteNotifications({
+  renderablePostComment,
+  authorOfPublishedItemUserId,
+  databaseService,
+  blobStorageService,
+  webSocketService,
+}: {
+  renderablePostComment: RenderablePostComment;
+  authorOfPublishedItemUserId: string;
+  databaseService: DatabaseService;
+  blobStorageService: BlobStorageServiceInterface;
+  webSocketService: WebSocketService;
+}): Promise<void> {
+  const authorOfCommentUserId = renderablePostComment.authorUserId;
+
+
+
+  const tags = collectTagsFromText({text: renderablePostComment.text});
+
+  const foundUnrenderableUsersMatchingTags = await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames({usernames: tags});
+  const foundUserIdsMatchingTags = foundUnrenderableUsersMatchingTags.map(({userId}) => userId).filter((userId) => userId !== authorOfCommentUserId);
+
+  // IF THE AUTHOR WAS NOT TAGGED, THEN SEND NEW COMMENT MESSAGE
+  if (!(authorOfPublishedItemUserId === authorOfCommentUserId) &&  !foundUserIdsMatchingTags.includes(authorOfPublishedItemUserId)) {
+
+    await assembleRecordAndSendNewCommentOnPostNotification({
+      publishedItemId: renderablePostComment.postId,
+      publishedItemCommentId: renderablePostComment.postCommentId,
+      recipientUserId: authorOfPublishedItemUserId,
+      databaseService,
+      blobStorageService,
+      webSocketService
+  
+    });
+  }
+  await BluebirdPromise.map(
+    foundUserIdsMatchingTags,
+    async (taggedUserId) =>
+      await assembleRecordAndSendNewTagInPublishedItemCommentNotification({
+        publishedItemId: renderablePostComment.postId,
+        publishedItemCommentId: renderablePostComment.postCommentId,
+        recipientUserId: taggedUserId,
+        databaseService,
+        blobStorageService,
+        webSocketService
+      }),
+  );
 }

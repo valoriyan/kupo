@@ -5,6 +5,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromParts } from "../user/utilities";
+import { RenderableNewFollowerNotification } from "../notification/models/renderableUserNotifications";
 
 export interface FollowUserRequestBody {
   userIdBeingFollowed: string;
@@ -70,7 +71,7 @@ export async function handleFollowUser({
           { userId: userIdBeingFollowed },
         );
 
-      const renderableNewFollowerNotification = {
+      const renderableNewFollowerNotification: RenderableNewFollowerNotification = {
         countOfUnreadNotifications,
         type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
         eventTimestamp: Date.now(),

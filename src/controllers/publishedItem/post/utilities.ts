@@ -10,6 +10,33 @@ import {
 } from "../models";
 import { assembleBaseRenderablePublishedItem } from "../utilities";
 
+export async function constructRenderablePostFromPartsById({
+  blobStorageService,
+  databaseService,
+  publishedItemId,
+  clientUserId,
+}: {
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  publishedItemId: string;
+  clientUserId: string | undefined;
+}): Promise<RenderablePost> {
+
+  const uncompiledBasePublishedItem =
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { id: publishedItemId },
+    );
+
+    const post = await constructRenderablePostFromParts({
+      blobStorageService: blobStorageService,
+      databaseService: databaseService,
+      uncompiledBasePublishedItem,
+      clientUserId,
+    });
+
+    return post;
+}
+
 export async function constructRenderablePostsFromParts({
   blobStorageService,
   databaseService,

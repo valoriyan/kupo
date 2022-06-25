@@ -3,11 +3,13 @@ import {
   UnrenderableCanceledCommentOnPostNotification,
   UnrenderableCanceledNewFollowerNotification,
   UnrenderableCanceledNewLikeOnPostNotification,
+  UnrenderableCanceledNewTagInPublishedItemCommentNotification,
 } from "../../../controllers/notification/models/unrenderableCanceledUserNotifications";
 import {
   RenderableNewCommentOnPostNotification,
   RenderableNewFollowerNotification,
   RenderableNewLikeOnPostNotification,
+  RenderableNewTagInPublishedItemCommentNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
 import { notifyUserIdOfNewCommentOnPost } from "./notifications/notifyUserIdOfNewCommentOnPost";
@@ -15,6 +17,8 @@ import { notifyUserIdOfNewFollower } from "./notifications/notifyUserIdOfNewFoll
 import { notifyUserIdOfNewLikeOnPost } from "./notifications/notifyUserIdOfNewLikeOnPost";
 import { notifyUserIdOfCanceledNewCommentOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewCommentOnPost";
 import { notifyUserIdOfCanceledNewFollower } from "./canceledNotifications/notifyUserIdOfCanceledNewFollower";
+import { notifyUserIdOfNewTagInPublishedItemComment } from "./notifications/notifyUserIdOfNewTagInPublishedItemComment";
+import { notifyUserIdOfCanceledNewTagInPublishedItemComment } from "./canceledNotifications/notifyUserIdOfCanceledNewTagInPublishedItemComment";
 
 export class UserNotificationsWebsocketService {
   constructor(public websocketIO: Server) {}
@@ -100,6 +104,34 @@ export class UserNotificationsWebsocketService {
       userId,
       io: this.websocketIO,
       unrenderableCanceledNewLikeOnPostNotification,
+    });
+  }
+
+  public async notifyUserIdOfNewTagInPublishedItemComment({
+    renderableNewTagInPublishedItemCommentNotification,
+    userId,
+  }: {
+    renderableNewTagInPublishedItemCommentNotification: RenderableNewTagInPublishedItemCommentNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfNewTagInPublishedItemComment({
+      userId,
+      io: this.websocketIO,
+      renderableNewTagInPublishedItemCommentNotification,
+    });
+  }
+
+  public async notifyUserIdOfCanceledNewTagInPublishedItemComment({
+    unrenderableCanceledNewTagInPublishedItemCommentNotification,
+    userId,
+  }: {
+    unrenderableCanceledNewTagInPublishedItemCommentNotification: UnrenderableCanceledNewTagInPublishedItemCommentNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfCanceledNewTagInPublishedItemComment({
+      userId,
+      io: this.websocketIO,
+      unrenderableCanceledNewTagInPublishedItemCommentNotification,
     });
   }
 }

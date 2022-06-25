@@ -15,3 +15,8 @@ export interface UnrenderableCanceledNewLikeOnPostNotification
   userIdUnlikingPost: string;
   postId: string;
 }
+
+export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification
+  extends BaseUserNotification {
+  publishedItemCommentId: string;
+}

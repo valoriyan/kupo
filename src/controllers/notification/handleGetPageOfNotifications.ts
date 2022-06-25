@@ -10,6 +10,7 @@ import { assembleRenderableNewFollowerNotification } from "./renderableNotificat
 import { assembleRenderableNewLikeOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewLikeOnPostNotification";
 import { RenderableUserNotification } from "./models/renderableUserNotifications";
 import { decodeTimestampCursor } from "../utilities/pagination";
+import { assembleRenderableNewTagInPublishedItemCommentNotification } from "./renderableNotificationAssemblers/assembleRenderableNewTagInPublishedItemCommentNotification";
 
 export interface GetPageOfNotificationsRequestBody {
   cursor?: string;
@@ -125,7 +126,14 @@ async function assembleNotifcations({
             databaseService: controller.databaseService,
             clientUserId,
           });
-        } else {
+        } else if (userNotification.notification_type === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT) {
+          return await assembleRenderableNewTagInPublishedItemCommentNotification({
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        }else {
           throw new Error("Unknown event type");
         }
       } catch (error) {

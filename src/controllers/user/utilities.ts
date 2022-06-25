@@ -28,6 +28,34 @@ export async function constructRenderableUsersFromPartsByUserIds({
   });
 }
 
+export async function constructRenderableUserFromPartsByUserId({
+  clientUserId,
+  userId,
+  blobStorageService,
+  databaseService,
+}: {
+  clientUserId: string;
+  userId: string;
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+}): Promise<RenderableUser> {
+  const unrenderableUser =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      userId,
+    });
+
+  if (!!unrenderableUser) {
+    return await constructRenderableUserFromParts({
+      clientUserId,
+      unrenderableUser,
+      blobStorageService: blobStorageService,
+      databaseService: databaseService,
+    });
+  } else {
+    throw new Error("Missing userId");
+  }
+}
+
 export async function constructRenderableUsersFromParts({
   clientUserId,
   unrenderableUsers,

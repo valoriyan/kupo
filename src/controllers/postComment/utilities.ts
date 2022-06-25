@@ -7,6 +7,31 @@ import {
 } from "../user/utilities";
 import { RenderablePostComment, UnrenderablePostComment } from "./models";
 
+export async function constructRenderablePostCommentFromPartsById({
+  blobStorageService,
+  databaseService,
+  postCommentId,
+  clientUserId,
+}: {
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  postCommentId: string;
+  clientUserId: string;
+}): Promise<RenderablePostComment> {
+
+  const unrenderablePostComment = await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById({
+    postCommentId,
+  });
+
+  return await constructRenderablePostCommentFromParts({
+    blobStorageService,
+    databaseService,
+    unrenderablePostComment,
+    clientUserId,  
+  });
+
+}
+
 export async function constructRenderablePostCommentFromParts({
   blobStorageService,
   databaseService,
