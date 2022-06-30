@@ -1,5 +1,5 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import { Api, GetPageOfCommentsByPostIdSuccess } from "#/api";
+import { Api, ReadPageOfCommentsByPublishedItemIdSuccess } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useDeleteCommentFromPost = ({
@@ -13,7 +13,7 @@ export const useDeleteCommentFromPost = ({
 
   return useMutation(
     async () => {
-      const res = await Api.deleteCommentFromPost({
+      const res = await Api.deletePublishedItemComment({
         postCommentId,
       });
 
@@ -30,9 +30,11 @@ export const useDeleteCommentFromPost = ({
     {
       onSuccess: (data) => {
         if (data) {
-          queryClient.setQueryData<InfiniteData<GetPageOfCommentsByPostIdSuccess>>(
+          queryClient.setQueryData<
+            InfiniteData<ReadPageOfCommentsByPublishedItemIdSuccess>
+          >(
             [CacheKeys.PostComments, postId],
-            (queriedData): InfiniteData<GetPageOfCommentsByPostIdSuccess> => {
+            (queriedData): InfiniteData<ReadPageOfCommentsByPublishedItemIdSuccess> => {
               if (!!queriedData) {
                 const updatedPages = queriedData.pages.map((page) => {
                   const updatedRenderablePosts = page.postComments.filter(

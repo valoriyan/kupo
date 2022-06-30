@@ -1,4 +1,4 @@
-import { useGetPageOfPostCommentsByPostId } from "#/api/queries/posts/useGetPageOfPostCommentsByPostId";
+import { useReadPageOfCommentsByPublishedItemId } from "#/api/queries/posts/useReadPageOfCommentsByPublishedItemId";
 import { ErrorMessage } from "../../ErrorArea";
 import { Flex, Stack } from "../../Layout";
 import { LoadingArea } from "../../LoadingArea";
@@ -18,7 +18,7 @@ export const Comments = ({ postId }: CommentsProps) => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useGetPageOfPostCommentsByPostId({
+  } = useReadPageOfCommentsByPublishedItemId({
     postId,
   });
 

@@ -1,12 +1,16 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, GetPageOfCommentsByPostIdSuccess } from "../..";
+import { Api, ReadPageOfCommentsByPublishedItemIdSuccess } from "../..";
 
-export const useGetPageOfPostCommentsByPostId = ({ postId }: { postId: string }) => {
+export const useReadPageOfCommentsByPublishedItemId = ({
+  postId,
+}: {
+  postId: string;
+}) => {
   return useInfiniteQuery<
-    GetPageOfCommentsByPostIdSuccess,
+    ReadPageOfCommentsByPublishedItemIdSuccess,
     Error,
-    GetPageOfCommentsByPostIdSuccess,
+    ReadPageOfCommentsByPublishedItemIdSuccess,
     string[]
   >(
     [CacheKeys.PostComments, postId],
@@ -25,7 +29,7 @@ async function fetchPageOfCommentsByPostId({
   postId: string;
   pageParam: string | undefined;
 }) {
-  const res = await Api.getPageOfCommentsByPostId({
+  const res = await Api.readPageOfCommentsByPublishedItemId({
     postId,
     pageSize: 25,
     cursor: pageParam,

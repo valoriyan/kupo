@@ -1,5 +1,5 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query";
-import { Api, GetPageOfCommentsByPostIdSuccess } from "#/api";
+import { Api, ReadPageOfCommentsByPublishedItemIdSuccess } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useCommentOnPost = () => {
@@ -7,7 +7,7 @@ export const useCommentOnPost = () => {
 
   return useMutation(
     async ({ postId, text }: { postId: string; text: string }) => {
-      const res = await Api.commentOnPost({
+      const res = await Api.createPublishedItemComment({
         postId,
         text,
       });
@@ -28,9 +28,11 @@ export const useCommentOnPost = () => {
           const createdPostComment = data.postComment;
           const { postId } = createdPostComment;
 
-          queryClient.setQueryData<InfiniteData<GetPageOfCommentsByPostIdSuccess>>(
+          queryClient.setQueryData<
+            InfiniteData<ReadPageOfCommentsByPublishedItemIdSuccess>
+          >(
             [CacheKeys.PostComments, postId],
-            (queriedData): InfiniteData<GetPageOfCommentsByPostIdSuccess> => {
+            (queriedData): InfiniteData<ReadPageOfCommentsByPublishedItemIdSuccess> => {
               if (!!queriedData) {
                 const updatedPages = queriedData.pages.map((page, index) => {
                   if (index < queriedData.pages.length - 1) {
