@@ -203,6 +203,10 @@ export class PublishedItemsTableService extends TableService {
       values: queryValues,
     };
 
+    console.log("QUERY");
+    console.log(query);
+    console.log();
+
     const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(query);
 
     return response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem);
