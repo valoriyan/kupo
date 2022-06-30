@@ -25,7 +25,7 @@ export async function constructPublishedItemsFromParts({
   return await BluebirdPromise.map(
     uncompiledBasePublishedItems,
     async (uncompiledBasePublishedItem) =>
-      await constructRenderableShopItemFromParts({
+      await constructPublishedItemFromParts({
         blobStorageService,
         databaseService,
         uncompiledBasePublishedItem,
