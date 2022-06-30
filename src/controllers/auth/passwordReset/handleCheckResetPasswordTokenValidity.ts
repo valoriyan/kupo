@@ -14,10 +14,6 @@ export enum CheckResetPasswordTokenValidityFailedReason {
   InvalidToken = "InvalidToken",
 }
 
-export interface CheckResetPasswordTokenValidityFailed {
-  reason: CheckResetPasswordTokenValidityFailedReason;
-}
-
 export async function handleCheckResetPasswordTokenValidity({
   requestBody,
 }: {
@@ -25,7 +21,7 @@ export async function handleCheckResetPasswordTokenValidity({
   requestBody: CheckResetPasswordTokenValidityRequestBody;
 }): Promise<
   HTTPResponse<
-    CheckResetPasswordTokenValidityFailed,
+  CheckResetPasswordTokenValidityFailedReason,
     CheckResetPasswordTokenValiditySuccess
   >
 > {

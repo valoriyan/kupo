@@ -1,11 +1,19 @@
-import { AuthFailed } from "../controllers/auth/models";
+import { GenericResponseFailedReason } from "../controllers/models";
+import { AuthFailedReason } from "../controllers/auth/models";
 
-export interface HTTPResponse<ErrorType, SuccessType> {
-  error?: ErrorType;
+export interface HTTPResponse<ErrorReason, SuccessType> {
+  error?: {
+    reason: ErrorReason | GenericResponseFailedReason;
+    additionalErrorInformation?: string;
+  };
   success?: SuccessType;
 }
 
-export interface SecuredHTTPResponse<ErrorType, SuccessType> {
-  error?: ErrorType | AuthFailed;
+export interface SecuredHTTPResponse<ErrorReason, SuccessType> {
+  error?: {
+    reason: ErrorReason | GenericResponseFailedReason | AuthFailedReason;
+    errorMessage?: string;
+    additionalErrorInformation?: string;
+  };
   success?: SuccessType;
 }

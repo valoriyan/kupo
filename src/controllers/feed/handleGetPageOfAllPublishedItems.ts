@@ -16,10 +16,6 @@ export enum GetPageOfAllPublishedItemsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfAllPublishedItemsFailed {
-  reason: GetPageOfAllPublishedItemsFailedReason;
-}
-
 export interface GetPageOfAllPublishedItemsSuccess {
   renderablePublishedItems: RenderablePublishedItem[];
 
@@ -36,11 +32,11 @@ export async function handleGetPageOfAllPublishedItems({
   request: express.Request;
   requestBody: GetPageOfAllPublishedItemsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfAllPublishedItemsFailed, GetPageOfAllPublishedItemsSuccess>
+  SecuredHTTPResponse<GetPageOfAllPublishedItemsFailedReason, GetPageOfAllPublishedItemsSuccess>
 > {
   const { cursor, pageSize } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const unrenderableUser =

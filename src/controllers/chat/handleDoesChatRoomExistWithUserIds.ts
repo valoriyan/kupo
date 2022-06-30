@@ -18,10 +18,6 @@ export enum DoesChatRoomExistWithUserIdsFailedReason {
   IllegalAccess = "Illegal Access",
 }
 
-export interface DoesChatRoomExistWithUserIdsFailed {
-  reason: DoesChatRoomExistWithUserIdsFailedReason;
-}
-
 export async function handleDoesChatRoomExistWithUserIds({
   controller,
   request,
@@ -32,13 +28,13 @@ export async function handleDoesChatRoomExistWithUserIds({
   requestBody: DoesChatRoomExistWithUserIdsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    DoesChatRoomExistWithUserIdsFailed,
+    DoesChatRoomExistWithUserIdsFailedReason,
     DoesChatRoomExistWithUserIdsSuccess
   >
 > {
   const { userIds } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   if (!userIds.includes(clientUserId)) {

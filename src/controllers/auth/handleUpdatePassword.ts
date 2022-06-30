@@ -2,6 +2,8 @@ import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { checkAuthorization, encryptPassword } from "./utilities";
 import { AuthController } from "./authController";
+import { generateErrorResponse } from "../utilities/generateErrorResponse";
+import { GenericResponseFailedReason } from "../models";
 
 export interface UpdatePasswordRequestBody {
   updatedPassword: string;
@@ -9,6 +11,7 @@ export interface UpdatePasswordRequestBody {
 
 export enum UpdatePasswordFailedReason {
   Unknown = "Unknown",
+  DatabaseFailure = "Database Error",
 }
 
 export interface UpdatePasswordFailed {
@@ -27,17 +30,27 @@ export async function handleUpdatePassword({
   request: express.Request;
   requestBody: UpdatePasswordRequestBody;
 }): Promise<SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
-  if (error) return error;
+  const { clientUserId, errorResponse: errorResponseWithSetHttpStatusCode } = await checkAuthorization(controller, request);
+  if (errorResponseWithSetHttpStatusCode) return errorResponseWithSetHttpStatusCode;
 
   const encryptedPassword = encryptPassword({ password: requestBody.updatedPassword });
 
-  await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
-    {
-      userId: clientUserId,
-      encryptedPassword,
-    },
-  );
+  try {
+    await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
+      {
+        userId: clientUserId,
+        encryptedPassword,
+      },
+    );  
+  } catch (error) {
+    return generateErrorResponse({
+      controller,
+      errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      additionalErrorInformation: "Error at usersTableService.updateUserPassword",
+      error,
+      httpStatusCode: 500,
+    });
+  }
 
   return {};
 }

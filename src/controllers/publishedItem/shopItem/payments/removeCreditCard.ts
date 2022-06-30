@@ -10,8 +10,11 @@ export interface RemoveCreditCardRequestBody {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RemoveCreditCardSuccess {}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface RemoveCreditCardFailed {}
+export enum RemoveCreditCardFailedReason {
+  UNKNOWN_REASON = "UNKNOWN_REASON",
+}
 
 export async function handleRemoveCreditCard({
   controller,
@@ -21,10 +24,10 @@ export async function handleRemoveCreditCard({
   controller: ShopItemController;
   request: express.Request;
   requestBody: RemoveCreditCardRequestBody;
-}): Promise<SecuredHTTPResponse<RemoveCreditCardFailed, RemoveCreditCardSuccess>> {
+}): Promise<SecuredHTTPResponse<RemoveCreditCardFailedReason, RemoveCreditCardSuccess>> {
   const { localCreditCardId } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
@@ -54,6 +57,8 @@ export async function handleRemoveCreditCard({
   }
 
   return {
-    error: {},
+    error: {
+      reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
+    },
   };
 }

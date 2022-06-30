@@ -36,7 +36,7 @@ export async function handleSearchForUsers({
   request: express.Request;
   requestBody: SearchForUsersRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { pageNumber, query, pageSize } = requestBody;

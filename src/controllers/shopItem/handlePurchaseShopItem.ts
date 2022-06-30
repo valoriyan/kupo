@@ -11,7 +11,9 @@ export interface PurchaseShopItemRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PurchaseShopItemSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PurchaseShopItemFailed {}
+export enum PurchaseShopItemFailedReason {
+  UNKNOWN_REASON = "UNKNOWN_REASON",
+}
 
 export async function handlePurchaseShopItem({
   controller,
@@ -21,10 +23,10 @@ export async function handlePurchaseShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: PurchaseShopItemRequestBody;
-}): Promise<SecuredHTTPResponse<PurchaseShopItemFailed, PurchaseShopItemSuccess>> {
+}): Promise<SecuredHTTPResponse<PurchaseShopItemFailedReason, PurchaseShopItemSuccess>> {
   const { publishedItemId, localCreditCardId } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
@@ -61,6 +63,8 @@ export async function handlePurchaseShopItem({
   }
 
   return {
-    error: {},
+    error: {
+      reason: PurchaseShopItemFailedReason.UNKNOWN_REASON,
+    },
   };
 }

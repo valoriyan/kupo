@@ -7,10 +7,6 @@ export enum UpdatePostFailedReason {
   IllegalAccess = "Illegal Access",
 }
 
-export interface UpdatePostFailed {
-  reason: UpdatePostFailedReason;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UpdatePostSuccess {}
 
@@ -31,8 +27,8 @@ export async function handleUpdatePost({
   controller: PostController;
   request: express.Request;
   requestBody: UpdatePostRequestBody;
-}): Promise<SecuredHTTPResponse<UpdatePostFailed, UpdatePostSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+}): Promise<SecuredHTTPResponse<UpdatePostFailedReason, UpdatePostSuccess>> {
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =

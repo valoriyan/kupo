@@ -18,9 +18,6 @@ export enum ResetPasswordFailedReason {
   InvalidPassword = "InvalidPassword",
 }
 
-export interface ResetPasswordFailed {
-  reason: ResetPasswordFailedReason;
-}
 
 export async function handleResetPassword({
   controller,
@@ -28,7 +25,7 @@ export async function handleResetPassword({
 }: {
   controller: AuthController;
   requestBody: ResetPasswordRequestBody;
-}): Promise<HTTPResponse<ResetPasswordFailed, ResetPasswordSuccess>> {
+}): Promise<HTTPResponse<ResetPasswordFailedReason, ResetPasswordSuccess>> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const { token, password } = requestBody;

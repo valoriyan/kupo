@@ -32,10 +32,6 @@ export enum GetShopItemsByUsernameFailedReason {
   UnknownUser = "User Not Found",
 }
 
-export interface GetShopItemsByUsernameFailed {
-  reason: GetShopItemsByUsernameFailedReason;
-}
-
 export async function handleGetShopItemsByUsername({
   controller,
   request,
@@ -44,7 +40,7 @@ export async function handleGetShopItemsByUsername({
   controller: ShopItemController;
   request: express.Request;
   requestBody: GetShopItemsByUsernameRequestBody;
-}): Promise<HTTPResponse<GetShopItemsByUsernameFailed, GetShopItemsByUsernameSuccess>> {
+}): Promise<HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>> {
   const { username, ...restRequestBody } = requestBody;
   const userId =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
@@ -72,7 +68,7 @@ export async function handleGetShopItemsByUserId({
   controller: ShopItemController;
   request: express.Request;
   requestBody: GetShopItemsByUserIdRequestBody;
-}): Promise<HTTPResponse<GetShopItemsByUsernameFailed, GetShopItemsByUsernameSuccess>> {
+}): Promise<HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>> {
   const { userId, pageSize, cursor } = requestBody;
 
   const clientUserId = await getClientUserId(request);

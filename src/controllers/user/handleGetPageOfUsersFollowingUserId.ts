@@ -39,7 +39,7 @@ export async function handleGetPageOfUsersFollowingUserId({
     GetPageOfUsersFollowingUserIdSuccess
   >
 > {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { cursor, userIdBeingFollowed, pageSize } = requestBody;

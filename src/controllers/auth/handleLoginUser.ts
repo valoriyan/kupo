@@ -1,6 +1,7 @@
+import { HTTPResponse } from "../../types/httpResponse";
 import { getEnvironmentVariable } from "../../utilities";
 import { AuthController } from "./authController";
-import { AuthFailureReason } from "./models";
+import { AuthFailedReason, AuthSuccess } from "./models";
 import { encryptPassword } from "./utilities";
 import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
 
@@ -15,7 +16,7 @@ export async function handleLoginUser({
 }: {
   controller: AuthController;
   requestBody: LoginUserRequestBody;
-}) {
+}): Promise<HTTPResponse<AuthFailedReason, AuthSuccess>> {
   const { username, password } = requestBody;
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
@@ -34,10 +35,10 @@ export async function handleLoginUser({
     }
 
     controller.setStatus(401);
-    return { error: { reason: AuthFailureReason.WrongPassword } };
+    return { error: { reason: AuthFailedReason.WrongPassword } };
   } catch (error) {
     console.log("error", error);
     controller.setStatus(401);
-    return { error: { reason: AuthFailureReason.UnknownCause } };
+    return { error: { reason: AuthFailedReason.UnknownCause } };
   }
 }

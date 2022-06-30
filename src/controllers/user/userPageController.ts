@@ -6,17 +6,17 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
   GetUserProfileRequestBody,
   GetUserProfileSuccess,
-  GetUserProfileFailed,
+  GetUserProfileFailedReason,
   handleGetUserProfile,
 } from "./handleGetUserProfile";
 import {
-  UpdateUserProfileFailed,
+  UpdateUserProfileFailedReason,
   handleUpdateUserProfile,
   UpdateUserProfileSuccess,
   UpdateUserProfileRequestBody,
 } from "./handleUpdateUserProfile";
 import {
-  SearchUserProfilesByUsernameFailed,
+  SearchUserProfilesByUsernameFailedReason,
   handleSearchUserProfilesByUsername,
   SearchUserProfilesByUsernameRequestBody,
   SearchUserProfilesByUsernameSuccess,
@@ -54,12 +54,12 @@ import {
 } from "./handleGetPageOfUsersFollowingUserId";
 import {
   handleUpdateUserProfilePicture,
-  UpdateUserProfilePictureFailed,
+  UpdateUserProfilePictureFailedReason,
   UpdateUserProfilePictureSuccess,
 } from "./handleUpdateUserProfilePicture";
 import {
   handleUpdateUserBackgroundImage,
-  UpdateUserBackgroundImageFailed,
+  UpdateUserBackgroundImageFailedReason,
   UpdateUserBackgroundImageSuccess,
 } from "./handleUpdateUserBackgroundImage";
 import { PaymentProcessingService } from "../../services/paymentProcessingService";
@@ -87,7 +87,7 @@ export class UserPageController extends Controller {
   public async getUserProfile(
     @Request() request: express.Request,
     @Body() requestBody: GetUserProfileRequestBody,
-  ): Promise<SecuredHTTPResponse<GetUserProfileFailed, GetUserProfileSuccess>> {
+  ): Promise<SecuredHTTPResponse<GetUserProfileFailedReason, GetUserProfileSuccess>> {
     return await handleGetUserProfile({
       controller: this,
       request,
@@ -125,7 +125,7 @@ export class UserPageController extends Controller {
     @Body() requestBody: SearchUserProfilesByUsernameRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      SearchUserProfilesByUsernameFailed,
+      SearchUserProfilesByUsernameFailedReason,
       SearchUserProfilesByUsernameSuccess
     >
   > {
@@ -178,7 +178,7 @@ export class UserPageController extends Controller {
   public async updateUserProfile(
     @Request() request: express.Request,
     @Body() requestBody: UpdateUserProfileRequestBody,
-  ): Promise<SecuredHTTPResponse<UpdateUserProfileFailed, UpdateUserProfileSuccess>> {
+  ): Promise<SecuredHTTPResponse<UpdateUserProfileFailedReason, UpdateUserProfileSuccess>> {
     return await handleUpdateUserProfile({
       controller: this,
       request,
@@ -191,7 +191,7 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
   ): Promise<
-    SecuredHTTPResponse<UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess>
+    SecuredHTTPResponse<UpdateUserProfilePictureFailedReason, UpdateUserProfilePictureSuccess>
   > {
     return await handleUpdateUserProfilePicture({
       controller: this,
@@ -207,7 +207,7 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
   ): Promise<
-    SecuredHTTPResponse<UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess>
+    SecuredHTTPResponse<UpdateUserBackgroundImageFailedReason, UpdateUserBackgroundImageSuccess>
   > {
     return await handleUpdateUserBackgroundImage({
       controller: this,

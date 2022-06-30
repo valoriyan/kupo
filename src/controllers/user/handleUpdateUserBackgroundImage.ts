@@ -9,9 +9,6 @@ export enum UpdateUserBackgroundImageFailedReason {
   Unknown = "Unknown",
 }
 
-export interface UpdateUserBackgroundImageFailed {
-  reason: UpdateUserBackgroundImageFailedReason;
-}
 
 export type UpdateUserBackgroundImageSuccess = RenderableUser;
 
@@ -28,9 +25,9 @@ export async function handleUpdateUserBackgroundImage({
   request: express.Request;
   requestBody: UpdateUserBackgroundImageRequestBody;
 }): Promise<
-  SecuredHTTPResponse<UpdateUserBackgroundImageFailed, UpdateUserBackgroundImageSuccess>
+  SecuredHTTPResponse<UpdateUserBackgroundImageFailedReason, UpdateUserBackgroundImageSuccess>
 > {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const backgroundImageBlobItemPointer = requestBody.backgroundImage

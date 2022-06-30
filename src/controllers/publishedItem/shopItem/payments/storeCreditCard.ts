@@ -15,7 +15,9 @@ export interface StoreCreditCardRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface StoreCreditCardSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface StoreCreditCardFailed {}
+export enum StoreCreditCardFailedReason {
+  UNKNOWN_REASON = "UNKNOWN_REASON",
+}
 
 export async function handleStoreCreditCard({
   controller,
@@ -25,7 +27,7 @@ export async function handleStoreCreditCard({
   controller: ShopItemController;
   request: express.Request;
   requestBody: StoreCreditCardRequestBody;
-}): Promise<SecuredHTTPResponse<StoreCreditCardFailed, StoreCreditCardSuccess>> {
+}): Promise<SecuredHTTPResponse<StoreCreditCardFailedReason, StoreCreditCardSuccess>> {
   const now = Date.now();
 
   const ipAddressOfRequestor = (request.headers["x-real-ip"] ||
@@ -39,7 +41,7 @@ export async function handleStoreCreditCard({
     CREDIT_CARD_OWNER_NAME,
   } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
@@ -78,6 +80,8 @@ export async function handleStoreCreditCard({
   }
 
   return {
-    error: {},
+    error: {
+      reason: StoreCreditCardFailedReason.UNKNOWN_REASON,
+    },
   };
 }

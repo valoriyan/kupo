@@ -15,10 +15,6 @@ export enum CreateShopItemFailedReason {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CreateShopItemSuccess {}
 
-export interface CreateShopItemFailed {
-  reason: CreateShopItemFailedReason;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
   caption: string;
@@ -39,8 +35,8 @@ export async function handleCreateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+}): Promise<SecuredHTTPResponse<CreateShopItemFailedReason, CreateShopItemSuccess>> {
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const {

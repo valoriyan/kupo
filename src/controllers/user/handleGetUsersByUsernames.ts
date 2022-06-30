@@ -30,7 +30,7 @@ export async function handleGetUsersByUsernames({
   request: express.Request;
   requestBody: GetUsersByUsernamesRequestBody;
 }): Promise<SecuredHTTPResponse<GetUsersByUsernamesFailed, GetUsersByUsernamesSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { usernames } = requestBody;

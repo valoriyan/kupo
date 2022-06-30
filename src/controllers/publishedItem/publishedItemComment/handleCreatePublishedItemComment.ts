@@ -36,8 +36,8 @@ export async function handleCreatePublishedItemComment({
 > {
   const { postId, text } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
-  if (error) return error;
+  const { clientUserId, errorResponse } = await checkAuthorization(controller, request);
+  if (errorResponse) return errorResponse;
 
   const postCommentId: string = uuidv4();
 

@@ -6,7 +6,7 @@ import {
   generateRefreshToken,
   REFRESH_TOKEN_EXPIRATION_TIME,
 } from ".";
-import { AuthFailed, AuthSuccess } from "../models";
+import { AuthFailedReason, AuthSuccess } from "../models";
 
 export function grantNewAccessToken({
   controller,
@@ -18,7 +18,7 @@ export function grantNewAccessToken({
   userId: string;
   jwtPrivateKey: string;
   successStatusCode?: number;
-}): HTTPResponse<AuthFailed, AuthSuccess> {
+}): HTTPResponse<AuthFailedReason, AuthSuccess> {
   const accessToken = generateAccessToken({
     userId,
     jwtPrivateKey,

@@ -41,7 +41,7 @@ export async function handleGetPageOfChatMessages({
 
   const endOfPageTimestamp = cursor ? +cursor : Date.now() + 1;
 
-  const { error } = await checkAuthorization(controller, request);
+  const { errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const unrenderableChatMessages =

@@ -13,10 +13,6 @@ export enum SharePostFailedReason {
   ScheduledPublicationTimestampIsInPast = "Scheduled Publication Timestamp is in Past",
 }
 
-export interface SharePostFailed {
-  reason: SharePostFailedReason;
-}
-
 export interface SharePostSuccess {
   renderablePost: RenderablePost;
 }
@@ -37,7 +33,7 @@ export async function handleSharePost({
   controller: PostController;
   request: express.Request;
   requestBody: SharePostRequestBody;
-}): Promise<SecuredHTTPResponse<SharePostFailed, SharePostSuccess>> {
+}): Promise<SecuredHTTPResponse<SharePostFailedReason, SharePostSuccess>> {
   const {
     sharedPostId,
     caption,
@@ -48,7 +44,7 @@ export async function handleSharePost({
 
   const postId: string = uuidv4();
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const now = Date.now();

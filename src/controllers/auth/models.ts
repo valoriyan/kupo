@@ -1,4 +1,4 @@
-export enum AuthFailureReason {
+export enum AuthFailedReason {
   WrongPassword = "Wrong Password",
   UnknownCause = "Unknown Cause",
   NoRefreshToken = "No Refresh Token Found",
@@ -12,5 +12,5 @@ export interface AuthSuccess {
 }
 
 export interface AuthFailed {
-  reason: AuthFailureReason;
+  reason: AuthFailedReason;
 }

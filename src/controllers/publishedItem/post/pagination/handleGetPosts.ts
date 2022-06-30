@@ -32,10 +32,6 @@ export enum GetPostsByUsernameFailedReason {
   UnknownUser = "User Not Found",
 }
 
-export interface GetPostsByUsernameFailed {
-  reason: GetPostsByUsernameFailedReason;
-}
-
 export async function handleGetPostsByUsername({
   controller,
   request,
@@ -44,7 +40,7 @@ export async function handleGetPostsByUsername({
   controller: PostController;
   request: express.Request;
   requestBody: GetPostsByUsernameRequestBody;
-}): Promise<HTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>> {
+}): Promise<HTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>> {
   const { username, ...restRequestBody } = requestBody;
   const userId =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
@@ -72,7 +68,7 @@ export async function handleGetPostsByUserId({
   controller: PostController;
   request: express.Request;
   requestBody: GetPostsByUserIdRequestBody;
-}): Promise<HTTPResponse<GetPostsByUsernameFailed, GetPostsByUsernameSuccess>> {
+}): Promise<HTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>> {
   const { userId, pageSize, cursor } = requestBody;
 
   const clientUserId = await getClientUserId(request);

@@ -24,7 +24,7 @@ import {
 } from "./handleGetPageOfChatRooms";
 import {
   DoesChatRoomExistWithUserIdsRequestBody,
-  DoesChatRoomExistWithUserIdsFailed,
+  DoesChatRoomExistWithUserIdsFailedReason,
   handleDoesChatRoomExistWithUserIds,
   DoesChatRoomExistWithUserIdsSuccess,
 } from "./handleDoesChatRoomExistWithUserIds";
@@ -140,7 +140,7 @@ export class ChatController extends Controller {
     @Body() requestBody: DoesChatRoomExistWithUserIdsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      DoesChatRoomExistWithUserIdsFailed,
+      DoesChatRoomExistWithUserIdsFailedReason,
       DoesChatRoomExistWithUserIdsSuccess
     >
   > {

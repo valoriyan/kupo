@@ -17,9 +17,6 @@ export enum SearchUserProfilesByUsernameFailedReason {
   NotFound = "User Not Found",
 }
 
-export interface SearchUserProfilesByUsernameFailed {
-  reason: SearchUserProfilesByUsernameFailedReason;
-}
 
 export async function handleSearchUserProfilesByUsername({
   controller,
@@ -31,11 +28,11 @@ export async function handleSearchUserProfilesByUsername({
   requestBody: SearchUserProfilesByUsernameRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    SearchUserProfilesByUsernameFailed,
+  SearchUserProfilesByUsernameFailedReason,
     SearchUserProfilesByUsernameSuccess
   >
 > {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { searchString } = requestBody;

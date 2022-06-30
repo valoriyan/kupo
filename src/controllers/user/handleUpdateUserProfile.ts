@@ -10,10 +10,6 @@ export enum UpdateUserProfileFailedReason {
   Unknown = "Unknown",
 }
 
-export interface UpdateUserProfileFailed {
-  reason: UpdateUserProfileFailedReason;
-}
-
 export type UpdateUserProfileSuccess = RenderableUser;
 
 export interface UpdateUserProfileRequestBody {
@@ -34,8 +30,8 @@ export async function handleUpdateUserProfile({
   controller: UserPageController;
   request: express.Request;
   requestBody: UpdateUserProfileRequestBody;
-}): Promise<SecuredHTTPResponse<UpdateUserProfileFailed, UpdateUserProfileSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+}): Promise<SecuredHTTPResponse<UpdateUserProfileFailedReason, UpdateUserProfileSuccess>> {
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const {

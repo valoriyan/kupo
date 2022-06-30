@@ -29,7 +29,7 @@ import {
   SetUserContentFeedFiltersSuccess,
 } from "./handleSetUserContentFeedFilters";
 import {
-  GetPageOfAllPublishedItemsFailed,
+  GetPageOfAllPublishedItemsFailedReason,
   GetPageOfAllPublishedItemsRequestBody,
   GetPageOfAllPublishedItemsSuccess,
   handleGetPageOfAllPublishedItems,
@@ -59,7 +59,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetPageOfAllPublishedItemsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfAllPublishedItemsFailed,
+      GetPageOfAllPublishedItemsFailedReason,
       GetPageOfAllPublishedItemsSuccess
     >
   > {

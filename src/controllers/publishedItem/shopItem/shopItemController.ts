@@ -13,12 +13,12 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../../services/databaseService";
 import express from "express";
 import {
-  CreateShopItemFailed,
+  CreateShopItemFailedReason,
   handleCreateShopItem,
   CreateShopItemSuccess,
 } from "./handleCreateShopItem";
 import {
-  UpdateShopItemFailed,
+  UpdateShopItemFailedReason,
   handleUpdateShopItem,
   UpdateShopItemSuccess,
 } from "./handleUpdateShopItem";
@@ -31,7 +31,7 @@ import {
 import { BlobStorageService } from "../../../services/blobStorageService";
 import {
   GetShopItemsByUserIdRequestBody,
-  GetShopItemsByUsernameFailed,
+  GetShopItemsByUsernameFailedReason,
   GetShopItemsByUsernameRequestBody,
   GetShopItemsByUsernameSuccess,
   handleGetShopItemsByUserId,
@@ -40,7 +40,7 @@ import {
 import { PaymentProcessingService } from "../../../services/paymentProcessingService";
 import {
   handlePurchaseShopItem,
-  PurchaseShopItemFailed,
+  PurchaseShopItemFailedReason,
   PurchaseShopItemRequestBody,
   PurchaseShopItemSuccess,
 } from "./payments/handlePurchaseShopItem";
@@ -52,7 +52,7 @@ import {
 } from "./payments/getCreditCardsStoredByUserId";
 import {
   handleRemoveCreditCard,
-  RemoveCreditCardFailed,
+  RemoveCreditCardFailedReason,
   RemoveCreditCardRequestBody,
   RemoveCreditCardSuccess,
 } from "./payments/removeCreditCard";
@@ -85,7 +85,7 @@ export class ShopItemController extends Controller {
     @FormField() scheduledPublicationTimestamp: string,
     @FormField() collaboratorUserIds: string,
     @FormField() expirationTimestamp?: string, // number
-  ): Promise<SecuredHTTPResponse<CreateShopItemFailed, CreateShopItemSuccess>> {
+  ): Promise<SecuredHTTPResponse<CreateShopItemFailedReason, CreateShopItemSuccess>> {
     return await handleCreateShopItem({
       controller: this,
       request,
@@ -110,7 +110,7 @@ export class ShopItemController extends Controller {
   public async purchaseShopItem(
     @Request() request: express.Request,
     @Body() requestBody: PurchaseShopItemRequestBody,
-  ): Promise<SecuredHTTPResponse<PurchaseShopItemFailed, PurchaseShopItemSuccess>> {
+  ): Promise<SecuredHTTPResponse<PurchaseShopItemFailedReason, PurchaseShopItemSuccess>> {
     return await handlePurchaseShopItem({
       controller: this,
       request,
@@ -127,7 +127,7 @@ export class ShopItemController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetShopItemsByUserIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetShopItemsByUsernameFailed, GetShopItemsByUsernameSuccess>
+    SecuredHTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>
   > {
     return await handleGetShopItemsByUserId({
       controller: this,
@@ -141,7 +141,7 @@ export class ShopItemController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetShopItemsByUsernameRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetShopItemsByUsernameFailed, GetShopItemsByUsernameSuccess>
+    SecuredHTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>
   > {
     return await handleGetShopItemsByUsername({
       controller: this,
@@ -183,7 +183,7 @@ export class ShopItemController extends Controller {
     @FormField() expirationTimestamp?: number,
     @FormField() collaboratorUserIds?: string[],
     @UploadedFiles() mediaFiles?: Express.Multer.File[],
-  ): Promise<SecuredHTTPResponse<UpdateShopItemFailed, UpdateShopItemSuccess>> {
+  ): Promise<SecuredHTTPResponse<UpdateShopItemFailedReason, UpdateShopItemSuccess>> {
     return await handleUpdateShopItem({
       controller: this,
       request,
@@ -221,7 +221,7 @@ export class ShopItemController extends Controller {
   public async removeCreditCard(
     @Request() request: express.Request,
     @Body() requestBody: RemoveCreditCardRequestBody,
-  ): Promise<SecuredHTTPResponse<RemoveCreditCardFailed, RemoveCreditCardSuccess>> {
+  ): Promise<SecuredHTTPResponse<RemoveCreditCardFailedReason, RemoveCreditCardSuccess>> {
     return await handleRemoveCreditCard({
       controller: this,
       request,

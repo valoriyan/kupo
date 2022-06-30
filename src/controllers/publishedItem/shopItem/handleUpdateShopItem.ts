@@ -10,10 +10,6 @@ export enum UpdateShopItemFailedReason {
   IllegalAccess = "Illegal Access",
 }
 
-export interface UpdateShopItemFailed {
-  reason: UpdateShopItemFailedReason;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
   publishedItemId: string;
@@ -35,8 +31,8 @@ export async function handleUpdateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<UpdateShopItemFailed, UpdateShopItemSuccess>> {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+}): Promise<SecuredHTTPResponse<UpdateShopItemFailedReason, UpdateShopItemSuccess>> {
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const {

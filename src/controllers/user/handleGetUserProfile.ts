@@ -1,6 +1,6 @@
 import express from "express";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { AuthFailureReason } from "../auth/models";
+import { AuthFailedReason } from "../auth/models";
 import { getClientUserId } from "../auth/utilities";
 import { RenderableUser, UnrenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -16,9 +16,6 @@ export enum GetUserProfileFailedReason {
   NotFound = "User Not Found",
 }
 
-export interface GetUserProfileFailed {
-  reason: GetUserProfileFailedReason;
-}
 
 export async function handleGetUserProfile({
   controller,
@@ -28,7 +25,7 @@ export async function handleGetUserProfile({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetUserProfileRequestBody;
-}): Promise<SecuredHTTPResponse<GetUserProfileFailed, GetUserProfileSuccess>> {
+}): Promise<SecuredHTTPResponse<GetUserProfileFailedReason, GetUserProfileSuccess>> {
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
   const clientUserId = await getClientUserId(request);
@@ -48,7 +45,7 @@ export async function handleGetUserProfile({
     // Fetch user profile by own userId
     if (!clientUserId) {
       controller.setStatus(403);
-      return { error: { reason: AuthFailureReason.AuthorizationError } };
+      return { error: { reason: AuthFailedReason.AuthorizationError } };
     }
     const unrenderableUsers =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(

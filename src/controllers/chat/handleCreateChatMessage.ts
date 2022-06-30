@@ -33,7 +33,7 @@ export async function handleCreateChatMessage({
 }): Promise<SecuredHTTPResponse<CreateChatMessageFailed, CreateChatMessageSuccess>> {
   const { chatRoomId, chatMessageText } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const chatMessageId: string = uuidv4();

@@ -2,8 +2,9 @@ import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
 import { MD5 } from "crypto-js";
-import { AuthFailureReason, AuthFailed } from "../models";
+import { AuthFailedReason, AuthFailed } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
+import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
@@ -70,7 +71,7 @@ export function validateTokenAndGetUserId({
 export async function checkAuthorization(
   controller: Controller,
   request: Request,
-): Promise<{ clientUserId: string; error?: { error: AuthFailed } }> {
+): Promise<{ clientUserId: string; errorResponse?: { error: AuthFailed } }> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {
     const token =
@@ -80,10 +81,14 @@ export async function checkAuthorization(
 
     return { clientUserId: validateTokenAndGetUserId({ token, jwtPrivateKey }) };
   } catch {
-    controller.setStatus(403);
+    const errorResponse = generateErrorResponse({
+      controller,
+      errorReason: AuthFailedReason.AuthorizationError,
+      httpStatusCode: 403,  
+    })
     return {
       clientUserId: "",
-      error: { error: { reason: AuthFailureReason.AuthorizationError } },
+      errorResponse,
     };
   }
 }

@@ -27,7 +27,7 @@ export async function handleFollowUser({
 }): Promise<HTTPResponse<FollowUserFailed, FollowUserSuccess>> {
   const { userIdBeingFollowed } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const userFollowEventId = uuidv4();

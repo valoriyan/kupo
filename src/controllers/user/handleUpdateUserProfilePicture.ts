@@ -9,10 +9,6 @@ export enum UpdateUserProfilePictureFailedReason {
   Unknown = "Unknown",
 }
 
-export interface UpdateUserProfilePictureFailed {
-  reason: UpdateUserProfilePictureFailedReason;
-}
-
 export type UpdateUserProfilePictureSuccess = RenderableUser;
 
 export interface UpdateUserProfilePictureRequestBody {
@@ -28,9 +24,9 @@ export async function handleUpdateUserProfilePicture({
   request: express.Request;
   requestBody: UpdateUserProfilePictureRequestBody;
 }): Promise<
-  SecuredHTTPResponse<UpdateUserProfilePictureFailed, UpdateUserProfilePictureSuccess>
+  SecuredHTTPResponse<UpdateUserProfilePictureFailedReason, UpdateUserProfilePictureSuccess>
 > {
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const profilePictureBlobItemPointer = requestBody.profilePicture

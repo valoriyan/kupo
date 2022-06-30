@@ -16,10 +16,6 @@ export enum CreatePostFailedReason {
   ScheduledPublicationTimestampIsInPast = "Scheduled Publication Timestamp is in Past",
 }
 
-export interface CreatePostFailed {
-  reason: CreatePostFailedReason;
-}
-
 export interface CreatePostSuccess {
   renderablePost: RenderablePost;
 }
@@ -40,7 +36,7 @@ export async function handleCreatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<CreatePostFailed, CreatePostSuccess>> {
+}): Promise<SecuredHTTPResponse<CreatePostFailedReason, CreatePostSuccess>> {
   const {
     caption,
     scheduledPublicationTimestamp,
@@ -49,7 +45,7 @@ export async function handleCreatePost({
     expirationTimestamp,
   } = requestBody;
 
-  const { clientUserId, error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const postId: string = uuidv4();
