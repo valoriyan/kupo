@@ -27,6 +27,11 @@ export async function handleDeleteShopItem({
   const { clientUserId, error } = await checkAuthorization(controller, request);
   if (error) return error;
 
+  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem({
+    id: publishedItemId,
+    authorUserId: clientUserId,
+  });
+
   await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
     {
       publishedItemId,

@@ -1,6 +1,6 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { constructRenderablePostCommentFromParts } from "../../postComment/utilities";
+import { constructRenderablePostCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { constructRenderablePostFromParts } from "../../publishedItem/post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";

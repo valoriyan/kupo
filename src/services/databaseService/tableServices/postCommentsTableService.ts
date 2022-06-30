@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from "pg";
-import { UnrenderablePostComment } from "../../../controllers/postComment/models";
+import { UnrenderablePostComment } from "../../../controllers/publishedItem/publishedItemComment/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";

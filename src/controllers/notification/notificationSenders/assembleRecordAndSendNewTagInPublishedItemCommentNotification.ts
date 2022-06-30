@@ -4,7 +4,7 @@ import { constructRenderablePostFromPartsById } from "../../publishedItem/post/u
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
-import { constructRenderablePostCommentFromPartsById } from "../../postComment/utilities";
+import { constructRenderablePostCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
 

@@ -1,41 +1,41 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
-import { PostCommentController } from "./postCommentController";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
+import { PublishedItemCommentController } from "./publishedItemCommentController";
 import { RenderablePostComment, UnrenderablePostComment } from "./models";
 import { constructRenderablePostCommentsFromParts } from "./utilities";
-import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 
-export interface GetPageOfCommentsByPostIdRequestBody {
+export interface ReadPageOfCommentsByPublishedItemIdRequestBody {
   postId: string;
   cursor?: string;
   pageSize: number;
 }
 
-export interface GetPageOfCommentsByPostIdSuccess {
+export interface ReadPageOfCommentsByPublishedItemIdSuccess {
   postComments: RenderablePostComment[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum GetPageOfCommentsByPostIdFailedReason {
+export enum ReadPageOfCommentsByPublishedItemIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfCommentsByPostIdFailure {
-  reason: GetPageOfCommentsByPostIdFailedReason;
+export interface ReadPageOfCommentsByPublishedItemIdFailure {
+  reason: ReadPageOfCommentsByPublishedItemIdFailedReason;
 }
 
-export async function handleGetPageOfCommentsByPostId({
+export async function handleReadPageOfCommentsByPublishedItemId({
   controller,
   request,
   requestBody,
 }: {
-  controller: PostCommentController;
+  controller: PublishedItemCommentController;
   request: express.Request;
-  requestBody: GetPageOfCommentsByPostIdRequestBody;
+  requestBody: ReadPageOfCommentsByPublishedItemIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfCommentsByPostIdFailure, GetPageOfCommentsByPostIdSuccess>
+  SecuredHTTPResponse<ReadPageOfCommentsByPublishedItemIdFailure, ReadPageOfCommentsByPublishedItemIdSuccess>
 > {
   const { postId, cursor, pageSize } = requestBody;
 

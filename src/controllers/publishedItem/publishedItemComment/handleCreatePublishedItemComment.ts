@@ -1,38 +1,37 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
 import { v4 as uuidv4 } from "uuid";
-import { PostCommentController } from "./postCommentController";
+import { PublishedItemCommentController } from "./publishedItemCommentController";
 import { RenderablePostComment } from "./models";
 import { constructRenderablePostCommentFromParts } from "./utilities";
-import { DatabaseService } from "../../services/databaseService";
-import { collectTagsFromText } from "../utilities/collectTagsFromText";
-import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
-import { WebSocketService } from "../../services/webSocketService";
-import { assembleRecordAndSendNewCommentOnPostNotification } from "../notification/notificationSenders/assembleRecordAndSendNewCommentOnPostNotification";
+import { DatabaseService } from "../../../services/databaseService";
+import { collectTagsFromText } from "../../utilities/collectTagsFromText";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { WebSocketService } from "../../../services/webSocketService";
 import { Promise as BluebirdPromise } from "bluebird";
-import { assembleRecordAndSendNewTagInPublishedItemCommentNotification } from "../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCommentNotification";
+import { assembleRecordAndSendNewTagInPublishedItemCommentNotification } from "../../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCommentNotification";
 
-export interface CommentOnPostRequestBody {
+export interface CreatePublishedItemCommentRequestBody {
   postId: string;
   text: string;
 }
 
-export interface CommentOnPostSuccess {
+export interface CreatePublishedItemCommentSuccess {
   postComment: RenderablePostComment;
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CommentOnPostFailed {}
+export interface CreatePublishedItemCommentFailed {}
 
-export async function handleCommentOnPost({
+export async function handleCreatePublishedItemComment({
   controller,
   request,
   requestBody,
 }: {
-  controller: PostCommentController;
+  controller: PublishedItemCommentController;
   request: express.Request;
-  requestBody: CommentOnPostRequestBody;
-}): Promise<SecuredHTTPResponse<CommentOnPostFailed, CommentOnPostSuccess>> {
+  requestBody: CreatePublishedItemCommentRequestBody;
+}): Promise<SecuredHTTPResponse<CreatePublishedItemCommentFailed, CreatePublishedItemCommentSuccess>> {
   const { postId, text } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);
@@ -113,7 +112,7 @@ async function considerAndExecuteNotifications({
     !(authorOfPublishedItemUserId === authorOfCommentUserId) &&
     !foundUserIdsMatchingTags.includes(authorOfPublishedItemUserId)
   ) {
-    await assembleRecordAndSendNewCommentOnPostNotification({
+    await assembleRecordAndSendNewTagInPublishedItemCommentNotification({
       publishedItemId: renderablePostComment.postId,
       publishedItemCommentId: renderablePostComment.postCommentId,
       recipientUserId: authorOfPublishedItemUserId,

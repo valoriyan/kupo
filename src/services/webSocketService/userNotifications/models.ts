@@ -1,4 +1,4 @@
-import { RenderablePostComment } from "../../../controllers/postComment/models";
+import { RenderablePostComment } from "../../../controllers/publishedItem/publishedItemComment/models";
 import { RenderablePost } from "../../../controllers/publishedItem/post/models";
 import { RenderableUser } from "../../../controllers/user/models";
 

@@ -1,4 +1,4 @@
-import { RenderableUser } from "../user/models";
+import { RenderableUser } from "../../user/models";
 
 export interface UnrenderablePostComment {
   postCommentId: string;

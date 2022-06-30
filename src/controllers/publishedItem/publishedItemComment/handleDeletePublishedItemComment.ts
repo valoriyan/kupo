@@ -1,30 +1,30 @@
 import express from "express";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
-import { checkAuthorization } from "../auth/utilities";
-import { UnrenderableCanceledCommentOnPostNotification } from "../notification/models/unrenderableCanceledUserNotifications";
-import { PostCommentController } from "./postCommentController";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { checkAuthorization } from "../../auth/utilities";
+import { UnrenderableCanceledCommentOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
+import { PublishedItemCommentController } from "./publishedItemCommentController";
 
-export interface DeleteCommentFromPostRequestBody {
+export interface DeletePublishedItemCommentRequestBody {
   postCommentId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DeleteCommentFromPostSuccess {}
+export interface DeletePublishedItemCommentSuccess {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DeleteCommentFromPostFailed {}
+export interface DeletePublishedItemCommentFailed {}
 
-export async function handleDeleteCommentFromPost({
+export async function handleDeletePublishedItemComment({
   controller,
   request,
   requestBody,
 }: {
-  controller: PostCommentController;
+  controller: PublishedItemCommentController;
   request: express.Request;
-  requestBody: DeleteCommentFromPostRequestBody;
+  requestBody: DeletePublishedItemCommentRequestBody;
 }): Promise<
-  SecuredHTTPResponse<DeleteCommentFromPostFailed, DeleteCommentFromPostSuccess>
+  SecuredHTTPResponse<DeletePublishedItemCommentFailed, DeletePublishedItemCommentSuccess>
 > {
   const { postCommentId } = requestBody;
 

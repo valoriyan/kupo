@@ -1,6 +1,6 @@
 import { BaseUserNotification } from ".";
 import { RenderablePost } from "../../publishedItem/post/models";
-import { RenderablePostComment } from "../../postComment/models";
+import { RenderablePostComment } from "../../publishedItem/publishedItemComment/models";
 import { RenderableUser } from "../../user/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 

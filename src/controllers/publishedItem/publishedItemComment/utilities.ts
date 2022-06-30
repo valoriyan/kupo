@@ -1,10 +1,10 @@
-import { BlobStorageServiceInterface } from "./../../services/blobStorageService/models";
-import { DatabaseService } from "../../services/databaseService";
-import { UnrenderableUser } from "../user/models";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { DatabaseService } from "../../../services/databaseService";
+import { UnrenderableUser } from "../../user/models";
 import {
   constructRenderableUserFromParts,
   constructRenderableUsersFromParts,
-} from "../user/utilities";
+} from "../../user/utilities";
 import { RenderablePostComment, UnrenderablePostComment } from "./models";
 
 export async function constructRenderablePostCommentFromPartsById({
