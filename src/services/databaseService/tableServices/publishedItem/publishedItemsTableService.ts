@@ -191,6 +191,7 @@ export class PublishedItemsTableService extends TableService {
         FROM
           ${this.tableName}
         WHERE
+          true
           ${typeConstraintClause}
           ${filteringWhereClause}
           ${getPublishedItemsBeforeTimestampClause}
