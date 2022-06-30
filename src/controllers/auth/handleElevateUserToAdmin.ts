@@ -29,7 +29,10 @@ export async function handleElevateUserToAdmin({
 }): Promise<SecuredHTTPResponse<ElevateUserToAdminFailed, ElevateUserToAdminSuccess>> {
   const { userIdElevatedToAdmin } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const clientUser =

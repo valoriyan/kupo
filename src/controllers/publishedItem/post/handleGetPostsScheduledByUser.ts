@@ -30,7 +30,10 @@ export async function handleGetPostsScheduledByUser({
 }): Promise<
   SecuredHTTPResponse<GetPostsScheduledByUserFailed, GetPostsScheduledByUserSuccess>
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const { rangeStartTimestamp, rangeEndTimestamp } = requestBody;

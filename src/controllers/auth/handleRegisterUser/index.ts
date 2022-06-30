@@ -97,7 +97,7 @@ export async function handleRegisterUser({
     }
 
     console.log(`Failed to create user ${username} | UnknownCause`);
-    
+
     return generateErrorResponse({
       controller,
       errorReason: RegisterUserFailedReason.UnknownCause,

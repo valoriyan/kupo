@@ -36,7 +36,10 @@ export async function handleCreateShopItem({
   request: express.Request;
   requestBody: HandlerRequestBody;
 }): Promise<SecuredHTTPResponse<CreateShopItemFailedReason, CreateShopItemSuccess>> {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const {

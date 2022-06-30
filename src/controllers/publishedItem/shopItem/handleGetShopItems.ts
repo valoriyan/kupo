@@ -40,7 +40,9 @@ export async function handleGetShopItemsByUsername({
   controller: ShopItemController;
   request: express.Request;
   requestBody: GetShopItemsByUsernameRequestBody;
-}): Promise<HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>> {
+}): Promise<
+  HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>
+> {
   const { username, ...restRequestBody } = requestBody;
   const userId =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
@@ -68,7 +70,9 @@ export async function handleGetShopItemsByUserId({
   controller: ShopItemController;
   request: express.Request;
   requestBody: GetShopItemsByUserIdRequestBody;
-}): Promise<HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>> {
+}): Promise<
+  HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>
+> {
   const { userId, pageSize, cursor } = requestBody;
 
   const clientUserId = await getClientUserId(request);

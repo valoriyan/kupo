@@ -29,7 +29,10 @@ export async function handleDeleteChatMessage({
 }): Promise<SecuredHTTPResponse<DeleteChatMessageFailed, DeleteChatMessageSuccess>> {
   const { chatMessageId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const deletedChatMessage =

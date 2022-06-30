@@ -39,7 +39,10 @@ export async function handleSearchForPosts({
   request: express.Request;
   requestBody: SearchForPostsRequestBody;
 }): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const { pageNumber, query, pageSize } = requestBody;
@@ -63,12 +66,11 @@ export async function handleSearchForPosts({
             { captionSubstring: lowercaseTrimmedQuery, type: PublishedItemType.POST },
           );
 
-  
         const unrenderablePostsWithoutElementsOrHashtags =
           mergeArraysOfUncompiledBasePublishedItem({
             arrays: [unrenderablePostsMatchingHashtag, unrenderablePostsMatchingCaption],
           });
-    
+
         if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {
           return {
             success: {
@@ -77,56 +79,53 @@ export async function handleSearchForPosts({
             },
           };
         }
-    
+
         const pageOfUnrenderablePosts = unrenderablePostsWithoutElementsOrHashtags.slice(
           pageSize * pageNumber - pageSize,
           pageSize * pageNumber,
         );
-    
+
         const renderablePosts = await constructRenderablePostsFromParts({
           blobStorageService: controller.blobStorageService,
           databaseService: controller.databaseService,
           uncompiledBasePublishedItems: pageOfUnrenderablePosts,
           clientUserId,
         });
-    
+
         return {
           success: {
             posts: renderablePosts,
             totalCount: unrenderablePostsWithoutElementsOrHashtags.length,
           },
-        };            
-  
-
+        };
       } catch (error) {
         return generateErrorResponse({
           controller,
           errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-          additionalErrorInformation: "Error at publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring",
+          additionalErrorInformation:
+            "Error at publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring",
           error,
           httpStatusCode: 500,
         });
-  
       }
-
     } catch (error) {
       return generateErrorResponse({
         controller,
         errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        additionalErrorInformation: "Error at publishedItemsTableService.getPublishedItemsByIds",
+        additionalErrorInformation:
+          "Error at publishedItemsTableService.getPublishedItemsByIds",
         error,
         httpStatusCode: 500,
       });
     }
-
   } catch {
     return generateErrorResponse({
       controller,
       errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      additionalErrorInformation: "Error at hashtagTableService.getPublishedItemIdsWithOneOfHashtags",
+      additionalErrorInformation:
+        "Error at hashtagTableService.getPublishedItemIdsWithOneOfHashtags",
       error,
       httpStatusCode: 500,
     });
   }
-
 }

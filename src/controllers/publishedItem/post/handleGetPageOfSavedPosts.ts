@@ -38,7 +38,10 @@ export async function handleGetPageOfSavedPosts({
 }): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
   const { cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const pageTimestamp = cursor

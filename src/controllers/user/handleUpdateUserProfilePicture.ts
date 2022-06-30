@@ -24,9 +24,15 @@ export async function handleUpdateUserProfilePicture({
   request: express.Request;
   requestBody: UpdateUserProfilePictureRequestBody;
 }): Promise<
-  SecuredHTTPResponse<UpdateUserProfilePictureFailedReason, UpdateUserProfilePictureSuccess>
+  SecuredHTTPResponse<
+    UpdateUserProfilePictureFailedReason,
+    UpdateUserProfilePictureSuccess
+  >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const profilePictureBlobItemPointer = requestBody.profilePicture

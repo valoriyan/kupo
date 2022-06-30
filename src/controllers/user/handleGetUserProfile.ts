@@ -16,7 +16,6 @@ export enum GetUserProfileFailedReason {
   NotFound = "User Not Found",
 }
 
-
 export async function handleGetUserProfile({
   controller,
   request,

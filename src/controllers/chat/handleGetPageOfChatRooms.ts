@@ -39,7 +39,10 @@ export async function handleGetPageOfChatRooms({
 }): Promise<SecuredHTTPResponse<GetPageOfChatRoomsFailed, GetPageOfChatRoomsSuccess>> {
   const { pageSize, cursor, query } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   let unrenderableChatRooms: UnrenderableChatRoomPreview[];

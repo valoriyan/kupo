@@ -21,7 +21,7 @@ export async function handleCheckResetPasswordTokenValidity({
   requestBody: CheckResetPasswordTokenValidityRequestBody;
 }): Promise<
   HTTPResponse<
-  CheckResetPasswordTokenValidityFailedReason,
+    CheckResetPasswordTokenValidityFailedReason,
     CheckResetPasswordTokenValiditySuccess
   >
 > {

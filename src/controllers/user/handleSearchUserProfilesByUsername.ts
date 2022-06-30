@@ -17,7 +17,6 @@ export enum SearchUserProfilesByUsernameFailedReason {
   NotFound = "User Not Found",
 }
 
-
 export async function handleSearchUserProfilesByUsername({
   controller,
   request,
@@ -28,11 +27,14 @@ export async function handleSearchUserProfilesByUsername({
   requestBody: SearchUserProfilesByUsernameRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-  SearchUserProfilesByUsernameFailedReason,
+    SearchUserProfilesByUsernameFailedReason,
     SearchUserProfilesByUsernameSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const { searchString } = requestBody;

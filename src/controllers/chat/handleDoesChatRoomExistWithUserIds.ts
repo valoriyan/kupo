@@ -34,7 +34,10 @@ export async function handleDoesChatRoomExistWithUserIds({
 > {
   const { userIds } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   if (!userIds.includes(clientUserId)) {

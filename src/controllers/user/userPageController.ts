@@ -178,7 +178,9 @@ export class UserPageController extends Controller {
   public async updateUserProfile(
     @Request() request: express.Request,
     @Body() requestBody: UpdateUserProfileRequestBody,
-  ): Promise<SecuredHTTPResponse<UpdateUserProfileFailedReason, UpdateUserProfileSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<UpdateUserProfileFailedReason, UpdateUserProfileSuccess>
+  > {
     return await handleUpdateUserProfile({
       controller: this,
       request,
@@ -191,7 +193,10 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
   ): Promise<
-    SecuredHTTPResponse<UpdateUserProfilePictureFailedReason, UpdateUserProfilePictureSuccess>
+    SecuredHTTPResponse<
+      UpdateUserProfilePictureFailedReason,
+      UpdateUserProfilePictureSuccess
+    >
   > {
     return await handleUpdateUserProfilePicture({
       controller: this,
@@ -207,7 +212,10 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
   ): Promise<
-    SecuredHTTPResponse<UpdateUserBackgroundImageFailedReason, UpdateUserBackgroundImageSuccess>
+    SecuredHTTPResponse<
+      UpdateUserBackgroundImageFailedReason,
+      UpdateUserBackgroundImageSuccess
+    >
   > {
     return await handleUpdateUserBackgroundImage({
       controller: this,

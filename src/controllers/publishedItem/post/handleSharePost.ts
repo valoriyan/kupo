@@ -44,7 +44,10 @@ export async function handleSharePost({
 
   const postId: string = uuidv4();
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const now = Date.now();

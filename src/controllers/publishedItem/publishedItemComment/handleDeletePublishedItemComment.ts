@@ -28,7 +28,10 @@ export async function handleDeletePublishedItemComment({
 > {
   const { postCommentId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const { postId } =

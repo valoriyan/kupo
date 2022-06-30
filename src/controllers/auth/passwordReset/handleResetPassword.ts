@@ -18,7 +18,6 @@ export enum ResetPasswordFailedReason {
   InvalidPassword = "InvalidPassword",
 }
 
-
 export async function handleResetPassword({
   controller,
   requestBody,

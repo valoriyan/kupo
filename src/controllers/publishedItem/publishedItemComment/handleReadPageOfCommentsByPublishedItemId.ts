@@ -42,7 +42,10 @@ export async function handleReadPageOfCommentsByPublishedItemId({
 > {
   const { postId, cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const unrenderablePostComments: UnrenderablePostComment[] =

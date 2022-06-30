@@ -30,7 +30,8 @@ export async function handleUpdatePassword({
   request: express.Request;
   requestBody: UpdatePasswordRequestBody;
 }): Promise<SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>> {
-  const { clientUserId, errorResponse: errorResponseWithSetHttpStatusCode } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: errorResponseWithSetHttpStatusCode } =
+    await checkAuthorization(controller, request);
   if (errorResponseWithSetHttpStatusCode) return errorResponseWithSetHttpStatusCode;
 
   const encryptedPassword = encryptPassword({ password: requestBody.updatedPassword });
@@ -41,7 +42,7 @@ export async function handleUpdatePassword({
         userId: clientUserId,
         encryptedPassword,
       },
-    );  
+    );
   } catch (error) {
     return generateErrorResponse({
       controller,

@@ -141,7 +141,9 @@ export class PostController extends Controller {
   public async getPostsByUserId(
     @Request() request: express.Request,
     @Body() requestBody: GetPostsByUserIdRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>
+  > {
     return await handleGetPostsByUserId({
       controller: this,
       request,
@@ -153,7 +155,9 @@ export class PostController extends Controller {
   public async getPostsByUsername(
     @Request() request: express.Request,
     @Body() requestBody: GetPostsByUsernameRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>
+  > {
     return await handleGetPostsByUsername({
       controller: this,
       request,

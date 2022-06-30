@@ -37,7 +37,10 @@ export async function handleGetPublishedItemById({
 > {
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const uncompiledBasePublishedItem =

@@ -27,7 +27,10 @@ export async function handleRemoveCreditCard({
 }): Promise<SecuredHTTPResponse<RemoveCreditCardFailedReason, RemoveCreditCardSuccess>> {
   const { localCreditCardId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =

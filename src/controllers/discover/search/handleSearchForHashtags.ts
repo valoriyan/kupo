@@ -53,16 +53,16 @@ export async function handleSearchForHashtags({
         },
       };
     }
-    
+
     try {
       const matchingHashtags =
-      await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
-        {
-          hashtagSubstring: lowercaseTrimmedQuery,
-          pageNumber,
-          pageSize,
-        },
-      );
+        await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
+          {
+            hashtagSubstring: lowercaseTrimmedQuery,
+            pageNumber,
+            pageSize,
+          },
+        );
 
       return {
         success: {
@@ -74,22 +74,20 @@ export async function handleSearchForHashtags({
       return generateErrorResponse({
         controller,
         errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        additionalErrorInformation: "Error at hashtagTableService.getHashtagsMatchingSubstring",
+        additionalErrorInformation:
+          "Error at hashtagTableService.getHashtagsMatchingSubstring",
         error,
         httpStatusCode: 500,
       });
-  
     }
-
   } catch (error) {
     return generateErrorResponse({
       controller,
       errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      additionalErrorInformation: "Error at hashtagTableService.getHashtagsCountBySubstring",
+      additionalErrorInformation:
+        "Error at hashtagTableService.getHashtagsCountBySubstring",
       error,
       httpStatusCode: 500,
     });
   }
-
-
 }

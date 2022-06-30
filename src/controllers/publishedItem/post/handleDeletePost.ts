@@ -23,7 +23,10 @@ export async function handleDeletePost({
   request: express.Request;
   requestBody: DeletePostRequestBody;
 }): Promise<SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>> {
-  const { errorResponse: error, clientUserId } = await checkAuthorization(controller, request);
+  const { errorResponse: error, clientUserId } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const { postId } = requestBody;

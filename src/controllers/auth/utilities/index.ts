@@ -84,8 +84,8 @@ export async function checkAuthorization(
     const errorResponse = generateErrorResponse({
       controller,
       errorReason: AuthFailedReason.AuthorizationError,
-      httpStatusCode: 403,  
-    })
+      httpStatusCode: 403,
+    });
     return {
       clientUserId: "",
       errorResponse,

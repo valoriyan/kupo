@@ -28,7 +28,10 @@ export async function handleUpdatePost({
   request: express.Request;
   requestBody: UpdatePostRequestBody;
 }): Promise<SecuredHTTPResponse<UpdatePostFailedReason, UpdatePostSuccess>> {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =

@@ -24,7 +24,10 @@ export async function handleUserSavesPublishedItem({
 }): Promise<HTTPResponse<UserSavesPublishedItemFailed, UserSavesPublishedItemSuccess>> {
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const saveId = uuidv4();

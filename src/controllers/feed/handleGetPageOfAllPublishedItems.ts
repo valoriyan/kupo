@@ -32,11 +32,17 @@ export async function handleGetPageOfAllPublishedItems({
   request: express.Request;
   requestBody: GetPageOfAllPublishedItemsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfAllPublishedItemsFailedReason, GetPageOfAllPublishedItemsSuccess>
+  SecuredHTTPResponse<
+    GetPageOfAllPublishedItemsFailedReason,
+    GetPageOfAllPublishedItemsSuccess
+  >
 > {
   const { cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse: error } = await checkAuthorization(
+    controller,
+    request,
+  );
   if (error) return error;
 
   const unrenderableUser =
