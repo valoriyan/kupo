@@ -17,7 +17,12 @@ import {
 } from "./handleDeletePublishedItemComment";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { WebSocketService } from "../../../services/webSocketService";
-import { CreatePublishedItemCommentFailed, CreatePublishedItemCommentRequestBody, CreatePublishedItemCommentSuccess, handleCreatePublishedItemComment } from "./handleCreatePublishedItemComment";
+import {
+  CreatePublishedItemCommentFailed,
+  CreatePublishedItemCommentRequestBody,
+  CreatePublishedItemCommentSuccess,
+  handleCreatePublishedItemComment,
+} from "./handleCreatePublishedItemComment";
 
 @injectable()
 @Route("PublishedItemComment")
@@ -38,7 +43,12 @@ export class PublishedItemCommentController extends Controller {
   public async createPublishedItemComment(
     @Request() request: express.Request,
     @Body() requestBody: CreatePublishedItemCommentRequestBody,
-  ): Promise<SecuredHTTPResponse<CreatePublishedItemCommentFailed, CreatePublishedItemCommentSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      CreatePublishedItemCommentFailed,
+      CreatePublishedItemCommentSuccess
+    >
+  > {
     return await handleCreatePublishedItemComment({
       controller: this,
       request,
@@ -80,7 +90,10 @@ export class PublishedItemCommentController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: DeletePublishedItemCommentRequestBody,
   ): Promise<
-    SecuredHTTPResponse<DeletePublishedItemCommentFailed, DeletePublishedItemCommentSuccess>
+    SecuredHTTPResponse<
+      DeletePublishedItemCommentFailed,
+      DeletePublishedItemCommentSuccess
+    >
   > {
     return await handleDeletePublishedItemComment({
       controller: this,

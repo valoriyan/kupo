@@ -35,7 +35,10 @@ export async function handleReadPageOfCommentsByPublishedItemId({
   request: express.Request;
   requestBody: ReadPageOfCommentsByPublishedItemIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<ReadPageOfCommentsByPublishedItemIdFailure, ReadPageOfCommentsByPublishedItemIdSuccess>
+  SecuredHTTPResponse<
+    ReadPageOfCommentsByPublishedItemIdFailure,
+    ReadPageOfCommentsByPublishedItemIdSuccess
+  >
 > {
   const { postId, cursor, pageSize } = requestBody;
 

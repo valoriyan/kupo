@@ -31,7 +31,9 @@ export async function handleCreatePublishedItemComment({
   controller: PublishedItemCommentController;
   request: express.Request;
   requestBody: CreatePublishedItemCommentRequestBody;
-}): Promise<SecuredHTTPResponse<CreatePublishedItemCommentFailed, CreatePublishedItemCommentSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<CreatePublishedItemCommentFailed, CreatePublishedItemCommentSuccess>
+> {
   const { postId, text } = requestBody;
 
   const { clientUserId, error } = await checkAuthorization(controller, request);

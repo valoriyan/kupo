@@ -202,7 +202,7 @@ export class PublishedItemsTableService extends TableService {
       values: queryValues,
     };
 
-    console.log("QUERY")
+    console.log("QUERY");
     console.log(query);
     console.log();
 
