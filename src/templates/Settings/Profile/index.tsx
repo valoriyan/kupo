@@ -12,16 +12,16 @@ import { Box, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { CacheKeys } from "#/contexts/queryClient";
 import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
-import { goToUserProfilePage } from "../UserProfile";
+import { goToUserProfilePage } from "../../UserProfile";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
 import { ProfileSettings } from "./ProfileSettings";
 
-export interface EditProfileProps {
+export interface ProfileProps {
   user: RenderableUser;
 }
 
-export const EditProfile = ({ user }: EditProfileProps) => {
+export const Profile = ({ user }: ProfileProps) => {
   const queryClient = useQueryClient();
   const [username, setUsername, isUsernameTouched, setIsUsernameTouched] = useFormField(
     user.username,

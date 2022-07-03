@@ -5,7 +5,7 @@ import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
 import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
-import { EditProfile } from "#/templates/EditProfile";
+import { Profile } from "#/templates/Settings/Profile";
 import { getSettingsCloseHref } from ".";
 
 const ProfileSettingsPage = ProtectedPage(() => {
@@ -21,7 +21,7 @@ const ProfileSettingsPage = ProtectedPage(() => {
       ) : isLoading || !data ? (
         <LoadingArea size="lg" />
       ) : (
-        <EditProfile user={data} />
+        <Profile user={data} />
       )}
     </>
   );

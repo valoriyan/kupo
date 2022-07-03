@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LockIcon, UserIcon } from "#/components/Icons";
+import { CreditCardIcon, LockIcon, UserIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -15,6 +15,11 @@ export const Settings = () => {
       <Link href="/settings/account" passHref>
         <NavButton>
           <LockIcon /> Account
+        </NavButton>
+      </Link>
+      <Link href="/settings/payment-information" passHref>
+        <NavButton>
+          <CreditCardIcon /> Payment Information
         </NavButton>
       </Link>
     </Stack>
