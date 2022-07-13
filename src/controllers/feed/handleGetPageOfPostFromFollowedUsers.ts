@@ -15,10 +15,6 @@ export enum GetPageOfPostFromFollowedUsersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfPostFromFollowedUsersFailed {
-  reason: GetPageOfPostFromFollowedUsersFailedReason;
-}
-
 export interface GetPageOfPostFromFollowedUsersSuccess {
   posts: RenderablePost[];
 
@@ -36,7 +32,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
   requestBody: GetPageOfPostFromFollowedUsersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfPostFromFollowedUsersFailed,
+    GetPageOfPostFromFollowedUsersFailedReason,
     GetPageOfPostFromFollowedUsersSuccess
   >
 > {

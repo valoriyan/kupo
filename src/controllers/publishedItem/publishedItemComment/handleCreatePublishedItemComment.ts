@@ -20,8 +20,10 @@ export interface CreatePublishedItemCommentRequestBody {
 export interface CreatePublishedItemCommentSuccess {
   postComment: RenderablePostComment;
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CreatePublishedItemCommentFailed {}
+
+export enum CreatePublishedItemCommentFailedReason {
+  UNKNOWN_REASON = "UNKNOWN_REASON",
+}
 
 export async function handleCreatePublishedItemComment({
   controller,
@@ -32,7 +34,10 @@ export async function handleCreatePublishedItemComment({
   request: express.Request;
   requestBody: CreatePublishedItemCommentRequestBody;
 }): Promise<
-  SecuredHTTPResponse<CreatePublishedItemCommentFailed, CreatePublishedItemCommentSuccess>
+  SecuredHTTPResponse<
+    CreatePublishedItemCommentFailedReason,
+    CreatePublishedItemCommentSuccess
+  >
 > {
   const { postId, text } = requestBody;
 

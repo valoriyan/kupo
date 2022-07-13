@@ -17,10 +17,6 @@ export enum GetPageOfPostFromFollowedHashtagFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfPostFromFollowedHashtagFailed {
-  reason: GetPageOfPostFromFollowedHashtagFailedReason;
-}
-
 export interface GetPageOfPostFromFollowedHashtagSuccess {
   posts: RenderablePost[];
   previousPageCursor?: string;
@@ -37,7 +33,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   requestBody: GetPageOfPostFromFollowedHashtagRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfPostFromFollowedHashtagFailed,
+    GetPageOfPostFromFollowedHashtagFailedReason,
     GetPageOfPostFromFollowedHashtagSuccess
   >
 > {

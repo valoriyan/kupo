@@ -23,10 +23,6 @@ export enum GetPageOfSavedPostsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfSavedPostsFailed {
-  reason: GetPageOfSavedPostsFailedReason;
-}
-
 export async function handleGetPageOfSavedPosts({
   controller,
   request,
@@ -35,7 +31,9 @@ export async function handleGetPageOfSavedPosts({
   controller: PostController;
   request: express.Request;
   requestBody: GetPageOfSavedPostsRequestBody;
-}): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<GetPageOfSavedPostsFailedReason, GetPageOfSavedPostsSuccess>
+> {
   const { cursor, pageSize } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(

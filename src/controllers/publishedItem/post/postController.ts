@@ -26,13 +26,13 @@ import {
   DeletePostSuccess,
 } from "./handleDeletePost";
 import {
-  GetPageOfSavedPostsFailed,
+  GetPageOfSavedPostsFailedReason,
   GetPageOfSavedPostsRequestBody,
   GetPageOfSavedPostsSuccess,
   handleGetPageOfSavedPosts,
 } from "./handleGetPageOfSavedPosts";
 import {
-  GetPublishedItemByIdFailed,
+  GetPublishedItemByIdFailedReason,
   GetPublishedItemByIdRequestBody,
   handleGetPublishedItemById,
   GetPublishedItemByIdSuccess,
@@ -128,7 +128,7 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPublishedItemByIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>
+    SecuredHTTPResponse<GetPublishedItemByIdFailedReason, GetPublishedItemByIdSuccess>
   > {
     return await handleGetPublishedItemById({
       controller: this,
@@ -183,7 +183,9 @@ export class PostController extends Controller {
   public async getPageOfSavedPosts(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfSavedPostsRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPageOfSavedPostsFailed, GetPageOfSavedPostsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<GetPageOfSavedPostsFailedReason, GetPageOfSavedPostsSuccess>
+  > {
     return await handleGetPageOfSavedPosts({
       controller: this,
       request,

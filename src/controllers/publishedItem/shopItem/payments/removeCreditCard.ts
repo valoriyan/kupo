@@ -3,7 +3,6 @@ import { SecuredHTTPResponse } from "../../../../types/httpResponse";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RemoveCreditCardRequestBody {
   localCreditCardId: string;
 }
@@ -11,7 +10,6 @@ export interface RemoveCreditCardRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RemoveCreditCardSuccess {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export enum RemoveCreditCardFailedReason {
   UNKNOWN_REASON = "UNKNOWN_REASON",
 }

@@ -1,28 +1,19 @@
 import { Pool, QueryResult } from "pg";
-import { CreditCardSummary } from "../../../controllers/publishedItem/shopItem/payments/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
+import {
+  generatePSQLGenericDeleteRowsQueryString,
+  generatePSQLGenericUpdateRowQueryString,
+  isQueryEmpty,
+} from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
-interface DBStoredCreditCardDatum {
+export interface DBStoredCreditCardDatum {
   local_credit_card_id: string;
-
   user_id: string;
-  credit_card_last_four_digits: string;
   payment_processor_card_id: string;
+  is_primary_card: boolean;
   creation_timestamp: string;
-}
-
-function convertDBStoredCreditCardDatumToCreditCardSummary(
-  dBStoredCreditCardDatum: DBStoredCreditCardDatum,
-): CreditCardSummary {
-  return {
-    localCreditCardId: dBStoredCreditCardDatum.local_credit_card_id,
-    userId: dBStoredCreditCardDatum.user_id,
-    creditCardLastFourDigits: dBStoredCreditCardDatum.credit_card_last_four_digits,
-    creationTimestamp: parseInt(dBStoredCreditCardDatum.creation_timestamp),
-  };
 }
 
 export class StoredCreditCardDataTableService extends TableService {
@@ -39,11 +30,10 @@ export class StoredCreditCardDataTableService extends TableService {
           local_credit_card_id VARCHAR(64) NOT NULL,
 
           user_id VARCHAR(64) NOT NULL,
-          
-
-          credit_card_last_four_digits VARCHAR(4) NOT NULL,
 
           payment_processor_card_id VARCHAR(64) UNIQUE NOT NULL,
+
+          is_primary_card boolean NOT NULL,
 
           creation_timestamp BIGINT NOT NULL,
 
@@ -62,26 +52,23 @@ export class StoredCreditCardDataTableService extends TableService {
   public async storeUserCreditCardData({
     userId,
     localCreditCardId,
-    creditCardLastFourDigits,
-    paymentProcessorCustomerId,
     paymentProcessorCardId,
     creationTimestamp,
+    isPrimaryCard,
   }: {
     userId: string;
     localCreditCardId: string;
-    creditCardLastFourDigits: string;
-    paymentProcessorCustomerId: string;
     paymentProcessorCardId: string;
     creationTimestamp: number;
+    isPrimaryCard: boolean;
   }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
+    const query = generatePSQLGenericCreateRowsQuery<string | number | boolean>({
       rowsOfFieldsAndValues: [
         [
           { field: "user_id", value: userId },
           { field: "local_credit_card_id", value: localCreditCardId },
-          { field: "credit_card_last_four_digits", value: creditCardLastFourDigits },
-          { field: "payment_processor_customer_id", value: paymentProcessorCustomerId },
           { field: "payment_processor_card_id", value: paymentProcessorCardId },
+          { field: "is_primary_card", value: isPrimaryCard },
           { field: "creation_timestamp", value: creationTimestamp },
         ],
       ],
@@ -124,7 +111,7 @@ export class StoredCreditCardDataTableService extends TableService {
     userId,
   }: {
     userId: string;
-  }): Promise<CreditCardSummary[]> {
+  }): Promise<DBStoredCreditCardDatum[]> {
     const query = {
       text: `
         SELECT
@@ -142,12 +129,50 @@ export class StoredCreditCardDataTableService extends TableService {
       query,
     );
 
-    return response.rows.map(convertDBStoredCreditCardDatumToCreditCardSummary);
+    return response.rows;
   }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async makeCreditCardPrimary({
+    userId,
+    localCreditCardId,
+  }: {
+    userId: string;
+    localCreditCardId: string;
+  }): Promise<void> {
+    const setUpQuery = generatePSQLGenericUpdateRowQueryString<string | number | boolean>(
+      {
+        updatedFields: [
+          { field: "is_primary_card", value: false, settings: { includeIfEmpty: true } },
+        ],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "user_id",
+          value: userId,
+        },
+        tableName: this.tableName,
+      },
+    );
+
+    if (!isQueryEmpty({ query: setUpQuery })) {
+      await this.datastorePool.query(setUpQuery);
+    }
+
+    const query = generatePSQLGenericUpdateRowQueryString<string | number | boolean>({
+      updatedFields: [{ field: "is_primary_card", value: true }],
+      fieldUsedToIdentifyUpdatedRow: {
+        field: "local_credit_card_id",
+        value: localCreditCardId,
+      },
+      tableName: this.tableName,
+    });
+
+    if (!isQueryEmpty({ query })) {
+      await this.datastorePool.query(query);
+    }
+  }
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////

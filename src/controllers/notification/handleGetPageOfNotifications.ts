@@ -29,10 +29,6 @@ export enum GetPageOfNotificationsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfNotificationsFailed {
-  reason: GetPageOfNotificationsFailedReason;
-}
-
 export async function handleGetPageOfNotifications({
   controller,
   request,
@@ -42,7 +38,7 @@ export async function handleGetPageOfNotifications({
   request: express.Request;
   requestBody: GetPageOfNotificationsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
+  SecuredHTTPResponse<GetPageOfNotificationsFailedReason, GetPageOfNotificationsSuccess>
 > {
   const now = Date.now();
 

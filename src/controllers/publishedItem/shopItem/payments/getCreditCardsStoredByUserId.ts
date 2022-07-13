@@ -4,15 +4,13 @@ import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { CreditCardSummary } from "./models";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GetCreditCardsStoredByUserIdRequestBody {}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetCreditCardsStoredByUserIdSuccess {
   cards: CreditCardSummary[];
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GetCreditCardsStoredByUserIdFailed {}
+
+export enum GetCreditCardsStoredByUserIdFailedReason {
+  UNKNOWN_REASON = "UNKNOWN_REASON",
+}
 
 export async function handleGetCreditCardsStoredByUserId({
   controller,
@@ -20,10 +18,9 @@ export async function handleGetCreditCardsStoredByUserId({
 }: {
   controller: ShopItemController;
   request: express.Request;
-  requestBody: GetCreditCardsStoredByUserIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetCreditCardsStoredByUserIdFailed,
+    GetCreditCardsStoredByUserIdFailedReason,
     GetCreditCardsStoredByUserIdSuccess
   >
 > {
@@ -33,16 +30,31 @@ export async function handleGetCreditCardsStoredByUserId({
   );
   if (error) return error;
 
-  const creditCardSummaries =
-    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
-      {
-        userId: clientUserId,
-      },
+  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+      { userId: clientUserId },
     );
 
-  return {
-    success: {
-      cards: creditCardSummaries,
-    },
-  };
+  const dbCreditCardData =
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
+      { userId: clientUserId },
+    );
+
+  if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID || !dbCreditCardData) {
+    return { error: { reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON } };
+  }
+
+  const { paymentProcessorCustomerId } =
+    unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
+
+  const creditCardSummaries = await Promise.all(
+    dbCreditCardData.map((dbCreditCardDatum) =>
+      controller.paymentProcessingService.getCustomerCreditCardSummary({
+        paymentProcessorCustomerId,
+        dbCreditCardDatum,
+      }),
+    ),
+  );
+
+  return { success: { cards: creditCardSummaries } };
 }

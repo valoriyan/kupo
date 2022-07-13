@@ -9,10 +9,6 @@ export enum CreateChatMessageInNewChatRoomFailedReason {
   RoomAlreadyExists = "Room Already Exists",
 }
 
-export interface CreateChatMessageInNewChatRoomFailed {
-  reason: CreateChatMessageInNewChatRoomFailedReason;
-}
-
 export interface CreateChatMessageInNewChatRoomSuccess {
   chatRoomId: string;
 }
@@ -32,7 +28,7 @@ export async function handleCreateChatMessageInNewChatRoom({
   requestBody: CreateChatMessageInNewRoomRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    CreateChatMessageInNewChatRoomFailed,
+    CreateChatMessageInNewChatRoomFailedReason,
     CreateChatMessageInNewChatRoomSuccess
   >
 > {

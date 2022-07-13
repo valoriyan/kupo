@@ -22,10 +22,6 @@ export enum ReadPageOfCommentsByPublishedItemIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface ReadPageOfCommentsByPublishedItemIdFailure {
-  reason: ReadPageOfCommentsByPublishedItemIdFailedReason;
-}
-
 export async function handleReadPageOfCommentsByPublishedItemId({
   controller,
   request,
@@ -36,7 +32,7 @@ export async function handleReadPageOfCommentsByPublishedItemId({
   requestBody: ReadPageOfCommentsByPublishedItemIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ReadPageOfCommentsByPublishedItemIdFailure,
+    ReadPageOfCommentsByPublishedItemIdFailedReason,
     ReadPageOfCommentsByPublishedItemIdSuccess
   >
 > {

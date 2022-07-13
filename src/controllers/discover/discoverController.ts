@@ -6,19 +6,19 @@ import { DatabaseService } from "../../services/databaseService";
 import { SecuredHTTPResponse } from "../../types/httpResponse";
 import {
   handleSearchForHashtags,
-  SearchForHashtagsFailed,
+  SearchForHashtagsFailedReason,
   SearchForHashtagsRequestBody,
   SearchForHashtagsSuccess,
 } from "./search/handleSearchForHashtags";
 import {
   handleSearchForPosts,
-  SearchForPostsFailed,
+  SearchForPostsFailedReason,
   SearchForPostsRequestBody,
   SearchForPostsSuccess,
 } from "./search/handleSearchForPosts";
 import {
   handleSearchForUsers,
-  SearchForUsersFailed,
+  SearchForUsersFailedReason,
   SearchForUsersRequestBody,
   SearchForUsersSuccess,
 } from "./search/handleSearchForUsers";
@@ -45,7 +45,9 @@ export class DiscoverController extends Controller {
   public async searchForHashtags(
     @Request() request: express.Request,
     @Body() requestBody: SearchForHashtagsRequestBody,
-  ): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<SearchForHashtagsFailedReason, SearchForHashtagsSuccess>
+  > {
     return await handleSearchForHashtags({
       controller: this,
       request,
@@ -57,7 +59,7 @@ export class DiscoverController extends Controller {
   public async searchForPosts(
     @Request() request: express.Request,
     @Body() requestBody: SearchForPostsRequestBody,
-  ): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
+  ): Promise<SecuredHTTPResponse<SearchForPostsFailedReason, SearchForPostsSuccess>> {
     return await handleSearchForPosts({
       controller: this,
       request,
@@ -69,7 +71,7 @@ export class DiscoverController extends Controller {
   public async searchForUsers(
     @Request() request: express.Request,
     @Body() requestBody: SearchForUsersRequestBody,
-  ): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
+  ): Promise<SecuredHTTPResponse<SearchForUsersFailedReason, SearchForUsersSuccess>> {
     return await handleSearchForUsers({
       controller: this,
       request,

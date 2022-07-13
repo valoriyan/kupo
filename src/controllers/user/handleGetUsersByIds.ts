@@ -13,10 +13,6 @@ export enum GetUsersByIdsFailedReason {
   NotFound = "User Not Found",
 }
 
-export interface GetUsersByIdsFailed {
-  reason: GetUsersByIdsFailedReason;
-}
-
 export interface GetUsersByIdsSuccess {
   users: (RenderableUser | null)[];
 }
@@ -29,7 +25,7 @@ export async function handleGetUsersByIds({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetUsersByIdsRequestBody;
-}): Promise<SecuredHTTPResponse<GetUsersByIdsFailed, GetUsersByIdsSuccess>> {
+}): Promise<SecuredHTTPResponse<GetUsersByIdsFailedReason, GetUsersByIdsSuccess>> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,

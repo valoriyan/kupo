@@ -9,10 +9,6 @@ export enum CreateChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface CreateChatMessageFailed {
-  reason: CreateChatMessageFailedReason;
-}
-
 export interface CreateChatMessageSuccess {
   chatMessage: RenderableChatMessage;
 }
@@ -30,7 +26,9 @@ export async function handleCreateChatMessage({
   controller: ChatController;
   request: express.Request;
   requestBody: CreateChatMessageRequestBody;
-}): Promise<SecuredHTTPResponse<CreateChatMessageFailed, CreateChatMessageSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<CreateChatMessageFailedReason, CreateChatMessageSuccess>
+> {
   const { chatRoomId, chatMessageText } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(

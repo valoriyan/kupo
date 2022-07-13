@@ -5,14 +5,14 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { WebSocketService } from "../../services/webSocketService";
 import {
-  GetPageOfNotificationsFailed,
+  GetPageOfNotificationsFailedReason,
   GetPageOfNotificationsRequestBody,
   handleGetPageOfNotifications,
   GetPageOfNotificationsSuccess,
 } from "./handleGetPageOfNotifications";
 import { BlobStorageService } from "./../../services/blobStorageService";
 import {
-  GetCountOfUnreadNotificationsFailed,
+  GetCountOfUnreadNotificationsFailedReason,
   GetCountOfUnreadNotificationsSuccess,
   handleGetCountOfUnreadNotifications,
 } from "./handleGetCountOfUnreadNotifications";
@@ -41,7 +41,7 @@ export class NotificationController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfNotificationsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPageOfNotificationsFailed, GetPageOfNotificationsSuccess>
+    SecuredHTTPResponse<GetPageOfNotificationsFailedReason, GetPageOfNotificationsSuccess>
   > {
     return await handleGetPageOfNotifications({
       controller: this,
@@ -55,7 +55,7 @@ export class NotificationController extends Controller {
     @Request() request: express.Request,
   ): Promise<
     SecuredHTTPResponse<
-      GetCountOfUnreadNotificationsFailed,
+      GetCountOfUnreadNotificationsFailedReason,
       GetCountOfUnreadNotificationsSuccess
     >
   > {

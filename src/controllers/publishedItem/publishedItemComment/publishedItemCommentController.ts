@@ -5,20 +5,20 @@ import { injectable } from "tsyringe";
 import { DatabaseService } from "../../../services/databaseService";
 import {
   ReadPageOfCommentsByPublishedItemIdRequestBody,
-  ReadPageOfCommentsByPublishedItemIdFailure,
+  ReadPageOfCommentsByPublishedItemIdFailedReason,
   ReadPageOfCommentsByPublishedItemIdSuccess,
   handleReadPageOfCommentsByPublishedItemId,
 } from "./handleReadPageOfCommentsByPublishedItemId";
 import {
   handleDeletePublishedItemComment,
   DeletePublishedItemCommentRequestBody,
-  DeletePublishedItemCommentFailed,
+  DeletePublishedItemCommentFailedReason,
   DeletePublishedItemCommentSuccess,
 } from "./handleDeletePublishedItemComment";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { WebSocketService } from "../../../services/webSocketService";
 import {
-  CreatePublishedItemCommentFailed,
+  CreatePublishedItemCommentFailedReason,
   CreatePublishedItemCommentRequestBody,
   CreatePublishedItemCommentSuccess,
   handleCreatePublishedItemComment,
@@ -45,7 +45,7 @@ export class PublishedItemCommentController extends Controller {
     @Body() requestBody: CreatePublishedItemCommentRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      CreatePublishedItemCommentFailed,
+      CreatePublishedItemCommentFailedReason,
       CreatePublishedItemCommentSuccess
     >
   > {
@@ -66,7 +66,7 @@ export class PublishedItemCommentController extends Controller {
     @Body() requestBody: ReadPageOfCommentsByPublishedItemIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ReadPageOfCommentsByPublishedItemIdFailure,
+      ReadPageOfCommentsByPublishedItemIdFailedReason,
       ReadPageOfCommentsByPublishedItemIdSuccess
     >
   > {
@@ -91,7 +91,7 @@ export class PublishedItemCommentController extends Controller {
     @Body() requestBody: DeletePublishedItemCommentRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      DeletePublishedItemCommentFailed,
+      DeletePublishedItemCommentFailedReason,
       DeletePublishedItemCommentSuccess
     >
   > {

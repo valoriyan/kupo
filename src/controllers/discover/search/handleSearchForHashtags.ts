@@ -15,10 +15,6 @@ export enum SearchForHashtagsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface SearchForHashtagsFailed {
-  reason: SearchForHashtagsFailedReason;
-}
-
 export interface SearchForHashtagsSuccess {
   hashtags: string[];
   totalCount: number;
@@ -32,7 +28,9 @@ export async function handleSearchForHashtags({
   controller: DiscoverController;
   request: express.Request;
   requestBody: SearchForHashtagsRequestBody;
-}): Promise<SecuredHTTPResponse<SearchForHashtagsFailed, SearchForHashtagsSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<SearchForHashtagsFailedReason, SearchForHashtagsSuccess>
+> {
   const { errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 

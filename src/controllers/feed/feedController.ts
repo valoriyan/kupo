@@ -4,20 +4,20 @@ import { SecuredHTTPResponse } from "../../types/httpResponse";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
 import {
-  GetPageOfPostFromFollowedHashtagFailed,
+  GetPageOfPostFromFollowedHashtagFailedReason,
   GetPageOfPostFromFollowedHashtagRequestBody,
   handleGetPageOfPostFromFollowedHashtag,
   GetPageOfPostFromFollowedHashtagSuccess,
 } from "./handleGetPageOfPostFromFollowedHashtag";
 import {
-  GetPageOfPostFromFollowedUsersFailed,
+  GetPageOfPostFromFollowedUsersFailedReason,
   GetPageOfPostFromFollowedUsersRequestBody,
   handleGetPageOfPostFromFollowedUsers,
   GetPageOfPostFromFollowedUsersSuccess,
 } from "./handleGetPageOfPostFromFollowedUsers";
 import { BlobStorageService } from "../../services/blobStorageService";
 import {
-  GetUserContentFeedFiltersFailed,
+  GetUserContentFeedFiltersFailedReason,
   GetUserContentFeedFiltersRequestBody,
   handleGetUserContentFeedFilters,
   GetUserContentFeedFiltersSuccess,
@@ -76,7 +76,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetPageOfPostFromFollowedUsersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfPostFromFollowedUsersFailed,
+      GetPageOfPostFromFollowedUsersFailedReason,
       GetPageOfPostFromFollowedUsersSuccess
     >
   > {
@@ -93,7 +93,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetPageOfPostFromFollowedHashtagRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfPostFromFollowedHashtagFailed,
+      GetPageOfPostFromFollowedHashtagFailedReason,
       GetPageOfPostFromFollowedHashtagSuccess
     >
   > {
@@ -109,7 +109,10 @@ export class FeedController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetUserContentFeedFiltersRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetUserContentFeedFiltersFailed, GetUserContentFeedFiltersSuccess>
+    SecuredHTTPResponse<
+      GetUserContentFeedFiltersFailedReason,
+      GetUserContentFeedFiltersSuccess
+    >
   > {
     return await handleGetUserContentFeedFilters({
       controller: this,

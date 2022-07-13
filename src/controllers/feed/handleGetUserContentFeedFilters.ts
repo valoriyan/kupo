@@ -11,10 +11,6 @@ export enum GetUserContentFeedFiltersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetUserContentFeedFiltersFailed {
-  reason: GetUserContentFeedFiltersFailedReason;
-}
-
 export interface GetUserContentFeedFiltersSuccess {
   userContentFeedFilters: UserContentFeedFilter[];
 }
@@ -29,7 +25,10 @@ export async function handleGetUserContentFeedFilters({
   request: express.Request;
   requestBody: GetUserContentFeedFiltersRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetUserContentFeedFiltersFailed, GetUserContentFeedFiltersSuccess>
+  SecuredHTTPResponse<
+    GetUserContentFeedFiltersFailedReason,
+    GetUserContentFeedFiltersSuccess
+  >
 > {
   const now = Date.now();
 

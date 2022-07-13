@@ -11,10 +11,6 @@ export enum GetCountOfUnreadNotificationsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetCountOfUnreadNotificationsFailed {
-  reason: GetCountOfUnreadNotificationsFailedReason;
-}
-
 export async function handleGetCountOfUnreadNotifications({
   controller,
   request,
@@ -23,7 +19,7 @@ export async function handleGetCountOfUnreadNotifications({
   request: express.Request;
 }): Promise<
   SecuredHTTPResponse<
-    GetCountOfUnreadNotificationsFailed,
+    GetCountOfUnreadNotificationsFailedReason,
     GetCountOfUnreadNotificationsSuccess
   >
 > {

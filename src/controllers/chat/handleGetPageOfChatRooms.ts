@@ -24,10 +24,6 @@ export enum GetPageOfChatRoomsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfChatRoomsFailed {
-  reason: GetPageOfChatRoomsFailedReason;
-}
-
 export async function handleGetPageOfChatRooms({
   controller,
   request,
@@ -36,7 +32,9 @@ export async function handleGetPageOfChatRooms({
   controller: ChatController;
   request: express.Request;
   requestBody: GetPageOfChatRoomsRequestBody;
-}): Promise<SecuredHTTPResponse<GetPageOfChatRoomsFailed, GetPageOfChatRoomsSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<GetPageOfChatRoomsFailedReason, GetPageOfChatRoomsSuccess>
+> {
   const { pageSize, cursor, query } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(

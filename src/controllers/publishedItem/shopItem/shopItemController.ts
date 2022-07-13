@@ -1,34 +1,30 @@
-import {
-  Controller,
-  FormField,
-  Post,
-  Route,
-  Request,
-  UploadedFiles,
-  Delete,
-  Body,
-} from "tsoa";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
-import { injectable } from "tsyringe";
-import { DatabaseService } from "../../../services/databaseService";
 import express from "express";
 import {
+  Body,
+  Controller,
+  Delete,
+  FormField,
+  Post,
+  Request,
+  Route,
+  UploadedFiles,
+} from "tsoa";
+import { injectable } from "tsyringe";
+import { BlobStorageService } from "../../../services/blobStorageService";
+import { DatabaseService } from "../../../services/databaseService";
+import { PaymentProcessingService } from "../../../services/paymentProcessingService";
+import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import {
   CreateShopItemFailedReason,
-  handleCreateShopItem,
   CreateShopItemSuccess,
+  handleCreateShopItem,
 } from "./handleCreateShopItem";
 import {
-  UpdateShopItemFailedReason,
-  handleUpdateShopItem,
-  UpdateShopItemSuccess,
-} from "./handleUpdateShopItem";
-import {
-  DeleteShopItemRequestBody,
   DeleteShopItemFailed,
-  handleDeleteShopItem,
+  DeleteShopItemRequestBody,
   DeleteShopItemSuccess,
+  handleDeleteShopItem,
 } from "./handleDeleteShopItem";
-import { BlobStorageService } from "../../../services/blobStorageService";
 import {
   GetShopItemsByUserIdRequestBody,
   GetShopItemsByUsernameFailedReason,
@@ -37,7 +33,16 @@ import {
   handleGetShopItemsByUserId,
   handleGetShopItemsByUsername,
 } from "./handleGetShopItems";
-import { PaymentProcessingService } from "../../../services/paymentProcessingService";
+import {
+  handleUpdateShopItem,
+  UpdateShopItemFailedReason,
+  UpdateShopItemSuccess,
+} from "./handleUpdateShopItem";
+import {
+  GetCreditCardsStoredByUserIdFailedReason,
+  GetCreditCardsStoredByUserIdSuccess,
+  handleGetCreditCardsStoredByUserId,
+} from "./payments/getCreditCardsStoredByUserId";
 import {
   handlePurchaseShopItem,
   PurchaseShopItemFailedReason,
@@ -45,17 +50,23 @@ import {
   PurchaseShopItemSuccess,
 } from "./payments/handlePurchaseShopItem";
 import {
-  GetCreditCardsStoredByUserIdFailed,
-  GetCreditCardsStoredByUserIdRequestBody,
-  GetCreditCardsStoredByUserIdSuccess,
-  handleGetCreditCardsStoredByUserId,
-} from "./payments/getCreditCardsStoredByUserId";
+  handleMakeCreditCardPrimary,
+  MakeCreditCardPrimaryFailedReason,
+  MakeCreditCardPrimaryRequestBody,
+  MakeCreditCardPrimarySuccess,
+} from "./payments/makeCreditCardPrimary";
 import {
   handleRemoveCreditCard,
   RemoveCreditCardFailedReason,
   RemoveCreditCardRequestBody,
   RemoveCreditCardSuccess,
 } from "./payments/removeCreditCard";
+import {
+  handleStoreCreditCard,
+  StoreCreditCardFailedReason,
+  StoreCreditCardRequestBody,
+  StoreCreditCardSuccess,
+} from "./payments/storeCreditCard";
 
 @injectable()
 @Route("shopitem")
@@ -118,6 +129,18 @@ export class ShopItemController extends Controller {
     });
   }
 
+  @Post("storeCreditCard")
+  public async storeCreditCard(
+    @Request() request: express.Request,
+    @Body() requestBody: StoreCreditCardRequestBody,
+  ): Promise<SecuredHTTPResponse<StoreCreditCardFailedReason, StoreCreditCardSuccess>> {
+    return await handleStoreCreditCard({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -153,17 +176,15 @@ export class ShopItemController extends Controller {
   @Post("getCreditCardsStoredByUserId")
   public async getCreditCardsStoredByUserId(
     @Request() request: express.Request,
-    @Body() requestBody: GetCreditCardsStoredByUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetCreditCardsStoredByUserIdFailed,
+      GetCreditCardsStoredByUserIdFailedReason,
       GetCreditCardsStoredByUserIdSuccess
     >
   > {
     return await handleGetCreditCardsStoredByUserId({
       controller: this,
       request,
-      requestBody,
     });
   }
 
@@ -198,6 +219,20 @@ export class ShopItemController extends Controller {
         collaboratorUserIds,
         mediaFiles,
       },
+    });
+  }
+
+  @Delete("makeCardPrimary")
+  public async makeCardPrimary(
+    @Request() request: express.Request,
+    @Body() requestBody: MakeCreditCardPrimaryRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<MakeCreditCardPrimaryFailedReason, MakeCreditCardPrimarySuccess>
+  > {
+    return await handleMakeCreditCardPrimary({
+      controller: this,
+      request,
+      requestBody,
     });
   }
 

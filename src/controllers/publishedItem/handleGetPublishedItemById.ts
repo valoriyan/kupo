@@ -12,10 +12,6 @@ export enum GetPublishedItemByIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPublishedItemByIdFailed {
-  reason: GetPublishedItemByIdFailedReason;
-}
-
 export interface GetPublishedItemByIdSuccess {
   publishedItem: RenderablePost | RenderableShopItem;
 }
@@ -33,7 +29,7 @@ export async function handleGetPublishedItemById({
   request: express.Request;
   requestBody: GetPublishedItemByIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPublishedItemByIdFailed, GetPublishedItemByIdSuccess>
+  SecuredHTTPResponse<GetPublishedItemByIdFailedReason, GetPublishedItemByIdSuccess>
 > {
   const { publishedItemId } = requestBody;
 

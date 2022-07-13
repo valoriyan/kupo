@@ -28,26 +28,26 @@ import {
   SetUserHashtagsSuccess,
 } from "./handleSetUserHashtags";
 import {
-  GetUsersByIdsFailed,
+  GetUsersByIdsFailedReason,
   GetUsersByIdsRequestBody,
   handleGetUsersByIds,
   GetUsersByIdsSuccess,
 } from "./handleGetUsersByIds";
 import {
-  GetUsersByUsernamesFailed,
+  GetUsersByUsernamesFailedReason,
   GetUsersByUsernamesRequestBody,
   handleGetUsersByUsernames,
   GetUsersByUsernamesSuccess,
 } from "./handleGetUsersByUsernames";
 import { BlobStorageService } from "./../../services/blobStorageService";
 import {
-  GetPageOfUsersFollowedByUserIdFailed,
+  GetPageOfUsersFollowedByUserIdFailedReason,
   GetPageOfUsersFollowedByUserIdRequestBody,
   GetPageOfUsersFollowedByUserIdSuccess,
   handleGetPageOfUsersFollowedByUserId,
 } from "./handleGetPageOfUsersFollowedByUserId";
 import {
-  GetPageOfUsersFollowingUserIdFailed,
+  GetPageOfUsersFollowingUserIdFailedReason,
   GetPageOfUsersFollowingUserIdRequestBody,
   GetPageOfUsersFollowingUserIdSuccess,
   handleGetPageOfUsersFollowingUserId,
@@ -99,7 +99,7 @@ export class UserPageController extends Controller {
   public async getUsersByIds(
     @Request() request: express.Request,
     @Body() requestBody: GetUsersByIdsRequestBody,
-  ): Promise<SecuredHTTPResponse<GetUsersByIdsFailed, GetUsersByIdsSuccess>> {
+  ): Promise<SecuredHTTPResponse<GetUsersByIdsFailedReason, GetUsersByIdsSuccess>> {
     return await handleGetUsersByIds({
       controller: this,
       request,
@@ -111,7 +111,9 @@ export class UserPageController extends Controller {
   public async getUsersByUsernames(
     @Request() request: express.Request,
     @Body() requestBody: GetUsersByUsernamesRequestBody,
-  ): Promise<SecuredHTTPResponse<GetUsersByUsernamesFailed, GetUsersByUsernamesSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<GetUsersByUsernamesFailedReason, GetUsersByUsernamesSuccess>
+  > {
     return await handleGetUsersByUsernames({
       controller: this,
       request,
@@ -142,7 +144,7 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetPageOfUsersFollowedByUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfUsersFollowedByUserIdFailed,
+      GetPageOfUsersFollowedByUserIdFailedReason,
       GetPageOfUsersFollowedByUserIdSuccess
     >
   > {
@@ -159,7 +161,7 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetPageOfUsersFollowingUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfUsersFollowingUserIdFailed,
+      GetPageOfUsersFollowingUserIdFailedReason,
       GetPageOfUsersFollowingUserIdSuccess
     >
   > {

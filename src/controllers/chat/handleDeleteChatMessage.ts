@@ -7,10 +7,6 @@ export enum DeleteChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface DeleteChatMessageFailed {
-  reason: DeleteChatMessageFailedReason;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DeleteChatMessageSuccess {}
 
@@ -26,7 +22,9 @@ export async function handleDeleteChatMessage({
   controller: ChatController;
   request: express.Request;
   requestBody: DeleteChatMessageRequestBody;
-}): Promise<SecuredHTTPResponse<DeleteChatMessageFailed, DeleteChatMessageSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<DeleteChatMessageFailedReason, DeleteChatMessageSuccess>
+> {
   const { chatMessageId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(

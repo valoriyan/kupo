@@ -1,5 +1,7 @@
 import { singleton } from "tsyringe";
+import { CreditCardSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 import { getEnvironmentVariable } from "../../utilities";
+import { DBStoredCreditCardDatum } from "../databaseService/tableServices/storedCreditCardDataTableService";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const securionPay = require("securionpay");
@@ -59,29 +61,17 @@ export class PaymentProcessingService {
 
   async storeCustomerCreditCard({
     paymentProcessorCustomerId,
-    CREDIT_CARD_NUMBER,
-    CREDIT_CARD_EXPIRATION_MONTH,
-    CREDIT_CARD_EXPIRATION_YEAR,
-    CREDIT_CARD_VERIFICATION_CODE,
-    CREDIT_CARD_OWNER_NAME,
+    paymentProcessorCardToken,
     ipAddressOfRequestor,
   }: {
     paymentProcessorCustomerId: string;
-    CREDIT_CARD_NUMBER: string;
-    CREDIT_CARD_EXPIRATION_MONTH: string;
-    CREDIT_CARD_EXPIRATION_YEAR: string;
-    CREDIT_CARD_VERIFICATION_CODE: string;
-    CREDIT_CARD_OWNER_NAME: string;
+    paymentProcessorCardToken: string;
     ipAddressOfRequestor: string;
   }): Promise<string> {
     const card = await PaymentProcessingService.securionPayApi.cards.create(
       paymentProcessorCustomerId,
       {
-        number: CREDIT_CARD_NUMBER,
-        expMonth: CREDIT_CARD_EXPIRATION_MONTH,
-        expYear: CREDIT_CARD_EXPIRATION_YEAR,
-        cvc: CREDIT_CARD_VERIFICATION_CODE,
-        cardholderName: CREDIT_CARD_OWNER_NAME,
+        id: paymentProcessorCardToken,
         fraudCheckData: {
           ipAddress: ipAddressOfRequestor,
         },
@@ -89,6 +79,30 @@ export class PaymentProcessingService {
     );
 
     return card.id;
+  }
+
+  async getCustomerCreditCardSummary({
+    paymentProcessorCustomerId,
+    dbCreditCardDatum,
+  }: {
+    paymentProcessorCustomerId: string;
+    dbCreditCardDatum: DBStoredCreditCardDatum;
+  }): Promise<CreditCardSummary> {
+    const cardDetails = await PaymentProcessingService.securionPayApi.cards.get(
+      paymentProcessorCustomerId,
+      dbCreditCardDatum.payment_processor_card_id,
+    );
+    return {
+      localCreditCardId: dbCreditCardDatum.local_credit_card_id,
+      userId: dbCreditCardDatum.user_id,
+      isPrimaryCard: dbCreditCardDatum.is_primary_card,
+      creationTimestamp: parseInt(dbCreditCardDatum.creation_timestamp),
+      last4: cardDetails.last4,
+      expMonth: cardDetails.expMonth,
+      expYear: cardDetails.expYear,
+      cardholderName: cardDetails.cardholderName,
+      brand: cardDetails.brand,
+    };
   }
 
   async removeCustomerCreditCard({

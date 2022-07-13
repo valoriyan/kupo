@@ -15,10 +15,6 @@ export enum GetPageOfUsersFollowingUserIdFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfUsersFollowingUserIdFailed {
-  reason: GetPageOfUsersFollowingUserIdFailedReason;
-}
-
 export interface GetPageOfUsersFollowingUserIdSuccess {
   users: RenderableUser[];
   previousPageCursor?: string;
@@ -35,7 +31,7 @@ export async function handleGetPageOfUsersFollowingUserId({
   requestBody: GetPageOfUsersFollowingUserIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfUsersFollowingUserIdFailed,
+    GetPageOfUsersFollowingUserIdFailedReason,
     GetPageOfUsersFollowingUserIdSuccess
   >
 > {

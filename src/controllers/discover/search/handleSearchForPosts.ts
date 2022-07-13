@@ -21,10 +21,6 @@ export enum SearchForPostsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface SearchForPostsFailed {
-  reason: SearchForPostsFailedReason;
-}
-
 export interface SearchForPostsSuccess {
   posts: RenderablePost[];
   totalCount: number;
@@ -38,7 +34,7 @@ export async function handleSearchForPosts({
   controller: DiscoverController;
   request: express.Request;
   requestBody: SearchForPostsRequestBody;
-}): Promise<SecuredHTTPResponse<SearchForPostsFailed, SearchForPostsSuccess>> {
+}): Promise<SecuredHTTPResponse<SearchForPostsFailedReason, SearchForPostsSuccess>> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,

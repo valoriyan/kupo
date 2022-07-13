@@ -18,10 +18,6 @@ export enum SearchForUsersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface SearchForUsersFailed {
-  reason: SearchForUsersFailedReason;
-}
-
 export interface SearchForUsersSuccess {
   users: RenderableUser[];
   totalCount: number;
@@ -35,7 +31,7 @@ export async function handleSearchForUsers({
   controller: DiscoverController;
   request: express.Request;
   requestBody: SearchForUsersRequestBody;
-}): Promise<SecuredHTTPResponse<SearchForUsersFailed, SearchForUsersSuccess>> {
+}): Promise<SecuredHTTPResponse<SearchForUsersFailedReason, SearchForUsersSuccess>> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,

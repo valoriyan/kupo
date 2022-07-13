@@ -6,18 +6,18 @@ import express from "express";
 import { WebSocketService } from "../../services/webSocketService";
 import {
   CreateChatMessageRequestBody,
-  CreateChatMessageFailed,
+  CreateChatMessageFailedReason,
   handleCreateChatMessage,
   CreateChatMessageSuccess,
 } from "./handleCreateChatMessage";
 import {
-  GetPageOfChatMessagesFailed,
+  GetPageOfChatMessagesFailedReason,
   GetPageOfChatMessagesRequestBody,
   handleGetPageOfChatMessages,
   GetPageOfChatMessagesSuccess,
 } from "./handleGetPageOfChatMessages";
 import {
-  GetPageOfChatRoomsFailed,
+  GetPageOfChatRoomsFailedReason,
   GetPageOfChatRoomsRequestBody,
   handleGetPageOfChatRooms,
   GetPageOfChatRoomsSuccess,
@@ -30,18 +30,18 @@ import {
 } from "./handleDoesChatRoomExistWithUserIds";
 import {
   CreateChatMessageInNewRoomRequestBody,
-  CreateChatMessageInNewChatRoomFailed,
+  CreateChatMessageInNewChatRoomFailedReason,
   handleCreateChatMessageInNewChatRoom,
   CreateChatMessageInNewChatRoomSuccess,
 } from "./handleCreateChatMessageInNewChatRoom";
 import {
   DeleteChatMessageRequestBody,
-  DeleteChatMessageFailed,
+  DeleteChatMessageFailedReason,
   handleDeleteChatMessage,
   DeleteChatMessageSuccess,
 } from "./handleDeleteChatMessage";
 import {
-  GetChatRoomByIdFailed,
+  GetChatRoomByIdFailedReason,
   GetChatRoomByIdRequestBody,
   handleGetChatRoomById,
   GetChatRoomByIdSuccess,
@@ -67,7 +67,9 @@ export class ChatController extends Controller {
   public async createChatMessage(
     @Request() request: express.Request,
     @Body() requestBody: CreateChatMessageRequestBody,
-  ): Promise<SecuredHTTPResponse<CreateChatMessageFailed, CreateChatMessageSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<CreateChatMessageFailedReason, CreateChatMessageSuccess>
+  > {
     return await handleCreateChatMessage({
       controller: this,
       request,
@@ -81,7 +83,7 @@ export class ChatController extends Controller {
     @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      CreateChatMessageInNewChatRoomFailed,
+      CreateChatMessageInNewChatRoomFailedReason,
       CreateChatMessageInNewChatRoomSuccess
     >
   > {
@@ -101,7 +103,7 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPageOfChatMessagesFailed, GetPageOfChatMessagesSuccess>
+    SecuredHTTPResponse<GetPageOfChatMessagesFailedReason, GetPageOfChatMessagesSuccess>
   > {
     return await handleGetPageOfChatMessages({
       controller: this,
@@ -114,7 +116,7 @@ export class ChatController extends Controller {
   public async getChatRoomById(
     @Request() request: express.Request,
     @Body() requestBody: GetChatRoomByIdRequestBody,
-  ): Promise<SecuredHTTPResponse<GetChatRoomByIdFailed, GetChatRoomByIdSuccess>> {
+  ): Promise<SecuredHTTPResponse<GetChatRoomByIdFailedReason, GetChatRoomByIdSuccess>> {
     return await handleGetChatRoomById({
       controller: this,
       request,
@@ -126,7 +128,9 @@ export class ChatController extends Controller {
   public async getPageOfChatRooms(
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatRoomsRequestBody,
-  ): Promise<SecuredHTTPResponse<GetPageOfChatRoomsFailed, GetPageOfChatRoomsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<GetPageOfChatRoomsFailedReason, GetPageOfChatRoomsSuccess>
+  > {
     return await handleGetPageOfChatRooms({
       controller: this,
       request,
@@ -163,7 +167,9 @@ export class ChatController extends Controller {
   public async deleteChatMessage(
     @Request() request: express.Request,
     @Body() requestBody: DeleteChatMessageRequestBody,
-  ): Promise<SecuredHTTPResponse<DeleteChatMessageFailed, DeleteChatMessageSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<DeleteChatMessageFailedReason, DeleteChatMessageSuccess>
+  > {
     return await handleDeleteChatMessage({
       controller: this,
       request,

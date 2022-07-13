@@ -12,8 +12,9 @@ export interface DeletePublishedItemCommentRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DeletePublishedItemCommentSuccess {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DeletePublishedItemCommentFailed {}
+export enum DeletePublishedItemCommentFailedReason {
+  UNKNOWN_REASON = "UNKNOWN_REASON",
+}
 
 export async function handleDeletePublishedItemComment({
   controller,
@@ -24,7 +25,10 @@ export async function handleDeletePublishedItemComment({
   request: express.Request;
   requestBody: DeletePublishedItemCommentRequestBody;
 }): Promise<
-  SecuredHTTPResponse<DeletePublishedItemCommentFailed, DeletePublishedItemCommentSuccess>
+  SecuredHTTPResponse<
+    DeletePublishedItemCommentFailedReason,
+    DeletePublishedItemCommentSuccess
+  >
 > {
   const { postCommentId } = requestBody;
 
