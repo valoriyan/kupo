@@ -64,6 +64,10 @@ const generateSocket = ({
     NOTIFICATIONEVENTS.CanceledNewLikeOnPost,
     generateUnrenderableCanceledNewLikeOnPostNotificationHandler({ set, get }),
   );
+  newSocket.on(
+    NOTIFICATIONEVENTS.NewTagInPublishedItemComment,
+    generateUnrenderableCanceledNewLikeOnPostNotificationHandler({ set, get }),
+  );
 
   return newSocket;
 };
