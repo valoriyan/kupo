@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { GetPasswordResetEmailFailed } from "./get-password-reset-email-failed";
+import { HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccessError } from "./httpresponse-get-password-reset-email-failed-get-password-reset-email-success-error";
 
 /**
  *
@@ -22,10 +22,10 @@ import { GetPasswordResetEmailFailed } from "./get-password-reset-email-failed";
 export interface HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess {
   /**
    *
-   * @type {GetPasswordResetEmailFailed}
+   * @type {HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccessError}
    * @memberof HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess
    */
-  error?: GetPasswordResetEmailFailed;
+  error?: HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccessError;
   /**
    *
    * @type {object}

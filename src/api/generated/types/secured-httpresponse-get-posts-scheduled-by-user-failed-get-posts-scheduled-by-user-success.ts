@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
 import { GetPostsScheduledByUserSuccess } from "./get-posts-scheduled-by-user-success";
+import { SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccessError } from "./secured-httpresponse-get-posts-scheduled-by-user-failed-get-posts-scheduled-by-user-success-error";
 
 /**
  *
@@ -23,10 +23,10 @@ import { GetPostsScheduledByUserSuccess } from "./get-posts-scheduled-by-user-su
 export interface SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess {
   /**
    *
-   * @type {object | AuthFailed}
+   * @type {SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccessError}
    * @memberof SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess
    */
-  error?: object | AuthFailed;
+  error?: SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccessError;
   /**
    *
    * @type {GetPostsScheduledByUserSuccess}

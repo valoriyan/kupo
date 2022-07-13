@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
+import { SecuredHTTPResponseDeletePostFailedDeletePostSuccessError } from "./secured-httpresponse-delete-post-failed-delete-post-success-error";
 
 /**
  *
@@ -22,10 +22,10 @@ import { AuthFailed } from "./auth-failed";
 export interface SecuredHTTPResponseDeletePostFailedDeletePostSuccess {
   /**
    *
-   * @type {object | AuthFailed}
+   * @type {SecuredHTTPResponseDeletePostFailedDeletePostSuccessError}
    * @memberof SecuredHTTPResponseDeletePostFailedDeletePostSuccess
    */
-  error?: object | AuthFailed;
+  error?: SecuredHTTPResponseDeletePostFailedDeletePostSuccessError;
   /**
    *
    * @type {object}

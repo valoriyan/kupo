@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useMakeCreditCardPrimary } from "#/api/mutations/payment/makeCreditCardPrimary";
+import { useRemoveCreditCard } from "#/api/mutations/payment/removeCreditCard";
+import { useGetCreditCardsByUserId } from "#/api/queries/payment/getCreditCardsByUserId";
 import { Button } from "#/components/Button";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { MathPlusIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { Spinner } from "#/components/Spinner";
 import { Body } from "#/components/Typography";
-import { CardInfo, OnFileCard } from "./OnFileCard";
+import { openAddCardModal } from "./AddCardModal";
+import { OnFileCard } from "./OnFileCard";
 
 export const CardInformation = () => {
   return (
@@ -15,7 +18,7 @@ export const CardInformation = () => {
       </Body>
       <Stack css={{ gap: "$4" }}>
         <CardList />
-        <Button css={{ gap: "$2" }}>
+        <Button css={{ gap: "$2" }} onClick={openAddCardModal}>
           <MathPlusIcon /> <div>Add Card</div>
         </Button>
       </Stack>
@@ -24,9 +27,9 @@ export const CardInformation = () => {
 };
 
 const CardList = () => {
-  const [cards, setCards] = useState<CardInfo[]>(testCards);
-  const isLoading = false;
-  const isError = false;
+  const { data, isLoading, isError } = useGetCreditCardsByUserId();
+  const { mutateAsync: makeCreditCardPrimary } = useMakeCreditCardPrimary();
+  const { mutateAsync: removeCreditCard } = useRemoveCreditCard();
 
   if (isError && !isLoading) {
     return (
@@ -34,7 +37,7 @@ const CardList = () => {
     );
   }
 
-  if (isLoading || !cards) {
+  if (isLoading || !data) {
     return (
       <Flex css={{ p: "$6", justifyContent: "center" }}>
         <Spinner size="lg" />
@@ -42,41 +45,20 @@ const CardList = () => {
     );
   }
 
-  if (!cards.length) {
+  if (!data.length) {
     return <ErrorMessage css={{ fontSize: "$3" }}>No cards on file yet</ErrorMessage>;
   }
 
   return (
     <>
-      {cards.map((card) => (
+      {data.map((card) => (
         <OnFileCard
-          key={card.id}
+          key={card.localCreditCardId}
           cardInfo={card}
-          makePrimaryCard={() => {}}
-          deleteCard={() => setCards((prev) => prev.filter((c) => c.id !== card.id))}
+          makePrimaryCard={() => makeCreditCardPrimary(card.localCreditCardId)}
+          deleteCard={() => removeCreditCard(card.localCreditCardId)}
         />
       ))}
     </>
   );
 };
-
-const testCards: CardInfo[] = [
-  {
-    id: "1",
-    cardIssuer: "Visa",
-    lastFourDigits: "4242",
-    cardholderName: "Blake Zimmerman",
-    expMonth: 12,
-    expYear: 2025,
-    isPrimaryCard: true,
-  },
-  {
-    id: "2",
-    cardIssuer: "American Express",
-    lastFourDigits: "6969",
-    cardholderName: "Blake Zimmerman",
-    expMonth: 1,
-    expYear: 2024,
-    isPrimaryCard: false,
-  },
-];

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
+import { SecuredHTTPResponseFollowUserFailedFollowUserSuccessError } from "./secured-httpresponse-follow-user-failed-follow-user-success-error";
 
 /**
  *
@@ -22,10 +22,10 @@ import { AuthFailed } from "./auth-failed";
 export interface SecuredHTTPResponseFollowUserFailedFollowUserSuccess {
   /**
    *
-   * @type {object | AuthFailed}
+   * @type {SecuredHTTPResponseFollowUserFailedFollowUserSuccessError}
    * @memberof SecuredHTTPResponseFollowUserFailedFollowUserSuccess
    */
-  error?: object | AuthFailed;
+  error?: SecuredHTTPResponseFollowUserFailedFollowUserSuccessError;
   /**
    *
    * @type {object}

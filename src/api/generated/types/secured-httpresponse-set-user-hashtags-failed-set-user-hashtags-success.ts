@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
-import { SetUserHashtagsFailed } from "./set-user-hashtags-failed";
+import { SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccessError } from "./secured-httpresponse-set-user-hashtags-failed-set-user-hashtags-success-error";
 
 /**
  *
@@ -23,10 +22,10 @@ import { SetUserHashtagsFailed } from "./set-user-hashtags-failed";
 export interface SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess {
   /**
    *
-   * @type {SetUserHashtagsFailed | AuthFailed}
+   * @type {SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccessError}
    * @memberof SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess
    */
-  error?: SetUserHashtagsFailed | AuthFailed;
+  error?: SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccessError;
   /**
    *
    * @type {object}

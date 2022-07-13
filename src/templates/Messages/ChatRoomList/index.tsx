@@ -2,7 +2,7 @@ import Link from "next/link";
 import { UseInfiniteQueryResult } from "react-query";
 import {
   RenderableUser,
-  SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
+  SecuredHTTPResponseGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess,
 } from "#/api";
 import { styled } from "#/styling";
 import { ChatRoomListItem } from "../ChatRoomListItem";
@@ -13,7 +13,7 @@ export const ChatRoomsList = ({
 }: {
   clientUserData: RenderableUser;
   infiniteQueryResultOfFetchingPageOfChatRooms: UseInfiniteQueryResult<
-    SecuredHTTPResponseGetPageOfChatRoomsFailedGetPageOfChatRoomsSuccess,
+    SecuredHTTPResponseGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess,
     Error
   >;
 }) => {

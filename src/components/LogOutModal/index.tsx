@@ -23,9 +23,9 @@ export const LogOutModal = ({ onLogout, hide }: LogOutModalProps) => {
         gap: "$6",
         px: "$7",
         py: "$6",
-        bg: "$background1",
+        bg: "$modalBackground",
         borderRadius: "$2",
-        boxShadow: "$2",
+        boxShadow: "$3",
       }}
     >
       <MainTitle>Log Out</MainTitle>

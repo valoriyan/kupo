@@ -1,3 +1,4 @@
+import { CreditCardSummary } from "#/api";
 import { Button } from "#/components/Button";
 import { Flex, Stack } from "#/components/Layout";
 import { Body, Subtext } from "#/components/Typography";
@@ -14,7 +15,7 @@ export interface CardInfo {
 }
 
 export interface OnFileCardProps {
-  cardInfo: CardInfo;
+  cardInfo: CreditCardSummary;
   makePrimaryCard: () => void;
   deleteCard: () => void;
 }
@@ -30,7 +31,7 @@ export const OnFileCard = ({
         <Stack css={{ gap: "$1" }}>
           <Flex css={{ justifyContent: "space-between" }}>
             <Body>
-              <strong>{cardInfo.cardIssuer}</strong> ****{cardInfo.lastFourDigits}
+              <strong>{cardInfo.brand}</strong> ****{cardInfo.last4}
             </Body>
             {cardInfo.isPrimaryCard && (
               <Body css={{ color: "$secondary", fontWeight: "bold" }}>Primary</Body>

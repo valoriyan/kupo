@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
-import { ElevateUserToAdminFailed } from "./elevate-user-to-admin-failed";
+import { SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccessError } from "./secured-httpresponse-elevate-user-to-admin-failed-elevate-user-to-admin-success-error";
 
 /**
  *
@@ -23,10 +22,10 @@ import { ElevateUserToAdminFailed } from "./elevate-user-to-admin-failed";
 export interface SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess {
   /**
    *
-   * @type {ElevateUserToAdminFailed | AuthFailed}
+   * @type {SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccessError}
    * @memberof SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess
    */
-  error?: ElevateUserToAdminFailed | AuthFailed;
+  error?: SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccessError;
   /**
    *
    * @type {object}

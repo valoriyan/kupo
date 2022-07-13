@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
-import { UpdatePasswordFailed } from "./update-password-failed";
+import { SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccessError } from "./secured-httpresponse-update-password-failed-update-password-success-error";
 
 /**
  *
@@ -23,10 +22,10 @@ import { UpdatePasswordFailed } from "./update-password-failed";
 export interface SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess {
   /**
    *
-   * @type {UpdatePasswordFailed | AuthFailed}
+   * @type {SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccessError}
    * @memberof SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess
    */
-  error?: UpdatePasswordFailed | AuthFailed;
+  error?: SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccessError;
   /**
    *
    * @type {object}
