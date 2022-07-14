@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
-import { SetUserContentFeedFiltersFailed } from "./set-user-content-feed-filters-failed";
+import { SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccessError } from "./secured-httpresponse-set-user-content-feed-filters-failed-set-user-content-feed-filters-success-error";
 import { SetUserContentFeedFiltersSuccess } from "./set-user-content-feed-filters-success";
 
 /**
@@ -24,10 +23,10 @@ import { SetUserContentFeedFiltersSuccess } from "./set-user-content-feed-filter
 export interface SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess {
   /**
    *
-   * @type {SetUserContentFeedFiltersFailed | AuthFailed}
+   * @type {SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccessError}
    * @memberof SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess
    */
-  error?: SetUserContentFeedFiltersFailed | AuthFailed;
+  error?: SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccessError;
   /**
    *
    * @type {SetUserContentFeedFiltersSuccess}

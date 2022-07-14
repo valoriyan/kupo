@@ -19,4 +19,5 @@
  */
 export enum UpdatePasswordFailedReason {
   Unknown = "Unknown",
+  DatabaseError = "Database Error",
 }

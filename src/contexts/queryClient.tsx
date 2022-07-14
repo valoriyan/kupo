@@ -30,6 +30,7 @@ export enum CacheKeys {
   SavedPosts = "SavedPosts",
   ResetPasswordTokenValidity = "ResetPasswordTokenValidity",
   CountOfUnreadNotifications = "CountOfUnreadNotifications",
+  UserCreditCards = "UserCreditCards",
 }
 
 export const queryClient = new QueryClient({

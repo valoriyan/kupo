@@ -32,14 +32,44 @@ export interface CreditCardSummary {
   userId: string;
   /**
    *
-   * @type {string}
+   * @type {boolean}
    * @memberof CreditCardSummary
    */
-  creditCardLastFourDigits: string;
+  isPrimaryCard: boolean;
   /**
    *
    * @type {number}
    * @memberof CreditCardSummary
    */
   creationTimestamp: number;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  last4: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  expMonth: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  expYear: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  cardholderName: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreditCardSummary
+   */
+  brand: string;
 }

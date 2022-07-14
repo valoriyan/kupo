@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
+import { SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccessError } from "./secured-httpresponse-delete-shop-item-failed-delete-shop-item-success-error";
 
 /**
  *
@@ -22,10 +22,10 @@ import { AuthFailed } from "./auth-failed";
 export interface SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess {
   /**
    *
-   * @type {object | AuthFailed}
+   * @type {SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccessError}
    * @memberof SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess
    */
-  error?: object | AuthFailed;
+  error?: SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccessError;
   /**
    *
    * @type {object}

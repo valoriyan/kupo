@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { AuthFailed } from "./auth-failed";
+import { SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccessError } from "./secured-httpresponse-user-likes-published-item-failed-user-likes-published-item-success-error";
 
 /**
  *
@@ -22,10 +22,10 @@ import { AuthFailed } from "./auth-failed";
 export interface SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess {
   /**
    *
-   * @type {object | AuthFailed}
+   * @type {SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccessError}
    * @memberof SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess
    */
-  error?: object | AuthFailed;
+  error?: SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccessError;
   /**
    *
    * @type {object}
