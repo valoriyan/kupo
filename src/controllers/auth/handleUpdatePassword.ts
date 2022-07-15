@@ -53,5 +53,5 @@ export async function handleUpdatePassword({
     });
   }
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

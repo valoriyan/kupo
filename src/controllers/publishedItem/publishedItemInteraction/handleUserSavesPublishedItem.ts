@@ -41,5 +41,5 @@ export async function handleUserSavesPublishedItem({
     },
   );
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

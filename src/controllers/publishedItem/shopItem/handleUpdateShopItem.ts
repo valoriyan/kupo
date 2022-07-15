@@ -72,5 +72,5 @@ export async function handleUpdateShopItem({
     },
   );
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

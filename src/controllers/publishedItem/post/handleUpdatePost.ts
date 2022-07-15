@@ -61,5 +61,5 @@ export async function handleUpdatePost({
     },
   );
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

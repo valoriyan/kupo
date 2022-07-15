@@ -46,5 +46,5 @@ export async function handleSetUserHashtags({
     },
   );
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

@@ -77,7 +77,7 @@ export async function checkAuthorization(
   errorResponse?: {
     type: EitherType.error;
     error: AuthFailed;
-  }
+  };
 }> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {

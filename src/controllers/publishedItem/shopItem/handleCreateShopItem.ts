@@ -130,6 +130,9 @@ export async function handleCreateShopItem({
   } catch (e) {
     console.log("error", error);
     controller.setStatus(500);
-    return { type: EitherType.error, error: { reason: CreateShopItemFailedReason.UnknownCause } };
+    return {
+      type: EitherType.error,
+      error: { reason: CreateShopItemFailedReason.UnknownCause },
+    };
   }
 }

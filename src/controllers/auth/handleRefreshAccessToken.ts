@@ -37,6 +37,9 @@ export async function handleRefreshAccessToken({
     return grantNewAccessToken({ controller, userId, jwtPrivateKey });
   } catch {
     controller.setStatus(401);
-    return { type: EitherType.error, error: { reason: AuthFailedReason.TokenGenerationFailed } };
+    return {
+      type: EitherType.error,
+      error: { reason: AuthFailedReason.TokenGenerationFailed },
+    };
   }
 }

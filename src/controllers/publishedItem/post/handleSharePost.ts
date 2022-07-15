@@ -128,6 +128,9 @@ export async function handleSharePost({
   } catch (error) {
     console.log("error", error);
     controller.setStatus(401);
-    return { type: EitherType.error, error: { reason: SharePostFailedReason.UnknownCause } };
+    return {
+      type: EitherType.error,
+      error: { reason: SharePostFailedReason.UnknownCause },
+    };
   }
 }

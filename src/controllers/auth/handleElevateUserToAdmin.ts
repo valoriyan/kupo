@@ -48,5 +48,5 @@ export async function handleElevateUserToAdmin({
     throw new Error("Client user does not have permission to create admins");
   }
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

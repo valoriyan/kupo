@@ -77,5 +77,5 @@ export async function handleRemoveUserLikeFromPublishedItem({
     },
   );
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

@@ -38,5 +38,5 @@ export async function handleUserUnsavesPublishedItem({
     },
   );
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

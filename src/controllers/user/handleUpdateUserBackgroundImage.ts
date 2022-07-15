@@ -52,7 +52,10 @@ export async function handleUpdateUserBackgroundImage({
 
   if (!updatedUnrenderableUser) {
     controller.setStatus(404);
-    return { type: EitherType.error, error: { reason: UpdateUserBackgroundImageFailedReason.Unknown } };
+    return {
+      type: EitherType.error,
+      error: { reason: UpdateUserBackgroundImageFailedReason.Unknown },
+    };
   }
 
   const renderableUser = await constructRenderableUserFromParts({

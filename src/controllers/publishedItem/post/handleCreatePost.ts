@@ -163,6 +163,9 @@ export async function handleCreatePost({
   } catch (error) {
     console.log("error", error);
     controller.setStatus(500);
-    return { type: EitherType.error, error: { reason: CreatePostFailedReason.UnknownCause } };
+    return {
+      type: EitherType.error,
+      error: { reason: CreatePostFailedReason.UnknownCause },
+    };
   }
 }

@@ -7,22 +7,26 @@ export enum EitherType {
 }
 
 export interface ErrorResponse<ErrorReason> {
-  type: EitherType.error,
+  type: EitherType.error;
   error: {
-    reason: ErrorReason | AuthFailedReason  | GenericResponseFailedReason;
+    reason: ErrorReason | AuthFailedReason | GenericResponseFailedReason;
     errorMessage?: string;
     additionalErrorInformation?: string;
   };
 }
 
 export interface SuccessResponse<SuccessType> {
-  type: EitherType.success,
+  type: EitherType.success;
   success: SuccessType;
 }
 
-export type Either<ErrorReason, SuccessType> = ErrorResponse<ErrorReason> | SuccessResponse<SuccessType>;
-
+export type Either<ErrorReason, SuccessType> =
+  | ErrorResponse<ErrorReason>
+  | SuccessResponse<SuccessType>;
 
 export type HTTPResponse<ErrorReason, SuccessType> = Either<ErrorReason, SuccessType>;
 
-export type SecuredHTTPResponse<ErrorReason, SuccessType> = Either<ErrorReason, SuccessType>;
+export type SecuredHTTPResponse<ErrorReason, SuccessType> = Either<
+  ErrorReason,
+  SuccessType
+>;

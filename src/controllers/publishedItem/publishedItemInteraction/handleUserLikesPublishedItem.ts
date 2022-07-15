@@ -123,5 +123,5 @@ export async function handleUserLikesPublishedItem({
     );
   }
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

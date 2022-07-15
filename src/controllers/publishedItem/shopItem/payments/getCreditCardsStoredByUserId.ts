@@ -41,7 +41,10 @@ export async function handleGetCreditCardsStoredByUserId({
     );
 
   if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID || !dbCreditCardData) {
-    return { type: EitherType.error, error: { reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON } };
+    return {
+      type: EitherType.error,
+      error: { reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON },
+    };
   }
 
   const { paymentProcessorCustomerId } =

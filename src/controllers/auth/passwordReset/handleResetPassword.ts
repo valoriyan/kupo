@@ -48,6 +48,9 @@ export async function handleResetPassword({
     };
   } catch (error) {
     console.log(`handleResetPassword error: ${error}`);
-    return { type: EitherType.error, error: { reason: ResetPasswordFailedReason.InvalidToken } };
+    return {
+      type: EitherType.error,
+      error: { reason: ResetPasswordFailedReason.InvalidToken },
+    };
   }
 }

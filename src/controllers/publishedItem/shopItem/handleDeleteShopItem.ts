@@ -53,5 +53,5 @@ export async function handleDeleteShopItem({
 
   await controller.blobStorageService.deleteImages({ blobPointers });
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

@@ -100,5 +100,5 @@ export async function handleDeletePost({
     );
   }
 
-  return {type: EitherType.success, success: {}};
+  return { type: EitherType.success, success: {} };
 }

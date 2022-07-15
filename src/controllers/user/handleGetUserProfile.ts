@@ -44,7 +44,10 @@ export async function handleGetUserProfile({
     // Fetch user profile by own userId
     if (!clientUserId) {
       controller.setStatus(403);
-      return { type: EitherType.error, error: { reason: AuthFailedReason.AuthorizationError } };
+      return {
+        type: EitherType.error,
+        error: { reason: AuthFailedReason.AuthorizationError },
+      };
     }
     const unrenderableUsers =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
@@ -55,7 +58,10 @@ export async function handleGetUserProfile({
 
   if (!unrenderableUser) {
     controller.setStatus(404);
-    return { type: EitherType.error, error: { reason: GetUserProfileFailedReason.NotFound } };
+    return {
+      type: EitherType.error,
+      error: { reason: GetUserProfileFailedReason.NotFound },
+    };
   }
 
   const renderableUser = await constructRenderableUserFromParts({

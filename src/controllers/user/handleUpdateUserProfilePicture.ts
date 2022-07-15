@@ -52,7 +52,10 @@ export async function handleUpdateUserProfilePicture({
 
   if (!updatedUnrenderableUser) {
     controller.setStatus(404);
-    return { type: EitherType.error, error: { reason: UpdateUserProfilePictureFailedReason.Unknown } };
+    return {
+      type: EitherType.error,
+      error: { reason: UpdateUserProfilePictureFailedReason.Unknown },
+    };
   }
 
   const renderableUser = await constructRenderableUserFromParts({
