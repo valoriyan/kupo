@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { FeedController } from "./feedController";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "./models";
@@ -60,6 +60,7 @@ export async function handleGetUserContentFeedFilters({
   }
 
   return {
+    type: EitherType.success,
     success: {
       userContentFeedFilters,
     },

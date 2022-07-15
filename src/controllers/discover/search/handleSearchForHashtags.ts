@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
@@ -45,6 +45,7 @@ export async function handleSearchForHashtags({
 
     if (!matchingHashtagsCount) {
       return {
+        type: EitherType.success,
         success: {
           hashtags: [],
           totalCount: 0,
@@ -63,6 +64,7 @@ export async function handleSearchForHashtags({
         );
 
       return {
+        type: EitherType.success,
         success: {
           hashtags: matchingHashtags,
           totalCount: matchingHashtagsCount,

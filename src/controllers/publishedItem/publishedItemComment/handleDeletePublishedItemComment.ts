@@ -1,6 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { UnrenderableCanceledCommentOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
@@ -83,6 +83,7 @@ export async function handleDeletePublishedItemComment({
   );
 
   return {
+    type: EitherType.success,
     success: {},
   };
 }

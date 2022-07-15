@@ -5,7 +5,7 @@ import { RenderablePost } from "./models";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./pagination/utilities";
 import { constructRenderablePostsFromParts } from "./utilities";
 import { decodeTimestampCursor } from "../../utilities/pagination";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { PostController } from "./postController";
 
 export interface GetPageOfSavedPostsRequestBody {
@@ -79,6 +79,7 @@ export async function handleGetPageOfSavedPosts({
   });
 
   return {
+    type: EitherType.success,
     success: {
       posts,
       previousPageCursor: requestBody.cursor,

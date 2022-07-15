@@ -13,7 +13,7 @@ import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/monads";
 import {
   CreatePostFailedReason,
   handleCreatePost,

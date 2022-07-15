@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 import { v4 as uuidv4 } from "uuid";
@@ -126,10 +126,10 @@ export async function handleCreateShopItem({
       },
     );
 
-    return { success: {} };
+    return { type: EitherType.success, success: {} };
   } catch (e) {
     console.log("error", error);
     controller.setStatus(500);
-    return { error: { reason: CreateShopItemFailedReason.UnknownCause } };
+    return { type: EitherType.error, error: { reason: CreateShopItemFailedReason.UnknownCause } };
   }
 }

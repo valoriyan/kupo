@@ -1,4 +1,4 @@
-import { HTTPResponse } from "../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../types/monads";
 import { getEnvironmentVariable } from "../../utilities";
 import { AuthController } from "./authController";
 import { AuthFailedReason, AuthSuccess } from "./models";
@@ -35,10 +35,10 @@ export async function handleLoginUser({
     }
 
     controller.setStatus(401);
-    return { error: { reason: AuthFailedReason.WrongPassword } };
+    return { type: EitherType.error, error: { reason: AuthFailedReason.WrongPassword } };
   } catch (error) {
     console.log("error", error);
     controller.setStatus(401);
-    return { error: { reason: AuthFailedReason.UnknownCause } };
+    return { type: EitherType.error, error: { reason: AuthFailedReason.UnknownCause } };
   }
 }

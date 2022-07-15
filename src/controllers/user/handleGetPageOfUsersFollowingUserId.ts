@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -55,6 +55,7 @@ export async function handleGetPageOfUsersFollowingUserId({
   if (userIdsDoingFollowing.length === 0) {
     // controller.setStatus(404);
     return {
+      type: EitherType.success,
       success: {
         users: [],
         previousPageCursor: cursor,
@@ -79,6 +80,7 @@ export async function handleGetPageOfUsersFollowingUserId({
     pageOfRenderableUsers.length === pageSize ? (pageNumber + 1).toString() : undefined;
 
   return {
+    type: EitherType.success,
     success: {
       users: pageOfRenderableUsers,
       previousPageCursor: cursor,

@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/monads";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../../services/databaseService";

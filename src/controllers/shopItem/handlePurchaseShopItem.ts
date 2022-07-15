@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ShopItemController } from "../publishedItem/shopItem/shopItemController";
 
@@ -61,11 +61,13 @@ export async function handlePurchaseShopItem({
     });
 
     return {
+      type: EitherType.success,
       success: {},
     };
   }
 
   return {
+    type: EitherType.error,
     error: {
       reason: PurchaseShopItemFailedReason.UNKNOWN_REASON,
     },

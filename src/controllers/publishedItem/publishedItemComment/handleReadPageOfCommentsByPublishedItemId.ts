@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
 import { RenderablePostComment, UnrenderablePostComment } from "./models";
@@ -72,6 +72,7 @@ export async function handleReadPageOfCommentsByPublishedItemId({
       : undefined;
 
   return {
+    type: EitherType.success,
     success: {
       postComments: renderablePostComments,
       previousPageCursor: cursor,

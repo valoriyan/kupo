@@ -1,3 +1,4 @@
+import { EitherType } from "../../types/monads";
 import { Controller } from "tsoa";
 
 export function generateErrorResponse<T>({
@@ -13,6 +14,7 @@ export function generateErrorResponse<T>({
   error?: unknown;
   additionalErrorInformation?: string;
 }): {
+  type: EitherType.error;
   error: {
     reason: T;
     errorMessage?: string;
@@ -21,6 +23,7 @@ export function generateErrorResponse<T>({
 } {
   controller.setStatus(httpStatusCode);
   return {
+    type: EitherType.error,
     error: {
       reason: errorReason,
       errorMessage: getMessageFromError(error),

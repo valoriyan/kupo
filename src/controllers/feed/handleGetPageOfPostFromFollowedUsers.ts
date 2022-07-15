@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../publishedItem/post/models";
 import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
@@ -76,6 +76,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
       : undefined;
 
   return {
+    type: EitherType.success,
     success: {
       posts: renderablePosts,
       previousPageCursor: cursor,

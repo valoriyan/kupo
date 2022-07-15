@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { Controller } from "tsoa";
 import {
   generateAccessToken,
@@ -39,5 +39,5 @@ export function grantNewAccessToken({
   );
 
   controller.setStatus(successStatusCode);
-  return { success: { accessToken } };
+  return { type: EitherType.success, success: { accessToken } };
 }

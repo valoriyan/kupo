@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PostController } from "./postController";
 
@@ -44,6 +44,7 @@ export async function handleUpdatePost({
 
   if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
     return {
+      type: EitherType.error,
       error: {
         reason: UpdatePostFailedReason.IllegalAccess,
       },
@@ -60,5 +61,5 @@ export async function handleUpdatePost({
     },
   );
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

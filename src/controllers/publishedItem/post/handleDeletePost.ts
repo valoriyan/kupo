@@ -1,7 +1,7 @@
 import express from "express";
 import { checkAuthorization } from "../../../controllers/auth/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -100,5 +100,5 @@ export async function handleDeletePost({
     );
   }
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserPageController } from "./userPageController";
 
@@ -46,5 +46,5 @@ export async function handleSetUserHashtags({
     },
   );
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

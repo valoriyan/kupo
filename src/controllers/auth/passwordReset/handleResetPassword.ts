@@ -1,5 +1,5 @@
 import { getEnvironmentVariable } from "../../../utilities";
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { AuthController } from "../authController";
 import { verify } from "jsonwebtoken";
 import { ResetPasswordJWTData } from "../../../services/emailService/models";
@@ -43,10 +43,11 @@ export async function handleResetPassword({
     );
 
     return {
+      type: EitherType.success,
       success: {},
     };
   } catch (error) {
     console.log(`handleResetPassword error: ${error}`);
-    return { error: { reason: ResetPasswordFailedReason.InvalidToken } };
+    return { type: EitherType.error, error: { reason: ResetPasswordFailedReason.InvalidToken } };
   }
 }

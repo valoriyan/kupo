@@ -1,6 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { UnrenderableCanceledNewLikeOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
@@ -77,5 +77,5 @@ export async function handleRemoveUserLikeFromPublishedItem({
     },
   );
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

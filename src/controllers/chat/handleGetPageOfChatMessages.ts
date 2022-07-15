@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { RenderableChatMessage } from "./models";
@@ -57,6 +57,7 @@ export async function handleGetPageOfChatMessages({
       : undefined;
 
   return {
+    type: EitherType.success,
     success: {
       chatMessages: pageOfRenderableChatMessages,
       previousPageCursor: previousPageCursor,

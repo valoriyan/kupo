@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { AuthFailedReason } from "../auth/models";
 import { getClientUserId } from "../auth/utilities";
 import { RenderableUser, UnrenderableUser } from "./models";
@@ -44,7 +44,7 @@ export async function handleGetUserProfile({
     // Fetch user profile by own userId
     if (!clientUserId) {
       controller.setStatus(403);
-      return { error: { reason: AuthFailedReason.AuthorizationError } };
+      return { type: EitherType.error, error: { reason: AuthFailedReason.AuthorizationError } };
     }
     const unrenderableUsers =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
@@ -55,7 +55,7 @@ export async function handleGetUserProfile({
 
   if (!unrenderableUser) {
     controller.setStatus(404);
-    return { error: { reason: GetUserProfileFailedReason.NotFound } };
+    return { type: EitherType.error, error: { reason: GetUserProfileFailedReason.NotFound } };
   }
 
   const renderableUser = await constructRenderableUserFromParts({
@@ -66,6 +66,7 @@ export async function handleGetUserProfile({
   });
 
   return {
+    type: EitherType.success,
     success: renderableUser,
   };
 }

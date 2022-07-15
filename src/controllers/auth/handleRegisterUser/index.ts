@@ -1,4 +1,4 @@
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { v4 as uuidv4 } from "uuid";
 import { encryptPassword } from "../utilities";
 import { AuthController } from "../authController";
@@ -35,6 +35,7 @@ export async function handleRegisterUser({
   if (!!usernameErrorReason) {
     console.log(`Not creating user ${username} due to failure to validateUsername`);
     return {
+      type: EitherType.error,
       error: {
         reason: usernameErrorReason,
       },
@@ -78,7 +79,7 @@ export async function handleRegisterUser({
       successStatusCode: 201,
     });
 
-    if (newAccessTokenResponse.success) {
+    if (newAccessTokenResponse.type === "success") {
       try {
         const user =
           await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
@@ -92,6 +93,7 @@ export async function handleRegisterUser({
       }
 
       return {
+        type: EitherType.success,
         success: newAccessTokenResponse.success,
       };
     }

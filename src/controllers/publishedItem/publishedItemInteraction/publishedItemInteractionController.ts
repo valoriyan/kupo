@@ -4,7 +4,7 @@ import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/monads";
 import {
   handleUserSavesPublishedItem,
   UserSavesPublishedItemFailed,

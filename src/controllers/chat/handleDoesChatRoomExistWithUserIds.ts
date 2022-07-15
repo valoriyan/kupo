@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { areSetsEqual } from "../../utilities/checkSetEquality";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
@@ -42,6 +42,7 @@ export async function handleDoesChatRoomExistWithUserIds({
 
   if (!userIds.includes(clientUserId)) {
     return {
+      type: EitherType.error,
       error: { reason: DoesChatRoomExistWithUserIdsFailedReason.IllegalAccess },
     };
   }
@@ -61,6 +62,7 @@ export async function handleDoesChatRoomExistWithUserIds({
   }
 
   return {
+    type: EitherType.success,
     success: {
       doesChatRoomExist,
       chatRoomId: doesChatRoomExist ? chatRoomId : undefined,

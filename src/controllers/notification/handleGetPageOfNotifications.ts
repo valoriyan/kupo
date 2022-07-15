@@ -1,6 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -79,6 +79,7 @@ export async function handleGetPageOfNotifications({
   });
 
   return {
+    type: EitherType.success,
     success: {
       userNotifications: renderableUserNotifications,
     },

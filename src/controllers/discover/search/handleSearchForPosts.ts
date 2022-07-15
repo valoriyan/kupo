@@ -2,7 +2,7 @@ import express from "express";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
 import { PublishedItemType } from "../../../controllers/publishedItem/models";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "../../publishedItem/post/models";
 import {
@@ -69,6 +69,7 @@ export async function handleSearchForPosts({
 
         if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {
           return {
+            type: EitherType.success,
             success: {
               posts: [],
               totalCount: 0,
@@ -89,6 +90,7 @@ export async function handleSearchForPosts({
         });
 
         return {
+          type: EitherType.success,
           success: {
             posts: renderablePosts,
             totalCount: unrenderablePostsWithoutElementsOrHashtags.length,

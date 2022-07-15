@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { CreditCardSummary } from "./models";
@@ -41,7 +41,7 @@ export async function handleGetCreditCardsStoredByUserId({
     );
 
   if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID || !dbCreditCardData) {
-    return { error: { reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON } };
+    return { type: EitherType.error, error: { reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON } };
   }
 
   const { paymentProcessorCustomerId } =
@@ -56,5 +56,5 @@ export async function handleGetCreditCardsStoredByUserId({
     ),
   );
 
-  return { success: { cards: creditCardSummaries } };
+  return { type: EitherType.success, success: { cards: creditCardSummaries } };
 }

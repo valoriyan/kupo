@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 
@@ -42,11 +42,13 @@ export async function handleMakeCreditCardPrimary({
     );
 
     return {
+      type: EitherType.success,
       success: {},
     };
   } catch (error) {
     console.log(error);
     return {
+      type: EitherType.error,
       error: {
         reason: MakeCreditCardPrimaryFailedReason.UNKNOWN_REASON,
       },

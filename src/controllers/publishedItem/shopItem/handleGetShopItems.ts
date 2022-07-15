@@ -1,5 +1,5 @@
 import express from "express";
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { getClientUserId } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "../post/pagination/utilities";
@@ -51,6 +51,7 @@ export async function handleGetShopItemsByUsername({
 
   if (!userId) {
     return {
+      type: EitherType.error,
       error: { reason: GetShopItemsByUsernameFailedReason.UnknownUser },
     };
   }
@@ -89,6 +90,7 @@ export async function handleGetShopItemsByUserId({
 
   if (!canViewContent) {
     return {
+      type: EitherType.error,
       error: { reason: GetShopItemsByUsernameFailedReason.UserPrivate },
     };
   }
@@ -111,6 +113,7 @@ export async function handleGetShopItemsByUserId({
   });
 
   return {
+    type: EitherType.success,
     success: {
       shopItems: renderableShopItemPreview,
       previousPageCursor: requestBody.cursor,

@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
 import { PostController } from "./postController";
@@ -55,6 +55,7 @@ export async function handleGetPostsScheduledByUser({
   });
 
   return {
+    type: EitherType.success,
     success: {
       posts: renderablePosts,
     },

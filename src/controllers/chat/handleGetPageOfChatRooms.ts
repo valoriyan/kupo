@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
@@ -118,6 +118,7 @@ export async function handleGetPageOfChatRooms({
     renderableChatRooms.length > endOfPageCursor ? endOfPageCursor.toString() : undefined;
 
   return {
+    type: EitherType.success,
     success: {
       chatRooms: pageOfRenderableChatRooms,
       previousPageCursor: cursor,

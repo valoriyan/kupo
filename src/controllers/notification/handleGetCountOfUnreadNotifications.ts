@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 
@@ -35,6 +35,7 @@ export async function handleGetCountOfUnreadNotifications({
     );
 
   return {
+    type: EitherType.success,
     success: {
       count: countOfUnreadNotifications,
     },

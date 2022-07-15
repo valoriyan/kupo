@@ -1,6 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { HTTPResponse } from "../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UnrenderableCanceledNewFollowerNotification } from "../notification/models/unrenderableCanceledUserNotifications";
 import { UserInteractionController } from "./userInteractionController";
@@ -72,6 +72,7 @@ export async function handleUnfollowUser({
   );
 
   return {
+    type: EitherType.success,
     success: {},
   };
 }

@@ -1,6 +1,6 @@
 import express from "express";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/monads";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
 import {

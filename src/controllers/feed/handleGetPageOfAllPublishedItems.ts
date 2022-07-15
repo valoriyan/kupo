@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePublishedItem } from "../publishedItem/models";
 import { constructPublishedItemsFromParts } from "../publishedItem/utilities";
@@ -79,6 +79,7 @@ export async function handleGetPageOfAllPublishedItems({
         : undefined;
 
     return {
+      type: EitherType.success,
       success: {
         renderablePublishedItems,
         previousPageCursor: cursor,
@@ -87,6 +88,7 @@ export async function handleGetPageOfAllPublishedItems({
     };
   } else {
     return {
+      type: EitherType.error,
       error: {
         reason: GetPageOfAllPublishedItemsFailedReason.ILLEGAL_ACCESS,
       },

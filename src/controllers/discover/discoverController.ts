@@ -3,7 +3,7 @@ import { Body, Controller, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/monads";
 import {
   handleSearchForHashtags,
   SearchForHashtagsFailedReason,

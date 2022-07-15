@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -72,6 +72,7 @@ export async function handleCreatePost({
     const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
     if (mediaFileErrors.length > 0) {
       return {
+        type: EitherType.error,
         error: { reason: CreatePostFailedReason.UnknownCause },
       };
     }
@@ -136,6 +137,7 @@ export async function handleCreatePost({
     });
 
     return {
+      type: EitherType.success,
       success: {
         renderablePost: {
           type: PublishedItemType.POST,
@@ -161,6 +163,6 @@ export async function handleCreatePost({
   } catch (error) {
     console.log("error", error);
     controller.setStatus(500);
-    return { error: { reason: CreatePostFailedReason.UnknownCause } };
+    return { type: EitherType.error, error: { reason: CreatePostFailedReason.UnknownCause } };
   }
 }

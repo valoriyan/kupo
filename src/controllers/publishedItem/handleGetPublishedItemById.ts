@@ -1,4 +1,4 @@
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { PostController } from "./post/postController";
 import express from "express";
 import { checkAuthorization } from "../auth/utilities";
@@ -52,6 +52,7 @@ export async function handleGetPublishedItemById({
       clientUserId,
     });
     return {
+      type: EitherType.success,
       success: { publishedItem: post },
     };
   } else {
@@ -62,6 +63,7 @@ export async function handleGetPublishedItemById({
       clientUserId,
     });
     return {
+      type: EitherType.success,
       success: { publishedItem: shopItem },
     };
   }

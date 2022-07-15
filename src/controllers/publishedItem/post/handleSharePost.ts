@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { PostController } from "./postController";
 import express from "express";
 import { checkAuthorization } from "../../auth/utilities";
@@ -101,6 +101,7 @@ export async function handleSharePost({
     );
 
     return {
+      type: EitherType.success,
       success: {
         renderablePost: {
           id: postId,
@@ -127,6 +128,6 @@ export async function handleSharePost({
   } catch (error) {
     console.log("error", error);
     controller.setStatus(401);
-    return { error: { reason: SharePostFailedReason.UnknownCause } };
+    return { type: EitherType.error, error: { reason: SharePostFailedReason.UnknownCause } };
   }
 }

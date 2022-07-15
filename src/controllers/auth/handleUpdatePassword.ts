@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization, encryptPassword } from "./utilities";
 import { AuthController } from "./authController";
 import { generateErrorResponse } from "../utilities/generateErrorResponse";
@@ -53,5 +53,5 @@ export async function handleUpdatePassword({
     });
   }
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

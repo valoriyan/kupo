@@ -1,7 +1,7 @@
 import express from "express";
 import { DatabaseService } from "../../services/databaseService";
 import { Body, Controller, Get, Post, Request, Route } from "tsoa";
-import { HTTPResponse, SecuredHTTPResponse } from "../../types/httpResponse";
+import { HTTPResponse, SecuredHTTPResponse } from "../../types/monads";
 import { injectable } from "tsyringe";
 import {
   RegisterUserFailedReason,

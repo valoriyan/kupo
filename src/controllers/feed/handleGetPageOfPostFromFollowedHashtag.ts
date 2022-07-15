@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../publishedItem/post/models";
 import { getPageOfPostsFromAllPosts } from "../publishedItem/post/pagination/utilities";
@@ -85,6 +85,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
       : undefined;
 
   return {
+    type: EitherType.success,
     success: {
       posts: renderablePosts,
       previousPageCursor: cursor,

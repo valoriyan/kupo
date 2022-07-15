@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { HTTPResponse } from "../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
@@ -91,6 +91,7 @@ export async function handleFollowUser({
   }
 
   return {
+    type: EitherType.success,
     success: {},
   };
 }

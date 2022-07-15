@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromParts } from "../../user/utilities";
@@ -123,5 +123,5 @@ export async function handleUserLikesPublishedItem({
     );
   }
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

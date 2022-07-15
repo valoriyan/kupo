@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
@@ -53,5 +53,5 @@ export async function handleDeleteShopItem({
 
   await controller.blobStorageService.deleteImages({ blobPointers });
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

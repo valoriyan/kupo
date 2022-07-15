@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { AuthController } from "./authController";
 
@@ -48,5 +48,5 @@ export async function handleElevateUserToAdmin({
     throw new Error("Client user does not have permission to create admins");
   }
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

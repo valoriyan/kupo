@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderableUser } from "../../user/models";
@@ -62,6 +62,7 @@ export async function handleSearchForUsers({
 
   if (unrenderableUsers.length === 0) {
     return {
+      type: EitherType.success,
       success: {
         users: [],
         totalCount: 0,
@@ -82,6 +83,7 @@ export async function handleSearchForUsers({
   });
 
   return {
+    type: EitherType.success,
     success: {
       users: renderableUsers,
       totalCount: unrenderableUsers.length,

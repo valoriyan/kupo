@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
@@ -70,6 +70,7 @@ export async function handleCreateChatMessage({
   });
 
   return {
+    type: EitherType.success,
     success: {
       chatMessage,
     },

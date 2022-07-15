@@ -5,6 +5,7 @@ import { MD5 } from "crypto-js";
 import { AuthFailedReason, AuthFailed } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
 import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
+import { EitherType } from "../../../types/monads";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
@@ -71,7 +72,13 @@ export function validateTokenAndGetUserId({
 export async function checkAuthorization(
   controller: Controller,
   request: Request,
-): Promise<{ clientUserId: string; errorResponse?: { error: AuthFailed } }> {
+): Promise<{
+  clientUserId: string;
+  errorResponse?: {
+    type: EitherType.error;
+    error: AuthFailed;
+  }
+}> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {
     const token =

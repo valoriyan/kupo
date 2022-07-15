@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
@@ -41,5 +41,5 @@ export async function handleUserSavesPublishedItem({
     },
   );
 
-  return {};
+  return {type: EitherType.success, success: {}};
 }

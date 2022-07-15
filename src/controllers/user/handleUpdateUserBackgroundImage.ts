@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -52,7 +52,7 @@ export async function handleUpdateUserBackgroundImage({
 
   if (!updatedUnrenderableUser) {
     controller.setStatus(404);
-    return { error: { reason: UpdateUserBackgroundImageFailedReason.Unknown } };
+    return { type: EitherType.error, error: { reason: UpdateUserBackgroundImageFailedReason.Unknown } };
   }
 
   const renderableUser = await constructRenderableUserFromParts({
@@ -63,6 +63,7 @@ export async function handleUpdateUserBackgroundImage({
   });
 
   return {
+    type: EitherType.success,
     success: renderableUser,
   };
 }

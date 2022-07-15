@@ -1,4 +1,4 @@
-import { HTTPResponse } from "../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../types/monads";
 import { AuthController } from "../authController";
 
 export interface GetPasswordResetEmailRequestBody {
@@ -35,6 +35,7 @@ export async function handleGetPasswordResetEmail({
   }
 
   return {
+    type: EitherType.success,
     success: {},
   };
 }

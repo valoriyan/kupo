@@ -1,7 +1,7 @@
 import express from "express";
 import { RenderablePost } from "../models";
 import { PostController } from "../postController";
-import { HTTPResponse } from "../../../../types/httpResponse";
+import { EitherType, HTTPResponse } from "../../../../types/monads";
 import { getClientUserId } from "../../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
@@ -49,6 +49,7 @@ export async function handleGetPostsByUsername({
 
   if (!userId) {
     return {
+      type: EitherType.error,
       error: { reason: GetPostsByUsernameFailedReason.UnknownUser },
     };
   }
@@ -85,6 +86,7 @@ export async function handleGetPostsByUserId({
 
   if (!canViewContent) {
     return {
+      type: EitherType.error,
       error: { reason: GetPostsByUsernameFailedReason.UserPrivate },
     };
   }
@@ -107,6 +109,7 @@ export async function handleGetPostsByUserId({
   });
 
   return {
+    type: EitherType.success,
     success: {
       posts,
       previousPageCursor: requestBody.cursor,

@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
@@ -53,5 +53,5 @@ export async function handleDeleteChatMessage({
     deletedChatMessageId: deletedChatMessage.chatMessageId,
   });
 
-  return { success: {} };
+  return { type: EitherType.success, success: {} };
 }

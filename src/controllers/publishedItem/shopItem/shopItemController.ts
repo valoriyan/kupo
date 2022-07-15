@@ -13,7 +13,7 @@ import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { PaymentProcessingService } from "../../../services/paymentProcessingService";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../../types/monads";
 import {
   CreateShopItemFailedReason,
   CreateShopItemSuccess,

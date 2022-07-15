@@ -3,7 +3,7 @@ import { WebSocketService } from "../../services/webSocketService";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/monads";
 import { BlobStorageService } from "./../../services/blobStorageService";
 import {
   FollowUserFailed,

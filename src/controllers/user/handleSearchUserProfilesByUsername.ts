@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -49,6 +49,7 @@ export async function handleSearchUserProfilesByUsername({
   if (unrenderableUsers.length === 0) {
     controller.setStatus(404);
     return {
+      type: EitherType.error,
       error: { reason: SearchUserProfilesByUsernameFailedReason.NotFound },
     };
   }
@@ -61,6 +62,7 @@ export async function handleSearchUserProfilesByUsername({
   });
 
   return {
+    type: EitherType.success,
     success: {
       results: renderableUsers,
     },

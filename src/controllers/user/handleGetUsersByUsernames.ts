@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -62,6 +62,7 @@ export async function handleGetUsersByUsernames({
   });
 
   return {
+    type: EitherType.success,
     success: {
       users: foundUsers,
     },

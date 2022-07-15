@@ -1,6 +1,6 @@
 import express from "express";
 import { Color } from "../../types/color";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../types/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ProfilePrivacySetting, RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -81,7 +81,7 @@ export async function handleUpdateUserProfile({
 
   if (!updatedUnrenderableUser) {
     controller.setStatus(404);
-    return { error: { reason: UpdateUserProfileFailedReason.Unknown } };
+    return { type: EitherType.error, error: { reason: UpdateUserProfileFailedReason.Unknown } };
   }
 
   const renderableUser = await constructRenderableUserFromParts({
@@ -92,6 +92,7 @@ export async function handleUpdateUserProfile({
   });
 
   return {
+    type: EitherType.success,
     success: renderableUser,
   };
 }

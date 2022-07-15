@@ -2,7 +2,7 @@ import express from "express";
 import { Body, Controller, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/httpResponse";
+import { SecuredHTTPResponse } from "../../types/monads";
 import {
   GetUserProfileRequestBody,
   GetUserProfileSuccess,

@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/httpResponse";
+import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
@@ -85,6 +85,7 @@ export async function handleCreatePublishedItemComment({
   });
 
   return {
+    type: EitherType.success,
     success: { postComment: renderablePostComment },
   };
 }
