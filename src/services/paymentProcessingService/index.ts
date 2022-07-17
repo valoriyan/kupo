@@ -1,7 +1,16 @@
+/* eslint-disable @typescript-eslint/ban-types */
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../utilities/monads";
 import { singleton } from "tsyringe";
 import { CreditCardSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 import { getEnvironmentVariable } from "../../utilities";
 import { DBStoredCreditCardDatum } from "../databaseService/tableServices/storedCreditCardDataTableService";
+import { GenericResponseFailedReason } from "../../controllers/models";
+import { Controller } from "tsoa";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const securionPay = require("securionpay");
@@ -19,40 +28,81 @@ export class PaymentProcessingService {
   // CUSTOMERS /////////////////////////////////////
   //////////////////////////////////////////////////
 
-  async registerCustomer({ customerEmail }: { customerEmail: string }): Promise<string> {
-    const customer = await PaymentProcessingService.securionPayApi.customers.create({
-      email: customerEmail,
-    });
+  async registerCustomer({
+    controller,
+    customerEmail,
+  }: {
+    controller: Controller;
+    customerEmail: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>> {
+    try {
+      const customer = await PaymentProcessingService.securionPayApi.customers.create({
+        email: customerEmail,
+      });
 
-    return customer.id;
+      return Success(customer.id);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at registerCustomer",
+      });
+    }
   }
 
   async removeCustomer({
+    controller,
     paymentProcessorCustomerId,
   }: {
+    controller: Controller;
     paymentProcessorCustomerId: string;
-  }): Promise<string> {
-    const removedPaymentProcessorCustomerId =
-      await PaymentProcessingService.securionPayApi.customers.delete(
-        paymentProcessorCustomerId,
-      );
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>> {
+    try {
+      const removedPaymentProcessorCustomerId =
+        await PaymentProcessingService.securionPayApi.customers.delete(
+          paymentProcessorCustomerId,
+        );
 
-    return removedPaymentProcessorCustomerId;
+      return Success(removedPaymentProcessorCustomerId);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at removeCustomer",
+      });
+    }
   }
 
   async updateCustomerEmail({
+    controller,
     paymentProcessorCustomerId,
     updatedEmail,
   }: {
+    controller: Controller;
     paymentProcessorCustomerId: string;
     updatedEmail: string;
-  }): Promise<void> {
-    await PaymentProcessingService.securionPayApi.customers.update(
-      paymentProcessorCustomerId,
-      {
-        email: updatedEmail,
-      },
-    );
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      await PaymentProcessingService.securionPayApi.customers.update(
+        paymentProcessorCustomerId,
+        {
+          email: updatedEmail,
+        },
+      );
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at updateCustomerEmail",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -60,65 +110,101 @@ export class PaymentProcessingService {
   //////////////////////////////////////////////////
 
   async storeCustomerCreditCard({
+    controller,
     paymentProcessorCustomerId,
     paymentProcessorCardToken,
     ipAddressOfRequestor,
   }: {
+    controller: Controller;
     paymentProcessorCustomerId: string;
     paymentProcessorCardToken: string;
     ipAddressOfRequestor: string;
-  }): Promise<string> {
-    const card = await PaymentProcessingService.securionPayApi.cards.create(
-      paymentProcessorCustomerId,
-      {
-        id: paymentProcessorCardToken,
-        fraudCheckData: {
-          ipAddress: ipAddressOfRequestor,
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>> {
+    try {
+      const card = await PaymentProcessingService.securionPayApi.cards.create(
+        paymentProcessorCustomerId,
+        {
+          id: paymentProcessorCardToken,
+          fraudCheckData: {
+            ipAddress: ipAddressOfRequestor,
+          },
         },
-      },
-    );
+      );
 
-    return card.id;
+      return card.id;
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at storeCustomerCreditCard",
+      });
+    }
   }
 
   async getCustomerCreditCardSummary({
+    controller,
     paymentProcessorCustomerId,
     dbCreditCardDatum,
   }: {
+    controller: Controller;
     paymentProcessorCustomerId: string;
     dbCreditCardDatum: DBStoredCreditCardDatum;
-  }): Promise<CreditCardSummary> {
-    const cardDetails = await PaymentProcessingService.securionPayApi.cards.get(
-      paymentProcessorCustomerId,
-      dbCreditCardDatum.payment_processor_card_id,
-    );
-    return {
-      localCreditCardId: dbCreditCardDatum.local_credit_card_id,
-      userId: dbCreditCardDatum.user_id,
-      isPrimaryCard: dbCreditCardDatum.is_primary_card,
-      creationTimestamp: parseInt(dbCreditCardDatum.creation_timestamp),
-      last4: cardDetails.last4,
-      expMonth: cardDetails.expMonth,
-      expYear: cardDetails.expYear,
-      cardholderName: cardDetails.cardholderName,
-      brand: cardDetails.brand,
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, CreditCardSummary>> {
+    try {
+      const cardDetails = await PaymentProcessingService.securionPayApi.cards.get(
+        paymentProcessorCustomerId,
+        dbCreditCardDatum.payment_processor_card_id,
+      );
+      return Success({
+        localCreditCardId: dbCreditCardDatum.local_credit_card_id,
+        userId: dbCreditCardDatum.user_id,
+        isPrimaryCard: dbCreditCardDatum.is_primary_card,
+        creationTimestamp: parseInt(dbCreditCardDatum.creation_timestamp),
+        last4: cardDetails.last4,
+        expMonth: cardDetails.expMonth,
+        expYear: cardDetails.expYear,
+        cardholderName: cardDetails.cardholderName,
+        brand: cardDetails.brand,
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at getCustomerCreditCardSummary",
+      });
+    }
   }
 
   async removeCustomerCreditCard({
+    controller,
     paymentProcessorCustomerId,
     paymentProcessorCardId,
   }: {
+    controller: Controller;
     paymentProcessorCustomerId: string;
     paymentProcessorCardId: string;
-  }): Promise<string> {
-    const deletedPaymentProcessorCardId =
-      await PaymentProcessingService.securionPayApi.cards.delete(
-        paymentProcessorCustomerId,
-        paymentProcessorCardId,
-      );
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>> {
+    try {
+      const deletedPaymentProcessorCardId =
+        await PaymentProcessingService.securionPayApi.cards.delete(
+          paymentProcessorCustomerId,
+          paymentProcessorCardId,
+        );
 
-    return deletedPaymentProcessorCardId;
+      return deletedPaymentProcessorCardId;
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at removeCustomerCreditCard",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -126,22 +212,34 @@ export class PaymentProcessingService {
   //////////////////////////////////////////////////
 
   async chargeCustomerWithCachedCreditCard({
+    controller,
     paymentProcessingCustomerId,
     paymentProcessingCreditCardId,
     chargeAmount,
   }: {
+    controller: Controller;
     paymentProcessingCustomerId: string;
     paymentProcessingCreditCardId: string;
     chargeAmount: number;
-  }): Promise<string> {
-    // TODO: ADD SOME CHECKS TO DOUBLY CONFIRM USER BEING CHARGED
-    const charge = await PaymentProcessingService.securionPayApi.charges.create({
-      amount: chargeAmount,
-      currency: "USD",
-      card: paymentProcessingCreditCardId,
-      customerId: paymentProcessingCustomerId,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>> {
+    try {
+      // TODO: ADD SOME CHECKS TO DOUBLY CONFIRM USER BEING CHARGED
+      const charge = await PaymentProcessingService.securionPayApi.charges.create({
+        amount: chargeAmount,
+        currency: "USD",
+        card: paymentProcessingCreditCardId,
+        customerId: paymentProcessingCustomerId,
+      });
 
-    return charge.id;
+      return charge.id;
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.PAYMENT_PROCESSOR_ERROR,
+        error,
+        additionalErrorInformation: "Error at chargeCustomerWithCachedCreditCard",
+      });
+    }
   }
 }

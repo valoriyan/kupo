@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-types */
+import { Controller } from "tsoa";
+import { ErrorReasonTypes, InternalServiceResponse } from "../../utilities/monads";
+
 export interface BlobItemPointer {
   fileKey: string;
 }
@@ -8,17 +12,27 @@ export enum BlobStorageServiceType {
 }
 
 export abstract class BlobStorageServiceInterface {
-  abstract saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer>;
+  abstract saveImage({
+    controller,
+    image,
+  }: {
+    controller: Controller;
+    image: Buffer;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>>;
 
   abstract getTemporaryImageUrl({
+    controller,
     blobItemPointer,
   }: {
+    controller: Controller;
     blobItemPointer: BlobItemPointer;
-  }): Promise<string>;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>>;
 
   abstract deleteImages({
+    controller,
     blobPointers,
   }: {
+    controller: Controller;
     blobPointers: BlobItemPointer[];
-  }): Promise<void>;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>>;
 }

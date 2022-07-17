@@ -4,6 +4,7 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
+  collectMappedResponses,
 } from "../../../utilities/monads";
 import { PostController } from "./postController";
 import express from "express";
@@ -91,14 +92,20 @@ export async function handleCreatePost({
     };
   }
 
-  const filedAndRenderablePostMediaElements = await BluebirdPromise.map(
-    mediaFiles,
-    async (file) =>
-      uploadMediaFile({
-        file,
-        blobStorageService: controller.blobStorageService,
-      }),
+  const uploadMediaFileResponses = await BluebirdPromise.map(mediaFiles, async (file) =>
+    uploadMediaFile({
+      controller,
+      file,
+      blobStorageService: controller.blobStorageService,
+    }),
   );
+  const mappedUploadMediaFileResponses = collectMappedResponses({
+    mappedResponses: uploadMediaFileResponses,
+  });
+  if (mappedUploadMediaFileResponses.type === EitherType.failure) {
+    return mappedUploadMediaFileResponses;
+  }
+  const { success: filedAndRenderablePostMediaElements } = mappedUploadMediaFileResponses;
 
   const mediaElements: MediaElement[] = filedAndRenderablePostMediaElements.map(
     (filedAndRenderablePostMediaElement) => ({

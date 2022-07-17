@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
-  FailureResponse,
   InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
@@ -180,14 +180,12 @@ async function considerAndExecuteNotifications({
         }),
     );
 
-  const firstOccuringError =
-    assembleRecordAndSendNewTagInPublishedItemCommentNotificationResponses.find(
-      (responseElement) => {
-        return responseElement.type === EitherType.failure;
-      },
-    );
-  if (firstOccuringError) {
-    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+  const mappedResponse = collectMappedResponses({
+    mappedResponses:
+      assembleRecordAndSendNewTagInPublishedItemCommentNotificationResponses,
+  });
+  if (mappedResponse.type === EitherType.failure) {
+    return mappedResponse;
   }
 
   return Success({});

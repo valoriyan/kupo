@@ -18,12 +18,11 @@ import { DBShopItemElementType } from "../../../services/databaseService/tableSe
 import { assembleBaseRenderablePublishedItem } from "../utilities";
 import { Controller } from "tsoa";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
-  FailureResponse,
   InternalServiceResponse,
   Success,
-  SuccessResponse,
 } from "../../../utilities/monads";
 
 export async function constructRenderableShopItemsFromParts({
@@ -51,20 +50,9 @@ export async function constructRenderableShopItemsFromParts({
       }),
   );
 
-  const firstOccuringError = constructRenderableShopItemFromPartsResponses.find(
-    (responseElement) => {
-      return responseElement.type === EitherType.failure;
-    },
-  );
-  if (firstOccuringError) {
-    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
-  }
-
-  const renderablePosts = constructRenderableShopItemFromPartsResponses.map(
-    (responseElement) => (responseElement as SuccessResponse<RenderableShopItem>).success,
-  );
-
-  return Success(renderablePosts);
+  return collectMappedResponses({
+    mappedResponses: constructRenderableShopItemFromPartsResponses,
+  });
 }
 
 export async function constructRenderableShopItemFromParts({
@@ -448,23 +436,31 @@ async function assembleShopItemPreviewMediaElements({
   const { success: filedShopItemPreviewMediaElements } =
     getShopItemMediaElementsByPublishedItemIdResponse;
 
-  const previewMediaElements: MediaElement[] = await BluebirdPromise.map(
+  const getTemporaryImageUrlResponses = await BluebirdPromise.map(
     filedShopItemPreviewMediaElements,
-    async (filedShopItemMediaElement): Promise<MediaElement> => {
+    async (
+      filedShopItemMediaElement,
+    ): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement>> => {
       const { blobFileKey, mimeType } = filedShopItemMediaElement;
 
-      const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
+      const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+        controller,
         blobItemPointer: {
           fileKey: blobFileKey,
         },
       });
 
-      return {
+      if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+        return getTemporaryImageUrlResponse;
+      }
+      const { success: fileTemporaryUrl } = getTemporaryImageUrlResponse;
+
+      return Success({
         temporaryUrl: fileTemporaryUrl,
         mimeType: mimeType,
-      };
+      });
     },
   );
 
-  return Success(previewMediaElements);
+  return collectMappedResponses({ mappedResponses: getTemporaryImageUrlResponses });
 }

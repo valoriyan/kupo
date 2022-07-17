@@ -12,12 +12,11 @@ import { constructRenderableShopItemFromParts } from "./shopItem/utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { Controller } from "tsoa";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
-  FailureResponse,
   InternalServiceResponse,
   Success,
-  SuccessResponse,
 } from "../../utilities/monads";
 
 export async function constructPublishedItemsFromParts({
@@ -50,20 +49,9 @@ export async function constructPublishedItemsFromParts({
       }),
   );
 
-  const firstOccuringError = constructPublishedItemFromPartsResponses.find(
-    (responseElement) => {
-      return responseElement.type === EitherType.failure;
-    },
-  );
-  if (firstOccuringError) {
-    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
-  }
-
-  const publishedItems = constructPublishedItemFromPartsResponses.map(
-    (responseElement) => (responseElement as SuccessResponse<RenderableShopItem>).success,
-  );
-
-  return Success(publishedItems);
+  return collectMappedResponses({
+    mappedResponses: constructPublishedItemFromPartsResponses,
+  });
 }
 
 export async function constructPublishedItemFromParts({

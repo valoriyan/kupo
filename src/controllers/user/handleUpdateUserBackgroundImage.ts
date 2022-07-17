@@ -35,17 +35,25 @@ export async function handleUpdateUserBackgroundImage({
     UpdateUserBackgroundImageSuccess
   >
 > {
+  const { backgroundImage } = requestBody;
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
   );
   if (error) return error;
 
-  const backgroundImageBlobItemPointer = requestBody.backgroundImage
-    ? await controller.blobStorageService.saveImage({
-        image: requestBody.backgroundImage?.buffer,
-      })
-    : null;
+  let backgroundImageBlobItemPointer = undefined;
+  if (!!backgroundImage) {
+    const saveImageResponse = await controller.blobStorageService.saveImage({
+      controller,
+      image: requestBody.backgroundImage?.buffer,
+    });
+    if (saveImageResponse.type === EitherType.failure) {
+      return saveImageResponse;
+    }
+    backgroundImageBlobItemPointer = saveImageResponse.success;
+  }
 
   const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(

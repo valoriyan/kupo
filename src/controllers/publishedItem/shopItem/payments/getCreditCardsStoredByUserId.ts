@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   Failure,
@@ -83,14 +84,23 @@ export async function handleGetCreditCardsStoredByUserId({
   const { paymentProcessorCustomerId } =
     unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
 
-  const creditCardSummaries = await Promise.all(
+  const getCustomerCreditCardSummaryResponses = await Promise.all(
     dbCreditCardData.map((dbCreditCardDatum) =>
       controller.paymentProcessingService.getCustomerCreditCardSummary({
+        controller,
         paymentProcessorCustomerId,
         dbCreditCardDatum,
       }),
     ),
   );
+
+  const mappedGetCustomerCreditCardSummaryResponses = collectMappedResponses({
+    mappedResponses: getCustomerCreditCardSummaryResponses,
+  });
+  if (mappedGetCustomerCreditCardSummaryResponses.type === EitherType.failure) {
+    return mappedGetCustomerCreditCardSummaryResponses;
+  }
+  const { success: creditCardSummaries } = mappedGetCustomerCreditCardSummaryResponses;
 
   return Success({ cards: creditCardSummaries });
 }

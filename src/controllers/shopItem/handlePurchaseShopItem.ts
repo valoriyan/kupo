@@ -81,12 +81,18 @@ export async function handlePurchaseShopItem({
     const chargeAmountMajorCurrencyUnits = unrenderableShopItemPreview.price;
     const chargeAmountMinorCurrencyUnits = parseInt(chargeAmountMajorCurrencyUnits) * 100;
 
-    await controller.paymentProcessingService.chargeCustomerWithCachedCreditCard({
-      paymentProcessingCustomerId:
-        unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
-      paymentProcessingCreditCardId: dbStoredCreditCardDatum.payment_processor_card_id,
-      chargeAmount: chargeAmountMinorCurrencyUnits,
-    });
+    const chargeCustomerWithCachedCreditCardResponse =
+      await controller.paymentProcessingService.chargeCustomerWithCachedCreditCard({
+        controller,
+        paymentProcessingCustomerId:
+          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+        paymentProcessingCreditCardId: dbStoredCreditCardDatum.payment_processor_card_id,
+        chargeAmount: chargeAmountMinorCurrencyUnits,
+      });
+
+    if (chargeCustomerWithCachedCreditCardResponse.type === EitherType.failure) {
+      return chargeCustomerWithCachedCreditCardResponse;
+    }
 
     return Success({});
   }

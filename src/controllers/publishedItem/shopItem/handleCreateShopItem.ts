@@ -1,7 +1,9 @@
 import express from "express";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
+  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
@@ -95,32 +97,52 @@ export async function handleCreateShopItem({
     return createShopItemResponse;
   }
 
-  const shopItemMediaElements = await BluebirdPromise.map(
+  const uploadMediaFileResponses = await BluebirdPromise.map(
     mediaFiles,
     async (
       mediaFile,
       index,
-    ): Promise<{
-      publishedItemId: string;
-      shopItemElementIndex: number;
-      blobFileKey: string;
-      fileTemporaryUrl: string;
-      mimetype: string;
-    }> => {
-      const { blobFileKey, fileTemporaryUrl, mimetype } = await uploadMediaFile({
+    ): Promise<
+      InternalServiceResponse<
+        ErrorReasonTypes<string>,
+        {
+          publishedItemId: string;
+          shopItemElementIndex: number;
+          blobFileKey: string;
+          fileTemporaryUrl: string;
+          mimetype: string;
+        }
+      >
+    > => {
+      const uploadMediaFileResponse = await uploadMediaFile({
+        controller,
         file: mediaFile,
         blobStorageService: controller.blobStorageService,
       });
+      if (uploadMediaFileResponse.type === EitherType.failure) {
+        return uploadMediaFileResponse;
+      }
+      const {
+        success: { blobFileKey, fileTemporaryUrl, mimetype },
+      } = uploadMediaFileResponse;
 
-      return {
+      return Success({
         publishedItemId,
         shopItemElementIndex: index,
         blobFileKey,
         fileTemporaryUrl,
         mimetype,
-      };
+      });
     },
   );
+
+  const mappedUploadMediaFileResponses = collectMappedResponses({
+    mappedResponses: uploadMediaFileResponses,
+  });
+  if (mappedUploadMediaFileResponses.type === EitherType.failure) {
+    return mappedUploadMediaFileResponses;
+  }
+  const { success: shopItemMediaElements } = mappedUploadMediaFileResponses;
 
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 

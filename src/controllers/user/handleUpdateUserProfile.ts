@@ -77,11 +77,16 @@ export async function handleUpdateUserProfile({
       unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
     if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-      await controller.paymentProcessingService.updateCustomerEmail({
-        paymentProcessorCustomerId:
-          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID?.paymentProcessorCustomerId,
-        updatedEmail: userEmail,
-      });
+      const updateCustomerEmailResponse =
+        await controller.paymentProcessingService.updateCustomerEmail({
+          controller,
+          paymentProcessorCustomerId:
+            unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID?.paymentProcessorCustomerId,
+          updatedEmail: userEmail,
+        });
+      if (updateCustomerEmailResponse.type === EitherType.failure) {
+        return updateCustomerEmailResponse;
+      }
     }
   }
 

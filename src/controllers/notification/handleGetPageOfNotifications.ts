@@ -1,14 +1,13 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   Failure,
-  FailureResponse,
   InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
-  SuccessResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
@@ -181,19 +180,13 @@ async function assembleNotifcations({
     },
   );
 
-  const firstOccuringError = assembleRenderableNotificationResponses.find(
-    (responseElement) => {
-      return responseElement.type === EitherType.failure;
-    },
-  );
-  if (firstOccuringError) {
-    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+  const renderableUserNotificationsResponse = collectMappedResponses({
+    mappedResponses: assembleRenderableNotificationResponses,
+  });
+  if (renderableUserNotificationsResponse.type === EitherType.failure) {
+    return renderableUserNotificationsResponse;
   }
-
-  const renderableUserNotifications = assembleRenderableNotificationResponses.map(
-    (responseElement) =>
-      (responseElement as SuccessResponse<RenderableUserNotification>).success,
-  );
+  const { success: renderableUserNotifications } = renderableUserNotificationsResponse;
 
   return Success(
     renderableUserNotifications.filter(

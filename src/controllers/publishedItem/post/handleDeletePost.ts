@@ -65,7 +65,13 @@ export async function handleDeletePost({
   }
   const { success: blobPointers } = deletePostContentElementsByPostIdResponse;
 
-  await controller.blobStorageService.deleteImages({ blobPointers });
+  const deleteImagesResponse = await controller.blobStorageService.deleteImages({
+    controller,
+    blobPointers,
+  });
+  if (deleteImagesResponse.type === EitherType.failure) {
+    return deleteImagesResponse;
+  }
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED POST LIKES

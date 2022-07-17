@@ -63,13 +63,18 @@ export async function handleStoreCreditCard({
     selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
   if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-    const paymentProcessorCardId =
+    const storeCustomerCreditCardResponse =
       await controller.paymentProcessingService.storeCustomerCreditCard({
+        controller,
         paymentProcessorCustomerId:
           unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
         paymentProcessorCardToken,
         ipAddressOfRequestor,
       });
+    if (storeCustomerCreditCardResponse.type === EitherType.failure) {
+      return storeCustomerCreditCardResponse;
+    }
+    const { success: paymentProcessorCardId } = storeCustomerCreditCardResponse;
 
     const getCreditCardsStoredByUserIdResponse =
       await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(

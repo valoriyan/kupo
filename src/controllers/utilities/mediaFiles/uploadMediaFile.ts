@@ -1,17 +1,31 @@
 import sharp from "sharp";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import { Controller } from "tsoa";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 
 export async function uploadMediaFile({
+  controller,
   file,
   blobStorageService,
 }: {
+  controller: Controller;
   file: Express.Multer.File;
   blobStorageService: BlobStorageServiceInterface;
-}): Promise<{
-  blobFileKey: string;
-  fileTemporaryUrl: string;
-  mimetype: string;
-}> {
+}): Promise<
+  InternalServiceResponse<
+    ErrorReasonTypes<string>,
+    {
+      blobFileKey: string;
+      fileTemporaryUrl: string;
+      mimetype: string;
+    }
+  >
+> {
   const { mimetype } = file;
 
   const permittedImageTypes = ["image/jpeg", "image/png"];
@@ -55,15 +69,27 @@ export async function uploadMediaFile({
   // Revert to original file if compression somehow made the file larger (it could happen...)
   buffer = newBufferSizeInKB < ogBufferSizeInKB ? buffer : file.buffer;
 
-  const blobItemPointer = await blobStorageService.saveImage({ image: buffer });
+  const saveImageResponse = await blobStorageService.saveImage({
+    controller,
+    image: buffer,
+  });
+  if (saveImageResponse.type === EitherType.failure) {
+    return saveImageResponse;
+  }
+  const { success: blobItemPointer } = saveImageResponse;
 
-  const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
+  const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+    controller,
     blobItemPointer,
   });
+  if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+    return getTemporaryImageUrlResponse;
+  }
+  const { success: fileTemporaryUrl } = getTemporaryImageUrlResponse;
 
-  return {
+  return Success({
     blobFileKey: blobItemPointer.fileKey,
     fileTemporaryUrl,
     mimetype,
-  };
+  });
 }

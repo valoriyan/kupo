@@ -33,17 +33,25 @@ export async function handleUpdateUserProfilePicture({
     UpdateUserProfilePictureSuccess
   >
 > {
+  const { profilePicture } = requestBody;
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
   );
   if (error) return error;
 
-  const profilePictureBlobItemPointer = requestBody.profilePicture
-    ? await controller.blobStorageService.saveImage({
-        image: requestBody.profilePicture?.buffer,
-      })
-    : null;
+  let profilePictureBlobItemPointer = undefined;
+  if (!!profilePicture) {
+    const saveImageResponse = await controller.blobStorageService.saveImage({
+      controller,
+      image: requestBody.profilePicture?.buffer,
+    });
+    if (saveImageResponse.type === EitherType.failure) {
+      return saveImageResponse;
+    }
+    profilePictureBlobItemPointer = saveImageResponse.success;
+  }
 
   const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(

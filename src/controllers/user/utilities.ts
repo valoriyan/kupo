@@ -5,13 +5,12 @@ import { RenderableUser, UnrenderableUser } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { Controller } from "tsoa";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   Failure,
-  FailureResponse,
   InternalServiceResponse,
   Success,
-  SuccessResponse,
 } from "../../utilities/monads";
 import { GenericResponseFailedReason } from "../models";
 
@@ -117,20 +116,9 @@ export async function constructRenderableUsersFromParts({
       }),
   );
 
-  const firstOccuringError = constructRenderableUserFromPartsResponses.find(
-    (responseElement) => {
-      return responseElement.type === EitherType.failure;
-    },
-  );
-  if (firstOccuringError) {
-    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
-  }
-
-  const renderableUsers = constructRenderableUserFromPartsResponses.map(
-    (responseElement) => (responseElement as SuccessResponse<RenderableUser>).success,
-  );
-
-  return Success(renderableUsers);
+  return collectMappedResponses({
+    mappedResponses: constructRenderableUserFromPartsResponses,
+  });
 }
 
 export async function constructRenderableUserFromParts({
@@ -160,21 +148,33 @@ export async function constructRenderableUserFromParts({
     isAdmin,
   } = unrenderableUser;
 
-  const backgroundImageTemporaryUrl = !!backgroundImageBlobFileKey
-    ? await blobStorageService.getTemporaryImageUrl({
-        blobItemPointer: {
-          fileKey: backgroundImageBlobFileKey,
-        },
-      })
-    : undefined;
+  let backgroundImageTemporaryUrl = undefined;
+  if (!!backgroundImageBlobFileKey) {
+    const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+      controller,
+      blobItemPointer: {
+        fileKey: backgroundImageBlobFileKey,
+      },
+    });
+    if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+      return getTemporaryImageUrlResponse;
+    }
+    backgroundImageTemporaryUrl = getTemporaryImageUrlResponse.success;
+  }
 
-  const profilePictureTemporaryUrl = !!profilePictureBlobFileKey
-    ? await blobStorageService.getTemporaryImageUrl({
-        blobItemPointer: {
-          fileKey: profilePictureBlobFileKey,
-        },
-      })
-    : undefined;
+  let profilePictureTemporaryUrl = undefined;
+  if (!!profilePictureBlobFileKey) {
+    const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+      controller,
+      blobItemPointer: {
+        fileKey: profilePictureBlobFileKey,
+      },
+    });
+    if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+      return getTemporaryImageUrlResponse;
+    }
+    profilePictureTemporaryUrl = getTemporaryImageUrlResponse.success;
+  }
 
   const canUserViewUserContentResponse = await canUserViewUserContent({
     controller,

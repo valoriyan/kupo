@@ -83,3 +83,22 @@ function getMessageFromError(error: unknown): string {
   }
   return "";
 }
+
+export const collectMappedResponses = <T>({
+  mappedResponses,
+}: {
+  mappedResponses: InternalServiceResponse<string, T>[];
+}): FailureResponse<string> | SuccessResponse<T[]> => {
+  const firstOccuringError = mappedResponses.find((responseElement) => {
+    return responseElement.type === EitherType.failure;
+  });
+  if (firstOccuringError) {
+    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+  }
+
+  const successes = mappedResponses.map(
+    (responseElement) => (responseElement as SuccessResponse<T>).success,
+  );
+
+  return Success(successes);
+};

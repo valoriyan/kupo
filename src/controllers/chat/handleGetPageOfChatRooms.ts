@@ -1,11 +1,10 @@
 import express from "express";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
-  FailureResponse,
   SecuredHTTPResponse,
   Success,
-  SuccessResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
@@ -66,25 +65,19 @@ export async function handleGetPageOfChatRooms({
         );
       },
     );
-    const firstOccuringError = selectUsersByUsernameMatchingSubstringResponses.find(
-      (responseElement) => {
-        return responseElement.type === EitherType.failure;
-      },
-    );
-    if (firstOccuringError) {
-      return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+
+    const arrayOfMatchedUsers = collectMappedResponses({
+      mappedResponses: selectUsersByUsernameMatchingSubstringResponses,
+    });
+    if (arrayOfMatchedUsers.type === EitherType.failure) {
+      return arrayOfMatchedUsers;
     }
 
-    const matchedUsers = selectUsersByUsernameMatchingSubstringResponses
-      .map(
-        (responseElement) =>
-          (responseElement as SuccessResponse<UnrenderableUser[]>).success,
-      )
-      .reduce(
-        (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
-          memo.concat(...matchedUsers),
-        [],
-      );
+    const matchedUsers = arrayOfMatchedUsers.success.reduce(
+      (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
+        memo.concat(...matchedUsers),
+      [],
+    );
 
     const matchedUserIds = matchedUsers.map(({ userId }) => userId);
 

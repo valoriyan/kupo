@@ -11,12 +11,11 @@ import {
 import { assembleBaseRenderablePublishedItem } from "../utilities";
 import { Controller } from "tsoa";
 import {
+  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
-  FailureResponse,
   InternalServiceResponse,
   Success,
-  SuccessResponse,
 } from "../../../utilities/monads";
 
 export async function constructRenderablePostFromPartsById({
@@ -84,20 +83,9 @@ export async function constructRenderablePostsFromParts({
       }),
   );
 
-  const firstOccuringError = constructRenderablePostFromPartsResponses.find(
-    (responseElement) => {
-      return responseElement.type === EitherType.failure;
-    },
-  );
-  if (firstOccuringError) {
-    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
-  }
-
-  const renderablePosts = constructRenderablePostFromPartsResponses.map(
-    (responseElement) => (responseElement as SuccessResponse<RenderablePost>).success,
-  );
-
-  return Success(renderablePosts);
+  return collectMappedResponses({
+    mappedResponses: constructRenderablePostFromPartsResponses,
+  });
 }
 
 export async function constructRenderablePostFromParts({
@@ -290,21 +278,36 @@ export async function assemblePostMediaElements({
   }
   const { success: filedPostMediaElements } = getPostContentElementsByPostIdResponse;
 
-  const mediaElements: MediaElement[] = await BluebirdPromise.map(
+  const getTemporaryImageUrlResponses = await BluebirdPromise.map(
     filedPostMediaElements,
-    async (filedPostMediaElement): Promise<MediaElement> => {
-      const fileTemporaryUrl = await blobStorageService.getTemporaryImageUrl({
+    async (
+      filedPostMediaElement,
+    ): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement>> => {
+      const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+        controller,
         blobItemPointer: {
           fileKey: filedPostMediaElement.blobFileKey,
         },
       });
+      if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+        return getTemporaryImageUrlResponse;
+      }
+      const { success: fileTemporaryUrl } = getTemporaryImageUrlResponse;
 
-      return {
+      return Success({
         temporaryUrl: fileTemporaryUrl,
         mimeType: filedPostMediaElement.mimeType,
-      };
+      });
     },
   );
+
+  const mappedGetTemporaryImageUrlResponses = collectMappedResponses({
+    mappedResponses: getTemporaryImageUrlResponses,
+  });
+  if (mappedGetTemporaryImageUrlResponses.type === EitherType.failure) {
+    return mappedGetTemporaryImageUrlResponses;
+  }
+  const { success: mediaElements } = mappedGetTemporaryImageUrlResponses;
 
   return Success(mediaElements);
 }

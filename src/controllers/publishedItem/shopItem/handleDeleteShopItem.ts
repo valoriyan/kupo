@@ -76,7 +76,13 @@ export async function handleDeleteShopItem({
   }
   const { success: blobPointers } = deleteShopItemMediaElementsByPublishedItemIdResponse;
 
-  await controller.blobStorageService.deleteImages({ blobPointers });
+  const deleteImagesResponse = await controller.blobStorageService.deleteImages({
+    controller,
+    blobPointers,
+  });
+  if (deleteImagesResponse.type === EitherType.failure) {
+    return deleteImagesResponse;
+  }
 
   return Success({});
 }

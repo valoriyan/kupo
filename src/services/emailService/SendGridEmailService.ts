@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { getEnvironmentVariable } from "../../utilities";
 import { EmailServiceInterface } from "./models";
 import { generateResetPasswordToken, generateResetPasswordURL } from "./utilities";
@@ -5,6 +6,14 @@ import SendgridMailer from "@sendgrid/mail";
 import { UnrenderableUser } from "../../controllers/user/models";
 import { generateForgotPasswordEmailHtml } from "./templates/generateForgotPasswordEmailHtml";
 import { generateWelcomeEmailHtml } from "./templates/generateWelcomeEmailHtml";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../utilities/monads";
+import { Controller } from "tsoa";
+import { GenericResponseFailedReason } from "../../controllers/models";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
@@ -19,66 +28,98 @@ export class SendGridEmailService extends EmailServiceInterface {
     SendgridMailer.setApiKey(SendGridEmailService.SENDGRID_API_KEY);
   }
 
-  async sendResetPasswordEmail({ user }: { user: UnrenderableUser }): Promise<void> {
-    const { userId, email } = user;
+  async sendResetPasswordEmail({
+    controller,
+    user,
+  }: {
+    controller: Controller;
+    user: UnrenderableUser;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const { userId, email } = user;
 
-    const resetPasswordToken = generateResetPasswordToken({
-      userId,
-      jwtPrivateKey: SendGridEmailService.JWT_PRIVATE_KEY,
-    });
-
-    const resetPasswordUrlWithToken = generateResetPasswordURL({
-      frontendBaseUrl: SendGridEmailService.FRONTEND_BASE_URL,
-      resetPasswordToken,
-    });
-
-    const message = {
-      to: email,
-      from: {
-        name: "Kupono.io",
-        email: "noreply@kupono.io",
-      },
-      subject: "Password Reset Requested",
-      html: generateForgotPasswordEmailHtml({ resetPasswordUrlWithToken }),
-    };
-
-    await SendgridMailer.send(message)
-      .then(() => {
-        console.log("Email sent");
-      })
-      .catch((error: Error) => {
-        console.error(error);
+      const resetPasswordToken = generateResetPasswordToken({
+        userId,
+        jwtPrivateKey: SendGridEmailService.JWT_PRIVATE_KEY,
       });
 
-    return;
+      const resetPasswordUrlWithToken = generateResetPasswordURL({
+        frontendBaseUrl: SendGridEmailService.FRONTEND_BASE_URL,
+        resetPasswordToken,
+      });
+
+      const message = {
+        to: email,
+        from: {
+          name: "Kupono.io",
+          email: "noreply@kupono.io",
+        },
+        subject: "Password Reset Requested",
+        html: generateForgotPasswordEmailHtml({ resetPasswordUrlWithToken }),
+      };
+
+      await SendgridMailer.send(message)
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendResetPasswordEmail",
+      });
+    }
   }
 
-  async sendWelcomeEmail({ user }: { user: UnrenderableUser }): Promise<void> {
-    const { email } = user;
+  async sendWelcomeEmail({
+    controller,
+    user,
+  }: {
+    controller: Controller;
+    user: UnrenderableUser;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const { email } = user;
 
-    const message = {
-      to: email,
-      from: {
-        name: "Kupono.io",
-        email: "hello@kupono.io",
-      },
-      subject: "Welcome to Kupono.io",
-      dynamic_template_data: {
+      const message = {
+        to: email,
+        from: {
+          name: "Kupono.io",
+          email: "hello@kupono.io",
+        },
         subject: "Welcome to Kupono.io",
-      },
-      html: generateWelcomeEmailHtml({
-        homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,
-      }),
-    };
+        dynamic_template_data: {
+          subject: "Welcome to Kupono.io",
+        },
+        html: generateWelcomeEmailHtml({
+          homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,
+        }),
+      };
 
-    await SendgridMailer.send(message)
-      .then(() => {
-        console.log("Email sent");
-      })
-      .catch((error: Error) => {
-        console.error(error);
+      await SendgridMailer.send(message)
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendWelcomeEmail",
       });
-
-    return;
+    }
   }
 }

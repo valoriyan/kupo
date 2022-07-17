@@ -65,10 +65,15 @@ export async function handleRegisterUser({
 
   const lowerCaseUsername = username.toLowerCase();
 
-  const paymentProcessorCustomerId =
+  const registerCustomerResponse =
     await controller.paymentProcessingService.registerCustomer({
+      controller,
       customerEmail: email,
     });
+  if (registerCustomerResponse.type === EitherType.failure) {
+    return registerCustomerResponse;
+  }
+  const { success: paymentProcessorCustomerId } = registerCustomerResponse;
 
   const createUserResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.createUser({

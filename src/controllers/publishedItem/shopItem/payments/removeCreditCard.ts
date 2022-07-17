@@ -74,11 +74,17 @@ export async function handleRemoveCreditCard({
       return unstoreCreditCardResponse;
     }
 
-    await controller.paymentProcessingService.removeCustomerCreditCard({
-      paymentProcessorCardId: dBStoredCreditCardDatum.payment_processor_card_id,
-      paymentProcessorCustomerId:
-        unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
-    });
+    const removeCustomerCreditCardResponse =
+      await controller.paymentProcessingService.removeCustomerCreditCard({
+        controller,
+        paymentProcessorCardId: dBStoredCreditCardDatum.payment_processor_card_id,
+        paymentProcessorCustomerId:
+          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+      });
+    if (removeCustomerCreditCardResponse.type === EitherType.failure) {
+      return removeCustomerCreditCardResponse;
+    }
+
     return Success({});
   }
 
