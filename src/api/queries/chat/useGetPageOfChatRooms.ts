@@ -28,5 +28,5 @@ async function fetchPageOfChatRooms({ cursor, query }: GetPageOfChatRoomsArgs) {
   const res = await Api.getPageOfChatRooms({ query, cursor, pageSize: 25 });
 
   if (res.data.success) return res.data.success;
-  throw new Error(res.data.error?.reason ?? "Unknown Error");
+  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
 }

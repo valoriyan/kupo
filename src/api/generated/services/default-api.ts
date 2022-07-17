@@ -55,6 +55,128 @@ import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
 import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 // @ts-ignore
+import { EitherAuthFailedReasonAuthSuccess } from "../types";
+// @ts-ignore
+import { EitherCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess } from "../types";
+// @ts-ignore
+import { EitherDeletePostFailedDeletePostSuccess } from "../types";
+// @ts-ignore
+import { EitherDeleteShopItemFailedDeleteShopItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrAuthFailedReasonAuthSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrCreateChatMessageFailedReasonCreateChatMessageSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrCreatePostFailedReasonCreatePostSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrDeleteChatMessageFailedReasonDeleteChatMessageSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdminSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfChatMessagesFailedReasonGetPageOfChatMessagesSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetUserProfileFailedReasonGetUserProfileSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetUsersByIdsFailedReasonGetUsersByIdsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrPurchaseShopItemFailedReasonPurchaseShopItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrRegisterUserFailedReasonAuthSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrRemoveCreditCardFailedReasonRemoveCreditCardSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSearchForHashtagsFailedReasonSearchForHashtagsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSearchForPostsFailedReasonSearchForPostsSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSearchForUsersFailedReasonSearchForUsersSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSharePostFailedReasonSharePostSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrStoreCreditCardFailedReasonStoreCreditCardSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdatePasswordFailedUpdatePasswordSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdatePostFailedReasonUpdatePostSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdateShopItemFailedReasonUpdateShopItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdateUserProfileFailedReasonUpdateUserProfileSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess } from "../types";
+// @ts-ignore
+import { EitherFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
+// @ts-ignore
+import { EitherFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse } from "../types";
+// @ts-ignore
+import { EitherFollowUserFailedFollowUserSuccess } from "../types";
+// @ts-ignore
+import { EitherGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess } from "../types";
+// @ts-ignore
+import { EitherResetPasswordFailedReasonResetPasswordSuccess } from "../types";
+// @ts-ignore
+import { EitherSetUserHashtagsFailedSetUserHashtagsSuccess } from "../types";
+// @ts-ignore
+import { EitherUserLikesPublishedItemFailedUserLikesPublishedItemSuccess } from "../types";
+// @ts-ignore
+import { EitherUserSavesPublishedItemFailedUserSavesPublishedItemSuccess } from "../types";
+// @ts-ignore
+import { EitherUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess } from "../types";
+// @ts-ignore
 import { ElevateUserToAdminRequestBody } from "../types";
 // @ts-ignore
 import { FollowUserRequestBody } from "../types";
@@ -99,16 +221,6 @@ import { GetUsersByIdsRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
-import { HTTPResponseAuthFailedReasonAuthSuccess } from "../types";
-// @ts-ignore
-import { HTTPResponseCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess } from "../types";
-// @ts-ignore
-import { HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess } from "../types";
-// @ts-ignore
-import { HTTPResponseRegisterUserFailedReasonAuthSuccess } from "../types";
-// @ts-ignore
-import { HTTPResponseResetPasswordFailedReasonResetPasswordSuccess } from "../types";
-// @ts-ignore
 import { InlineObject5 } from "../types";
 // @ts-ignore
 import { InlineResponse200 } from "../types";
@@ -136,116 +248,6 @@ import { SearchForPostsRequestBody } from "../types";
 import { SearchForUsersRequestBody } from "../types";
 // @ts-ignore
 import { SearchUserProfilesByUsernameRequestBody } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseCreateChatMessageFailedReasonCreateChatMessageSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseCreatePostFailedReasonCreatePostSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseCreateShopItemFailedReasonCreateShopItemSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseDeleteChatMessageFailedReasonDeleteChatMessageSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseDeletePostFailedDeletePostSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseFollowUserFailedFollowUserSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfChatMessagesFailedReasonGetPageOfChatMessagesSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetUserProfileFailedReasonGetUserProfileSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetUsersByIdsFailedReasonGetUsersByIdsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponsePurchaseShopItemFailedReasonPurchaseShopItemSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseRemoveCreditCardFailedReasonRemoveCreditCardSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSearchForHashtagsFailedReasonSearchForHashtagsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSearchForPostsFailedReasonSearchForPostsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSearchForUsersFailedReasonSearchForUsersSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseSharePostFailedReasonSharePostSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseStoreCreditCardFailedReasonStoreCreditCardSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUpdatePostFailedReasonUpdatePostSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUpdateShopItemFailedReasonUpdateShopItemSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUpdateUserProfileFailedReasonUpdateUserProfileSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUserSavesPublishedItemFailedUserSavesPublishedItemSuccess } from "../types";
-// @ts-ignore
-import { SecuredHTTPResponseUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess } from "../types";
 // @ts-ignore
 import { SetUserContentFeedFiltersRequestBody } from "../types";
 // @ts-ignore
@@ -3522,7 +3524,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess>
+      ) => AxiosPromise<EitherCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.checkResetPasswordTokenValidity(
@@ -3549,7 +3551,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseCreateChatMessageFailedReasonCreateChatMessageSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrCreateChatMessageFailedReasonCreateChatMessageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createChatMessage(
         createChatMessageRequestBody,
@@ -3575,7 +3577,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.createChatMessageInNewChatRoom(
@@ -3610,7 +3612,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseCreatePostFailedReasonCreatePostSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrCreatePostFailedReasonCreatePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
         mediaFiles,
@@ -3640,7 +3642,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.createPublishedItemComment(
@@ -3681,7 +3683,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseCreateShopItemFailedReasonCreateShopItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
         mediaFiles,
@@ -3714,7 +3716,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseDeleteChatMessageFailedReasonDeleteChatMessageSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrDeleteChatMessageFailedReasonDeleteChatMessageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteChatMessage(
         deleteChatMessageRequestBody,
@@ -3740,7 +3742,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseDeletePostFailedDeletePostSuccess>
+      ) => AxiosPromise<EitherDeletePostFailedDeletePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deletePost(
         deletePostRequestBody,
@@ -3766,7 +3768,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.deletePublishedItemComment(
@@ -3793,7 +3795,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess>
+      ) => AxiosPromise<EitherDeleteShopItemFailedDeleteShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteShopItem(
         deleteShopItemRequestBody,
@@ -3819,7 +3821,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.doesChatRoomExistWithUserIds(
@@ -3846,7 +3848,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdminSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.elevateUserToAdmin(
         elevateUserToAdminRequestBody,
@@ -3872,7 +3874,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFollowUserFailedFollowUserSuccess>
+      ) => AxiosPromise<EitherFollowUserFailedFollowUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
         followUserRequestBody,
@@ -3898,7 +3900,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getChatRoomById(
         getChatRoomByIdRequestBody,
@@ -3922,7 +3924,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getCountOfUnreadNotifications(options);
@@ -3944,7 +3946,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getCreditCardsStoredByUserId(options);
@@ -3968,7 +3970,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfALLPUBLISHEDITEMS(
@@ -3995,7 +3997,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfChatMessagesFailedReasonGetPageOfChatMessagesSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfChatMessagesFailedReasonGetPageOfChatMessagesSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatMessages(
         getPageOfChatMessagesRequestBody,
@@ -4021,7 +4023,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfChatRooms(
         getPageOfChatRoomsRequestBody,
@@ -4047,7 +4049,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfNotifications(
         getPageOfNotificationsRequestBody,
@@ -4073,7 +4075,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfPostFromFollowedHashtag(
@@ -4100,7 +4102,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfPostFromFollowedUsers(
@@ -4127,7 +4129,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfSavedPosts(
         getPageOfSavedPostsRequestBody,
@@ -4153,7 +4155,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfUsersFollowedByUserId(
@@ -4180,7 +4182,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPageOfUsersFollowingUserId(
@@ -4207,7 +4209,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPasswordResetEmail(
         getPasswordResetEmailRequestBody,
@@ -4233,7 +4235,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUserId(
         getPostsByUserIdRequestBody,
@@ -4259,7 +4261,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUsername(
         getPostsByUsernameRequestBody,
@@ -4285,7 +4287,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess>
+      ) => AxiosPromise<EitherGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsScheduledByUser(
         getPostsScheduledByUserRequestBody,
@@ -4311,7 +4313,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPublishedItemById(
         getPublishedItemByIdRequestBody,
@@ -4337,7 +4339,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getShopItemsByUserId(
         getShopItemsByUserIdRequestBody,
@@ -4363,7 +4365,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getShopItemsByUsername(
         getShopItemsByUsernameRequestBody,
@@ -4389,7 +4391,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUserContentFeedFilters(
         body,
@@ -4415,7 +4417,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetUserProfileFailedReasonGetUserProfileSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetUserProfileFailedReasonGetUserProfileSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUserProfile(
         getUserProfileRequestBody,
@@ -4441,7 +4443,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetUsersByIdsFailedReasonGetUsersByIdsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetUsersByIdsFailedReasonGetUsersByIdsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByIds(
         getUsersByIdsRequestBody,
@@ -4467,7 +4469,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersByUsernames(
         getUsersByUsernamesRequestBody,
@@ -4493,7 +4495,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseAuthFailedReasonAuthSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrAuthFailedReasonAuthSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.loginUser(
         loginUserRequestBody,
@@ -4535,7 +4537,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.makeCardPrimary(
         makeCreditCardPrimaryRequestBody,
@@ -4561,7 +4563,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponsePurchaseShopItemFailedReasonPurchaseShopItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrPurchaseShopItemFailedReasonPurchaseShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.purchaseShopItem(
         purchaseShopItemRequestBody,
@@ -4587,7 +4589,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.readPageOfCommentsByPublishedItemId(
@@ -4612,7 +4614,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseAuthFailedReasonAuthSuccess>
+      ) => AxiosPromise<EitherAuthFailedReasonAuthSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.refreshAccessToken(
         options,
@@ -4637,7 +4639,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseRegisterUserFailedReasonAuthSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrRegisterUserFailedReasonAuthSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(
         registerUserRequestBody,
@@ -4663,7 +4665,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseRemoveCreditCardFailedReasonRemoveCreditCardSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrRemoveCreditCardFailedReasonRemoveCreditCardSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.removeCreditCard(
         removeCreditCardRequestBody,
@@ -4689,7 +4691,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse>
+      ) => AxiosPromise<EitherFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.removeUserLikeFromPublishedItem(
@@ -4716,7 +4718,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<HTTPResponseResetPasswordFailedReasonResetPasswordSuccess>
+      ) => AxiosPromise<EitherResetPasswordFailedReasonResetPasswordSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword(
         resetPasswordRequestBody,
@@ -4742,7 +4744,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSearchForHashtagsFailedReasonSearchForHashtagsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSearchForHashtagsFailedReasonSearchForHashtagsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchForHashtags(
         searchForHashtagsRequestBody,
@@ -4768,7 +4770,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSearchForPostsFailedReasonSearchForPostsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSearchForPostsFailedReasonSearchForPostsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchForPosts(
         searchForPostsRequestBody,
@@ -4794,7 +4796,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSearchForUsersFailedReasonSearchForUsersSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSearchForUsersFailedReasonSearchForUsersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.searchForUsers(
         searchForUsersRequestBody,
@@ -4820,7 +4822,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.searchUserProfilesByUsername(
@@ -4870,7 +4872,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.setUserContentFeedFilters(
         setUserContentFeedFiltersRequestBody,
@@ -4896,7 +4898,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess>
+      ) => AxiosPromise<EitherSetUserHashtagsFailedSetUserHashtagsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.setUserHashtags(
         setUserHashtagsRequestBody,
@@ -4922,7 +4924,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseSharePostFailedReasonSharePostSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSharePostFailedReasonSharePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.sharePost(
         sharePostRequestBody,
@@ -4948,7 +4950,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseStoreCreditCardFailedReasonStoreCreditCardSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrStoreCreditCardFailedReasonStoreCreditCardSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.storeCreditCard(
         storeCreditCardRequestBody,
@@ -4974,7 +4976,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse>
+      ) => AxiosPromise<EitherFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.unfollowUser(
         unfollowUserRequestBody,
@@ -5000,7 +5002,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdatePasswordFailedUpdatePasswordSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePassword(
         updatePasswordRequestBody,
@@ -5026,7 +5028,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdatePostFailedReasonUpdatePostSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdatePostFailedReasonUpdatePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePost(
         updatePostRequestBody,
@@ -5068,7 +5070,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdateShopItemFailedReasonUpdateShopItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateShopItemFailedReasonUpdateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
         publishedItemId,
@@ -5102,7 +5104,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserBackgroundImage(
         backgroundImage,
@@ -5128,7 +5130,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedReasonUpdateUserProfileSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfileFailedReasonUpdateUserProfileSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfile(
         updateUserProfileRequestBody,
@@ -5154,7 +5156,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfilePicture(
         profilePicture,
@@ -5180,7 +5182,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess>
+      ) => AxiosPromise<EitherUserLikesPublishedItemFailedUserLikesPublishedItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userLikesPublishedItem(
         userLikesPublishedItemRequestBody,
@@ -5206,7 +5208,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUserSavesPublishedItemFailedUserSavesPublishedItemSuccess>
+      ) => AxiosPromise<EitherUserSavesPublishedItemFailedUserSavesPublishedItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userSavesPublishedItem(
         userSavesPublishedItemRequestBody,
@@ -5232,7 +5234,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<SecuredHTTPResponseUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess>
+      ) => AxiosPromise<EitherUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userUnsavesPublishedItem(
         removeUserLikeFromPublishedItemRequestBody,
@@ -5268,7 +5270,7 @@ export const DefaultApiFactory = function (
     checkResetPasswordTokenValidity(
       checkResetPasswordTokenValidityRequestBody: CheckResetPasswordTokenValidityRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess> {
+    ): AxiosPromise<EitherCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess> {
       return localVarFp
         .checkResetPasswordTokenValidity(
           checkResetPasswordTokenValidityRequestBody,
@@ -5285,7 +5287,7 @@ export const DefaultApiFactory = function (
     createChatMessage(
       createChatMessageRequestBody: CreateChatMessageRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseCreateChatMessageFailedReasonCreateChatMessageSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrCreateChatMessageFailedReasonCreateChatMessageSuccess> {
       return localVarFp
         .createChatMessage(createChatMessageRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5299,7 +5301,7 @@ export const DefaultApiFactory = function (
     createChatMessageInNewChatRoom(
       createChatMessageInNewRoomRequestBody: CreateChatMessageInNewRoomRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess> {
       return localVarFp
         .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5321,7 +5323,7 @@ export const DefaultApiFactory = function (
       scheduledPublicationTimestamp?: string,
       expirationTimestamp?: string,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseCreatePostFailedReasonCreatePostSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrCreatePostFailedReasonCreatePostSuccess> {
       return localVarFp
         .createPost(
           mediaFiles,
@@ -5342,7 +5344,7 @@ export const DefaultApiFactory = function (
     createPublishedItemComment(
       createPublishedItemCommentRequestBody: CreatePublishedItemCommentRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess> {
       return localVarFp
         .createPublishedItemComment(createPublishedItemCommentRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5370,7 +5372,7 @@ export const DefaultApiFactory = function (
       collaboratorUserIds: string,
       expirationTimestamp?: string,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseCreateShopItemFailedReasonCreateShopItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess> {
       return localVarFp
         .createShopItem(
           mediaFiles,
@@ -5394,7 +5396,7 @@ export const DefaultApiFactory = function (
     deleteChatMessage(
       deleteChatMessageRequestBody: DeleteChatMessageRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseDeleteChatMessageFailedReasonDeleteChatMessageSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrDeleteChatMessageFailedReasonDeleteChatMessageSuccess> {
       return localVarFp
         .deleteChatMessage(deleteChatMessageRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5408,7 +5410,7 @@ export const DefaultApiFactory = function (
     deletePost(
       deletePostRequestBody: DeletePostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseDeletePostFailedDeletePostSuccess> {
+    ): AxiosPromise<EitherDeletePostFailedDeletePostSuccess> {
       return localVarFp
         .deletePost(deletePostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5422,7 +5424,7 @@ export const DefaultApiFactory = function (
     deletePublishedItemComment(
       deletePublishedItemCommentRequestBody: DeletePublishedItemCommentRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess> {
       return localVarFp
         .deletePublishedItemComment(deletePublishedItemCommentRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5436,7 +5438,7 @@ export const DefaultApiFactory = function (
     deleteShopItem(
       deleteShopItemRequestBody: DeleteShopItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseDeleteShopItemFailedDeleteShopItemSuccess> {
+    ): AxiosPromise<EitherDeleteShopItemFailedDeleteShopItemSuccess> {
       return localVarFp
         .deleteShopItem(deleteShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5450,7 +5452,7 @@ export const DefaultApiFactory = function (
     doesChatRoomExistWithUserIds(
       doesChatRoomExistWithUserIdsRequestBody: DoesChatRoomExistWithUserIdsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess> {
       return localVarFp
         .doesChatRoomExistWithUserIds(doesChatRoomExistWithUserIdsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5464,7 +5466,7 @@ export const DefaultApiFactory = function (
     elevateUserToAdmin(
       elevateUserToAdminRequestBody: ElevateUserToAdminRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseElevateUserToAdminFailedElevateUserToAdminSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdminSuccess> {
       return localVarFp
         .elevateUserToAdmin(elevateUserToAdminRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5478,7 +5480,7 @@ export const DefaultApiFactory = function (
     followUser(
       followUserRequestBody: FollowUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFollowUserFailedFollowUserSuccess> {
+    ): AxiosPromise<EitherFollowUserFailedFollowUserSuccess> {
       return localVarFp
         .followUser(followUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5492,7 +5494,7 @@ export const DefaultApiFactory = function (
     getChatRoomById(
       getChatRoomByIdRequestBody: GetChatRoomByIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess> {
       return localVarFp
         .getChatRoomById(getChatRoomByIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5504,7 +5506,7 @@ export const DefaultApiFactory = function (
      */
     getCountOfUnreadNotifications(
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess> {
       return localVarFp
         .getCountOfUnreadNotifications(options)
         .then((request) => request(axios, basePath));
@@ -5516,7 +5518,7 @@ export const DefaultApiFactory = function (
      */
     getCreditCardsStoredByUserId(
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess> {
       return localVarFp
         .getCreditCardsStoredByUserId(options)
         .then((request) => request(axios, basePath));
@@ -5530,7 +5532,7 @@ export const DefaultApiFactory = function (
     getPageOfALLPUBLISHEDITEMS(
       getPageOfAllPublishedItemsRequestBody: GetPageOfAllPublishedItemsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess> {
       return localVarFp
         .getPageOfALLPUBLISHEDITEMS(getPageOfAllPublishedItemsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5544,7 +5546,7 @@ export const DefaultApiFactory = function (
     getPageOfChatMessages(
       getPageOfChatMessagesRequestBody: GetPageOfChatMessagesRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfChatMessagesFailedReasonGetPageOfChatMessagesSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfChatMessagesFailedReasonGetPageOfChatMessagesSuccess> {
       return localVarFp
         .getPageOfChatMessages(getPageOfChatMessagesRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5558,7 +5560,7 @@ export const DefaultApiFactory = function (
     getPageOfChatRooms(
       getPageOfChatRoomsRequestBody: GetPageOfChatRoomsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfChatRoomsFailedReasonGetPageOfChatRoomsSuccess> {
       return localVarFp
         .getPageOfChatRooms(getPageOfChatRoomsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5572,7 +5574,7 @@ export const DefaultApiFactory = function (
     getPageOfNotifications(
       getPageOfNotificationsRequestBody: GetPageOfNotificationsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess> {
       return localVarFp
         .getPageOfNotifications(getPageOfNotificationsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5586,7 +5588,7 @@ export const DefaultApiFactory = function (
     getPageOfPostFromFollowedHashtag(
       getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess> {
       return localVarFp
         .getPageOfPostFromFollowedHashtag(
           getPageOfPostFromFollowedHashtagRequestBody,
@@ -5603,7 +5605,7 @@ export const DefaultApiFactory = function (
     getPageOfPostFromFollowedUsers(
       getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess> {
       return localVarFp
         .getPageOfPostFromFollowedUsers(
           getPageOfPostFromFollowedUsersRequestBody,
@@ -5620,7 +5622,7 @@ export const DefaultApiFactory = function (
     getPageOfSavedPosts(
       getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess> {
       return localVarFp
         .getPageOfSavedPosts(getPageOfSavedPostsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5634,7 +5636,7 @@ export const DefaultApiFactory = function (
     getPageOfUsersFollowedByUserId(
       getPageOfUsersFollowedByUserIdRequestBody: GetPageOfUsersFollowedByUserIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess> {
       return localVarFp
         .getPageOfUsersFollowedByUserId(
           getPageOfUsersFollowedByUserIdRequestBody,
@@ -5651,7 +5653,7 @@ export const DefaultApiFactory = function (
     getPageOfUsersFollowingUserId(
       getPageOfUsersFollowingUserIdRequestBody: GetPageOfUsersFollowingUserIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess> {
       return localVarFp
         .getPageOfUsersFollowingUserId(getPageOfUsersFollowingUserIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5665,7 +5667,7 @@ export const DefaultApiFactory = function (
     getPasswordResetEmail(
       getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseGetPasswordResetEmailFailedGetPasswordResetEmailSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess> {
       return localVarFp
         .getPasswordResetEmail(getPasswordResetEmailRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5679,7 +5681,7 @@ export const DefaultApiFactory = function (
     getPostsByUserId(
       getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess> {
       return localVarFp
         .getPostsByUserId(getPostsByUserIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5693,7 +5695,7 @@ export const DefaultApiFactory = function (
     getPostsByUsername(
       getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess> {
       return localVarFp
         .getPostsByUsername(getPostsByUsernameRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5707,7 +5709,7 @@ export const DefaultApiFactory = function (
     getPostsScheduledByUser(
       getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess> {
+    ): AxiosPromise<EitherGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess> {
       return localVarFp
         .getPostsScheduledByUser(getPostsScheduledByUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5721,7 +5723,7 @@ export const DefaultApiFactory = function (
     getPublishedItemById(
       getPublishedItemByIdRequestBody: GetPublishedItemByIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess> {
       return localVarFp
         .getPublishedItemById(getPublishedItemByIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5735,7 +5737,7 @@ export const DefaultApiFactory = function (
     getShopItemsByUserId(
       getShopItemsByUserIdRequestBody: GetShopItemsByUserIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess> {
       return localVarFp
         .getShopItemsByUserId(getShopItemsByUserIdRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5749,7 +5751,7 @@ export const DefaultApiFactory = function (
     getShopItemsByUsername(
       getShopItemsByUsernameRequestBody: GetShopItemsByUsernameRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess> {
       return localVarFp
         .getShopItemsByUsername(getShopItemsByUsernameRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5763,7 +5765,7 @@ export const DefaultApiFactory = function (
     getUserContentFeedFilters(
       body: object,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess> {
       return localVarFp
         .getUserContentFeedFilters(body, options)
         .then((request) => request(axios, basePath));
@@ -5777,7 +5779,7 @@ export const DefaultApiFactory = function (
     getUserProfile(
       getUserProfileRequestBody: GetUserProfileRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetUserProfileFailedReasonGetUserProfileSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetUserProfileFailedReasonGetUserProfileSuccess> {
       return localVarFp
         .getUserProfile(getUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5791,7 +5793,7 @@ export const DefaultApiFactory = function (
     getUsersByIds(
       getUsersByIdsRequestBody: GetUsersByIdsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetUsersByIdsFailedReasonGetUsersByIdsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetUsersByIdsFailedReasonGetUsersByIdsSuccess> {
       return localVarFp
         .getUsersByIds(getUsersByIdsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5805,7 +5807,7 @@ export const DefaultApiFactory = function (
     getUsersByUsernames(
       getUsersByUsernamesRequestBody: GetUsersByUsernamesRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess> {
       return localVarFp
         .getUsersByUsernames(getUsersByUsernamesRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5819,7 +5821,7 @@ export const DefaultApiFactory = function (
     loginUser(
       loginUserRequestBody: LoginUserRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseAuthFailedReasonAuthSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrAuthFailedReasonAuthSuccess> {
       return localVarFp
         .loginUser(loginUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5841,7 +5843,7 @@ export const DefaultApiFactory = function (
     makeCardPrimary(
       makeCreditCardPrimaryRequestBody: MakeCreditCardPrimaryRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess> {
       return localVarFp
         .makeCardPrimary(makeCreditCardPrimaryRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5855,7 +5857,7 @@ export const DefaultApiFactory = function (
     purchaseShopItem(
       purchaseShopItemRequestBody: PurchaseShopItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponsePurchaseShopItemFailedReasonPurchaseShopItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrPurchaseShopItemFailedReasonPurchaseShopItemSuccess> {
       return localVarFp
         .purchaseShopItem(purchaseShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5869,7 +5871,7 @@ export const DefaultApiFactory = function (
     readPageOfCommentsByPublishedItemId(
       readPageOfCommentsByPublishedItemIdRequestBody: ReadPageOfCommentsByPublishedItemIdRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess> {
       return localVarFp
         .readPageOfCommentsByPublishedItemId(
           readPageOfCommentsByPublishedItemIdRequestBody,
@@ -5882,9 +5884,7 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    refreshAccessToken(
-      options?: any,
-    ): AxiosPromise<HTTPResponseAuthFailedReasonAuthSuccess> {
+    refreshAccessToken(options?: any): AxiosPromise<EitherAuthFailedReasonAuthSuccess> {
       return localVarFp
         .refreshAccessToken(options)
         .then((request) => request(axios, basePath));
@@ -5898,7 +5898,7 @@ export const DefaultApiFactory = function (
     registerUser(
       registerUserRequestBody: RegisterUserRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseRegisterUserFailedReasonAuthSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrRegisterUserFailedReasonAuthSuccess> {
       return localVarFp
         .registerUser(registerUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5912,7 +5912,7 @@ export const DefaultApiFactory = function (
     removeCreditCard(
       removeCreditCardRequestBody: RemoveCreditCardRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseRemoveCreditCardFailedReasonRemoveCreditCardSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrRemoveCreditCardFailedReasonRemoveCreditCardSuccess> {
       return localVarFp
         .removeCreditCard(removeCreditCardRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5926,7 +5926,7 @@ export const DefaultApiFactory = function (
     removeUserLikeFromPublishedItem(
       removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse> {
+    ): AxiosPromise<EitherFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse> {
       return localVarFp
         .removeUserLikeFromPublishedItem(
           removeUserLikeFromPublishedItemRequestBody,
@@ -5943,7 +5943,7 @@ export const DefaultApiFactory = function (
     resetPassword(
       resetPasswordRequestBody: ResetPasswordRequestBody,
       options?: any,
-    ): AxiosPromise<HTTPResponseResetPasswordFailedReasonResetPasswordSuccess> {
+    ): AxiosPromise<EitherResetPasswordFailedReasonResetPasswordSuccess> {
       return localVarFp
         .resetPassword(resetPasswordRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5957,7 +5957,7 @@ export const DefaultApiFactory = function (
     searchForHashtags(
       searchForHashtagsRequestBody: SearchForHashtagsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSearchForHashtagsFailedReasonSearchForHashtagsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSearchForHashtagsFailedReasonSearchForHashtagsSuccess> {
       return localVarFp
         .searchForHashtags(searchForHashtagsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5971,7 +5971,7 @@ export const DefaultApiFactory = function (
     searchForPosts(
       searchForPostsRequestBody: SearchForPostsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSearchForPostsFailedReasonSearchForPostsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSearchForPostsFailedReasonSearchForPostsSuccess> {
       return localVarFp
         .searchForPosts(searchForPostsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5985,7 +5985,7 @@ export const DefaultApiFactory = function (
     searchForUsers(
       searchForUsersRequestBody: SearchForUsersRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSearchForUsersFailedReasonSearchForUsersSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSearchForUsersFailedReasonSearchForUsersSuccess> {
       return localVarFp
         .searchForUsers(searchForUsersRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -5999,7 +5999,7 @@ export const DefaultApiFactory = function (
     searchUserProfilesByUsername(
       searchUserProfilesByUsernameRequestBody: SearchUserProfilesByUsernameRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess> {
       return localVarFp
         .searchUserProfilesByUsername(searchUserProfilesByUsernameRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6027,7 +6027,7 @@ export const DefaultApiFactory = function (
     setUserContentFeedFilters(
       setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess> {
       return localVarFp
         .setUserContentFeedFilters(setUserContentFeedFiltersRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6041,7 +6041,7 @@ export const DefaultApiFactory = function (
     setUserHashtags(
       setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSetUserHashtagsFailedSetUserHashtagsSuccess> {
+    ): AxiosPromise<EitherSetUserHashtagsFailedSetUserHashtagsSuccess> {
       return localVarFp
         .setUserHashtags(setUserHashtagsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6055,7 +6055,7 @@ export const DefaultApiFactory = function (
     sharePost(
       sharePostRequestBody: SharePostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseSharePostFailedReasonSharePostSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSharePostFailedReasonSharePostSuccess> {
       return localVarFp
         .sharePost(sharePostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6069,7 +6069,7 @@ export const DefaultApiFactory = function (
     storeCreditCard(
       storeCreditCardRequestBody: StoreCreditCardRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseStoreCreditCardFailedReasonStoreCreditCardSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrStoreCreditCardFailedReasonStoreCreditCardSuccess> {
       return localVarFp
         .storeCreditCard(storeCreditCardRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6083,7 +6083,7 @@ export const DefaultApiFactory = function (
     unfollowUser(
       unfollowUserRequestBody: UnfollowUserRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse> {
+    ): AxiosPromise<EitherFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse> {
       return localVarFp
         .unfollowUser(unfollowUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6097,7 +6097,7 @@ export const DefaultApiFactory = function (
     updatePassword(
       updatePasswordRequestBody: UpdatePasswordRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdatePasswordFailedUpdatePasswordSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePasswordFailedUpdatePasswordSuccess> {
       return localVarFp
         .updatePassword(updatePasswordRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6111,7 +6111,7 @@ export const DefaultApiFactory = function (
     updatePost(
       updatePostRequestBody: UpdatePostRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdatePostFailedReasonUpdatePostSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePostFailedReasonUpdatePostSuccess> {
       return localVarFp
         .updatePost(updatePostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6141,7 +6141,7 @@ export const DefaultApiFactory = function (
       collaboratorUserIds?: string,
       mediaFiles?: Array<any>,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdateShopItemFailedReasonUpdateShopItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateShopItemFailedReasonUpdateShopItemSuccess> {
       return localVarFp
         .updateShopItem(
           publishedItemId,
@@ -6166,7 +6166,7 @@ export const DefaultApiFactory = function (
     updateUserBackgroundImage(
       backgroundImage: any,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess> {
       return localVarFp
         .updateUserBackgroundImage(backgroundImage, options)
         .then((request) => request(axios, basePath));
@@ -6180,7 +6180,7 @@ export const DefaultApiFactory = function (
     updateUserProfile(
       updateUserProfileRequestBody: UpdateUserProfileRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfileFailedReasonUpdateUserProfileSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfileFailedReasonUpdateUserProfileSuccess> {
       return localVarFp
         .updateUserProfile(updateUserProfileRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6194,7 +6194,7 @@ export const DefaultApiFactory = function (
     updateUserProfilePicture(
       profilePicture: any,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess> {
       return localVarFp
         .updateUserProfilePicture(profilePicture, options)
         .then((request) => request(axios, basePath));
@@ -6208,7 +6208,7 @@ export const DefaultApiFactory = function (
     userLikesPublishedItem(
       userLikesPublishedItemRequestBody: UserLikesPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUserLikesPublishedItemFailedUserLikesPublishedItemSuccess> {
+    ): AxiosPromise<EitherUserLikesPublishedItemFailedUserLikesPublishedItemSuccess> {
       return localVarFp
         .userLikesPublishedItem(userLikesPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6222,7 +6222,7 @@ export const DefaultApiFactory = function (
     userSavesPublishedItem(
       userSavesPublishedItemRequestBody: UserSavesPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUserSavesPublishedItemFailedUserSavesPublishedItemSuccess> {
+    ): AxiosPromise<EitherUserSavesPublishedItemFailedUserSavesPublishedItemSuccess> {
       return localVarFp
         .userSavesPublishedItem(userSavesPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6236,7 +6236,7 @@ export const DefaultApiFactory = function (
     userUnsavesPublishedItem(
       removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<SecuredHTTPResponseUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess> {
+    ): AxiosPromise<EitherUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess> {
       return localVarFp
         .userUnsavesPublishedItem(removeUserLikeFromPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));

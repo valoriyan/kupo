@@ -10,7 +10,7 @@ export const useGetCountOfUnreadNotifications = () => {
       return res.data.success.count;
     }
     throw new Error(
-      res.data.error?.reason ?? "Failed to get count of unread notifications",
+      (res.data.error.reason as string) ?? "Failed to get count of unread notifications",
     );
   });
 };

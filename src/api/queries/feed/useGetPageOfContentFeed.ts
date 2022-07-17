@@ -56,7 +56,7 @@ async function fetchPageOfContentFromFromFollowedUsers({
   });
 
   if (res.data.success) return res.data.success;
-  throw new Error(res.data.error?.reason ?? "Unknown Error");
+  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
 }
 
 async function fetchPageOfContentFromFromFollowedHashtag({
@@ -73,7 +73,7 @@ async function fetchPageOfContentFromFromFollowedHashtag({
   });
 
   if (res.data.success) return res.data.success;
-  throw new Error(res.data.error?.reason ?? "Unknown Error");
+  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
 }
 
 async function fetchPageOfContentFromFromFollowedUsername({
@@ -90,7 +90,7 @@ async function fetchPageOfContentFromFromFollowedUsername({
   });
 
   if (res.data.success) return res.data.success;
-  throw new Error(res.data.error?.reason ?? "Unknown Error");
+  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
 }
 
 async function fetchPageOfAllPublishedItems({
@@ -110,5 +110,5 @@ async function fetchPageOfAllPublishedItems({
       nextPageCursor: res.data.success.nextPageCursor,
     };
   }
-  throw new Error(res.data.error?.reason ?? "Unknown Error");
+  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
 }

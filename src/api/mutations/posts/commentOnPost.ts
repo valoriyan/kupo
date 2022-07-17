@@ -17,7 +17,7 @@ export const useCommentOnPost = () => {
       throw new Error(
         res.data.error
           ? "reason" in res.data.error
-            ? res.data.error.reason
+            ? (res.data.error.reason as string)
             : defaultErrorMessage
           : defaultErrorMessage,
       );

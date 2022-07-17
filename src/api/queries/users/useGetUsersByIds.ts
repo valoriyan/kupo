@@ -12,7 +12,7 @@ export const useGetUsersByUserIds = ({ userIds }: { userIds: string[] }) => {
         const users: (RenderableUser | null)[] = res.data.success.users;
         return users;
       }
-      throw new Error(res.data.error?.reason ?? "Failed to fetch users");
+      throw new Error((res.data.error.reason as string) ?? "Failed to fetch users");
     },
     { enabled: !!userIds.length },
   );

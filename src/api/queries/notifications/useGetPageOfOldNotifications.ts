@@ -22,5 +22,5 @@ async function fetchPageOfOldNotifications({ pageParam = undefined }) {
   });
 
   if (res.data && res.data.success) return res.data.success;
-  throw new Error(res.data.error?.reason ?? "Failed to fetch notifications");
+  throw new Error((res.data.error.reason as string) ?? "Failed to fetch notifications");
 }

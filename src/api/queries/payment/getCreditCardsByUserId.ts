@@ -14,7 +14,9 @@ export const useGetCreditCardsByUserId = () => {
       if (res.data.success) {
         return res.data.success.cards;
       }
-      throw new Error(res.data.error?.reason ?? "Failed to fetch credit cards");
+      throw new Error(
+        (res.data.error.reason as string) ?? "Failed to fetch credit cards",
+      );
     },
     { enabled: !!currentUserId },
   );

@@ -19,4 +19,5 @@
  */
 export enum ElevateUserToAdminFailedReason {
   UserNotFound = "User Not Found",
+  IllegalAccess = "ILLEGAL_ACCESS",
 }

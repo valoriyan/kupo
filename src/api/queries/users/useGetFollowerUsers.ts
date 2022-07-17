@@ -35,5 +35,5 @@ async function fetchPageOfFollowerUsers({
     return res.data.success;
   }
 
-  throw new Error(res.data.error?.reason);
+  throw new Error(res.data.error.reason as string);
 }

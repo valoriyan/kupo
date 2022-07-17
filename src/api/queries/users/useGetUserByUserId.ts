@@ -19,7 +19,7 @@ export const useGetUserByUserId = ({ userId }: GetUserByUserIdArgs) => {
         }
         throw new Error("No user found");
       }
-      throw new Error(res.data.error?.reason ?? "Failed to fetch user");
+      throw new Error((res.data.error.reason as string) ?? "Failed to fetch user");
     },
     { enabled: !!userId },
   );

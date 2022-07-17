@@ -13,7 +13,9 @@ export const useSearchForHashtags = ({
       const res = await Api.searchForHashtags({ query, pageNumber, pageSize });
 
       if (res.data.success) return res.data.success;
-      throw new Error(res.data.error?.reason ?? "Failed to search for hashtags");
+      throw new Error(
+        (res.data.error.reason as string) ?? "Failed to search for hashtags",
+      );
     },
     { enabled: !!query, keepPreviousData: true },
   );

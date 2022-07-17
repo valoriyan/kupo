@@ -13,7 +13,7 @@ export const useGetUserByUsername = ({ username }: { username: string }) => {
       if (res.data.success) {
         return res.data.success;
       }
-      throw new Error(res.data.error?.reason ?? "Failed to fetch user");
+      throw new Error((res.data.error.reason as string) ?? "Failed to fetch user");
     },
     {
       onSuccess: async (data) => {

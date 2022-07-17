@@ -17,7 +17,7 @@ export const useGetChatRoomIdWithUserIds = ({ userIds }: GetChatRoomIdArgs) => {
       if (res.data.success) {
         return res.data.success;
       }
-      throw new Error(res.data.error?.reason ?? "Failed to look up chat room");
+      throw new Error((res.data.error.reason as string) ?? "Failed to look up chat room");
     },
     { enabled: !!userIds.length },
   );

@@ -14,7 +14,9 @@ export const useCreateNewChatMessageInNewChatRoom = () => {
 
       if (res.data.success) return res.data.success.chatRoomId;
 
-      throw new Error(res.data.error?.reason ?? "Failed to create new chat room");
+      throw new Error(
+        (res.data.error.reason as string) ?? "Failed to create new chat room",
+      );
     },
   );
 };

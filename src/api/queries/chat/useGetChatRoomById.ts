@@ -11,7 +11,7 @@ export const useGetChatRoomById = ({ chatRoomId }: { chatRoomId: string }) => {
       if (res.data.success) {
         return res.data.success.chatRoom;
       }
-      throw new Error(res.data.error?.reason ?? "Failed to fetch chat room");
+      throw new Error((res.data.error.reason as string) ?? "Failed to fetch chat room");
     },
     { enabled: !!chatRoomId },
   );

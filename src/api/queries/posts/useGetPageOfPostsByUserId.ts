@@ -25,7 +25,7 @@ export async function fetchPageOfPostsByUserId({
     return res.data.success;
   }
 
-  throw new Error(res.data.error?.reason);
+  throw new Error(res.data.error.reason as string);
 }
 
 export const useGetPageOfPostsByUserId = ({ userId }: GetPostsByUserIdArgs) => {

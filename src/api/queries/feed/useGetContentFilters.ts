@@ -16,7 +16,7 @@ export const useGetContentFilters = ({ clientUserId }: { clientUserId: string })
   const { data, ...queryResult } = useQuery([CacheKeys.ContentFilters], async () => {
     const response = await Api.getUserContentFeedFilters({});
     if (response.data.success) return response.data.success.userContentFeedFilters;
-    throw new Error(response.data.error?.reason ?? "Unknown Error");
+    throw new Error((response.data.error.reason as string) ?? "Unknown Error");
   });
 
   return { data: defaultFilters.concat(data ?? []), ...queryResult };

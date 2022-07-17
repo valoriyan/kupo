@@ -13,7 +13,7 @@ export const useSearchForPosts = ({
       const res = await Api.searchForPosts({ query, pageNumber, pageSize });
 
       if (res.data.success) return res.data.success;
-      throw new Error(res.data.error?.reason ?? "Failed to search for posts");
+      throw new Error((res.data.error.reason as string) ?? "Failed to search for posts");
     },
     { enabled: !!query, keepPreviousData: true },
   );

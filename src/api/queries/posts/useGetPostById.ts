@@ -15,7 +15,7 @@ export const useGetPostById = ({ postId }: GetPostByIdArgs) => {
       if (res.data.success) {
         return res.data.success.publishedItem as RenderablePost;
       }
-      throw new Error(res.data.error?.reason ?? "Failed to fetch post");
+      throw new Error((res.data.error.reason as string) ?? "Failed to fetch post");
     },
     { enabled: !!postId },
   );
