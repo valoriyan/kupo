@@ -1,8 +1,11 @@
 import express from "express";
-import { GenericResponseFailedReason } from "../../../controllers/models";
-import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
 import { PublishedItemType } from "../../../controllers/publishedItem/models";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "../../publishedItem/post/models";
 import {
@@ -34,7 +37,12 @@ export async function handleSearchForPosts({
   controller: DiscoverController;
   request: express.Request;
   requestBody: SearchForPostsRequestBody;
-}): Promise<SecuredHTTPResponse<SearchForPostsFailedReason, SearchForPostsSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | SearchForPostsFailedReason>,
+    SearchForPostsSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -44,86 +52,70 @@ export async function handleSearchForPosts({
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
-  try {
-    const publishedItemIds =
-      await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemIdsWithOneOfHashtags(
-        { hashtagSubstring: lowercaseTrimmedQuery },
-      );
+  const getPublishedItemIdsWithOneOfHashtagsResponse =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemIdsWithOneOfHashtags(
+      { controller, hashtagSubstring: lowercaseTrimmedQuery },
+    );
+  if (getPublishedItemIdsWithOneOfHashtagsResponse.type === EitherType.failure) {
+    return getPublishedItemIdsWithOneOfHashtagsResponse;
+  }
+  const { success: publishedItemIds } = getPublishedItemIdsWithOneOfHashtagsResponse;
 
-    try {
-      const unrenderablePostsMatchingHashtag =
-        await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
-          { ids: publishedItemIds, restrictedToType: PublishedItemType.POST },
-        );
+  const getPublishedItemsByIdsResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
+      { controller, ids: publishedItemIds, restrictedToType: PublishedItemType.POST },
+    );
+  if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
+    return getPublishedItemsByIdsResponse;
+  }
+  const { success: unrenderablePostsMatchingHashtag } = getPublishedItemsByIdsResponse;
 
-      try {
-        const unrenderablePostsMatchingCaption =
-          await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring(
-            { captionSubstring: lowercaseTrimmedQuery, type: PublishedItemType.POST },
-          );
-
-        const unrenderablePostsWithoutElementsOrHashtags =
-          mergeArraysOfUncompiledBasePublishedItem({
-            arrays: [unrenderablePostsMatchingHashtag, unrenderablePostsMatchingCaption],
-          });
-
-        if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {
-          return {
-            type: EitherType.success,
-            success: {
-              posts: [],
-              totalCount: 0,
-            },
-          };
-        }
-
-        const pageOfUnrenderablePosts = unrenderablePostsWithoutElementsOrHashtags.slice(
-          pageSize * pageNumber - pageSize,
-          pageSize * pageNumber,
-        );
-
-        const renderablePosts = await constructRenderablePostsFromParts({
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          uncompiledBasePublishedItems: pageOfUnrenderablePosts,
-          clientUserId,
-        });
-
-        return {
-          type: EitherType.success,
-          success: {
-            posts: renderablePosts,
-            totalCount: unrenderablePostsWithoutElementsOrHashtags.length,
-          },
-        };
-      } catch (error) {
-        return generateErrorResponse({
-          controller,
-          errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-          additionalErrorInformation:
-            "Error at publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring",
-          error,
-          httpStatusCode: 500,
-        });
-      }
-    } catch (error) {
-      return generateErrorResponse({
+  const getPublishedItemsByCaptionMatchingSubstringResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring(
+      {
         controller,
-        errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        additionalErrorInformation:
-          "Error at publishedItemsTableService.getPublishedItemsByIds",
-        error,
-        httpStatusCode: 500,
-      });
-    }
-  } catch {
-    return generateErrorResponse({
-      controller,
-      errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      additionalErrorInformation:
-        "Error at hashtagTableService.getPublishedItemIdsWithOneOfHashtags",
-      error,
-      httpStatusCode: 500,
+        captionSubstring: lowercaseTrimmedQuery,
+        type: PublishedItemType.POST,
+      },
+    );
+  if (getPublishedItemsByCaptionMatchingSubstringResponse.type === EitherType.failure) {
+    return getPublishedItemsByCaptionMatchingSubstringResponse;
+  }
+  const { success: unrenderablePostsMatchingCaption } =
+    getPublishedItemsByCaptionMatchingSubstringResponse;
+
+  const unrenderablePostsWithoutElementsOrHashtags =
+    mergeArraysOfUncompiledBasePublishedItem({
+      arrays: [unrenderablePostsMatchingHashtag, unrenderablePostsMatchingCaption],
+    });
+
+  if (unrenderablePostsWithoutElementsOrHashtags.length === 0) {
+    return Success({
+      posts: [],
+      totalCount: 0,
     });
   }
+
+  const pageOfUnrenderablePosts = unrenderablePostsWithoutElementsOrHashtags.slice(
+    pageSize * pageNumber - pageSize,
+    pageSize * pageNumber,
+  );
+
+  const constructRenderablePostsFromPartsResponse =
+    await constructRenderablePostsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems: pageOfUnrenderablePosts,
+      clientUserId,
+    });
+  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostsFromPartsResponse;
+  }
+  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+
+  return Success({
+    posts: renderablePosts,
+    totalCount: unrenderablePostsWithoutElementsOrHashtags.length,
+  });
 }

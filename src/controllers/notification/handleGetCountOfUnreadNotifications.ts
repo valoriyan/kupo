@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 
@@ -19,7 +24,7 @@ export async function handleGetCountOfUnreadNotifications({
   request: express.Request;
 }): Promise<
   SecuredHTTPResponse<
-    GetCountOfUnreadNotificationsFailedReason,
+    ErrorReasonTypes<string | GetCountOfUnreadNotificationsFailedReason>,
     GetCountOfUnreadNotificationsSuccess
   >
 > {
@@ -29,15 +34,17 @@ export async function handleGetCountOfUnreadNotifications({
   );
   if (error) return error;
 
-  const countOfUnreadNotifications =
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  return {
-    type: EitherType.success,
-    success: {
-      count: countOfUnreadNotifications,
-    },
-  };
+  return Success({
+    count: countOfUnreadNotifications,
+  });
 }

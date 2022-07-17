@@ -1,6 +1,11 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  HTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { UnrenderableCanceledNewLikeOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
@@ -24,7 +29,7 @@ export async function handleRemoveUserLikeFromPublishedItem({
   requestBody: RemoveUserLikeFromPublishedItemRequestBody;
 }): Promise<
   HTTPResponse<
-    FailedToRemoveUserLikeFromPublishedItemResponse,
+    ErrorReasonTypes<string | FailedToRemoveUserLikeFromPublishedItemResponse>,
     SuccessfullyRemovedUserLikeFromPostResponse
   >
 > {
@@ -36,31 +41,50 @@ export async function handleRemoveUserLikeFromPublishedItem({
   );
   if (error) return error;
 
-  const deletedPostLike =
+  const removePublishedItemLikeByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.removePublishedItemLikeByUserId(
       {
+        controller,
         publishedItemId,
         userId: clientUserId,
       },
     );
+  if (removePublishedItemLikeByUserIdResponse.type === EitherType.failure) {
+    return removePublishedItemLikeByUserIdResponse;
+  }
+  const { success: deletedPostLike } = removePublishedItemLikeByUserIdResponse;
 
-  const unrenderablePost =
+  const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: publishedItemId },
+      { controller, id: publishedItemId },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: unrenderablePost } = getPublishedItemByIdResponse;
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
-    {
-      recipientUserId: unrenderablePost.authorUserId,
-      notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-      referenceTableId: deletedPostLike.published_item_like_id,
-    },
-  );
+  const deleteUserNotificationForUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
+      {
+        controller,
+        recipientUserId: unrenderablePost.authorUserId,
+        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+        referenceTableId: deletedPostLike.published_item_like_id,
+      },
+    );
+  if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
+    return deleteUserNotificationForUserIdResponse;
+  }
 
-  const countOfUnreadNotifications =
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: unrenderablePost.authorUserId },
+      { controller, userId: unrenderablePost.authorUserId },
     );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   const unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification =
     {
@@ -77,5 +101,5 @@ export async function handleRemoveUserLikeFromPublishedItem({
     },
   );
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

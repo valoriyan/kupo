@@ -1,5 +1,9 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -25,7 +29,7 @@ export async function handleUpdateUserProfilePicture({
   requestBody: UpdateUserProfilePictureRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    UpdateUserProfilePictureFailedReason,
+    ErrorReasonTypes<string | UpdateUserProfilePictureFailedReason>,
     UpdateUserProfilePictureSuccess
   >
 > {
@@ -41,32 +45,43 @@ export async function handleUpdateUserProfilePicture({
       })
     : null;
 
-  const updatedUnrenderableUser =
+  const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
       {
+        controller,
         userId: clientUserId,
 
         profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
       },
     );
 
+  if (updateUserByUserIdResponse.type === EitherType.failure) {
+    return updateUserByUserIdResponse;
+  }
+
+  const { success: updatedUnrenderableUser } = updateUserByUserIdResponse;
+
   if (!updatedUnrenderableUser) {
     controller.setStatus(404);
     return {
-      type: EitherType.error,
+      type: EitherType.failure,
       error: { reason: UpdateUserProfilePictureFailedReason.Unknown },
     };
   }
 
-  const renderableUser = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser: updatedUnrenderableUser,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser: updatedUnrenderableUser,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    },
+  );
 
-  return {
-    type: EitherType.success,
-    success: renderableUser,
-  };
+  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUserFromPartsResponse;
+  }
+
+  return constructRenderableUserFromPartsResponse;
 }

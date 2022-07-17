@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
@@ -40,6 +49,7 @@ export class UserHashtagsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async upsertHashtagsForUser({
+    controller,
     userId,
     hashtag1,
     hashtag2,
@@ -47,50 +57,61 @@ export class UserHashtagsTableService extends TableService {
     hashtag4,
     hashtag5,
   }: {
+    controller: Controller;
     userId: string;
     hashtag1: string;
     hashtag2: string;
     hashtag3: string;
     hashtag4: string;
     hashtag5: string;
-  }): Promise<void> {
-    console.log(`${this.tableName} | addHashtagsToUser`);
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const queryText = `
+        INSERT INTO ${this.tableName} (
+          user_id,
+          hashtag_1,
+          hashtag_2,
+          hashtag_3,
+          hashtag_4,
+          hashtag_5
+        )
+        VALUES(
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6
+        )
+        ON CONFLICT(user_id)
+        DO
+          UPDATE
+          SET
+            hashtag_1 = $2,
+            hashtag_2 = $3,
+            hashtag_3 = $4,
+            hashtag_4 = $5,
+            hashtag_5 = $6
+        ;
+      `;
 
-    const queryText = `
-      INSERT INTO ${this.tableName} (
-        user_id,
-        hashtag_1,
-        hashtag_2,
-        hashtag_3,
-        hashtag_4,
-        hashtag_5
-      )
-      VALUES(
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6
-      )
-      ON CONFLICT(user_id)
-      DO
-        UPDATE
-        SET
-          hashtag_1 = $2,
-          hashtag_2 = $3,
-          hashtag_3 = $4,
-          hashtag_4 = $5,
-          hashtag_5 = $6
-      ;
-    `;
+      const query = {
+        text: queryText,
+        values: [userId, hashtag1, hashtag2, hashtag3, hashtag4, hashtag5],
+      };
 
-    const query = {
-      text: queryText,
-      values: [userId, hashtag1, hashtag2, hashtag3, hashtag4, hashtag5],
-    };
-
-    await this.datastorePool.query<DBUserHashtag>(query);
+      await this.datastorePool.query<DBUserHashtag>(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userHashtagsTableService.upsertHashtagsForUser",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -98,66 +119,96 @@ export class UserHashtagsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getUserIdsWithHashtag({
+    controller,
     hashtag,
   }: {
+    controller: Controller;
     hashtag: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-            hashtag_1 = $1
-          OR
-            hashtag_2 = $1
-          OR
-            hashtag_3 = $1
-          OR
-            hashtag_4 = $1
-          OR
-            hashtag_5 = $1
-        ;
-      `,
-      values: [hashtag],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              hashtag_1 = $1
+            OR
+              hashtag_2 = $1
+            OR
+              hashtag_3 = $1
+            OR
+              hashtag_4 = $1
+            OR
+              hashtag_5 = $1
+          ;
+        `,
+        values: [hashtag],
+      };
 
-    const response: QueryResult<DBUserHashtag> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUserHashtag> = await this.datastorePool.query(query);
 
-    const userIds = response.rows.map((row) => row.user_id);
-    return userIds;
+      const userIds = response.rows.map((row) => row.user_id);
+      return Success(userIds);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userHashtagsTableService.getUserIdsWithHashtag",
+      });
+    }
   }
 
-  public async getHashtagsForUserId({ userId }: { userId: string }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          user_id = $1
-        ;
-      `,
-      values: [userId],
-    };
+  public async getHashtagsForUserId({
+    controller,
+    userId,
+  }: {
+    controller: Controller;
+    userId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id = $1
+          ;
+        `,
+        values: [userId],
+      };
 
-    const response: QueryResult<DBUserHashtag> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUserHashtag> = await this.datastorePool.query(query);
 
-    if (response.rows.length < 1) {
-      return [];
+      if (response.rows.length < 1) {
+        return Success([]);
+      }
+
+      const row = response.rows[0];
+      const hashtags = [
+        row.hashtag_1,
+        row.hashtag_2,
+        row.hashtag_3,
+        row.hashtag_4,
+        row.hashtag_5,
+      ];
+      return Success(hashtags);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userHashtagsTableService.getHashtagsForUserId",
+      });
     }
-
-    const row = response.rows[0];
-    const hashtags = [
-      row.hashtag_1,
-      row.hashtag_2,
-      row.hashtag_3,
-      row.hashtag_4,
-      row.hashtag_5,
-    ];
-    return hashtags;
   }
 
   //////////////////////////////////////////////////

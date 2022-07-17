@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -31,7 +36,7 @@ export async function handleGetPageOfUsersFollowingUserId({
   requestBody: GetPageOfUsersFollowingUserIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfUsersFollowingUserIdFailedReason,
+    ErrorReasonTypes<string | GetPageOfUsersFollowingUserIdFailedReason>,
     GetPageOfUsersFollowingUserIdSuccess
   >
 > {
@@ -43,32 +48,39 @@ export async function handleGetPageOfUsersFollowingUserId({
 
   const { cursor, userIdBeingFollowed, pageSize } = requestBody;
 
-  const unrenderableUserFollows =
+  const getUserIdsFollowingUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
-      { userIdBeingFollowed },
+      { controller, userIdBeingFollowed },
     );
+
+  if (getUserIdsFollowingUserIdResponse.type === EitherType.failure) {
+    return getUserIdsFollowingUserIdResponse;
+  }
+  const { success: unrenderableUserFollows } = getUserIdsFollowingUserIdResponse;
 
   const userIdsDoingFollowing = unrenderableUserFollows.map(
     ({ userIdDoingFollowing }) => userIdDoingFollowing,
   );
 
   if (userIdsDoingFollowing.length === 0) {
-    // controller.setStatus(404);
-    return {
-      type: EitherType.success,
-      success: {
-        users: [],
-        previousPageCursor: cursor,
-      },
-    };
+    return Success({
+      users: [],
+      previousPageCursor: cursor,
+    });
   }
 
-  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
-    clientUserId,
-    userIds: userIdsDoingFollowing,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUsersFromPartsByUserIdsResponse =
+    await constructRenderableUsersFromPartsByUserIds({
+      controller,
+      clientUserId,
+      userIds: userIdsDoingFollowing,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsByUserIdsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   const pageNumber = parseInt(cursor || "0") || 0;
   const startIndexForPage = pageSize * pageNumber;
@@ -79,12 +91,9 @@ export async function handleGetPageOfUsersFollowingUserId({
   const nextPageCursor =
     pageOfRenderableUsers.length === pageSize ? (pageNumber + 1).toString() : undefined;
 
-  return {
-    type: EitherType.success,
-    success: {
-      users: pageOfRenderableUsers,
-      previousPageCursor: cursor,
-      nextPageCursor,
-    },
-  };
+  return Success({
+    users: pageOfRenderableUsers,
+    previousPageCursor: cursor,
+    nextPageCursor,
+  });
 }

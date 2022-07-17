@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { EitherType, HTTPResponse } from "../../types/monads";
+import { EitherType, HTTPResponse } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
@@ -35,44 +35,77 @@ export async function handleFollowUser({
 
   const userFollowEventId = uuidv4();
 
-  await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
-    {
-      userFollowEventId,
-      userIdDoingFollowing: clientUserId,
-      userIdBeingFollowed,
-      timestamp: Date.now(),
-    },
-  );
-
-  if (userIdBeingFollowed !== clientUserId) {
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+  const createUserFollowResponse =
+    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
       {
-        userNotificationId: uuidv4(),
-        recipientUserId: userIdBeingFollowed,
-        notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-        referenceTableId: userFollowEventId,
+        controller,
+        userFollowEventId,
+        userIdDoingFollowing: clientUserId,
+        userIdBeingFollowed,
+        timestamp: Date.now(),
       },
     );
+  if (createUserFollowResponse.type === EitherType.failure) {
+    return createUserFollowResponse;
+  }
 
-    const unrenderableClientUser =
+  if (userIdBeingFollowed !== clientUserId) {
+    const createUserNotificationResponse =
+      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+        {
+          controller,
+          userNotificationId: uuidv4(),
+          recipientUserId: userIdBeingFollowed,
+          notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+          referenceTableId: userFollowEventId,
+        },
+      );
+    if (createUserNotificationResponse.type === EitherType.failure) {
+      return createUserNotificationResponse;
+    }
+
+    const selectUserByUserIdResponse =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
         {
+          controller,
           userId: clientUserId,
         },
       );
+    if (selectUserByUserIdResponse.type === EitherType.failure) {
+      return selectUserByUserIdResponse;
+    }
+
+    const { success: unrenderableClientUser } = selectUserByUserIdResponse;
 
     if (!!unrenderableClientUser) {
-      const clientUser = await constructRenderableUserFromParts({
-        clientUserId,
-        unrenderableUser: unrenderableClientUser,
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-      });
+      const constructRenderableUserFromPartsResponse =
+        await constructRenderableUserFromParts({
+          controller,
+          clientUserId,
+          unrenderableUser: unrenderableClientUser,
+          blobStorageService: controller.blobStorageService,
+          databaseService: controller.databaseService,
+        });
 
-      const countOfUnreadNotifications =
+      if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
+        return constructRenderableUserFromPartsResponse;
+      }
+
+      const { success: clientUser } = constructRenderableUserFromPartsResponse;
+
+      const selectCountOfUnreadUserNotificationsByUserIdResponse =
         await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-          { userId: userIdBeingFollowed },
+          { controller, userId: userIdBeingFollowed },
         );
+
+      if (
+        selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure
+      ) {
+        return selectCountOfUnreadUserNotificationsByUserIdResponse;
+      }
+
+      const { success: countOfUnreadNotifications } =
+        selectCountOfUnreadUserNotificationsByUserIdResponse;
 
       const renderableNewFollowerNotification: RenderableNewFollowerNotification = {
         countOfUnreadNotifications,

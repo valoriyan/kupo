@@ -6,67 +6,121 @@ import { constructRenderablePostFromParts } from "../../publishedItem/post/utili
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewCommentOnPostNotification } from "../models/renderableUserNotifications";
+import { Controller } from "tsoa";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 
 export async function assembleRenderableNewCommentOnPostNotification({
+  controller,
   userNotification,
   blobStorageService,
   databaseService,
   clientUserId,
 }: {
+  controller: Controller;
   userNotification: DBUserNotification;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   clientUserId: string;
-}): Promise<RenderableNewCommentOnPostNotification> {
+}): Promise<
+  InternalServiceResponse<
+    ErrorReasonTypes<string>,
+    RenderableNewCommentOnPostNotification
+  >
+> {
   const {
     reference_table_id: postCommentId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
-  const unrenderablePostComment =
+  const getPostCommentByIdResponse =
     await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
-      { postCommentId },
+      { controller, postCommentId },
     );
+  if (getPostCommentByIdResponse.type === EitherType.failure) {
+    return getPostCommentByIdResponse;
+  }
+  const { success: unrenderablePostComment } = getPostCommentByIdResponse;
 
-  const postComment = await constructRenderablePostCommentFromParts({
-    blobStorageService,
-    databaseService,
-    unrenderablePostComment,
-    clientUserId,
-  });
+  const constructRenderablePostCommentFromPartsResponse =
+    await constructRenderablePostCommentFromParts({
+      controller,
+      blobStorageService,
+      databaseService,
+      unrenderablePostComment,
+      clientUserId,
+    });
+  if (constructRenderablePostCommentFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostCommentFromPartsResponse;
+  }
+  const { success: postComment } = constructRenderablePostCommentFromPartsResponse;
 
-  const unrenderablePostWithoutElementsOrHashtags =
+  const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       {
+        controller,
         id: postComment.postId,
       },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: unrenderablePostWithoutElementsOrHashtags } =
+    getPublishedItemByIdResponse;
 
-  const post = await constructRenderablePostFromParts({
-    blobStorageService,
-    databaseService,
-    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-    clientUserId,
-  });
+  const constructRenderablePostFromPartsResponse = await constructRenderablePostFromParts(
+    {
+      controller,
+      blobStorageService,
+      databaseService,
+      uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
+      clientUserId,
+    },
+  );
+  if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostFromPartsResponse;
+  }
+  const { success: post } = constructRenderablePostFromPartsResponse;
 
-  const unrenderableUserThatCommented =
+  const selectUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      controller,
       userId: unrenderablePostComment.authorUserId,
     });
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: unrenderableUserThatCommented } = selectUserByUserIdResponse;
 
-  const userThatCommented = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser: unrenderableUserThatCommented!,
-    blobStorageService,
-    databaseService,
-  });
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser: unrenderableUserThatCommented!,
+      blobStorageService,
+      databaseService,
+    },
+  );
+  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUserFromPartsResponse;
+  }
+  const { success: userThatCommented } = constructRenderableUserFromPartsResponse;
 
-  const countOfUnreadNotifications =
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  return {
+  return Success({
     countOfUnreadNotifications,
     userThatCommented,
     post,
@@ -74,5 +128,5 @@ export async function assembleRenderableNewCommentOnPostNotification({
     timestampSeenByUser,
     type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
     eventTimestamp: postComment.creationTimestamp,
-  };
+  });
 }

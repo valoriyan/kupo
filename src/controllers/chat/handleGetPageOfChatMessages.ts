@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { RenderableChatMessage } from "./models";
@@ -31,7 +36,10 @@ export async function handleGetPageOfChatMessages({
   request: express.Request;
   requestBody: GetPageOfChatMessagesRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfChatMessagesFailedReason, GetPageOfChatMessagesSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetPageOfChatMessagesFailedReason>,
+    GetPageOfChatMessagesSuccess
+  >
 > {
   const { chatRoomId, pageSize, cursor } = requestBody;
 
@@ -40,10 +48,14 @@ export async function handleGetPageOfChatMessages({
   const { errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
-  const unrenderableChatMessages =
+  const getChatMessagesByChatRoomIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.getChatMessagesByChatRoomId(
-      { chatRoomId, beforeTimestamp: endOfPageTimestamp },
+      { controller, chatRoomId, beforeTimestamp: endOfPageTimestamp },
     );
+  if (getChatMessagesByChatRoomIdResponse.type === EitherType.failure) {
+    return getChatMessagesByChatRoomIdResponse;
+  }
+  const { success: unrenderableChatMessages } = getChatMessagesByChatRoomIdResponse;
 
   const renderableChatMessages = unrenderableChatMessages.map(
     (unrenderableChatMessage) => unrenderableChatMessage,
@@ -56,12 +68,9 @@ export async function handleGetPageOfChatMessages({
       ? pageOfRenderableChatMessages[0].creationTimestamp.toString()
       : undefined;
 
-  return {
-    type: EitherType.success,
-    success: {
-      chatMessages: pageOfRenderableChatMessages,
-      previousPageCursor: previousPageCursor,
-      nextPageCursor: cursor,
-    },
-  };
+  return Success({
+    chatMessages: pageOfRenderableChatMessages,
+    previousPageCursor: previousPageCursor,
+    nextPageCursor: cursor,
+  });
 }

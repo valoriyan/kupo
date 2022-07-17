@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../publishedItem/post/models";
 import { getPageOfPostsFromAllPosts } from "../publishedItem/post/pagination/utilities";
@@ -33,7 +38,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   requestBody: GetPageOfPostFromFollowedHashtagRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfPostFromFollowedHashtagFailedReason,
+    ErrorReasonTypes<string | GetPageOfPostFromFollowedHashtagFailedReason>,
     GetPageOfPostFromFollowedHashtagSuccess
   >
 > {
@@ -49,19 +54,29 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
-  const postIdsWithHashtag =
+  const getPublishedItemsWithHashtagResponse =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemsWithHashtag(
-      { hashtag: hashtag },
+      { controller, hashtag: hashtag },
     );
+  if (getPublishedItemsWithHashtagResponse.type === EitherType.failure) {
+    return getPublishedItemsWithHashtagResponse;
+  }
+  const { success: postIdsWithHashtag } = getPublishedItemsWithHashtagResponse;
 
-  const unrenderablePostsWithoutElementsOrHashtags =
+  const getPublishedItemsByIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
+        controller,
         ids: postIdsWithHashtag,
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
       },
     );
+  if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
+    return getPublishedItemsByIdsResponse;
+  }
+  const { success: unrenderablePostsWithoutElementsOrHashtags } =
+    getPublishedItemsByIdsResponse;
 
   const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
     unrenderablePostsWithoutElementsOrHashtags,
@@ -69,12 +84,18 @@ export async function handleGetPageOfPostFromFollowedHashtag({
     pageSize: pageSize,
   });
 
-  const renderablePosts = await constructRenderablePostsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItems: filteredUnrenderablePostsWithoutElements,
-    clientUserId,
-  });
+  const constructRenderablePostsFromPartsResponse =
+    await constructRenderablePostsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems: filteredUnrenderablePostsWithoutElements,
+      clientUserId,
+    });
+  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostsFromPartsResponse;
+  }
+  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
 
   const nextPageCursor =
     renderablePosts.length > 0
@@ -84,12 +105,9 @@ export async function handleGetPageOfPostFromFollowedHashtag({
         })
       : undefined;
 
-  return {
-    type: EitherType.success,
-    success: {
-      posts: renderablePosts,
-      previousPageCursor: cursor,
-      nextPageCursor,
-    },
-  };
+  return Success({
+    posts: renderablePosts,
+    previousPageCursor: cursor,
+    nextPageCursor,
+  });
 }

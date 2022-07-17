@@ -16,22 +16,34 @@ import {
 } from "../models";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 import { assembleBaseRenderablePublishedItem } from "../utilities";
+import { Controller } from "tsoa";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  FailureResponse,
+  InternalServiceResponse,
+  Success,
+  SuccessResponse,
+} from "../../../utilities/monads";
 
 export async function constructRenderableShopItemsFromParts({
+  controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItems,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   clientUserId: string | undefined;
-}): Promise<RenderableShopItem[]> {
-  const renderablePosts = await BluebirdPromise.map(
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItem[]>> {
+  const constructRenderableShopItemFromPartsResponses = await BluebirdPromise.map(
     uncompiledBasePublishedItems,
     async (uncompiledBasePublishedItem) =>
       await constructRenderableShopItemFromParts({
+        controller,
         blobStorageService,
         databaseService,
         uncompiledBasePublishedItem,
@@ -39,77 +51,132 @@ export async function constructRenderableShopItemsFromParts({
       }),
   );
 
-  return renderablePosts;
+  const firstOccuringError = constructRenderableShopItemFromPartsResponses.find(
+    (responseElement) => {
+      return responseElement.type === EitherType.failure;
+    },
+  );
+  if (firstOccuringError) {
+    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+  }
+
+  const renderablePosts = constructRenderableShopItemFromPartsResponses.map(
+    (responseElement) => (responseElement as SuccessResponse<RenderableShopItem>).success,
+  );
+
+  return Success(renderablePosts);
 }
 
 export async function constructRenderableShopItemFromParts({
+  controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItem,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
-}): Promise<RenderableShopItem> {
-  const baseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
-    databaseService,
-    uncompiledBasePublishedItem,
-    clientUserId,
-  });
-
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItem>> {
+  const assembleBaseRenderablePublishedItemResponse =
+    await assembleBaseRenderablePublishedItem({
+      controller,
+      databaseService,
+      uncompiledBasePublishedItem,
+      clientUserId,
+    });
+  if (assembleBaseRenderablePublishedItemResponse.type === EitherType.failure) {
+    return assembleBaseRenderablePublishedItemResponse;
+  }
+  const { success: baseRenderablePublishedItem } =
+    assembleBaseRenderablePublishedItemResponse;
   const { id, idOfPublishedItemBeingShared } = baseRenderablePublishedItem;
 
   if (!!idOfPublishedItemBeingShared) {
-    const sharedShopItem = await assembleSharedShopItemFromParts({
-      blobStorageService,
-      databaseService,
-      baseRenderablePublishedItem,
-      clientUserId,
-    });
+    const assembleSharedShopItemFromPartsResponse = await assembleSharedShopItemFromParts(
+      {
+        controller,
+        blobStorageService,
+        databaseService,
+        baseRenderablePublishedItem,
+        clientUserId,
+      },
+    );
+    if (assembleSharedShopItemFromPartsResponse.type === EitherType.failure) {
+      return assembleSharedShopItemFromPartsResponse;
+    }
+    const { success: sharedShopItem } = assembleSharedShopItemFromPartsResponse;
 
-    return sharedShopItem;
+    return Success(sharedShopItem);
   } else {
-    const hasPublishedItemBeenPurchasedByUserId =
-      !!clientUserId &&
-      (await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId(
-        {
-          publishedItemId: id,
-          nonCreatorUserId: clientUserId,
-        },
-      ));
+    let hasPublishedItemBeenPurchasedByUserId = false;
+    if (!!clientUserId) {
+      const hasPublishedItemBeenPurchasedByUserIdResponse =
+        await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId(
+          {
+            controller,
+            publishedItemId: id,
+            nonCreatorUserId: clientUserId,
+          },
+        );
+      if (hasPublishedItemBeenPurchasedByUserIdResponse.type === EitherType.failure) {
+        return hasPublishedItemBeenPurchasedByUserIdResponse;
+      }
+      hasPublishedItemBeenPurchasedByUserId =
+        hasPublishedItemBeenPurchasedByUserIdResponse.success;
+    }
 
     if (hasPublishedItemBeenPurchasedByUserId) {
-      const rootPurchasedShopItemDetails =
+      const assembleRootPurchasedShopItemDetailsFromPartsResponse =
         await assembleRootPurchasedShopItemDetailsFromParts({
+          controller,
           blobStorageService,
           databaseService,
           baseRenderablePublishedItem,
         });
-      return rootPurchasedShopItemDetails;
+      if (
+        assembleRootPurchasedShopItemDetailsFromPartsResponse.type === EitherType.failure
+      ) {
+        return assembleRootPurchasedShopItemDetailsFromPartsResponse;
+      }
+      const { success: rootPurchasedShopItemDetails } =
+        assembleRootPurchasedShopItemDetailsFromPartsResponse;
+
+      return Success(rootPurchasedShopItemDetails);
     } else {
-      const rootShopItemPreview = await assembleRootShopItemPreviewFromParts({
-        blobStorageService,
-        databaseService,
-        baseRenderablePublishedItem,
-      });
-      return rootShopItemPreview;
+      const assembleRootShopItemPreviewFromPartsResponse =
+        await assembleRootShopItemPreviewFromParts({
+          controller,
+          blobStorageService,
+          databaseService,
+          baseRenderablePublishedItem,
+        });
+      if (assembleRootShopItemPreviewFromPartsResponse.type === EitherType.failure) {
+        return assembleRootShopItemPreviewFromPartsResponse;
+      }
+      const { success: rootShopItemPreview } =
+        assembleRootShopItemPreviewFromPartsResponse;
+
+      return Success(rootShopItemPreview);
     }
   }
 }
 
 async function assembleSharedShopItemFromParts({
+  controller,
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
   clientUserId: string | undefined;
-}): Promise<SharedShopItem> {
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, SharedShopItem>> {
   const {
     id,
     creationTimestamp,
@@ -125,37 +192,74 @@ async function assembleSharedShopItemFromParts({
     idOfPublishedItemBeingShared,
   } = baseRenderablePublishedItem;
 
-  const sharedUncompiledBasePublishedItem =
+  const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: idOfPublishedItemBeingShared! },
+      { controller, id: idOfPublishedItemBeingShared! },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: sharedUncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
-  const sharedBaseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
-    databaseService,
-    uncompiledBasePublishedItem: sharedUncompiledBasePublishedItem,
-    clientUserId,
-  });
+  const assembleBaseRenderablePublishedItemResponse =
+    await assembleBaseRenderablePublishedItem({
+      controller,
+      databaseService,
+      uncompiledBasePublishedItem: sharedUncompiledBasePublishedItem,
+      clientUserId,
+    });
+  if (assembleBaseRenderablePublishedItemResponse.type === EitherType.failure) {
+    return assembleBaseRenderablePublishedItemResponse;
+  }
+  const { success: sharedBaseRenderablePublishedItem } =
+    assembleBaseRenderablePublishedItemResponse;
 
-  const hasSharedPublishedItemBeenPurchasedByUserId =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId(
-      {
-        publishedItemId: sharedBaseRenderablePublishedItem.id,
-        nonCreatorUserId: clientUserId,
-      },
-    ));
+  let hasSharedPublishedItemBeenPurchasedByUserId = false;
+  if (!!clientUserId) {
+    const hasPublishedItemBeenPurchasedByUserIdResponse =
+      await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId(
+        {
+          controller,
+          publishedItemId: sharedBaseRenderablePublishedItem.id,
+          nonCreatorUserId: clientUserId,
+        },
+      );
+    if (hasPublishedItemBeenPurchasedByUserIdResponse.type === EitherType.failure) {
+      return hasPublishedItemBeenPurchasedByUserIdResponse;
+    }
+    hasSharedPublishedItemBeenPurchasedByUserId =
+      hasPublishedItemBeenPurchasedByUserIdResponse.success;
+  }
 
-  const sharedItem = hasSharedPublishedItemBeenPurchasedByUserId
-    ? await assembleRootPurchasedShopItemDetailsFromParts({
-        blobStorageService,
-        databaseService,
-        baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
-      })
-    : await assembleRootShopItemPreviewFromParts({
+  let sharedItem;
+  if (hasSharedPublishedItemBeenPurchasedByUserId) {
+    const assembleRootPurchasedShopItemDetailsFromPartsResponse =
+      await assembleRootPurchasedShopItemDetailsFromParts({
+        controller,
         blobStorageService,
         databaseService,
         baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
       });
+    if (
+      assembleRootPurchasedShopItemDetailsFromPartsResponse.type === EitherType.failure
+    ) {
+      return assembleRootPurchasedShopItemDetailsFromPartsResponse;
+    }
+    sharedItem = assembleRootPurchasedShopItemDetailsFromPartsResponse.success;
+  } else {
+    const assembleRootShopItemPreviewFromPartsResponse =
+      await assembleRootShopItemPreviewFromParts({
+        controller,
+        blobStorageService,
+        databaseService,
+        baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
+      });
+    if (assembleRootShopItemPreviewFromPartsResponse.type === EitherType.failure) {
+      return assembleRootShopItemPreviewFromPartsResponse;
+    }
+    sharedItem = assembleRootShopItemPreviewFromPartsResponse.success;
+  }
+
   const sharedShopItem: SharedShopItem = {
     type: PublishedItemType.SHOP_ITEM,
     id,
@@ -171,18 +275,20 @@ async function assembleSharedShopItemFromParts({
     isSavedByClient,
     sharedItem,
   };
-  return sharedShopItem;
+  return Success(sharedShopItem);
 }
 
 async function assembleRootShopItemPreviewFromParts({
+  controller,
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
-}): Promise<RootShopItemPreview> {
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RootShopItemPreview>> {
   const {
     id,
     creationTimestamp,
@@ -197,18 +303,29 @@ async function assembleRootShopItemPreviewFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-  const dbShopItem =
+  const getShopItemByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
       {
+        controller,
         publishedItemId: id,
       },
     );
+  if (getShopItemByPublishedItemIdResponse.type === EitherType.failure) {
+    return getShopItemByPublishedItemIdResponse;
+  }
+  const { success: dbShopItem } = getShopItemByPublishedItemIdResponse;
 
-  const previewMediaElements = await assembleShopItemPreviewMediaElements({
-    publishedItemId: id,
-    blobStorageService,
-    databaseService,
-  });
+  const assembleShopItemPreviewMediaElementsResponse =
+    await assembleShopItemPreviewMediaElements({
+      controller,
+      publishedItemId: id,
+      blobStorageService,
+      databaseService,
+    });
+  if (assembleShopItemPreviewMediaElementsResponse.type === EitherType.failure) {
+    return assembleShopItemPreviewMediaElementsResponse;
+  }
+  const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
 
   const rootShopItemPreview: RootShopItemPreview = {
     renderableShopItemType: RenderableShopItemType.SHOP_ITEM_PREVIEW,
@@ -229,18 +346,22 @@ async function assembleRootShopItemPreviewFromParts({
     previewMediaElements,
   };
 
-  return rootShopItemPreview;
+  return Success(rootShopItemPreview);
 }
 
 async function assembleRootPurchasedShopItemDetailsFromParts({
+  controller,
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
-}): Promise<RootPurchasedShopItemDetails> {
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, RootPurchasedShopItemDetails>
+> {
   const {
     id,
     creationTimestamp,
@@ -255,18 +376,29 @@ async function assembleRootPurchasedShopItemDetailsFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-  const dbShopItem =
+  const getShopItemByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
       {
+        controller,
         publishedItemId: id,
       },
     );
+  if (getShopItemByPublishedItemIdResponse.type === EitherType.failure) {
+    return getShopItemByPublishedItemIdResponse;
+  }
+  const { success: dbShopItem } = getShopItemByPublishedItemIdResponse;
 
-  const previewMediaElements = await assembleShopItemPreviewMediaElements({
-    publishedItemId: id,
-    blobStorageService,
-    databaseService,
-  });
+  const assembleShopItemPreviewMediaElementsResponse =
+    await assembleShopItemPreviewMediaElements({
+      controller,
+      publishedItemId: id,
+      blobStorageService,
+      databaseService,
+    });
+  if (assembleShopItemPreviewMediaElementsResponse.type === EitherType.failure) {
+    return assembleShopItemPreviewMediaElementsResponse;
+  }
+  const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
 
   const rootPurchasedShopItemDetails: RootPurchasedShopItemDetails = {
     renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
@@ -288,25 +420,33 @@ async function assembleRootPurchasedShopItemDetailsFromParts({
     purchasedMediaElements: [],
   };
 
-  return rootPurchasedShopItemDetails;
+  return Success(rootPurchasedShopItemDetails);
 }
 
 async function assembleShopItemPreviewMediaElements({
+  controller,
   publishedItemId,
   blobStorageService,
   databaseService,
 }: {
+  controller: Controller;
   publishedItemId: string;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-}): Promise<MediaElement[]> {
-  const filedShopItemPreviewMediaElements =
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
+  const getShopItemMediaElementsByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemMediaElementsByPublishedItemId(
       {
+        controller,
         publishedItemId,
         shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
       },
     );
+  if (getShopItemMediaElementsByPublishedItemIdResponse.type === EitherType.failure) {
+    return getShopItemMediaElementsByPublishedItemIdResponse;
+  }
+  const { success: filedShopItemPreviewMediaElements } =
+    getShopItemMediaElementsByPublishedItemIdResponse;
 
   const previewMediaElements: MediaElement[] = await BluebirdPromise.map(
     filedShopItemPreviewMediaElements,
@@ -326,5 +466,5 @@ async function assembleShopItemPreviewMediaElements({
     },
   );
 
-  return previewMediaElements;
+  return Success(previewMediaElements);
 }

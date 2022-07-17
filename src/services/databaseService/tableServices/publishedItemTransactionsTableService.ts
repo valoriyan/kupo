@@ -1,4 +1,12 @@
 import { Pool, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -37,29 +45,44 @@ export class PublishedItemTransactionsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async recordTransaction({
+    controller,
     transactionId,
     publishedItemId,
     nonCreatorUserId,
     creationTimestamp,
   }: {
+    controller: Controller;
     transactionId: string;
     publishedItemId: string;
     nonCreatorUserId: string;
     creationTimestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "transaction_id", value: transactionId },
-          { field: "published_item_id", value: publishedItemId },
-          { field: "non_creator_user_id", value: nonCreatorUserId },
-          { field: "creation_timestamp", value: creationTimestamp },
+    // eslint-disable-next-line @typescript-eslint/ban-types
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "transaction_id", value: transactionId },
+            { field: "published_item_id", value: publishedItemId },
+            { field: "non_creator_user_id", value: nonCreatorUserId },
+            { field: "creation_timestamp", value: creationTimestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemTransactionsTableService.recordTransaction",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -67,33 +90,46 @@ export class PublishedItemTransactionsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async hasPublishedItemBeenPurchasedByUserId({
+    controller,
     publishedItemId,
     nonCreatorUserId,
   }: {
+    controller: Controller;
     publishedItemId: string;
     nonCreatorUserId: string;
-  }) {
-    const query = {
-      text: `
-          SELECT
-            *
-          FROM
-            ${this.tableName}
-          WHERE
-                published_item_id = $1
-            AND
-                non_creator_user_id = $2
-          LIMIT
-            1
-          ;
-        `,
-      values: [publishedItemId, nonCreatorUserId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+    try {
+      const query = {
+        text: `
+            SELECT
+              *
+            FROM
+              ${this.tableName}
+            WHERE
+                  published_item_id = $1
+              AND
+                  non_creator_user_id = $2
+            LIMIT
+              1
+            ;
+          `,
+        values: [publishedItemId, nonCreatorUserId],
+      };
 
-    const response: QueryResult<DBPublishedItemTransaction> =
-      await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishedItemTransaction> =
+        await this.datastorePool.query(query);
 
-    return response.rows.length === 1;
+      return Success(response.rows.length === 1);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemTransactionsTableService.hasPublishedItemBeenPurchasedByUserId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////

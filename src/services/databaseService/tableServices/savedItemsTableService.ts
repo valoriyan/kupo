@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
@@ -43,29 +52,42 @@ export class SavedItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async saveItem({
+    controller,
     saveId,
     publishedItemId,
     userId,
     creationTimestamp,
   }: {
+    controller: Controller;
     saveId: string;
     publishedItemId: string;
     userId: string;
     creationTimestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "save_id", value: saveId },
-          { field: "published_item_id", value: publishedItemId },
-          { field: "user_id", value: userId },
-          { field: "creation_timestamp", value: creationTimestamp },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "save_id", value: saveId },
+            { field: "published_item_id", value: publishedItemId },
+            { field: "user_id", value: userId },
+            { field: "creation_timestamp", value: creationTimestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at savedItemsTableService.saveItem",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -73,84 +95,110 @@ export class SavedItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getSavedItemsByUserId({
+    controller,
     userId,
     limit,
     getItemsSavedBeforeTimestamp,
   }: {
+    controller: Controller;
     userId: string;
     limit?: number;
     getItemsSavedBeforeTimestamp?: number;
-  }): Promise<DBSavedItem[]> {
-    const queryValues: (string | number)[] = [userId];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBSavedItem[]>> {
+    try {
+      const queryValues: (string | number)[] = [userId];
 
-    let limitClause = "";
-    if (!!limit) {
-      limitClause = `
-        LIMIT $${queryValues.length + 1}
-      `;
+      let limitClause = "";
+      if (!!limit) {
+        limitClause = `
+          LIMIT $${queryValues.length + 1}
+        `;
 
-      queryValues.push(limit);
-    }
+        queryValues.push(limit);
+      }
 
-    let getItemsSavedBeforeTimestampClause = "";
-    if (!!getItemsSavedBeforeTimestamp) {
-      getItemsSavedBeforeTimestampClause = `
-        AND
-          creation_timestamp < $${queryValues.length + 1}
-      `;
+      let getItemsSavedBeforeTimestampClause = "";
+      if (!!getItemsSavedBeforeTimestamp) {
+        getItemsSavedBeforeTimestampClause = `
+          AND
+            creation_timestamp < $${queryValues.length + 1}
+        `;
 
-      queryValues.push(getItemsSavedBeforeTimestamp);
-    }
+        queryValues.push(getItemsSavedBeforeTimestamp);
+      }
 
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-        user_id = $1
-          ${getItemsSavedBeforeTimestampClause}
-        ORDER BY
-          creation_timestamp DESC
-        ${limitClause}
-        ;
-      `,
-      values: queryValues,
-    };
-
-    const response: QueryResult<DBSavedItem> = await this.datastorePool.query(query);
-
-    return response.rows;
-  }
-
-  public async doesUserIdSavePublishedItemId({
-    publishedItemId,
-    userId,
-  }: {
-    publishedItemId: string;
-    userId: string;
-  }): Promise<boolean> {
-    const query = {
-      text: `
+      const query = {
+        text: `
           SELECT
-            COUNT(*)
+            *
           FROM
             ${this.tableName}
           WHERE
-          published_item_id = $1
-          AND
-            user_id = $2
+          user_id = $1
+            ${getItemsSavedBeforeTimestampClause}
+          ORDER BY
+            creation_timestamp DESC
+          ${limitClause}
           ;
         `,
-      values: [publishedItemId, userId],
-    };
+        values: queryValues,
+      };
 
-    const response: QueryResult<{
-      count: string;
-    }> = await this.datastorePool.query(query);
+      const response: QueryResult<DBSavedItem> = await this.datastorePool.query(query);
 
-    return parseInt(response.rows[0].count) === 1;
+      return Success(response.rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at savedItemsTableService.getSavedItemsByUserId",
+      });
+    }
+  }
+
+  public async doesUserIdSavePublishedItemId({
+    controller,
+    publishedItemId,
+    userId,
+  }: {
+    controller: Controller;
+    publishedItemId: string;
+    userId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+    try {
+      const query = {
+        text: `
+            SELECT
+              COUNT(*)
+            FROM
+              ${this.tableName}
+            WHERE
+            published_item_id = $1
+            AND
+              user_id = $2
+            ;
+          `,
+        values: [publishedItemId, userId],
+      };
+
+      const response: QueryResult<{
+        count: string;
+      }> = await this.datastorePool.query(query);
+
+      return Success(parseInt(response.rows[0].count) === 1);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at savedItemsTableService.doesUserIdSavePublishedItemId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -162,20 +210,34 @@ export class SavedItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async unSaveItem({
+    controller,
     userId,
     publishedItemId,
   }: {
+    controller: Controller;
     userId: string;
     publishedItemId: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "user_id", value: userId },
-        { field: "published_item_id", value: publishedItemId },
-      ],
-      tableName: this.tableName,
-    });
+    // eslint-disable-next-line @typescript-eslint/ban-types
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "user_id", value: userId },
+          { field: "published_item_id", value: publishedItemId },
+        ],
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at savedItemsTableService.unSaveItem",
+      });
+    }
   }
 }

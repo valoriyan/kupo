@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 import { v4 as uuidv4 } from "uuid";
@@ -35,7 +40,12 @@ export async function handleCreateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<CreateShopItemFailedReason, CreateShopItemSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | CreateShopItemFailedReason>,
+    CreateShopItemSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -55,9 +65,10 @@ export async function handleCreateShopItem({
   const publishedItemId = uuidv4();
   const now = Date.now();
 
-  try {
+  const createPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
       {
+        controller,
         type: PublishedItemType.SHOP_ITEM,
         publishedItemId,
         creationTimestamp: now,
@@ -67,53 +78,68 @@ export async function handleCreateShopItem({
         expirationTimestamp,
       },
     );
+  if (createPublishedItemResponse.type === EitherType.failure) {
+    return createPublishedItemResponse;
+  }
 
+  const createShopItemResponse =
     await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
       {
+        controller,
         publishedItemId,
         title: title,
         price: price,
       },
     );
+  if (createShopItemResponse.type === EitherType.failure) {
+    return createShopItemResponse;
+  }
 
-    const shopItemMediaElements = await BluebirdPromise.map(
-      mediaFiles,
-      async (
-        mediaFile,
-        index,
-      ): Promise<{
-        publishedItemId: string;
-        shopItemElementIndex: number;
-        blobFileKey: string;
-        fileTemporaryUrl: string;
-        mimetype: string;
-      }> => {
-        const { blobFileKey, fileTemporaryUrl, mimetype } = await uploadMediaFile({
-          file: mediaFile,
-          blobStorageService: controller.blobStorageService,
-        });
+  const shopItemMediaElements = await BluebirdPromise.map(
+    mediaFiles,
+    async (
+      mediaFile,
+      index,
+    ): Promise<{
+      publishedItemId: string;
+      shopItemElementIndex: number;
+      blobFileKey: string;
+      fileTemporaryUrl: string;
+      mimetype: string;
+    }> => {
+      const { blobFileKey, fileTemporaryUrl, mimetype } = await uploadMediaFile({
+        file: mediaFile,
+        blobStorageService: controller.blobStorageService,
+      });
 
-        return {
-          publishedItemId,
-          shopItemElementIndex: index,
-          blobFileKey,
-          fileTemporaryUrl,
-          mimetype,
-        };
-      },
-    );
+      return {
+        publishedItemId,
+        shopItemElementIndex: index,
+        blobFileKey,
+        fileTemporaryUrl,
+        mimetype,
+      };
+    },
+  );
 
-    const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
+  const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
+  const addHashtagsToPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
       {
+        controller,
         hashtags: lowerCaseHashtags,
         publishedItemId,
       },
     );
+  if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
+    return addHashtagsToPublishedItemResponse;
+  }
 
+  const createShopItemMediaElementsResponse =
     await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
       {
+        controller,
         shopItemMediaElements: shopItemMediaElements.map(
           ({ publishedItemId, shopItemElementIndex, blobFileKey, mimetype }) => ({
             publishedItemId,
@@ -125,14 +151,9 @@ export async function handleCreateShopItem({
         ),
       },
     );
-
-    return { type: EitherType.success, success: {} };
-  } catch (e) {
-    console.log("error", error);
-    controller.setStatus(500);
-    return {
-      type: EitherType.error,
-      error: { reason: CreateShopItemFailedReason.UnknownCause },
-    };
+  if (createShopItemMediaElementsResponse.type === EitherType.failure) {
+    return createShopItemMediaElementsResponse;
   }
+
+  return Success({});
 }

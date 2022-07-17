@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePublishedItem } from "../publishedItem/models";
 import { constructPublishedItemsFromParts } from "../publishedItem/utilities";
@@ -33,7 +39,7 @@ export async function handleGetPageOfAllPublishedItems({
   requestBody: GetPageOfAllPublishedItemsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfAllPublishedItemsFailedReason,
+    ErrorReasonTypes<string | GetPageOfAllPublishedItemsFailedReason>,
     GetPageOfAllPublishedItemsSuccess
   >
 > {
@@ -45,15 +51,20 @@ export async function handleGetPageOfAllPublishedItems({
   );
   if (error) return error;
 
-  const unrenderableUser =
+  const selectUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: unrenderableUser } = selectUserByUserIdResponse;
 
   if (!!unrenderableUser && !!unrenderableUser.isAdmin) {
-    const uncompiledBasePublishedItems =
+    const GET_ALL_PUBLISHED_ITEMSResponse =
       await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.GET_ALL_PUBLISHED_ITEMS(
         {
+          controller,
           filterOutExpiredAndUnscheduledPublishedItems: true,
           limit: pageSize,
           getPublishedItemsBeforeTimestamp: cursor
@@ -61,13 +72,24 @@ export async function handleGetPageOfAllPublishedItems({
             : undefined,
         },
       );
+    if (GET_ALL_PUBLISHED_ITEMSResponse.type === EitherType.failure) {
+      return GET_ALL_PUBLISHED_ITEMSResponse;
+    }
+    const { success: uncompiledBasePublishedItems } = GET_ALL_PUBLISHED_ITEMSResponse;
 
-    const renderablePublishedItems = await constructPublishedItemsFromParts({
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      uncompiledBasePublishedItems,
-      clientUserId,
-    });
+    const constructPublishedItemsFromPartsResponse =
+      await constructPublishedItemsFromParts({
+        controller,
+        blobStorageService: controller.blobStorageService,
+        databaseService: controller.databaseService,
+        uncompiledBasePublishedItems,
+        clientUserId,
+      });
+    if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
+      return constructPublishedItemsFromPartsResponse;
+    }
+    const { success: renderablePublishedItems } =
+      constructPublishedItemsFromPartsResponse;
 
     const nextPageCursor =
       renderablePublishedItems.length > 0
@@ -78,20 +100,18 @@ export async function handleGetPageOfAllPublishedItems({
           })
         : undefined;
 
-    return {
-      type: EitherType.success,
-      success: {
-        renderablePublishedItems,
-        previousPageCursor: cursor,
-        nextPageCursor,
-      },
-    };
+    return Success({
+      renderablePublishedItems,
+      previousPageCursor: cursor,
+      nextPageCursor,
+    });
   } else {
-    return {
-      type: EitherType.error,
-      error: {
-        reason: GetPageOfAllPublishedItemsFailedReason.ILLEGAL_ACCESS,
-      },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 403,
+      reason: GetPageOfAllPublishedItemsFailedReason.ILLEGAL_ACCESS,
+      error,
+      additionalErrorInformation: "Illegal access at handleGetPageOfAllPublishedItems",
+    });
   }
 }

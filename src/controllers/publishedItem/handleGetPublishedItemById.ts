@@ -1,4 +1,9 @@
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { PostController } from "./post/postController";
 import express from "express";
 import { checkAuthorization } from "../auth/utilities";
@@ -29,7 +34,10 @@ export async function handleGetPublishedItemById({
   request: express.Request;
   requestBody: GetPublishedItemByIdRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPublishedItemByIdFailedReason, GetPublishedItemByIdSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetPublishedItemByIdFailedReason>,
+    GetPublishedItemByIdSuccess
+  >
 > {
   const { publishedItemId } = requestBody;
 
@@ -39,32 +47,44 @@ export async function handleGetPublishedItemById({
   );
   if (error) return error;
 
-  const uncompiledBasePublishedItem =
+  const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: publishedItemId },
+      { controller, id: publishedItemId },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
-    const post = await constructRenderablePostFromParts({
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      uncompiledBasePublishedItem,
-      clientUserId,
-    });
-    return {
-      type: EitherType.success,
-      success: { publishedItem: post },
-    };
+    const constructRenderablePostFromPartsResponse =
+      await constructRenderablePostFromParts({
+        controller,
+        blobStorageService: controller.blobStorageService,
+        databaseService: controller.databaseService,
+        uncompiledBasePublishedItem,
+        clientUserId,
+      });
+    if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
+      return constructRenderablePostFromPartsResponse;
+    }
+    const { success: post } = constructRenderablePostFromPartsResponse;
+
+    return Success({ publishedItem: post });
   } else {
-    const shopItem = await constructRenderableShopItemFromParts({
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      uncompiledBasePublishedItem,
-      clientUserId,
-    });
-    return {
-      type: EitherType.success,
-      success: { publishedItem: shopItem },
-    };
+    const constructRenderableShopItemFromPartsResponse =
+      await constructRenderableShopItemFromParts({
+        controller,
+        blobStorageService: controller.blobStorageService,
+        databaseService: controller.databaseService,
+        uncompiledBasePublishedItem,
+        clientUserId,
+      });
+    if (constructRenderableShopItemFromPartsResponse.type === EitherType.failure) {
+      return constructRenderableShopItemFromPartsResponse;
+    }
+    const { success: shopItem } = constructRenderableShopItemFromPartsResponse;
+
+    return Success({ publishedItem: shopItem });
   }
 }

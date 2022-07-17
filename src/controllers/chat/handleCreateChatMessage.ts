@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
@@ -27,7 +32,10 @@ export async function handleCreateChatMessage({
   request: express.Request;
   requestBody: CreateChatMessageRequestBody;
 }): Promise<
-  SecuredHTTPResponse<CreateChatMessageFailedReason, CreateChatMessageSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | CreateChatMessageFailedReason>,
+    CreateChatMessageSuccess
+  >
 > {
   const { chatRoomId, chatMessageText } = requestBody;
 
@@ -41,20 +49,29 @@ export async function handleCreateChatMessage({
 
   const creationTimestamp = Date.now();
 
-  await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.createChatMessage(
-    {
-      chatMessageId,
-      text: chatMessageText,
-      authorUserId: clientUserId,
-      chatRoomId,
-      creationTimestamp,
-    },
-  );
-
-  const userIds =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
-      { chatRoomId },
+  const createChatMessageResponse =
+    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.createChatMessage(
+      {
+        controller,
+        chatMessageId,
+        text: chatMessageText,
+        authorUserId: clientUserId,
+        chatRoomId,
+        creationTimestamp,
+      },
     );
+  if (createChatMessageResponse.type === EitherType.failure) {
+    return createChatMessageResponse;
+  }
+
+  const getUserIdsJoinedToChatRoomIdResponse =
+    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
+      { controller, chatRoomId },
+    );
+  if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {
+    return getUserIdsJoinedToChatRoomIdResponse;
+  }
+  const { success: userIds } = getUserIdsJoinedToChatRoomIdResponse;
 
   const chatMessage: RenderableChatMessage = {
     chatMessageId,
@@ -69,10 +86,7 @@ export async function handleCreateChatMessage({
     chatMessage,
   });
 
-  return {
-    type: EitherType.success,
-    success: {
-      chatMessage,
-    },
-  };
+  return Success({
+    chatMessage,
+  });
 }

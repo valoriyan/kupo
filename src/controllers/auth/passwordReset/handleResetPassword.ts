@@ -1,5 +1,5 @@
 import { getEnvironmentVariable } from "../../../utilities";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import { EitherType, HTTPResponse } from "../../../utilities/monads";
 import { AuthController } from "../authController";
 import { verify } from "jsonwebtoken";
 import { ResetPasswordJWTData } from "../../../services/emailService/models";
@@ -37,6 +37,7 @@ export async function handleResetPassword({
 
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
       {
+        controller,
         userId,
         encryptedPassword,
       },
@@ -49,7 +50,7 @@ export async function handleResetPassword({
   } catch (error) {
     console.log(`handleResetPassword error: ${error}`);
     return {
-      type: EitherType.error,
+      type: EitherType.failure,
       error: { reason: ResetPasswordFailedReason.InvalidToken },
     };
   }

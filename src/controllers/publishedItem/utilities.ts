@@ -10,43 +10,80 @@ import { constructRenderablePostFromParts } from "./post/utilities";
 import { RenderableShopItem } from "./shopItem/models";
 import { constructRenderableShopItemFromParts } from "./shopItem/utilities";
 import { Promise as BluebirdPromise } from "bluebird";
+import { Controller } from "tsoa";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  FailureResponse,
+  InternalServiceResponse,
+  Success,
+  SuccessResponse,
+} from "../../utilities/monads";
 
 export async function constructPublishedItemsFromParts({
+  controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItems,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   clientUserId: string | undefined;
-}): Promise<(RenderablePost | RenderableShopItem)[]> {
-  return await BluebirdPromise.map(
+}): Promise<
+  InternalServiceResponse<
+    ErrorReasonTypes<string>,
+    (RenderablePost | RenderableShopItem)[]
+  >
+> {
+  const constructPublishedItemFromPartsResponses = await BluebirdPromise.map(
     uncompiledBasePublishedItems,
     async (uncompiledBasePublishedItem) =>
       await constructPublishedItemFromParts({
+        controller,
         blobStorageService,
         databaseService,
         uncompiledBasePublishedItem,
         clientUserId,
       }),
   );
+
+  const firstOccuringError = constructPublishedItemFromPartsResponses.find(
+    (responseElement) => {
+      return responseElement.type === EitherType.failure;
+    },
+  );
+  if (firstOccuringError) {
+    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+  }
+
+  const publishedItems = constructPublishedItemFromPartsResponses.map(
+    (responseElement) => (responseElement as SuccessResponse<RenderableShopItem>).success,
+  );
+
+  return Success(publishedItems);
 }
 
 export async function constructPublishedItemFromParts({
+  controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItem,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
-}): Promise<RenderablePost | RenderableShopItem> {
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost | RenderableShopItem>
+> {
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
     return await constructRenderablePostFromParts({
+      controller,
       blobStorageService,
       databaseService,
       uncompiledBasePublishedItem,
@@ -54,6 +91,7 @@ export async function constructPublishedItemFromParts({
     });
   } else {
     return await constructRenderableShopItemFromParts({
+      controller,
       blobStorageService,
       databaseService,
       uncompiledBasePublishedItem,
@@ -63,14 +101,18 @@ export async function constructPublishedItemFromParts({
 }
 
 export async function assembleBaseRenderablePublishedItem({
+  controller,
   databaseService,
   uncompiledBasePublishedItem,
   clientUserId,
 }: {
+  controller: Controller;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
-}): Promise<BaseRenderablePublishedItem> {
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, BaseRenderablePublishedItem>
+> {
   const {
     type,
     id,
@@ -81,42 +123,71 @@ export async function assembleBaseRenderablePublishedItem({
     expirationTimestamp,
   } = uncompiledBasePublishedItem;
 
-  const hashtags =
+  const getHashtagsForPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
-      { publishedItemId: id },
+      { controller, publishedItemId: id },
     );
 
-  const countOfLikesOnPost =
+  if (getHashtagsForPublishedItemIdResponse.type === EitherType.failure) {
+    return getHashtagsForPublishedItemIdResponse;
+  }
+  const { success: hashtags } = getHashtagsForPublishedItemIdResponse;
+
+  const countLikesOnPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemLikesTableService.countLikesOnPublishedItemId(
       {
+        controller,
         publishedItemId: id,
       },
     );
+  if (countLikesOnPublishedItemIdResponse.type === EitherType.failure) {
+    return countLikesOnPublishedItemIdResponse;
+  }
+  const { success: countOfLikesOnPost } = countLikesOnPublishedItemIdResponse;
 
-  const countOfCommentsOnPost =
+  const countCommentsOnPostIdResponse =
     await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
       {
+        controller,
         postId: id,
       },
     );
+  if (countCommentsOnPostIdResponse.type === EitherType.failure) {
+    return countCommentsOnPostIdResponse;
+  }
+  const { success: countOfCommentsOnPost } = countCommentsOnPostIdResponse;
 
-  const isLikedByClient =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.publishedItemLikesTableService.doesUserIdLikePublishedItemId(
-      {
-        userId: clientUserId,
-        publishedItemId: id,
-      },
-    ));
+  let isLikedByClient = false;
+  if (!!clientUserId) {
+    const doesUserIdLikePublishedItemIdResponse =
+      await databaseService.tableNameToServicesMap.publishedItemLikesTableService.doesUserIdLikePublishedItemId(
+        {
+          controller,
+          userId: clientUserId,
+          publishedItemId: id,
+        },
+      );
+    if (doesUserIdLikePublishedItemIdResponse.type === EitherType.failure) {
+      return doesUserIdLikePublishedItemIdResponse;
+    }
+    isLikedByClient = doesUserIdLikePublishedItemIdResponse.success;
+  }
 
-  const isSavedByClient =
-    !!clientUserId &&
-    (await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-      {
-        userId: clientUserId,
-        publishedItemId: id,
-      },
-    ));
+  let isSavedByClient = false;
+  if (!!clientUserId) {
+    const doesUserIdSavePublishedItemIdResponse =
+      await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
+        {
+          controller,
+          userId: clientUserId,
+          publishedItemId: id,
+        },
+      );
+    if (doesUserIdSavePublishedItemIdResponse.type === EitherType.failure) {
+      return doesUserIdSavePublishedItemIdResponse;
+    }
+    isSavedByClient = doesUserIdSavePublishedItemIdResponse.success;
+  }
 
   const baseRenderablePublishedItem: BaseRenderablePublishedItem = {
     type,
@@ -137,5 +208,5 @@ export async function assembleBaseRenderablePublishedItem({
     isSavedByClient,
   };
 
-  return baseRenderablePublishedItem;
+  return Success(baseRenderablePublishedItem);
 }

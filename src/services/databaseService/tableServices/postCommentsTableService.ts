@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { UnrenderablePostComment } from "../../../controllers/publishedItem/publishedItemComment/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
@@ -9,6 +16,8 @@ import {
   isQueryEmpty,
 } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { Controller } from "tsoa";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 interface DBPostComment {
   post_comment_id: string;
@@ -58,32 +67,45 @@ export class PostCommentsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createPostComment({
+    controller,
     postCommentId,
     postId,
     text,
     authorUserId,
     creationTimestamp,
   }: {
+    controller: Controller;
     postCommentId: string;
     postId: string;
     text: string;
     authorUserId: string;
     creationTimestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "post_comment_id", value: postCommentId },
-          { field: "post_id", value: postId },
-          { field: "text", value: text },
-          { field: "author_user_id", value: authorUserId },
-          { field: "creation_timestamp", value: creationTimestamp },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "post_comment_id", value: postCommentId },
+            { field: "post_id", value: postId },
+            { field: "text", value: text },
+            { field: "author_user_id", value: authorUserId },
+            { field: "creation_timestamp", value: creationTimestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at postCommentsTableService.createPostComment",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -91,87 +113,134 @@ export class PostCommentsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getPostCommentById({
+    controller,
     postCommentId,
   }: {
+    controller: Controller;
     postCommentId: string;
-  }): Promise<UnrenderablePostComment> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          post_comment_id = $1
-        ;
-      `,
-      values: [postCommentId],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePostComment>
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            post_comment_id = $1
+          ;
+        `,
+        values: [postCommentId],
+      };
 
-    const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBPostCommentToUnrenderablePostComment)[0];
+      return Success(response.rows.map(convertDBPostCommentToUnrenderablePostComment)[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postCommentsTableService.getPostCommentById",
+      });
+    }
   }
 
   public async getPostCommentsByPostId({
+    controller,
     postId,
     afterTimestamp,
     pageSize,
   }: {
+    controller: Controller;
     postId: string;
     afterTimestamp?: number;
     pageSize: number;
-  }): Promise<UnrenderablePostComment[]> {
-    const values: Array<string | number> = [postId, pageSize];
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePostComment[]>
+  > {
+    try {
+      const values: Array<string | number> = [postId, pageSize];
 
-    let afterTimestampCondition = "";
-    if (!!afterTimestamp) {
-      afterTimestampCondition = `AND creation_timestamp > $3`;
-      values.push(afterTimestamp);
-    }
+      let afterTimestampCondition = "";
+      if (!!afterTimestamp) {
+        afterTimestampCondition = `AND creation_timestamp > $3`;
+        values.push(afterTimestamp);
+      }
 
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          post_id = $1
-          ${afterTimestampCondition}
-        ORDER BY
-          creation_timestamp
-        LIMIT
-          $2
-        ;
-      `,
-      values,
-    };
-
-    const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
-
-    return response.rows.map(convertDBPostCommentToUnrenderablePostComment);
-  }
-
-  public async countCommentsOnPostId({ postId }: { postId: string }): Promise<number> {
-    const query = {
-      text: `
+      const query = {
+        text: `
           SELECT
-            COUNT(*)
+            *
           FROM
             ${this.tableName}
           WHERE
             post_id = $1
+            ${afterTimestampCondition}
+          ORDER BY
+            creation_timestamp
+          LIMIT
+            $2
           ;
         `,
-      values: [postId],
-    };
+        values,
+      };
 
-    const response: QueryResult<{
-      count: string;
-    }> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
 
-    return parseInt(response.rows[0].count);
+      return Success(response.rows.map(convertDBPostCommentToUnrenderablePostComment));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postCommentsTableService.getPostCommentsByPostId",
+      });
+    }
+  }
+
+  public async countCommentsOnPostId({
+    controller,
+    postId,
+  }: {
+    controller: Controller;
+    postId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const query = {
+        text: `
+            SELECT
+              COUNT(*)
+            FROM
+              ${this.tableName}
+            WHERE
+              post_id = $1
+            ;
+          `,
+        values: [postId],
+      };
+
+      const response: QueryResult<{
+        count: string;
+      }> = await this.datastorePool.query(query);
+
+      return Success(parseInt(response.rows[0].count));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postCommentsTableService.countCommentsOnPostId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -179,23 +248,36 @@ export class PostCommentsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async updatePostComment({
+    controller,
     postCommentId,
     text,
   }: {
+    controller: Controller;
     postCommentId: string;
     text: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "text", value: text }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "post_comment_id",
-        value: postCommentId,
-      },
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "text", value: text }],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "post_comment_id",
+          value: postCommentId,
+        },
+        tableName: this.tableName,
+      });
 
-    if (!isQueryEmpty({ query })) {
-      await this.datastorePool.query(query);
+      if (!isQueryEmpty({ query })) {
+        await this.datastorePool.query(query);
+      }
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at postCommentsTableService.updatePostComment",
+      });
     }
   }
 
@@ -204,29 +286,49 @@ export class PostCommentsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deletePostComment({
+    controller,
     postCommentId,
     authorUserId,
   }: {
+    controller: Controller;
     postCommentId: string;
     authorUserId: string;
-  }): Promise<UnrenderablePostComment> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "post_comment_id", value: postCommentId },
-        { field: "author_user_id", value: authorUserId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePostComment>
+  > {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "post_comment_id", value: postCommentId },
+          { field: "author_user_id", value: authorUserId },
+        ],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPostComment> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (!!rows.length) {
-      const row = response.rows[0];
-      return convertDBPostCommentToUnrenderablePostComment(row);
+      if (!!rows.length) {
+        const row = response.rows[0];
+        return Success(convertDBPostCommentToUnrenderablePostComment(row));
+      }
+
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "Post Comment not found at postCommentsTableService.deletePostComment",
+        additionalErrorInformation: "Error at postCommentsTableService.deletePostComment",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at postCommentsTableService.deletePostComment",
+      });
     }
-
-    throw new Error("No rows deleted");
   }
 }

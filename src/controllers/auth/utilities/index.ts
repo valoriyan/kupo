@@ -4,8 +4,7 @@ import { Controller } from "tsoa";
 import { MD5 } from "crypto-js";
 import { AuthFailedReason, AuthFailed } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
-import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
-import { EitherType } from "../../../types/monads";
+import { EitherType } from "../../../utilities/monads";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
@@ -75,7 +74,7 @@ export async function checkAuthorization(
 ): Promise<{
   clientUserId: string;
   errorResponse?: {
-    type: EitherType.error;
+    type: EitherType.failure;
     error: AuthFailed;
   };
 }> {
@@ -88,14 +87,15 @@ export async function checkAuthorization(
 
     return { clientUserId: validateTokenAndGetUserId({ token, jwtPrivateKey }) };
   } catch {
-    const errorResponse = generateErrorResponse({
-      controller,
-      errorReason: AuthFailedReason.AuthorizationError,
-      httpStatusCode: 403,
-    });
+    controller.setStatus(403);
     return {
       clientUserId: "",
-      errorResponse,
+      errorResponse: {
+        type: EitherType.failure,
+        error: {
+          reason: AuthFailedReason.AuthorizationError,
+        },
+      },
     };
   }
 }

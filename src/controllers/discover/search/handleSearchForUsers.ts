@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderableUser } from "../../user/models";
@@ -31,7 +36,12 @@ export async function handleSearchForUsers({
   controller: DiscoverController;
   request: express.Request;
   requestBody: SearchForUsersRequestBody;
-}): Promise<SecuredHTTPResponse<SearchForUsersFailedReason, SearchForUsersSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | SearchForUsersFailedReason>,
+    SearchForUsersSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -41,33 +51,43 @@ export async function handleSearchForUsers({
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
-  const unrenderableUsersMatchingSearchString =
+  const selectUsersBySearchStringResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersBySearchString(
-      { searchString: lowercaseTrimmedQuery },
+      { controller, searchString: lowercaseTrimmedQuery },
     );
+  if (selectUsersBySearchStringResponse.type === EitherType.failure) {
+    return selectUsersBySearchStringResponse;
+  }
+  const { success: unrenderableUsersMatchingSearchString } =
+    selectUsersBySearchStringResponse;
 
-  const unrenderableUsersIdsMatchingHashtag =
+  const getUserIdsWithHashtagResponse =
     await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.getUserIdsWithHashtag(
-      { hashtag: lowercaseTrimmedQuery },
+      { controller, hashtag: lowercaseTrimmedQuery },
     );
+  if (getUserIdsWithHashtagResponse.type === EitherType.failure) {
+    return getUserIdsWithHashtagResponse;
+  }
+  const { success: unrenderableUsersIdsMatchingHashtag } = getUserIdsWithHashtagResponse;
 
-  const unrenderableUsersMatchingHashtag =
+  const selectUsersByUserIdsResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-      { userIds: unrenderableUsersIdsMatchingHashtag },
+      { controller, userIds: unrenderableUsersIdsMatchingHashtag },
     );
+  if (selectUsersByUserIdsResponse.type === EitherType.failure) {
+    return selectUsersByUserIdsResponse;
+  }
+  const { success: unrenderableUsersMatchingHashtag } = selectUsersByUserIdsResponse;
 
   const unrenderableUsers = mergeArraysOfUnrenderableUsers({
     arrays: [unrenderableUsersMatchingSearchString, unrenderableUsersMatchingHashtag],
   });
 
   if (unrenderableUsers.length === 0) {
-    return {
-      type: EitherType.success,
-      success: {
-        users: [],
-        totalCount: 0,
-      },
-    };
+    return Success({
+      users: [],
+      totalCount: 0,
+    });
   }
 
   const pageOfUnrenderableUsers = unrenderableUsers.slice(
@@ -75,18 +95,21 @@ export async function handleSearchForUsers({
     pageSize * pageNumber,
   );
 
-  const renderableUsers = await constructRenderableUsersFromParts({
-    clientUserId,
-    unrenderableUsers: pageOfUnrenderableUsers,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUsersFromPartsResponse =
+    await constructRenderableUsersFromParts({
+      controller,
+      clientUserId,
+      unrenderableUsers: pageOfUnrenderableUsers,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
 
-  return {
-    type: EitherType.success,
-    success: {
-      users: renderableUsers,
-      totalCount: unrenderableUsers.length,
-    },
-  };
+  return Success({
+    users: renderableUsers,
+    totalCount: unrenderableUsers.length,
+  });
 }

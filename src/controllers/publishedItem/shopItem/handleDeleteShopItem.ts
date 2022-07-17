@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
@@ -21,7 +26,12 @@ export async function handleDeleteShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: DeleteShopItemRequestBody;
-}): Promise<SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | DeleteShopItemFailed>,
+    DeleteShopItemSuccess
+  >
+> {
   const { publishedItemId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -30,28 +40,43 @@ export async function handleDeleteShopItem({
   );
   if (error) return error;
 
-  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
-    {
-      id: publishedItemId,
-      authorUserId: clientUserId,
-    },
-  );
+  const deletePublishedItemResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
+      {
+        controller,
+        id: publishedItemId,
+        authorUserId: clientUserId,
+      },
+    );
+  if (deletePublishedItemResponse.type === EitherType.failure) {
+    return deletePublishedItemResponse;
+  }
 
-  await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
-    {
-      publishedItemId,
-      authorUserId: clientUserId,
-    },
-  );
+  const deleteShopItemResponse =
+    await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
+      {
+        controller,
+        publishedItemId,
+        authorUserId: clientUserId,
+      },
+    );
+  if (deleteShopItemResponse.type === EitherType.failure) {
+    return deleteShopItemResponse;
+  }
 
-  const blobPointers =
+  const deleteShopItemMediaElementsByPublishedItemIdResponse =
     await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByPublishedItemId(
       {
+        controller,
         publishedItemId,
       },
     );
+  if (deleteShopItemMediaElementsByPublishedItemIdResponse.type === EitherType.failure) {
+    return deleteShopItemMediaElementsByPublishedItemIdResponse;
+  }
+  const { success: blobPointers } = deleteShopItemMediaElementsByPublishedItemIdResponse;
 
   await controller.blobStorageService.deleteImages({ blobPointers });
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

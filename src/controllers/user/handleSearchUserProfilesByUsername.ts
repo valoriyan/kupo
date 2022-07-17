@@ -1,6 +1,13 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
+import { GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUsersFromParts } from "./utilities";
@@ -27,7 +34,7 @@ export async function handleSearchUserProfilesByUsername({
   requestBody: SearchUserProfilesByUsernameRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    SearchUserProfilesByUsernameFailedReason,
+    ErrorReasonTypes<string | SearchUserProfilesByUsernameFailedReason>,
     SearchUserProfilesByUsernameSuccess
   >
 > {
@@ -39,32 +46,42 @@ export async function handleSearchUserProfilesByUsername({
 
   const { searchString } = requestBody;
 
-  const unrenderableUsers =
+  const selectUsersByUsernameMatchingSubstringResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
       {
+        controller,
         usernameSubstring: searchString.toLowerCase(),
       },
     );
-
-  if (unrenderableUsers.length === 0) {
-    controller.setStatus(404);
-    return {
-      type: EitherType.error,
-      error: { reason: SearchUserProfilesByUsernameFailedReason.NotFound },
-    };
+  if (selectUsersByUsernameMatchingSubstringResponse.type === EitherType.failure) {
+    return selectUsersByUsernameMatchingSubstringResponse;
   }
 
-  const renderableUsers = await constructRenderableUsersFromParts({
-    clientUserId,
-    unrenderableUsers,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const { success: unrenderableUsers } = selectUsersByUsernameMatchingSubstringResponse;
 
-  return {
-    type: EitherType.success,
-    success: {
-      results: renderableUsers,
-    },
-  };
+  if (unrenderableUsers.length === 0) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: SearchUserProfilesByUsernameFailedReason.NotFound,
+      additionalErrorInformation: "Error at handleSearchUserProfilesByUsername",
+    });
+  }
+
+  const constructRenderableUsersFromPartsResponse =
+    await constructRenderableUsersFromParts({
+      controller,
+      clientUserId,
+      unrenderableUsers,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+
+  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
+
+  return Success({ results: renderableUsers });
 }

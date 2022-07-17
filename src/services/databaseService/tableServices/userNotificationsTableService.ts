@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
@@ -7,6 +8,14 @@ import {
 } from "./utilities/index";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
 
 export interface DBUserNotification {
   user_notification_id: string;
@@ -57,30 +66,44 @@ export class UserNotificationsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createUserNotification({
+    controller,
     userNotificationId,
     recipientUserId,
     notificationType,
     referenceTableId,
   }: {
+    controller: Controller;
     userNotificationId: string;
     recipientUserId: string;
     notificationType: NOTIFICATION_EVENTS;
     referenceTableId: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "user_notification_id", value: userNotificationId },
-          { field: "recipient_user_id", value: recipientUserId },
-          { field: "notification_type", value: notificationType },
-          { field: "reference_table_id", value: referenceTableId },
-          { field: "last_updated_timestamp", value: Date.now() },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "user_notification_id", value: userNotificationId },
+            { field: "recipient_user_id", value: recipientUserId },
+            { field: "notification_type", value: notificationType },
+            { field: "reference_table_id", value: referenceTableId },
+            { field: "last_updated_timestamp", value: Date.now() },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.createUserNotification",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -88,121 +111,160 @@ export class UserNotificationsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async selectUserNotificationsByUserId({
+    controller,
     userId,
     limit,
     getNotificationsUpdatedBeforeTimestamp,
   }: {
+    controller: Controller;
     userId: string;
     limit?: number;
     getNotificationsUpdatedBeforeTimestamp?: number;
-  }): Promise<DBUserNotification[]> {
-    const queryValues: (number | string)[] = [userId];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserNotification[]>> {
+    try {
+      const queryValues: (number | string)[] = [userId];
 
-    let limitClause = "";
-    if (!!limit) {
-      limitClause = `
-        LIMIT $${queryValues.length + 1}
-      `;
+      let limitClause = "";
+      if (!!limit) {
+        limitClause = `
+          LIMIT $${queryValues.length + 1}
+        `;
 
-      queryValues.push(limit);
+        queryValues.push(limit);
+      }
+
+      let getNotificationsUpdatedBeforeTimestampClause = "";
+      if (!!getNotificationsUpdatedBeforeTimestamp) {
+        getNotificationsUpdatedBeforeTimestampClause = `
+          AND
+            last_updated_timestamp < $${queryValues.length + 1}
+        `;
+
+        queryValues.push(getNotificationsUpdatedBeforeTimestamp);
+      }
+
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            recipient_user_id = $1
+            ${getNotificationsUpdatedBeforeTimestampClause}
+          ORDER BY
+            last_updated_timestamp DESC
+          ${limitClause}
+          ;
+        `,
+        values: queryValues,
+      };
+
+      const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
+        queryString,
+      );
+
+      const rows = response.rows;
+
+      return Success(rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.selectUserNotificationsByUserId",
+      });
     }
-
-    let getNotificationsUpdatedBeforeTimestampClause = "";
-    if (!!getNotificationsUpdatedBeforeTimestamp) {
-      getNotificationsUpdatedBeforeTimestampClause = `
-        AND
-          last_updated_timestamp < $${queryValues.length + 1}
-      `;
-
-      queryValues.push(getNotificationsUpdatedBeforeTimestamp);
-    }
-
-    const queryString = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          recipient_user_id = $1
-          ${getNotificationsUpdatedBeforeTimestampClause}
-        ORDER BY
-          last_updated_timestamp DESC
-        ${limitClause}
-        ;
-      `,
-      values: queryValues,
-    };
-
-    const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
-      queryString,
-    );
-
-    const rows = response.rows;
-
-    return rows;
   }
 
   public async doesUserNotificationExist({
+    controller,
     userId,
     referenceTableId,
   }: {
+    controller: Controller;
     userId: string;
     referenceTableId: string;
-  }): Promise<boolean> {
-    const queryString = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-            recipient_user_id = $1
-          AND
-            reference_table_id = $2
-        ORDER BY
-          last_updated_timestamp DESC
-        LIMIT
-          1
-        ;
-      `,
-      values: [userId, referenceTableId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+    try {
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              recipient_user_id = $1
+            AND
+              reference_table_id = $2
+          ORDER BY
+            last_updated_timestamp DESC
+          LIMIT
+            1
+          ;
+        `,
+        values: [userId, referenceTableId],
+      };
 
-    const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
-      queryString,
-    );
+      const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
+        queryString,
+      );
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    return rows.length === 1;
+      return Success(rows.length === 1);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.doesUserNotificationExist",
+      });
+    }
   }
 
   public async selectCountOfUnreadUserNotificationsByUserId({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<number> {
-    const query = {
-      text: `
-        SELECT
-          COUNT(*)
-        FROM
-          ${this.tableName}
-        WHERE
-            recipient_user_id = $1
-          AND
-            timestamp_seen_by_user IS NULL
-        ;
-      `,
-      values: [userId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            COUNT(*)
+          FROM
+            ${this.tableName}
+          WHERE
+              recipient_user_id = $1
+            AND
+              timestamp_seen_by_user IS NULL
+          ;
+        `,
+        values: [userId],
+      };
 
-    const response: QueryResult<{
-      count: string;
-    }> = await this.datastorePool.query(query);
+      const response: QueryResult<{
+        count: string;
+      }> = await this.datastorePool.query(query);
 
-    return parseInt(response.rows[0].count);
+      return Success(parseInt(response.rows[0].count));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -210,56 +272,75 @@ export class UserNotificationsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async markAllUserNotificationsAsSeen({
+    controller,
     recipientUserId,
     timestampSeenByUser,
   }: {
+    controller: Controller;
     recipientUserId: string;
     timestampSeenByUser: number;
-  }): Promise<void> {
-    const query = {
-      text: `
-        UPDATE
-          ${this.tableName}
-        SET
-          timestamp_seen_by_user = $1
-        WHERE
-            timestamp_seen_by_user IS NULL
-          AND
-            recipient_user_id = $2
-        ;
-      `,
-      values: [timestampSeenByUser, recipientUserId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = {
+        text: `
+          UPDATE
+            ${this.tableName}
+          SET
+            timestamp_seen_by_user = $1
+          WHERE
+              timestamp_seen_by_user IS NULL
+            AND
+              recipient_user_id = $2
+          ;
+        `,
+        values: [timestampSeenByUser, recipientUserId],
+      };
 
-    // const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-    //   updatedFields: [{ field: "timestamp_seen_by_user", value: timestampSeenByUser }],
-    //   fieldUsedToIdentifyUpdatedRow: {
-    //     field: "user_notification_id",
-    //     value: userNotificationId,
-    //   },
-    //   tableName: this.tableName,
-    // });
-
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.markAllUserNotificationsAsSeen",
+      });
+    }
   }
 
   public async setLastUpdatedTimestamp({
+    controller,
     userNotificationId,
     newUpdateTimestamp,
   }: {
+    controller: Controller;
     userNotificationId: string;
     newUpdateTimestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "last_updated_timestamp", value: newUpdateTimestamp }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "user_notification_id",
-        value: userNotificationId,
-      },
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "last_updated_timestamp", value: newUpdateTimestamp }],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "user_notification_id",
+          value: userNotificationId,
+        },
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.setLastUpdatedTimestamp",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -267,46 +348,71 @@ export class UserNotificationsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deleteUserNotificationForUserId({
+    controller,
     referenceTableId,
     recipientUserId,
     notificationType,
   }: {
+    controller: Controller;
     referenceTableId: string;
     recipientUserId: string;
     notificationType: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "reference_table_id", value: referenceTableId },
-        { field: "notification_type", value: notificationType },
-        { field: "recipient_user_id", value: recipientUserId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "reference_table_id", value: referenceTableId },
+          { field: "notification_type", value: notificationType },
+          { field: "recipient_user_id", value: recipientUserId },
+        ],
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.deleteUserNotificationForUserId",
+      });
+    }
   }
 
   public async deleteUserNotificationsForAllUsersByReferenceTableIds({
+    controller,
     referenceTableIds,
     notificationType,
   }: {
+    controller: Controller;
     referenceTableIds: string[];
     notificationType: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "notification_type", value: notificationType },
-      ],
-      fieldsUsedToIdentifyRowsToDeleteUsingInClauses: [
-        { field: "reference_table_id", values: referenceTableIds },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "notification_type", value: notificationType },
+        ],
+        fieldsUsedToIdentifyRowsToDeleteUsingInClauses: [
+          { field: "reference_table_id", values: referenceTableIds },
+        ],
+        tableName: this.tableName,
+      });
 
-    console.log("query");
-    console.log(query);
-
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds",
+      });
+    }
   }
 }

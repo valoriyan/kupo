@@ -3,7 +3,7 @@ import { Body, Controller, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../services/blobStorageService";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import {
   handleSearchForHashtags,
   SearchForHashtagsFailedReason,
@@ -46,7 +46,10 @@ export class DiscoverController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: SearchForHashtagsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<SearchForHashtagsFailedReason, SearchForHashtagsSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SearchForHashtagsFailedReason>,
+      SearchForHashtagsSuccess
+    >
   > {
     return await handleSearchForHashtags({
       controller: this,
@@ -59,7 +62,12 @@ export class DiscoverController extends Controller {
   public async searchForPosts(
     @Request() request: express.Request,
     @Body() requestBody: SearchForPostsRequestBody,
-  ): Promise<SecuredHTTPResponse<SearchForPostsFailedReason, SearchForPostsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SearchForPostsFailedReason>,
+      SearchForPostsSuccess
+    >
+  > {
     return await handleSearchForPosts({
       controller: this,
       request,
@@ -71,7 +79,12 @@ export class DiscoverController extends Controller {
   public async searchForUsers(
     @Request() request: express.Request,
     @Body() requestBody: SearchForUsersRequestBody,
-  ): Promise<SecuredHTTPResponse<SearchForUsersFailedReason, SearchForUsersSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SearchForUsersFailedReason>,
+      SearchForUsersSuccess
+    >
+  > {
     return await handleSearchForUsers({
       controller: this,
       request,

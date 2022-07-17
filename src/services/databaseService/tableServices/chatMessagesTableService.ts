@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { UnrenderableChatMessage } from "../../../controllers/chat/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
@@ -9,6 +16,8 @@ import {
   isQueryEmpty,
 } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { Controller } from "tsoa";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 interface DBChatMessage {
   chat_message_id: string;
@@ -58,32 +67,45 @@ export class ChatMessagesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createChatMessage({
+    controller,
     chatMessageId,
     text,
     authorUserId,
     chatRoomId,
     creationTimestamp,
   }: {
+    controller: Controller;
     chatMessageId: string;
     text: string;
     authorUserId: string;
     chatRoomId: string;
     creationTimestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "chat_message_id", value: chatMessageId },
-          { field: "text", value: text },
-          { field: "author_user_id", value: authorUserId },
-          { field: "chat_room_id", value: chatRoomId },
-          { field: "creation_timestamp", value: creationTimestamp },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "chat_message_id", value: chatMessageId },
+            { field: "text", value: text },
+            { field: "author_user_id", value: authorUserId },
+            { field: "chat_room_id", value: chatRoomId },
+            { field: "creation_timestamp", value: creationTimestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at chatMessagesTableService.createChatMessage",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -91,39 +113,54 @@ export class ChatMessagesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getChatMessagesByChatRoomId({
+    controller,
     chatRoomId,
     beforeTimestamp,
   }: {
+    controller: Controller;
     chatRoomId: string;
     beforeTimestamp?: number;
-  }): Promise<UnrenderableChatMessage[]> {
-    const values: (string | number)[] = [chatRoomId];
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatMessage[]>
+  > {
+    try {
+      const values: (string | number)[] = [chatRoomId];
 
-    let beforeTimestampCondition = "";
-    if (!!beforeTimestamp) {
-      beforeTimestampCondition = `AND creation_timestamp <  $2`;
-      values.push(beforeTimestamp);
+      let beforeTimestampCondition = "";
+      if (!!beforeTimestamp) {
+        beforeTimestampCondition = `AND creation_timestamp <  $2`;
+        values.push(beforeTimestamp);
+      }
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              chat_room_id = $1
+              ${beforeTimestampCondition}
+          ORDER BY
+            creation_timestamp
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+
+      return Success(response.rows.map(convertDBChatMessageToUnrenderableChatMessage));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatMessagesTableService.getChatMessagesByChatRoomId",
+      });
     }
-
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-            chat_room_id = $1
-            ${beforeTimestampCondition}
-        ORDER BY
-          creation_timestamp
-        ;
-      `,
-      values,
-    };
-
-    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
-
-    return response.rows.map(convertDBChatMessageToUnrenderableChatMessage);
   }
 
   //////////////////////////////////////////////////
@@ -131,23 +168,36 @@ export class ChatMessagesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async updateChatMessage({
+    controller,
     chatMessageId,
     text,
   }: {
+    controller: Controller;
     chatMessageId: string;
     text: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "text", value: text }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "chat_message_id",
-        value: chatMessageId,
-      },
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "text", value: text }],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "chat_message_id",
+          value: chatMessageId,
+        },
+        tableName: this.tableName,
+      });
 
-    if (!isQueryEmpty({ query })) {
-      await this.datastorePool.query(query);
+      if (!isQueryEmpty({ query })) {
+        await this.datastorePool.query(query);
+      }
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at chatMessagesTableService.updateChatMessage",
+      });
     }
   }
 
@@ -156,29 +206,49 @@ export class ChatMessagesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deleteChatMessage({
+    controller,
     chatMessageId,
     userId,
   }: {
+    controller: Controller;
     chatMessageId: string;
     userId: string;
-  }): Promise<UnrenderableChatMessage> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "chat_message_id", value: chatMessageId },
-        { field: "author_user_id", value: userId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatMessage>
+  > {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "chat_message_id", value: chatMessageId },
+          { field: "author_user_id", value: userId },
+        ],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+      const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (!!rows.length) {
-      const row = response.rows[0];
-      return convertDBChatMessageToUnrenderableChatMessage(row);
+      if (!!rows.length) {
+        const row = response.rows[0];
+        return Success(convertDBChatMessageToUnrenderableChatMessage(row));
+      }
+
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "Chat Message not found in chatMessagesTableService.deleteChatMessage",
+        additionalErrorInformation: "Error at chatMessagesTableService.deleteChatMessage",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at chatMessagesTableService.deleteChatMessage",
+      });
     }
-
-    throw new Error("No rows deleted");
   }
 }

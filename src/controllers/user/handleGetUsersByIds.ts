@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -25,7 +30,12 @@ export async function handleGetUsersByIds({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetUsersByIdsRequestBody;
-}): Promise<SecuredHTTPResponse<GetUsersByIdsFailedReason, GetUsersByIdsSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetUsersByIdsFailedReason>,
+    GetUsersByIdsSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -34,12 +44,19 @@ export async function handleGetUsersByIds({
 
   const { userIds } = requestBody;
 
-  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
-    clientUserId,
-    userIds,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUsersFromPartsByUserIdsResponse =
+    await constructRenderableUsersFromPartsByUserIds({
+      controller,
+      clientUserId,
+      userIds,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+
+  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsByUserIdsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   const foundUsers = userIds.map((userId) => {
     const foundUser = renderableUsers.find(
@@ -48,10 +65,7 @@ export async function handleGetUsersByIds({
     return !!foundUser ? foundUser : null;
   });
 
-  return {
-    type: EitherType.success,
-    success: {
-      users: foundUsers,
-    },
-  };
+  return Success({
+    users: foundUsers,
+  });
 }

@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
@@ -26,7 +31,10 @@ export async function handleGetUsersByUsernames({
   request: express.Request;
   requestBody: GetUsersByUsernamesRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetUsersByUsernamesFailedReason, GetUsersByUsernamesSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetUsersByUsernamesFailedReason>,
+    GetUsersByUsernamesSuccess
+  >
 > {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -38,17 +46,29 @@ export async function handleGetUsersByUsernames({
 
   const lowercaseUsernames = usernames.map((username) => username.toLowerCase());
 
-  const unrenderableUsers =
+  const selectUsersByUsernamesResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
-      { usernames: lowercaseUsernames },
+      { controller, usernames: lowercaseUsernames },
     );
 
-  const renderableUsers = await constructRenderableUsersFromParts({
-    clientUserId,
-    unrenderableUsers,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  if (selectUsersByUsernamesResponse.type === EitherType.failure) {
+    return selectUsersByUsernamesResponse;
+  }
+  const { success: unrenderableUsers } = selectUsersByUsernamesResponse;
+
+  const constructRenderableUsersFromPartsResponse =
+    await constructRenderableUsersFromParts({
+      controller,
+      clientUserId,
+      unrenderableUsers,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+
+  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
 
   const usernameToUserMap = new Map(
     renderableUsers.map((renderableUser) => [renderableUser.username, renderableUser]),
@@ -61,10 +81,7 @@ export async function handleGetUsersByUsernames({
     return null;
   });
 
-  return {
-    type: EitherType.success,
-    success: {
-      users: foundUsers,
-    },
-  };
+  return Success({
+    users: foundUsers,
+  });
 }

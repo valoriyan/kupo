@@ -1,6 +1,14 @@
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import { Controller } from "tsoa";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { UnrenderableUser } from "../../user/models";
 import {
   constructRenderableUserFromParts,
   constructRenderableUsersFromParts,
@@ -8,24 +16,32 @@ import {
 import { RenderablePostComment, UnrenderablePostComment } from "./models";
 
 export async function constructRenderablePostCommentFromPartsById({
+  controller,
   blobStorageService,
   databaseService,
   postCommentId,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   postCommentId: string;
   clientUserId: string;
-}): Promise<RenderablePostComment> {
-  const unrenderablePostComment =
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePostComment>> {
+  const getPostCommentByIdResponse =
     await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
       {
+        controller,
         postCommentId,
       },
     );
+  if (getPostCommentByIdResponse.type === EitherType.failure) {
+    return getPostCommentByIdResponse;
+  }
+  const { success: unrenderablePostComment } = getPostCommentByIdResponse;
 
   return await constructRenderablePostCommentFromParts({
+    controller,
     blobStorageService,
     databaseService,
     unrenderablePostComment,
@@ -34,62 +50,97 @@ export async function constructRenderablePostCommentFromPartsById({
 }
 
 export async function constructRenderablePostCommentFromParts({
+  controller,
   blobStorageService,
   databaseService,
   unrenderablePostComment,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   unrenderablePostComment: UnrenderablePostComment;
   clientUserId: string;
-}): Promise<RenderablePostComment> {
-  const unrenderableUser =
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePostComment>> {
+  const selectUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      controller,
       userId: unrenderablePostComment.authorUserId,
     });
 
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: unrenderableUser } = selectUserByUserIdResponse;
+
   if (!unrenderableUser) {
-    throw new Error(`Missing user: ${unrenderablePostComment.authorUserId}`);
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at constructRenderablePostCommentFromParts",
+      additionalErrorInformation:
+        "User not found at constructRenderablePostCommentFromParts",
+    });
   }
 
-  const renderableUser = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser,
-    blobStorageService,
-    databaseService,
-  });
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser,
+      blobStorageService,
+      databaseService,
+    },
+  );
+  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUserFromPartsResponse;
+  }
+  const { success: renderableUser } = constructRenderableUserFromPartsResponse;
 
-  return {
+  return Success({
     ...unrenderablePostComment,
     user: renderableUser,
-  };
+  });
 }
 
 export async function constructRenderablePostCommentsFromParts({
+  controller,
   blobStorageService,
   databaseService,
   unrenderablePostComments,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   unrenderablePostComments: UnrenderablePostComment[];
   clientUserId: string;
-}): Promise<RenderablePostComment[]> {
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePostComment[]>> {
   const userIds = unrenderablePostComments.map((postComment) => postComment.authorUserId);
 
-  const unrenderableUsers: UnrenderableUser[] =
+  const selectUsersByUserIdsResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
+      controller,
       userIds,
     });
+  if (selectUsersByUserIdsResponse.type === EitherType.failure) {
+    return selectUsersByUserIdsResponse;
+  }
+  const { success: unrenderableUsers } = selectUsersByUserIdsResponse;
 
-  const renderableUsers = await constructRenderableUsersFromParts({
-    clientUserId,
-    unrenderableUsers,
-    blobStorageService,
-    databaseService,
-  });
+  const constructRenderableUsersFromPartsResponse =
+    await constructRenderableUsersFromParts({
+      controller,
+      clientUserId,
+      unrenderableUsers,
+      blobStorageService,
+      databaseService,
+    });
+  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
 
   const userIdToRenderableUserMap = new Map(
     renderableUsers.map((renderableUser) => [renderableUser.userId, renderableUser]),
@@ -102,5 +153,5 @@ export async function constructRenderablePostCommentsFromParts({
     }),
   );
 
-  return renderablePostComments;
+  return Success(renderablePostComments);
 }

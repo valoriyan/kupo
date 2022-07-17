@@ -1,6 +1,6 @@
 import express from "express";
 import { getEnvironmentVariable } from "../../utilities";
-import { EitherType, HTTPResponse } from "../../types/monads";
+import { EitherType, HTTPResponse } from "../../utilities/monads";
 import { AuthController } from "./authController";
 import { AuthFailedReason, AuthSuccess } from "./models";
 import { validateTokenAndGetUserId } from "./utilities";
@@ -18,7 +18,10 @@ export async function handleRefreshAccessToken({
 
   if (!refreshToken) {
     controller.setStatus(401);
-    return { type: EitherType.error, error: { reason: AuthFailedReason.NoRefreshToken } };
+    return {
+      type: EitherType.failure,
+      error: { reason: AuthFailedReason.NoRefreshToken },
+    };
   }
 
   let userId: string;
@@ -30,7 +33,7 @@ export async function handleRefreshAccessToken({
     });
   } catch {
     controller.setStatus(401);
-    return { type: EitherType.error, error: { reason: AuthFailedReason.InvalidToken } };
+    return { type: EitherType.failure, error: { reason: AuthFailedReason.InvalidToken } };
   }
 
   try {
@@ -38,7 +41,7 @@ export async function handleRefreshAccessToken({
   } catch {
     controller.setStatus(401);
     return {
-      type: EitherType.error,
+      type: EitherType.failure,
       error: { reason: AuthFailedReason.TokenGenerationFailed },
     };
   }

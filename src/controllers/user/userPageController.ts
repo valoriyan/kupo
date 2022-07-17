@@ -2,7 +2,7 @@ import express from "express";
 import { Body, Controller, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import {
   GetUserProfileRequestBody,
   GetUserProfileSuccess,
@@ -87,7 +87,12 @@ export class UserPageController extends Controller {
   public async getUserProfile(
     @Request() request: express.Request,
     @Body() requestBody: GetUserProfileRequestBody,
-  ): Promise<SecuredHTTPResponse<GetUserProfileFailedReason, GetUserProfileSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetUserProfileFailedReason>,
+      GetUserProfileSuccess
+    >
+  > {
     return await handleGetUserProfile({
       controller: this,
       request,
@@ -99,7 +104,12 @@ export class UserPageController extends Controller {
   public async getUsersByIds(
     @Request() request: express.Request,
     @Body() requestBody: GetUsersByIdsRequestBody,
-  ): Promise<SecuredHTTPResponse<GetUsersByIdsFailedReason, GetUsersByIdsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetUsersByIdsFailedReason>,
+      GetUsersByIdsSuccess
+    >
+  > {
     return await handleGetUsersByIds({
       controller: this,
       request,
@@ -112,7 +122,10 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetUsersByUsernamesRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetUsersByUsernamesFailedReason, GetUsersByUsernamesSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetUsersByUsernamesFailedReason>,
+      GetUsersByUsernamesSuccess
+    >
   > {
     return await handleGetUsersByUsernames({
       controller: this,
@@ -127,7 +140,7 @@ export class UserPageController extends Controller {
     @Body() requestBody: SearchUserProfilesByUsernameRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      SearchUserProfilesByUsernameFailedReason,
+      ErrorReasonTypes<string | SearchUserProfilesByUsernameFailedReason>,
       SearchUserProfilesByUsernameSuccess
     >
   > {
@@ -144,7 +157,7 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetPageOfUsersFollowedByUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfUsersFollowedByUserIdFailedReason,
+      ErrorReasonTypes<string | GetPageOfUsersFollowedByUserIdFailedReason>,
       GetPageOfUsersFollowedByUserIdSuccess
     >
   > {
@@ -161,7 +174,7 @@ export class UserPageController extends Controller {
     @Body() requestBody: GetPageOfUsersFollowingUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfUsersFollowingUserIdFailedReason,
+      ErrorReasonTypes<string | GetPageOfUsersFollowingUserIdFailedReason>,
       GetPageOfUsersFollowingUserIdSuccess
     >
   > {
@@ -181,7 +194,10 @@ export class UserPageController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: UpdateUserProfileRequestBody,
   ): Promise<
-    SecuredHTTPResponse<UpdateUserProfileFailedReason, UpdateUserProfileSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UpdateUserProfileFailedReason>,
+      UpdateUserProfileSuccess
+    >
   > {
     return await handleUpdateUserProfile({
       controller: this,
@@ -196,7 +212,7 @@ export class UserPageController extends Controller {
     @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
   ): Promise<
     SecuredHTTPResponse<
-      UpdateUserProfilePictureFailedReason,
+      ErrorReasonTypes<string | UpdateUserProfilePictureFailedReason>,
       UpdateUserProfilePictureSuccess
     >
   > {
@@ -215,7 +231,7 @@ export class UserPageController extends Controller {
     @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
   ): Promise<
     SecuredHTTPResponse<
-      UpdateUserBackgroundImageFailedReason,
+      ErrorReasonTypes<string | UpdateUserBackgroundImageFailedReason>,
       UpdateUserBackgroundImageSuccess
     >
   > {

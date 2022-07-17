@@ -9,48 +9,74 @@ import {
   UncompiledBasePublishedItem,
 } from "../models";
 import { assembleBaseRenderablePublishedItem } from "../utilities";
+import { Controller } from "tsoa";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  FailureResponse,
+  InternalServiceResponse,
+  Success,
+  SuccessResponse,
+} from "../../../utilities/monads";
 
 export async function constructRenderablePostFromPartsById({
+  controller,
   blobStorageService,
   databaseService,
   publishedItemId,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   publishedItemId: string;
   clientUserId: string | undefined;
-}): Promise<RenderablePost> {
-  const uncompiledBasePublishedItem =
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost>> {
+  const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: publishedItemId },
+      { controller, id: publishedItemId },
     );
 
-  const post = await constructRenderablePostFromParts({
-    blobStorageService: blobStorageService,
-    databaseService: databaseService,
-    uncompiledBasePublishedItem,
-    clientUserId,
-  });
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
-  return post;
+  const constructRenderablePostFromPartsResponse = await constructRenderablePostFromParts(
+    {
+      controller,
+      blobStorageService: blobStorageService,
+      databaseService: databaseService,
+      uncompiledBasePublishedItem,
+      clientUserId,
+    },
+  );
+  if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostFromPartsResponse;
+  }
+  const { success: post } = constructRenderablePostFromPartsResponse;
+
+  return Success(post);
 }
 
 export async function constructRenderablePostsFromParts({
+  controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItems,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   clientUserId: string | undefined;
-}): Promise<RenderablePost[]> {
-  const renderablePosts = await BluebirdPromise.map(
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost[]>> {
+  const constructRenderablePostFromPartsResponses = await BluebirdPromise.map(
     uncompiledBasePublishedItems,
     async (uncompiledBasePublishedItem) =>
       await constructRenderablePostFromParts({
+        controller,
         blobStorageService,
         databaseService,
         uncompiledBasePublishedItem,
@@ -58,25 +84,47 @@ export async function constructRenderablePostsFromParts({
       }),
   );
 
-  return renderablePosts;
+  const firstOccuringError = constructRenderablePostFromPartsResponses.find(
+    (responseElement) => {
+      return responseElement.type === EitherType.failure;
+    },
+  );
+  if (firstOccuringError) {
+    return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+  }
+
+  const renderablePosts = constructRenderablePostFromPartsResponses.map(
+    (responseElement) => (responseElement as SuccessResponse<RenderablePost>).success,
+  );
+
+  return Success(renderablePosts);
 }
 
 export async function constructRenderablePostFromParts({
+  controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItem,
   clientUserId,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
-}): Promise<RenderablePost> {
-  const baseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
-    databaseService,
-    uncompiledBasePublishedItem,
-    clientUserId,
-  });
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost>> {
+  const assembleBaseRenderablePublishedItemResponse =
+    await assembleBaseRenderablePublishedItem({
+      controller,
+      databaseService,
+      uncompiledBasePublishedItem,
+      clientUserId,
+    });
+  if (assembleBaseRenderablePublishedItemResponse.type === EitherType.failure) {
+    return assembleBaseRenderablePublishedItemResponse;
+  }
+  const { success: baseRenderablePublishedItem } =
+    assembleBaseRenderablePublishedItemResponse;
 
   const {
     id,
@@ -94,34 +142,55 @@ export async function constructRenderablePostFromParts({
   } = baseRenderablePublishedItem;
 
   if (!idOfPublishedItemBeingShared) {
-    const rootRenderablePost: RootRenderablePost = await assembleRootRenderablePost({
+    const assembleRootRenderablePostResponse = await assembleRootRenderablePost({
+      controller,
       blobStorageService,
       databaseService,
       baseRenderablePublishedItem,
     });
+    if (assembleRootRenderablePostResponse.type === EitherType.failure) {
+      return assembleRootRenderablePostResponse;
+    }
+    const { success: rootRenderablePost } = assembleRootRenderablePostResponse;
 
-    return rootRenderablePost;
+    return Success(rootRenderablePost);
   } else {
-    const uncompiledSharedBasePublishedItem =
+    const getPublishedItemByIdResponse =
       await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
         {
+          controller,
           id: idOfPublishedItemBeingShared,
         },
       );
+    if (getPublishedItemByIdResponse.type === EitherType.failure) {
+      return getPublishedItemByIdResponse;
+    }
+    const { success: uncompiledSharedBasePublishedItem } = getPublishedItemByIdResponse;
 
-    const sharedBaseRenderablePublishedItem = await assembleBaseRenderablePublishedItem({
+    const assembleBaseRenderablePublishedItemResponse =
+      await assembleBaseRenderablePublishedItem({
+        controller,
+        databaseService,
+        uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
+        clientUserId,
+      });
+    if (assembleBaseRenderablePublishedItemResponse.type === EitherType.failure) {
+      return assembleBaseRenderablePublishedItemResponse;
+    }
+    const { success: sharedBaseRenderablePublishedItem } =
+      assembleBaseRenderablePublishedItemResponse;
+
+    const assembleRootRenderablePostResponse = await assembleRootRenderablePost({
+      controller,
+      blobStorageService,
       databaseService,
-      uncompiledBasePublishedItem: uncompiledSharedBasePublishedItem,
-      clientUserId,
+      baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
     });
 
-    const sharedRootRenderablePost: RootRenderablePost = await assembleRootRenderablePost(
-      {
-        blobStorageService,
-        databaseService,
-        baseRenderablePublishedItem: sharedBaseRenderablePublishedItem,
-      },
-    );
+    if (assembleRootRenderablePostResponse.type === EitherType.failure) {
+      return assembleRootRenderablePostResponse;
+    }
+    const { success: sharedRootRenderablePost } = assembleRootRenderablePostResponse;
 
     const sharedRenderablePost: SharedRenderablePost = {
       type: PublishedItemType.POST,
@@ -139,19 +208,21 @@ export async function constructRenderablePostFromParts({
       isSavedByClient,
       sharedItem: sharedRootRenderablePost,
     };
-    return sharedRenderablePost;
+    return Success(sharedRenderablePost);
   }
 }
 
 async function assembleRootRenderablePost({
+  controller,
   blobStorageService,
   databaseService,
   baseRenderablePublishedItem,
 }: {
+  controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
-}): Promise<RootRenderablePost> {
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RootRenderablePost>> {
   const {
     id,
     creationTimestamp,
@@ -166,11 +237,16 @@ async function assembleRootRenderablePost({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-  const mediaElements = await assemblePostMediaElements({
+  const assemblePostMediaElementsResponse = await assemblePostMediaElements({
+    controller,
     publishedItemId: id,
     blobStorageService,
     databaseService,
   });
+  if (assemblePostMediaElementsResponse.type === EitherType.failure) {
+    return assemblePostMediaElementsResponse;
+  }
+  const { success: mediaElements } = assemblePostMediaElementsResponse;
 
   const rootRenderablePost: RootRenderablePost = {
     type: PublishedItemType.POST,
@@ -188,24 +264,31 @@ async function assembleRootRenderablePost({
     isSavedByClient,
   };
 
-  return rootRenderablePost;
+  return Success(rootRenderablePost);
 }
 
 export async function assemblePostMediaElements({
+  controller,
   publishedItemId,
   blobStorageService,
   databaseService,
 }: {
+  controller: Controller;
   publishedItemId: string;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-}): Promise<MediaElement[]> {
-  const filedPostMediaElements =
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
+  const getPostContentElementsByPostIdResponse =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
       {
+        controller,
         postId: publishedItemId,
       },
     );
+  if (getPostContentElementsByPostIdResponse.type === EitherType.failure) {
+    return getPostContentElementsByPostIdResponse;
+  }
+  const { success: filedPostMediaElements } = getPostContentElementsByPostIdResponse;
 
   const mediaElements: MediaElement[] = await BluebirdPromise.map(
     filedPostMediaElements,
@@ -223,7 +306,7 @@ export async function assemblePostMediaElements({
     },
   );
 
-  return mediaElements;
+  return Success(mediaElements);
 }
 
 export function mergeArraysOfUncompiledBasePublishedItem({

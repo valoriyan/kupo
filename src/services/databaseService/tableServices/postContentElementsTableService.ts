@@ -1,9 +1,20 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
-import { FiledMediaElement } from "../../../controllers/models";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import {
+  FiledMediaElement,
+  GenericResponseFailedReason,
+} from "../../../controllers/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { Controller } from "tsoa";
 
 interface DBPostContentElement {
   post_id: string;
@@ -40,35 +51,47 @@ export class PostContentElementsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createPostContentElements({
+    controller,
     postContentElements,
   }: {
+    controller: Controller;
     postContentElements: {
       postId: string;
       postContentElementIndex: number;
       blobFileKey: string;
       mimetype: string;
     }[];
-  }): Promise<void> {
-    console.log(`${this.tableName} | createPostContentElements`);
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const rowsOfFieldsAndValues = postContentElements.map(
+        ({ postId, postContentElementIndex, blobFileKey, mimetype }) => [
+          { field: "post_id", value: postId },
+          {
+            field: "post_content_element_index",
+            value: `${postContentElementIndex}`,
+          },
+          { field: "blob_file_key", value: blobFileKey },
+          { field: "mimetype", value: mimetype },
+        ],
+      );
 
-    const rowsOfFieldsAndValues = postContentElements.map(
-      ({ postId, postContentElementIndex, blobFileKey, mimetype }) => [
-        { field: "post_id", value: postId },
-        {
-          field: "post_content_element_index",
-          value: `${postContentElementIndex}`,
-        },
-        { field: "blob_file_key", value: blobFileKey },
-        { field: "mimetype", value: mimetype },
-      ],
-    );
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues,
+        tableName: this.tableName,
+      });
 
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues,
-      tableName: this.tableName,
-    });
-
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postContentElementsTableService.createPostContentElements",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -76,68 +99,110 @@ export class PostContentElementsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getPostContentElementsByPostId({
+    controller,
     postId,
   }: {
+    controller: Controller;
     postId: string;
-  }): Promise<FiledMediaElement[]> {
-    const queryString = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          post_id = $1
-        ;
-      `,
-      values: [postId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, FiledMediaElement[]>> {
+    try {
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            post_id = $1
+          ;
+        `,
+        values: [postId],
+      };
 
-    const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
-      queryString,
-    );
+      const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
+        queryString,
+      );
 
-    return response.rows
-      .sort((firstElement, secondElement) =>
-        firstElement.post_content_element_index > secondElement.post_content_element_index
-          ? 1
-          : -1,
-      )
-      .map((dbPostContentElement) => ({
-        blobFileKey: dbPostContentElement.blob_file_key,
-        mimeType: dbPostContentElement.mimetype,
-      }));
+      return Success(
+        response.rows
+          .sort((firstElement, secondElement) =>
+            firstElement.post_content_element_index >
+            secondElement.post_content_element_index
+              ? 1
+              : -1,
+          )
+          .map((dbPostContentElement) => ({
+            blobFileKey: dbPostContentElement.blob_file_key,
+            mimeType: dbPostContentElement.mimetype,
+          })),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postContentElementsTableService.getPostContentElementsByPostId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async updatePostContentElements({ postId }: { postId: string }): Promise<void> {
-    // TODO: DECIDE HOW TO HANDLE MEDIA REPLACEMENT
-    console.log(postId);
-  }
+  // public async updatePostContentElements({
+  //   postId,
+  // }: {
+  //   postId: string;
+  // }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, void>> {
+  //   // TODO: DECIDE HOW TO HANDLE MEDIA REPLACEMENT
+  //   console.log(postId);
+  // }
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deletePostContentElementsByPostId({ postId }: { postId: string }): Promise<
-    {
-      fileKey: string;
-    }[]
+  public async deletePostContentElementsByPostId({
+    controller,
+    postId,
+  }: {
+    controller: Controller;
+    postId: string;
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      {
+        fileKey: string;
+      }[]
+    >
   > {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
-      tableName: this.tableName,
-    });
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
+        query,
+      );
 
-    return response.rows.map((dbPostContentElement) => ({
-      fileKey: dbPostContentElement.blob_file_key,
-    }));
+      return Success(
+        response.rows.map((dbPostContentElement) => ({
+          fileKey: dbPostContentElement.blob_file_key,
+        })),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postContentElementsTableService.deletePostContentElementsByPostId",
+      });
+    }
   }
 }

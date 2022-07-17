@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
@@ -25,7 +30,12 @@ export async function handleGetChatRoomById({
   controller: ChatController;
   request: express.Request;
   requestBody: GetChatRoomByIdRequestBody;
-}): Promise<SecuredHTTPResponse<GetChatRoomByIdFailedReason, GetChatRoomByIdSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetChatRoomByIdFailedReason>,
+    GetChatRoomByIdSuccess
+  >
+> {
   const { chatRoomId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -34,22 +44,32 @@ export async function handleGetChatRoomById({
   );
   if (error) return error;
 
-  const unrenderableChatRoom =
+  const getChatRoomByIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomById(
-      { chatRoomId },
+      { controller, chatRoomId },
     );
+  if (getChatRoomByIdResponse.type === EitherType.failure) {
+    return getChatRoomByIdResponse;
+  }
+  const { success: unrenderableChatRoom } = getChatRoomByIdResponse;
 
   const setOfUserIds: Set<string> = new Set();
   unrenderableChatRoom.memberUserIds.forEach((memberUserId) => {
     setOfUserIds.add(memberUserId);
   });
 
-  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
-    clientUserId,
-    userIds: [...setOfUserIds],
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUsersFromPartsByUserIdsResponse =
+    await constructRenderableUsersFromPartsByUserIds({
+      controller,
+      clientUserId,
+      userIds: [...setOfUserIds],
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsByUserIdsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   const mapOfUserIdsToRenderableUsers = new Map(
     renderableUsers.map((renderableUser) => {
@@ -66,10 +86,7 @@ export async function handleGetChatRoomById({
     members: chatRoomMembers,
   };
 
-  return {
-    type: EitherType.success,
-    success: {
-      chatRoom: renderableChatRoom,
-    },
-  };
+  return Success({
+    chatRoom: renderableChatRoom,
+  });
 }

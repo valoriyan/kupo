@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { FeedController } from "./feedController";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "./models";
@@ -26,7 +31,7 @@ export async function handleGetUserContentFeedFilters({
   requestBody: GetUserContentFeedFiltersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetUserContentFeedFiltersFailedReason,
+    ErrorReasonTypes<string | GetUserContentFeedFiltersFailedReason>,
     GetUserContentFeedFiltersSuccess
   >
 > {
@@ -38,15 +43,23 @@ export async function handleGetUserContentFeedFilters({
   );
   if (error) return error;
 
-  const userContentFeedFilters =
+  const getUserContentFeedFiltersByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.getUserContentFeedFiltersByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (getUserContentFeedFiltersByUserIdResponse.type === EitherType.failure) {
+    return getUserContentFeedFiltersByUserIdResponse;
+  }
+  const { success: userContentFeedFilters } = getUserContentFeedFiltersByUserIdResponse;
 
-  const unrenderableUser =
+  const selectUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: unrenderableUser } = selectUserByUserIdResponse;
 
   // ADD ALL_POSTS_FOR_REVIEW_BY_ADMINS FILTER FOR ADMINS
   if (!!unrenderableUser && !!unrenderableUser.isAdmin) {
@@ -59,10 +72,7 @@ export async function handleGetUserContentFeedFilters({
     });
   }
 
-  return {
-    type: EitherType.success,
-    success: {
-      userContentFeedFilters,
-    },
-  };
+  return Success({
+    userContentFeedFilters,
+  });
 }

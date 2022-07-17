@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
@@ -50,32 +59,46 @@ export class StoredCreditCardDataTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async storeUserCreditCardData({
+    controller,
     userId,
     localCreditCardId,
     paymentProcessorCardId,
     creationTimestamp,
     isPrimaryCard,
   }: {
+    controller: Controller;
     userId: string;
     localCreditCardId: string;
     paymentProcessorCardId: string;
     creationTimestamp: number;
     isPrimaryCard: boolean;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number | boolean>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "user_id", value: userId },
-          { field: "local_credit_card_id", value: localCreditCardId },
-          { field: "payment_processor_card_id", value: paymentProcessorCardId },
-          { field: "is_primary_card", value: isPrimaryCard },
-          { field: "creation_timestamp", value: creationTimestamp },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number | boolean>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "user_id", value: userId },
+            { field: "local_credit_card_id", value: localCreditCardId },
+            { field: "payment_processor_card_id", value: paymentProcessorCardId },
+            { field: "is_primary_card", value: isPrimaryCard },
+            { field: "creation_timestamp", value: creationTimestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at storedCreditCardDataTableService.storeUserCreditCardData",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -83,53 +106,81 @@ export class StoredCreditCardDataTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getStoredCreditCardByLocalId({
+    controller,
     localCreditCardId,
   }: {
+    controller: Controller;
     localCreditCardId: string;
-  }): Promise<DBStoredCreditCardDatum> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-        local_credit_card_id = $1
-        ;
-      `,
-      values: [localCreditCardId],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBStoredCreditCardDatum>
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+          local_credit_card_id = $1
+          ;
+        `,
+        values: [localCreditCardId],
+      };
 
-    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBStoredCreditCardDatum> =
+        await this.datastorePool.query(query);
 
-    return response.rows[0];
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at storedCreditCardDataTableService.getStoredCreditCardByLocalId",
+      });
+    }
   }
 
   public async getCreditCardsStoredByUserId({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<DBStoredCreditCardDatum[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-            user_id = $1
-        ;
-      `,
-      values: [userId],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBStoredCreditCardDatum[]>
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              user_id = $1
+          ;
+        `,
+        values: [userId],
+      };
 
-    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBStoredCreditCardDatum> =
+        await this.datastorePool.query(query);
 
-    return response.rows;
+      return Success(response.rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at storedCreditCardDataTableService.getCreditCardsStoredByUserId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -137,14 +188,18 @@ export class StoredCreditCardDataTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async makeCreditCardPrimary({
+    controller,
     userId,
     localCreditCardId,
   }: {
+    controller: Controller;
     userId: string;
     localCreditCardId: string;
-  }): Promise<void> {
-    const setUpQuery = generatePSQLGenericUpdateRowQueryString<string | number | boolean>(
-      {
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const setUpQuery = generatePSQLGenericUpdateRowQueryString<
+        string | number | boolean
+      >({
         updatedFields: [
           { field: "is_primary_card", value: false, settings: { includeIfEmpty: true } },
         ],
@@ -153,24 +208,34 @@ export class StoredCreditCardDataTableService extends TableService {
           value: userId,
         },
         tableName: this.tableName,
-      },
-    );
+      });
 
-    if (!isQueryEmpty({ query: setUpQuery })) {
-      await this.datastorePool.query(setUpQuery);
-    }
+      if (!isQueryEmpty({ query: setUpQuery })) {
+        await this.datastorePool.query(setUpQuery);
+      }
 
-    const query = generatePSQLGenericUpdateRowQueryString<string | number | boolean>({
-      updatedFields: [{ field: "is_primary_card", value: true }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "local_credit_card_id",
-        value: localCreditCardId,
-      },
-      tableName: this.tableName,
-    });
+      const query = generatePSQLGenericUpdateRowQueryString<string | number | boolean>({
+        updatedFields: [{ field: "is_primary_card", value: true }],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "local_credit_card_id",
+          value: localCreditCardId,
+        },
+        tableName: this.tableName,
+      });
 
-    if (!isQueryEmpty({ query })) {
-      await this.datastorePool.query(query);
+      if (!isQueryEmpty({ query })) {
+        await this.datastorePool.query(query);
+      }
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at storedCreditCardDataTableService.makeCreditCardPrimary",
+      });
     }
   }
 
@@ -179,28 +244,42 @@ export class StoredCreditCardDataTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async unstoreCreditCard({
+    controller,
     userId,
     localCreditCardId,
   }: {
+    controller: Controller;
     userId: string;
     localCreditCardId: string;
-  }): Promise<DBStoredCreditCardDatum> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "user_id", value: userId },
-        { field: "local_credit_card_id", value: localCreditCardId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBStoredCreditCardDatum>
+  > {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "user_id", value: userId },
+          { field: "local_credit_card_id", value: localCreditCardId },
+        ],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBStoredCreditCardDatum> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBStoredCreditCardDatum> =
+        await this.datastorePool.query(query);
 
-    if (response.rows.length < 1) {
-      throw new Error("Missing cached credit card - none to delete");
+      if (response.rows.length < 1) {
+        throw new Error("Missing cached credit card - none to delete");
+      }
+
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at storedCreditCardDataTableService.unstoreCreditCard",
+      });
     }
-
-    return response.rows[0];
   }
 }

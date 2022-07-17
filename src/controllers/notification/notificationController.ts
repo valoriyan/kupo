@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { Controller, Post, Route, Request, Body } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
@@ -41,7 +41,10 @@ export class NotificationController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfNotificationsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPageOfNotificationsFailedReason, GetPageOfNotificationsSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPageOfNotificationsFailedReason>,
+      GetPageOfNotificationsSuccess
+    >
   > {
     return await handleGetPageOfNotifications({
       controller: this,
@@ -55,7 +58,7 @@ export class NotificationController extends Controller {
     @Request() request: express.Request,
   ): Promise<
     SecuredHTTPResponse<
-      GetCountOfUnreadNotificationsFailedReason,
+      ErrorReasonTypes<string | GetCountOfUnreadNotificationsFailedReason>,
       GetCountOfUnreadNotificationsSuccess
     >
   > {

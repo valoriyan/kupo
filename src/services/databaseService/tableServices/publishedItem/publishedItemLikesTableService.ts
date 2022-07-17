@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../../config";
 import { TableService } from "../models";
 import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
@@ -39,29 +48,43 @@ export class PublishedItemLikesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createPublishedItemLikeFromUserId({
+    controller,
     publishedItemLikeId,
     publishedItemId,
     userId,
     timestamp,
   }: {
+    controller: Controller;
     publishedItemLikeId: string;
     publishedItemId: string;
     userId: string;
     timestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "published_item_like_id", value: publishedItemLikeId },
-          { field: "published_item_id", value: publishedItemId },
-          { field: "user_id", value: userId },
-          { field: "timestamp", value: timestamp },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "published_item_like_id", value: publishedItemLikeId },
+            { field: "published_item_id", value: publishedItemId },
+            { field: "user_id", value: userId },
+            { field: "timestamp", value: timestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.createPublishedItemLikeFromUserId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -69,68 +92,59 @@ export class PublishedItemLikesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getPostLikeByPublishedItemLikeId({
+    controller,
     publishedItemLikeId,
   }: {
+    controller: Controller;
     publishedItemLikeId: string;
-  }): Promise<DBPublishedItemLike> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          published_item_like_id = $1
-        LIMIT
-          1
-        ;
-      `,
-      values: [publishedItemLikeId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBPublishedItemLike>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            published_item_like_id = $1
+          LIMIT
+            1
+          ;
+        `,
+        values: [publishedItemLikeId],
+      };
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+        query,
+      );
 
-    if (response.rows.length < 1) {
-      throw new Error("Missing post like - getPostLikeByPublishedItemLikeId");
+      if (response.rows.length < 1) {
+        throw new Error("Missing post like - getPostLikeByPublishedItemLikeId");
+      }
+
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.getPostLikeByPublishedItemLikeId",
+      });
     }
-
-    return response.rows[0];
   }
 
   public async getPostLikesByPublishedItemId({
+    controller,
     publishedItemId,
   }: {
+    controller: Controller;
     publishedItemId: string;
-  }): Promise<DBPublishedItemLike[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          published_item_id = $1
-        ;
-      `,
-      values: [publishedItemId],
-    };
-
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
-      query,
-    );
-
-    return response.rows;
-  }
-
-  public async getUserIdsLikingPublishedItemId({
-    publishedItemId,
-  }: {
-    publishedItemId: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBPublishedItemLike[]>> {
+    try {
+      const query = {
+        text: `
           SELECT
             *
           FROM
@@ -139,69 +153,143 @@ export class PublishedItemLikesTableService extends TableService {
             published_item_id = $1
           ;
         `,
-      values: [publishedItemId],
-    };
+        values: [publishedItemId],
+      };
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
-      query,
-    );
-    const rows = response.rows;
+      const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+        query,
+      );
 
-    return rows.map((row) => row.user_id);
+      return Success(response.rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.getPostLikesByPublishedItemId",
+      });
+    }
+  }
+
+  public async getUserIdsLikingPublishedItemId({
+    controller,
+    publishedItemId,
+  }: {
+    controller: Controller;
+    publishedItemId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+            SELECT
+              *
+            FROM
+              ${this.tableName}
+            WHERE
+              published_item_id = $1
+            ;
+          `,
+        values: [publishedItemId],
+      };
+
+      const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+        query,
+      );
+      const rows = response.rows;
+
+      return Success(rows.map((row) => row.user_id));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.getUserIdsLikingPublishedItemId",
+      });
+    }
   }
 
   public async countLikesOnPublishedItemId({
+    controller,
     publishedItemId,
   }: {
+    controller: Controller;
     publishedItemId: string;
-  }): Promise<number> {
-    const query = {
-      text: `
-          SELECT
-            COUNT(*)
-          FROM
-            ${this.tableName}
-          WHERE
-            published_item_id = $1
-          ;
-        `,
-      values: [publishedItemId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const query = {
+        text: `
+            SELECT
+              COUNT(*)
+            FROM
+              ${this.tableName}
+            WHERE
+              published_item_id = $1
+            ;
+          `,
+        values: [publishedItemId],
+      };
 
-    const response: QueryResult<{
-      count: string;
-    }> = await this.datastorePool.query(query);
+      const response: QueryResult<{
+        count: string;
+      }> = await this.datastorePool.query(query);
 
-    return parseInt(response.rows[0].count);
+      return Success(parseInt(response.rows[0].count));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.countLikesOnPublishedItemId",
+      });
+    }
   }
 
   public async doesUserIdLikePublishedItemId({
+    controller,
     publishedItemId,
     userId,
   }: {
+    controller: Controller;
     publishedItemId: string;
     userId: string;
-  }): Promise<boolean> {
-    const query = {
-      text: `
-          SELECT
-            COUNT(*)
-          FROM
-            ${this.tableName}
-          WHERE
-            published_item_id = $1
-          AND
-            user_id = $2
-          ;
-        `,
-      values: [publishedItemId, userId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+    try {
+      const query = {
+        text: `
+            SELECT
+              COUNT(*)
+            FROM
+              ${this.tableName}
+            WHERE
+              published_item_id = $1
+            AND
+              user_id = $2
+            ;
+          `,
+        values: [publishedItemId, userId],
+      };
 
-    const response: QueryResult<{
-      count: string;
-    }> = await this.datastorePool.query(query);
+      const response: QueryResult<{
+        count: string;
+      }> = await this.datastorePool.query(query);
 
-    return parseInt(response.rows[0].count) === 1;
+      return Success(parseInt(response.rows[0].count) === 1);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.doesUserIdLikePublishedItemId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -213,51 +301,85 @@ export class PublishedItemLikesTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async removePublishedItemLikeByUserId({
+    controller,
     publishedItemId,
     userId,
   }: {
+    controller: Controller;
     publishedItemId: string;
     userId: string;
-  }): Promise<DBPublishedItemLike> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "published_item_id", value: publishedItemId },
-        { field: "user_id", value: userId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBPublishedItemLike>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "published_item_id", value: publishedItemId },
+          { field: "user_id", value: userId },
+        ],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+        query,
+      );
 
-    if (response.rows.length < 1) {
-      throw new Error("Missing post like - none to delete");
+      if (response.rows.length < 1) {
+        throw new Error("Missing post like - none to delete");
+      }
+
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.removePublishedItemLikeByUserId",
+      });
     }
-
-    return response.rows[0];
   }
 
   public async removeAllPostLikesByPublishedItemId({
+    controller,
     publishedItemId,
   }: {
+    controller: Controller;
     publishedItemId: string;
-  }): Promise<DBPublishedItemLike> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "published_item_id", value: publishedItemId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBPublishedItemLike>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "published_item_id", value: publishedItemId },
+        ],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBPublishedItemLike> = await this.datastorePool.query(
+        query,
+      );
 
-    if (response.rows.length < 1) {
-      throw new Error("Missing post like - none to delete");
+      if (response.rows.length < 1) {
+        return Failure({
+          controller,
+          httpStatusCode: 500,
+          reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+          error:
+            "Missing post like - none to delete in publishedItemLikesTableService.removeAllPostLikesByPublishedItemId",
+          additionalErrorInformation:
+            "Error at publishedItemLikesTableService.removeAllPostLikesByPublishedItemId",
+        });
+      }
+
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemLikesTableService.removeAllPostLikesByPublishedItemId",
+      });
     }
-
-    return response.rows[0];
   }
 }

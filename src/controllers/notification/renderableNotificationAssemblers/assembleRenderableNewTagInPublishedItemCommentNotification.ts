@@ -6,67 +6,122 @@ import { constructRenderablePostFromParts } from "../../publishedItem/post/utili
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import { Controller } from "tsoa";
 
 export async function assembleRenderableNewTagInPublishedItemCommentNotification({
+  controller,
   userNotification,
   blobStorageService,
   databaseService,
   clientUserId,
 }: {
+  controller: Controller;
   userNotification: DBUserNotification;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   clientUserId: string;
-}): Promise<RenderableNewTagInPublishedItemCommentNotification> {
+}): Promise<
+  InternalServiceResponse<
+    ErrorReasonTypes<string>,
+    RenderableNewTagInPublishedItemCommentNotification
+  >
+> {
   const {
     reference_table_id: publishedItemCommentId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
-  const countOfUnreadNotifications =
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  const unrenderablePublishedItemComment =
+  const getPostCommentByIdResponse =
     await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
-      { postCommentId: publishedItemCommentId },
+      { controller, postCommentId: publishedItemCommentId },
     );
+  if (getPostCommentByIdResponse.type === EitherType.failure) {
+    return getPostCommentByIdResponse;
+  }
+  const { success: unrenderablePublishedItemComment } = getPostCommentByIdResponse;
 
-  const publishedItemComment = await constructRenderablePostCommentFromParts({
-    blobStorageService,
-    databaseService,
-    unrenderablePostComment: unrenderablePublishedItemComment,
-    clientUserId,
-  });
+  const constructRenderablePostCommentFromPartsResponse =
+    await constructRenderablePostCommentFromParts({
+      controller,
+      blobStorageService,
+      databaseService,
+      unrenderablePostComment: unrenderablePublishedItemComment,
+      clientUserId,
+    });
+  if (constructRenderablePostCommentFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostCommentFromPartsResponse;
+  }
+  const { success: publishedItemComment } =
+    constructRenderablePostCommentFromPartsResponse;
 
-  const unrenderableUserTaggingClient =
+  const selectUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+      controller,
       userId: unrenderablePublishedItemComment.authorUserId,
     });
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: unrenderableUserTaggingClient } = selectUserByUserIdResponse;
 
-  const userTaggingClient = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser: unrenderableUserTaggingClient!,
-    blobStorageService,
-    databaseService,
-  });
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser: unrenderableUserTaggingClient!,
+      blobStorageService,
+      databaseService,
+    },
+  );
+  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableUserFromPartsResponse;
+  }
+  const { success: userTaggingClient } = constructRenderableUserFromPartsResponse;
 
-  const unrenderablePostWithoutElementsOrHashtags =
+  const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       {
+        controller,
         id: publishedItemComment.postId,
       },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: unrenderablePostWithoutElementsOrHashtags } =
+    getPublishedItemByIdResponse;
 
-  const publishedItem = await constructRenderablePostFromParts({
-    blobStorageService,
-    databaseService,
-    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-    clientUserId,
-  });
+  const constructRenderablePostFromPartsResponse = await constructRenderablePostFromParts(
+    {
+      controller,
+      blobStorageService,
+      databaseService,
+      uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
+      clientUserId,
+    },
+  );
+  if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostFromPartsResponse;
+  }
+  const { success: publishedItem } = constructRenderablePostFromPartsResponse;
 
-  return {
+  return Success({
     type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
     countOfUnreadNotifications,
     eventTimestamp: publishedItemComment.creationTimestamp,
@@ -74,5 +129,5 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
     userTaggingClient,
     publishedItem,
     publishedItemComment,
-  };
+  });
 }

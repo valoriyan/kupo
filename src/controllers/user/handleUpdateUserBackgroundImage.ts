@@ -1,6 +1,12 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
+import { GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities";
@@ -25,7 +31,7 @@ export async function handleUpdateUserBackgroundImage({
   requestBody: UpdateUserBackgroundImageRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    UpdateUserBackgroundImageFailedReason,
+    ErrorReasonTypes<string | UpdateUserBackgroundImageFailedReason>,
     UpdateUserBackgroundImageSuccess
   >
 > {
@@ -41,32 +47,40 @@ export async function handleUpdateUserBackgroundImage({
       })
     : null;
 
-  const updatedUnrenderableUser =
+  const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
       {
+        controller,
         userId: clientUserId,
 
         backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
       },
     );
-
-  if (!updatedUnrenderableUser) {
-    controller.setStatus(404);
-    return {
-      type: EitherType.error,
-      error: { reason: UpdateUserBackgroundImageFailedReason.Unknown },
-    };
+  if (updateUserByUserIdResponse.type === EitherType.failure) {
+    return updateUserByUserIdResponse;
   }
 
-  const renderableUser = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser: updatedUnrenderableUser,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const { success: updatedUnrenderableUser } = updateUserByUserIdResponse;
 
-  return {
-    type: EitherType.success,
-    success: renderableUser,
-  };
+  if (!updatedUnrenderableUser) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handleUpdateUserBackgroundImage",
+      additionalErrorInformation: "Error at handleUpdateUserBackgroundImage",
+    });
+  }
+
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser: updatedUnrenderableUser,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    },
+  );
+
+  return constructRenderableUserFromPartsResponse;
 }

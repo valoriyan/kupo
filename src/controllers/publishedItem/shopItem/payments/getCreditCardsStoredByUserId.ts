@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../../utilities/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { CreditCardSummary } from "./models";
@@ -20,7 +26,7 @@ export async function handleGetCreditCardsStoredByUserId({
   request: express.Request;
 }): Promise<
   SecuredHTTPResponse<
-    GetCreditCardsStoredByUserIdFailedReason,
+    ErrorReasonTypes<string | GetCreditCardsStoredByUserIdFailedReason>,
     GetCreditCardsStoredByUserIdSuccess
   >
 > {
@@ -30,21 +36,48 @@ export async function handleGetCreditCardsStoredByUserId({
   );
   if (error) return error;
 
-  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+  const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
 
-  const dbCreditCardData =
+  if (
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+    EitherType.failure
+  ) {
+    return selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+  }
+  const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+
+  const getCreditCardsStoredByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
 
-  if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID || !dbCreditCardData) {
-    return {
-      type: EitherType.error,
-      error: { reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON },
-    };
+  if (getCreditCardsStoredByUserIdResponse.type === EitherType.failure) {
+    return getCreditCardsStoredByUserIdResponse;
+  }
+  const { success: dbCreditCardData } = getCreditCardsStoredByUserIdResponse;
+
+  if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON,
+      error: "User not found at handleGetCreditCardsStoredByUserId",
+      additionalErrorInformation: "User not found at handleGetCreditCardsStoredByUserId",
+    });
+  }
+  if (!dbCreditCardData) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON,
+      error: "Credit card data not found for user at handleGetCreditCardsStoredByUserId",
+      additionalErrorInformation:
+        "Credit card data not found for user at handleGetCreditCardsStoredByUserId",
+    });
   }
 
   const { paymentProcessorCustomerId } =
@@ -59,5 +92,5 @@ export async function handleGetCreditCardsStoredByUserId({
     ),
   );
 
-  return { type: EitherType.success, success: { cards: creditCardSummaries } };
+  return Success({ cards: creditCardSummaries });
 }

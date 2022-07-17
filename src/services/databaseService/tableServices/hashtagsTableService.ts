@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryConfig, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -34,30 +43,44 @@ export class HashtagsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async addHashtagsToPublishedItem({
+    controller,
     hashtags,
     publishedItemId,
   }: {
+    controller: Controller;
     hashtags: string[];
     publishedItemId: string;
-  }): Promise<void> {
-    if (hashtags.length === 0) {
-      return;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      if (hashtags.length === 0) {
+        return Success({});
+      }
+
+      const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
+        { field: "hashtag", value: hashtag },
+        {
+          field: "published_item_id",
+          value: `${publishedItemId}`,
+        },
+      ]);
+
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues,
+        tableName: this.tableName,
+      });
+
+      await this.datastorePool.query<DBHashtag>(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at hashtagsTableService.addHashtagsToPublishedItem",
+      });
     }
-
-    const rowsOfFieldsAndValues = hashtags.map((hashtag) => [
-      { field: "hashtag", value: hashtag },
-      {
-        field: "published_item_id",
-        value: `${publishedItemId}`,
-      },
-    ]);
-
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues,
-      tableName: this.tableName,
-    });
-
-    await this.datastorePool.query<DBHashtag>(query);
   }
 
   //////////////////////////////////////////////////
@@ -65,134 +88,199 @@ export class HashtagsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getPublishedItemsWithHashtag({
+    controller,
     hashtag,
   }: {
+    controller: Controller;
     hashtag: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-            hashtag = $1
-        ;
-      `,
-      values: [hashtag],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              hashtag = $1
+          ;
+        `,
+        values: [hashtag],
+      };
 
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+      const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
-    const publishedItemIds = response.rows.map((row) => row.published_item_id);
-    return publishedItemIds;
+      const publishedItemIds = response.rows.map((row) => row.published_item_id);
+      return Success(publishedItemIds);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at hashtagsTableService.getPublishedItemsWithHashtag",
+      });
+    }
   }
 
   public async getPublishedItemIdsWithOneOfHashtags({
+    controller,
     hashtagSubstring,
   }: {
+    controller: Controller;
     hashtagSubstring: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-            hashtag LIKE CONCAT('%', $1::text, '%')
-        ;
-      `,
-      values: [hashtagSubstring],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              hashtag LIKE CONCAT('%', $1::text, '%')
+          ;
+        `,
+        values: [hashtagSubstring],
+      };
 
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+      const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
-    const publishedItemIds = response.rows.map((row) => row.published_item_id);
-    return publishedItemIds;
+      const publishedItemIds = response.rows.map((row) => row.published_item_id);
+      return Success(publishedItemIds);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at hashtagsTableService.getPublishedItemIdsWithOneOfHashtags",
+      });
+    }
   }
 
   public async getHashtagsForPublishedItemId({
+    controller,
     publishedItemId,
   }: {
+    controller: Controller;
     publishedItemId: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-        published_item_id = $1
-        ;
-      `,
-      values: [publishedItemId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+          published_item_id = $1
+          ;
+        `,
+        values: [publishedItemId],
+      };
 
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+      const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
-    const hashtags = response.rows.map((row) => row.hashtag);
-    return hashtags;
+      const hashtags = response.rows.map((row) => row.hashtag);
+      return Success(hashtags);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at hashtagsTableService.getHashtagsForPublishedItemId",
+      });
+    }
   }
 
   public async getHashtagsCountBySubstring({
+    controller,
     hashtagSubstring,
   }: {
+    controller: Controller;
     hashtagSubstring: string;
-  }) {
-    const query: QueryConfig = {
-      text: `
-        SELECT
-          COUNT(DISTINCT hashtag) as count
-        FROM
-          ${this.tableName}
-        WHERE
-          hashtag LIKE CONCAT('%', $1::text, '%')
-        ;
-      `,
-      values: [hashtagSubstring],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            COUNT(DISTINCT hashtag) as count
+          FROM
+            ${this.tableName}
+          WHERE
+            hashtag LIKE CONCAT('%', $1::text, '%')
+          ;
+        `,
+        values: [hashtagSubstring],
+      };
 
-    const response: QueryResult<{ count: string }> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+        query,
+      );
 
-    return parseInt(response.rows[0].count);
+      return Success(parseInt(response.rows[0].count));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at hashtagsTableService.getHashtagsCountBySubstring",
+      });
+    }
   }
 
   public async getHashtagsMatchingSubstring({
+    controller,
     hashtagSubstring,
     pageNumber,
     pageSize,
   }: {
+    controller: Controller;
     hashtagSubstring: string;
     pageNumber: number;
     pageSize: number;
-  }): Promise<string[]> {
-    const offset = pageSize * pageNumber - pageSize;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const offset = pageSize * pageNumber - pageSize;
 
-    const query: QueryConfig = {
-      text: `
-        SELECT DISTINCT
-          hashtag
-        FROM
-          ${this.tableName}
-        WHERE
-          hashtag LIKE CONCAT('%', $1::text, '%')
-        LIMIT
-          $2
-        OFFSET
-          $3
-        ;
-      `,
-      values: [hashtagSubstring, pageSize, offset],
-    };
+      const query: QueryConfig = {
+        text: `
+          SELECT DISTINCT
+            hashtag
+          FROM
+            ${this.tableName}
+          WHERE
+            hashtag LIKE CONCAT('%', $1::text, '%')
+          LIMIT
+            $2
+          OFFSET
+            $3
+          ;
+        `,
+        values: [hashtagSubstring, pageSize, offset],
+      };
 
-    const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
+      const response: QueryResult<DBHashtag> = await this.datastorePool.query(query);
 
-    const hashtags = response.rows.map((row) => row.hashtag);
-    return hashtags;
+      const hashtags = response.rows.map((row) => row.hashtag);
+      return Success(hashtags);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at hashtagsTableService.getHashtagsMatchingSubstring",
+      });
+    }
   }
 
   //////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 import { Controller, Post, Route, Request, Body } from "tsoa";
-import { SecuredHTTPResponse } from "../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import express from "express";
@@ -68,7 +68,10 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: CreateChatMessageRequestBody,
   ): Promise<
-    SecuredHTTPResponse<CreateChatMessageFailedReason, CreateChatMessageSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | CreateChatMessageFailedReason>,
+      CreateChatMessageSuccess
+    >
   > {
     return await handleCreateChatMessage({
       controller: this,
@@ -83,7 +86,7 @@ export class ChatController extends Controller {
     @Body() requestBody: CreateChatMessageInNewRoomRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      CreateChatMessageInNewChatRoomFailedReason,
+      ErrorReasonTypes<string | CreateChatMessageInNewChatRoomFailedReason>,
       CreateChatMessageInNewChatRoomSuccess
     >
   > {
@@ -103,7 +106,10 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatMessagesRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPageOfChatMessagesFailedReason, GetPageOfChatMessagesSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPageOfChatMessagesFailedReason>,
+      GetPageOfChatMessagesSuccess
+    >
   > {
     return await handleGetPageOfChatMessages({
       controller: this,
@@ -116,7 +122,12 @@ export class ChatController extends Controller {
   public async getChatRoomById(
     @Request() request: express.Request,
     @Body() requestBody: GetChatRoomByIdRequestBody,
-  ): Promise<SecuredHTTPResponse<GetChatRoomByIdFailedReason, GetChatRoomByIdSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetChatRoomByIdFailedReason>,
+      GetChatRoomByIdSuccess
+    >
+  > {
     return await handleGetChatRoomById({
       controller: this,
       request,
@@ -129,7 +140,10 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfChatRoomsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPageOfChatRoomsFailedReason, GetPageOfChatRoomsSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPageOfChatRoomsFailedReason>,
+      GetPageOfChatRoomsSuccess
+    >
   > {
     return await handleGetPageOfChatRooms({
       controller: this,
@@ -144,7 +158,7 @@ export class ChatController extends Controller {
     @Body() requestBody: DoesChatRoomExistWithUserIdsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      DoesChatRoomExistWithUserIdsFailedReason,
+      ErrorReasonTypes<string | DoesChatRoomExistWithUserIdsFailedReason>,
       DoesChatRoomExistWithUserIdsSuccess
     >
   > {
@@ -168,7 +182,10 @@ export class ChatController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: DeleteChatMessageRequestBody,
   ): Promise<
-    SecuredHTTPResponse<DeleteChatMessageFailedReason, DeleteChatMessageSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | DeleteChatMessageFailedReason>,
+      DeleteChatMessageSuccess
+    >
   > {
     return await handleDeleteChatMessage({
       controller: this,

@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../../utilities/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 
@@ -22,7 +28,12 @@ export async function handleRemoveCreditCard({
   controller: ShopItemController;
   request: express.Request;
   requestBody: RemoveCreditCardRequestBody;
-}): Promise<SecuredHTTPResponse<RemoveCreditCardFailedReason, RemoveCreditCardSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | RemoveCreditCardFailedReason>,
+    RemoveCreditCardSuccess
+  >
+> {
   const { localCreditCardId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -31,37 +42,51 @@ export async function handleRemoveCreditCard({
   );
   if (error) return error;
 
-  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+  const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
 
-  const dBStoredCreditCardDatum =
+  if (
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+    EitherType.failure
+  ) {
+    return selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+  }
+  const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+
+  const getStoredCreditCardByLocalIdResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getStoredCreditCardByLocalId(
-      { localCreditCardId },
+      { controller, localCreditCardId },
     );
+  if (getStoredCreditCardByLocalIdResponse.type === EitherType.failure) {
+    return getStoredCreditCardByLocalIdResponse;
+  }
+  const { success: dBStoredCreditCardDatum } = getStoredCreditCardByLocalIdResponse;
 
   if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.unstoreCreditCard(
-      { userId: clientUserId, localCreditCardId },
-    );
+    const unstoreCreditCardResponse =
+      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.unstoreCreditCard(
+        { controller, userId: clientUserId, localCreditCardId },
+      );
+    if (unstoreCreditCardResponse.type === EitherType.failure) {
+      return unstoreCreditCardResponse;
+    }
 
     await controller.paymentProcessingService.removeCustomerCreditCard({
       paymentProcessorCardId: dBStoredCreditCardDatum.payment_processor_card_id,
       paymentProcessorCustomerId:
         unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
     });
-
-    return {
-      type: EitherType.success,
-      success: {},
-    };
+    return Success({});
   }
 
-  return {
-    type: EitherType.error,
-    error: {
-      reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
-    },
-  };
+  return Failure({
+    controller,
+    httpStatusCode: 404,
+    reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
+    error: "User not found at handleRemoveCreditCard",
+    additionalErrorInformation: "User not found at handleRemoveCreditCard",
+  });
 }

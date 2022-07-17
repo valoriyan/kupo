@@ -1,7 +1,13 @@
 import express from "express";
 import { RenderablePost } from "../models";
 import { PostController } from "../postController";
-import { EitherType, HTTPResponse } from "../../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  HTTPResponse,
+  Success,
+} from "../../../../utilities/monads";
 import { getClientUserId } from "../../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
@@ -40,18 +46,30 @@ export async function handleGetPostsByUsername({
   controller: PostController;
   request: express.Request;
   requestBody: GetPostsByUsernameRequestBody;
-}): Promise<HTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>> {
+}): Promise<
+  HTTPResponse<
+    ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
+    GetPostsByUsernameSuccess
+  >
+> {
   const { username, ...restRequestBody } = requestBody;
-  const userId =
+  const selectUserIdByUsernameResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
-      username,
+      { controller, username },
     );
+  if (selectUserIdByUsernameResponse.type === EitherType.failure) {
+    return selectUserIdByUsernameResponse;
+  }
+  const { success: userId } = selectUserIdByUsernameResponse;
 
   if (!userId) {
-    return {
-      type: EitherType.error,
-      error: { reason: GetPostsByUsernameFailedReason.UnknownUser },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetPostsByUsernameFailedReason.UnknownUser,
+      error: "User not found at handleGetPostsByUsername",
+      additionalErrorInformation: "User not found at handleGetPostsByUsername",
+    });
   }
 
   return handleGetPostsByUserId({
@@ -69,7 +87,12 @@ export async function handleGetPostsByUserId({
   controller: PostController;
   request: express.Request;
   requestBody: GetPostsByUserIdRequestBody;
-}): Promise<HTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>> {
+}): Promise<
+  HTTPResponse<
+    ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
+    GetPostsByUsernameSuccess
+  >
+> {
   const { userId, pageSize, cursor } = requestBody;
 
   const clientUserId = await getClientUserId(request);
@@ -78,44 +101,61 @@ export async function handleGetPostsByUserId({
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
-  const canViewContent = await canUserViewUserContentByUserId({
+  const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
+    controller,
     clientUserId,
     targetUserId: userId,
     databaseService: controller.databaseService,
   });
+  if (canUserViewUserContentByUserIdResponse.type === EitherType.failure) {
+    return canUserViewUserContentByUserIdResponse;
+  }
+  const { success: canViewContent } = canUserViewUserContentByUserIdResponse;
 
   if (!canViewContent) {
-    return {
-      type: EitherType.error,
-      error: { reason: GetPostsByUsernameFailedReason.UserPrivate },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetPostsByUsernameFailedReason.UserPrivate,
+      error: "Illegal access at handleGetPostsByUserId",
+      additionalErrorInformation: "Illegal access at handleGetPostsByUserId",
+    });
   }
 
-  const unrenderablePostsWithoutElementsOrHashtags =
+  const getPublishedItemsByAuthorUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId(
       {
+        controller,
         authorUserId: userId,
         filterOutExpiredAndUnscheduledPublishedItems: true,
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
       },
     );
+  if (getPublishedItemsByAuthorUserIdResponse.type === EitherType.failure) {
+    return getPublishedItemsByAuthorUserIdResponse;
+  }
+  const { success: unrenderablePostsWithoutElementsOrHashtags } =
+    getPublishedItemsByAuthorUserIdResponse;
 
-  const posts = await constructRenderablePostsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
-    clientUserId,
+  const constructRenderablePostsFromPartsResponse =
+    await constructRenderablePostsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
+      clientUserId,
+    });
+  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostsFromPartsResponse;
+  }
+  const { success: posts } = constructRenderablePostsFromPartsResponse;
+
+  return Success({
+    posts,
+    previousPageCursor: requestBody.cursor,
+    nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
+      sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
+    }),
   });
-
-  return {
-    type: EitherType.success,
-    success: {
-      posts,
-      previousPageCursor: requestBody.cursor,
-      nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
-        sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
-      }),
-    },
-  };
 }

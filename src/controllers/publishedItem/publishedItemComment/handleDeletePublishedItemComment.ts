@@ -1,6 +1,11 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { UnrenderableCanceledCommentOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
@@ -26,7 +31,7 @@ export async function handleDeletePublishedItemComment({
   requestBody: DeletePublishedItemCommentRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    DeletePublishedItemCommentFailedReason,
+    ErrorReasonTypes<string | DeletePublishedItemCommentFailedReason>,
     DeletePublishedItemCommentSuccess
   >
 > {
@@ -38,35 +43,62 @@ export async function handleDeletePublishedItemComment({
   );
   if (error) return error;
 
-  const { postId } =
+  const getPostCommentByIdResponse =
     await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
-      { postCommentId },
+      { controller, postCommentId },
     );
+  if (getPostCommentByIdResponse.type === EitherType.failure) {
+    return getPostCommentByIdResponse;
+  }
+  const {
+    success: { postId },
+  } = getPostCommentByIdResponse;
 
-  const { authorUserId: postAuthorUserId } =
+  const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: postId },
+      { controller, id: postId },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const {
+    success: { authorUserId: postAuthorUserId },
+  } = getPublishedItemByIdResponse;
 
-  await controller.databaseService.tableNameToServicesMap.postCommentsTableService.deletePostComment(
-    {
-      postCommentId,
-      authorUserId: clientUserId,
-    },
-  );
+  const deletePostCommentResponse =
+    await controller.databaseService.tableNameToServicesMap.postCommentsTableService.deletePostComment(
+      {
+        controller,
+        postCommentId,
+        authorUserId: clientUserId,
+      },
+    );
+  if (deletePostCommentResponse.type === EitherType.failure) {
+    return deletePostCommentResponse;
+  }
 
-  await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
-    {
-      notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-      referenceTableId: postCommentId,
-      recipientUserId: postAuthorUserId,
-    },
-  );
+  const deleteUserNotificationForUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
+      {
+        controller,
+        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+        referenceTableId: postCommentId,
+        recipientUserId: postAuthorUserId,
+      },
+    );
+  if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
+    return deleteUserNotificationForUserIdResponse;
+  }
 
-  const countOfUnreadNotifications =
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: postAuthorUserId },
+      { controller, userId: postAuthorUserId },
     );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification =
     {
@@ -82,8 +114,5 @@ export async function handleDeletePublishedItemComment({
     },
   );
 
-  return {
-    type: EitherType.success,
-    success: {},
-  };
+  return Success({});
 }

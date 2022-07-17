@@ -1,4 +1,4 @@
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import { EitherType, ErrorReasonTypes, HTTPResponse } from "../../../utilities/monads";
 import { AuthController } from "../authController";
 
 export interface GetPasswordResetEmailRequestBody {
@@ -22,13 +22,22 @@ export async function handleGetPasswordResetEmail({
 }: {
   controller: AuthController;
   requestBody: GetPasswordResetEmailRequestBody;
-}): Promise<HTTPResponse<GetPasswordResetEmailFailed, GetPasswordResetEmailSuccess>> {
+}): Promise<
+  HTTPResponse<
+    ErrorReasonTypes<string | GetPasswordResetEmailFailed>,
+    GetPasswordResetEmailSuccess
+  >
+> {
   const { email } = requestBody;
 
-  const user =
+  const selectUserByEmailResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByEmail(
-      { email },
+      { controller, email },
     );
+  if (selectUserByEmailResponse.type === EitherType.failure) {
+    return selectUserByEmailResponse;
+  }
+  const { success: user } = selectUserByEmailResponse;
 
   if (!!user) {
     controller.emailService.sendResetPasswordEmail({ user });

@@ -1,5 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -36,7 +41,12 @@ export async function handleCreatePost({
   controller: PostController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<CreatePostFailedReason, CreatePostSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | CreatePostFailedReason>,
+    CreatePostSuccess
+  >
+> {
   const {
     caption,
     scheduledPublicationTimestamp,
@@ -56,9 +66,10 @@ export async function handleCreatePost({
 
   const creationTimestamp = now;
 
-  try {
+  const createPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
       {
+        controller,
         publishedItemId: postId,
         type: PublishedItemType.POST,
         creationTimestamp,
@@ -68,104 +79,106 @@ export async function handleCreatePost({
         expirationTimestamp,
       },
     );
+  if (createPublishedItemResponse.type === EitherType.failure) {
+    return createPublishedItemResponse;
+  }
 
-    const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
-    if (mediaFileErrors.length > 0) {
-      return {
-        type: EitherType.error,
-        error: { reason: CreatePostFailedReason.UnknownCause },
-      };
-    }
+  const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
+  if (mediaFileErrors.length > 0) {
+    return {
+      type: EitherType.failure,
+      error: { reason: CreatePostFailedReason.UnknownCause },
+    };
+  }
 
-    const filedAndRenderablePostMediaElements = await BluebirdPromise.map(
-      mediaFiles,
-      async (file) =>
-        uploadMediaFile({
-          file,
-          blobStorageService: controller.blobStorageService,
-        }),
-    );
-
-    const mediaElements: MediaElement[] = filedAndRenderablePostMediaElements.map(
-      (filedAndRenderablePostMediaElement) => ({
-        temporaryUrl: filedAndRenderablePostMediaElement.fileTemporaryUrl,
-        mimeType: filedAndRenderablePostMediaElement.mimetype,
+  const filedAndRenderablePostMediaElements = await BluebirdPromise.map(
+    mediaFiles,
+    async (file) =>
+      uploadMediaFile({
+        file,
+        blobStorageService: controller.blobStorageService,
       }),
+  );
+
+  const mediaElements: MediaElement[] = filedAndRenderablePostMediaElements.map(
+    (filedAndRenderablePostMediaElement) => ({
+      temporaryUrl: filedAndRenderablePostMediaElement.fileTemporaryUrl,
+      mimeType: filedAndRenderablePostMediaElement.mimetype,
+    }),
+  );
+
+  const mediaElementTemporaryUrls = filedAndRenderablePostMediaElements.map(
+    (filedAndRenderablePostMediaElement) =>
+      filedAndRenderablePostMediaElement.fileTemporaryUrl,
+  );
+
+  if (filedAndRenderablePostMediaElements.length > 0) {
+    await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
+      {
+        controller,
+        postContentElements: filedAndRenderablePostMediaElements.map(
+          ({ blobFileKey, mimetype }, index) => ({
+            postId,
+            postContentElementIndex: index,
+            blobFileKey,
+            mimetype,
+          }),
+        ),
+      },
     );
+  }
 
-    const mediaElementTemporaryUrls = filedAndRenderablePostMediaElements.map(
-      (filedAndRenderablePostMediaElement) =>
-        filedAndRenderablePostMediaElement.fileTemporaryUrl,
-    );
+  const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
-    if (filedAndRenderablePostMediaElements.length > 0) {
-      await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
-        {
-          postContentElements: filedAndRenderablePostMediaElements.map(
-            ({ blobFileKey, mimetype }, index) => ({
-              postId,
-              postContentElementIndex: index,
-              blobFileKey,
-              mimetype,
-            }),
-          ),
-        },
-      );
-    }
-
-    const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
-
+  const addHashtagsToPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
       {
+        controller,
         hashtags: lowerCaseHashtags,
         publishedItemId: postId,
       },
     );
-
-    const unrenderableUsers =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-        { userIds: [clientUserId] },
-      );
-
-    const unrenderableUser = unrenderableUsers[0];
-
-    await controller.webSocketService.notifyOfNewPost({
-      recipientUserId: clientUserId,
-      previewTemporaryUrl: mediaElementTemporaryUrls[0],
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      username: unrenderableUser!.username,
-    });
-
-    return {
-      type: EitherType.success,
-      success: {
-        renderablePost: {
-          type: PublishedItemType.POST,
-          id: postId,
-          authorUserId: clientUserId,
-          caption,
-          creationTimestamp,
-          scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-          expirationTimestamp,
-          mediaElements,
-          hashtags: lowerCaseHashtags,
-          likes: {
-            count: 0,
-          },
-          comments: {
-            count: 0,
-          },
-          isLikedByClient: false,
-          isSavedByClient: false,
-        },
-      },
-    };
-  } catch (error) {
-    console.log("error", error);
-    controller.setStatus(500);
-    return {
-      type: EitherType.error,
-      error: { reason: CreatePostFailedReason.UnknownCause },
-    };
+  if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
+    return addHashtagsToPublishedItemResponse;
   }
+
+  const selectUsersByUserIdsResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
+      { controller, userIds: [clientUserId] },
+    );
+  if (selectUsersByUserIdsResponse.type === EitherType.failure) {
+    return selectUsersByUserIdsResponse;
+  }
+  const { success: unrenderableUsers } = selectUsersByUserIdsResponse;
+
+  const unrenderableUser = unrenderableUsers[0];
+
+  await controller.webSocketService.notifyOfNewPost({
+    recipientUserId: clientUserId,
+    previewTemporaryUrl: mediaElementTemporaryUrls[0],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    username: unrenderableUser!.username,
+  });
+
+  return Success({
+    renderablePost: {
+      type: PublishedItemType.POST,
+      id: postId,
+      authorUserId: clientUserId,
+      caption,
+      creationTimestamp,
+      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+      expirationTimestamp,
+      mediaElements,
+      hashtags: lowerCaseHashtags,
+      likes: {
+        count: 0,
+      },
+      comments: {
+        count: 0,
+      },
+      isLikedByClient: false,
+      isSavedByClient: false,
+    },
+  });
 }

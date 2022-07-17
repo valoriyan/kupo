@@ -1,4 +1,4 @@
-import { map } from "bluebird";
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryConfig, QueryResult } from "pg";
 import { Color } from "../../../types/color";
 import {
@@ -14,6 +14,14 @@ import {
   generatePSQLGenericUpdateRowQueryString,
 } from "./utilities/index";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
 
 interface DBUser {
   user_id: string;
@@ -139,6 +147,7 @@ export class UsersTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createUser({
+    controller,
     userId,
     email,
     username,
@@ -147,6 +156,7 @@ export class UsersTableService extends TableService {
     creationTimestamp,
     isAdmin,
   }: {
+    controller: Controller;
     userId: string;
     email: string;
     username: string;
@@ -154,29 +164,40 @@ export class UsersTableService extends TableService {
     paymentProcessorCustomerId: string;
     creationTimestamp: number;
     isAdmin?: boolean;
-  }): Promise<void> {
-    const is_admin_value = !!isAdmin ? "true" : "false";
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const is_admin_value = !!isAdmin ? "true" : "false";
 
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "user_id", value: userId },
-          { field: "email", value: email },
-          { field: "username", value: username },
-          { field: "encrypted_password", value: encryptedPassword },
-          { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "user_id", value: userId },
+            { field: "email", value: email },
+            { field: "username", value: username },
+            { field: "encrypted_password", value: encryptedPassword },
+            { field: "profile_privacy_setting", value: ProfilePrivacySetting.Public },
 
-          { field: "payment_processor_customer_id", value: paymentProcessorCustomerId },
+            { field: "payment_processor_customer_id", value: paymentProcessorCustomerId },
 
-          { field: "creation_timestamp", value: creationTimestamp },
+            { field: "creation_timestamp", value: creationTimestamp },
 
-          { field: "is_admin", value: is_admin_value },
+            { field: "is_admin", value: is_admin_value },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.createUser",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -184,299 +205,438 @@ export class UsersTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async selectUser_WITH_PASSWORD_ByUsername({
+    controller,
     username,
   }: {
+    controller: Controller;
     username: string;
-  }): Promise<UnrenderableUser_WITH_PASSWORD | undefined> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          username = $1
-        LIMIT
-          1
-        ;
-      `,
-      values: [username],
-    };
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      UnrenderableUser_WITH_PASSWORD | undefined
+    >
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            username = $1
+          LIMIT
+            1
+          ;
+        `,
+        values: [username],
+      };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser_WITH_PASSWORD(rows[0]);
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser_WITH_PASSWORD(rows[0]));
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.selectUser_WITH_PASSWORD_ByUsername",
+      });
     }
-    return;
   }
 
-  public async selectUserIdByUsername(username: string): Promise<string | undefined> {
-    const response: QueryResult<Pick<DBUser, "user_id">> = await this.datastorePool.query(
-      {
-        text: `
-        SELECT
-          user_id
-        FROM
-          ${this.tableName}
-        WHERE
-          username = $1
-        LIMIT
-          1
-        ;
-      `,
-        values: [username],
-      },
-    );
+  public async selectUserIdByUsername({
+    controller,
+    username,
+  }: {
+    controller: Controller;
+    username: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string | undefined>> {
+    try {
+      const response: QueryResult<Pick<DBUser, "user_id">> =
+        await this.datastorePool.query({
+          text: `
+          SELECT
+            user_id
+          FROM
+            ${this.tableName}
+          WHERE
+            username = $1
+          LIMIT
+            1
+          ;
+        `,
+          values: [username],
+        });
 
-    if (!response.rows[0]) return;
+      if (!response.rows[0]) return Success(undefined);
 
-    return response.rows[0].user_id;
+      return Success(response.rows[0].user_id);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.selectUserIdByUsername",
+      });
+    }
   }
 
   public async selectUserByUsername({
+    controller,
     username,
   }: {
+    controller: Controller;
     username: string;
-  }): Promise<UnrenderableUser | undefined> {
-    const queryString = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          username = $1
-        LIMIT
-          1
-        ;
-      `,
-      values: [username],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser | undefined>
+  > {
+    try {
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            username = $1
+          LIMIT
+            1
+          ;
+        `,
+        values: [username],
+      };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser(rows[0]);
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser(rows[0]));
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.selectUserByUsername",
+      });
     }
-    return;
   }
 
   public async selectUsersByUsernames({
+    controller,
     usernames,
   }: {
+    controller: Controller;
     usernames: string[];
-  }): Promise<UnrenderableUser[]> {
-    if (usernames.length === 0) {
-      return [];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    try {
+      if (usernames.length === 0) {
+        return Success([]);
+      }
+
+      const usernamesQueryText = usernames
+        .map((_, index) => {
+          return `$${index + 1}`;
+        })
+        .join(", ");
+
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            username IN ( ${usernamesQueryText} )
+          ;
+        `,
+        values: usernames,
+      };
+
+      const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+      const rows = response.rows;
+
+      return Success(rows.map(convertDBUserToUnrenderableUser));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.selectUsersByUsernames",
+      });
     }
-
-    const usernamesQueryText = usernames
-      .map((_, index) => {
-        return `$${index + 1}`;
-      })
-      .join(", ");
-
-    const queryString = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          username IN ( ${usernamesQueryText} )
-        ;
-      `,
-      values: usernames,
-    };
-
-    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
-
-    const rows = response.rows;
-
-    return map(rows, convertDBUserToUnrenderableUser);
   }
 
   public async selectUsersBySearchString({
+    controller,
     searchString,
   }: {
+    controller: Controller;
     searchString: string;
-  }): Promise<UnrenderableUser[]> {
-    const query: QueryConfig = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          short_bio LIKE CONCAT('%', $1::text, '%') OR
-          username LIKE CONCAT('%', $1::text, '%')
-        ;
-      `,
-      values: [searchString],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    try {
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            short_bio LIKE CONCAT('%', $1::text, '%') OR
+            username LIKE CONCAT('%', $1::text, '%')
+          ;
+        `,
+        values: [searchString],
+      };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBUserToUnrenderableUser);
+      return Success(response.rows.map(convertDBUserToUnrenderableUser));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.selectUsersBySearchString",
+      });
+    }
   }
 
   public async selectUsersByUsernameMatchingSubstring({
+    controller,
     usernameSubstring,
   }: {
+    controller: Controller;
     usernameSubstring: string;
-  }): Promise<UnrenderableUser[]> {
-    const query: QueryConfig = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          username LIKE CONCAT('%', $1::text, '%' )
-        ;
-      `,
-      values: [usernameSubstring],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    try {
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            username LIKE CONCAT('%', $1::text, '%' )
+          ;
+        `,
+        values: [usernameSubstring],
+      };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    return rows.map(convertDBUserToUnrenderableUser);
+      return Success(rows.map(convertDBUserToUnrenderableUser));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.selectUsersByUsernameMatchingSubstring",
+      });
+    }
   }
 
   public async selectUserByUserId({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<UnrenderableUser | undefined> {
-    console.log(`${this.tableName} | selectUsersByUserIds`);
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser | undefined>
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id = $1
+          ;
+        `,
+        values: [userId],
+      };
 
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          user_id = $1
-        ;
-      `,
-      values: [userId],
-    };
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const rows = response.rows;
 
-    const rows = response.rows;
-
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser(rows[0]);
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser(rows[0]));
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.selectUserByUserId",
+      });
     }
-    return;
   }
 
   public async selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID | undefined> {
-    console.log(`${this.tableName} | selectUsersByUserIds`);
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID | undefined
+    >
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id = $1
+          ;
+        `,
+        values: [userId],
+      };
 
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          user_id = $1
-        ;
-      `,
-      values: [userId],
-    };
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const rows = response.rows;
 
-    const rows = response.rows;
-
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(rows[0]);
+      if (rows.length === 1) {
+        return Success(
+          convertDBUserToUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(rows[0]),
+        );
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID",
+      });
     }
-    return;
   }
 
   public async selectUsersByUserIds({
+    controller,
     userIds,
   }: {
+    controller: Controller;
     userIds: string[];
-  }): Promise<UnrenderableUser[]> {
-    console.log(`${this.tableName} | selectUsersByUserIds`);
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    try {
+      const filteredUserIds = userIds.filter((userId) => !!userId);
 
-    const filteredUserIds = userIds.filter((userId) => !!userId);
+      if (filteredUserIds.length === 0) {
+        return Success([]);
+      }
 
-    if (filteredUserIds.length === 0) {
-      return [];
+      const userIdsQueryText = filteredUserIds
+        .map((_, index) => {
+          return `$${index + 1}`;
+        })
+        .join(", ");
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id IN ( ${userIdsQueryText} )
+          ;
+        `,
+        values: filteredUserIds,
+      };
+
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      return Success(rows.map(convertDBUserToUnrenderableUser));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.selectUsersByUserIds",
+      });
     }
-
-    const userIdsQueryText = filteredUserIds
-      .map((_, index) => {
-        return `$${index + 1}`;
-      })
-      .join(", ");
-
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          user_id IN ( ${userIdsQueryText} )
-        ;
-      `,
-      values: filteredUserIds,
-    };
-
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
-
-    const rows = response.rows;
-
-    return map(rows, convertDBUserToUnrenderableUser);
   }
 
   public async selectUserByEmail({
+    controller,
     email,
   }: {
+    controller: Controller;
     email: string;
-  }): Promise<UnrenderableUser | undefined> {
-    const queryString = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          email = $1
-        LIMIT
-          1
-        ;
-      `,
-      values: [email],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser | undefined>
+  > {
+    try {
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            email = $1
+          LIMIT
+            1
+          ;
+        `,
+        values: [email],
+      };
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser(rows[0]);
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser(rows[0]));
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.selectUserByEmail",
+      });
     }
-    return;
   }
 
   //////////////////////////////////////////////////
@@ -484,27 +644,41 @@ export class UsersTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async updateUserPassword({
+    controller,
     userId,
     encryptedPassword,
   }: {
+    controller: Controller;
     userId: string;
     encryptedPassword: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "encrypted_password", value: encryptedPassword }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "user_id",
-        value: userId,
-      },
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "encrypted_password", value: encryptedPassword }],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "user_id",
+          value: userId,
+        },
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.updateUserPassword",
+      });
+    }
   }
 
   public async updateUserByUserId({
-    userId,
+    controller,
 
+    userId,
     username,
     shortBio,
     userWebsite,
@@ -515,8 +689,9 @@ export class UsersTableService extends TableService {
     profilePictureBlobFileKey,
     preferredPagePrimaryColor,
   }: {
-    userId: string;
+    controller: Controller;
 
+    userId: string;
     username?: string;
     shortBio?: string;
     userWebsite?: string;
@@ -526,79 +701,116 @@ export class UsersTableService extends TableService {
     backgroundImageBlobFileKey?: string;
     profilePictureBlobFileKey?: string;
     preferredPagePrimaryColor?: Color;
-  }): Promise<UnrenderableUser | undefined> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [
-        { field: "username", value: username },
-        { field: "short_bio", value: shortBio, settings: { includeIfEmpty: true } },
-        {
-          field: "user_website",
-          value: userWebsite,
-          settings: { includeIfEmpty: true },
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser | undefined>
+  > {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [
+          { field: "username", value: username },
+          { field: "short_bio", value: shortBio, settings: { includeIfEmpty: true } },
+          {
+            field: "user_website",
+            value: userWebsite,
+            settings: { includeIfEmpty: true },
+          },
+          {
+            field: "email",
+            value: email,
+          },
+          {
+            field: "phone_number",
+            value: phoneNumber,
+          },
+          { field: "profile_privacy_setting", value: profilePrivacySetting },
+          { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
+          { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
+          {
+            field: "preferred_page_primary_color_red",
+            value: preferredPagePrimaryColor?.red,
+          },
+          {
+            field: "preferred_page_primary_color_green",
+            value: preferredPagePrimaryColor?.green,
+          },
+          {
+            field: "preferred_page_primary_color_blue",
+            value: preferredPagePrimaryColor?.blue,
+          },
+        ],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "user_id",
+          value: userId,
         },
-        {
-          field: "email",
-          value: email,
-        },
-        {
-          field: "phone_number",
-          value: phoneNumber,
-        },
-        { field: "profile_privacy_setting", value: profilePrivacySetting },
-        { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
-        { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
-        {
-          field: "preferred_page_primary_color_red",
-          value: preferredPagePrimaryColor?.red,
-        },
-        {
-          field: "preferred_page_primary_color_green",
-          value: preferredPagePrimaryColor?.green,
-        },
-        {
-          field: "preferred_page_primary_color_blue",
-          value: preferredPagePrimaryColor?.blue,
-        },
-      ],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "user_id",
-        value: userId,
-      },
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser(rows[0]);
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser(rows[0]));
+      }
+
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "User not found.",
+        additionalErrorInformation: "Error at usersTableService.updateUserByUserId",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.updateUserByUserId",
+      });
     }
-    return;
   }
 
   public async elevateUserToAdmin({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<UnrenderableUser | undefined> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [{ field: "is_admin", value: "true" }],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "user_id",
-        value: userId,
-      },
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "is_admin", value: "true" }],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "user_id",
+          value: userId,
+        },
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (rows.length === 1) {
-      return convertDBUserToUnrenderableUser(rows[0]);
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser(rows[0]));
+      }
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "User not found.",
+        additionalErrorInformation: "Error at usersTableService.elevateUserToAdmin",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.elevateUserToAdmin",
+      });
     }
-    return;
   }
 
   //////////////////////////////////////////////////

@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  HTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { getClientUserId } from "../../auth/utilities";
 import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "../post/pagination/utilities";
@@ -7,6 +13,7 @@ import { decodeTimestampCursor } from "../../utilities/pagination";
 import { RenderableShopItem } from "./models";
 import { ShopItemController } from "./shopItemController";
 import { constructRenderableShopItemsFromParts } from "./utilities";
+import { RemoveCreditCardFailedReason } from "./payments/removeCreditCard";
 
 export interface GetShopItemsByUserIdRequestBody {
   userId: string;
@@ -41,19 +48,30 @@ export async function handleGetShopItemsByUsername({
   request: express.Request;
   requestBody: GetShopItemsByUsernameRequestBody;
 }): Promise<
-  HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>
+  HTTPResponse<
+    ErrorReasonTypes<string | GetShopItemsByUsernameFailedReason>,
+    GetShopItemsByUsernameSuccess
+  >
 > {
   const { username, ...restRequestBody } = requestBody;
-  const userId =
+  const selectUserIdByUsernameRequest =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
-      username,
+      { controller, username },
     );
 
+  if (selectUserIdByUsernameRequest.type === EitherType.failure) {
+    return selectUserIdByUsernameRequest;
+  }
+  const { success: userId } = selectUserIdByUsernameRequest;
+
   if (!userId) {
-    return {
-      type: EitherType.error,
-      error: { reason: GetShopItemsByUsernameFailedReason.UnknownUser },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
+      error: "User not found at handleGetShopItemsByUsername",
+      additionalErrorInformation: "User not found at handleGetShopItemsByUsername",
+    });
   }
 
   return handleGetShopItemsByUserId({
@@ -72,7 +90,10 @@ export async function handleGetShopItemsByUserId({
   request: express.Request;
   requestBody: GetShopItemsByUserIdRequestBody;
 }): Promise<
-  HTTPResponse<GetShopItemsByUsernameFailedReason, GetShopItemsByUsernameSuccess>
+  HTTPResponse<
+    ErrorReasonTypes<string | GetShopItemsByUsernameFailedReason>,
+    GetShopItemsByUsernameSuccess
+  >
 > {
   const { userId, pageSize, cursor } = requestBody;
 
@@ -82,44 +103,63 @@ export async function handleGetShopItemsByUserId({
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
-  const canViewContent = await canUserViewUserContentByUserId({
+  const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
+    controller,
     clientUserId,
     targetUserId: userId,
     databaseService: controller.databaseService,
   });
 
+  if (canUserViewUserContentByUserIdResponse.type === EitherType.failure) {
+    return canUserViewUserContentByUserIdResponse;
+  }
+  const { success: canViewContent } = canUserViewUserContentByUserIdResponse;
+
   if (!canViewContent) {
-    return {
-      type: EitherType.error,
-      error: { reason: GetShopItemsByUsernameFailedReason.UserPrivate },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 403,
+      reason: GetShopItemsByUsernameFailedReason.UserPrivate,
+      error: "Illegal access at handleGetShopItemsByUserId",
+      additionalErrorInformation: "Illegal access at handleGetShopItemsByUserId",
+    });
   }
 
-  const uncompiledBasePublishedItems =
+  const getPublishedItemsByAuthorUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId(
       {
+        controller,
         authorUserId: userId,
         filterOutExpiredAndUnscheduledPublishedItems: true,
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
       },
     );
+  if (getPublishedItemsByAuthorUserIdResponse.type === EitherType.failure) {
+    return getPublishedItemsByAuthorUserIdResponse;
+  }
+  const { success: uncompiledBasePublishedItems } =
+    getPublishedItemsByAuthorUserIdResponse;
 
-  const renderableShopItemPreview = await constructRenderableShopItemsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItems,
-    clientUserId,
+  const constructRenderableShopItemsFromPartsResponse =
+    await constructRenderableShopItemsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems,
+      clientUserId,
+    });
+  if (constructRenderableShopItemsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderableShopItemsFromPartsResponse;
+  }
+  const { success: renderableShopItemPreview } =
+    constructRenderableShopItemsFromPartsResponse;
+
+  return Success({
+    shopItems: renderableShopItemPreview,
+    previousPageCursor: requestBody.cursor,
+    nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
+      sequentialFeedItems: renderableShopItemPreview,
+    }),
   });
-
-  return {
-    type: EitherType.success,
-    success: {
-      shopItems: renderableShopItemPreview,
-      previousPageCursor: requestBody.cursor,
-      nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
-        sequentialFeedItems: renderableShopItemPreview,
-      }),
-    },
-  };
 }

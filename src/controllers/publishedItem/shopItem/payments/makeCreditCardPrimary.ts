@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../../utilities/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 
@@ -23,7 +28,10 @@ export async function handleMakeCreditCardPrimary({
   request: express.Request;
   requestBody: MakeCreditCardPrimaryRequestBody;
 }): Promise<
-  SecuredHTTPResponse<MakeCreditCardPrimaryFailedReason, MakeCreditCardPrimarySuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | MakeCreditCardPrimaryFailedReason>,
+    MakeCreditCardPrimarySuccess
+  >
 > {
   const { localCreditCardId } = requestBody;
 
@@ -33,25 +41,18 @@ export async function handleMakeCreditCardPrimary({
   );
   if (error) return error;
 
-  try {
+  const makeCreditCardPrimaryResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.makeCreditCardPrimary(
       {
+        controller,
         userId: clientUserId,
         localCreditCardId,
       },
     );
 
-    return {
-      type: EitherType.success,
-      success: {},
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      type: EitherType.error,
-      error: {
-        reason: MakeCreditCardPrimaryFailedReason.UNKNOWN_REASON,
-      },
-    };
+  if (makeCreditCardPrimaryResponse.type === EitherType.failure) {
+    return makeCreditCardPrimaryResponse;
   }
+
+  return Success({});
 }

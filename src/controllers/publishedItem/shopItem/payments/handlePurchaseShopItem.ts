@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+} from "../../../../utilities/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { v4 as uuidv4 } from "uuid";
@@ -24,7 +29,12 @@ export async function handlePurchaseShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: PurchaseShopItemRequestBody;
-}): Promise<SecuredHTTPResponse<PurchaseShopItemFailedReason, PurchaseShopItemSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | PurchaseShopItemFailedReason>,
+    PurchaseShopItemSuccess
+  >
+> {
   const now = Date.now();
   const transactionId = uuidv4();
 
@@ -36,23 +46,41 @@ export async function handlePurchaseShopItem({
   );
   if (error) return error;
 
-  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+  const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
 
-  if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-    const unrenderableShopItemPreview =
-      await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
-        { publishedItemId },
-      );
+  if (
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+    EitherType.failure
+  ) {
+    return selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+  }
+  const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
-    const storedCreditCard =
+  if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+    const getShopItemByPublishedItemIdResponse =
+      await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
+        { controller, publishedItemId },
+      );
+    if (getShopItemByPublishedItemIdResponse.type === EitherType.failure) {
+      return getShopItemByPublishedItemIdResponse;
+    }
+    const { success: unrenderableShopItemPreview } = getShopItemByPublishedItemIdResponse;
+
+    const getStoredCreditCardByLocalIdResponse =
       await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getStoredCreditCardByLocalId(
         {
+          controller,
           localCreditCardId,
         },
       );
+    if (getStoredCreditCardByLocalIdResponse.type === EitherType.failure) {
+      return getStoredCreditCardByLocalIdResponse;
+    }
+    const { success: storedCreditCard } = getStoredCreditCardByLocalIdResponse;
 
     const chargeAmountMajorCurrencyUnits = parseInt(unrenderableShopItemPreview.price); // i.e. charge amount in US Dollars
     const chargeAmountMinorCurrencyUnits = chargeAmountMajorCurrencyUnits * 100; // i.e. charge amount in US Cents
@@ -64,14 +92,20 @@ export async function handlePurchaseShopItem({
       chargeAmount: chargeAmountMinorCurrencyUnits,
     });
 
-    await controller.databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.recordTransaction(
-      {
-        transactionId,
-        publishedItemId,
-        nonCreatorUserId: clientUserId,
-        creationTimestamp: now,
-      },
-    );
+    const recordTransactionResponse =
+      await controller.databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.recordTransaction(
+        {
+          controller,
+          transactionId,
+          publishedItemId,
+          nonCreatorUserId: clientUserId,
+          creationTimestamp: now,
+        },
+      );
+
+    if (recordTransactionResponse.type === EitherType.failure) {
+      return recordTransactionResponse;
+    }
 
     return {
       type: EitherType.success,
@@ -79,10 +113,11 @@ export async function handlePurchaseShopItem({
     };
   }
 
-  return {
-    type: EitherType.error,
-    error: {
-      reason: PurchaseShopItemFailedReason.UNKNOWN_REASON,
-    },
-  };
+  return Failure({
+    controller,
+    httpStatusCode: 404,
+    reason: PurchaseShopItemFailedReason.UNKNOWN_REASON,
+    error: "User not found at handlePurchaseShopItem",
+    additionalErrorInformation: "User not found at handlePurchaseShopItem",
+  });
 }

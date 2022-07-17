@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+} from "../../utilities/monads";
 import { AuthFailedReason } from "../auth/models";
 import { getClientUserId } from "../auth/utilities";
 import { RenderableUser, UnrenderableUser } from "./models";
@@ -24,7 +29,12 @@ export async function handleGetUserProfile({
   controller: UserPageController;
   request: express.Request;
   requestBody: GetUserProfileRequestBody;
-}): Promise<SecuredHTTPResponse<GetUserProfileFailedReason, GetUserProfileSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetUserProfileFailedReason>,
+    GetUserProfileSuccess
+  >
+> {
   // TODO: CHECK IF USER HAS ACCESS TO PROFILE
   // IF Private hide posts and shop
   const clientUserId = await getClientUserId(request);
@@ -36,43 +46,55 @@ export async function handleGetUserProfile({
     const lowercaseUsername = username.toLowerCase();
 
     // Fetch user profile by given username
-    unrenderableUser =
+    const selectUserByUsernameResponse =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
-        { username: lowercaseUsername },
+        { controller, username: lowercaseUsername },
       );
+    if (selectUserByUsernameResponse.type === EitherType.failure) {
+      return selectUserByUsernameResponse;
+    }
+    unrenderableUser = selectUserByUsernameResponse.success;
   } else {
     // Fetch user profile by own userId
     if (!clientUserId) {
-      controller.setStatus(403);
-      return {
-        type: EitherType.error,
-        error: { reason: AuthFailedReason.AuthorizationError },
-      };
+      return Failure({
+        controller,
+        httpStatusCode: 403,
+        reason: AuthFailedReason.AuthorizationError,
+        error: "Unauthorized at handleGetUserProfile",
+        additionalErrorInformation: "Unauthorized at handleGetUserProfile",
+      });
     }
-    const unrenderableUsers =
+    const selectUsersByUserIdsResponse =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-        { userIds: [clientUserId] },
+        { controller, userIds: [clientUserId] },
       );
+    if (selectUsersByUserIdsResponse.type === EitherType.failure) {
+      return selectUsersByUserIdsResponse;
+    }
+    const { success: unrenderableUsers } = selectUsersByUserIdsResponse;
     unrenderableUser = unrenderableUsers[0];
   }
 
   if (!unrenderableUser) {
-    controller.setStatus(404);
-    return {
-      type: EitherType.error,
-      error: { reason: GetUserProfileFailedReason.NotFound },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetUserProfileFailedReason.NotFound,
+      error: "User not found at handleGetUserProfile",
+      additionalErrorInformation: "User not found at handleGetUserProfile",
+    });
   }
 
-  const renderableUser = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    },
+  );
 
-  return {
-    type: EitherType.success,
-    success: renderableUser,
-  };
+  return constructRenderableUserFromPartsResponse;
 }

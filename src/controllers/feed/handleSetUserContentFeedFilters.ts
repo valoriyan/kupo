@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { FeedController } from "./feedController";
 import { UserContentFeedFilter } from "./models";
@@ -30,7 +35,10 @@ export async function handleSetUserContentFeedFilters({
   request: express.Request;
   requestBody: SetUserContentFeedFiltersRequestBody;
 }): Promise<
-  SecuredHTTPResponse<SetUserContentFeedFiltersFailed, SetUserContentFeedFiltersSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | SetUserContentFeedFiltersFailed>,
+    SetUserContentFeedFiltersSuccess
+  >
 > {
   const { requestedContentFeedFilters } = requestBody;
 
@@ -52,25 +60,35 @@ export async function handleSetUserContentFeedFilters({
     }),
   ];
 
-  const existingUserContentFeedFilters =
+  const getUserContentFeedFiltersByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.getUserContentFeedFiltersByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (getUserContentFeedFiltersByUserIdResponse.type === EitherType.failure) {
+    return getUserContentFeedFiltersByUserIdResponse;
+  }
+  const { success: existingUserContentFeedFilters } =
+    getUserContentFeedFiltersByUserIdResponse;
 
   if (existingUserContentFeedFilters.length > 0) {
-    await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.deleteUserContentFeedFiltersByUserId(
-      { userId: clientUserId },
-    );
+    const deleteUserContentFeedFiltersByUserIdResponse =
+      await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.deleteUserContentFeedFiltersByUserId(
+        { controller, userId: clientUserId },
+      );
+    if (deleteUserContentFeedFiltersByUserIdResponse.type === EitherType.failure) {
+      return deleteUserContentFeedFiltersByUserIdResponse;
+    }
   }
 
-  await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.createUserContentFeedFilters(
-    { userContentFeedFilters },
-  );
+  const createUserContentFeedFiltersResponse =
+    await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.createUserContentFeedFilters(
+      { controller, userContentFeedFilters },
+    );
+  if (createUserContentFeedFiltersResponse.type === EitherType.failure) {
+    return createUserContentFeedFiltersResponse;
+  }
 
-  return {
-    type: EitherType.success,
-    success: {
-      userContentFeedFilters,
-    },
-  };
+  return Success({
+    userContentFeedFilters,
+  });
 }

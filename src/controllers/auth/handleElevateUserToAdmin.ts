@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { AuthController } from "./authController";
 
@@ -9,6 +15,7 @@ export interface ElevateUserToAdminRequestBody {
 
 export enum ElevateUserToAdminFailedReason {
   NotFound = "User Not Found",
+  ILLEGAL_ACCESS = "ILLEGAL_ACCESS",
 }
 
 export interface ElevateUserToAdminFailed {
@@ -26,7 +33,12 @@ export async function handleElevateUserToAdmin({
   controller: AuthController;
   request: express.Request;
   requestBody: ElevateUserToAdminRequestBody;
-}): Promise<SecuredHTTPResponse<ElevateUserToAdminFailed, ElevateUserToAdminSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | ElevateUserToAdminFailed>,
+    ElevateUserToAdminSuccess
+  >
+> {
   const { userIdElevatedToAdmin } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -35,18 +47,34 @@ export async function handleElevateUserToAdmin({
   );
   if (error) return error;
 
-  const clientUser =
+  const selectUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: clientUser } = selectUserByUserIdResponse;
 
   if (!!clientUser && clientUser.isAdmin) {
-    await controller.databaseService.tableNameToServicesMap.usersTableService.elevateUserToAdmin(
-      { userId: userIdElevatedToAdmin },
-    );
+    const elevateUserToAdminResponse =
+      await controller.databaseService.tableNameToServicesMap.usersTableService.elevateUserToAdmin(
+        { controller, userId: userIdElevatedToAdmin },
+      );
+    if (elevateUserToAdminResponse.type === EitherType.failure) {
+      return elevateUserToAdminResponse;
+    }
   } else {
-    throw new Error("Client user does not have permission to create admins");
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: ElevateUserToAdminFailedReason.ILLEGAL_ACCESS,
+      error:
+        "Client user does not have permission to create admins at handleElevateUserToAdmin",
+      additionalErrorInformation:
+        "Client user does not have permission to create admins at handleElevateUserToAdmin",
+    });
   }
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

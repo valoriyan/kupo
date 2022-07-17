@@ -1,8 +1,13 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
-import { RenderablePostComment, UnrenderablePostComment } from "./models";
+import { RenderablePostComment } from "./models";
 import { constructRenderablePostCommentsFromParts } from "./utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 
@@ -32,7 +37,7 @@ export async function handleReadPageOfCommentsByPublishedItemId({
   requestBody: ReadPageOfCommentsByPublishedItemIdRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ReadPageOfCommentsByPublishedItemIdFailedReason,
+    ErrorReasonTypes<string | ReadPageOfCommentsByPublishedItemIdFailedReason>,
     ReadPageOfCommentsByPublishedItemIdSuccess
   >
 > {
@@ -44,9 +49,10 @@ export async function handleReadPageOfCommentsByPublishedItemId({
   );
   if (error) return error;
 
-  const unrenderablePostComments: UnrenderablePostComment[] =
+  const getPostCommentsByPostIdResponse =
     await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentsByPostId(
       {
+        controller,
         postId,
         afterTimestamp: cursor
           ? decodeTimestampCursor({ encodedCursor: cursor })
@@ -54,13 +60,24 @@ export async function handleReadPageOfCommentsByPublishedItemId({
         pageSize,
       },
     );
+  if (getPostCommentsByPostIdResponse.type === EitherType.failure) {
+    return getPostCommentsByPostIdResponse;
+  }
+  const { success: unrenderablePostComments } = getPostCommentsByPostIdResponse;
 
-  const renderablePostComments = await constructRenderablePostCommentsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    unrenderablePostComments,
-    clientUserId,
-  });
+  const constructRenderablePostCommentsFromPartsResponse =
+    await constructRenderablePostCommentsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      unrenderablePostComments,
+      clientUserId,
+    });
+  if (constructRenderablePostCommentsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostCommentsFromPartsResponse;
+  }
+  const { success: renderablePostComments } =
+    constructRenderablePostCommentsFromPartsResponse;
 
   const nextPageCursor =
     renderablePostComments.length === pageSize
@@ -71,12 +88,9 @@ export async function handleReadPageOfCommentsByPublishedItemId({
         })
       : undefined;
 
-  return {
-    type: EitherType.success,
-    success: {
-      postComments: renderablePostComments,
-      previousPageCursor: cursor,
-      nextPageCursor,
-    },
-  };
+  return Success({
+    postComments: renderablePostComments,
+    previousPageCursor: cursor,
+    nextPageCursor,
+  });
 }

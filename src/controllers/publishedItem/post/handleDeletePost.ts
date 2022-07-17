@@ -1,7 +1,12 @@
 import express from "express";
 import { checkAuthorization } from "../../../controllers/auth/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -22,7 +27,9 @@ export async function handleDeletePost({
   controller: PostController;
   request: express.Request;
   requestBody: DeletePostRequestBody;
-}): Promise<SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<ErrorReasonTypes<string | DeletePostFailed>, DeletePostSuccess>
+> {
   const { errorResponse: error, clientUserId } = await checkAuthorization(
     controller,
     request,
@@ -31,20 +38,32 @@ export async function handleDeletePost({
 
   const { postId } = requestBody;
 
-  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
-    {
-      id: postId,
-      authorUserId: clientUserId,
-    },
-  );
+  const deletePublishedItemResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
+      {
+        controller,
+        id: postId,
+        authorUserId: clientUserId,
+      },
+    );
+  if (deletePublishedItemResponse.type === EitherType.failure) {
+    return deletePublishedItemResponse;
+  }
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED BLOB FILES
   //////////////////////////////////////////////////
-  const blobPointers =
+  const deletePostContentElementsByPostIdResponse =
     await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
-      { postId },
+      {
+        controller,
+        postId,
+      },
     );
+  if (deletePostContentElementsByPostIdResponse.type === EitherType.failure) {
+    return deletePostContentElementsByPostIdResponse;
+  }
+  const { success: blobPointers } = deletePostContentElementsByPostIdResponse;
 
   await controller.blobStorageService.deleteImages({ blobPointers });
 
@@ -52,18 +71,30 @@ export async function handleDeletePost({
   // DELETE ASSOCIATED POST LIKES
   //////////////////////////////////////////////////
 
-  const dbPostLikes =
+  const getPostLikesByPublishedItemIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPostLikesByPublishedItemId(
-      { publishedItemId: postId },
+      {
+        controller,
+        publishedItemId: postId,
+      },
     );
+  if (getPostLikesByPublishedItemIdResponse.type === EitherType.failure) {
+    return getPostLikesByPublishedItemIdResponse;
+  }
+  const { success: dbPostLikes } = getPostLikesByPublishedItemIdResponse;
+
   const postLikeIds = dbPostLikes.map(
     ({ published_item_like_id: post_like_id }) => post_like_id,
   );
 
   if (dbPostLikes.length > 0) {
-    await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.removeAllPostLikesByPublishedItemId(
-      { publishedItemId: postId },
-    );
+    const removeAllPostLikesByPublishedItemIdResponse =
+      await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.removeAllPostLikesByPublishedItemId(
+        { controller, publishedItemId: postId },
+      );
+    if (removeAllPostLikesByPublishedItemIdResponse.type === EitherType.failure) {
+      return removeAllPostLikesByPublishedItemIdResponse;
+    }
   }
 
   //////////////////////////////////////////////////
@@ -71,34 +102,52 @@ export async function handleDeletePost({
   //////////////////////////////////////////////////
 
   if (postLikeIds.length > 0) {
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
-      {
-        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-        referenceTableIds: postLikeIds,
-      },
-    );
+    const deleteUserNotificationsForAllUsersByReferenceTableIdsResponse =
+      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
+        {
+          controller,
+          notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+          referenceTableIds: postLikeIds,
+        },
+      );
+    if (
+      deleteUserNotificationsForAllUsersByReferenceTableIdsResponse.type ===
+      EitherType.failure
+    ) {
+      return deleteUserNotificationsForAllUsersByReferenceTableIdsResponse;
+    }
   }
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED SAVED POSTS
   //////////////////////////////////////////////////
 
-  const userIdSavedItemId =
+  const doesUserIdSavePublishedItemIdResponse =
     await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
       {
+        controller,
         userId: clientUserId,
         publishedItemId: postId,
       },
     );
+  if (doesUserIdSavePublishedItemIdResponse.type === EitherType.failure) {
+    return doesUserIdSavePublishedItemIdResponse;
+  }
+  const { success: userIdSavedItemId } = doesUserIdSavePublishedItemIdResponse;
 
   if (userIdSavedItemId) {
-    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
-      {
-        userId: clientUserId,
-        publishedItemId: postId,
-      },
-    );
+    const unSaveItemResponse =
+      await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
+        {
+          controller,
+          userId: clientUserId,
+          publishedItemId: postId,
+        },
+      );
+    if (unSaveItemResponse.type === EitherType.failure) {
+      return unSaveItemResponse;
+    }
   }
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

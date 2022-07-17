@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
@@ -28,7 +33,7 @@ export async function handleCreateChatMessageInNewChatRoom({
   requestBody: CreateChatMessageInNewRoomRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    CreateChatMessageInNewChatRoomFailedReason,
+    ErrorReasonTypes<string | CreateChatMessageInNewChatRoomFailedReason>,
     CreateChatMessageInNewChatRoomSuccess
   >
 > {
@@ -42,41 +47,52 @@ export async function handleCreateChatMessageInNewChatRoom({
 
   let chatRoomId: string;
 
-  const existingChatRoomId =
+  const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive(
-      { userIds },
+      { controller, userIds },
     );
+  if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
+    return getChatRoomIdWithUserIdMembersExclusiveResponse;
+  }
+  const { success: existingChatRoomId } = getChatRoomIdWithUserIdMembersExclusiveResponse;
 
   if (!!existingChatRoomId) {
     chatRoomId = existingChatRoomId;
   } else {
     chatRoomId = uuidv4();
 
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.insertUsersIntoChatRoom(
-      {
-        userIds,
-        joinTimestamp: Date.now(),
-        chatRoomId,
-      },
-    );
+    const insertUsersIntoChatRoomResponse =
+      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.insertUsersIntoChatRoom(
+        {
+          controller,
+          userIds,
+          joinTimestamp: Date.now(),
+          chatRoomId,
+        },
+      );
+    if (insertUsersIntoChatRoomResponse.type === EitherType.failure) {
+      return insertUsersIntoChatRoomResponse;
+    }
   }
 
   const chatMessageId: string = uuidv4();
 
-  await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.createChatMessage(
-    {
-      chatMessageId,
-      text: chatMessageText,
-      authorUserId: clientUserId,
-      chatRoomId,
-      creationTimestamp: Date.now(),
-    },
-  );
+  const createChatMessageResponse =
+    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.createChatMessage(
+      {
+        controller,
+        chatMessageId,
+        text: chatMessageText,
+        authorUserId: clientUserId,
+        chatRoomId,
+        creationTimestamp: Date.now(),
+      },
+    );
+  if (createChatMessageResponse.type === EitherType.failure) {
+    return createChatMessageResponse;
+  }
 
-  return {
-    type: EitherType.success,
-    success: {
-      chatRoomId,
-    },
-  };
+  return Success({
+    chatRoomId,
+  });
 }

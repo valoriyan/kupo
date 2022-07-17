@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PostController } from "./postController";
 
@@ -27,7 +33,12 @@ export async function handleUpdatePost({
   controller: PostController;
   request: express.Request;
   requestBody: UpdatePostRequestBody;
-}): Promise<SecuredHTTPResponse<UpdatePostFailedReason, UpdatePostSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | UpdatePostFailedReason>,
+    UpdatePostSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -37,29 +48,43 @@ export async function handleUpdatePost({
   const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
     requestBody;
 
-  const unrenderablePostWithoutElementsOrHashtags =
+  const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: postId },
+      {
+        controller,
+        id: postId,
+      },
     );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: unrenderablePostWithoutElementsOrHashtags } =
+    getPublishedItemByIdResponse;
 
   if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
-    return {
-      type: EitherType.error,
-      error: {
-        reason: UpdatePostFailedReason.IllegalAccess,
-      },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 403,
+      reason: UpdatePostFailedReason.IllegalAccess,
+      error: "Illegal Access at handleUpdatePost",
+      additionalErrorInformation: "Illegal Access at handleUpdatePost",
+    });
   }
 
-  await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById(
-    {
-      id: postId,
-      authorUserId: clientUserId,
-      caption: caption ? caption.toLowerCase() : caption,
-      scheduledPublicationTimestamp,
-      expirationTimestamp,
-    },
-  );
+  const updateContentItemByIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById(
+      {
+        controller,
+        id: postId,
+        authorUserId: clientUserId,
+        caption: caption ? caption.toLowerCase() : caption,
+        scheduledPublicationTimestamp,
+        expirationTimestamp,
+      },
+    );
+  if (updateContentItemByIdResponse.type === EitherType.failure) {
+    return updateContentItemByIdResponse;
+  }
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

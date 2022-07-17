@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import {
   UserContentFeedFilter,
   UserContentFeedFilterType,
@@ -8,6 +15,8 @@ import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { Controller } from "tsoa";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 interface DBUserContentFeedFilter {
   content_feed_filter_id: string;
@@ -66,8 +75,10 @@ export class UserContentFeedFiltersTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createUserContentFeedFilters({
+    controller,
     userContentFeedFilters,
   }: {
+    controller: Controller;
     userContentFeedFilters: {
       contentFeedFilterId: string;
       userId: string;
@@ -75,23 +86,35 @@ export class UserContentFeedFiltersTableService extends TableService {
       value: string;
       creationTimestamp: number;
     }[];
-  }): Promise<void> {
-    const rowsOfFieldsAndValues = userContentFeedFilters.map(
-      ({ contentFeedFilterId, userId, type, value, creationTimestamp }) => [
-        { field: "content_feed_filter_id", value: contentFeedFilterId },
-        { field: "user_id", value: userId },
-        { field: "type", value: type },
-        { field: "value", value: value },
-        { field: "creation_timestamp", value: creationTimestamp },
-      ],
-    );
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const rowsOfFieldsAndValues = userContentFeedFilters.map(
+        ({ contentFeedFilterId, userId, type, value, creationTimestamp }) => [
+          { field: "content_feed_filter_id", value: contentFeedFilterId },
+          { field: "user_id", value: userId },
+          { field: "type", value: type },
+          { field: "value", value: value },
+          { field: "creation_timestamp", value: creationTimestamp },
+        ],
+      );
 
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues,
-      tableName: this.tableName,
-    });
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues,
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userContentFeedFiltersTableService.createUserContentFeedFilters",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -99,30 +122,46 @@ export class UserContentFeedFiltersTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getUserContentFeedFiltersByUserId({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<UserContentFeedFilter[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          user_id = $1
-        ORDER BY
-          creation_timestamp
-        ;
-      `,
-      values: [userId],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UserContentFeedFilter[]>
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id = $1
+          ORDER BY
+            creation_timestamp
+          ;
+        `,
+        values: [userId],
+      };
 
-    const response: QueryResult<DBUserContentFeedFilter> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBUserContentFeedFilter> =
+        await this.datastorePool.query(query);
 
-    return response.rows.map(convertDBUserContentFeedFilterToUserContentFeedFilter);
+      return Success(
+        response.rows.map(convertDBUserContentFeedFilterToUserContentFeedFilter),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userContentFeedFiltersTableService.getUserContentFeedFiltersByUserId",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -134,26 +173,45 @@ export class UserContentFeedFiltersTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deleteUserContentFeedFiltersByUserId({
+    controller,
     userId,
   }: {
+    controller: Controller;
     userId: string;
-  }): Promise<UserContentFeedFilter> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [{ field: "user_id", value: userId }],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UserContentFeedFilter>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [{ field: "user_id", value: userId }],
+        tableName: this.tableName,
+      });
 
-    const response: QueryResult<DBUserContentFeedFilter> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBUserContentFeedFilter> =
+        await this.datastorePool.query(query);
 
-    const rows = response.rows;
+      const rows = response.rows;
 
-    if (!!rows.length) {
-      const row = response.rows[0];
-      return convertDBUserContentFeedFilterToUserContentFeedFilter(row);
+      if (!!rows.length) {
+        const row = response.rows[0];
+        return Success(convertDBUserContentFeedFilterToUserContentFeedFilter(row));
+      }
+
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "No userContentFeedFilter row to delete.",
+        additionalErrorInformation:
+          "Error at userContentFeedFiltersTableService.deleteUserContentFeedFiltersByUserId",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userContentFeedFiltersTableService.deleteUserContentFeedFiltersByUserId",
+      });
     }
-
-    throw new Error("No rows deleted");
   }
 }

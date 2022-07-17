@@ -1,10 +1,19 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { UnrenderableChatRoomPreview } from "../../../controllers/chat/models";
 
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { Controller } from "tsoa";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 interface DBChatRoomMembership {
   chat_room_id: string;
@@ -59,49 +68,77 @@ export class ChatRoomsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async insertUserIntoChatRoom({
+    controller,
     chatRoomId,
     userId,
     joinTimestamp,
   }: {
+    controller: Controller;
     chatRoomId: string;
     userId: string;
     joinTimestamp: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "chat_room_id", value: chatRoomId },
-          { field: "user_id", value: userId },
-          { field: "join_timestamp", value: joinTimestamp },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "chat_room_id", value: chatRoomId },
+            { field: "user_id", value: userId },
+            { field: "join_timestamp", value: joinTimestamp },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatRoomsTableService.insertUserIntoChatRoom",
+      });
+    }
   }
 
   public async insertUsersIntoChatRoom({
+    controller,
     chatRoomId,
     userIds,
     joinTimestamp,
   }: {
+    controller: Controller;
     chatRoomId: string;
     userIds: string[];
     joinTimestamp: number;
-  }): Promise<void> {
-    const rowsOfFieldsAndValues = userIds.map((userId) => [
-      { field: "chat_room_id", value: chatRoomId },
-      { field: "user_id", value: userId },
-      { field: "join_timestamp", value: joinTimestamp },
-    ]);
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const rowsOfFieldsAndValues = userIds.map((userId) => [
+        { field: "chat_room_id", value: chatRoomId },
+        { field: "user_id", value: userId },
+        { field: "join_timestamp", value: joinTimestamp },
+      ]);
 
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: rowsOfFieldsAndValues,
-      tableName: this.tableName,
-    });
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: rowsOfFieldsAndValues,
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatRoomsTableService.insertUsersIntoChatRoom",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -109,69 +146,101 @@ export class ChatRoomsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getChatRoomById({
+    controller,
     chatRoomId,
   }: {
+    controller: Controller;
     chatRoomId: string;
-  }): Promise<UnrenderableChatRoomPreview> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          chat_room_id = $1
-        ;
-      `,
-      values: [chatRoomId],
-    };
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatRoomPreview>
+  > {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            chat_room_id = $1
+          ;
+        `,
+        values: [chatRoomId],
+      };
 
-    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+        query,
+      );
 
-    const unrenderableChatRoomPreviews =
-      convertDBChatRoomMembershipsToUnrenderableChatRooms(response.rows);
-    if (unrenderableChatRoomPreviews.length === 0) {
-      throw new Error("Missing chat room");
+      const unrenderableChatRoomPreviews =
+        convertDBChatRoomMembershipsToUnrenderableChatRooms(response.rows);
+      if (unrenderableChatRoomPreviews.length === 0) {
+        throw new Error("Missing chat room");
+      }
+
+      return Success(unrenderableChatRoomPreviews[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at chatRoomsTableService.getChatRoomById",
+      });
     }
-
-    return unrenderableChatRoomPreviews[0];
   }
 
   public async getUserIdsJoinedToChatRoomId({
+    controller,
     chatRoomId,
   }: {
+    controller: Controller;
     chatRoomId: string;
-  }): Promise<string[]> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          chat_room_id = $1
-        ;
-      `,
-      values: [chatRoomId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            chat_room_id = $1
+          ;
+        `,
+        values: [chatRoomId],
+      };
 
-    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+        query,
+      );
 
-    return response.rows.map((dbChatRoom) => dbChatRoom.user_id);
+      return Success(response.rows.map((dbChatRoom) => dbChatRoom.user_id));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatRoomsTableService.getUserIdsJoinedToChatRoomId",
+      });
+    }
   }
 
   public async getChatRoomsJoinedByUserIds({
+    controller,
     userIds,
   }: {
+    controller: Controller;
     userIds: string[];
-  }): Promise<UnrenderableChatRoomPreview[]> {
-    const whereConditionText = userIds
-      .map((_, index) => {
-        return `
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatRoomPreview[]>
+  > {
+    try {
+      const whereConditionText = userIds
+        .map((_, index) => {
+          return `
         chat_room_id IN (
           SELECT 
             chat_room_id
@@ -181,11 +250,11 @@ export class ChatRoomsTableService extends TableService {
             user_id = $${index + 1}
         )
       `;
-      })
-      .join("\n AND \n");
+        })
+        .join("\n AND \n");
 
-    const query = {
-      text: `
+      const query = {
+        text: `
         SELECT
           *
         FROM
@@ -194,62 +263,89 @@ export class ChatRoomsTableService extends TableService {
           ${whereConditionText}
         ;
       `,
-      values: userIds,
-    };
+        values: userIds,
+      };
 
-    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+        query,
+      );
 
-    const dbChatRoomMemberships = response.rows;
+      const dbChatRoomMemberships = response.rows;
 
-    return convertDBChatRoomMembershipsToUnrenderableChatRooms(dbChatRoomMemberships);
+      return Success(
+        convertDBChatRoomMembershipsToUnrenderableChatRooms(dbChatRoomMemberships),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatRoomsTableService.getChatRoomsJoinedByUserIds",
+      });
+    }
   }
 
   public async getChatRoomIdWithUserIdMembersExclusive({
+    controller,
     userIds,
   }: {
+    controller: Controller;
     userIds: string[];
-  }): Promise<string | undefined> {
-    const parameterizedUsersList = userIds.map((_, index) => `$${index + 1}`).join(", ");
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string | undefined>> {
+    try {
+      const parameterizedUsersList = userIds
+        .map((_, index) => `$${index + 1}`)
+        .join(", ");
 
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          user_id IN ( ${parameterizedUsersList} )
-        ;
-      `,
-      values: userIds,
-    };
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            user_id IN ( ${parameterizedUsersList} )
+          ;
+        `,
+        values: userIds,
+      };
 
-    const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-      query,
-    );
+      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
+        query,
+      );
 
-    const dbChatRoomMemberships = response.rows;
+      const dbChatRoomMemberships = response.rows;
 
-    const mapOfRoomIdsToMemberUserIds: Map<string, Set<string>> = new Map();
-    dbChatRoomMemberships.forEach((dbChatRoomMembership) => {
-      const { user_id, chat_room_id } = dbChatRoomMembership;
-      const members: Set<string> = mapOfRoomIdsToMemberUserIds.has(chat_room_id)
-        ? mapOfRoomIdsToMemberUserIds.get(chat_room_id)!
-        : new Set();
+      const mapOfRoomIdsToMemberUserIds: Map<string, Set<string>> = new Map();
+      dbChatRoomMemberships.forEach((dbChatRoomMembership) => {
+        const { user_id, chat_room_id } = dbChatRoomMembership;
+        const members: Set<string> = mapOfRoomIdsToMemberUserIds.has(chat_room_id)
+          ? mapOfRoomIdsToMemberUserIds.get(chat_room_id)!
+          : new Set();
 
-      members.add(user_id);
-      mapOfRoomIdsToMemberUserIds.set(chat_room_id, members);
-    });
+        members.add(user_id);
+        mapOfRoomIdsToMemberUserIds.set(chat_room_id, members);
+      });
 
-    for (const [roomId, members] of mapOfRoomIdsToMemberUserIds) {
-      if (userIds.every((userId) => members.has(userId))) {
-        return roomId;
+      for (const [roomId, members] of mapOfRoomIdsToMemberUserIds) {
+        if (userIds.every((userId) => members.has(userId))) {
+          return Success(roomId);
+        }
       }
-    }
 
-    return;
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -261,20 +357,34 @@ export class ChatRoomsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async removeUserFromChatRoomById({
+    controller,
     chatRoomId,
     userId,
   }: {
+    controller: Controller;
     chatRoomId: string;
     userId: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "chat_room_id", value: chatRoomId },
-        { field: "user_id", value: userId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "chat_room_id", value: chatRoomId },
+          { field: "user_id", value: userId },
+        ],
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatRoomsTableService.removeUserFromChatRoomById",
+      });
+    }
   }
 }

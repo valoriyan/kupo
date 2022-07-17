@@ -1,5 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { PostController } from "./postController";
 import express from "express";
 import { checkAuthorization } from "../../auth/utilities";
@@ -33,7 +38,9 @@ export async function handleSharePost({
   controller: PostController;
   request: express.Request;
   requestBody: SharePostRequestBody;
-}): Promise<SecuredHTTPResponse<SharePostFailedReason, SharePostSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<ErrorReasonTypes<string | SharePostFailedReason>, SharePostSuccess>
+> {
   const {
     sharedPostId,
     caption,
@@ -54,32 +61,51 @@ export async function handleSharePost({
 
   const creationTimestamp = now;
 
-  try {
-    let unrenderableSharedPostWithoutElementsOrHashtags =
+  const getPublishedItemByIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { controller, id: sharedPostId },
+    );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  let unrenderableSharedPostWithoutElementsOrHashtags =
+    getPublishedItemByIdResponse.success;
+
+  if (!!unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared) {
+    const getPublishedItemByIdResponse =
       await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-        { id: sharedPostId },
+        {
+          controller,
+          id: unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared,
+        },
       );
-
-    if (!!unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared) {
-      unrenderableSharedPostWithoutElementsOrHashtags =
-        await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-          {
-            id: unrenderableSharedPostWithoutElementsOrHashtags.idOfPublishedItemBeingShared,
-          },
-        );
+    if (getPublishedItemByIdResponse.type === EitherType.failure) {
+      return getPublishedItemByIdResponse;
     }
+    unrenderableSharedPostWithoutElementsOrHashtags =
+      getPublishedItemByIdResponse.success;
+  }
 
-    const renderableSharedPost = await constructRenderablePostFromParts({
+  const constructRenderablePostFromPartsResponse = await constructRenderablePostFromParts(
+    {
+      controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItem: unrenderableSharedPostWithoutElementsOrHashtags,
       clientUserId,
-    });
+    },
+  );
+  if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostFromPartsResponse;
+  }
+  const { success: renderableSharedPost } = constructRenderablePostFromPartsResponse;
 
-    const lowercaseCaption = caption.toLowerCase();
+  const lowercaseCaption = caption.toLowerCase();
 
+  const createPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
       {
+        controller,
         publishedItemId: postId,
         type: PublishedItemType.POST,
         creationTimestamp,
@@ -90,47 +116,44 @@ export async function handleSharePost({
         idOfPublishedItemBeingShared: sharedPostId,
       },
     );
+  if (createPublishedItemResponse.type === EitherType.failure) {
+    return createPublishedItemResponse;
+  }
 
-    const lowercaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
+  const lowercaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
+  const addHashtagsToPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
       {
+        controller,
         hashtags: lowercaseHashtags,
         publishedItemId: postId,
       },
     );
-
-    return {
-      type: EitherType.success,
-      success: {
-        renderablePost: {
-          id: postId,
-          type: PublishedItemType.POST,
-          creationTimestamp,
-          mediaElements: [],
-          authorUserId: clientUserId,
-          caption: lowercaseCaption,
-          scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-          hashtags: lowercaseHashtags,
-          expirationTimestamp,
-          likes: {
-            count: 0,
-          },
-          comments: {
-            count: 0,
-          },
-          isLikedByClient: false,
-          isSavedByClient: false,
-          sharedItem: renderableSharedPost as RootRenderablePost,
-        },
-      },
-    };
-  } catch (error) {
-    console.log("error", error);
-    controller.setStatus(401);
-    return {
-      type: EitherType.error,
-      error: { reason: SharePostFailedReason.UnknownCause },
-    };
+  if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
+    return addHashtagsToPublishedItemResponse;
   }
+
+  return Success({
+    renderablePost: {
+      id: postId,
+      type: PublishedItemType.POST,
+      creationTimestamp,
+      mediaElements: [],
+      authorUserId: clientUserId,
+      caption: lowercaseCaption,
+      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+      hashtags: lowercaseHashtags,
+      expirationTimestamp,
+      likes: {
+        count: 0,
+      },
+      comments: {
+        count: 0,
+      },
+      isLikedByClient: false,
+      isSavedByClient: false,
+      sharedItem: renderableSharedPost as RootRenderablePost,
+    },
+  });
 }

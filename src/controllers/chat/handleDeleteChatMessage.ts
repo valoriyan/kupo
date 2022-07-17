@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
@@ -23,7 +28,10 @@ export async function handleDeleteChatMessage({
   request: express.Request;
   requestBody: DeleteChatMessageRequestBody;
 }): Promise<
-  SecuredHTTPResponse<DeleteChatMessageFailedReason, DeleteChatMessageSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | DeleteChatMessageFailedReason>,
+    DeleteChatMessageSuccess
+  >
 > {
   const { chatMessageId } = requestBody;
 
@@ -33,25 +41,34 @@ export async function handleDeleteChatMessage({
   );
   if (error) return error;
 
-  const deletedChatMessage =
+  const deleteChatMessageResponse =
     await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.deleteChatMessage(
       {
+        controller,
         chatMessageId,
         userId: clientUserId,
       },
     );
+  if (deleteChatMessageResponse.type === EitherType.failure) {
+    return deleteChatMessageResponse;
+  }
+  const { success: deletedChatMessage } = deleteChatMessageResponse;
 
   const chatRoomId = deletedChatMessage.chatRoomId;
 
-  const userIds =
+  const getUserIdsJoinedToChatRoomIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
-      { chatRoomId },
+      { controller, chatRoomId },
     );
+  if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {
+    return getUserIdsJoinedToChatRoomIdResponse;
+  }
+  const { success: userIds } = getUserIdsJoinedToChatRoomIdResponse;
 
   await controller.webSocketService.notifyUserIdsOfDeletedChatMessage({
     userIds,
     deletedChatMessageId: deletedChatMessage.chatMessageId,
   });
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

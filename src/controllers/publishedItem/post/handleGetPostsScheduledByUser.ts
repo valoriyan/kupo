@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
 import { PostController } from "./postController";
@@ -28,7 +33,10 @@ export async function handleGetPostsScheduledByUser({
   request: express.Request;
   requestBody: GetPostsScheduledByUserRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPostsScheduledByUserFailed, GetPostsScheduledByUserSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetPostsScheduledByUserFailed>,
+    GetPostsScheduledByUserSuccess
+  >
 > {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -38,26 +46,38 @@ export async function handleGetPostsScheduledByUser({
 
   const { rangeStartTimestamp, rangeEndTimestamp } = requestBody;
 
-  const uncompiledBasePublishedItem =
+  const getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
       {
+        controller,
         creatorUserId: clientUserId,
         rangeEndTimestamp,
         rangeStartTimestamp,
       },
     );
+  if (
+    getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse.type ===
+    EitherType.failure
+  ) {
+    return getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse;
+  }
+  const { success: uncompiledBasePublishedItem } =
+    getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse;
 
-  const renderablePosts = await constructRenderablePostsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItems: uncompiledBasePublishedItem,
-    clientUserId,
+  const constructRenderablePostsFromPartsResponse =
+    await constructRenderablePostsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems: uncompiledBasePublishedItem,
+      clientUserId,
+    });
+  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostsFromPartsResponse;
+  }
+  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+
+  return Success({
+    posts: renderablePosts,
   });
-
-  return {
-    type: EitherType.success,
-    success: {
-      posts: renderablePosts,
-    },
-  };
 }

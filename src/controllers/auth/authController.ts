@@ -1,7 +1,11 @@
 import express from "express";
 import { DatabaseService } from "../../services/databaseService";
 import { Body, Controller, Get, Post, Request, Route } from "tsoa";
-import { HTTPResponse, SecuredHTTPResponse } from "../../types/monads";
+import {
+  ErrorReasonTypes,
+  HTTPResponse,
+  SecuredHTTPResponse,
+} from "../../utilities/monads";
 import { injectable } from "tsyringe";
 import {
   RegisterUserFailedReason,
@@ -63,7 +67,9 @@ export class AuthController extends Controller {
   @Post("register")
   public async registerUser(
     @Body() requestBody: RegisterUserRequestBody,
-  ): Promise<HTTPResponse<RegisterUserFailedReason, AuthSuccess>> {
+  ): Promise<
+    HTTPResponse<ErrorReasonTypes<string | RegisterUserFailedReason>, AuthSuccess>
+  > {
     return await handleRegisterUser({
       controller: this,
       requestBody,
@@ -73,7 +79,7 @@ export class AuthController extends Controller {
   @Post("login")
   public async loginUser(
     @Body() requestBody: LoginUserRequestBody,
-  ): Promise<HTTPResponse<AuthFailedReason, AuthSuccess>> {
+  ): Promise<HTTPResponse<ErrorReasonTypes<string | AuthFailedReason>, AuthSuccess>> {
     return await handleLoginUser({
       controller: this,
       requestBody,
@@ -93,7 +99,12 @@ export class AuthController extends Controller {
   @Post("getPasswordResetEmail")
   public async getPasswordResetEmail(
     @Body() requestBody: GetPasswordResetEmailRequestBody,
-  ): Promise<HTTPResponse<GetPasswordResetEmailFailed, GetPasswordResetEmailSuccess>> {
+  ): Promise<
+    HTTPResponse<
+      ErrorReasonTypes<string | GetPasswordResetEmailFailed>,
+      GetPasswordResetEmailSuccess
+    >
+  > {
     return await handleGetPasswordResetEmail({
       controller: this,
       requestBody,
@@ -127,7 +138,12 @@ export class AuthController extends Controller {
   public async updatePassword(
     @Request() request: express.Request,
     @Body() requestBody: UpdatePasswordRequestBody,
-  ): Promise<SecuredHTTPResponse<UpdatePasswordFailed, UpdatePasswordSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UpdatePasswordFailed>,
+      UpdatePasswordSuccess
+    >
+  > {
     return await handleUpdatePassword({
       controller: this,
       request,
@@ -149,7 +165,12 @@ export class AuthController extends Controller {
   public async elevateUserToAdmin(
     @Request() request: express.Request,
     @Body() requestBody: ElevateUserToAdminRequestBody,
-  ): Promise<SecuredHTTPResponse<ElevateUserToAdminFailed, ElevateUserToAdminSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | ElevateUserToAdminFailed>,
+      ElevateUserToAdminSuccess
+    >
+  > {
     return await handleElevateUserToAdmin({
       controller: this,
       request,

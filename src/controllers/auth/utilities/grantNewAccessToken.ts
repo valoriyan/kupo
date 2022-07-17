@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import { EitherType, HTTPResponse } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import {
   generateAccessToken,

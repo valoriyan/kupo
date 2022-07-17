@@ -14,9 +14,6 @@ export class LocalBlobStorageService extends BlobStorageServiceInterface {
   }
 
   async saveImage({ image }: { image: Buffer }): Promise<BlobItemPointer> {
-    console.log("\n\n\n\n\n\nHIT!\n\n\n\n\n\n");
-    console.log(this);
-
     const fileKey = uuidv4();
     const fileWritePath =
       LocalBlobStorageService.localBlobStorageDirectory + "/" + fileKey;

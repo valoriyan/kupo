@@ -1,4 +1,10 @@
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  HTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { v4 as uuidv4 } from "uuid";
 import { encryptPassword } from "../utilities";
 import { AuthController } from "../authController";
@@ -6,7 +12,7 @@ import { grantNewAccessToken } from "../utilities/grantNewAccessToken";
 import { AuthSuccess } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
 import { validateUsername } from "./validations";
-import { generateErrorResponse } from "../../utilities/generateErrorResponse";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 export interface RegisterUserRequestBody {
   email: string;
@@ -25,7 +31,9 @@ export async function handleRegisterUser({
 }: {
   requestBody: RegisterUserRequestBody;
   controller: AuthController;
-}): Promise<HTTPResponse<RegisterUserFailedReason, AuthSuccess>> {
+}): Promise<
+  HTTPResponse<ErrorReasonTypes<string | RegisterUserFailedReason>, AuthSuccess>
+> {
   const userId = uuidv4();
   const { email, username, password } = requestBody;
 
@@ -34,35 +42,37 @@ export async function handleRegisterUser({
   const usernameErrorReason = validateUsername({ username });
   if (!!usernameErrorReason) {
     console.log(`Not creating user ${username} due to failure to validateUsername`);
-    return {
-      type: EitherType.error,
-      error: {
-        reason: usernameErrorReason,
-      },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 400,
+      reason: usernameErrorReason,
+      error: `${usernameErrorReason} at handleRegisterUser`,
+      additionalErrorInformation: `${usernameErrorReason} at handleRegisterUser`,
+    });
   }
 
   const encryptedPassword = encryptPassword({ password });
 
   const now = Date.now();
 
-  try {
-    const INSANELY_HARDCODED_ADMIN_EMAILS = [
-      "julian.trajanson@gmail.com",
-      "chan.asa.co@gmail.com",
-      "blake.zimmerman@icloud.com",
-    ];
+  const INSANELY_HARDCODED_ADMIN_EMAILS = [
+    "julian.trajanson@gmail.com",
+    "chan.asa.co@gmail.com",
+    "blake.zimmerman@icloud.com",
+  ];
 
-    const isAdmin = INSANELY_HARDCODED_ADMIN_EMAILS.includes(email);
+  const isAdmin = INSANELY_HARDCODED_ADMIN_EMAILS.includes(email);
 
-    const lowerCaseUsername = username.toLowerCase();
+  const lowerCaseUsername = username.toLowerCase();
 
-    const paymentProcessorCustomerId =
-      await controller.paymentProcessingService.registerCustomer({
-        customerEmail: email,
-      });
+  const paymentProcessorCustomerId =
+    await controller.paymentProcessingService.registerCustomer({
+      customerEmail: email,
+    });
 
+  const createUserResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.createUser({
+      controller,
       userId,
       email,
       username: lowerCaseUsername,
@@ -71,48 +81,46 @@ export async function handleRegisterUser({
       isAdmin,
       paymentProcessorCustomerId,
     });
+  if (createUserResponse.type === EitherType.failure) {
+    return createUserResponse;
+  }
 
-    const newAccessTokenResponse = grantNewAccessToken({
-      controller,
-      userId,
-      jwtPrivateKey: getEnvironmentVariable("JWT_PRIVATE_KEY"),
-      successStatusCode: 201,
-    });
+  const newAccessTokenResponse = grantNewAccessToken({
+    controller,
+    userId,
+    jwtPrivateKey: getEnvironmentVariable("JWT_PRIVATE_KEY"),
+    successStatusCode: 201,
+  });
 
-    if (newAccessTokenResponse.type === "success") {
-      try {
-        const user =
-          await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-            { userId },
-          );
-        if (!!user) {
-          controller.emailService.sendWelcomeEmail({ user });
-        }
-      } catch (error) {
-        console.log(`FAILED TO SEND WELCOME EMAIL | ${error}`);
+  if (newAccessTokenResponse.type === "success") {
+    try {
+      const selectUserByUserIdResponse =
+        await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+          { controller, userId },
+        );
+      if (selectUserByUserIdResponse.type === EitherType.failure) {
+        return selectUserByUserIdResponse;
       }
+      const { success: user } = selectUserByUserIdResponse;
 
-      return {
-        type: EitherType.success,
-        success: newAccessTokenResponse.success,
-      };
+      if (!!user) {
+        controller.emailService.sendWelcomeEmail({ user });
+      }
+    } catch (error) {
+      console.log(`FAILED TO SEND WELCOME EMAIL | ${error}`);
     }
 
-    console.log(`Failed to create user ${username} | UnknownCause`);
-
-    return generateErrorResponse({
-      controller,
-      errorReason: RegisterUserFailedReason.UnknownCause,
-      httpStatusCode: 500,
-    });
-  } catch (error) {
-    console.log(`Failed to create user ${username} | UnknownCause`);
-    console.log("error", error);
-
-    return generateErrorResponse({
-      controller,
-      errorReason: RegisterUserFailedReason.UnknownCause,
-      httpStatusCode: 401,
-    });
+    return Success(newAccessTokenResponse.success);
   }
+
+  console.log(`Failed to create user ${username} | UnknownCause`);
+
+  return Failure({
+    controller,
+    httpStatusCode: 500,
+    reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+    error: "Unable to generate new access token at handleRegisterUser",
+    additionalErrorInformation:
+      "Unable to generate new access token at handleRegisterUser",
+  });
 }

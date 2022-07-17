@@ -13,7 +13,7 @@ import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
-import { SecuredHTTPResponse } from "../../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../../utilities/monads";
 import {
   CreatePostFailedReason,
   handleCreatePost,
@@ -89,7 +89,12 @@ export class PostController extends Controller {
     @FormField() hashtags: string, // string[]
     @FormField() scheduledPublicationTimestamp?: string, // number
     @FormField() expirationTimestamp?: string, // number
-  ): Promise<SecuredHTTPResponse<CreatePostFailedReason, CreatePostSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | CreatePostFailedReason>,
+      CreatePostSuccess
+    >
+  > {
     return await handleCreatePost({
       controller: this,
       request,
@@ -111,7 +116,12 @@ export class PostController extends Controller {
   public async sharePost(
     @Request() request: express.Request,
     @Body() requestBody: SharePostRequestBody,
-  ): Promise<SecuredHTTPResponse<SharePostFailedReason, SharePostSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SharePostFailedReason>,
+      SharePostSuccess
+    >
+  > {
     return await handleSharePost({
       controller: this,
       request,
@@ -128,7 +138,10 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPublishedItemByIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPublishedItemByIdFailedReason, GetPublishedItemByIdSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPublishedItemByIdFailedReason>,
+      GetPublishedItemByIdSuccess
+    >
   > {
     return await handleGetPublishedItemById({
       controller: this,
@@ -142,7 +155,10 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPostsByUserIdRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
+      GetPostsByUsernameSuccess
+    >
   > {
     return await handleGetPostsByUserId({
       controller: this,
@@ -156,7 +172,10 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPostsByUsernameRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPostsByUsernameFailedReason, GetPostsByUsernameSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
+      GetPostsByUsernameSuccess
+    >
   > {
     return await handleGetPostsByUsername({
       controller: this,
@@ -184,7 +203,10 @@ export class PostController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: GetPageOfSavedPostsRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPageOfSavedPostsFailedReason, GetPageOfSavedPostsSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPageOfSavedPostsFailedReason>,
+      GetPageOfSavedPostsSuccess
+    >
   > {
     return await handleGetPageOfSavedPosts({
       controller: this,
@@ -201,7 +223,12 @@ export class PostController extends Controller {
   public async updatePost(
     @Request() request: express.Request,
     @Body() requestBody: UpdatePostRequestBody,
-  ): Promise<SecuredHTTPResponse<UpdatePostFailedReason, UpdatePostSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UpdatePostFailedReason>,
+      UpdatePostSuccess
+    >
+  > {
     return await handleUpdatePost({
       controller: this,
       request,

@@ -1,5 +1,5 @@
 import { getEnvironmentVariable } from "../../../utilities";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import { EitherType, HTTPResponse } from "../../../utilities/monads";
 import { AuthController } from "../authController";
 import { verify } from "jsonwebtoken";
 
@@ -33,7 +33,7 @@ export async function handleCheckResetPasswordTokenValidity({
     verify(token, jwtPrivateKey);
   } catch {
     return {
-      type: EitherType.error,
+      type: EitherType.failure,
       error: { reason: CheckResetPasswordTokenValidityFailedReason.InvalidToken },
     };
   }

@@ -1,8 +1,15 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../../utilities/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { v4 as uuidv4 } from "uuid";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 
 export interface StoreCreditCardRequestBody {
   paymentProcessorCardToken: string;
@@ -23,7 +30,12 @@ export async function handleStoreCreditCard({
   controller: ShopItemController;
   request: express.Request;
   requestBody: StoreCreditCardRequestBody;
-}): Promise<SecuredHTTPResponse<StoreCreditCardFailedReason, StoreCreditCardSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | StoreCreditCardFailedReason>,
+    StoreCreditCardSuccess
+  >
+> {
   const now = Date.now();
 
   const ipAddressOfRequestor = (request.headers["x-real-ip"] ||
@@ -37,10 +49,18 @@ export async function handleStoreCreditCard({
   );
   if (error) return error;
 
-  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+  const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
-      { userId: clientUserId },
+      { controller, userId: clientUserId },
     );
+  if (
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+    EitherType.failure
+  ) {
+    return selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+  }
+  const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
   if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
     const paymentProcessorCardId =
@@ -51,32 +71,40 @@ export async function handleStoreCreditCard({
         ipAddressOfRequestor,
       });
 
-    const currentCreditCardsCount = (
+    const getCreditCardsStoredByUserIdResponse =
       await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
-        { userId: clientUserId },
-      )
-    ).length;
+        { controller, userId: clientUserId },
+      );
 
-    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
-      {
-        userId: clientUserId,
-        localCreditCardId: uuidv4(),
-        paymentProcessorCardId,
-        creationTimestamp: now,
-        isPrimaryCard: !currentCreditCardsCount,
-      },
-    );
+    if (getCreditCardsStoredByUserIdResponse.type === EitherType.failure) {
+      return getCreditCardsStoredByUserIdResponse;
+    }
+    const { success: creditCardsStoredByUserId } = getCreditCardsStoredByUserIdResponse;
 
-    return {
-      type: EitherType.success,
-      success: {},
-    };
+    const currentCreditCardsCount = creditCardsStoredByUserId.length;
+
+    const storeUserCreditCardDataResponse =
+      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
+        {
+          controller,
+          userId: clientUserId,
+          localCreditCardId: uuidv4(),
+          paymentProcessorCardId,
+          creationTimestamp: now,
+          isPrimaryCard: !currentCreditCardsCount,
+        },
+      );
+    if (storeUserCreditCardDataResponse.type === EitherType.failure) {
+      return storeUserCreditCardDataResponse;
+    }
+
+    return Success({});
   }
-
-  return {
-    type: EitherType.error,
-    error: {
-      reason: StoreCreditCardFailedReason.UNKNOWN_REASON,
-    },
-  };
+  return Failure({
+    controller,
+    httpStatusCode: 500,
+    reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+    error: "User not found at handleStoreCreditCard",
+    additionalErrorInformation: "User not found at handleStoreCreditCard",
+  });
 }

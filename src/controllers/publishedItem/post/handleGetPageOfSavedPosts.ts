@@ -5,7 +5,12 @@ import { RenderablePost } from "./models";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./pagination/utilities";
 import { constructRenderablePostsFromParts } from "./utilities";
 import { decodeTimestampCursor } from "../../utilities/pagination";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { PostController } from "./postController";
 
 export interface GetPageOfSavedPostsRequestBody {
@@ -32,7 +37,10 @@ export async function handleGetPageOfSavedPosts({
   request: express.Request;
   requestBody: GetPageOfSavedPostsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfSavedPostsFailedReason, GetPageOfSavedPostsSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetPageOfSavedPostsFailedReason>,
+    GetPageOfSavedPostsSuccess
+  >
 > {
   const { cursor, pageSize } = requestBody;
 
@@ -46,46 +54,59 @@ export async function handleGetPageOfSavedPosts({
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
-  const db_saved_items =
+  const getSavedItemsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.savedItemsTableService.getSavedItemsByUserId(
       {
+        controller,
         userId: clientUserId,
         limit: pageSize,
         getItemsSavedBeforeTimestamp: pageTimestamp,
       },
     );
+  if (getSavedItemsByUserIdResponse.type === EitherType.failure) {
+    return getSavedItemsByUserIdResponse;
+  }
+  const { success: db_saved_items } = getSavedItemsByUserIdResponse;
 
   const publishedItemIds = db_saved_items.map(
     (db_saved_item) => db_saved_item.published_item_id,
   );
 
-  const uncompiledBasePublishedItems =
+  const getPublishedItemsByIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
+        controller,
         ids: publishedItemIds,
       },
     );
+  if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
+    return getPublishedItemsByIdsResponse;
+  }
+  const { success: uncompiledBasePublishedItems } = getPublishedItemsByIdsResponse;
 
   const uncompiledSavedPosts = uncompiledBasePublishedItems.filter(
     (uncompiledBasePublishedItem) =>
       uncompiledBasePublishedItem.type === PublishedItemType.POST,
   );
 
-  const posts = await constructRenderablePostsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItems: uncompiledSavedPosts,
-    clientUserId,
-  });
+  const constructRenderablePostsFromPartsResponse =
+    await constructRenderablePostsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems: uncompiledSavedPosts,
+      clientUserId,
+    });
+  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostsFromPartsResponse;
+  }
+  const { success: posts } = constructRenderablePostsFromPartsResponse;
 
-  return {
-    type: EitherType.success,
-    success: {
-      posts,
-      previousPageCursor: requestBody.cursor,
-      nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
-        sequentialFeedItems: posts,
-      }),
-    },
-  };
+  return Success({
+    posts,
+    previousPageCursor: requestBody.cursor,
+    nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
+      sequentialFeedItems: posts,
+    }),
+  });
 }

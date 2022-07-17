@@ -1,5 +1,5 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import { EitherType, SecuredHTTPResponse } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserPageController } from "./userPageController";
 
@@ -37,6 +37,7 @@ export async function handleSetUserHashtags({
 
   await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.upsertHashtagsForUser(
     {
+      controller,
       userId: clientUserId,
       hashtag1: hashtag1?.toLowerCase() ?? "",
       hashtag2: hashtag2?.toLowerCase() ?? "",

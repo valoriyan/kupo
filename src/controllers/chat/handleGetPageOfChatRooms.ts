@@ -1,5 +1,12 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  FailureResponse,
+  SecuredHTTPResponse,
+  Success,
+  SuccessResponse,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
@@ -33,7 +40,10 @@ export async function handleGetPageOfChatRooms({
   request: express.Request;
   requestBody: GetPageOfChatRoomsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<GetPageOfChatRoomsFailedReason, GetPageOfChatRoomsSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | GetPageOfChatRoomsFailedReason>,
+    GetPageOfChatRoomsSuccess
+  >
 > {
   const { pageSize, cursor, query } = requestBody;
 
@@ -48,30 +58,53 @@ export async function handleGetPageOfChatRooms({
   if (!!query) {
     const usernameSubstrings = query.split(" ");
 
-    const matchedUsers = await BluebirdPromise.map(
+    const selectUsersByUsernameMatchingSubstringResponses = await BluebirdPromise.map(
       usernameSubstrings,
       async (usernameSubstring) => {
         return await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
-          { usernameSubstring },
+          { controller, usernameSubstring },
         );
       },
-    ).reduce(
-      (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
-        memo.concat(...matchedUsers),
-      [],
     );
+    const firstOccuringError = selectUsersByUsernameMatchingSubstringResponses.find(
+      (responseElement) => {
+        return responseElement.type === EitherType.failure;
+      },
+    );
+    if (firstOccuringError) {
+      return firstOccuringError as FailureResponse<ErrorReasonTypes<string>>;
+    }
+
+    const matchedUsers = selectUsersByUsernameMatchingSubstringResponses
+      .map(
+        (responseElement) =>
+          (responseElement as SuccessResponse<UnrenderableUser[]>).success,
+      )
+      .reduce(
+        (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
+          memo.concat(...matchedUsers),
+        [],
+      );
 
     const matchedUserIds = matchedUsers.map(({ userId }) => userId);
 
-    unrenderableChatRooms =
+    const getChatRoomsJoinedByUserIdsResponse =
       await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserIds(
-        { userIds: [clientUserId, ...matchedUserIds] },
+        { controller, userIds: [clientUserId, ...matchedUserIds] },
       );
+    if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {
+      return getChatRoomsJoinedByUserIdsResponse;
+    }
+    unrenderableChatRooms = getChatRoomsJoinedByUserIdsResponse.success;
   } else {
-    unrenderableChatRooms =
+    const getChatRoomsJoinedByUserIdsResponse =
       await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserIds(
-        { userIds: [clientUserId] },
+        { controller, userIds: [clientUserId] },
       );
+    if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {
+      return getChatRoomsJoinedByUserIdsResponse;
+    }
+    unrenderableChatRooms = getChatRoomsJoinedByUserIdsResponse.success;
   }
 
   const setOfUserIds: Set<string> = new Set();
@@ -81,12 +114,18 @@ export async function handleGetPageOfChatRooms({
     });
   });
 
-  const renderableUsers = await constructRenderableUsersFromPartsByUserIds({
-    clientUserId,
-    userIds: [...setOfUserIds],
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUsersFromPartsByUserIdsResponse =
+    await constructRenderableUsersFromPartsByUserIds({
+      controller,
+      clientUserId,
+      userIds: [...setOfUserIds],
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    });
+  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsByUserIdsResponse;
+  }
+  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   const mapOfUserIdsToRenderableUsers = new Map(
     renderableUsers.map((renderableUser) => {
@@ -117,12 +156,9 @@ export async function handleGetPageOfChatRooms({
   const adjustedEndOfPageCursor =
     renderableChatRooms.length > endOfPageCursor ? endOfPageCursor.toString() : undefined;
 
-  return {
-    type: EitherType.success,
-    success: {
-      chatRooms: pageOfRenderableChatRooms,
-      previousPageCursor: cursor,
-      nextPageCursor: adjustedEndOfPageCursor,
-    },
-  };
+  return Success({
+    chatRooms: pageOfRenderableChatRooms,
+    previousPageCursor: cursor,
+    nextPageCursor: adjustedEndOfPageCursor,
+  });
 }

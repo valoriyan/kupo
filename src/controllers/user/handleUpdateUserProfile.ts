@@ -1,7 +1,13 @@
 import express from "express";
 import { Color } from "../../types/color";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
+import { GenericResponseFailedReason } from "../models";
 import { ProfilePrivacySetting, RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities";
@@ -31,7 +37,10 @@ export async function handleUpdateUserProfile({
   request: express.Request;
   requestBody: UpdateUserProfileRequestBody;
 }): Promise<
-  SecuredHTTPResponse<UpdateUserProfileFailedReason, UpdateUserProfileSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | UpdateUserProfileFailedReason>,
+    UpdateUserProfileSuccess
+  >
 > {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -49,12 +58,23 @@ export async function handleUpdateUserProfile({
   } = requestBody;
 
   if (!!userEmail) {
-    const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+    const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
       await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
         {
+          controller,
           userId: clientUserId,
         },
       );
+
+    if (
+      unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+      EitherType.failure
+    ) {
+      return unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+    }
+
+    const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+      unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
     if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
       await controller.paymentProcessingService.updateCustomerEmail({
@@ -65,9 +85,10 @@ export async function handleUpdateUserProfile({
     }
   }
 
-  const updatedUnrenderableUser =
+  const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
       {
+        controller,
         userId: clientUserId,
 
         username: username,
@@ -79,23 +100,30 @@ export async function handleUpdateUserProfile({
       },
     );
 
+  if (updateUserByUserIdResponse.type === EitherType.failure) {
+    return updateUserByUserIdResponse;
+  }
+  const { success: updatedUnrenderableUser } = updateUserByUserIdResponse;
+
   if (!updatedUnrenderableUser) {
-    controller.setStatus(404);
-    return {
-      type: EitherType.error,
-      error: { reason: UpdateUserProfileFailedReason.Unknown },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handleUpdateUserProfile",
+      additionalErrorInformation: "Error at handleUpdateUserProfile",
+    });
   }
 
-  const renderableUser = await constructRenderableUserFromParts({
-    clientUserId,
-    unrenderableUser: updatedUnrenderableUser,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-  });
+  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
+    {
+      controller,
+      clientUserId,
+      unrenderableUser: updatedUnrenderableUser,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+    },
+  );
 
-  return {
-    type: EitherType.success,
-    success: renderableUser,
-  };
+  return constructRenderableUserFromPartsResponse;
 }

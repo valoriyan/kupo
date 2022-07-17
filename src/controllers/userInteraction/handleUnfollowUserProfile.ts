@@ -1,6 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { EitherType, HTTPResponse } from "../../types/monads";
+import { EitherType, HTTPResponse } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UnrenderableCanceledNewFollowerNotification } from "../notification/models/unrenderableCanceledUserNotifications";
 import { UserInteractionController } from "./userInteractionController";
@@ -36,26 +36,41 @@ export async function handleUnfollowUser({
   );
   if (error) return error;
 
-  const { user_follow_event_id } =
+  const deleteUserFollowResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
       {
+        controller,
         userIdDoingUnfollowing: clientUserId,
         userIdBeingUnfollowed: requestBody.userIdBeingUnfollowed,
       },
     );
 
+  if (deleteUserFollowResponse.type === EitherType.failure) {
+    return deleteUserFollowResponse;
+  }
+  const {
+    success: { user_follow_event_id },
+  } = deleteUserFollowResponse;
+
   await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
     {
+      controller,
       notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
       referenceTableId: user_follow_event_id,
       recipientUserId: userIdBeingUnfollowed,
     },
   );
 
-  const countOfUnreadNotifications =
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { userId: userIdBeingUnfollowed },
+      { controller, userId: userIdBeingUnfollowed },
     );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type == EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   const unrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification =
     {

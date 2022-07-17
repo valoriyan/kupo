@@ -1,9 +1,12 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
-import { generateErrorResponse } from "../../../controllers/utilities/generateErrorResponse";
-import { GenericResponseFailedReason } from "../../../controllers/models";
 
 export interface SearchForHashtagsRequestBody {
   query: string;
@@ -29,7 +32,10 @@ export async function handleSearchForHashtags({
   request: express.Request;
   requestBody: SearchForHashtagsRequestBody;
 }): Promise<
-  SecuredHTTPResponse<SearchForHashtagsFailedReason, SearchForHashtagsSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | SearchForHashtagsFailedReason>,
+    SearchForHashtagsSuccess
+  >
 > {
   const { errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
@@ -37,57 +43,38 @@ export async function handleSearchForHashtags({
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
-  try {
-    const matchingHashtagsCount =
-      await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsCountBySubstring(
-        { hashtagSubstring: lowercaseTrimmedQuery },
-      );
+  const getHashtagsCountBySubstringResponse =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsCountBySubstring(
+      { controller, hashtagSubstring: lowercaseTrimmedQuery },
+    );
+  if (getHashtagsCountBySubstringResponse.type === EitherType.failure) {
+    return getHashtagsCountBySubstringResponse;
+  }
+  const { success: matchingHashtagsCount } = getHashtagsCountBySubstringResponse;
 
-    if (!matchingHashtagsCount) {
-      return {
-        type: EitherType.success,
-        success: {
-          hashtags: [],
-          totalCount: 0,
-        },
-      };
-    }
-
-    try {
-      const matchingHashtags =
-        await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
-          {
-            hashtagSubstring: lowercaseTrimmedQuery,
-            pageNumber,
-            pageSize,
-          },
-        );
-
-      return {
-        type: EitherType.success,
-        success: {
-          hashtags: matchingHashtags,
-          totalCount: matchingHashtagsCount,
-        },
-      };
-    } catch (error) {
-      return generateErrorResponse({
-        controller,
-        errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        additionalErrorInformation:
-          "Error at hashtagTableService.getHashtagsMatchingSubstring",
-        error,
-        httpStatusCode: 500,
-      });
-    }
-  } catch (error) {
-    return generateErrorResponse({
-      controller,
-      errorReason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      additionalErrorInformation:
-        "Error at hashtagTableService.getHashtagsCountBySubstring",
-      error,
-      httpStatusCode: 500,
+  if (!matchingHashtagsCount) {
+    return Success({
+      hashtags: [],
+      totalCount: 0,
     });
   }
+
+  const getHashtagsMatchingSubstringResponse =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
+      {
+        controller,
+        hashtagSubstring: lowercaseTrimmedQuery,
+        pageNumber,
+        pageSize,
+      },
+    );
+  if (getHashtagsMatchingSubstringResponse.type === EitherType.failure) {
+    return getHashtagsMatchingSubstringResponse;
+  }
+  const { success: matchingHashtags } = getHashtagsMatchingSubstringResponse;
+
+  return Success({
+    hashtags: matchingHashtags,
+    totalCount: matchingHashtagsCount,
+  });
 }

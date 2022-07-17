@@ -1,6 +1,6 @@
 import express from "express";
 import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
 import {
@@ -59,7 +59,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetPageOfAllPublishedItemsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfAllPublishedItemsFailedReason,
+      ErrorReasonTypes<string | GetPageOfAllPublishedItemsFailedReason>,
       GetPageOfAllPublishedItemsSuccess
     >
   > {
@@ -76,7 +76,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetPageOfPostFromFollowedUsersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfPostFromFollowedUsersFailedReason,
+      ErrorReasonTypes<string | GetPageOfPostFromFollowedUsersFailedReason>,
       GetPageOfPostFromFollowedUsersSuccess
     >
   > {
@@ -93,7 +93,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetPageOfPostFromFollowedHashtagRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPageOfPostFromFollowedHashtagFailedReason,
+      ErrorReasonTypes<string | GetPageOfPostFromFollowedHashtagFailedReason>,
       GetPageOfPostFromFollowedHashtagSuccess
     >
   > {
@@ -110,7 +110,7 @@ export class FeedController extends Controller {
     @Body() requestBody: GetUserContentFeedFiltersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetUserContentFeedFiltersFailedReason,
+      ErrorReasonTypes<string | GetUserContentFeedFiltersFailedReason>,
       GetUserContentFeedFiltersSuccess
     >
   > {
@@ -130,7 +130,10 @@ export class FeedController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: SetUserContentFeedFiltersRequestBody,
   ): Promise<
-    SecuredHTTPResponse<SetUserContentFeedFiltersFailed, SetUserContentFeedFiltersSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SetUserContentFeedFiltersFailed>,
+      SetUserContentFeedFiltersSuccess
+    >
   > {
     return await handleSetUserContentFeedFilters({
       controller: this,

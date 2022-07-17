@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config as injectEnvironmentVariables } from "dotenv";
 injectEnvironmentVariables();
 
@@ -10,6 +11,7 @@ async function run() {
 
   const databaseService = new DatabaseService();
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
+    controller: undefined as any,
     userId: "1001",
     email: "richard.morgan@sweetemail.com",
     username: "richard",
@@ -19,6 +21,7 @@ async function run() {
   });
 
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
+    controller: undefined as any,
     userId: "1002",
     email: "gloria.lamb@woahcoolemail.com",
     username: "gloria",
@@ -28,6 +31,7 @@ async function run() {
   });
 
   await databaseService.tableNameToServicesMap.usersTableService.createUser({
+    controller: undefined as any,
     userId: "1003",
     email: "jayjayrogers@okayyeah.com",
     username: "jay",

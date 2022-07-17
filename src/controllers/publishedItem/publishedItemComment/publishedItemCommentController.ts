@@ -1,5 +1,5 @@
 import express from "express";
-import { SecuredHTTPResponse } from "../../../types/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../../utilities/monads";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../../services/databaseService";
@@ -45,7 +45,7 @@ export class PublishedItemCommentController extends Controller {
     @Body() requestBody: CreatePublishedItemCommentRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      CreatePublishedItemCommentFailedReason,
+      ErrorReasonTypes<string | CreatePublishedItemCommentFailedReason>,
       CreatePublishedItemCommentSuccess
     >
   > {
@@ -66,7 +66,7 @@ export class PublishedItemCommentController extends Controller {
     @Body() requestBody: ReadPageOfCommentsByPublishedItemIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ReadPageOfCommentsByPublishedItemIdFailedReason,
+      ErrorReasonTypes<string | ReadPageOfCommentsByPublishedItemIdFailedReason>,
       ReadPageOfCommentsByPublishedItemIdSuccess
     >
   > {
@@ -91,7 +91,7 @@ export class PublishedItemCommentController extends Controller {
     @Body() requestBody: DeletePublishedItemCommentRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      DeletePublishedItemCommentFailedReason,
+      ErrorReasonTypes<string | DeletePublishedItemCommentFailedReason>,
       DeletePublishedItemCommentSuccess
     >
   > {

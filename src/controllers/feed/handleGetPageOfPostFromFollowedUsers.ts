@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePost } from "../publishedItem/post/models";
 import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
@@ -32,7 +37,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
   requestBody: GetPageOfPostFromFollowedUsersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    GetPageOfPostFromFollowedUsersFailedReason,
+    ErrorReasonTypes<string | GetPageOfPostFromFollowedUsersFailedReason>,
     GetPageOfPostFromFollowedUsersSuccess
   >
 > {
@@ -44,14 +49,19 @@ export async function handleGetPageOfPostFromFollowedUsers({
   );
   if (error) return error;
 
-  const userIdsBeingFollowed: string[] =
+  const getUserIdsFollowedByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
-      { userIdDoingFollowing: clientUserId },
+      { controller, userIdDoingFollowing: clientUserId },
     );
+  if (getUserIdsFollowedByUserIdResponse.type === EitherType.failure) {
+    return getUserIdsFollowedByUserIdResponse;
+  }
+  const { success: userIdsBeingFollowed } = getUserIdsFollowedByUserIdResponse;
 
-  const unrenderablePostsWithoutElementsOrHashtags =
+  const getPublishedItemsByCreatorUserIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCreatorUserIds(
       {
+        controller,
         creatorUserIds: [...userIdsBeingFollowed, clientUserId],
         beforeTimestamp: cursor
           ? decodeTimestampCursor({ encodedCursor: cursor })
@@ -59,13 +69,24 @@ export async function handleGetPageOfPostFromFollowedUsers({
         pageSize,
       },
     );
+  if (getPublishedItemsByCreatorUserIdsResponse.type === EitherType.failure) {
+    return getPublishedItemsByCreatorUserIdsResponse;
+  }
+  const { success: unrenderablePostsWithoutElementsOrHashtags } =
+    getPublishedItemsByCreatorUserIdsResponse;
 
-  const renderablePosts = await constructRenderablePostsFromParts({
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
-    clientUserId,
-  });
+  const constructRenderablePostsFromPartsResponse =
+    await constructRenderablePostsFromParts({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
+      clientUserId,
+    });
+  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
+    return constructRenderablePostsFromPartsResponse;
+  }
+  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
 
   const nextPageCursor =
     renderablePosts.length > 0
@@ -75,12 +96,9 @@ export async function handleGetPageOfPostFromFollowedUsers({
         })
       : undefined;
 
-  return {
-    type: EitherType.success,
-    success: {
-      posts: renderablePosts,
-      previousPageCursor: cursor,
-      nextPageCursor,
-    },
-  };
+  return Success({
+    posts: renderablePosts,
+    previousPageCursor: cursor,
+    nextPageCursor,
+  });
 }

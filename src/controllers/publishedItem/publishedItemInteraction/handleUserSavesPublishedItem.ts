@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  HTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
@@ -21,7 +26,12 @@ export async function handleUserSavesPublishedItem({
   controller: PublishedItemInteractionController;
   request: express.Request;
   requestBody: UserSavesPublishedItemRequestBody;
-}): Promise<HTTPResponse<UserSavesPublishedItemFailed, UserSavesPublishedItemSuccess>> {
+}): Promise<
+  HTTPResponse<
+    ErrorReasonTypes<string | UserSavesPublishedItemFailed>,
+    UserSavesPublishedItemSuccess
+  >
+> {
   const { publishedItemId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -32,14 +42,19 @@ export async function handleUserSavesPublishedItem({
 
   const saveId = uuidv4();
 
-  await controller.databaseService.tableNameToServicesMap.savedItemsTableService.saveItem(
-    {
-      saveId,
-      publishedItemId,
-      userId: clientUserId,
-      creationTimestamp: Date.now(),
-    },
-  );
+  const saveItemResponse =
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.saveItem(
+      {
+        controller,
+        saveId,
+        publishedItemId,
+        userId: clientUserId,
+        creationTimestamp: Date.now(),
+      },
+    );
+  if (saveItemResponse.type === EitherType.failure) {
+    return saveItemResponse;
+  }
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

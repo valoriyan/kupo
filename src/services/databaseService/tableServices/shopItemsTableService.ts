@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import { Controller } from "tsoa";
+import {
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
@@ -40,26 +49,39 @@ export class ShopItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async createShopItem({
+    controller,
     publishedItemId,
     title,
     price,
   }: {
+    controller: Controller;
     publishedItemId: string;
     title: string;
     price: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericCreateRowsQuery<string | number>({
-      rowsOfFieldsAndValues: [
-        [
-          { field: "published_item_id", value: publishedItemId },
-          { field: "title", value: title },
-          { field: "price", value: price },
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "published_item_id", value: publishedItemId },
+            { field: "title", value: title },
+            { field: "price", value: price },
+          ],
         ],
-      ],
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at shopItemsTableService.createShopItem",
+      });
+    }
   }
 
   //////////////////////////////////////////////////
@@ -67,63 +89,89 @@ export class ShopItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async getShopItemByPublishedItemId({
+    controller,
     publishedItemId,
   }: {
+    controller: Controller;
     publishedItemId: string;
-  }): Promise<DBShopItem> {
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-        published_item_id = $1
-        ;
-      `,
-      values: [publishedItemId],
-    };
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBShopItem>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+          published_item_id = $1
+          ;
+        `,
+        values: [publishedItemId],
+      };
 
-    const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
+      const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
 
-    if (response.rows.length < 1) {
-      throw new Error("Missing shop item");
+      if (response.rows.length < 1) {
+        throw new Error("Missing shop item");
+      }
+
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at shopItemsTableService.getShopItemByPublishedItemId",
+      });
     }
-
-    return response.rows[0];
   }
 
   public async getShopItemsByPublishedItemIds({
+    controller,
     publishedItemIds,
   }: {
+    controller: Controller;
     publishedItemIds: string[];
-  }): Promise<DBShopItem[]> {
-    if (publishedItemIds.length === 0) {
-      return [];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBShopItem[]>> {
+    try {
+      if (publishedItemIds.length === 0) {
+        return Success([]);
+      }
+
+      const queryValues: Array<string> = [...publishedItemIds];
+
+      const publishedItemIdsQueryString = publishedItemIds
+        .map((_, index) => `$${index + 1}`)
+        .join(", ");
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            published_item_id IN (${publishedItemIdsQueryString})
+          ;
+        `,
+        values: queryValues,
+      };
+
+      const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
+
+      return Success(response.rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at shopItemsTableService.getShopItemsByPublishedItemIds",
+      });
     }
-
-    const queryValues: Array<string> = [...publishedItemIds];
-
-    const publishedItemIdsQueryString = publishedItemIds
-      .map((_, index) => `$${index + 1}`)
-      .join(", ");
-
-    const query = {
-      text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          published_item_id IN (${publishedItemIdsQueryString})
-        ;
-      `,
-      values: queryValues,
-    };
-
-    const response: QueryResult<DBShopItem> = await this.datastorePool.query(query);
-
-    return response.rows;
   }
 
   //////////////////////////////////////////////////
@@ -131,6 +179,7 @@ export class ShopItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async updateShopItemByPublishedItemId({
+    controller,
     publishedItemId,
     description,
     scheduledPublicationTimestamp,
@@ -138,33 +187,46 @@ export class ShopItemsTableService extends TableService {
     title,
     price,
   }: {
+    controller: Controller;
     publishedItemId: string;
     description?: string;
     scheduledPublicationTimestamp?: number;
     expirationTimestamp?: number;
     title?: string;
     price?: number;
-  }): Promise<void> {
-    const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-      updatedFields: [
-        { field: "description", value: description },
-        {
-          field: "scheduled_publication_timestamp",
-          value: scheduledPublicationTimestamp,
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [
+          { field: "description", value: description },
+          {
+            field: "scheduled_publication_timestamp",
+            value: scheduledPublicationTimestamp,
+          },
+          { field: "expiration_timestamp", value: expirationTimestamp },
+          { field: "title", value: title },
+          { field: "price", value: price },
+        ],
+        fieldUsedToIdentifyUpdatedRow: {
+          field: "published_item_id",
+          value: publishedItemId,
         },
-        { field: "expiration_timestamp", value: expirationTimestamp },
-        { field: "title", value: title },
-        { field: "price", value: price },
-      ],
-      fieldUsedToIdentifyUpdatedRow: {
-        field: "published_item_id",
-        value: publishedItemId,
-      },
-      tableName: this.tableName,
-    });
+        tableName: this.tableName,
+      });
 
-    if (!isQueryEmpty({ query })) {
-      await this.datastorePool.query(query);
+      if (!isQueryEmpty({ query })) {
+        await this.datastorePool.query(query);
+      }
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at shopItemsTableService.updateShopItemByPublishedItemId",
+      });
     }
   }
 
@@ -173,20 +235,33 @@ export class ShopItemsTableService extends TableService {
   //////////////////////////////////////////////////
 
   public async deleteShopItem({
+    controller,
     publishedItemId,
     authorUserId,
   }: {
+    controller: Controller;
     publishedItemId: string;
     authorUserId: string;
-  }): Promise<void> {
-    const query = generatePSQLGenericDeleteRowsQueryString({
-      fieldsUsedToIdentifyRowsToDelete: [
-        { field: "published_item_id", value: publishedItemId },
-        { field: "author_user_id", value: authorUserId },
-      ],
-      tableName: this.tableName,
-    });
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "published_item_id", value: publishedItemId },
+          { field: "author_user_id", value: authorUserId },
+        ],
+        tableName: this.tableName,
+      });
 
-    await this.datastorePool.query(query);
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at shopItemsTableService.deleteShopItem",
+      });
+    }
   }
 }

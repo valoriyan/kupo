@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { areSetsEqual } from "../../utilities/checkSetEquality";
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
@@ -28,7 +34,7 @@ export async function handleDoesChatRoomExistWithUserIds({
   requestBody: DoesChatRoomExistWithUserIdsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    DoesChatRoomExistWithUserIdsFailedReason,
+    ErrorReasonTypes<string | DoesChatRoomExistWithUserIdsFailedReason>,
     DoesChatRoomExistWithUserIdsSuccess
   >
 > {
@@ -41,31 +47,40 @@ export async function handleDoesChatRoomExistWithUserIds({
   if (error) return error;
 
   if (!userIds.includes(clientUserId)) {
-    return {
-      type: EitherType.error,
-      error: { reason: DoesChatRoomExistWithUserIdsFailedReason.IllegalAccess },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: DoesChatRoomExistWithUserIdsFailedReason.IllegalAccess,
+      error: "Illegal access at handleDoesChatRoomExistWithUserIds",
+      additionalErrorInformation: "Illegal access at handleDoesChatRoomExistWithUserIds",
+    });
   }
 
-  const chatRoomId =
+  const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive(
-      { userIds },
+      { controller, userIds },
     );
+  if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
+    return getChatRoomIdWithUserIdMembersExclusiveResponse;
+  }
+  const { success: chatRoomId } = getChatRoomIdWithUserIdMembersExclusiveResponse;
 
   let doesChatRoomExist = false;
   if (chatRoomId) {
-    const userIdsInChatRoom =
+    const getUserIdsJoinedToChatRoomIdResponse =
       await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
-        { chatRoomId },
+        { controller, chatRoomId },
       );
+    if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {
+      return getUserIdsJoinedToChatRoomIdResponse;
+    }
+    const { success: userIdsInChatRoom } = getUserIdsJoinedToChatRoomIdResponse;
+
     doesChatRoomExist = areSetsEqual(new Set(userIdsInChatRoom), new Set(userIds));
   }
 
-  return {
-    type: EitherType.success,
-    success: {
-      doesChatRoomExist,
-      chatRoomId: doesChatRoomExist ? chatRoomId : undefined,
-    },
-  };
+  return Success({
+    doesChatRoomExist,
+    chatRoomId: doesChatRoomExist ? chatRoomId : undefined,
+  });
 }

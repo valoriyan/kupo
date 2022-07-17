@@ -1,5 +1,10 @@
 import express from "express";
-import { EitherType, HTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  HTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
@@ -21,7 +26,10 @@ export async function handleUserUnsavesPublishedItem({
   request: express.Request;
   requestBody: UserUnsavesPublishedItemRequestBody;
 }): Promise<
-  HTTPResponse<UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess>
+  HTTPResponse<
+    ErrorReasonTypes<string | UserUnsavesPublishedItemFailed>,
+    UserUnsavesPublishedItemSuccess
+  >
 > {
   const { publishedItemId } = requestBody;
 
@@ -31,12 +39,17 @@ export async function handleUserUnsavesPublishedItem({
   );
   if (error) return error;
 
-  await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
-    {
-      userId: clientUserId,
-      publishedItemId: publishedItemId,
-    },
-  );
+  const unSaveItemResponse =
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
+      {
+        controller,
+        userId: clientUserId,
+        publishedItemId: publishedItemId,
+      },
+    );
+  if (unSaveItemResponse.type === EitherType.failure) {
+    return unSaveItemResponse;
+  }
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

@@ -1,3 +1,12 @@
+import { GenericResponseFailedReason } from "../../../controllers/models";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
+import { Controller } from "tsoa";
 import {
   ProfilePrivacySetting,
   UnrenderableUser,
@@ -5,19 +14,23 @@ import {
 import { DatabaseService } from "../../../services/databaseService";
 
 export async function canUserViewUserContent({
+  controller,
   clientUserId,
   targetUser,
   databaseService,
 }: {
+  controller: Controller;
   clientUserId: string | undefined;
   targetUser: UnrenderableUser;
   databaseService: DatabaseService;
-}): Promise<boolean> {
-  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public) return true;
-  if (!clientUserId) return false;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public)
+    return Success(true);
+  if (!clientUserId) return Success(false);
 
   return await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
     {
+      controller,
       userIdDoingFollowing: clientUserId,
       userIdBeingFollowed: targetUser.userId,
     },
@@ -25,26 +38,41 @@ export async function canUserViewUserContent({
 }
 
 export async function canUserViewUserContentByUserId({
+  controller,
   clientUserId,
   targetUserId,
   databaseService,
 }: {
+  controller: Controller;
   clientUserId: string | undefined;
   targetUserId: string;
   databaseService: DatabaseService;
-}): Promise<boolean> {
-  const targetUsers =
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  const selectUsersByUserIdsResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
+      controller,
       userIds: [targetUserId],
     });
+
+  if (selectUsersByUserIdsResponse.type === EitherType.failure) {
+    return selectUsersByUserIdsResponse;
+  }
+  const { success: targetUsers } = selectUsersByUserIdsResponse;
 
   const targetUser = targetUsers[0];
 
   if (!targetUser) {
-    throw new Error("Missing user");
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at canUserViewUserContentByUserId",
+      additionalErrorInformation: "User not found at canUserViewUserContentByUserId",
+    });
   }
 
   return canUserViewUserContent({
+    controller,
     clientUserId,
     targetUser,
     databaseService,

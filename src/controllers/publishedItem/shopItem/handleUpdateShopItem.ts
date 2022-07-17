@@ -1,5 +1,11 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../../types/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  SecuredHTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
@@ -31,7 +37,12 @@ export async function handleUpdateShopItem({
   controller: ShopItemController;
   request: express.Request;
   requestBody: HandlerRequestBody;
-}): Promise<SecuredHTTPResponse<UpdateShopItemFailedReason, UpdateShopItemSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | UpdateShopItemFailedReason>,
+    UpdateShopItemSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -47,30 +58,41 @@ export async function handleUpdateShopItem({
     expirationTimestamp,
   } = requestBody;
 
-  const uncompiledBasePublishedItem =
+  const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { id: publishedItemId },
+      { controller, id: publishedItemId },
     );
 
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
+
   if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
-    return {
-      type: EitherType.error,
-      error: {
-        reason: UpdateShopItemFailedReason.IllegalAccess,
-      },
-    };
+    return Failure({
+      controller,
+      httpStatusCode: 403,
+      reason: UpdateShopItemFailedReason.IllegalAccess,
+      error: "Illegal access at handleUpdateShopItem",
+      additionalErrorInformation: "Illegal access at handleUpdateShopItem",
+    });
   }
 
-  await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByPublishedItemId(
-    {
-      publishedItemId: uncompiledBasePublishedItem.id,
-      description: description,
-      title: title,
-      price: price,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp,
-      expirationTimestamp: expirationTimestamp,
-    },
-  );
+  const updateShopItemByPublishedItemIdResponse =
+    await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByPublishedItemId(
+      {
+        controller,
+        publishedItemId: uncompiledBasePublishedItem.id,
+        description: description,
+        title: title,
+        price: price,
+        scheduledPublicationTimestamp: scheduledPublicationTimestamp,
+        expirationTimestamp: expirationTimestamp,
+      },
+    );
+  if (updateShopItemByPublishedItemIdResponse.type === EitherType.failure) {
+    return updateShopItemByPublishedItemIdResponse;
+  }
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }
