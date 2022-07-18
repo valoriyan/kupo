@@ -19,4 +19,7 @@
  */
 export enum GenericResponseFailedReason {
   DatabaseTransactionError = "DATABASE_TRANSACTION_ERROR",
+  PaymentProcessorError = "PAYMENT_PROCESSOR_ERROR",
+  EmailServiceError = "EMAIL_SERVICE_ERROR",
+  BlobStorageError = "BLOB_STORAGE_ERROR",
 }
