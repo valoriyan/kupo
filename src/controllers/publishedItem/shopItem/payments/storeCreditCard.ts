@@ -85,8 +85,6 @@ export async function handleStoreCreditCard({
   }
   const { success: paymentProcessorCardId } = storeCustomerCreditCardResponse;
 
-  console.log("paymentProcessorCardId", paymentProcessorCardId);
-
   const getCreditCardsStoredByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
       { controller, userId: clientUserId },
