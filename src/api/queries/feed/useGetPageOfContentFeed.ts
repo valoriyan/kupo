@@ -55,6 +55,9 @@ async function fetchPageOfContentFromFromFollowedUsers({
     pageSize: 5,
   });
 
+  console.log("POSTS");
+  console.log(res.data.success);
+
   if (res.data.success) return res.data.success;
   throw new Error((res.data.error.reason as string) ?? "Unknown Error");
 }
