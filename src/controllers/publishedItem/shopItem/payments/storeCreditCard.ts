@@ -62,54 +62,57 @@ export async function handleStoreCreditCard({
   const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
     selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
-  if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-    const storeCustomerCreditCardResponse =
-      await controller.paymentProcessingService.storeCustomerCreditCard({
-        controller,
-        paymentProcessorCustomerId:
-          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
-        paymentProcessorCardToken,
-        ipAddressOfRequestor,
-      });
-    if (storeCustomerCreditCardResponse.type === EitherType.failure) {
-      return storeCustomerCreditCardResponse;
-    }
-    const { success: paymentProcessorCardId } = storeCustomerCreditCardResponse;
-
-    const getCreditCardsStoredByUserIdResponse =
-      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
-        { controller, userId: clientUserId },
-      );
-
-    if (getCreditCardsStoredByUserIdResponse.type === EitherType.failure) {
-      return getCreditCardsStoredByUserIdResponse;
-    }
-    const { success: creditCardsStoredByUserId } = getCreditCardsStoredByUserIdResponse;
-
-    const currentCreditCardsCount = creditCardsStoredByUserId.length;
-
-    const storeUserCreditCardDataResponse =
-      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
-        {
-          controller,
-          userId: clientUserId,
-          localCreditCardId: uuidv4(),
-          paymentProcessorCardId,
-          creationTimestamp: now,
-          isPrimaryCard: !currentCreditCardsCount,
-        },
-      );
-    if (storeUserCreditCardDataResponse.type === EitherType.failure) {
-      return storeUserCreditCardDataResponse;
-    }
-
-    return Success({});
+  if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handleStoreCreditCard",
+      additionalErrorInformation: "User not found at handleStoreCreditCard",
+    });
   }
-  return Failure({
-    controller,
-    httpStatusCode: 500,
-    reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-    error: "User not found at handleStoreCreditCard",
-    additionalErrorInformation: "User not found at handleStoreCreditCard",
-  });
+
+  const storeCustomerCreditCardResponse =
+    await controller.paymentProcessingService.storeCustomerCreditCard({
+      controller,
+      paymentProcessorCustomerId:
+        unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+      paymentProcessorCardToken,
+      ipAddressOfRequestor,
+    });
+  if (storeCustomerCreditCardResponse.type === EitherType.failure) {
+    return storeCustomerCreditCardResponse;
+  }
+  const { success: paymentProcessorCardId } = storeCustomerCreditCardResponse;
+
+  console.log("paymentProcessorCardId", paymentProcessorCardId);
+
+  const getCreditCardsStoredByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
+      { controller, userId: clientUserId },
+    );
+
+  if (getCreditCardsStoredByUserIdResponse.type === EitherType.failure) {
+    return getCreditCardsStoredByUserIdResponse;
+  }
+  const { success: creditCardsStoredByUserId } = getCreditCardsStoredByUserIdResponse;
+
+  const currentCreditCardsCount = creditCardsStoredByUserId.length;
+
+  const storeUserCreditCardDataResponse =
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
+      {
+        controller,
+        userId: clientUserId,
+        localCreditCardId: uuidv4(),
+        paymentProcessorCardId,
+        creationTimestamp: now,
+        isPrimaryCard: !currentCreditCardsCount,
+      },
+    );
+  if (storeUserCreditCardDataResponse.type === EitherType.failure) {
+    return storeUserCreditCardDataResponse;
+  }
+
+  return Success({});
 }
