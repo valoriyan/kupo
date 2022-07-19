@@ -43,7 +43,6 @@ const ResetPasswordInner = ({ resetPasswordToken }: { resetPasswordToken: string
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    console.log("CALLING", password);
     resetPassword({ password, token: resetPasswordToken });
   };
 
