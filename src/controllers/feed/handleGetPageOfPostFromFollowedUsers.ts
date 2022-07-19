@@ -72,7 +72,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
   if (getPublishedItemsByCreatorUserIdsResponse.type === EitherType.failure) {
     return getPublishedItemsByCreatorUserIdsResponse;
   }
-  const { success: unrenderablePostsWithoutElementsOrHashtags } =
+  const { success: uncompiledBasePublishedItems } =
     getPublishedItemsByCreatorUserIdsResponse;
 
   const constructRenderablePostsFromPartsResponse =
@@ -80,7 +80,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
+      uncompiledBasePublishedItems,
       clientUserId,
     });
   if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {

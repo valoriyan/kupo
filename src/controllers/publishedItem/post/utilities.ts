@@ -130,6 +130,7 @@ export async function constructRenderablePostFromParts({
   } = baseRenderablePublishedItem;
 
   if (!idOfPublishedItemBeingShared) {
+    console.log(`HIT!: ${caption}`);
     const assembleRootRenderablePostResponse = await assembleRootRenderablePost({
       controller,
       blobStorageService,

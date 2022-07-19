@@ -109,6 +109,7 @@ export async function assembleBaseRenderablePublishedItem({
     caption,
     scheduledPublicationTimestamp,
     expirationTimestamp,
+    idOfPublishedItemBeingShared,
   } = uncompiledBasePublishedItem;
 
   const getHashtagsForPublishedItemIdResponse =
@@ -194,6 +195,7 @@ export async function assembleBaseRenderablePublishedItem({
     },
     isLikedByClient,
     isSavedByClient,
+    idOfPublishedItemBeingShared,
   };
 
   return Success(baseRenderablePublishedItem);

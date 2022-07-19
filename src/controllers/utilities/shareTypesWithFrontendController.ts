@@ -16,7 +16,7 @@ export class ShareTypesWithFrontendController extends Controller {
       UnrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification;
     },
   ): Promise<{ response: string }> {
-    console.log(requestBody);
+    requestBody;
     return { response: "response" };
   }
 }
