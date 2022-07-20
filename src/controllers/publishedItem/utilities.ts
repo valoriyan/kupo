@@ -3,11 +3,10 @@ import { DatabaseService } from "../../services/databaseService";
 import {
   BaseRenderablePublishedItem,
   PublishedItemType,
+  RenderablePublishedItem,
   UncompiledBasePublishedItem,
 } from "./models";
-import { RenderablePost } from "./post/models";
 import { constructRenderablePostFromParts } from "./post/utilities";
-import { RenderableShopItem } from "./shopItem/models";
 import { constructRenderableShopItemFromParts } from "./shopItem/utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { Controller } from "tsoa";
@@ -34,7 +33,7 @@ export async function constructPublishedItemsFromParts({
 }): Promise<
   InternalServiceResponse<
     ErrorReasonTypes<string>,
-    (RenderablePost | RenderableShopItem)[]
+    RenderablePublishedItem[]
   >
 > {
   const constructPublishedItemFromPartsResponses = await BluebirdPromise.map(
@@ -67,7 +66,7 @@ export async function constructPublishedItemFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
 }): Promise<
-  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost | RenderableShopItem>
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>
 > {
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
     return await constructRenderablePostFromParts({

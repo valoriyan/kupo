@@ -16,7 +16,7 @@ export function getEncodedCursorOfNextPageOfSequentialItems<
   return undefined;
 }
 
-export function getPageOfPostsFromAllPosts({
+export function getPageOfPublishedItemsFromAllPublishedItems({
   unrenderablePostsWithoutElementsOrHashtags,
   encodedCursor,
   pageSize,

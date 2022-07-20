@@ -6,42 +6,42 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "../publishedItem/post/models";
-import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
+import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
+import { constructPublishedItemsFromParts } from "../publishedItem/utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
-export interface GetPageOfPostFromFollowedUsersRequestBody {
+export interface GetPublishedItemsFromFollowedUsersRequestBody {
   cursor?: string;
   pageSize: number;
+  publishedItemType?: PublishedItemType;
 }
 
-export enum GetPageOfPostFromFollowedUsersFailedReason {
+export enum GetPublishedItemsFromFollowedUsersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfPostFromFollowedUsersSuccess {
-  posts: RenderablePost[];
-
+export interface GetPublishedItemsFromFollowedUsersSuccess {
+  publishedItems: RenderablePublishedItem[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export async function handleGetPageOfPostFromFollowedUsers({
+export async function handleGetPublishedItemsFromFollowedUsers({
   controller,
   request,
   requestBody,
 }: {
   controller: FeedController;
   request: express.Request;
-  requestBody: GetPageOfPostFromFollowedUsersRequestBody;
+  requestBody: GetPublishedItemsFromFollowedUsersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | GetPageOfPostFromFollowedUsersFailedReason>,
-    GetPageOfPostFromFollowedUsersSuccess
+    ErrorReasonTypes<string | GetPublishedItemsFromFollowedUsersFailedReason>,
+    GetPublishedItemsFromFollowedUsersSuccess
   >
 > {
-  const { cursor, pageSize } = requestBody;
+  const { cursor, pageSize, publishedItemType } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -67,6 +67,7 @@ export async function handleGetPageOfPostFromFollowedUsers({
           ? decodeTimestampCursor({ encodedCursor: cursor })
           : undefined,
         pageSize,
+        type: publishedItemType,
       },
     );
   if (getPublishedItemsByCreatorUserIdsResponse.type === EitherType.failure) {
@@ -75,29 +76,29 @@ export async function handleGetPageOfPostFromFollowedUsers({
   const { success: uncompiledBasePublishedItems } =
     getPublishedItemsByCreatorUserIdsResponse;
 
-  const constructRenderablePostsFromPartsResponse =
-    await constructRenderablePostsFromParts({
+  const constructPublishedItemsFromPartsResponse =
+    await constructPublishedItemsFromParts({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems,
       clientUserId,
     });
-  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostsFromPartsResponse;
+  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsResponse;
   }
-  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+  const { success: renderablePublishedItems } = constructPublishedItemsFromPartsResponse;
 
   const nextPageCursor =
-    renderablePosts.length > 0
+    renderablePublishedItems.length > 0
       ? encodeTimestampCursor({
           timestamp:
-            renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
+            renderablePublishedItems[renderablePublishedItems.length - 1].scheduledPublicationTimestamp,
         })
       : undefined;
 
   return Success({
-    posts: renderablePosts,
+    publishedItems: renderablePublishedItems,
     previousPageCursor: cursor,
     nextPageCursor,
   });

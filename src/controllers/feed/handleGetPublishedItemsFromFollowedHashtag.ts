@@ -6,40 +6,41 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePost } from "../publishedItem/post/models";
-import { getPageOfPostsFromAllPosts } from "../publishedItem/post/pagination/utilities";
-import { constructRenderablePostsFromParts } from "../publishedItem/post/utilities";
+import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
+import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/post/pagination/utilities";
+import { constructPublishedItemsFromParts } from "../publishedItem/utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
-export interface GetPageOfPostFromFollowedHashtagRequestBody {
+export interface GetPublishedItemsFromFollowedHashtagRequestBody {
   hashtag: string;
   cursor?: string;
   pageSize: number;
+  publishedItemType?: PublishedItemType;
 }
 
-export enum GetPageOfPostFromFollowedHashtagFailedReason {
+export enum GetPublishedItemsFromFollowedHashtagFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface GetPageOfPostFromFollowedHashtagSuccess {
-  posts: RenderablePost[];
+export interface GetPublishedItemsFromFollowedHashtagSuccess {
+  publishedItems: RenderablePublishedItem[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export async function handleGetPageOfPostFromFollowedHashtag({
+export async function handleGetPublishedItemsFromFollowedHashtag({
   controller,
   request,
   requestBody,
 }: {
   controller: FeedController;
   request: express.Request;
-  requestBody: GetPageOfPostFromFollowedHashtagRequestBody;
+  requestBody: GetPublishedItemsFromFollowedHashtagRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | GetPageOfPostFromFollowedHashtagFailedReason>,
-    GetPageOfPostFromFollowedHashtagSuccess
+    ErrorReasonTypes<string | GetPublishedItemsFromFollowedHashtagFailedReason>,
+    GetPublishedItemsFromFollowedHashtagSuccess
   >
 > {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -48,7 +49,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   );
   if (error) return error;
 
-  const { cursor, hashtag, pageSize } = requestBody;
+  const { cursor, hashtag, pageSize, publishedItemType } = requestBody;
 
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
@@ -70,6 +71,7 @@ export async function handleGetPageOfPostFromFollowedHashtag({
         ids: postIdsWithHashtag,
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
+        restrictedToType: publishedItemType,
       },
     );
   if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
@@ -78,35 +80,35 @@ export async function handleGetPageOfPostFromFollowedHashtag({
   const { success: unrenderablePostsWithoutElementsOrHashtags } =
     getPublishedItemsByIdsResponse;
 
-  const filteredUnrenderablePostsWithoutElements = getPageOfPostsFromAllPosts({
+  const filteredUnrenderablePostsWithoutElements = getPageOfPublishedItemsFromAllPublishedItems({
     unrenderablePostsWithoutElementsOrHashtags,
     encodedCursor: cursor,
     pageSize: pageSize,
   });
 
-  const constructRenderablePostsFromPartsResponse =
-    await constructRenderablePostsFromParts({
+  const constructPublishedItemsFromPartsResponse =
+    await constructPublishedItemsFromParts({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: filteredUnrenderablePostsWithoutElements,
       clientUserId,
     });
-  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostsFromPartsResponse;
+  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsResponse;
   }
-  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+  const { success: renderablePublishedItems } = constructPublishedItemsFromPartsResponse;
 
   const nextPageCursor =
-    renderablePosts.length > 0
+    renderablePublishedItems.length > 0
       ? encodeTimestampCursor({
           timestamp:
-            renderablePosts[renderablePosts.length - 1].scheduledPublicationTimestamp,
+            renderablePublishedItems[renderablePublishedItems.length - 1].scheduledPublicationTimestamp,
         })
       : undefined;
 
   return Success({
-    posts: renderablePosts,
+    publishedItems: renderablePublishedItems,
     previousPageCursor: cursor,
     nextPageCursor,
   });

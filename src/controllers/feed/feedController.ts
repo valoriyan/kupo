@@ -3,18 +3,6 @@ import { DatabaseService } from "../../services/databaseService";
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { Controller, Route, Request, Body, Post } from "tsoa";
 import { injectable } from "tsyringe";
-import {
-  GetPageOfPostFromFollowedHashtagFailedReason,
-  GetPageOfPostFromFollowedHashtagRequestBody,
-  handleGetPageOfPostFromFollowedHashtag,
-  GetPageOfPostFromFollowedHashtagSuccess,
-} from "./handleGetPageOfPostFromFollowedHashtag";
-import {
-  GetPageOfPostFromFollowedUsersFailedReason,
-  GetPageOfPostFromFollowedUsersRequestBody,
-  handleGetPageOfPostFromFollowedUsers,
-  GetPageOfPostFromFollowedUsersSuccess,
-} from "./handleGetPageOfPostFromFollowedUsers";
 import { BlobStorageService } from "../../services/blobStorageService";
 import {
   GetUserContentFeedFiltersFailedReason,
@@ -34,6 +22,8 @@ import {
   GetPageOfAllPublishedItemsSuccess,
   handleGetPageOfAllPublishedItems,
 } from "./handleGetPageOfAllPublishedItems";
+import { GetPublishedItemsFromFollowedUsersFailedReason, GetPublishedItemsFromFollowedUsersRequestBody, GetPublishedItemsFromFollowedUsersSuccess, handleGetPublishedItemsFromFollowedUsers } from "./handleGetPublishedItemsFromFollowedUsers";
+import { GetPublishedItemsFromFollowedHashtagFailedReason, GetPublishedItemsFromFollowedHashtagRequestBody, GetPublishedItemsFromFollowedHashtagSuccess, handleGetPublishedItemsFromFollowedHashtag } from "./handleGetPublishedItemsFromFollowedHashtag";
 
 @injectable()
 @Route("feed")
@@ -70,34 +60,34 @@ export class FeedController extends Controller {
     });
   }
 
-  @Post("getPageOfPostFromFollowedUsers")
-  public async getPageOfPostFromFollowedUsers(
+  @Post("getPublishedItemsFromFollowedUsers")
+  public async getPublishedItemsFromFollowedUsers(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfPostFromFollowedUsersRequestBody,
+    @Body() requestBody: GetPublishedItemsFromFollowedUsersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetPageOfPostFromFollowedUsersFailedReason>,
-      GetPageOfPostFromFollowedUsersSuccess
+      ErrorReasonTypes<string | GetPublishedItemsFromFollowedUsersFailedReason>,
+      GetPublishedItemsFromFollowedUsersSuccess
     >
   > {
-    return await handleGetPageOfPostFromFollowedUsers({
+    return await handleGetPublishedItemsFromFollowedUsers({
       controller: this,
       request,
       requestBody,
     });
   }
 
-  @Post("getPageOfPostFromFollowedHashtag")
-  public async getPageOfPostFromFollowedHashtag(
+  @Post("getPublishedItemsFromFollowedHashtag")
+  public async getPublishedItemsFromFollowedHashtag(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfPostFromFollowedHashtagRequestBody,
+    @Body() requestBody: GetPublishedItemsFromFollowedHashtagRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetPageOfPostFromFollowedHashtagFailedReason>,
-      GetPageOfPostFromFollowedHashtagSuccess
+      ErrorReasonTypes<string | GetPublishedItemsFromFollowedHashtagFailedReason>,
+      GetPublishedItemsFromFollowedHashtagSuccess
     >
   > {
-    return await handleGetPageOfPostFromFollowedHashtag({
+    return await handleGetPublishedItemsFromFollowedHashtag({
       controller: this,
       request,
       requestBody,
