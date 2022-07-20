@@ -1,4 +1,4 @@
-import { UserContentFeedFilter } from "#/api";
+import { RenderablePost, UserContentFeedFilter } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
@@ -30,7 +30,7 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
     );
   }
 
-  const posts = data.pages.flatMap((page) => page.posts);
+  const posts = data.pages.flatMap((page) => page.publishedItems);
 
   return posts.length === 0 ? (
     <ErrorMessage>No Posts Found</ErrorMessage>
@@ -42,7 +42,7 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
       items={posts.map((post) => (
         <Post
           key={post.id}
-          post={post}
+          post={post as unknown as RenderablePost}
           handleClickOfCommentsButton={() => goToPostPage(post.id)}
         />
       ))}

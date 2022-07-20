@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, GetPostsByUsernameSuccess } from "../..";
+import { Api, GetPublishedItemsByUsernameSuccess } from "../..";
 
 export interface GetPostsByUserIdArgs {
   userId: string;
@@ -13,7 +13,7 @@ export async function fetchPageOfPostsByUserId({
   userId: string;
   pageParam: string | undefined;
 }) {
-  const res = await Api.getPostsByUserId(
+  const res = await Api.getPublishedItemsByUserId(
     {
       userId,
       pageSize: 25,
@@ -30,9 +30,9 @@ export async function fetchPageOfPostsByUserId({
 
 export const useGetPageOfPostsByUserId = ({ userId }: GetPostsByUserIdArgs) => {
   return useInfiniteQuery<
-    GetPostsByUsernameSuccess,
+    GetPublishedItemsByUsernameSuccess,
     Error,
-    GetPostsByUsernameSuccess,
+    GetPublishedItemsByUsernameSuccess,
     string[]
   >(
     [CacheKeys.UserPostPages, userId],

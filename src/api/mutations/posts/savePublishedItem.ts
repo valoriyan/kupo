@@ -20,7 +20,7 @@ export const useSavePublishedItem = ({
         updateCachedPost({
           queryClient,
           authorUserId,
-          postId: publishedItemId,
+          publishedItemId,
           postUpdater: (prev) => ({
             ...prev,
             isSavedByClient: true,

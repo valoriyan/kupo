@@ -1,4 +1,4 @@
-import { RenderableUser } from "#/api";
+import { RenderablePost, RenderableUser } from "#/api";
 import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
@@ -27,7 +27,7 @@ export const UserPosts = ({ user }: UserPostsProps) => {
     );
   }
 
-  const posts = data.pages.flatMap((page) => page.posts);
+  const posts = data.pages.flatMap((page) => page.publishedItems);
 
   return posts.length === 0 ? (
     <ErrorMessage>No Posts Yet</ErrorMessage>
@@ -39,7 +39,7 @@ export const UserPosts = ({ user }: UserPostsProps) => {
       items={posts.map((post) => (
         <Post
           key={post.id}
-          post={post}
+          post={post as unknown as RenderablePost}
           handleClickOfCommentsButton={() => goToPostPage(post.id)}
         />
       ))}

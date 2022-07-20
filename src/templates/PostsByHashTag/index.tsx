@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { UserContentFeedFilterType } from "#/api";
+import { RenderablePost, UserContentFeedFilterType } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { DetailLayout } from "#/components/DetailLayout";
 import { ErrorArea } from "#/components/ErrorArea";
@@ -28,7 +28,7 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
       filterValue: hashTag,
     });
 
-  const posts = data?.pages.flatMap((page) => page.posts);
+  const posts = data?.pages.flatMap((page) => page.publishedItems);
 
   const backRoute =
     SessionStorage.getItem<string>(PREVIOUS_LOCATION_BASE_KEY + hashTag) ?? "/feed";
@@ -47,7 +47,7 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
           items={posts.map((post) => (
             <Post
               key={post.id}
-              post={post}
+              post={post as unknown as RenderablePost}
               handleClickOfCommentsButton={() => goToPostPage(post.id)}
             />
           ))}

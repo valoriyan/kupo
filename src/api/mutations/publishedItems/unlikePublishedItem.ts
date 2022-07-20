@@ -20,7 +20,7 @@ export const useUnlikePublishedItem = ({
         updateCachedPost({
           queryClient,
           authorUserId,
-          postId: publishedItemId,
+          publishedItemId,
           postUpdater: (prev) => ({
             ...prev,
             isLikedByClient: false,

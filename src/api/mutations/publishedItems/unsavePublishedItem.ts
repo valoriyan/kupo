@@ -20,7 +20,7 @@ export const useUnsavePublishedItem = ({
         updateCachedPost({
           queryClient,
           authorUserId,
-          postId: publishedItemId,
+          publishedItemId,
           postUpdater: (prev) => ({
             ...prev,
             isSavedByClient: false,

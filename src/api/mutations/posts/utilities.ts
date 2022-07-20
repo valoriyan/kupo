@@ -1,28 +1,31 @@
 import { InfiniteData, QueryClient } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { RenderablePost, GetPostsByUsernameSuccess } from "../..";
+import { RenderablePublishedItem, GetPublishedItemsByUsernameSuccess } from "../..";
 
 export const updateCachedPost = ({
   queryClient,
   authorUserId,
-  postId,
+  publishedItemId,
   postUpdater,
 }: {
   queryClient: QueryClient;
   authorUserId: string;
-  postId: string;
+  publishedItemId: string;
   /** A function to update the post, or null if you want to remove the post from cache */
-  postUpdater: ((oldPost: RenderablePost) => RenderablePost) | null;
+  postUpdater: ((oldPost: RenderablePublishedItem) => RenderablePublishedItem) | null;
 }) => {
   const userPostsCacheKey = [CacheKeys.UserPostPages, authorUserId];
-  const singlePostCacheKey = [CacheKeys.PostById, postId];
+  const singlePostCacheKey = [CacheKeys.PostById, publishedItemId];
 
   const contentFeedQueries = queryClient.getQueriesData<
-    InfiniteData<GetPostsByUsernameSuccess>
+    InfiniteData<GetPublishedItemsByUsernameSuccess>
   >(CacheKeys.ContentFeed);
   const userPostsData =
-    queryClient.getQueryData<InfiniteData<GetPostsByUsernameSuccess>>(userPostsCacheKey);
-  const singlePostData = queryClient.getQueryData<RenderablePost>(singlePostCacheKey);
+    queryClient.getQueryData<InfiniteData<GetPublishedItemsByUsernameSuccess>>(
+      userPostsCacheKey,
+    );
+  const singlePostData =
+    queryClient.getQueryData<RenderablePublishedItem>(singlePostCacheKey);
 
   for (const [queryKey, queryData] of contentFeedQueries) {
     const updatedQueryData = {
@@ -30,11 +33,13 @@ export const updateCachedPost = ({
       pages: queryData.pages.map((page) => ({
         ...page,
         posts: postUpdater
-          ? page.posts.map((post) => {
-              if (post.id === postId) return postUpdater(post);
-              return post;
+          ? page.publishedItems.map((publishedItem) => {
+              if (publishedItem.id === publishedItemId) return postUpdater(publishedItem);
+              return publishedItem;
             })
-          : page.posts.filter((post) => post.id !== postId),
+          : page.publishedItems.filter(
+              (publishedItem) => publishedItem.id !== publishedItemId,
+            ),
       })),
     };
     queryClient.setQueryData(queryKey, updatedQueryData);
@@ -46,11 +51,13 @@ export const updateCachedPost = ({
       pages: userPostsData.pages.map((page) => ({
         ...page,
         posts: postUpdater
-          ? page.posts.map((post) => {
-              if (post.id === postId) return postUpdater(post);
-              return post;
+          ? page.publishedItems.map((publishedItem) => {
+              if (publishedItem.id === publishedItemId) return postUpdater(publishedItem);
+              return publishedItem;
             })
-          : page.posts.filter((post) => post.id !== postId),
+          : page.publishedItems.filter(
+              (publishedItem) => publishedItem.id !== publishedItemId,
+            ),
       })),
     };
     queryClient.setQueryData(userPostsCacheKey, updatedUserPostsData);

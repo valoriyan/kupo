@@ -97,21 +97,21 @@ import { EitherErrorReasonTypesStringOrGetPageOfChatRoomsFailedReasonGetPageOfCh
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPageOfNotificationsFailedReasonGetPageOfNotificationsSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess } from "../types";
-// @ts-ignore
-import { EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess } from "../types";
-// @ts-ignore
-import { EitherErrorReasonTypesStringOrGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess } from "../types";
-// @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPageOfUsersFollowedByUserIdFailedReasonGetPageOfUsersFollowedByUserIdSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess } from "../types";
-// @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedHashtagFailedReasonGetPublishedItemsFromFollowedHashtagSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedUsersFailedReasonGetPublishedItemsFromFollowedUsersSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetSavedPublishedItemsFailedReasonGetSavedPublishedItemsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetShopItemsByUsernameFailedReasonGetShopItemsByUsernameSuccess } from "../types";
 // @ts-ignore
@@ -165,7 +165,7 @@ import { EitherFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProf
 // @ts-ignore
 import { EitherFollowUserFailedFollowUserSuccess } from "../types";
 // @ts-ignore
-import { EitherGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess } from "../types";
+import { EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess } from "../types";
 // @ts-ignore
 import { EitherResetPasswordFailedReasonResetPasswordSuccess } from "../types";
 // @ts-ignore
@@ -191,25 +191,25 @@ import { GetPageOfChatRoomsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfNotificationsRequestBody } from "../types";
 // @ts-ignore
-import { GetPageOfPostFromFollowedHashtagRequestBody } from "../types";
-// @ts-ignore
-import { GetPageOfPostFromFollowedUsersRequestBody } from "../types";
-// @ts-ignore
-import { GetPageOfSavedPostsRequestBody } from "../types";
-// @ts-ignore
 import { GetPageOfUsersFollowedByUserIdRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfUsersFollowingUserIdRequestBody } from "../types";
 // @ts-ignore
 import { GetPasswordResetEmailRequestBody } from "../types";
 // @ts-ignore
-import { GetPostsByUserIdRequestBody } from "../types";
-// @ts-ignore
-import { GetPostsByUsernameRequestBody } from "../types";
-// @ts-ignore
-import { GetPostsScheduledByUserRequestBody } from "../types";
-// @ts-ignore
 import { GetPublishedItemByIdRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishedItemsByUserIdRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishedItemsByUsernameRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishedItemsFromFollowedHashtagRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishedItemsFromFollowedUsersRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishedItemsScheduledByUserRequestBody } from "../types";
+// @ts-ignore
+import { GetSavedPublishedItemsRequestBody } from "../types";
 // @ts-ignore
 import { GetShopItemsByUserIdRequestBody } from "../types";
 // @ts-ignore
@@ -1306,153 +1306,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfPostFromFollowedHashtag: async (
-      getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfPostFromFollowedHashtagRequestBody' is not null or undefined
-      assertParamExists(
-        "getPageOfPostFromFollowedHashtag",
-        "getPageOfPostFromFollowedHashtagRequestBody",
-        getPageOfPostFromFollowedHashtagRequestBody,
-      );
-      const localVarPath = `/feed/getPageOfPostFromFollowedHashtag`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfPostFromFollowedHashtagRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfPostFromFollowedUsers: async (
-      getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfPostFromFollowedUsersRequestBody' is not null or undefined
-      assertParamExists(
-        "getPageOfPostFromFollowedUsers",
-        "getPageOfPostFromFollowedUsersRequestBody",
-        getPageOfPostFromFollowedUsersRequestBody,
-      );
-      const localVarPath = `/feed/getPageOfPostFromFollowedUsers`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfPostFromFollowedUsersRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfSavedPosts: async (
-      getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPageOfSavedPostsRequestBody' is not null or undefined
-      assertParamExists(
-        "getPageOfSavedPosts",
-        "getPageOfSavedPostsRequestBody",
-        getPageOfSavedPostsRequestBody,
-      );
-      const localVarPath = `/post/getPageOfSavedPosts`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPageOfSavedPostsRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
      * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1600,117 +1453,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPostsByUserId: async (
-      getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPostsByUserIdRequestBody' is not null or undefined
-      assertParamExists(
-        "getPostsByUserId",
-        "getPostsByUserIdRequestBody",
-        getPostsByUserIdRequestBody,
-      );
-      const localVarPath = `/post/getPostsByUserId`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPostsByUserIdRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPostsByUsername: async (
-      getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
-      options: any = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'getPostsByUsernameRequestBody' is not null or undefined
-      assertParamExists(
-        "getPostsByUsername",
-        "getPostsByUsernameRequestBody",
-        getPostsByUsernameRequestBody,
-      );
-      const localVarPath = `/post/getPostsByUsername`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter["Content-Type"] = "application/json";
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getPostsByUsernameRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
+     * @param {GetPublishedItemsScheduledByUserRequestBody} getPublishedItemsScheduledByUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsScheduledByUser: async (
-      getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
+      getPublishedItemsScheduledByUserRequestBody: GetPublishedItemsScheduledByUserRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPostsScheduledByUserRequestBody' is not null or undefined
+      // verify required parameter 'getPublishedItemsScheduledByUserRequestBody' is not null or undefined
       assertParamExists(
         "getPostsScheduledByUser",
-        "getPostsScheduledByUserRequestBody",
-        getPostsScheduledByUserRequestBody,
+        "getPublishedItemsScheduledByUserRequestBody",
+        getPublishedItemsScheduledByUserRequestBody,
       );
       const localVarPath = `/post/getPostsScheduledByUser`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1735,7 +1490,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPostsScheduledByUserRequestBody,
+        getPublishedItemsScheduledByUserRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -1785,6 +1540,251 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPublishedItemByIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishedItemsByUserIdRequestBody} getPublishedItemsByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsByUserId: async (
+      getPublishedItemsByUserIdRequestBody: GetPublishedItemsByUserIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishedItemsByUserIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishedItemsByUserId",
+        "getPublishedItemsByUserIdRequestBody",
+        getPublishedItemsByUserIdRequestBody,
+      );
+      const localVarPath = `/post/getPublishedItemsByUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishedItemsByUserIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishedItemsByUsernameRequestBody} getPublishedItemsByUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsByUsername: async (
+      getPublishedItemsByUsernameRequestBody: GetPublishedItemsByUsernameRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishedItemsByUsernameRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishedItemsByUsername",
+        "getPublishedItemsByUsernameRequestBody",
+        getPublishedItemsByUsernameRequestBody,
+      );
+      const localVarPath = `/post/getPublishedItemsByUsername`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishedItemsByUsernameRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromFollowedHashtagRequestBody} getPublishedItemsFromFollowedHashtagRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsFromFollowedHashtag: async (
+      getPublishedItemsFromFollowedHashtagRequestBody: GetPublishedItemsFromFollowedHashtagRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishedItemsFromFollowedHashtagRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishedItemsFromFollowedHashtag",
+        "getPublishedItemsFromFollowedHashtagRequestBody",
+        getPublishedItemsFromFollowedHashtagRequestBody,
+      );
+      const localVarPath = `/feed/getPublishedItemsFromFollowedHashtag`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishedItemsFromFollowedHashtagRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromFollowedUsersRequestBody} getPublishedItemsFromFollowedUsersRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsFromFollowedUsers: async (
+      getPublishedItemsFromFollowedUsersRequestBody: GetPublishedItemsFromFollowedUsersRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishedItemsFromFollowedUsersRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishedItemsFromFollowedUsers",
+        "getPublishedItemsFromFollowedUsersRequestBody",
+        getPublishedItemsFromFollowedUsersRequestBody,
+      );
+      const localVarPath = `/feed/getPublishedItemsFromFollowedUsers`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishedItemsFromFollowedUsersRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetSavedPublishedItemsRequestBody} getSavedPublishedItemsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSavedPublishedItems: async (
+      getSavedPublishedItemsRequestBody: GetSavedPublishedItemsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getSavedPublishedItemsRequestBody' is not null or undefined
+      assertParamExists(
+        "getSavedPublishedItems",
+        "getSavedPublishedItemsRequestBody",
+        getSavedPublishedItemsRequestBody,
+      );
+      const localVarPath = `/post/getSavedPublishedItems`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getSavedPublishedItemsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -4064,86 +4064,6 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfPostFromFollowedHashtag(
-      getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getPageOfPostFromFollowedHashtag(
-          getPageOfPostFromFollowedHashtagRequestBody,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfPostFromFollowedUsers(
-      getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getPageOfPostFromFollowedUsers(
-          getPageOfPostFromFollowedUsersRequestBody,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPageOfSavedPosts(
-      getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getPageOfSavedPosts(
-        getPageOfSavedPostsRequestBody,
-        options,
-      );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
      * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4224,73 +4144,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPostsByUserId(
-      getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUserId(
-        getPostsByUserIdRequestBody,
-        options,
-      );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async getPostsByUsername(
-      getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
-      options?: any,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsByUsername(
-        getPostsByUsernameRequestBody,
-        options,
-      );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
+     * @param {GetPublishedItemsScheduledByUserRequestBody} getPublishedItemsScheduledByUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getPostsScheduledByUser(
-      getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
+      getPublishedItemsScheduledByUserRequestBody: GetPublishedItemsScheduledByUserRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess>
+      ) => AxiosPromise<EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsScheduledByUser(
-        getPostsScheduledByUserRequestBody,
+        getPublishedItemsScheduledByUserRequestBody,
         options,
       );
       return createRequestFunction(
@@ -4317,6 +4185,139 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPublishedItemById(
         getPublishedItemByIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPublishedItemsByUserIdRequestBody} getPublishedItemsByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishedItemsByUserId(
+      getPublishedItemsByUserIdRequestBody: GetPublishedItemsByUserIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getPublishedItemsByUserId(
+        getPublishedItemsByUserIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPublishedItemsByUsernameRequestBody} getPublishedItemsByUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishedItemsByUsername(
+      getPublishedItemsByUsernameRequestBody: GetPublishedItemsByUsernameRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishedItemsByUsername(
+          getPublishedItemsByUsernameRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromFollowedHashtagRequestBody} getPublishedItemsFromFollowedHashtagRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishedItemsFromFollowedHashtag(
+      getPublishedItemsFromFollowedHashtagRequestBody: GetPublishedItemsFromFollowedHashtagRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedHashtagFailedReasonGetPublishedItemsFromFollowedHashtagSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishedItemsFromFollowedHashtag(
+          getPublishedItemsFromFollowedHashtagRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromFollowedUsersRequestBody} getPublishedItemsFromFollowedUsersRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishedItemsFromFollowedUsers(
+      getPublishedItemsFromFollowedUsersRequestBody: GetPublishedItemsFromFollowedUsersRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedUsersFailedReasonGetPublishedItemsFromFollowedUsersSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishedItemsFromFollowedUsers(
+          getPublishedItemsFromFollowedUsersRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetSavedPublishedItemsRequestBody} getSavedPublishedItemsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getSavedPublishedItems(
+      getSavedPublishedItemsRequestBody: GetSavedPublishedItemsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetSavedPublishedItemsFailedReasonGetSavedPublishedItemsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getSavedPublishedItems(
+        getSavedPublishedItemsRequestBody,
         options,
       );
       return createRequestFunction(
@@ -5581,54 +5582,6 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfPostFromFollowedHashtag(
-      getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
-      options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedHashtagFailedReasonGetPageOfPostFromFollowedHashtagSuccess> {
-      return localVarFp
-        .getPageOfPostFromFollowedHashtag(
-          getPageOfPostFromFollowedHashtagRequestBody,
-          options,
-        )
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfPostFromFollowedUsers(
-      getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
-      options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfPostFromFollowedUsersFailedReasonGetPageOfPostFromFollowedUsersSuccess> {
-      return localVarFp
-        .getPageOfPostFromFollowedUsers(
-          getPageOfPostFromFollowedUsersRequestBody,
-          options,
-        )
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPageOfSavedPosts(
-      getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
-      options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPageOfSavedPostsFailedReasonGetPageOfSavedPostsSuccess> {
-      return localVarFp
-        .getPageOfSavedPosts(getPageOfSavedPostsRequestBody, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
      * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5674,44 +5627,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPostsByUserId(
-      getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
-      options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess> {
-      return localVarFp
-        .getPostsByUserId(getPostsByUserIdRequestBody, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getPostsByUsername(
-      getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
-      options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPostsByUsernameFailedReasonGetPostsByUsernameSuccess> {
-      return localVarFp
-        .getPostsByUsername(getPostsByUsernameRequestBody, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
+     * @param {GetPublishedItemsScheduledByUserRequestBody} getPublishedItemsScheduledByUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getPostsScheduledByUser(
-      getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
+      getPublishedItemsScheduledByUserRequestBody: GetPublishedItemsScheduledByUserRequestBody,
       options?: any,
-    ): AxiosPromise<EitherGetPostsScheduledByUserFailedGetPostsScheduledByUserSuccess> {
+    ): AxiosPromise<EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess> {
       return localVarFp
-        .getPostsScheduledByUser(getPostsScheduledByUserRequestBody, options)
+        .getPostsScheduledByUser(getPublishedItemsScheduledByUserRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5726,6 +5651,82 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess> {
       return localVarFp
         .getPublishedItemById(getPublishedItemByIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPublishedItemsByUserIdRequestBody} getPublishedItemsByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsByUserId(
+      getPublishedItemsByUserIdRequestBody: GetPublishedItemsByUserIdRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess> {
+      return localVarFp
+        .getPublishedItemsByUserId(getPublishedItemsByUserIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPublishedItemsByUsernameRequestBody} getPublishedItemsByUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsByUsername(
+      getPublishedItemsByUsernameRequestBody: GetPublishedItemsByUsernameRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess> {
+      return localVarFp
+        .getPublishedItemsByUsername(getPublishedItemsByUsernameRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromFollowedHashtagRequestBody} getPublishedItemsFromFollowedHashtagRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsFromFollowedHashtag(
+      getPublishedItemsFromFollowedHashtagRequestBody: GetPublishedItemsFromFollowedHashtagRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedHashtagFailedReasonGetPublishedItemsFromFollowedHashtagSuccess> {
+      return localVarFp
+        .getPublishedItemsFromFollowedHashtag(
+          getPublishedItemsFromFollowedHashtagRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromFollowedUsersRequestBody} getPublishedItemsFromFollowedUsersRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsFromFollowedUsers(
+      getPublishedItemsFromFollowedUsersRequestBody: GetPublishedItemsFromFollowedUsersRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedUsersFailedReasonGetPublishedItemsFromFollowedUsersSuccess> {
+      return localVarFp
+        .getPublishedItemsFromFollowedUsers(
+          getPublishedItemsFromFollowedUsersRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetSavedPublishedItemsRequestBody} getSavedPublishedItemsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSavedPublishedItems(
+      getSavedPublishedItemsRequestBody: GetSavedPublishedItemsRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetSavedPublishedItemsFailedReasonGetSavedPublishedItemsSuccess> {
+      return localVarFp
+        .getSavedPublishedItems(getSavedPublishedItemsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -6601,57 +6602,6 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPageOfPostFromFollowedHashtagRequestBody} getPageOfPostFromFollowedHashtagRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfPostFromFollowedHashtag(
-    getPageOfPostFromFollowedHashtagRequestBody: GetPageOfPostFromFollowedHashtagRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfPostFromFollowedHashtag(
-        getPageOfPostFromFollowedHashtagRequestBody,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPageOfPostFromFollowedUsersRequestBody} getPageOfPostFromFollowedUsersRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfPostFromFollowedUsers(
-    getPageOfPostFromFollowedUsersRequestBody: GetPageOfPostFromFollowedUsersRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfPostFromFollowedUsers(getPageOfPostFromFollowedUsersRequestBody, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPageOfSavedPostsRequestBody} getPageOfSavedPostsRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPageOfSavedPosts(
-    getPageOfSavedPostsRequestBody: GetPageOfSavedPostsRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPageOfSavedPosts(getPageOfSavedPostsRequestBody, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
    * @param {GetPageOfUsersFollowedByUserIdRequestBody} getPageOfUsersFollowedByUserIdRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6700,49 +6650,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPostsByUserIdRequestBody} getPostsByUserIdRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPostsByUserId(
-    getPostsByUserIdRequestBody: GetPostsByUserIdRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPostsByUserId(getPostsByUserIdRequestBody, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPostsByUsernameRequestBody} getPostsByUsernameRequestBody
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public getPostsByUsername(
-    getPostsByUsernameRequestBody: GetPostsByUsernameRequestBody,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .getPostsByUsername(getPostsByUsernameRequestBody, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {GetPostsScheduledByUserRequestBody} getPostsScheduledByUserRequestBody
+   * @param {GetPublishedItemsScheduledByUserRequestBody} getPublishedItemsScheduledByUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public getPostsScheduledByUser(
-    getPostsScheduledByUserRequestBody: GetPostsScheduledByUserRequestBody,
+    getPublishedItemsScheduledByUserRequestBody: GetPublishedItemsScheduledByUserRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .getPostsScheduledByUser(getPostsScheduledByUserRequestBody, options)
+      .getPostsScheduledByUser(getPublishedItemsScheduledByUserRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -6759,6 +6677,92 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPublishedItemById(getPublishedItemByIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishedItemsByUserIdRequestBody} getPublishedItemsByUserIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishedItemsByUserId(
+    getPublishedItemsByUserIdRequestBody: GetPublishedItemsByUserIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishedItemsByUserId(getPublishedItemsByUserIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishedItemsByUsernameRequestBody} getPublishedItemsByUsernameRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishedItemsByUsername(
+    getPublishedItemsByUsernameRequestBody: GetPublishedItemsByUsernameRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishedItemsByUsername(getPublishedItemsByUsernameRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishedItemsFromFollowedHashtagRequestBody} getPublishedItemsFromFollowedHashtagRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishedItemsFromFollowedHashtag(
+    getPublishedItemsFromFollowedHashtagRequestBody: GetPublishedItemsFromFollowedHashtagRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishedItemsFromFollowedHashtag(
+        getPublishedItemsFromFollowedHashtagRequestBody,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishedItemsFromFollowedUsersRequestBody} getPublishedItemsFromFollowedUsersRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishedItemsFromFollowedUsers(
+    getPublishedItemsFromFollowedUsersRequestBody: GetPublishedItemsFromFollowedUsersRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishedItemsFromFollowedUsers(
+        getPublishedItemsFromFollowedUsersRequestBody,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetSavedPublishedItemsRequestBody} getSavedPublishedItemsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getSavedPublishedItems(
+    getSavedPublishedItemsRequestBody: GetSavedPublishedItemsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getSavedPublishedItems(getSavedPublishedItemsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

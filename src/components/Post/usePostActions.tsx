@@ -30,7 +30,10 @@ export const usePostActions = (post: RenderablePost) => {
     publishedItemId: postId,
     authorUserId,
   });
-  const { mutateAsync: deletePost } = useDeletePost({ postId, authorUserId });
+  const { mutateAsync: deletePost } = useDeletePost({
+    publishedItemId: postId,
+    authorUserId,
+  });
 
   async function handleLikeButton() {
     if (isLikedByClient) unlikePost();

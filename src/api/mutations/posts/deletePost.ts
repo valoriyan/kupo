@@ -3,10 +3,10 @@ import { Api } from "../..";
 import { updateCachedPost } from "./utilities";
 
 export const useDeletePost = ({
-  postId,
+  publishedItemId,
   authorUserId,
 }: {
-  postId: string;
+  publishedItemId: string;
   authorUserId: string;
 }) => {
   const queryClient = useQueryClient();
@@ -14,7 +14,7 @@ export const useDeletePost = ({
   return useMutation(
     async () => {
       return await Api.deletePost({
-        postId,
+        postId: publishedItemId,
       });
     },
     {
@@ -22,7 +22,7 @@ export const useDeletePost = ({
         updateCachedPost({
           queryClient,
           authorUserId,
-          postId,
+          publishedItemId,
           postUpdater: null,
         });
       },

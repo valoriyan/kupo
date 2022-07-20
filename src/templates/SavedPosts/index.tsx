@@ -1,3 +1,4 @@
+import { RenderablePost } from "#/api";
 import { useGetSavedPosts } from "#/api/queries/posts/useGetSavedPosts";
 import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
@@ -10,7 +11,7 @@ export const SavedPosts = () => {
   const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetSavedPosts();
 
-  const posts = data?.pages.flatMap((page) => page.posts);
+  const posts = data?.pages.flatMap((page) => page.publishedItems);
 
   return (
     <BasicListWrapper>
@@ -30,7 +31,7 @@ export const SavedPosts = () => {
             items={posts.map((post) => (
               <Post
                 key={post.id}
-                post={post}
+                post={post as unknown as RenderablePost}
                 handleClickOfCommentsButton={() => goToPostPage(post.id)}
               />
             ))}
