@@ -1,4 +1,4 @@
-import { RenderablePostComment } from "../../../controllers/publishedItem/publishedItemComment/models";
+import { RenderablePublishedItemComment } from "../../../controllers/publishedItem/publishedItemComment/models";
 import { RenderablePost } from "../../../controllers/publishedItem/post/models";
 import { RenderableUser } from "../../../controllers/user/models";
 
@@ -12,5 +12,5 @@ export interface NewMentionInPostNotification {
 export interface NewMentionInPostCommentNotification {
   userThatMentionedClient: RenderableUser;
   post: RenderablePost;
-  commentWithinPost: RenderablePostComment;
+  commentWithinPost: RenderablePublishedItemComment;
 }

@@ -7,18 +7,18 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
-import { RenderablePostComment } from "./models";
-import { constructRenderablePostCommentsFromParts } from "./utilities";
+import { RenderablePublishedItemComment } from "./models";
+import { constructRenderablePublishedItemCommentsFromParts } from "./utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 
 export interface ReadPageOfCommentsByPublishedItemIdRequestBody {
-  postId: string;
+  publishedItemId: string;
   cursor?: string;
   pageSize: number;
 }
 
 export interface ReadPageOfCommentsByPublishedItemIdSuccess {
-  postComments: RenderablePostComment[];
+  postComments: RenderablePublishedItemComment[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
@@ -41,7 +41,7 @@ export async function handleReadPageOfCommentsByPublishedItemId({
     ReadPageOfCommentsByPublishedItemIdSuccess
   >
 > {
-  const { postId, cursor, pageSize } = requestBody;
+  const { publishedItemId, cursor, pageSize } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -49,28 +49,29 @@ export async function handleReadPageOfCommentsByPublishedItemId({
   );
   if (error) return error;
 
-  const getPostCommentsByPostIdResponse =
-    await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentsByPostId(
+  const getPublishedItemCommentsByPublishedItemIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentsByPublishedItemId(
       {
         controller,
-        postId,
+        publishedItemId,
         afterTimestamp: cursor
           ? decodeTimestampCursor({ encodedCursor: cursor })
           : undefined,
         pageSize,
       },
     );
-  if (getPostCommentsByPostIdResponse.type === EitherType.failure) {
-    return getPostCommentsByPostIdResponse;
+  if (getPublishedItemCommentsByPublishedItemIdResponse.type === EitherType.failure) {
+    return getPublishedItemCommentsByPublishedItemIdResponse;
   }
-  const { success: unrenderablePostComments } = getPostCommentsByPostIdResponse;
+  const { success: unrenderablePostComments } =
+    getPublishedItemCommentsByPublishedItemIdResponse;
 
   const constructRenderablePostCommentsFromPartsResponse =
-    await constructRenderablePostCommentsFromParts({
+    await constructRenderablePublishedItemCommentsFromParts({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      unrenderablePostComments,
+      unrenderablePublishedItemComments: unrenderablePostComments,
       clientUserId,
     });
   if (constructRenderablePostCommentsFromPartsResponse.type === EitherType.failure) {

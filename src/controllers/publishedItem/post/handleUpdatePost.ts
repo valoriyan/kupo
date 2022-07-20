@@ -17,7 +17,7 @@ export enum UpdatePostFailedReason {
 export interface UpdatePostSuccess {}
 
 export interface UpdatePostRequestBody {
-  postId: string;
+  publishedItemId: string;
 
   caption?: string;
 
@@ -45,14 +45,14 @@ export async function handleUpdatePost({
   );
   if (error) return error;
 
-  const { postId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
+  const { publishedItemId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
     requestBody;
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       {
         controller,
-        id: postId,
+        id: publishedItemId,
       },
     );
   if (getPublishedItemByIdResponse.type === EitherType.failure) {
@@ -75,7 +75,7 @@ export async function handleUpdatePost({
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById(
       {
         controller,
-        id: postId,
+        id: publishedItemId,
         authorUserId: clientUserId,
         caption: caption ? caption.toLowerCase() : caption,
         scheduledPublicationTimestamp,

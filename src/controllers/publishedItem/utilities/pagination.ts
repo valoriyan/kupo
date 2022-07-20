@@ -14,31 +14,30 @@ export function getEncodedCursorOfNextPageOfSequentialItems<
 }
 
 export function getPageOfPublishedItemsFromAllPublishedItems({
-  unrenderablePostsWithoutElementsOrHashtags,
+  uncompiledBasePublishedItems,
   encodedCursor,
   pageSize,
 }: {
-  unrenderablePostsWithoutElementsOrHashtags: UncompiledBasePublishedItem[];
+  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   encodedCursor?: string;
   pageSize: number;
 }): UncompiledBasePublishedItem[] {
   if (!!encodedCursor) {
     const timestamp = decodeTimestampCursor({ encodedCursor });
 
-    const filteredUnrenderablePostsWithoutElements =
-      unrenderablePostsWithoutElementsOrHashtags
-        .filter((unrenderablePostWithoutElementsOrHashtags) => {
-          const { scheduledPublicationTimestamp } =
-            unrenderablePostWithoutElementsOrHashtags;
-          return scheduledPublicationTimestamp < timestamp;
-        })
-        .slice(-pageSize);
+    const filteredUncompiledBasePublishedItems = uncompiledBasePublishedItems
+      .filter((uncompiledBasePublishedItem) => {
+        const { scheduledPublicationTimestamp } = uncompiledBasePublishedItem;
+        return scheduledPublicationTimestamp < timestamp;
+      })
+      .slice(-pageSize);
 
-    return filteredUnrenderablePostsWithoutElements;
+    return filteredUncompiledBasePublishedItems;
   }
 
-  const filteredUnrenderablePostsWithoutElements =
-    unrenderablePostsWithoutElementsOrHashtags.slice(-pageSize);
+  const pageOfUncompiledBasePublishedItems = uncompiledBasePublishedItems.slice(
+    -pageSize,
+  );
 
-  return filteredUnrenderablePostsWithoutElements;
+  return pageOfUncompiledBasePublishedItems;
 }

@@ -128,17 +128,17 @@ export async function assembleBaseRenderablePublishedItem({
   }
   const { success: countOfLikesOnPost } = countLikesOnPublishedItemIdResponse;
 
-  const countCommentsOnPostIdResponse =
-    await databaseService.tableNameToServicesMap.postCommentsTableService.countCommentsOnPostId(
+  const countCommentsOnPublishedItemIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.countCommentsOnPublishedItemId(
       {
         controller,
-        postId: id,
+        publishedItemId: id,
       },
     );
-  if (countCommentsOnPostIdResponse.type === EitherType.failure) {
-    return countCommentsOnPostIdResponse;
+  if (countCommentsOnPublishedItemIdResponse.type === EitherType.failure) {
+    return countCommentsOnPublishedItemIdResponse;
   }
-  const { success: countOfCommentsOnPost } = countCommentsOnPostIdResponse;
+  const { success: countOfCommentsOnPost } = countCommentsOnPublishedItemIdResponse;
 
   let isLikedByClient = false;
   if (!!clientUserId) {

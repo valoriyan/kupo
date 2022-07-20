@@ -1,8 +1,8 @@
 import { Controller, Post, Route, Body } from "tsoa";
 import {
-  UnrenderableCanceledCommentOnPostNotification,
+  UnrenderableCanceledCommentOnPublishedItemNotification,
   UnrenderableCanceledNewFollowerNotification,
-  UnrenderableCanceledNewLikeOnPostNotification,
+  UnrenderableCanceledNewLikeOnPublishedItemNotification,
 } from "../notification/models/unrenderableCanceledUserNotifications";
 
 @Route("utilities")
@@ -11,9 +11,9 @@ export class ShareTypesWithFrontendController extends Controller {
   public async sendDataTypesToFrontend1(
     @Body()
     requestBody: {
-      UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification;
+      UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification;
       UnrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification;
-      UnrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification;
+      UnrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPublishedItemNotification;
     },
   ): Promise<{ response: string }> {
     requestBody;

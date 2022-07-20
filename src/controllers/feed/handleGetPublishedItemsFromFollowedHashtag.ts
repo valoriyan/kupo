@@ -7,7 +7,7 @@ import {
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
-import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/pagination/utilities";
+import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/utilities/pagination";
 import { constructPublishedItemsFromParts } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
@@ -62,13 +62,13 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
   if (getPublishedItemsWithHashtagResponse.type === EitherType.failure) {
     return getPublishedItemsWithHashtagResponse;
   }
-  const { success: postIdsWithHashtag } = getPublishedItemsWithHashtagResponse;
+  const { success: publishedItemIdsWithHashtag } = getPublishedItemsWithHashtagResponse;
 
   const getPublishedItemsByIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
         controller,
-        ids: postIdsWithHashtag,
+        ids: publishedItemIdsWithHashtag,
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
         restrictedToType: publishedItemType,
@@ -77,22 +77,20 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
   if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
     return getPublishedItemsByIdsResponse;
   }
-  const { success: unrenderablePostsWithoutElementsOrHashtags } =
-    getPublishedItemsByIdsResponse;
+  const { success: uncompiledBasePublishedItem } = getPublishedItemsByIdsResponse;
 
-  const filteredUnrenderablePostsWithoutElements =
-    getPageOfPublishedItemsFromAllPublishedItems({
-      unrenderablePostsWithoutElementsOrHashtags,
-      encodedCursor: cursor,
-      pageSize: pageSize,
-    });
+  const pageOfUncompiledBasePublishedItem = getPageOfPublishedItemsFromAllPublishedItems({
+    uncompiledBasePublishedItems: uncompiledBasePublishedItem,
+    encodedCursor: cursor,
+    pageSize: pageSize,
+  });
 
   const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
     {
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      uncompiledBasePublishedItems: filteredUnrenderablePostsWithoutElements,
+      uncompiledBasePublishedItems: pageOfUncompiledBasePublishedItem,
       clientUserId,
     },
   );

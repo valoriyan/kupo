@@ -268,13 +268,13 @@ export function mergeArraysOfUnrenderableUsers({
   arrays: UnrenderableUser[][];
 }) {
   const mergedArray: UnrenderableUser[] = [];
-  const setOfIncludedPostIds = new Set();
+  const setOfIncludedPublishedItemIds = new Set();
 
   arrays.forEach((array) => {
     array.forEach((element) => {
       const { userId } = element;
-      if (!setOfIncludedPostIds.has(userId)) {
-        setOfIncludedPostIds.add(userId);
+      if (!setOfIncludedPublishedItemIds.has(userId)) {
+        setOfIncludedPublishedItemIds.add(userId);
         mergedArray.push(element);
       }
     });

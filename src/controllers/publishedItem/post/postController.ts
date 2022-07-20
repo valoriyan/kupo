@@ -30,7 +30,7 @@ import {
   GetSavedPublishedItemsRequestBody,
   GetSavedPublishedItemsSuccess,
   handleGetSavedPublishedItems,
-} from "../pagination/handleGetSavedPublishedItems";
+} from "../handleGetSavedPublishedItems";
 import {
   GetPublishedItemByIdFailedReason,
   GetPublishedItemByIdRequestBody,
@@ -62,7 +62,7 @@ import {
   handleGetPublishedItemsByUserId,
   handleGetPublishedItemsByUsername,
   GetPublishedItemsByUsernameSuccess,
-} from "../pagination/handleGetPublishedItems";
+} from "../handleGetPublishedItems";
 
 @injectable()
 @Route("post")

@@ -1,10 +1,9 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderablePostFromParts } from "../../publishedItem/post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { RenderableNewLikeOnPostNotification } from "../models/renderableUserNotifications";
+import { RenderableNewLikeOnPublishedItemNotification } from "../models/renderableUserNotifications";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -13,9 +12,10 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../models";
+import { constructPublishedItemFromParts } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 
-export async function assembleRenderableNewLikeOnPostNotification({
+export async function assembleRenderableNewLikeOnPublishedItemNotification({
   controller,
   userNotification,
   blobStorageService,
@@ -28,73 +28,73 @@ export async function assembleRenderableNewLikeOnPostNotification({
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<
-  InternalServiceResponse<ErrorReasonTypes<string>, RenderableNewLikeOnPostNotification>
+  InternalServiceResponse<
+    ErrorReasonTypes<string>,
+    RenderableNewLikeOnPublishedItemNotification
+  >
 > {
   const {
     reference_table_id: publishedItemLikeId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
-  const getPostLikeByPublishedItemLikeIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPostLikeByPublishedItemLikeId(
+  const getPublishedItemLikeByPublishedItemLikeIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPublishedItemLikeByPublishedItemLikeId(
       { controller, publishedItemLikeId },
     );
-  if (getPostLikeByPublishedItemLikeIdResponse.type === EitherType.failure) {
-    return getPostLikeByPublishedItemLikeIdResponse;
+  if (getPublishedItemLikeByPublishedItemLikeIdResponse.type === EitherType.failure) {
+    return getPublishedItemLikeByPublishedItemLikeIdResponse;
   }
   const {
     success: {
-      published_item_id: postId,
-      user_id: userLikingPostId,
+      published_item_id: publishedItemId,
+      user_id: userLikingPublishedItemId,
       timestamp: eventTimestampString,
     },
-  } = getPostLikeByPublishedItemLikeIdResponse;
+  } = getPublishedItemLikeByPublishedItemLikeIdResponse;
 
   const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       {
         controller,
-        id: postId,
+        id: publishedItemId,
       },
     );
   if (getPublishedItemByIdResponse.type === EitherType.failure) {
     return getPublishedItemByIdResponse;
   }
-  const { success: unrenderablePostWithoutElementsOrHashtags } =
-    getPublishedItemByIdResponse;
+  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
-  const constructRenderablePostFromPartsResponse = await constructRenderablePostFromParts(
-    {
-      controller,
-      blobStorageService,
-      databaseService,
-      uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-      clientUserId,
-    },
-  );
-  if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostFromPartsResponse;
+  const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
+    controller,
+    blobStorageService,
+    databaseService,
+    uncompiledBasePublishedItem: uncompiledBasePublishedItem,
+    clientUserId,
+  });
+  if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemFromPartsResponse;
   }
-  const { success: post } = constructRenderablePostFromPartsResponse;
+  const { success: renderablePublishedItem } = constructPublishedItemFromPartsResponse;
 
   const selectUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
       controller,
-      userId: userLikingPostId,
+      userId: userLikingPublishedItemId,
     });
   if (selectUserByUserIdResponse.type === EitherType.failure) {
     return selectUserByUserIdResponse;
   }
-  const { success: unrenderableUserThatLikedPost } = selectUserByUserIdResponse;
+  const { success: unrenderableUserThatLikedPublishedItem } = selectUserByUserIdResponse;
 
-  if (!unrenderableUserThatLikedPost) {
+  if (!unrenderableUserThatLikedPublishedItem) {
     return Failure({
       controller,
       httpStatusCode: 404,
       reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at at assembleRenderableNewLikeOnPostNotification",
+      error: "User not found at at assembleRenderableNewLikeOnPublishedItemNotification",
       additionalErrorInformation:
-        "User not found at at assembleRenderableNewLikeOnPostNotification",
+        "User not found at at assembleRenderableNewLikeOnPublishedItemNotification",
     });
   }
 
@@ -102,7 +102,7 @@ export async function assembleRenderableNewLikeOnPostNotification({
     {
       controller,
       clientUserId,
-      unrenderableUser: unrenderableUserThatLikedPost,
+      unrenderableUser: unrenderableUserThatLikedPublishedItem,
       blobStorageService,
       databaseService,
     },
@@ -110,7 +110,8 @@ export async function assembleRenderableNewLikeOnPostNotification({
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;
   }
-  const { success: userThatLikedPost } = constructRenderableUserFromPartsResponse;
+  const { success: userThatLikedPublishedItem } =
+    constructRenderableUserFromPartsResponse;
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
@@ -124,10 +125,10 @@ export async function assembleRenderableNewLikeOnPostNotification({
 
   return Success({
     countOfUnreadNotifications,
-    userThatLikedPost,
-    post,
+    userThatLikedPublishedItem,
+    publishedItem: renderablePublishedItem,
     timestampSeenByUser,
-    type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+    type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
     eventTimestamp: parseInt(eventTimestampString),
   });
 }

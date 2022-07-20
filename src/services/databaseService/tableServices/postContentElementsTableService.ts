@@ -17,7 +17,7 @@ import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerat
 import { Controller } from "tsoa";
 
 interface DBPostContentElement {
-  post_id: string;
+  published_item_id: string;
   post_content_element_index: number;
   blob_file_key: string;
   mimetype: string;
@@ -34,11 +34,11 @@ export class PostContentElementsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        post_id VARCHAR(64) NOT NULL,
+        published_item_id VARCHAR(64) NOT NULL,
         post_content_element_index SMALLINT NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         mimetype VARCHAR(64) NOT NULL,
-        UNIQUE (post_id, post_content_element_index)
+        UNIQUE (published_item_id, post_content_element_index)
       )
       ;
     `;
@@ -56,7 +56,7 @@ export class PostContentElementsTableService extends TableService {
   }: {
     controller: Controller;
     postContentElements: {
-      postId: string;
+      publishedItemId: string;
       postContentElementIndex: number;
       blobFileKey: string;
       mimetype: string;
@@ -64,8 +64,13 @@ export class PostContentElementsTableService extends TableService {
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
       const rowsOfFieldsAndValues = postContentElements.map(
-        ({ postId, postContentElementIndex, blobFileKey, mimetype }) => [
-          { field: "post_id", value: postId },
+        ({
+          publishedItemId: publishedItemId,
+          postContentElementIndex,
+          blobFileKey,
+          mimetype,
+        }) => [
+          { field: "published_item_id", value: publishedItemId },
           {
             field: "post_content_element_index",
             value: `${postContentElementIndex}`,
@@ -98,12 +103,12 @@ export class PostContentElementsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostContentElementsByPostId({
+  public async getPostContentElementsByPublishedItemId({
     controller,
-    postId,
+    publishedItemId,
   }: {
     controller: Controller;
-    postId: string;
+    publishedItemId: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, FiledMediaElement[]>> {
     try {
       const queryString = {
@@ -113,10 +118,10 @@ export class PostContentElementsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            post_id = $1
+            published_item_id = $1
           ;
         `,
-        values: [postId],
+        values: [publishedItemId],
       };
 
       const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
@@ -143,7 +148,7 @@ export class PostContentElementsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at postContentElementsTableService.getPostContentElementsByPostId",
+          "Error at postContentElementsTableService.getPostContentElementsByPublishedItemId",
       });
     }
   }
@@ -152,25 +157,16 @@ export class PostContentElementsTableService extends TableService {
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  // public async updatePostContentElements({
-  //   postId,
-  // }: {
-  //   postId: string;
-  // }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, void>> {
-  //   // TODO: DECIDE HOW TO HANDLE MEDIA REPLACEMENT
-  //   console.log(postId);
-  // }
-
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deletePostContentElementsByPostId({
+  public async deletePostContentElementsByPublishedItemId({
     controller,
-    postId,
+    publishedItemId: publishedItemId,
   }: {
     controller: Controller;
-    postId: string;
+    publishedItemId: string;
   }): Promise<
     InternalServiceResponse<
       ErrorReasonTypes<string>,
@@ -181,7 +177,9 @@ export class PostContentElementsTableService extends TableService {
   > {
     try {
       const query = generatePSQLGenericDeleteRowsQueryString({
-        fieldsUsedToIdentifyRowsToDelete: [{ field: "post_id", value: postId }],
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "published_item_id", value: publishedItemId },
+        ],
         tableName: this.tableName,
       });
 
@@ -201,7 +199,7 @@ export class PostContentElementsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at postContentElementsTableService.deletePostContentElementsByPostId",
+          "Error at postContentElementsTableService.deletePostContentElementsByPublishedItemId",
       });
     }
   }

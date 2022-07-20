@@ -1,20 +1,20 @@
 import { BaseUserNotification } from ".";
-import { RenderablePost } from "../../publishedItem/post/models";
-import { RenderablePostComment } from "../../publishedItem/publishedItemComment/models";
+import { RenderablePublishedItemComment } from "../../publishedItem/publishedItemComment/models";
 import { RenderableUser } from "../../user/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { RenderablePublishedItem } from "../../../controllers/publishedItem/models";
 
 export interface BaseRenderableUserNotification extends BaseUserNotification {
   eventTimestamp: number;
   timestampSeenByUser?: number;
 }
 
-export interface RenderableNewCommentOnPostNotification
+export interface RenderableNewCommentOnPublishedItemNotification
   extends BaseRenderableUserNotification {
-  type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST;
+  type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM;
   userThatCommented: RenderableUser;
-  post: RenderablePost;
-  postComment: RenderablePostComment;
+  publishedItem: RenderablePublishedItem;
+  publishedItemComment: RenderablePublishedItemComment;
 }
 
 export interface RenderableNewFollowerNotification
@@ -23,23 +23,23 @@ export interface RenderableNewFollowerNotification
   userDoingFollowing: RenderableUser;
 }
 
-export interface RenderableNewLikeOnPostNotification
+export interface RenderableNewLikeOnPublishedItemNotification
   extends BaseRenderableUserNotification {
-  type: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST;
-  userThatLikedPost: RenderableUser;
-  post: RenderablePost;
+  type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
+  userThatLikedPublishedItem: RenderableUser;
+  publishedItem: RenderablePublishedItem;
 }
 
 export interface RenderableNewTagInPublishedItemCommentNotification
   extends BaseRenderableUserNotification {
   type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT;
   userTaggingClient: RenderableUser;
-  publishedItem: RenderablePost;
-  publishedItemComment: RenderablePostComment;
+  publishedItem: RenderablePublishedItem;
+  publishedItemComment: RenderablePublishedItemComment;
 }
 
 export type RenderableUserNotification =
   | RenderableNewFollowerNotification
-  | RenderableNewCommentOnPostNotification
-  | RenderableNewLikeOnPostNotification
+  | RenderableNewCommentOnPublishedItemNotification
+  | RenderableNewLikeOnPublishedItemNotification
   | RenderableNewTagInPublishedItemCommentNotification;

@@ -29,7 +29,7 @@ export interface DBUserNotification {
 
   // if type = NEW_FOLLOWER: DBUserFollow [field: id];
   // if type = NEW_COMMENT_ON_POST: DBPostComment [field: post_comment_id];
-  // if type = NEW_POST: DBPost [field: post_id]
+  // if type = NEW_POST: DBPost [field: published_item_id]
   // if type = NEW_LIKE_ON_POST: DBPostLike [field: id]
   reference_table_id: string;
 }

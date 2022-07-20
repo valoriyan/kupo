@@ -267,17 +267,18 @@ export async function assemblePostMediaElements({
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
-  const getPostContentElementsByPostIdResponse =
-    await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPostId(
+  const getPostContentElementsByPublishedItemIdResponse =
+    await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPublishedItemId(
       {
         controller,
-        postId: publishedItemId,
+        publishedItemId,
       },
     );
-  if (getPostContentElementsByPostIdResponse.type === EitherType.failure) {
-    return getPostContentElementsByPostIdResponse;
+  if (getPostContentElementsByPublishedItemIdResponse.type === EitherType.failure) {
+    return getPostContentElementsByPublishedItemIdResponse;
   }
-  const { success: filedPostMediaElements } = getPostContentElementsByPostIdResponse;
+  const { success: filedPostMediaElements } =
+    getPostContentElementsByPublishedItemIdResponse;
 
   const getTemporaryImageUrlResponses = await BluebirdPromise.map(
     filedPostMediaElements,

@@ -7,7 +7,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
-import { UnrenderableCanceledNewLikeOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
+import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
 export interface RemoveUserLikeFromPublishedItemRequestBody {
@@ -68,7 +68,7 @@ export async function handleRemoveUserLikeFromPublishedItem({
       {
         controller,
         recipientUserId: unrenderablePost.authorUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
         referenceTableId: deletedPostLike.published_item_like_id,
       },
     );
@@ -86,12 +86,12 @@ export async function handleRemoveUserLikeFromPublishedItem({
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  const unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification =
+  const unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPublishedItemNotification =
     {
       countOfUnreadNotifications,
-      type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_POST,
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_PUBLISHED_ITEM,
       userIdUnlikingPost: clientUserId,
-      postId: publishedItemId,
+      publishedItemId: publishedItemId,
     };
 
   await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewLikeOnPost(

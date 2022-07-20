@@ -56,7 +56,7 @@ export class WebSocketService {
     });
   }
 
-  public async notifyOfNewPost({
+  public async notifyOfNewPublishedItem({
     recipientUserId,
     username,
     previewTemporaryUrl,
@@ -72,7 +72,9 @@ export class WebSocketService {
 
     const roomName = generatePrivateUserWebSocketRoomName({ userId: recipientUserId });
 
-    WebSocketService.io.to([roomName]).emit(NOTIFICATION_EVENTS.NEW_POST, message);
+    WebSocketService.io
+      .to([roomName])
+      .emit(NOTIFICATION_EVENTS.NEW_PUBLISHED_ITEM, message);
   }
 
   public async notifyUserIdsOfNewChatMessage({

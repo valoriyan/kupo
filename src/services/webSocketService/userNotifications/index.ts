@@ -1,14 +1,14 @@
 import { Server } from "socket.io";
 import {
-  UnrenderableCanceledCommentOnPostNotification,
+  UnrenderableCanceledCommentOnPublishedItemNotification,
   UnrenderableCanceledNewFollowerNotification,
-  UnrenderableCanceledNewLikeOnPostNotification,
+  UnrenderableCanceledNewLikeOnPublishedItemNotification,
   UnrenderableCanceledNewTagInPublishedItemCommentNotification,
 } from "../../../controllers/notification/models/unrenderableCanceledUserNotifications";
 import {
-  RenderableNewCommentOnPostNotification,
+  RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
-  RenderableNewLikeOnPostNotification,
+  RenderableNewLikeOnPublishedItemNotification,
   RenderableNewTagInPublishedItemCommentNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
@@ -27,7 +27,7 @@ export class UserNotificationsWebsocketService {
     renderableNewCommentOnPostNotification,
     userId,
   }: {
-    renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification;
+    renderableNewCommentOnPostNotification: RenderableNewCommentOnPublishedItemNotification;
     userId: string;
   }) {
     await notifyUserIdOfNewCommentOnPost({
@@ -41,7 +41,7 @@ export class UserNotificationsWebsocketService {
     unrenderableCanceledCommentOnPostNotification,
     userId,
   }: {
-    unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification;
+    unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification;
     userId: string;
   }) {
     await notifyUserIdOfCanceledNewCommentOnPost({
@@ -83,7 +83,7 @@ export class UserNotificationsWebsocketService {
     renderableNewLikeOnPostNotification,
     userId,
   }: {
-    renderableNewLikeOnPostNotification: RenderableNewLikeOnPostNotification;
+    renderableNewLikeOnPostNotification: RenderableNewLikeOnPublishedItemNotification;
     userId: string;
   }) {
     await notifyUserIdOfNewLikeOnPost({
@@ -97,7 +97,7 @@ export class UserNotificationsWebsocketService {
     unrenderableCanceledNewLikeOnPostNotification,
     userId,
   }: {
-    unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification;
+    unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPublishedItemNotification;
     userId: string;
   }) {
     await notifyUserIdOfCanceledNewLikeOnPost({

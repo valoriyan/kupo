@@ -118,7 +118,7 @@ const deleteAssociatedNotifications = async ({
       await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
         {
           controller,
-          notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
+          notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
           referenceTableIds: postLikeIds,
         },
       );

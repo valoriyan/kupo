@@ -1,6 +1,6 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { constructRenderablePostCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
+import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { constructRenderablePostFromParts } from "../../publishedItem/post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
@@ -48,8 +48,8 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   const getPostCommentByIdResponse =
-    await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
-      { controller, postCommentId: publishedItemCommentId },
+    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
+      { controller, publishedItemCommentId: publishedItemCommentId },
     );
   if (getPostCommentByIdResponse.type === EitherType.failure) {
     return getPostCommentByIdResponse;
@@ -57,11 +57,11 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   const { success: unrenderablePublishedItemComment } = getPostCommentByIdResponse;
 
   const constructRenderablePostCommentFromPartsResponse =
-    await constructRenderablePostCommentFromParts({
+    await constructRenderablePublishedItemCommentFromParts({
       controller,
       blobStorageService,
       databaseService,
-      unrenderablePostComment: unrenderablePublishedItemComment,
+      unrenderablePublishedItemComment: unrenderablePublishedItemComment,
       clientUserId,
     });
   if (constructRenderablePostCommentFromPartsResponse.type === EitherType.failure) {
@@ -98,7 +98,7 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       {
         controller,
-        id: publishedItemComment.postId,
+        id: publishedItemComment.publishedItemId,
       },
     );
   if (getPublishedItemByIdResponse.type === EitherType.failure) {

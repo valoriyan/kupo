@@ -1,8 +1,8 @@
 import { BaseUserNotification } from ".";
 
-export interface UnrenderableCanceledCommentOnPostNotification
+export interface UnrenderableCanceledCommentOnPublishedItemNotification
   extends BaseUserNotification {
-  postCommentId: string;
+  publishedItemCommentId: string;
 }
 
 export interface UnrenderableCanceledNewFollowerNotification
@@ -10,10 +10,10 @@ export interface UnrenderableCanceledNewFollowerNotification
   userIdDoingUnfollowing: string;
 }
 
-export interface UnrenderableCanceledNewLikeOnPostNotification
+export interface UnrenderableCanceledNewLikeOnPublishedItemNotification
   extends BaseUserNotification {
   userIdUnlikingPost: string;
-  postId: string;
+  publishedItemId: string;
 }
 
 export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification

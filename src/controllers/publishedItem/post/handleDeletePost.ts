@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
-import { BlobStorageService } from "src/services/blobStorageService";
-import { DatabaseService } from "src/services/databaseService";
+import { BlobStorageService } from "../../../services/blobStorageService";
+import { DatabaseService } from "../../../services/databaseService";
 import { Controller } from "tsoa";
 import { checkAuthorization } from "../../../controllers/auth/utilities";
 import {
@@ -65,7 +65,7 @@ export async function handleDeletePost({
     controller,
     databaseService: controller.databaseService,
     blobStorageService: controller.blobStorageService,
-    postId: publishedItemId,
+    publishedItemId: publishedItemId,
   });
   if (deleteAssociatedBlobFilesResponse.type === EitherType.failure) {
     return deleteAssociatedBlobFilesResponse;
@@ -78,24 +78,24 @@ const deleteAssociatedBlobFilesForPost = async ({
   controller,
   databaseService,
   blobStorageService,
-  postId,
+  publishedItemId,
 }: {
   controller: Controller;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageService;
-  postId: string;
+  publishedItemId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
-  const deletePostContentElementsByPostIdResponse =
-    await databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
+  const deletePostContentElementsByPublishedItemIdResponse =
+    await databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPublishedItemId(
       {
         controller,
-        postId,
+        publishedItemId,
       },
     );
-  if (deletePostContentElementsByPostIdResponse.type === EitherType.failure) {
-    return deletePostContentElementsByPostIdResponse;
+  if (deletePostContentElementsByPublishedItemIdResponse.type === EitherType.failure) {
+    return deletePostContentElementsByPublishedItemIdResponse;
   }
-  const { success: blobPointers } = deletePostContentElementsByPostIdResponse;
+  const { success: blobPointers } = deletePostContentElementsByPublishedItemIdResponse;
 
   const deleteImagesResponse = await blobStorageService.deleteImages({
     controller,

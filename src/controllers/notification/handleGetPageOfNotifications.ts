@@ -12,10 +12,10 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 import { Promise as BluebirdPromise } from "bluebird";
-import { assembleRenderableNewCommentOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewCommentOnPostNotification";
+import { assembleRenderableNewCommentOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewCommentOnPublishedItemNotification";
 import { DBUserNotification } from "../../services/databaseService/tableServices/userNotificationsTableService";
 import { assembleRenderableNewFollowerNotification } from "./renderableNotificationAssemblers/assembleRenderableNewFollowerNotification";
-import { assembleRenderableNewLikeOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewLikeOnPostNotification";
+import { assembleRenderableNewLikeOnPublishedItemNotification } from "./renderableNotificationAssemblers/assembleRenderableNewLikeOnPublishedItemNotification";
 import { RenderableUserNotification } from "./models/renderableUserNotifications";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { assembleRenderableNewTagInPublishedItemCommentNotification } from "./renderableNotificationAssemblers/assembleRenderableNewTagInPublishedItemCommentNotification";
@@ -128,7 +128,8 @@ async function assembleNotifcations({
       InternalServiceResponse<ErrorReasonTypes<string>, RenderableUserNotification | null>
     > => {
       if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST
+        userNotification.notification_type ===
+        NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM
       ) {
         return await assembleRenderableNewCommentOnPostNotification({
           controller,
@@ -148,9 +149,10 @@ async function assembleNotifcations({
           clientUserId,
         });
       } else if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_LIKE_ON_POST
+        userNotification.notification_type ===
+        NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM
       ) {
-        return await assembleRenderableNewLikeOnPostNotification({
+        return await assembleRenderableNewLikeOnPublishedItemNotification({
           controller,
           userNotification,
           blobStorageService: controller.blobStorageService,

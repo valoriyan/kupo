@@ -91,7 +91,7 @@ export class PublishedItemLikesTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostLikeByPublishedItemLikeId({
+  public async getPublishedItemLikeByPublishedItemLikeId({
     controller,
     publishedItemLikeId,
   }: {

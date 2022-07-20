@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { RenderableNewCommentOnPostNotification } from "../../../../controllers/notification/models/renderableUserNotifications";
+import { RenderableNewCommentOnPublishedItemNotification } from "../../../../controllers/notification/models/renderableUserNotifications";
 import { NOTIFICATION_EVENTS } from "../../eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "../../utilities";
 
@@ -9,13 +9,13 @@ export async function notifyUserIdOfNewCommentOnPost({
   userId,
 }: {
   io: Server;
-  renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification;
+  renderableNewCommentOnPostNotification: RenderableNewCommentOnPublishedItemNotification;
   userId: string;
 }): Promise<void> {
   const roomName = generatePrivateUserWebSocketRoomName({ userId });
 
   io.to([roomName]).emit(
-    NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+    NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
     renderableNewCommentOnPostNotification,
   );
 }

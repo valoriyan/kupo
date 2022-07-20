@@ -62,7 +62,7 @@ export async function handleCreatePost({
   );
   if (error) return error;
 
-  const postId: string = uuidv4();
+  const publishedItemId: string = uuidv4();
   const now = Date.now();
 
   const creationTimestamp = now;
@@ -71,7 +71,7 @@ export async function handleCreatePost({
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
       {
         controller,
-        publishedItemId: postId,
+        publishedItemId,
         type: PublishedItemType.POST,
         creationTimestamp,
         authorUserId: clientUserId,
@@ -125,7 +125,7 @@ export async function handleCreatePost({
         controller,
         postContentElements: filedAndRenderablePostMediaElements.map(
           ({ blobFileKey, mimetype }, index) => ({
-            postId,
+            publishedItemId,
             postContentElementIndex: index,
             blobFileKey,
             mimetype,
@@ -142,7 +142,7 @@ export async function handleCreatePost({
       {
         controller,
         hashtags: lowerCaseHashtags,
-        publishedItemId: postId,
+        publishedItemId: publishedItemId,
       },
     );
   if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
@@ -160,7 +160,7 @@ export async function handleCreatePost({
 
   const unrenderableUser = unrenderableUsers[0];
 
-  await controller.webSocketService.notifyOfNewPost({
+  await controller.webSocketService.notifyOfNewPublishedItem({
     recipientUserId: clientUserId,
     previewTemporaryUrl: mediaElementTemporaryUrls[0],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -170,7 +170,7 @@ export async function handleCreatePost({
   return Success({
     renderablePost: {
       type: PublishedItemType.POST,
-      id: postId,
+      id: publishedItemId,
       authorUserId: clientUserId,
       caption,
       creationTimestamp,

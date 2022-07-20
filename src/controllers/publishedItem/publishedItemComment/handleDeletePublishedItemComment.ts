@@ -7,7 +7,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
-import { UnrenderableCanceledCommentOnPostNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
+import { UnrenderableCanceledCommentOnPublishedItemNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
 
 export interface DeletePublishedItemCommentRequestBody {
@@ -44,19 +44,19 @@ export async function handleDeletePublishedItemComment({
   if (error) return error;
 
   const getPostCommentByIdResponse =
-    await controller.databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
-      { controller, postCommentId },
+    await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
+      { controller, publishedItemCommentId: postCommentId },
     );
   if (getPostCommentByIdResponse.type === EitherType.failure) {
     return getPostCommentByIdResponse;
   }
   const {
-    success: { postId },
+    success: { publishedItemId },
   } = getPostCommentByIdResponse;
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { controller, id: postId },
+      { controller, id: publishedItemId },
     );
   if (getPublishedItemByIdResponse.type === EitherType.failure) {
     return getPublishedItemByIdResponse;
@@ -66,10 +66,10 @@ export async function handleDeletePublishedItemComment({
   } = getPublishedItemByIdResponse;
 
   const deletePostCommentResponse =
-    await controller.databaseService.tableNameToServicesMap.postCommentsTableService.deletePostComment(
+    await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.deletePublishedItemComment(
       {
         controller,
-        postCommentId,
+        publishedItemCommentId: postCommentId,
         authorUserId: clientUserId,
       },
     );
@@ -81,7 +81,7 @@ export async function handleDeletePublishedItemComment({
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
         referenceTableId: postCommentId,
         recipientUserId: postAuthorUserId,
       },
@@ -100,17 +100,18 @@ export async function handleDeletePublishedItemComment({
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification =
+  const unrenderableCanceledCommentOnPublishedItemNotification: UnrenderableCanceledCommentOnPublishedItemNotification =
     {
-      type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_POST,
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_PUBLISHED_ITEM,
       countOfUnreadNotifications,
-      postCommentId,
+      publishedItemCommentId: postCommentId,
     };
 
   await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost(
     {
       userId: postAuthorUserId,
-      unrenderableCanceledCommentOnPostNotification,
+      unrenderableCanceledCommentOnPostNotification:
+        unrenderableCanceledCommentOnPublishedItemNotification,
     },
   );
 

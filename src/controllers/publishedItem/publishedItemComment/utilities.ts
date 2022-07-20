@@ -13,59 +13,67 @@ import {
   constructRenderableUserFromParts,
   constructRenderableUsersFromParts,
 } from "../../user/utilities";
-import { RenderablePostComment, UnrenderablePostComment } from "./models";
+import {
+  RenderablePublishedItemComment,
+  UnrenderablePublishedItemComment,
+} from "./models";
 
-export async function constructRenderablePostCommentFromPartsById({
+export async function constructRenderablePublishedItemCommentFromPartsById({
   controller,
   blobStorageService,
   databaseService,
-  postCommentId,
+  publishedItemCommentId,
   clientUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  postCommentId: string;
+  publishedItemCommentId: string;
   clientUserId: string;
-}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePostComment>> {
-  const getPostCommentByIdResponse =
-    await databaseService.tableNameToServicesMap.postCommentsTableService.getPostCommentById(
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment>
+> {
+  const getPublishedItemCommentByIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
       {
         controller,
-        postCommentId,
+        publishedItemCommentId: publishedItemCommentId,
       },
     );
-  if (getPostCommentByIdResponse.type === EitherType.failure) {
-    return getPostCommentByIdResponse;
+  if (getPublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return getPublishedItemCommentByIdResponse;
   }
-  const { success: unrenderablePostComment } = getPostCommentByIdResponse;
+  const { success: unrenderablePublishedItemComment } =
+    getPublishedItemCommentByIdResponse;
 
-  return await constructRenderablePostCommentFromParts({
+  return await constructRenderablePublishedItemCommentFromParts({
     controller,
     blobStorageService,
     databaseService,
-    unrenderablePostComment,
+    unrenderablePublishedItemComment,
     clientUserId,
   });
 }
 
-export async function constructRenderablePostCommentFromParts({
+export async function constructRenderablePublishedItemCommentFromParts({
   controller,
   blobStorageService,
   databaseService,
-  unrenderablePostComment,
+  unrenderablePublishedItemComment,
   clientUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  unrenderablePostComment: UnrenderablePostComment;
+  unrenderablePublishedItemComment: UnrenderablePublishedItemComment;
   clientUserId: string;
-}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePostComment>> {
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment>
+> {
   const selectUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
       controller,
-      userId: unrenderablePostComment.authorUserId,
+      userId: unrenderablePublishedItemComment.authorUserId,
     });
 
   if (selectUserByUserIdResponse.type === EitherType.failure) {
@@ -78,9 +86,9 @@ export async function constructRenderablePostCommentFromParts({
       controller,
       httpStatusCode: 500,
       reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at constructRenderablePostCommentFromParts",
+      error: "User not found at constructRenderablePublishedItemCommentFromParts",
       additionalErrorInformation:
-        "User not found at constructRenderablePostCommentFromParts",
+        "User not found at constructRenderablePublishedItemCommentFromParts",
     });
   }
 
@@ -99,25 +107,29 @@ export async function constructRenderablePostCommentFromParts({
   const { success: renderableUser } = constructRenderableUserFromPartsResponse;
 
   return Success({
-    ...unrenderablePostComment,
+    ...unrenderablePublishedItemComment,
     user: renderableUser,
   });
 }
 
-export async function constructRenderablePostCommentsFromParts({
+export async function constructRenderablePublishedItemCommentsFromParts({
   controller,
   blobStorageService,
   databaseService,
-  unrenderablePostComments,
+  unrenderablePublishedItemComments,
   clientUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  unrenderablePostComments: UnrenderablePostComment[];
+  unrenderablePublishedItemComments: UnrenderablePublishedItemComment[];
   clientUserId: string;
-}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePostComment[]>> {
-  const userIds = unrenderablePostComments.map((postComment) => postComment.authorUserId);
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment[]>
+> {
+  const userIds = unrenderablePublishedItemComments.map(
+    (publishedItemComment) => publishedItemComment.authorUserId,
+  );
 
   const selectUsersByUserIdsResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
@@ -146,12 +158,12 @@ export async function constructRenderablePostCommentsFromParts({
     renderableUsers.map((renderableUser) => [renderableUser.userId, renderableUser]),
   );
 
-  const renderablePostComments = unrenderablePostComments.map(
-    (postComment): RenderablePostComment => ({
-      ...postComment,
-      user: userIdToRenderableUserMap.get(postComment.authorUserId)!,
+  const renderablePublishedItemComments = unrenderablePublishedItemComments.map(
+    (publishedItemComment): RenderablePublishedItemComment => ({
+      ...publishedItemComment,
+      user: userIdToRenderableUserMap.get(publishedItemComment.authorUserId)!,
     }),
   );
 
-  return Success(renderablePostComments);
+  return Success(renderablePublishedItemComments);
 }

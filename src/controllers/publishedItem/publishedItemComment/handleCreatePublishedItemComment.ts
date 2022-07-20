@@ -11,8 +11,8 @@ import {
 import { checkAuthorization } from "../../auth/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
-import { RenderablePostComment } from "./models";
-import { constructRenderablePostCommentFromParts } from "./utilities";
+import { RenderablePublishedItemComment } from "./models";
+import { constructRenderablePublishedItemCommentFromParts } from "./utilities";
 import { DatabaseService } from "../../../services/databaseService";
 import { collectTagsFromText } from "../../utilities/collectTagsFromText";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
@@ -22,12 +22,12 @@ import { assembleRecordAndSendNewTagInPublishedItemCommentNotification } from ".
 import { Controller } from "tsoa";
 
 export interface CreatePublishedItemCommentRequestBody {
-  postId: string;
+  publishedItemId: string;
   text: string;
 }
 
 export interface CreatePublishedItemCommentSuccess {
-  postComment: RenderablePostComment;
+  postComment: RenderablePublishedItemComment;
 }
 
 export enum CreatePublishedItemCommentFailedReason {
@@ -48,7 +48,7 @@ export async function handleCreatePublishedItemComment({
     CreatePublishedItemCommentSuccess
   >
 > {
-  const { postId, text } = requestBody;
+  const { publishedItemId, text } = requestBody;
 
   const { clientUserId, errorResponse } = await checkAuthorization(controller, request);
   if (errorResponse) return errorResponse;
@@ -58,11 +58,11 @@ export async function handleCreatePublishedItemComment({
   const creationTimestamp = Date.now();
 
   const createPostCommentResponse =
-    await controller.databaseService.tableNameToServicesMap.postCommentsTableService.createPostComment(
+    await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.createPublishedItemComment(
       {
         controller,
-        postCommentId,
-        postId,
+        publishedItemCommentId: postCommentId,
+        publishedItemId: publishedItemId,
         text,
         authorUserId: clientUserId,
         creationTimestamp,
@@ -73,13 +73,13 @@ export async function handleCreatePublishedItemComment({
   }
 
   const constructRenderablePostCommentFromPartsResponse =
-    await constructRenderablePostCommentFromParts({
+    await constructRenderablePublishedItemCommentFromParts({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      unrenderablePostComment: {
-        postCommentId,
-        postId,
+      unrenderablePublishedItemComment: {
+        publishedItemCommentId: postCommentId,
+        publishedItemId: publishedItemId,
         text,
         authorUserId: clientUserId,
         creationTimestamp,
@@ -94,7 +94,7 @@ export async function handleCreatePublishedItemComment({
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { controller, id: postId },
+      { controller, id: publishedItemId },
     );
   if (getPublishedItemByIdResponse.type === EitherType.failure) {
     return getPublishedItemByIdResponse;
@@ -127,7 +127,7 @@ async function considerAndExecuteNotifications({
   webSocketService,
 }: {
   controller: Controller;
-  renderablePostComment: RenderablePostComment;
+  renderablePostComment: RenderablePublishedItemComment;
   authorOfPublishedItemUserId: string;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageServiceInterface;
@@ -157,8 +157,8 @@ async function considerAndExecuteNotifications({
   ) {
     await assembleRecordAndSendNewTagInPublishedItemCommentNotification({
       controller,
-      publishedItemId: renderablePostComment.postId,
-      publishedItemCommentId: renderablePostComment.postCommentId,
+      publishedItemId: renderablePostComment.publishedItemId,
+      publishedItemCommentId: renderablePostComment.publishedItemCommentId,
       recipientUserId: authorOfPublishedItemUserId,
       databaseService,
       blobStorageService,
@@ -171,8 +171,8 @@ async function considerAndExecuteNotifications({
       async (taggedUserId) =>
         await assembleRecordAndSendNewTagInPublishedItemCommentNotification({
           controller,
-          publishedItemId: renderablePostComment.postId,
-          publishedItemCommentId: renderablePostComment.postCommentId,
+          publishedItemId: renderablePostComment.publishedItemId,
+          publishedItemCommentId: renderablePostComment.publishedItemCommentId,
           recipientUserId: taggedUserId,
           databaseService,
           blobStorageService,

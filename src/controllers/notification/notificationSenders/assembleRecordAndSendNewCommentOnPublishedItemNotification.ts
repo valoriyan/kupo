@@ -5,9 +5,9 @@ import { constructRenderablePostFromPartsById } from "../../publishedItem/post/u
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
-import { constructRenderablePostCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
+import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
 import { v4 as uuidv4 } from "uuid";
-import { RenderableNewCommentOnPostNotification } from "../models/renderableUserNotifications";
+import { RenderableNewCommentOnPublishedItemNotification } from "../models/renderableUserNotifications";
 import { Controller } from "tsoa";
 import {
   EitherType,
@@ -47,10 +47,10 @@ export async function assembleRecordAndSendNewCommentOnPostNotification({
   const { success: post } = constructRenderablePostFromPartsByIdResponse;
 
   const constructRenderablePostCommentFromPartsByIdResponse =
-    await constructRenderablePostCommentFromPartsById({
+    await constructRenderablePublishedItemCommentFromPartsById({
       controller,
       clientUserId: recipientUserId,
-      postCommentId: publishedItemCommentId,
+      publishedItemCommentId: publishedItemCommentId,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
     });
@@ -88,7 +88,7 @@ export async function assembleRecordAndSendNewCommentOnPostNotification({
         controller,
         userNotificationId: uuidv4(),
         recipientUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
+        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
         referenceTableId: publishedItemCommentId,
       },
     );
@@ -96,14 +96,15 @@ export async function assembleRecordAndSendNewCommentOnPostNotification({
     return createUserNotificationResponse;
   }
 
-  const renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification = {
-    countOfUnreadNotifications,
-    type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_POST,
-    eventTimestamp: Date.now(),
-    userThatCommented,
-    post,
-    postComment,
-  };
+  const renderableNewCommentOnPostNotification: RenderableNewCommentOnPublishedItemNotification =
+    {
+      countOfUnreadNotifications,
+      type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
+      eventTimestamp: Date.now(),
+      userThatCommented,
+      publishedItem: post,
+      publishedItemComment: postComment,
+    };
 
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewCommentOnPost(
     {

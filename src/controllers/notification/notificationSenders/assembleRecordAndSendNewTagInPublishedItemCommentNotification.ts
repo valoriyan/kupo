@@ -5,7 +5,7 @@ import { constructRenderablePostFromPartsById } from "../../publishedItem/post/u
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
-import { constructRenderablePostCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
+import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
 import {
@@ -47,10 +47,10 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   const { success: post } = constructRenderablePostFromPartsByIdResponse;
 
   const constructRenderablePostCommentFromPartsByIdResponse =
-    await constructRenderablePostCommentFromPartsById({
+    await constructRenderablePublishedItemCommentFromPartsById({
       controller,
       clientUserId: recipientUserId,
-      postCommentId: publishedItemCommentId,
+      publishedItemCommentId: publishedItemCommentId,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
     });
