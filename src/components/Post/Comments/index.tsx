@@ -19,7 +19,7 @@ export const Comments = ({ postId }: CommentsProps) => {
     fetchNextPage,
     isFetchingNextPage,
   } = useReadPageOfCommentsByPublishedItemId({
-    postId,
+    publishedItemId: postId,
   });
 
   if (isError && !isLoading) {

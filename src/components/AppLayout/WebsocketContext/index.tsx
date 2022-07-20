@@ -4,12 +4,12 @@ import create, { GetState, SetState } from "zustand";
 import createContext from "zustand/context";
 import getConfig from "next/config";
 import { NOTIFICATIONEVENTS, RenderableUserNotification } from "#/api";
-import { generateRenderableNewCommentOnPostNotificationHandler } from "./renderableNewCommentOnPostNotificationHandler";
-import { generateRenderableNewLikeOnPostNotificationHandler } from "./renderableNewLikeOnPostNotificationHandler";
+import { generateRenderableNewCommentOnPublishedItemNotificationHandler } from "./renderableNewCommentOnPublishedItemNotificationHandler";
+import { generateRenderableNewLikeOnPublishedItemNotificationHandler } from "./renderableNewLikeOnPublishedItemNotificationHandler";
 import { generateRenderableNewFollowerNotificationHandler } from "./renderableNewFollowerNotificationHandler";
-import { generateUnrenderableCanceledCommentOnPostNotificationHandler } from "./unrenderableCanceledCommentOnPostNotificationHandler";
+import { generateUnrenderableCanceledCommentOnPublishedItemNotificationHandler } from "./unrenderableCanceledCommentOnPublishedItemNotificationHandler";
 import { generateUnrenderableCanceledNewFollowerNotificationHandler } from "./unrenderableCanceledNewFollowerNotificationHandler";
-import { generateUnrenderableCanceledNewLikeOnPostNotificationHandler } from "./unrenderableCanceledNewLikeOnPostNotificationHandler";
+import { generateUnrenderableCanceledNewLikeOnPublishedItemNotificationHandler } from "./unrenderableCanceledNewLikeOnPublishedItemNotificationHandler";
 
 export interface WebsocketState {
   socket: Socket | undefined;
@@ -38,13 +38,13 @@ const generateSocket = ({
   });
 
   newSocket.on(
-    NOTIFICATIONEVENTS.NewCommentOnPost,
-    generateRenderableNewCommentOnPostNotificationHandler({ set, get }),
+    NOTIFICATIONEVENTS.NewCommentOnPublishedItem,
+    generateRenderableNewCommentOnPublishedItemNotificationHandler({ set, get }),
   );
 
   newSocket.on(
-    NOTIFICATIONEVENTS.NewLikeOnPost,
-    generateRenderableNewLikeOnPostNotificationHandler({ set, get }),
+    NOTIFICATIONEVENTS.NewLikeOnPublishedItem,
+    generateRenderableNewLikeOnPublishedItemNotificationHandler({ set, get }),
   );
 
   newSocket.on(
@@ -53,20 +53,20 @@ const generateSocket = ({
   );
 
   newSocket.on(
-    NOTIFICATIONEVENTS.CanceledNewCommentOnPost,
-    generateUnrenderableCanceledCommentOnPostNotificationHandler({ set, get }),
+    NOTIFICATIONEVENTS.CanceledNewCommentOnPublishedItem,
+    generateUnrenderableCanceledCommentOnPublishedItemNotificationHandler({ set, get }),
   );
   newSocket.on(
     NOTIFICATIONEVENTS.CanceledNewFollower,
     generateUnrenderableCanceledNewFollowerNotificationHandler({ set, get }),
   );
   newSocket.on(
-    NOTIFICATIONEVENTS.CanceledNewLikeOnPost,
-    generateUnrenderableCanceledNewLikeOnPostNotificationHandler({ set, get }),
+    NOTIFICATIONEVENTS.CanceledNewLikeOnPublishedItem,
+    generateUnrenderableCanceledNewLikeOnPublishedItemNotificationHandler({ set, get }),
   );
   newSocket.on(
     NOTIFICATIONEVENTS.NewTagInPublishedItemComment,
-    generateUnrenderableCanceledNewLikeOnPostNotificationHandler({ set, get }),
+    generateUnrenderableCanceledNewLikeOnPublishedItemNotificationHandler({ set, get }),
   );
 
   return newSocket;

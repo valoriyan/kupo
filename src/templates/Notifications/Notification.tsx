@@ -1,13 +1,13 @@
 import {
   NOTIFICATIONEVENTS,
-  RenderableNewCommentOnPostNotification,
+  RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
-  RenderableNewLikeOnPostNotification,
+  RenderableNewLikeOnPublishedItemNotification,
   RenderableUserNotification,
 } from "#/api";
-import { NewCommentOnPostNotification } from "./NewCommentOnPostNotification";
+import { NewCommentOnPublishedItemNotification } from "./NewCommentOnPublishedItemNotification";
 import { NewFollowerNotification } from "./NewFollowerNotification";
-import { NewLikeOnPostNotification } from "./NewLikeOnPostNotification";
+import { NewLikeOnPublishedItemNotification } from "./NewLikeOnPublishedItemNotification";
 import { NewTagInPublishedItemCommentNotification } from "./NewTagInPublishedItemCommentNotification";
 
 export interface NotificationProps {
@@ -26,19 +26,24 @@ export const Notification = ({ notification }: NotificationProps) => {
       />
     );
   } else if (
-    (type as unknown as NOTIFICATIONEVENTS) === NOTIFICATIONEVENTS.NewCommentOnPost
+    (type as unknown as NOTIFICATIONEVENTS) ===
+    NOTIFICATIONEVENTS.NewCommentOnPublishedItem
   ) {
     return (
-      <NewCommentOnPostNotification
-        notification={notification as unknown as RenderableNewCommentOnPostNotification}
+      <NewCommentOnPublishedItemNotification
+        notification={
+          notification as unknown as RenderableNewCommentOnPublishedItemNotification
+        }
       />
     );
   } else if (
-    (type as unknown as NOTIFICATIONEVENTS) === NOTIFICATIONEVENTS.NewLikeOnPost
+    (type as unknown as NOTIFICATIONEVENTS) === NOTIFICATIONEVENTS.NewLikeOnPublishedItem
   ) {
     return (
-      <NewLikeOnPostNotification
-        notification={notification as unknown as RenderableNewLikeOnPostNotification}
+      <NewLikeOnPublishedItemNotification
+        notification={
+          notification as unknown as RenderableNewLikeOnPublishedItemNotification
+        }
       />
     );
   } else if (

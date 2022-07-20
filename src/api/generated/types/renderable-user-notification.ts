@@ -13,12 +13,12 @@
  */
 
 import { NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT } from "./notificationeventsnewtaginpublisheditemcomment";
-import { RenderableNewCommentOnPostNotification } from "./renderable-new-comment-on-post-notification";
+import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
-import { RenderableNewLikeOnPostNotification } from "./renderable-new-like-on-post-notification";
+import { RenderableNewLikeOnPublishedItemNotification } from "./renderable-new-like-on-published-item-notification";
 import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable-new-tag-in-published-item-comment-notification";
-import { RenderablePost } from "./renderable-post";
-import { RenderablePostComment } from "./renderable-post-comment";
+import { RenderablePublishedItem } from "./renderable-published-item";
+import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
 import { RenderableUser } from "./renderable-user";
 
 /**
@@ -65,38 +65,26 @@ export interface RenderableUserNotification {
   userThatCommented: RenderableUser;
   /**
    *
-   * @type {RenderablePost}
+   * @type {RenderablePublishedItem}
    * @memberof RenderableUserNotification
    */
-  post: RenderablePost;
+  publishedItem: RenderablePublishedItem;
   /**
    *
-   * @type {RenderablePostComment}
+   * @type {RenderablePublishedItemComment}
    * @memberof RenderableUserNotification
    */
-  postComment: RenderablePostComment;
+  publishedItemComment: RenderablePublishedItemComment;
   /**
    *
    * @type {RenderableUser}
    * @memberof RenderableUserNotification
    */
-  userThatLikedPost: RenderableUser;
+  userThatLikedPublishedItem: RenderableUser;
   /**
    *
    * @type {RenderableUser}
    * @memberof RenderableUserNotification
    */
   userTaggingClient: RenderableUser;
-  /**
-   *
-   * @type {RenderablePost}
-   * @memberof RenderableUserNotification
-   */
-  publishedItem: RenderablePost;
-  /**
-   *
-   * @type {RenderablePostComment}
-   * @memberof RenderableUserNotification
-   */
-  publishedItemComment: RenderablePostComment;
 }

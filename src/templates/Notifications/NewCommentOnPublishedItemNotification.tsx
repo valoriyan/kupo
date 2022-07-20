@@ -1,21 +1,23 @@
-import { RenderableNewLikeOnPostNotification } from "#/api";
+import { RenderableNewCommentOnPublishedItemNotification, RenderablePost } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Stack } from "#/components/Layout";
 import { PostThumbnail } from "#/components/PostThumbnail";
 import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
+import { truncate } from "#/utils/truncate";
 import { goToUserProfilePage } from "../UserProfile";
 import { NotificationWrapper } from "./shared";
 
-export const NewLikeOnPostNotification = ({
+export const NewCommentOnPublishedItemNotification = ({
   notification,
 }: {
-  notification: RenderableNewLikeOnPostNotification;
+  notification: RenderableNewCommentOnPublishedItemNotification;
 }) => {
   const {
-    userThatLikedPost: { username, profilePictureTemporaryUrl },
-    post,
+    userThatCommented: { username, profilePictureTemporaryUrl },
+    publishedItemComment: { text: publishedItemCommentText },
+    publishedItem,
     eventTimestamp,
   } = notification;
 
@@ -30,14 +32,20 @@ export const NewLikeOnPostNotification = ({
 
       <Stack css={{ gap: "$2" }}>
         <Body>
-          <UserName username={username} /> liked your post.
+          <UserName username={username} /> commented{" "}
+          <em>
+            &ldquo;
+            {truncate(publishedItemCommentText, 60)}
+            &rdquo;
+          </em>{" "}
+          on your post.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago
         </Body>
       </Stack>
 
-      <PostThumbnail post={post} />
+      <PostThumbnail post={publishedItem as unknown as RenderablePost} />
     </NotificationWrapper>
   );
 };

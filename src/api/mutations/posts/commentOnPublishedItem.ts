@@ -2,23 +2,18 @@ import { InfiniteData, useMutation, useQueryClient } from "react-query";
 import { Api, ReadPageOfCommentsByPublishedItemIdSuccess } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
-export const useDeleteCommentFromPost = ({
-  postCommentId,
-  postId,
-}: {
-  postCommentId: string;
-  postId: string;
-}) => {
+export const useCommentOnPublishedItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async () => {
-      const res = await Api.deletePublishedItemComment({
-        postCommentId,
+    async ({ publishedItemId, text }: { publishedItemId: string; text: string }) => {
+      const res = await Api.createPublishedItemComment({
+        publishedItemId,
+        text,
       });
 
       if (res.data.success) return res.data.success;
-      const defaultErrorMessage = "Failed to delete comment";
+      const defaultErrorMessage = "Failed to post comment";
       throw new Error(
         res.data.error
           ? "reason" in res.data.error
@@ -30,20 +25,33 @@ export const useDeleteCommentFromPost = ({
     {
       onSuccess: (data) => {
         if (data) {
+          const createdPostComment = data.postComment;
+          const { publishedItemId } = createdPostComment;
+
           queryClient.setQueryData<
             InfiniteData<ReadPageOfCommentsByPublishedItemIdSuccess>
           >(
-            [CacheKeys.PostComments, postId],
+            [CacheKeys.PostComments, publishedItemId],
             (queriedData): InfiniteData<ReadPageOfCommentsByPublishedItemIdSuccess> => {
               if (!!queriedData) {
-                const updatedPages = queriedData.pages.map((page) => {
-                  const updatedRenderablePosts = page.postComments.filter(
-                    (postComment) => postComment.postCommentId !== postCommentId,
+                const updatedPages = queriedData.pages.map((page, index) => {
+                  if (index < queriedData.pages.length - 1) {
+                    return page;
+                  }
+
+                  const existingPostCommentIds = page.postComments.map(
+                    (chatMessage) => chatMessage.publishedItemId,
                   );
+
+                  const updatedPostComments = !existingPostCommentIds.includes(
+                    createdPostComment.publishedItemId,
+                  )
+                    ? [...page.postComments, createdPostComment]
+                    : page.postComments;
 
                   return {
                     ...page,
-                    postComments: updatedRenderablePosts,
+                    postComments: updatedPostComments,
                   };
                 });
 

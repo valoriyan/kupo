@@ -23,7 +23,7 @@ export interface SharePostRequestBody {
    * @type {string}
    * @memberof SharePostRequestBody
    */
-  sharedPostId: string;
+  sharedPublishedItemId: string;
   /**
    *
    * @type {string}

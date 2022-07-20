@@ -12,18 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
-
 /**
  *
  * @export
- * @interface CreatePublishedItemCommentSuccess
+ * @enum {string}
  */
-export interface CreatePublishedItemCommentSuccess {
-  /**
-   *
-   * @type {RenderablePublishedItemComment}
-   * @memberof CreatePublishedItemCommentSuccess
-   */
-  postComment: RenderablePublishedItemComment;
+export enum NOTIFICATIONEVENTSNEWLIKEONPUBLISHEDITEM {
+  NewLikeOnPublishedItem = "NEW_LIKE_ON_PUBLISHED_ITEM",
 }

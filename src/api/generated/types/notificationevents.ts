@@ -20,13 +20,13 @@
 export enum NOTIFICATIONEVENTS {
   DeletedChatMessage = "DELETED_CHAT_MESSAGE",
   NewChatMessage = "NEW_CHAT_MESSAGE",
-  NewCommentOnPost = "NEW_COMMENT_ON_POST",
-  CanceledNewCommentOnPost = "CANCELED_NEW_COMMENT_ON_POST",
+  NewCommentOnPublishedItem = "NEW_COMMENT_ON_PUBLISHED_ITEM",
+  CanceledNewCommentOnPublishedItem = "CANCELED_NEW_COMMENT_ON_PUBLISHED_ITEM",
   NewFollower = "NEW_FOLLOWER",
   CanceledNewFollower = "CANCELED_NEW_FOLLOWER",
-  NewLikeOnPost = "NEW_LIKE_ON_POST",
-  CanceledNewLikeOnPost = "CANCELED_NEW_LIKE_ON_POST",
+  NewLikeOnPublishedItem = "NEW_LIKE_ON_PUBLISHED_ITEM",
+  CanceledNewLikeOnPublishedItem = "CANCELED_NEW_LIKE_ON_PUBLISHED_ITEM",
   NewTagInPublishedItemComment = "NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
   CanceledNewTagInPublishedItemComment = "CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
-  NewPost = "NEW_POST",
+  NewPublishedItem = "NEW_PUBLISHED_ITEM",
 }

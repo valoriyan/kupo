@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { RenderablePostComment } from "./renderable-post-comment";
+import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
 
 /**
  *
@@ -22,10 +22,10 @@ import { RenderablePostComment } from "./renderable-post-comment";
 export interface ReadPageOfCommentsByPublishedItemIdSuccess {
   /**
    *
-   * @type {Array<RenderablePostComment>}
+   * @type {Array<RenderablePublishedItemComment>}
    * @memberof ReadPageOfCommentsByPublishedItemIdSuccess
    */
-  postComments: Array<RenderablePostComment>;
+  postComments: Array<RenderablePublishedItemComment>;
   /**
    *
    * @type {string}

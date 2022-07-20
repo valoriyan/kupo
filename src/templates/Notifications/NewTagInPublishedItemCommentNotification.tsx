@@ -1,3 +1,4 @@
+import { RenderablePost } from "#/api";
 import { RenderableNewTagInPublishedItemCommentNotification } from "#/api/generated/types/renderable-new-tag-in-published-item-comment-notification";
 import { Avatar } from "#/components/Avatar";
 import { Stack } from "#/components/Layout";
@@ -44,7 +45,7 @@ export const NewTagInPublishedItemCommentNotification = ({
         </Body>
       </Stack>
 
-      <PostThumbnail post={publishedItem} />
+      <PostThumbnail post={publishedItem as unknown as RenderablePost} />
     </NotificationWrapper>
   );
 };

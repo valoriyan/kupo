@@ -3,9 +3,9 @@ import { CacheKeys } from "#/contexts/queryClient";
 import { Api, ReadPageOfCommentsByPublishedItemIdSuccess } from "../..";
 
 export const useReadPageOfCommentsByPublishedItemId = ({
-  postId,
+  publishedItemId,
 }: {
-  postId: string;
+  publishedItemId: string;
 }) => {
   return useInfiniteQuery<
     ReadPageOfCommentsByPublishedItemIdSuccess,
@@ -13,24 +13,24 @@ export const useReadPageOfCommentsByPublishedItemId = ({
     ReadPageOfCommentsByPublishedItemIdSuccess,
     string[]
   >(
-    [CacheKeys.PostComments, postId],
-    ({ pageParam }) => fetchPageOfCommentsByPostId({ pageParam, postId }),
+    [CacheKeys.PostComments, publishedItemId],
+    ({ pageParam }) => fetchPageOfCommentsByPostId({ pageParam, publishedItemId }),
     {
       getNextPageParam: (lastPage) => lastPage.nextPageCursor,
-      enabled: !!postId,
+      enabled: !!publishedItemId,
     },
   );
 };
 
 async function fetchPageOfCommentsByPostId({
-  postId,
+  publishedItemId,
   pageParam,
 }: {
-  postId: string;
+  publishedItemId: string;
   pageParam: string | undefined;
 }) {
   const res = await Api.readPageOfCommentsByPublishedItemId({
-    postId,
+    publishedItemId,
     pageSize: 25,
     cursor: pageParam,
   });

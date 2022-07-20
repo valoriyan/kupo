@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT } from "./notificationeventsnewtaginpublisheditemcomment";
+import { NOTIFICATIONEVENTSNEWCOMMENTONPUBLISHEDITEM } from "./notificationeventsnewcommentonpublisheditem";
 import { RenderablePublishedItem } from "./renderable-published-item";
 import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
 import { RenderableUser } from "./renderable-user";
@@ -20,49 +20,49 @@ import { RenderableUser } from "./renderable-user";
 /**
  *
  * @export
- * @interface RenderableNewTagInPublishedItemCommentNotification
+ * @interface RenderableNewCommentOnPublishedItemNotification
  */
-export interface RenderableNewTagInPublishedItemCommentNotification {
+export interface RenderableNewCommentOnPublishedItemNotification {
   /**
    *
-   * @type {NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @type {NOTIFICATIONEVENTSNEWCOMMENTONPUBLISHEDITEM}
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
-  type: NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT;
+  type: NOTIFICATIONEVENTSNEWCOMMENTONPUBLISHEDITEM;
   /**
    *
    * @type {number}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
   countOfUnreadNotifications: number;
   /**
    *
    * @type {number}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
   eventTimestamp: number;
   /**
    *
    * @type {number}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
   timestampSeenByUser?: number;
   /**
    *
    * @type {RenderableUser}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
-  userTaggingClient: RenderableUser;
+  userThatCommented: RenderableUser;
   /**
    *
    * @type {RenderablePublishedItem}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
   publishedItem: RenderablePublishedItem;
   /**
    *
    * @type {RenderablePublishedItemComment}
-   * @memberof RenderableNewTagInPublishedItemCommentNotification
+   * @memberof RenderableNewCommentOnPublishedItemNotification
    */
   publishedItemComment: RenderablePublishedItemComment;
 }

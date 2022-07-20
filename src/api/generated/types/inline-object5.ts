@@ -12,9 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { UnrenderableCanceledCommentOnPostNotification } from "./unrenderable-canceled-comment-on-post-notification";
+import { UnrenderableCanceledCommentOnPublishedItemNotification } from "./unrenderable-canceled-comment-on-published-item-notification";
 import { UnrenderableCanceledNewFollowerNotification } from "./unrenderable-canceled-new-follower-notification";
-import { UnrenderableCanceledNewLikeOnPostNotification } from "./unrenderable-canceled-new-like-on-post-notification";
+import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "./unrenderable-canceled-new-like-on-published-item-notification";
 
 /**
  *
@@ -24,10 +24,10 @@ import { UnrenderableCanceledNewLikeOnPostNotification } from "./unrenderable-ca
 export interface InlineObject5 {
   /**
    *
-   * @type {UnrenderableCanceledNewLikeOnPostNotification}
+   * @type {UnrenderableCanceledNewLikeOnPublishedItemNotification}
    * @memberof InlineObject5
    */
-  UnrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification;
+  UnrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPublishedItemNotification;
   /**
    *
    * @type {UnrenderableCanceledNewFollowerNotification}
@@ -36,8 +36,8 @@ export interface InlineObject5 {
   UnrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification;
   /**
    *
-   * @type {UnrenderableCanceledCommentOnPostNotification}
+   * @type {UnrenderableCanceledCommentOnPublishedItemNotification}
    * @memberof InlineObject5
    */
-  UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPostNotification;
+  UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification;
 }

@@ -23,7 +23,7 @@ export interface CreatePublishedItemCommentRequestBody {
    * @type {string}
    * @memberof CreatePublishedItemCommentRequestBody
    */
-  postId: string;
+  publishedItemId: string;
   /**
    *
    * @type {string}

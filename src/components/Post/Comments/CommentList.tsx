@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { RenderablePostComment } from "#/api";
-import { useDeleteCommentFromPost } from "#/api/mutations/posts/deleteCommentFromPost";
+import { RenderablePublishedItemComment } from "#/api";
+import { useDeleteCommentFromPublishedItem } from "#/api/mutations/posts/deleteCommentFromPublishedItem";
 import { Avatar } from "#/components/Avatar";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
@@ -18,7 +18,7 @@ import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { ActionMenu } from "../ActionMenu";
 
 export interface CommentListProps {
-  comments: RenderablePostComment[];
+  comments: RenderablePublishedItemComment[];
   hasNextPage: boolean | undefined;
   fetchNextPage: () => void;
   isFetchingNextPage: boolean;
@@ -37,7 +37,7 @@ export const CommentList = (props: CommentListProps) => {
       // eslint-disable-next-line react/display-name
       items={props.comments.map((comment) => ({ updateItemHeight }) => (
         <Comment
-          key={comment.postCommentId}
+          key={comment.publishedItemCommentId}
           comment={comment}
           updateItemHeight={updateItemHeight}
         />
@@ -47,15 +47,15 @@ export const CommentList = (props: CommentListProps) => {
 };
 
 interface CommentProps {
-  comment: RenderablePostComment;
+  comment: RenderablePublishedItemComment;
   updateItemHeight: InfiniteScrollItemRenderProps["updateItemHeight"];
 }
 
 const Comment = ({ comment, updateItemHeight }: CommentProps) => {
   const userId = useCurrentUserId();
-  const { mutateAsync: deleteComment } = useDeleteCommentFromPost({
-    postId: comment.postId,
-    postCommentId: comment.postCommentId,
+  const { mutateAsync: deleteComment } = useDeleteCommentFromPublishedItem({
+    publishedItemId: comment.publishedItemId,
+    publishedItemCommentId: comment.publishedItemCommentId,
   });
   const [shouldExpandComment, setShouldExpandComment] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);

@@ -39,7 +39,7 @@ export const SharePostModal = ({
 
   const postNow = async () => {
     await sharePost({
-      sharedPostId: post.id,
+      sharedPublishedItemId: post.id,
       caption,
       hashtags,
       expirationTimestamp: expirationDate?.valueOf(),

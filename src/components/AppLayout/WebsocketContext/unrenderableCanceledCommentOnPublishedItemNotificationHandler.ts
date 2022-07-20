@@ -2,17 +2,17 @@ import { GetState, SetState } from "zustand";
 import {
   NOTIFICATIONEVENTS,
   RenderableUserNotification,
-  UnrenderableCanceledNewLikeOnPostNotification,
+  UnrenderableCanceledCommentOnPublishedItemNotification,
 } from "#/api";
 import { WebsocketState } from ".";
 
-export const generateUnrenderableCanceledNewLikeOnPostNotificationHandler =
+export const generateUnrenderableCanceledCommentOnPublishedItemNotificationHandler =
   ({ set, get }: { set: SetState<WebsocketState>; get: GetState<WebsocketState> }) =>
   (
-    unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPostNotification,
+    unrenderableCanceledCommentOnPublishedItemNotification: UnrenderableCanceledCommentOnPublishedItemNotification,
   ) => {
-    const { countOfUnreadNotifications, userIdUnlikingPost, postId } =
-      unrenderableCanceledNewLikeOnPostNotification;
+    const { countOfUnreadNotifications, publishedItemCommentId } =
+      unrenderableCanceledCommentOnPublishedItemNotification;
 
     const { notificationsReceived } = get();
     const updatedNotificationsReceived: RenderableUserNotification[] = [];
@@ -20,9 +20,9 @@ export const generateUnrenderableCanceledNewLikeOnPostNotificationHandler =
     notificationsReceived.forEach((notificationReceived) => {
       const isCancelledNotification =
         (notificationReceived.type as unknown as NOTIFICATIONEVENTS) ===
-          NOTIFICATIONEVENTS.NewLikeOnPost &&
-        notificationReceived.userThatLikedPost.userId === userIdUnlikingPost &&
-        notificationReceived.post.id === postId;
+          NOTIFICATIONEVENTS.NewCommentOnPublishedItem &&
+        notificationReceived.publishedItemComment.publishedItemCommentId ===
+          publishedItemCommentId;
 
       if (!isCancelledNotification) {
         updatedNotificationsReceived.push(notificationReceived);

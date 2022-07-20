@@ -1,5 +1,5 @@
 import { FormEventHandler, useState } from "react";
-import { useCommentOnPost } from "#/api/mutations/posts/commentOnPost";
+import { useCommentOnPublishedItem } from "#/api/mutations/posts/commentOnPublishedItem";
 import { Button } from "#/components/Button";
 import { CommentIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
@@ -14,13 +14,13 @@ export interface CommentInputProps {
 }
 
 export const CommentInput = ({ postId }: CommentInputProps) => {
-  const { mutateAsync: commentOnPost, isLoading } = useCommentOnPost();
+  const { mutateAsync: commentOnPost, isLoading } = useCommentOnPublishedItem();
   const [text, setText] = useState("");
 
   const onSubmitComment: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
-      await commentOnPost({ postId, text });
+      await commentOnPost({ publishedItemId: postId, text });
       setText("");
     } catch {
       return;

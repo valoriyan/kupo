@@ -23,7 +23,7 @@ export interface UpdatePostRequestBody {
    * @type {string}
    * @memberof UpdatePostRequestBody
    */
-  postId: string;
+  publishedItemId: string;
   /**
    *
    * @type {string}

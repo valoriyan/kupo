@@ -1,20 +1,23 @@
 import { GetState, SetState } from "zustand";
 import {
-  RenderableNewCommentOnPostNotification,
+  RenderableNewLikeOnPublishedItemNotification,
   RenderableUserNotification,
 } from "#/api";
 import { WebsocketState } from ".";
 
-export const generateRenderableNewCommentOnPostNotificationHandler =
+export const generateRenderableNewLikeOnPublishedItemNotificationHandler =
   ({ set, get }: { set: SetState<WebsocketState>; get: GetState<WebsocketState> }) =>
-  (renderableNewCommentOnPostNotification: RenderableNewCommentOnPostNotification) => {
+  (
+    renderableNewLikeOnPublishedItemNotification: RenderableNewLikeOnPublishedItemNotification,
+  ) => {
     const notificationsReceived = get().notificationsReceived;
+
     set({
       updatedCountOfUnreadNotifications:
-        renderableNewCommentOnPostNotification.countOfUnreadNotifications,
+        renderableNewLikeOnPublishedItemNotification.countOfUnreadNotifications,
       notificationsReceived: [
         ...notificationsReceived,
-        renderableNewCommentOnPostNotification as unknown as RenderableUserNotification,
+        renderableNewLikeOnPublishedItemNotification as unknown as RenderableUserNotification,
       ],
     });
   };

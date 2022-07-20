@@ -23,7 +23,7 @@ export interface ReadPageOfCommentsByPublishedItemIdRequestBody {
    * @type {string}
    * @memberof ReadPageOfCommentsByPublishedItemIdRequestBody
    */
-  postId: string;
+  publishedItemId: string;
   /**
    *
    * @type {string}
