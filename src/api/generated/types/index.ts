@@ -54,7 +54,6 @@ export * from "./either-error-reason-types-string-or-get-published-items-by-user
 export * from "./either-error-reason-types-string-or-get-published-items-from-followed-hashtag-failed-reason-get-published-items-from-followed-hashtag-success";
 export * from "./either-error-reason-types-string-or-get-published-items-from-followed-users-failed-reason-get-published-items-from-followed-users-success";
 export * from "./either-error-reason-types-string-or-get-saved-published-items-failed-reason-get-saved-published-items-success";
-export * from "./either-error-reason-types-string-or-get-shop-items-by-username-failed-reason-get-shop-items-by-username-success";
 export * from "./either-error-reason-types-string-or-get-user-content-feed-filters-failed-reason-get-user-content-feed-filters-success";
 export * from "./either-error-reason-types-string-or-get-user-profile-failed-reason-get-user-profile-success";
 export * from "./either-error-reason-types-string-or-get-users-by-ids-failed-reason-get-users-by-ids-success";
@@ -116,7 +115,6 @@ export * from "./error-reason-types-string-or-get-published-items-by-username-fa
 export * from "./error-reason-types-string-or-get-published-items-from-followed-hashtag-failed-reason";
 export * from "./error-reason-types-string-or-get-published-items-from-followed-users-failed-reason";
 export * from "./error-reason-types-string-or-get-saved-published-items-failed-reason";
-export * from "./error-reason-types-string-or-get-shop-items-by-username-failed-reason";
 export * from "./error-reason-types-string-or-get-user-content-feed-filters-failed-reason";
 export * from "./error-reason-types-string-or-get-user-profile-failed-reason";
 export * from "./error-reason-types-string-or-get-users-by-ids-failed-reason";
@@ -197,8 +195,6 @@ export * from "./failure-response-error-reason-types-string-or-get-published-ite
 export * from "./failure-response-error-reason-types-string-or-get-published-items-from-followed-users-failed-reason-error";
 export * from "./failure-response-error-reason-types-string-or-get-saved-published-items-failed-reason";
 export * from "./failure-response-error-reason-types-string-or-get-saved-published-items-failed-reason-error";
-export * from "./failure-response-error-reason-types-string-or-get-shop-items-by-username-failed-reason";
-export * from "./failure-response-error-reason-types-string-or-get-shop-items-by-username-failed-reason-error";
 export * from "./failure-response-error-reason-types-string-or-get-user-content-feed-filters-failed-reason";
 export * from "./failure-response-error-reason-types-string-or-get-user-content-feed-filters-failed-reason-error";
 export * from "./failure-response-error-reason-types-string-or-get-user-profile-failed-reason";
@@ -309,10 +305,6 @@ export * from "./get-published-items-scheduled-by-user-success";
 export * from "./get-saved-published-items-failed-reason";
 export * from "./get-saved-published-items-request-body";
 export * from "./get-saved-published-items-success";
-export * from "./get-shop-items-by-user-id-request-body";
-export * from "./get-shop-items-by-username-failed-reason";
-export * from "./get-shop-items-by-username-request-body";
-export * from "./get-shop-items-by-username-success";
 export * from "./get-user-content-feed-filters-failed-reason";
 export * from "./get-user-content-feed-filters-success";
 export * from "./get-user-profile-failed-reason";
@@ -425,7 +417,6 @@ export * from "./success-response-get-published-items-from-followed-hashtag-succ
 export * from "./success-response-get-published-items-from-followed-users-success";
 export * from "./success-response-get-published-items-scheduled-by-user-success";
 export * from "./success-response-get-saved-published-items-success";
-export * from "./success-response-get-shop-items-by-username-success";
 export * from "./success-response-get-user-content-feed-filters-success";
 export * from "./success-response-get-user-profile-success";
 export * from "./success-response-get-users-by-ids-success";

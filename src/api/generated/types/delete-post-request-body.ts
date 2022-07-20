@@ -23,5 +23,5 @@ export interface DeletePostRequestBody {
    * @type {string}
    * @memberof DeletePostRequestBody
    */
-  postId: string;
+  publishedItemId: string;
 }

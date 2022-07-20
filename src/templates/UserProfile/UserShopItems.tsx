@@ -28,7 +28,7 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
   }
 
   const shopItems = data.pages
-    .flatMap((page) => page.shopItems)
+    .flatMap((page) => page.publishedItems)
     .map((shopItem) => ({
       postId: shopItem.id,
       authorUserId: shopItem.authorUserId,
