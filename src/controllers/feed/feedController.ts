@@ -22,8 +22,18 @@ import {
   GetPageOfAllPublishedItemsSuccess,
   handleGetPageOfAllPublishedItems,
 } from "./handleGetPageOfAllPublishedItems";
-import { GetPublishedItemsFromFollowedUsersFailedReason, GetPublishedItemsFromFollowedUsersRequestBody, GetPublishedItemsFromFollowedUsersSuccess, handleGetPublishedItemsFromFollowedUsers } from "./handleGetPublishedItemsFromFollowedUsers";
-import { GetPublishedItemsFromFollowedHashtagFailedReason, GetPublishedItemsFromFollowedHashtagRequestBody, GetPublishedItemsFromFollowedHashtagSuccess, handleGetPublishedItemsFromFollowedHashtag } from "./handleGetPublishedItemsFromFollowedHashtag";
+import {
+  GetPublishedItemsFromFollowedUsersFailedReason,
+  GetPublishedItemsFromFollowedUsersRequestBody,
+  GetPublishedItemsFromFollowedUsersSuccess,
+  handleGetPublishedItemsFromFollowedUsers,
+} from "./handleGetPublishedItemsFromFollowedUsers";
+import {
+  GetPublishedItemsFromFollowedHashtagFailedReason,
+  GetPublishedItemsFromFollowedHashtagRequestBody,
+  GetPublishedItemsFromFollowedHashtagSuccess,
+  handleGetPublishedItemsFromFollowedHashtag,
+} from "./handleGetPublishedItemsFromFollowedHashtag";
 
 @injectable()
 @Route("feed")

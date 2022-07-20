@@ -26,11 +26,11 @@ import {
   DeletePostSuccess,
 } from "./handleDeletePost";
 import {
-  GetPageOfSavedPostsFailedReason,
-  GetPageOfSavedPostsRequestBody,
-  GetPageOfSavedPostsSuccess,
-  handleGetPageOfSavedPosts,
-} from "./handleGetPageOfSavedPosts";
+  GetSavedPublishedItemsFailedReason,
+  GetSavedPublishedItemsRequestBody,
+  GetSavedPublishedItemsSuccess,
+  handleGetSavedPublishedItems,
+} from "../pagination/handleGetSavedPublishedItems";
 import {
   GetPublishedItemByIdFailedReason,
   GetPublishedItemByIdRequestBody,
@@ -38,11 +38,11 @@ import {
   GetPublishedItemByIdSuccess,
 } from "../handleGetPublishedItemById";
 import {
-  GetPostsScheduledByUserFailed,
-  GetPostsScheduledByUserRequestBody,
-  handleGetPostsScheduledByUser,
-  GetPostsScheduledByUserSuccess,
-} from "./handleGetPostsScheduledByUser";
+  GetPublishedItemsScheduledByUserFailed,
+  GetPublishedItemsScheduledByUserRequestBody,
+  handleGetPublishedItemsScheduledByUser,
+  GetPublishedItemsScheduledByUserSuccess,
+} from "./handleGetPublishedItemsScheduledByUser";
 import {
   SharePostFailedReason,
   handleSharePost,
@@ -56,13 +56,13 @@ import {
   UpdatePostRequestBody,
 } from "./handleUpdatePost";
 import {
-  GetPostsByUsernameFailedReason,
-  GetPostsByUserIdRequestBody,
-  GetPostsByUsernameRequestBody,
-  handleGetPostsByUserId,
-  handleGetPostsByUsername,
-  GetPostsByUsernameSuccess,
-} from "./pagination/handleGetPosts";
+  GetPublishedItemsByUsernameFailedReason,
+  GetPublishedItemsByUserIdRequestBody,
+  GetPublishedItemsByUsernameRequestBody,
+  handleGetPublishedItemsByUserId,
+  handleGetPublishedItemsByUsername,
+  GetPublishedItemsByUsernameSuccess,
+} from "../pagination/handleGetPublishedItems";
 
 @injectable()
 @Route("post")
@@ -150,34 +150,34 @@ export class PostController extends Controller {
     });
   }
 
-  @Post("getPostsByUserId")
-  public async getPostsByUserId(
+  @Post("getPublishedItemsByUserId")
+  public async getPublishedItemsByUserId(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostsByUserIdRequestBody,
+    @Body() requestBody: GetPublishedItemsByUserIdRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
-      GetPostsByUsernameSuccess
+      ErrorReasonTypes<string | GetPublishedItemsByUsernameFailedReason>,
+      GetPublishedItemsByUsernameSuccess
     >
   > {
-    return await handleGetPostsByUserId({
+    return await handleGetPublishedItemsByUserId({
       controller: this,
       request,
       requestBody,
     });
   }
 
-  @Post("getPostsByUsername")
-  public async getPostsByUsername(
+  @Post("getPublishedItemsByUsername")
+  public async getPublishedItemsByUsername(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostsByUsernameRequestBody,
+    @Body() requestBody: GetPublishedItemsByUsernameRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
-      GetPostsByUsernameSuccess
+      ErrorReasonTypes<string | GetPublishedItemsByUsernameFailedReason>,
+      GetPublishedItemsByUsernameSuccess
     >
   > {
-    return await handleGetPostsByUsername({
+    return await handleGetPublishedItemsByUsername({
       controller: this,
       request,
       requestBody,
@@ -187,28 +187,31 @@ export class PostController extends Controller {
   @Post("getPostsScheduledByUser")
   public async getPostsScheduledByUser(
     @Request() request: express.Request,
-    @Body() requestBody: GetPostsScheduledByUserRequestBody,
+    @Body() requestBody: GetPublishedItemsScheduledByUserRequestBody,
   ): Promise<
-    SecuredHTTPResponse<GetPostsScheduledByUserFailed, GetPostsScheduledByUserSuccess>
+    SecuredHTTPResponse<
+      GetPublishedItemsScheduledByUserFailed,
+      GetPublishedItemsScheduledByUserSuccess
+    >
   > {
-    return await handleGetPostsScheduledByUser({
+    return await handleGetPublishedItemsScheduledByUser({
       controller: this,
       request,
       requestBody,
     });
   }
 
-  @Post("getPageOfSavedPosts")
-  public async getPageOfSavedPosts(
+  @Post("getSavedPublishedItems")
+  public async getSavedPublishedItems(
     @Request() request: express.Request,
-    @Body() requestBody: GetPageOfSavedPostsRequestBody,
+    @Body() requestBody: GetSavedPublishedItemsRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetPageOfSavedPostsFailedReason>,
-      GetPageOfSavedPostsSuccess
+      ErrorReasonTypes<string | GetSavedPublishedItemsFailedReason>,
+      GetSavedPublishedItemsSuccess
     >
   > {
-    return await handleGetPageOfSavedPosts({
+    return await handleGetSavedPublishedItems({
       controller: this,
       request,
       requestBody,

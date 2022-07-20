@@ -7,7 +7,7 @@ import {
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
-import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/post/pagination/utilities";
+import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/pagination/utilities";
 import { constructPublishedItemsFromParts } from "../publishedItem/utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
@@ -80,20 +80,22 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
   const { success: unrenderablePostsWithoutElementsOrHashtags } =
     getPublishedItemsByIdsResponse;
 
-  const filteredUnrenderablePostsWithoutElements = getPageOfPublishedItemsFromAllPublishedItems({
-    unrenderablePostsWithoutElementsOrHashtags,
-    encodedCursor: cursor,
-    pageSize: pageSize,
-  });
+  const filteredUnrenderablePostsWithoutElements =
+    getPageOfPublishedItemsFromAllPublishedItems({
+      unrenderablePostsWithoutElementsOrHashtags,
+      encodedCursor: cursor,
+      pageSize: pageSize,
+    });
 
-  const constructPublishedItemsFromPartsResponse =
-    await constructPublishedItemsFromParts({
+  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
+    {
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: filteredUnrenderablePostsWithoutElements,
       clientUserId,
-    });
+    },
+  );
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemsFromPartsResponse;
   }
@@ -103,7 +105,8 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     renderablePublishedItems.length > 0
       ? encodeTimestampCursor({
           timestamp:
-            renderablePublishedItems[renderablePublishedItems.length - 1].scheduledPublicationTimestamp,
+            renderablePublishedItems[renderablePublishedItems.length - 1]
+              .scheduledPublicationTimestamp,
         })
       : undefined;
 

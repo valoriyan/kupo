@@ -1,8 +1,5 @@
-import {
-  decodeTimestampCursor,
-  encodeTimestampCursor,
-} from "../../../utilities/pagination";
-import { UncompiledBasePublishedItem } from "../../models";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
+import { UncompiledBasePublishedItem } from "../models";
 
 export function getEncodedCursorOfNextPageOfSequentialItems<
   T extends { scheduledPublicationTimestamp: number },

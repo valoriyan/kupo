@@ -6,36 +6,37 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
-import { RenderablePost } from "./models";
+import { PublishedItemType, RenderablePublishedItem } from "../models";
+import { constructPublishedItemsFromParts } from "../utilities";
 import { PostController } from "./postController";
-import { constructRenderablePostsFromParts } from "./utilities";
 
-export interface GetPostsScheduledByUserRequestBody {
+export interface GetPublishedItemsScheduledByUserRequestBody {
   // JS Timestamp
   rangeStartTimestamp: number;
   // JS Timestamp
   rangeEndTimestamp: number;
+  publishedItemType?: PublishedItemType;
 }
 
-export interface GetPostsScheduledByUserSuccess {
-  posts: RenderablePost[];
+export interface GetPublishedItemsScheduledByUserSuccess {
+  publishedItems: RenderablePublishedItem[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GetPostsScheduledByUserFailed {}
+export interface GetPublishedItemsScheduledByUserFailed {}
 
-export async function handleGetPostsScheduledByUser({
+export async function handleGetPublishedItemsScheduledByUser({
   controller,
   request,
   requestBody,
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPostsScheduledByUserRequestBody;
+  requestBody: GetPublishedItemsScheduledByUserRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | GetPostsScheduledByUserFailed>,
-    GetPostsScheduledByUserSuccess
+    ErrorReasonTypes<string | GetPublishedItemsScheduledByUserFailed>,
+    GetPublishedItemsScheduledByUserSuccess
   >
 > {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -44,7 +45,7 @@ export async function handleGetPostsScheduledByUser({
   );
   if (error) return error;
 
-  const { rangeStartTimestamp, rangeEndTimestamp } = requestBody;
+  const { rangeStartTimestamp, rangeEndTimestamp, publishedItemType } = requestBody;
 
   const getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
@@ -53,6 +54,7 @@ export async function handleGetPostsScheduledByUser({
         creatorUserId: clientUserId,
         rangeEndTimestamp,
         rangeStartTimestamp,
+        type: publishedItemType,
       },
     );
   if (
@@ -64,20 +66,21 @@ export async function handleGetPostsScheduledByUser({
   const { success: uncompiledBasePublishedItem } =
     getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse;
 
-  const constructRenderablePostsFromPartsResponse =
-    await constructRenderablePostsFromParts({
+  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
+    {
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: uncompiledBasePublishedItem,
       clientUserId,
-    });
-  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostsFromPartsResponse;
+    },
+  );
+  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsResponse;
   }
-  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+  const { success: renderablePosts } = constructPublishedItemsFromPartsResponse;
 
   return Success({
-    posts: renderablePosts,
+    publishedItems: renderablePosts,
   });
 }

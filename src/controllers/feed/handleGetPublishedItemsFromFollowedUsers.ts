@@ -76,14 +76,15 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   const { success: uncompiledBasePublishedItems } =
     getPublishedItemsByCreatorUserIdsResponse;
 
-  const constructPublishedItemsFromPartsResponse =
-    await constructPublishedItemsFromParts({
+  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
+    {
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems,
       clientUserId,
-    });
+    },
+  );
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemsFromPartsResponse;
   }
@@ -93,7 +94,8 @@ export async function handleGetPublishedItemsFromFollowedUsers({
     renderablePublishedItems.length > 0
       ? encodeTimestampCursor({
           timestamp:
-            renderablePublishedItems[renderablePublishedItems.length - 1].scheduledPublicationTimestamp,
+            renderablePublishedItems[renderablePublishedItems.length - 1]
+              .scheduledPublicationTimestamp,
         })
       : undefined;
 

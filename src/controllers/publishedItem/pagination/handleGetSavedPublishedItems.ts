@@ -1,9 +1,7 @@
 import express from "express";
 import { checkAuthorization } from "../../auth/utilities";
-import { PublishedItemType } from "../models";
-import { RenderablePost } from "./models";
-import { getEncodedCursorOfNextPageOfSequentialItems } from "./pagination/utilities";
-import { constructRenderablePostsFromParts } from "./utilities";
+import { PublishedItemType, RenderablePublishedItem } from "../models";
+import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
 import { decodeTimestampCursor } from "../../utilities/pagination";
 import {
   EitherType,
@@ -11,38 +9,40 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { PostController } from "./postController";
+import { PostController } from "../post/postController";
+import { constructPublishedItemsFromParts } from "../utilities";
 
-export interface GetPageOfSavedPostsRequestBody {
+export interface GetSavedPublishedItemsRequestBody {
   cursor?: string;
   pageSize: number;
+  publishedItemType?: PublishedItemType;
 }
 
-export interface GetPageOfSavedPostsSuccess {
-  posts: RenderablePost[];
+export interface GetSavedPublishedItemsSuccess {
+  publishedItems: RenderablePublishedItem[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum GetPageOfSavedPostsFailedReason {
+export enum GetSavedPublishedItemsFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export async function handleGetPageOfSavedPosts({
+export async function handleGetSavedPublishedItems({
   controller,
   request,
   requestBody,
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPageOfSavedPostsRequestBody;
+  requestBody: GetSavedPublishedItemsRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | GetPageOfSavedPostsFailedReason>,
-    GetPageOfSavedPostsSuccess
+    ErrorReasonTypes<string | GetSavedPublishedItemsFailedReason>,
+    GetSavedPublishedItemsSuccess
   >
 > {
-  const { cursor, pageSize } = requestBody;
+  const { cursor, pageSize, publishedItemType } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -77,6 +77,7 @@ export async function handleGetPageOfSavedPosts({
       {
         controller,
         ids: publishedItemIds,
+        restrictedToType: publishedItemType,
       },
     );
   if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
@@ -84,29 +85,25 @@ export async function handleGetPageOfSavedPosts({
   }
   const { success: uncompiledBasePublishedItems } = getPublishedItemsByIdsResponse;
 
-  const uncompiledSavedPosts = uncompiledBasePublishedItems.filter(
-    (uncompiledBasePublishedItem) =>
-      uncompiledBasePublishedItem.type === PublishedItemType.POST,
-  );
-
-  const constructRenderablePostsFromPartsResponse =
-    await constructRenderablePostsFromParts({
+  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
+    {
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-      uncompiledBasePublishedItems: uncompiledSavedPosts,
+      uncompiledBasePublishedItems,
       clientUserId,
-    });
-  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostsFromPartsResponse;
+    },
+  );
+  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsResponse;
   }
-  const { success: posts } = constructRenderablePostsFromPartsResponse;
+  const { success: renderablePublishedItems } = constructPublishedItemsFromPartsResponse;
 
   return Success({
-    posts,
+    publishedItems: renderablePublishedItems,
     previousPageCursor: requestBody.cursor,
     nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
-      sequentialFeedItems: posts,
+      sequentialFeedItems: renderablePublishedItems,
     }),
   });
 }

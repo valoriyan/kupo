@@ -1,55 +1,57 @@
 import express from "express";
-import { RenderablePost } from "../models";
-import { PostController } from "../postController";
+import { PostController } from "../post/postController";
 import {
   EitherType,
   ErrorReasonTypes,
   Failure,
   HTTPResponse,
   Success,
-} from "../../../../utilities/monads";
-import { getClientUserId } from "../../../auth/utilities";
-import { canUserViewUserContentByUserId } from "../../../auth/utilities/canUserViewUserContent";
+} from "../../../utilities/monads";
+import { getClientUserId } from "../../auth/utilities";
+import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
-import { constructRenderablePostsFromParts } from "../utilities";
-import { decodeTimestampCursor } from "../../../utilities/pagination";
+import { decodeTimestampCursor } from "../../utilities/pagination";
+import { PublishedItemType, RenderablePublishedItem } from "../models";
+import { constructPublishedItemsFromParts } from "../utilities";
 
-export interface GetPostsByUserIdRequestBody {
+export interface GetPublishedItemsByUserIdRequestBody {
   userId: string;
   cursor?: string;
   pageSize: number;
+  publishedItemType?: PublishedItemType;
 }
 
-export interface GetPostsByUsernameRequestBody {
+export interface GetPublishedItemsByUsernameRequestBody {
   username: string;
   cursor?: string;
   pageSize: number;
+  publishedItemType?: PublishedItemType;
 }
 
-export interface GetPostsByUsernameSuccess {
-  posts: RenderablePost[];
+export interface GetPublishedItemsByUsernameSuccess {
+  publishedItems: RenderablePublishedItem[];
   previousPageCursor?: string;
   nextPageCursor?: string;
 }
 
-export enum GetPostsByUsernameFailedReason {
+export enum GetPublishedItemsByUsernameFailedReason {
   UnknownCause = "Unknown Cause",
   UserPrivate = "This User's Posts Are Private",
   UnknownUser = "User Not Found",
 }
 
-export async function handleGetPostsByUsername({
+export async function handleGetPublishedItemsByUsername({
   controller,
   request,
   requestBody,
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPostsByUsernameRequestBody;
+  requestBody: GetPublishedItemsByUsernameRequestBody;
 }): Promise<
   HTTPResponse<
-    ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
-    GetPostsByUsernameSuccess
+    ErrorReasonTypes<string | GetPublishedItemsByUsernameFailedReason>,
+    GetPublishedItemsByUsernameSuccess
   >
 > {
   const { username, ...restRequestBody } = requestBody;
@@ -66,34 +68,34 @@ export async function handleGetPostsByUsername({
     return Failure({
       controller,
       httpStatusCode: 404,
-      reason: GetPostsByUsernameFailedReason.UnknownUser,
+      reason: GetPublishedItemsByUsernameFailedReason.UnknownUser,
       error: "User not found at handleGetPostsByUsername",
       additionalErrorInformation: "User not found at handleGetPostsByUsername",
     });
   }
 
-  return handleGetPostsByUserId({
+  return handleGetPublishedItemsByUserId({
     controller,
     request,
     requestBody: { ...restRequestBody, userId },
   });
 }
 
-export async function handleGetPostsByUserId({
+export async function handleGetPublishedItemsByUserId({
   controller,
   request,
   requestBody,
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: GetPostsByUserIdRequestBody;
+  requestBody: GetPublishedItemsByUserIdRequestBody;
 }): Promise<
   HTTPResponse<
-    ErrorReasonTypes<string | GetPostsByUsernameFailedReason>,
-    GetPostsByUsernameSuccess
+    ErrorReasonTypes<string | GetPublishedItemsByUsernameFailedReason>,
+    GetPublishedItemsByUsernameSuccess
   >
 > {
-  const { userId, pageSize, cursor } = requestBody;
+  const { userId, pageSize, cursor, publishedItemType } = requestBody;
 
   const clientUserId = await getClientUserId(request);
 
@@ -116,7 +118,7 @@ export async function handleGetPostsByUserId({
     return Failure({
       controller,
       httpStatusCode: 404,
-      reason: GetPostsByUsernameFailedReason.UserPrivate,
+      reason: GetPublishedItemsByUsernameFailedReason.UserPrivate,
       error: "Illegal access at handleGetPostsByUserId",
       additionalErrorInformation: "Illegal access at handleGetPostsByUserId",
     });
@@ -130,6 +132,7 @@ export async function handleGetPostsByUserId({
         filterOutExpiredAndUnscheduledPublishedItems: true,
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
+        type: publishedItemType,
       },
     );
   if (getPublishedItemsByAuthorUserIdResponse.type === EitherType.failure) {
@@ -138,24 +141,25 @@ export async function handleGetPostsByUserId({
   const { success: unrenderablePostsWithoutElementsOrHashtags } =
     getPublishedItemsByAuthorUserIdResponse;
 
-  const constructRenderablePostsFromPartsResponse =
-    await constructRenderablePostsFromParts({
+  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
+    {
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
       clientUserId,
-    });
-  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostsFromPartsResponse;
+    },
+  );
+  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsResponse;
   }
-  const { success: posts } = constructRenderablePostsFromPartsResponse;
+  const { success: publishedItems } = constructPublishedItemsFromPartsResponse;
 
   return Success({
-    posts,
+    publishedItems,
     previousPageCursor: requestBody.cursor,
     nextPageCursor: getEncodedCursorOfNextPageOfSequentialItems({
-      sequentialFeedItems: unrenderablePostsWithoutElementsOrHashtags,
+      sequentialFeedItems: publishedItems,
     }),
   });
 }

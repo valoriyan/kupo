@@ -31,10 +31,7 @@ export async function constructPublishedItemsFromParts({
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   clientUserId: string | undefined;
 }): Promise<
-  InternalServiceResponse<
-    ErrorReasonTypes<string>,
-    RenderablePublishedItem[]
-  >
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem[]>
 > {
   const constructPublishedItemFromPartsResponses = await BluebirdPromise.map(
     uncompiledBasePublishedItems,
@@ -65,9 +62,7 @@ export async function constructPublishedItemFromParts({
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   clientUserId: string | undefined;
-}): Promise<
-  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>
-> {
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>> {
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
     return await constructRenderablePostFromParts({
       controller,

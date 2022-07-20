@@ -1,6 +1,7 @@
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { AuthFailedReason } from "../../controllers/auth/models";
 import { Controller } from "tsoa";
+import { getEnvironmentVariable } from "..";
 
 export enum EitherType {
   failure = "failure",
@@ -63,6 +64,20 @@ export const Failure = <ErrorReason>({
   additionalErrorInformation?: string;
 }): FailureResponse<ErrorReason> => {
   controller.setStatus(httpStatusCode);
+
+  const productionEnvironment: string = getEnvironmentVariable("PRODUCTION_ENVIRONMENT");
+
+  if (productionEnvironment === "prod") {
+    // TODO: log error
+
+    return {
+      type: EitherType.failure,
+      error: {
+        reason,
+        errorMessage: "Internal Server Error",
+      },
+    };
+  }
 
   return {
     type: EitherType.failure,
