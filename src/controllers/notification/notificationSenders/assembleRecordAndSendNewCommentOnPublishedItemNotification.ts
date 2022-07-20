@@ -16,7 +16,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 
-export async function assembleRecordAndSendNewCommentOnPostNotification({
+export async function assembleRecordAndSendNewCommentOnPublishedItemNotification({
   controller,
   publishedItemId,
   publishedItemCommentId,

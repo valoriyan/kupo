@@ -20,6 +20,7 @@ import { WebSocketService } from "../../../services/webSocketService";
 import { Promise as BluebirdPromise } from "bluebird";
 import { assembleRecordAndSendNewTagInPublishedItemCommentNotification } from "../../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCommentNotification";
 import { Controller } from "tsoa";
+import { assembleRecordAndSendNewCommentOnPublishedItemNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewCommentOnPublishedItemNotification";
 
 export interface CreatePublishedItemCommentRequestBody {
   publishedItemId: string;
@@ -155,7 +156,7 @@ async function considerAndExecuteNotifications({
     !(authorOfPublishedItemUserId === authorOfCommentUserId) &&
     !foundUserIdsMatchingTags.includes(authorOfPublishedItemUserId)
   ) {
-    await assembleRecordAndSendNewTagInPublishedItemCommentNotification({
+    await assembleRecordAndSendNewCommentOnPublishedItemNotification({
       controller,
       publishedItemId: renderablePostComment.publishedItemId,
       publishedItemCommentId: renderablePostComment.publishedItemCommentId,
