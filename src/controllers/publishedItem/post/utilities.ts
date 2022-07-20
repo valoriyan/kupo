@@ -8,7 +8,7 @@ import {
   PublishedItemType,
   UncompiledBasePublishedItem,
 } from "../models";
-import { assembleBaseRenderablePublishedItem } from "../utilities";
+import { assembleBaseRenderablePublishedItem } from "../utilities/constructPublishedItemsFromParts";
 import { Controller } from "tsoa";
 import {
   collectMappedResponses,

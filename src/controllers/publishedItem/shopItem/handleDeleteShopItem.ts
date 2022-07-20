@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
+import { BlobStorageService } from "../../../services/blobStorageService";
+import { DatabaseService } from "../../../services/databaseService";
+import { Controller } from "tsoa";
 import {
   EitherType,
   ErrorReasonTypes,
+  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
+import { deleteBaseRenderablePublishedItemComponents } from "../utilities/deleteBasePublishedItemComponents";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -40,17 +46,23 @@ export async function handleDeleteShopItem({
   );
   if (error) return error;
 
-  const deletePublishedItemResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
-      {
-        controller,
-        id: publishedItemId,
-        authorUserId: clientUserId,
-      },
-    );
-  if (deletePublishedItemResponse.type === EitherType.failure) {
-    return deletePublishedItemResponse;
+  //////////////////////////////////////////////////
+  // DELETE BASE PUBLISHED ITEMs
+  //////////////////////////////////////////////////
+  const deleteBaseRenderablePublishedItemComponentsResponse =
+    await deleteBaseRenderablePublishedItemComponents({
+      controller,
+      databaseService: controller.databaseService,
+      publishedItemId,
+      requestingUserId: clientUserId,
+    });
+  if (deleteBaseRenderablePublishedItemComponentsResponse.type === EitherType.failure) {
+    return deleteBaseRenderablePublishedItemComponentsResponse;
   }
+
+  //////////////////////////////////////////////////
+  // DELETE REMAINING SHOP ITEM
+  //////////////////////////////////////////////////
 
   const deleteShopItemResponse =
     await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
@@ -64,8 +76,36 @@ export async function handleDeleteShopItem({
     return deleteShopItemResponse;
   }
 
+  //////////////////////////////////////////////////
+  // DELETE ASSOCIATED BLOB FILES
+  //////////////////////////////////////////////////
+  const deleteAssociatedBlobFilesForShopItemResponse =
+    await deleteAssociatedBlobFilesForShopItem({
+      controller,
+      databaseService: controller.databaseService,
+      blobStorageService: controller.blobStorageService,
+      publishedItemId,
+    });
+  if (deleteAssociatedBlobFilesForShopItemResponse.type === EitherType.failure) {
+    return deleteAssociatedBlobFilesForShopItemResponse;
+  }
+
+  return Success({});
+}
+
+const deleteAssociatedBlobFilesForShopItem = async ({
+  controller,
+  databaseService,
+  blobStorageService,
+  publishedItemId,
+}: {
+  controller: Controller;
+  databaseService: DatabaseService;
+  blobStorageService: BlobStorageService;
+  publishedItemId: string;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
   const deleteShopItemMediaElementsByPublishedItemIdResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByPublishedItemId(
+    await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByPublishedItemId(
       {
         controller,
         publishedItemId,
@@ -76,7 +116,7 @@ export async function handleDeleteShopItem({
   }
   const { success: blobPointers } = deleteShopItemMediaElementsByPublishedItemIdResponse;
 
-  const deleteImagesResponse = await controller.blobStorageService.deleteImages({
+  const deleteImagesResponse = await blobStorageService.deleteImages({
     controller,
     blobPointers,
   });
@@ -85,4 +125,4 @@ export async function handleDeleteShopItem({
   }
 
   return Success({});
-}
+};

@@ -15,7 +15,7 @@ import {
   UncompiledBasePublishedItem,
 } from "../models";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
-import { assembleBaseRenderablePublishedItem } from "../utilities";
+import { assembleBaseRenderablePublishedItem } from "../utilities/constructPublishedItemsFromParts";
 import { Controller } from "tsoa";
 import {
   collectMappedResponses,

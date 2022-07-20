@@ -1,12 +1,17 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
+import { BlobStorageService } from "src/services/blobStorageService";
+import { DatabaseService } from "src/services/databaseService";
+import { Controller } from "tsoa";
 import { checkAuthorization } from "../../../controllers/auth/utilities";
-import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import {
   EitherType,
   ErrorReasonTypes,
+  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
+import { deleteBaseRenderablePublishedItemComponents } from "../utilities/deleteBasePublishedItemComponents";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -16,7 +21,7 @@ export interface DeletePostFailed {}
 export interface DeletePostSuccess {}
 
 export interface DeletePostRequestBody {
-  postId: string;
+  publishedItemId: string;
 }
 
 export async function handleDeletePost({
@@ -36,25 +41,52 @@ export async function handleDeletePost({
   );
   if (error) return error;
 
-  const { postId } = requestBody;
+  const { publishedItemId } = requestBody;
 
-  const deletePublishedItemResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
-      {
-        controller,
-        id: postId,
-        authorUserId: clientUserId,
-      },
-    );
-  if (deletePublishedItemResponse.type === EitherType.failure) {
-    return deletePublishedItemResponse;
+  //////////////////////////////////////////////////
+  // DELETE BASE PUBLISHED ITEMS
+  //////////////////////////////////////////////////
+
+  const deleteBaseRenderablePublishedItemComponentsResponse =
+    await deleteBaseRenderablePublishedItemComponents({
+      controller,
+      databaseService: controller.databaseService,
+      publishedItemId,
+      requestingUserId: clientUserId,
+    });
+  if (deleteBaseRenderablePublishedItemComponentsResponse.type === EitherType.failure) {
+    return deleteBaseRenderablePublishedItemComponentsResponse;
   }
 
   //////////////////////////////////////////////////
   // DELETE ASSOCIATED BLOB FILES
   //////////////////////////////////////////////////
+  const deleteAssociatedBlobFilesResponse = await deleteAssociatedBlobFilesForPost({
+    controller,
+    databaseService: controller.databaseService,
+    blobStorageService: controller.blobStorageService,
+    postId: publishedItemId,
+  });
+  if (deleteAssociatedBlobFilesResponse.type === EitherType.failure) {
+    return deleteAssociatedBlobFilesResponse;
+  }
+
+  return Success({});
+}
+
+const deleteAssociatedBlobFilesForPost = async ({
+  controller,
+  databaseService,
+  blobStorageService,
+  postId,
+}: {
+  controller: Controller;
+  databaseService: DatabaseService;
+  blobStorageService: BlobStorageService;
+  postId: string;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
   const deletePostContentElementsByPostIdResponse =
-    await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
+    await databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPostId(
       {
         controller,
         postId,
@@ -65,7 +97,7 @@ export async function handleDeletePost({
   }
   const { success: blobPointers } = deletePostContentElementsByPostIdResponse;
 
-  const deleteImagesResponse = await controller.blobStorageService.deleteImages({
+  const deleteImagesResponse = await blobStorageService.deleteImages({
     controller,
     blobPointers,
   });
@@ -73,87 +105,5 @@ export async function handleDeletePost({
     return deleteImagesResponse;
   }
 
-  //////////////////////////////////////////////////
-  // DELETE ASSOCIATED POST LIKES
-  //////////////////////////////////////////////////
-
-  const getPostLikesByPublishedItemIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPostLikesByPublishedItemId(
-      {
-        controller,
-        publishedItemId: postId,
-      },
-    );
-  if (getPostLikesByPublishedItemIdResponse.type === EitherType.failure) {
-    return getPostLikesByPublishedItemIdResponse;
-  }
-  const { success: dbPostLikes } = getPostLikesByPublishedItemIdResponse;
-
-  const postLikeIds = dbPostLikes.map(
-    ({ published_item_like_id: post_like_id }) => post_like_id,
-  );
-
-  if (dbPostLikes.length > 0) {
-    const removeAllPostLikesByPublishedItemIdResponse =
-      await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.removeAllPostLikesByPublishedItemId(
-        { controller, publishedItemId: postId },
-      );
-    if (removeAllPostLikesByPublishedItemIdResponse.type === EitherType.failure) {
-      return removeAllPostLikesByPublishedItemIdResponse;
-    }
-  }
-
-  //////////////////////////////////////////////////
-  // DELETE ASSOCIATED NOTIFICATIONS
-  //////////////////////////////////////////////////
-
-  if (postLikeIds.length > 0) {
-    const deleteUserNotificationsForAllUsersByReferenceTableIdsResponse =
-      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
-        {
-          controller,
-          notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_POST,
-          referenceTableIds: postLikeIds,
-        },
-      );
-    if (
-      deleteUserNotificationsForAllUsersByReferenceTableIdsResponse.type ===
-      EitherType.failure
-    ) {
-      return deleteUserNotificationsForAllUsersByReferenceTableIdsResponse;
-    }
-  }
-
-  //////////////////////////////////////////////////
-  // DELETE ASSOCIATED SAVED POSTS
-  //////////////////////////////////////////////////
-
-  const doesUserIdSavePublishedItemIdResponse =
-    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-      {
-        controller,
-        userId: clientUserId,
-        publishedItemId: postId,
-      },
-    );
-  if (doesUserIdSavePublishedItemIdResponse.type === EitherType.failure) {
-    return doesUserIdSavePublishedItemIdResponse;
-  }
-  const { success: userIdSavedItemId } = doesUserIdSavePublishedItemIdResponse;
-
-  if (userIdSavedItemId) {
-    const unSaveItemResponse =
-      await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
-        {
-          controller,
-          userId: clientUserId,
-          publishedItemId: postId,
-        },
-      );
-    if (unSaveItemResponse.type === EitherType.failure) {
-      return unSaveItemResponse;
-    }
-  }
-
   return Success({});
-}
+};

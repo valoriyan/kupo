@@ -26,14 +26,6 @@ import {
   handleDeleteShopItem,
 } from "./handleDeleteShopItem";
 import {
-  GetShopItemsByUserIdRequestBody,
-  GetShopItemsByUsernameFailedReason,
-  GetShopItemsByUsernameRequestBody,
-  GetShopItemsByUsernameSuccess,
-  handleGetShopItemsByUserId,
-  handleGetShopItemsByUsername,
-} from "./handleGetShopItems";
-import {
   handleUpdateShopItem,
   UpdateShopItemFailedReason,
   UpdateShopItemSuccess,
@@ -159,40 +151,6 @@ export class ShopItemController extends Controller {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
-
-  @Post("getShopItemsByUserId")
-  public async getShopItemsByUserId(
-    @Request() request: express.Request,
-    @Body() requestBody: GetShopItemsByUserIdRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetShopItemsByUsernameFailedReason>,
-      GetShopItemsByUsernameSuccess
-    >
-  > {
-    return await handleGetShopItemsByUserId({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
-
-  @Post("getShopItemsByUsername")
-  public async getShopItemsByUsername(
-    @Request() request: express.Request,
-    @Body() requestBody: GetShopItemsByUsernameRequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetShopItemsByUsernameFailedReason>,
-      GetShopItemsByUsernameSuccess
-    >
-  > {
-    return await handleGetShopItemsByUsername({
-      controller: this,
-      request,
-      requestBody,
-    });
-  }
 
   @Post("getCreditCardsStoredByUserId")
   public async getCreditCardsStoredByUserId(

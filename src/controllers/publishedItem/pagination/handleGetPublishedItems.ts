@@ -12,7 +12,7 @@ import { canUserViewUserContentByUserId } from "../../auth/utilities/canUserView
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities";
 import { decodeTimestampCursor } from "../../utilities/pagination";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
-import { constructPublishedItemsFromParts } from "../utilities";
+import { constructPublishedItemsFromParts } from "../utilities/constructPublishedItemsFromParts";
 
 export interface GetPublishedItemsByUserIdRequestBody {
   userId: string;

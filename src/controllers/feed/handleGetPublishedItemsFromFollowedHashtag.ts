@@ -8,7 +8,7 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
 import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/pagination/utilities";
-import { constructPublishedItemsFromParts } from "../publishedItem/utilities";
+import { constructPublishedItemsFromParts } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
