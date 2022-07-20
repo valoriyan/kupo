@@ -131,7 +131,7 @@ export class PaymentProcessingService {
         },
       );
 
-      return card.id;
+      return Success(card.id);
     } catch (error) {
       return Failure({
         controller,
@@ -195,7 +195,7 @@ export class PaymentProcessingService {
           paymentProcessorCardId,
         );
 
-      return deletedPaymentProcessorCardId;
+      return Success(deletedPaymentProcessorCardId);
     } catch (error) {
       return Failure({
         controller,
@@ -231,7 +231,7 @@ export class PaymentProcessingService {
         customerId: paymentProcessingCustomerId,
       });
 
-      return charge.id;
+      return Success(charge.id);
     } catch (error) {
       return Failure({
         controller,
