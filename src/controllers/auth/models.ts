@@ -5,6 +5,7 @@ export enum AuthFailedReason {
   InvalidToken = "Failed To Validate Token",
   TokenGenerationFailed = "Failed To Generate Access Token",
   AuthorizationError = "You Must Be Logged In",
+  IllegalAccess = "Illegal Access",
 }
 
 export interface AuthSuccess {

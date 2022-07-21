@@ -147,7 +147,7 @@ export async function handleGetPublishedItemsByUserId({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
-      clientUserId,
+      requestorUserId: clientUserId,
     },
   );
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {

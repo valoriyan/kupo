@@ -12,7 +12,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { constructPublishedItemFromParts } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRenderableNewCommentOnPostNotification({
   controller,
@@ -60,26 +60,14 @@ export async function assembleRenderableNewCommentOnPostNotification({
   const { success: publishedItemComment } =
     constructRenderablePostCommentFromPartsResponse;
 
-  const getPublishedItemByIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      {
-        controller,
-        id: publishedItemComment.publishedItemId,
-      },
-    );
-  if (getPublishedItemByIdResponse.type === EitherType.failure) {
-    return getPublishedItemByIdResponse;
-  }
-  const { success: unrenderablePostWithoutElementsOrHashtags } =
-    getPublishedItemByIdResponse;
-
-  const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
-    controller,
-    blobStorageService,
-    databaseService,
-    uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-    clientUserId,
-  });
+  const constructPublishedItemFromPartsResponse =
+    await constructPublishedItemFromPartsById({
+      controller,
+      blobStorageService,
+      databaseService,
+      publishedItemId: publishedItemComment.publishedItemId,
+      requestorUserId: clientUserId,
+    });
   if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsResponse;
   }

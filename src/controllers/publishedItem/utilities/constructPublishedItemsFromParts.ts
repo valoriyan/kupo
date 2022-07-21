@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import {
-  BaseRenderablePublishedItem,
   PublishedItemType,
   RenderablePublishedItem,
   UncompiledBasePublishedItem,
@@ -23,13 +23,13 @@ export async function constructPublishedItemsFromParts({
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItems,
-  clientUserId,
+  requestorUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
-  clientUserId: string | undefined;
+  requestorUserId: string | undefined;
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem[]>
 > {
@@ -41,7 +41,7 @@ export async function constructPublishedItemsFromParts({
         blobStorageService,
         databaseService,
         uncompiledBasePublishedItem,
-        clientUserId,
+        requestorUserId,
       }),
   );
 
@@ -50,18 +50,56 @@ export async function constructPublishedItemsFromParts({
   });
 }
 
+export async function constructPublishedItemFromPartsById({
+  controller,
+  blobStorageService,
+  databaseService,
+  publishedItemId,
+  requestorUserId,
+}: {
+  controller: Controller;
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  publishedItemId: string;
+  requestorUserId: string | undefined;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>> {
+  const getPublishedItemByIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { controller, id: publishedItemId },
+    );
+
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
+
+  const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
+    controller,
+    blobStorageService: blobStorageService,
+    databaseService: databaseService,
+    uncompiledBasePublishedItem,
+    requestorUserId,
+  });
+  if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
+    return constructPublishedItemFromPartsResponse;
+  }
+  const { success: post } = constructPublishedItemFromPartsResponse;
+
+  return Success(post);
+}
+
 export async function constructPublishedItemFromParts({
   controller,
   blobStorageService,
   databaseService,
   uncompiledBasePublishedItem,
-  clientUserId,
+  requestorUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
-  clientUserId: string | undefined;
+  requestorUserId?: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>> {
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
     return await constructRenderablePostFromParts({
@@ -69,7 +107,7 @@ export async function constructPublishedItemFromParts({
       blobStorageService,
       databaseService,
       uncompiledBasePublishedItem,
-      clientUserId,
+      requestorUserId,
     });
   } else {
     return await constructRenderableShopItemFromParts({
@@ -77,120 +115,7 @@ export async function constructPublishedItemFromParts({
       blobStorageService,
       databaseService,
       uncompiledBasePublishedItem,
-      clientUserId,
+      requestorUserId: requestorUserId,
     });
   }
-}
-
-export async function assembleBaseRenderablePublishedItem({
-  controller,
-  databaseService,
-  uncompiledBasePublishedItem,
-  clientUserId,
-}: {
-  controller: Controller;
-  databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
-  clientUserId: string | undefined;
-}): Promise<
-  InternalServiceResponse<ErrorReasonTypes<string>, BaseRenderablePublishedItem>
-> {
-  const {
-    type,
-    id,
-    creationTimestamp,
-    authorUserId,
-    caption,
-    scheduledPublicationTimestamp,
-    expirationTimestamp,
-    idOfPublishedItemBeingShared,
-  } = uncompiledBasePublishedItem;
-
-  const getHashtagsForPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
-      { controller, publishedItemId: id },
-    );
-
-  if (getHashtagsForPublishedItemIdResponse.type === EitherType.failure) {
-    return getHashtagsForPublishedItemIdResponse;
-  }
-  const { success: hashtags } = getHashtagsForPublishedItemIdResponse;
-
-  const countLikesOnPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemLikesTableService.countLikesOnPublishedItemId(
-      {
-        controller,
-        publishedItemId: id,
-      },
-    );
-  if (countLikesOnPublishedItemIdResponse.type === EitherType.failure) {
-    return countLikesOnPublishedItemIdResponse;
-  }
-  const { success: countOfLikesOnPost } = countLikesOnPublishedItemIdResponse;
-
-  const countCommentsOnPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.countCommentsOnPublishedItemId(
-      {
-        controller,
-        publishedItemId: id,
-      },
-    );
-  if (countCommentsOnPublishedItemIdResponse.type === EitherType.failure) {
-    return countCommentsOnPublishedItemIdResponse;
-  }
-  const { success: countOfCommentsOnPost } = countCommentsOnPublishedItemIdResponse;
-
-  let isLikedByClient = false;
-  if (!!clientUserId) {
-    const doesUserIdLikePublishedItemIdResponse =
-      await databaseService.tableNameToServicesMap.publishedItemLikesTableService.doesUserIdLikePublishedItemId(
-        {
-          controller,
-          userId: clientUserId,
-          publishedItemId: id,
-        },
-      );
-    if (doesUserIdLikePublishedItemIdResponse.type === EitherType.failure) {
-      return doesUserIdLikePublishedItemIdResponse;
-    }
-    isLikedByClient = doesUserIdLikePublishedItemIdResponse.success;
-  }
-
-  let isSavedByClient = false;
-  if (!!clientUserId) {
-    const doesUserIdSavePublishedItemIdResponse =
-      await databaseService.tableNameToServicesMap.savedItemsTableService.doesUserIdSavePublishedItemId(
-        {
-          controller,
-          userId: clientUserId,
-          publishedItemId: id,
-        },
-      );
-    if (doesUserIdSavePublishedItemIdResponse.type === EitherType.failure) {
-      return doesUserIdSavePublishedItemIdResponse;
-    }
-    isSavedByClient = doesUserIdSavePublishedItemIdResponse.success;
-  }
-
-  const baseRenderablePublishedItem: BaseRenderablePublishedItem = {
-    type,
-    id,
-    creationTimestamp,
-    authorUserId,
-    caption,
-    scheduledPublicationTimestamp,
-    expirationTimestamp,
-    hashtags,
-    likes: {
-      count: countOfLikesOnPost,
-    },
-    comments: {
-      count: countOfCommentsOnPost,
-    },
-    isLikedByClient,
-    isSavedByClient,
-    idOfPublishedItemBeingShared,
-  };
-
-  return Success(baseRenderablePublishedItem);
 }

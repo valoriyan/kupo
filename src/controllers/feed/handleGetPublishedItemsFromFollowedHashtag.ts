@@ -91,7 +91,7 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: pageOfUncompiledBasePublishedItem,
-      clientUserId,
+      requestorUserId: clientUserId,
     },
   );
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {

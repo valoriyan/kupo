@@ -2,7 +2,9 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderablePostFromParts } from "../../publishedItem/post/utilities";
+import {
+  constructRenderablePostFromPartsById,
+} from "../../publishedItem/post/utilities";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
@@ -94,28 +96,14 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   }
   const { success: userTaggingClient } = constructRenderableUserFromPartsResponse;
 
-  const getPublishedItemByIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      {
-        controller,
-        id: publishedItemComment.publishedItemId,
-      },
-    );
-  if (getPublishedItemByIdResponse.type === EitherType.failure) {
-    return getPublishedItemByIdResponse;
-  }
-  const { success: unrenderablePostWithoutElementsOrHashtags } =
-    getPublishedItemByIdResponse;
-
-  const constructRenderablePostFromPartsResponse = await constructRenderablePostFromParts(
-    {
+  const constructRenderablePostFromPartsResponse =
+    await constructRenderablePostFromPartsById({
       controller,
       blobStorageService,
       databaseService,
-      uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-      clientUserId,
-    },
-  );
+      publishedItemId: publishedItemComment.publishedItemId,
+      requestorUserId: clientUserId,
+    });
   if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
     return constructRenderablePostFromPartsResponse;
   }

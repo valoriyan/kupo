@@ -8,10 +8,8 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "../../publishedItem/post/models";
-import {
-  constructRenderablePostsFromParts,
-  mergeArraysOfUncompiledBasePublishedItem,
-} from "../../publishedItem/post/utilities";
+import { constructRenderablePostsFromParts } from "../../publishedItem/post/utilities";
+import { mergeArraysOfUncompiledBasePublishedItem } from "../../publishedItem/utilities/mergeArraysOfUncompiledBasePublishedItem";
 import { DiscoverController } from "../discoverController";
 
 export interface SearchForPostsRequestBody {
@@ -107,7 +105,7 @@ export async function handleSearchForPosts({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: pageOfUnrenderablePosts,
-      clientUserId,
+      requestorUserId: clientUserId,
     });
   if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
     return constructRenderablePostsFromPartsResponse;

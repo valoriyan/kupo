@@ -36,7 +36,7 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   const constructRenderablePostFromPartsByIdResponse =
     await constructRenderablePostFromPartsById({
       controller,
-      clientUserId: recipientUserId,
+      requestorUserId: recipientUserId,
       publishedItemId,
       blobStorageService: blobStorageService,
       databaseService: databaseService,

@@ -148,7 +148,7 @@ export async function handleUserLikesPublishedItem({
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
         uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
-        clientUserId,
+        requestorUserId: clientUserId,
       },
     );
     if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {

@@ -82,7 +82,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems,
-      clientUserId,
+      requestorUserId: clientUserId,
     },
   );
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {

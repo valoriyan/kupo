@@ -72,7 +72,7 @@ export async function handleGetPublishedItemsScheduledByUser({
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: uncompiledBasePublishedItem,
-      clientUserId,
+      requestorUserId: clientUserId,
     },
   );
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {

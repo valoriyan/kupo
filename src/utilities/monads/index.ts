@@ -67,7 +67,7 @@ export const Failure = <ErrorReason>({
 
   const productionEnvironment: string = getEnvironmentVariable("PRODUCTION_ENVIRONMENT");
 
-  console.log("Error:")
+  console.log("Error:");
   console.log(error);
   console.log(`reason: ${reason}`);
   console.log(`additionalErrorInformation: ${additionalErrorInformation}`);

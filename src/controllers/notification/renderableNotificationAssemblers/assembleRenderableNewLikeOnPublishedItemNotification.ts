@@ -13,7 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../models";
-import { constructPublishedItemFromParts } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRenderableNewLikeOnPublishedItemNotification({
   controller,
@@ -53,25 +53,14 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
     },
   } = getPublishedItemLikeByPublishedItemLikeIdResponse;
 
-  const getPublishedItemByIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      {
-        controller,
-        id: publishedItemId,
-      },
-    );
-  if (getPublishedItemByIdResponse.type === EitherType.failure) {
-    return getPublishedItemByIdResponse;
-  }
-  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
-
-  const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
-    controller,
-    blobStorageService,
-    databaseService,
-    uncompiledBasePublishedItem: uncompiledBasePublishedItem,
-    clientUserId,
-  });
+  const constructPublishedItemFromPartsResponse =
+    await constructPublishedItemFromPartsById({
+      controller,
+      blobStorageService,
+      databaseService,
+      publishedItemId,
+      requestorUserId: clientUserId,
+    });
   if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsResponse;
   }

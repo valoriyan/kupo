@@ -61,6 +61,10 @@ export async function handleSharePost({
 
   const creationTimestamp = now;
 
+  //////////////////////////////////////////////////
+  // GET SHARED ITEM ///////////////////////////////
+  //////////////////////////////////////////////////
+
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { controller, id: sharedPublishedItemId },
@@ -68,34 +72,38 @@ export async function handleSharePost({
   if (getPublishedItemByIdResponse.type === EitherType.failure) {
     return getPublishedItemByIdResponse;
   }
-  let uncompiledBasePublishedItem = getPublishedItemByIdResponse.success;
+  let uncompiledBasePublishedItemBeingShared = getPublishedItemByIdResponse.success;
 
-  if (!!uncompiledBasePublishedItem.idOfPublishedItemBeingShared) {
+  if (!!uncompiledBasePublishedItemBeingShared.idOfPublishedItemBeingShared) {
     const getPublishedItemByIdResponse =
       await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
         {
           controller,
-          id: uncompiledBasePublishedItem.idOfPublishedItemBeingShared,
+          id: uncompiledBasePublishedItemBeingShared.idOfPublishedItemBeingShared,
         },
       );
     if (getPublishedItemByIdResponse.type === EitherType.failure) {
       return getPublishedItemByIdResponse;
     }
-    uncompiledBasePublishedItem = getPublishedItemByIdResponse.success;
+    uncompiledBasePublishedItemBeingShared = getPublishedItemByIdResponse.success;
   }
 
   const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
     controller,
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    uncompiledBasePublishedItem: uncompiledBasePublishedItem,
-    clientUserId,
+    uncompiledBasePublishedItem: uncompiledBasePublishedItemBeingShared,
+    requestorUserId: clientUserId,
   });
   if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsResponse;
   }
   const { success: sharedRenderablePublishedItem } =
     constructPublishedItemFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // END OF | GET SHARED ITEM //////////////////////
+  //////////////////////////////////////////////////
 
   const lowercaseCaption = caption.toLowerCase();
 

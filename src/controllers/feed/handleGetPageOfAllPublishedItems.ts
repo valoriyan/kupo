@@ -83,7 +83,7 @@ export async function handleGetPageOfAllPublishedItems({
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
         uncompiledBasePublishedItems,
-        clientUserId,
+        requestorUserId: clientUserId,
       });
     if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
       return constructPublishedItemsFromPartsResponse;
