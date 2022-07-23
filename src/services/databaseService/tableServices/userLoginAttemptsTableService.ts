@@ -13,10 +13,10 @@ import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUserLoginAttempt {
-    username: string;
-    timestamp: string;
-    ip_address: string;
-    was_successful: boolean;
+  username: string;
+  timestamp: string;
+  ip_address: string;
+  was_successful: boolean;
 }
 
 export class UserLoginAttemptsTableService extends TableService {
@@ -56,23 +56,22 @@ export class UserLoginAttemptsTableService extends TableService {
     username: string;
     timestamp: number;
     ipAddress: string;
-    wasSuccessful: boolean,
+    wasSuccessful: boolean;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
-        const was_successful_value = !!wasSuccessful ? "true" : "false";
+      const was_successful_value = !!wasSuccessful ? "true" : "false";
 
-
-        const query = generatePSQLGenericCreateRowsQuery<string | number>({
-            rowsOfFieldsAndValues: [
-              [
-                { field: "username", value: username },
-                { field: "timestamp", value: timestamp },
-                { field: "ip_address", value: ipAddress },
-                { field: "was_successful", value: was_successful_value },
-              ],
-            ],
-            tableName: this.tableName,
-          });
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues: [
+          [
+            { field: "username", value: username },
+            { field: "timestamp", value: timestamp },
+            { field: "ip_address", value: ipAddress },
+            { field: "was_successful", value: was_successful_value },
+          ],
+        ],
+        tableName: this.tableName,
+      });
 
       await this.datastorePool.query<DBUserLoginAttempt>(query);
       return Success({});
@@ -102,17 +101,16 @@ export class UserLoginAttemptsTableService extends TableService {
     limit?: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserLoginAttempt[]>> {
     try {
-        const queryValues = [username];
+      const queryValues = [username];
 
-        let limitClause = "";
-        if (!!limit) {
-          limitClause = `
+      let limitClause = "";
+      if (!!limit) {
+        limitClause = `
             LIMIT $${queryValues.length + 1}
           `;
-  
-          queryValues.push(limit.toString());
-        }
-  
+
+        queryValues.push(limit.toString());
+      }
 
       const query = {
         text: `
@@ -130,7 +128,9 @@ export class UserLoginAttemptsTableService extends TableService {
         values: queryValues,
       };
 
-      const response: QueryResult<DBUserLoginAttempt> = await this.datastorePool.query(query);
+      const response: QueryResult<DBUserLoginAttempt> = await this.datastorePool.query(
+        query,
+      );
       const rows = response.rows;
 
       return Success(rows);
@@ -145,7 +145,6 @@ export class UserLoginAttemptsTableService extends TableService {
       });
     }
   }
-
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////

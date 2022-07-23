@@ -30,7 +30,7 @@ export async function handleLoginUser({
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const now = Date.now();
-  const clientIpAddress = getClientIp(request)
+  const clientIpAddress = getClientIp(request);
 
   //////////////////////////////////////////////////
   // CHECK RECENT AUTH ATTEMPTS - ACCOUNT IS LOCKED AT FIVE FAILED CONSECUTIVE ATTEMPTS
@@ -41,14 +41,31 @@ export async function handleLoginUser({
         controller,
         username,
         limit: 5,
-     },
+      },
     );
   if (getLoginAttemptsForUsernameResponse.type === EitherType.failure) {
     return getLoginAttemptsForUsernameResponse;
   }
   const { success: recentLoginAttempts } = getLoginAttemptsForUsernameResponse;
 
-  if (recentLoginAttempts.length === 5 && recentLoginAttempts.every(recentLoginAttempt => !recentLoginAttempt.was_successful)) {
+  if (
+    recentLoginAttempts.length === 5 &&
+    recentLoginAttempts.every((recentLoginAttempt) => !recentLoginAttempt.was_successful)
+  ) {
+    const recordLoginAttemptResponse =
+    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+      {
+        controller,
+        username,
+        timestamp: now,
+        ipAddress: clientIpAddress || "",
+        wasSuccessful: false,
+      },
+    );
+  if (recordLoginAttemptResponse.type === EitherType.failure) {
+    return recordLoginAttemptResponse;
+  }
+
     return Failure({
       controller,
       httpStatusCode: 401,
@@ -74,22 +91,19 @@ export async function handleLoginUser({
     const hasMatchedPassword =
       encryptPassword({ password }) === user_WITH_PASSWORD.encryptedPassword;
     if (hasMatchedPassword) {
-
       const recordLoginAttemptResponse =
-      await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
-        {
-          controller,
-          username,
-          timestamp: now,
-          ipAddress: clientIpAddress || "",
-          wasSuccessful: true,
-            },
-      );
-    if (recordLoginAttemptResponse.type === EitherType.failure) {
-      return recordLoginAttemptResponse;
-    }
-  
-
+        await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+          {
+            controller,
+            username,
+            timestamp: now,
+            ipAddress: clientIpAddress || "",
+            wasSuccessful: true,
+          },
+        );
+      if (recordLoginAttemptResponse.type === EitherType.failure) {
+        return recordLoginAttemptResponse;
+      }
 
       const userId = user_WITH_PASSWORD.userId;
       return grantNewAccessToken({ controller, userId, jwtPrivateKey });
@@ -104,12 +118,11 @@ export async function handleLoginUser({
         timestamp: now,
         ipAddress: clientIpAddress || "",
         wasSuccessful: false,
-          },
+      },
     );
   if (recordLoginAttemptResponse.type === EitherType.failure) {
     return recordLoginAttemptResponse;
   }
-
 
   return Failure({
     controller,

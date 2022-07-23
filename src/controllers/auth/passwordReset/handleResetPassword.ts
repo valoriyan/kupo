@@ -28,12 +28,14 @@ export async function handleResetPassword({
   controller: AuthController;
   request: express.Request;
   requestBody: ResetPasswordRequestBody;
-}): Promise<HTTPResponse<ErrorReasonTypes<string | ResetPasswordFailedReason>, ResetPasswordSuccess>> {
+}): Promise<
+  HTTPResponse<ErrorReasonTypes<string | ResetPasswordFailedReason>, ResetPasswordSuccess>
+> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const { token, password } = requestBody;
   const now = Date.now();
-  const clientIpAddress = getClientIp(request)
+  const clientIpAddress = getClientIp(request);
 
   try {
     const jwtData = verify(token, jwtPrivateKey) as ResetPasswordJWTData;
@@ -50,32 +52,30 @@ export async function handleResetPassword({
     );
 
     const selectUserByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-      {
-        controller,
-        userId,
-      },
-    );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
-  }
-  const {success: unrenderableUser} = selectUserByUserIdResponse;
-
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+        {
+          controller,
+          userId,
+        },
+      );
+    if (selectUserByUserIdResponse.type === EitherType.failure) {
+      return selectUserByUserIdResponse;
+    }
+    const { success: unrenderableUser } = selectUserByUserIdResponse;
 
     const recordLoginAttemptResponse =
-    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
-      {
-        controller,
-        username: unrenderableUser!.username,
-        timestamp: now,
-        ipAddress: clientIpAddress || "",
-        wasSuccessful: true,
-          },
-    );
-  if (recordLoginAttemptResponse.type === EitherType.failure) {
-    return recordLoginAttemptResponse;
-  }
-
+      await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+        {
+          controller,
+          username: unrenderableUser!.username,
+          timestamp: now,
+          ipAddress: clientIpAddress || "",
+          wasSuccessful: true,
+        },
+      );
+    if (recordLoginAttemptResponse.type === EitherType.failure) {
+      return recordLoginAttemptResponse;
+    }
 
     return {
       type: EitherType.success,

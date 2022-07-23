@@ -157,7 +157,12 @@ export class AuthController extends Controller {
   public async resetPassword(
     @Request() request: express.Request,
     @Body() requestBody: ResetPasswordRequestBody,
-  ): Promise<HTTPResponse<ErrorReasonTypes<string | ResetPasswordFailedReason>, ResetPasswordSuccess>> {
+  ): Promise<
+    HTTPResponse<
+      ErrorReasonTypes<string | ResetPasswordFailedReason>,
+      ResetPasswordSuccess
+    >
+  > {
     return await handleResetPassword({
       controller: this,
       request,
