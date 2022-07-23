@@ -131,6 +131,8 @@ import { EitherErrorReasonTypesStringOrRegisterUserFailedReasonAuthSuccess } fro
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrRemoveCreditCardFailedReasonRemoveCreditCardSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrResetPasswordFailedReasonResetPasswordSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrSearchForHashtagsFailedReasonSearchForHashtagsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrSearchForPostsFailedReasonSearchForPostsSuccess } from "../types";
@@ -166,8 +168,6 @@ import { EitherFollowUserFailedFollowUserSuccess } from "../types";
 import { EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess } from "../types";
 // @ts-ignore
 import { EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess } from "../types";
-// @ts-ignore
-import { EitherResetPasswordFailedReasonResetPasswordSuccess } from "../types";
 // @ts-ignore
 import { EitherResolveFollowRequestFailedResolveFollowRequestSuccess } from "../types";
 // @ts-ignore
@@ -4689,7 +4689,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherResetPasswordFailedReasonResetPasswordSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrResetPasswordFailedReasonResetPasswordSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword(
         resetPasswordRequestBody,
@@ -5926,7 +5926,7 @@ export const DefaultApiFactory = function (
     resetPassword(
       resetPasswordRequestBody: ResetPasswordRequestBody,
       options?: any,
-    ): AxiosPromise<EitherResetPasswordFailedReasonResetPasswordSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrResetPasswordFailedReasonResetPasswordSuccess> {
       return localVarFp
         .resetPassword(resetPasswordRequestBody, options)
         .then((request) => request(axios, basePath));

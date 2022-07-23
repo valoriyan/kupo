@@ -12,18 +12,12 @@
  * Do not edit the class manually.
  */
 
+import { AuthFailedReason } from "./auth-failed-reason";
+import { GenericResponseFailedReason } from "./generic-response-failed-reason";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface ErrorReasonTypesStringOrResetPasswordFailedReason
  */
-export enum AuthFailedReason {
-  WrongPassword = "Wrong Password",
-  UnknownCause = "Unknown Cause",
-  NoRefreshTokenFound = "No Refresh Token Found",
-  FailedToValidateToken = "Failed To Validate Token",
-  FailedToGenerateAccessToken = "Failed To Generate Access Token",
-  YouMustBeLoggedIn = "You Must Be Logged In",
-  IllegalAccess = "Illegal Access",
-  AccountLocked = "Account Locked",
-}
+export interface ErrorReasonTypesStringOrResetPasswordFailedReason {}
