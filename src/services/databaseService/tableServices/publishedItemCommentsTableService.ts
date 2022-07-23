@@ -270,10 +270,12 @@ export class PublishedItemCommentsTableService extends TableService {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "text", value: text }],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "published_item_comment_id",
-          value: publishedItemCommentId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "published_item_comment_id",
+            value: publishedItemCommentId,
+          },
+        ],
         tableName: this.tableName,
       });
 

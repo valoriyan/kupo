@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { EitherType, ErrorReasonTypes, Failure, HTTPResponse, InternalServiceResponse, Success } from "../../utilities/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  HTTPResponse,
+  InternalServiceResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
@@ -42,7 +49,10 @@ export async function handleFollowUser({
 
   const userFollowEventId = uuidv4();
 
-  const selectUserByUserIdResponse = await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({controller, userId: userIdBeingFollowed});
+  const selectUserByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      { controller, userId: userIdBeingFollowed },
+    );
   if (selectUserByUserIdResponse.type === EitherType.failure) {
     return selectUserByUserIdResponse;
   }
@@ -57,7 +67,8 @@ export async function handleFollowUser({
     });
   }
 
-  const isPending = userBeingFollowed.profilePrivacySetting === ProfilePrivacySetting.Private;
+  const isPending =
+    userBeingFollowed.profilePrivacySetting === ProfilePrivacySetting.Private;
 
   const createUserFollowResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.createUserFollow(
@@ -82,8 +93,8 @@ export async function handleFollowUser({
       webSocketService: controller.webSocketService,
       userIdBeingFollowed,
       userIdDoingFollowing: clientUserId,
-      userFollowEventId,    
-    })
+      userFollowEventId,
+    });
   }
 
   return {
@@ -91,7 +102,6 @@ export async function handleFollowUser({
     success: {},
   };
 }
-
 
 const notifyUserOfNewFollower = async ({
   controller,
@@ -109,14 +119,7 @@ const notifyUserOfNewFollower = async ({
   userIdBeingFollowed: string;
   userIdDoingFollowing: string;
   userFollowEventId: string;
-
-}): Promise<
-  InternalServiceResponse<
-    ErrorReasonTypes<string>,
-    {}
-  >
->  => {
-
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
   const createUserNotificationResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
       {
@@ -132,65 +135,61 @@ const notifyUserOfNewFollower = async ({
   }
 
   //////////////////////////////////////////////////
-  // COLLECT USER DOING FOLLOWING TO SHARE WITH USER BEING FOLLOWED  
+  // COLLECT USER DOING FOLLOWING TO SHARE WITH USER BEING FOLLOWED
   //////////////////////////////////////////////////
 
   const selectUserByUserIdResponse =
-  await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
-    {
+    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
       controller,
       userId: userIdDoingFollowing,
-    },
-  );
-if (selectUserByUserIdResponse.type === EitherType.failure) {
-  return selectUserByUserIdResponse;
-}
-
-const { success: unrenderableUserDoingFollowing } = selectUserByUserIdResponse;
-
-if (!!unrenderableUserDoingFollowing) {
-  const constructRenderableUserFromPartsResponse =
-    await constructRenderableUserFromParts({
-      controller,
-      requestorUserId: userIdBeingFollowed,
-      unrenderableUser: unrenderableUserDoingFollowing,
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
     });
-
-  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsResponse;
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
   }
 
-  const { success: userDoingFollowing } = constructRenderableUserFromPartsResponse;
+  const { success: unrenderableUserDoingFollowing } = selectUserByUserIdResponse;
 
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: userIdBeingFollowed },
-    );
+  if (!!unrenderableUserDoingFollowing) {
+    const constructRenderableUserFromPartsResponse =
+      await constructRenderableUserFromParts({
+        controller,
+        requestorUserId: userIdBeingFollowed,
+        unrenderableUser: unrenderableUserDoingFollowing,
+        blobStorageService: blobStorageService,
+        databaseService: databaseService,
+      });
 
-  if (
-    selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure
-  ) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
+    if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
+      return constructRenderableUserFromPartsResponse;
+    }
 
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
+    const { success: userDoingFollowing } = constructRenderableUserFromPartsResponse;
 
-  const renderableNewFollowerNotification: RenderableNewFollowerNotification = {
-    countOfUnreadNotifications,
-    type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-    eventTimestamp: Date.now(),
-    userDoingFollowing,
-  };
+    const selectCountOfUnreadUserNotificationsByUserIdResponse =
+      await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+        { controller, userId: userIdBeingFollowed },
+      );
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewFollower(
-    {
+    if (
+      selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure
+    ) {
+      return selectCountOfUnreadUserNotificationsByUserIdResponse;
+    }
+
+    const { success: countOfUnreadNotifications } =
+      selectCountOfUnreadUserNotificationsByUserIdResponse;
+
+    const renderableNewFollowerNotification: RenderableNewFollowerNotification = {
+      countOfUnreadNotifications,
+      type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+      eventTimestamp: Date.now(),
+      userDoingFollowing,
+    };
+
+    await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewFollower({
       userId: userIdBeingFollowed,
       renderableNewFollowerNotification,
-    },
-  );
-}
+    });
+  }
   return Success({});
-}
+};

@@ -655,10 +655,12 @@ export class UsersTableService extends TableService {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "encrypted_password", value: encryptedPassword }],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "user_id",
-          value: userId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id",
+            value: userId,
+          },
+        ],
         tableName: this.tableName,
       });
 
@@ -738,10 +740,12 @@ export class UsersTableService extends TableService {
             value: preferredPagePrimaryColor?.blue,
           },
         ],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "user_id",
-          value: userId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id",
+            value: userId,
+          },
+        ],
         tableName: this.tableName,
       });
 
@@ -781,10 +785,12 @@ export class UsersTableService extends TableService {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "is_admin", value: "true" }],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "user_id",
-          value: userId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id",
+            value: userId,
+          },
+        ],
         tableName: this.tableName,
       });
 

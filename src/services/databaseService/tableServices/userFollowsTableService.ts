@@ -6,10 +6,16 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { UnrenderableUserFollow, UserFollowingStatus } from "../../../controllers/userInteraction/models";
+import {
+  UnrenderableUserFollow,
+  UserFollowingStatus,
+} from "../../../controllers/userInteraction/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericDeleteRowsQueryString, generatePSQLGenericUpdateRowQueryString } from "./utilities";
+import {
+  generatePSQLGenericDeleteRowsQueryString,
+  generatePSQLGenericUpdateRowQueryString,
+} from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
@@ -157,14 +163,13 @@ export class UserFollowsTableService extends TableService {
   }: {
     controller: Controller;
     userIdBeingFollowed: string;
-    areFollowsPending: boolean,
+    areFollowsPending: boolean;
     limit?: number;
     createdBeforeTimestamp?: number;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow[]>
   > {
     try {
-
       const queryValues: (string | number)[] = [userIdBeingFollowed];
 
       const pendingConstraintClause = `
@@ -172,7 +177,7 @@ export class UserFollowsTableService extends TableService {
           is_pending = $${queryValues.length + 1}
       `;
       const is_pending_value = !!areFollowsPending ? "true" : "false";
-      queryValues.push(is_pending_value);        
+      queryValues.push(is_pending_value);
 
       let limitClause = "";
       if (!!limit) {
@@ -192,7 +197,6 @@ export class UserFollowsTableService extends TableService {
 
         queryValues.push(createdBeforeTimestamp);
       }
-
 
       const query = {
         text: `
@@ -236,7 +240,7 @@ export class UserFollowsTableService extends TableService {
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
-    areFollowsPending: boolean,
+    areFollowsPending: boolean;
     limit?: number;
     createdBeforeTimestamp?: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
@@ -248,8 +252,7 @@ export class UserFollowsTableService extends TableService {
           is_pending = $${queryValues.length + 1}
       `;
       const is_pending_value = !!areFollowsPending ? "true" : "false";
-      queryValues.push(is_pending_value);        
-
+      queryValues.push(is_pending_value);
 
       let limitClause = "";
       if (!!limit) {
@@ -310,7 +313,7 @@ export class UserFollowsTableService extends TableService {
   }: {
     controller: Controller;
     userIdBeingFollowed: string;
-    areFollowsPending: boolean,
+    areFollowsPending: boolean;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
     try {
       const queryValues: (string | number)[] = [userIdBeingFollowed];
@@ -320,8 +323,7 @@ export class UserFollowsTableService extends TableService {
           is_pending = $${queryValues.length + 1}
       `;
       const is_pending_value = !!areFollowsPending ? "true" : "false";
-      queryValues.push(is_pending_value);        
-
+      queryValues.push(is_pending_value);
 
       const query = {
         text: `
@@ -361,7 +363,7 @@ export class UserFollowsTableService extends TableService {
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
-    areFollowsPending: boolean,
+    areFollowsPending: boolean;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
     try {
       const queryValues: (string | number)[] = [userIdDoingFollowing];
@@ -371,7 +373,7 @@ export class UserFollowsTableService extends TableService {
           is_pending = $${queryValues.length + 1}
       `;
       const is_pending_value = !!areFollowsPending ? "true" : "false";
-      queryValues.push(is_pending_value);        
+      queryValues.push(is_pending_value);
 
       const query = {
         text: `
@@ -445,7 +447,7 @@ export class UserFollowsTableService extends TableService {
       if (!!userFollow.is_pending) {
         Success(UserFollowingStatus.pending);
       }
-      
+
       return Success(UserFollowingStatus.is_following);
     } catch (error) {
       return Failure({
@@ -499,7 +501,8 @@ export class UserFollowsTableService extends TableService {
         httpStatusCode: 500,
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error: "User not found.",
-        additionalErrorInformation: "Error at UserFollowsTableService.approvePendingFollow",
+        additionalErrorInformation:
+          "Error at UserFollowsTableService.approvePendingFollow",
       });
     } catch (error) {
       return Failure({
@@ -507,7 +510,8 @@ export class UserFollowsTableService extends TableService {
         httpStatusCode: 500,
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
-        additionalErrorInformation: "Error at UserFollowsTableService.approvePendingFollow",
+        additionalErrorInformation:
+          "Error at UserFollowsTableService.approvePendingFollow",
       });
     }
   }

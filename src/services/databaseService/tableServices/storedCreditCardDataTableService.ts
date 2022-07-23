@@ -203,10 +203,12 @@ export class StoredCreditCardDataTableService extends TableService {
         updatedFields: [
           { field: "is_primary_card", value: false, settings: { includeIfEmpty: true } },
         ],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "user_id",
-          value: userId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id",
+            value: userId,
+          },
+        ],
         tableName: this.tableName,
       });
 
@@ -216,10 +218,12 @@ export class StoredCreditCardDataTableService extends TableService {
 
       const query = generatePSQLGenericUpdateRowQueryString<string | number | boolean>({
         updatedFields: [{ field: "is_primary_card", value: true }],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "local_credit_card_id",
-          value: localCreditCardId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "local_credit_card_id",
+            value: localCreditCardId,
+          },
+        ],
         tableName: this.tableName,
       });
 

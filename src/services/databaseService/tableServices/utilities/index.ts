@@ -71,18 +71,20 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
     })
     .join("\n");
 
-
   let conditionsUsedToIdentifyUpdatedRows = "";
-  fieldsUsedToIdentifyUpdatedRows.forEach((fieldUsedToIdentifyUpdatedRows: PSQLFieldAndValue<T>, index) => {
-    conditionsUsedToIdentifyUpdatedRows += "\n";
-    if (index > 0) {
-      conditionsUsedToIdentifyUpdatedRows += " AND ";
-    }
-    conditionsUsedToIdentifyUpdatedRows += `${fieldUsedToIdentifyUpdatedRows.field} = $${queryValueIndex + index + 1}`
+  fieldsUsedToIdentifyUpdatedRows.forEach(
+    (fieldUsedToIdentifyUpdatedRows: PSQLFieldAndValue<T>, index) => {
+      conditionsUsedToIdentifyUpdatedRows += "\n";
+      if (index > 0) {
+        conditionsUsedToIdentifyUpdatedRows += " AND ";
+      }
+      conditionsUsedToIdentifyUpdatedRows += `${
+        fieldUsedToIdentifyUpdatedRows.field
+      } = $${queryValueIndex + index + 1}`;
 
-    queryValues.push(fieldUsedToIdentifyUpdatedRows.value);
-  })
-
+      queryValues.push(fieldUsedToIdentifyUpdatedRows.value);
+    },
+  );
 
   const queryText = `
     UPDATE

@@ -322,10 +322,12 @@ export class UserNotificationsTableService extends TableService {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "last_updated_timestamp", value: newUpdateTimestamp }],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "user_notification_id",
-          value: userNotificationId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_notification_id",
+            value: userNotificationId,
+          },
+        ],
         tableName: this.tableName,
       });
 

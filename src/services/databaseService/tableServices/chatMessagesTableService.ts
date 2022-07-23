@@ -179,10 +179,12 @@ export class ChatMessagesTableService extends TableService {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "text", value: text }],
-        fieldsUsedToIdentifyUpdatedRows: [{
-          field: "chat_message_id",
-          value: chatMessageId,
-        }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "chat_message_id",
+            value: chatMessageId,
+          },
+        ],
         tableName: this.tableName,
       });
 

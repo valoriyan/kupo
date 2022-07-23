@@ -29,15 +29,14 @@ export async function canUserViewUserContent({
     return Success(true);
   if (!requestorUserId) return Success(false);
 
-
   const getFollowingStatusOfUserIdToUserIdResponse =
-  await databaseService.tableNameToServicesMap.userFollowsTableService.getFollowingStatusOfUserIdToUserId(
-    {
-      controller,
-      userIdDoingFollowing: requestorUserId,
-      userIdBeingFollowed: targetUser.userId,
-    },
-  );
+    await databaseService.tableNameToServicesMap.userFollowsTableService.getFollowingStatusOfUserIdToUserId(
+      {
+        controller,
+        userIdDoingFollowing: requestorUserId,
+        userIdBeingFollowed: targetUser.userId,
+      },
+    );
 
   if (getFollowingStatusOfUserIdToUserIdResponse.type === EitherType.failure) {
     return getFollowingStatusOfUserIdToUserIdResponse;
@@ -45,7 +44,6 @@ export async function canUserViewUserContent({
   const { success: userFollowingStatus } = getFollowingStatusOfUserIdToUserIdResponse;
 
   return Success(userFollowingStatus === UserFollowingStatus.is_following);
-
 }
 
 export async function canUserViewUserContentByUserId({

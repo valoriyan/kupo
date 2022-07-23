@@ -18,8 +18,18 @@ import {
   SuccessfullyUnfollowedUserProfileResponse,
   UnfollowUserRequestBody,
 } from "./handleUnfollowUserProfile";
-import { GetFollowerRequestsFailed, GetFollowerRequestsRequestBody, GetFollowerRequestsSuccess, handleGetFollowerRequests } from "./handleGetFollowerRequests";
-import { handleResolveFollowRequest, ResolveFollowRequestFailed, ResolveFollowRequestRequestBody, ResolveFollowRequestSuccess } from "./handleResolveFollowRequest";
+import {
+  GetFollowerRequestsFailed,
+  GetFollowerRequestsRequestBody,
+  GetFollowerRequestsSuccess,
+  handleGetFollowerRequests,
+} from "./handleGetFollowerRequests";
+import {
+  handleResolveFollowRequest,
+  ResolveFollowRequestFailed,
+  ResolveFollowRequestRequestBody,
+  ResolveFollowRequestSuccess,
+} from "./handleResolveFollowRequest";
 
 @injectable()
 @Route("userInteractions")
@@ -64,7 +74,6 @@ export class UserInteractionController extends Controller {
     });
   }
 
-
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -73,14 +82,15 @@ export class UserInteractionController extends Controller {
   public async resolveFollowRequest(
     @Request() request: express.Request,
     @Body() requestBody: ResolveFollowRequestRequestBody,
-  ): Promise<SecuredHTTPResponse<ResolveFollowRequestFailed, ResolveFollowRequestSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<ResolveFollowRequestFailed, ResolveFollowRequestSuccess>
+  > {
     return await handleResolveFollowRequest({
       controller: this,
       request,
       requestBody,
     });
   }
-
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////

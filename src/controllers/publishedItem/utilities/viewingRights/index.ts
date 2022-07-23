@@ -25,20 +25,17 @@ export async function assertViewingRightsOnPublishedItem({
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   const { authorUserId } = uncompiledBasePublishedItem;
 
-
-  const canUserViewUserContentByUserIdResponse =
-    await canUserViewUserContentByUserId({
-      controller,
-      requestorUserId,
-      targetUserId: authorUserId,
-      databaseService,
-        });
+  const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
+    controller,
+    requestorUserId,
+    targetUserId: authorUserId,
+    databaseService,
+  });
 
   if (canUserViewUserContentByUserIdResponse.type === EitherType.failure) {
     return canUserViewUserContentByUserIdResponse;
   }
   const { success: requestorHasViewingRights } = canUserViewUserContentByUserIdResponse;
-
 
   if (!!requestorHasViewingRights) {
     return Success({});
