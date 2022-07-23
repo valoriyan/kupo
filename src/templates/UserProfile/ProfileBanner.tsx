@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { RenderableUser } from "#/api";
+import { RenderableUser, UserFollowingStatus } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { ArrowLeftIcon } from "#/components/Icons";
 import { Box, Flex } from "#/components/Layout";
@@ -49,7 +49,9 @@ export const ProfileBanner = ({
             <FollowButton
               userId={user.userId}
               username={user.username}
-              isBeingFollowedByClient={user.isBeingFollowedByClient}
+              isBeingFollowedByClient={
+                user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+              }
             />
           </motion.div>
         )}

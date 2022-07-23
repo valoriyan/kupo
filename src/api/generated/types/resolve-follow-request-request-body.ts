@@ -12,15 +12,24 @@
  * Do not edit the class manually.
  */
 
+import { FollowRequestDecision } from "./follow-request-decision";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface ResolveFollowRequestRequestBody
  */
-export enum GenericResponseFailedReason {
-  BadRequest = "BAD_REQUEST",
-  DatabaseTransactionError = "DATABASE_TRANSACTION_ERROR",
-  PaymentProcessorError = "PAYMENT_PROCESSOR_ERROR",
-  EmailServiceError = "EMAIL_SERVICE_ERROR",
-  BlobStorageError = "BLOB_STORAGE_ERROR",
+export interface ResolveFollowRequestRequestBody {
+  /**
+   *
+   * @type {FollowRequestDecision}
+   * @memberof ResolveFollowRequestRequestBody
+   */
+  decision: FollowRequestDecision;
+  /**
+   *
+   * @type {string}
+   * @memberof ResolveFollowRequestRequestBody
+   */
+  userIdDoingFollowing: string;
 }

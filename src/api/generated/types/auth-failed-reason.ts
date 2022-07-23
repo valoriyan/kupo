@@ -24,4 +24,5 @@ export enum AuthFailedReason {
   FailedToValidateToken = "Failed To Validate Token",
   FailedToGenerateAccessToken = "Failed To Generate Access Token",
   YouMustBeLoggedIn = "You Must Be Logged In",
+  IllegalAccess = "Illegal Access",
 }

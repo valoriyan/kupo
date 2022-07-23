@@ -12,15 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { RenderableUser } from "./renderable-user";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface GetFollowerRequestsSuccess
  */
-export enum GenericResponseFailedReason {
-  BadRequest = "BAD_REQUEST",
-  DatabaseTransactionError = "DATABASE_TRANSACTION_ERROR",
-  PaymentProcessorError = "PAYMENT_PROCESSOR_ERROR",
-  EmailServiceError = "EMAIL_SERVICE_ERROR",
-  BlobStorageError = "BLOB_STORAGE_ERROR",
+export interface GetFollowerRequestsSuccess {
+  /**
+   *
+   * @type {Array<RenderableUser>}
+   * @memberof GetFollowerRequestsSuccess
+   */
+  users: Array<RenderableUser>;
 }

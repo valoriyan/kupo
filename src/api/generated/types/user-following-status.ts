@@ -17,10 +17,8 @@
  * @export
  * @enum {string}
  */
-export enum GenericResponseFailedReason {
-  BadRequest = "BAD_REQUEST",
-  DatabaseTransactionError = "DATABASE_TRANSACTION_ERROR",
-  PaymentProcessorError = "PAYMENT_PROCESSOR_ERROR",
-  EmailServiceError = "EMAIL_SERVICE_ERROR",
-  BlobStorageError = "BLOB_STORAGE_ERROR",
+export enum UserFollowingStatus {
+  IsFollowing = "is_following",
+  NotFollowing = "not_following",
+  Pending = "pending",
 }

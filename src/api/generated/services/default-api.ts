@@ -163,9 +163,13 @@ import { EitherFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProf
 // @ts-ignore
 import { EitherFollowUserFailedFollowUserSuccess } from "../types";
 // @ts-ignore
+import { EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess } from "../types";
+// @ts-ignore
 import { EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess } from "../types";
 // @ts-ignore
 import { EitherResetPasswordFailedReasonResetPasswordSuccess } from "../types";
+// @ts-ignore
+import { EitherResolveFollowRequestFailedResolveFollowRequestSuccess } from "../types";
 // @ts-ignore
 import { EitherSetUserHashtagsFailedSetUserHashtagsSuccess } from "../types";
 // @ts-ignore
@@ -234,6 +238,8 @@ import { RemoveCreditCardRequestBody } from "../types";
 import { RemoveUserLikeFromPublishedItemRequestBody } from "../types";
 // @ts-ignore
 import { ResetPasswordRequestBody } from "../types";
+// @ts-ignore
+import { ResolveFollowRequestRequestBody } from "../types";
 // @ts-ignore
 import { SearchForHashtagsRequestBody } from "../types";
 // @ts-ignore
@@ -1096,6 +1102,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getFollowerRequests: async (
+      body: object,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists("getFollowerRequests", "body", body);
+      const localVarPath = `/userInteractions/getFollowerRequests`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -2423,6 +2474,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         resetPasswordRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {ResolveFollowRequestRequestBody} resolveFollowRequestRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resolveFollowRequest: async (
+      resolveFollowRequestRequestBody: ResolveFollowRequestRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'resolveFollowRequestRequestBody' is not null or undefined
+      assertParamExists(
+        "resolveFollowRequest",
+        "resolveFollowRequestRequestBody",
+        resolveFollowRequestRequestBody,
+      );
+      const localVarPath = `/userInteractions/resolveFollowRequest`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        resolveFollowRequestRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -3855,6 +3955,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getFollowerRequests(
+      body: object,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getFollowerRequests(
+        body,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4567,6 +4693,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword(
         resetPasswordRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {ResolveFollowRequestRequestBody} resolveFollowRequestRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async resolveFollowRequest(
+      resolveFollowRequestRequestBody: ResolveFollowRequestRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherResolveFollowRequestFailedResolveFollowRequestSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.resolveFollowRequest(
+        resolveFollowRequestRequestBody,
         options,
       );
       return createRequestFunction(
@@ -5370,6 +5522,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getFollowerRequests(
+      body: object,
+      options?: any,
+    ): AxiosPromise<EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess> {
+      return localVarFp
+        .getFollowerRequests(body, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5763,6 +5929,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherResetPasswordFailedReasonResetPasswordSuccess> {
       return localVarFp
         .resetPassword(resetPasswordRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {ResolveFollowRequestRequestBody} resolveFollowRequestRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    resolveFollowRequest(
+      resolveFollowRequestRequestBody: ResolveFollowRequestRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherResolveFollowRequestFailedResolveFollowRequestSuccess> {
+      return localVarFp
+        .resolveFollowRequest(resolveFollowRequestRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -6354,6 +6534,19 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getFollowerRequests(body: object, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getFollowerRequests(body, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {GetPageOfAllPublishedItemsRequestBody} getPageOfAllPublishedItemsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6792,6 +6985,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .resetPassword(resetPasswordRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {ResolveFollowRequestRequestBody} resolveFollowRequestRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public resolveFollowRequest(
+    resolveFollowRequestRequestBody: ResolveFollowRequestRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .resolveFollowRequest(resolveFollowRequestRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

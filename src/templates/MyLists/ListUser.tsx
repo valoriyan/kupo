@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { RenderableUser } from "#/api";
+import { RenderableUser, UserFollowingStatus } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { Avatar } from "#/components/Avatar";
@@ -28,8 +28,9 @@ export const ListUser = ({ user }: ListUserProps) => {
   });
 
   const toggleFollow = () => {
-    if (user.isBeingFollowedByClient) unfollowUser();
-    else followUser();
+    if (user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing) {
+      unfollowUser();
+    } else followUser();
   };
 
   return (
@@ -45,7 +46,11 @@ export const ListUser = ({ user }: ListUserProps) => {
       </Flex>
       <Button size="sm" onClick={toggleFollow} disabled={isFollowing || isUnfollowing}>
         <TextOrSpinner isLoading={isFollowing || isUnfollowing}>
-          {user.isBeingFollowedByClient ? "Unfollow" : "Follow"}
+          {user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+            ? "Unfollow"
+            : user.followingStatusOfClientToUser === UserFollowingStatus.Pending
+            ? "Pending"
+            : "Follow"}
         </TextOrSpinner>
       </Button>
     </Wrapper>
