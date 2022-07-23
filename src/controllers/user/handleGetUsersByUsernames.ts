@@ -59,7 +59,7 @@ export async function handleGetUsersByUsernames({
   const constructRenderableUsersFromPartsResponse =
     await constructRenderableUsersFromParts({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUsers,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

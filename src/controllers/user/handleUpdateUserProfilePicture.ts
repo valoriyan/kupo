@@ -80,7 +80,7 @@ export async function handleUpdateUserProfilePicture({
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUser: updatedUnrenderableUser,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

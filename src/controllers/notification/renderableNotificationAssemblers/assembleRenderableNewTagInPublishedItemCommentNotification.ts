@@ -83,7 +83,7 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUser: unrenderableUserTaggingClient!,
       blobStorageService,
       databaseService,

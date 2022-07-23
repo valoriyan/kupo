@@ -86,7 +86,7 @@ export async function assembleRenderableNewCommentOnPostNotification({
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUser: unrenderableUserThatCommented!,
       blobStorageService,
       databaseService,

@@ -207,10 +207,10 @@ export class ShopItemsTableService extends TableService {
           { field: "title", value: title },
           { field: "price", value: price },
         ],
-        fieldUsedToIdentifyUpdatedRow: {
+        fieldsUsedToIdentifyUpdatedRows: [{
           field: "published_item_id",
           value: publishedItemId,
-        },
+        }],
         tableName: this.tableName,
       });
 

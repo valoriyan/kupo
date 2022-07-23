@@ -72,7 +72,7 @@ export async function handleSearchUserProfilesByUsername({
   const constructRenderableUsersFromPartsResponse =
     await constructRenderableUsersFromParts({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUsers,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

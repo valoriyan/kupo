@@ -98,7 +98,7 @@ export async function handleSearchForUsers({
   const constructRenderableUsersFromPartsResponse =
     await constructRenderableUsersFromParts({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUsers: pageOfUnrenderableUsers,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

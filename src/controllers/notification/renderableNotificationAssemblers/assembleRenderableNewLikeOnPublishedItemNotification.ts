@@ -90,7 +90,7 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUser: unrenderableUserThatLikedPublishedItem,
       blobStorageService,
       databaseService,

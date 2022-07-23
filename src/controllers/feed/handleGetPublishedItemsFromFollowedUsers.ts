@@ -51,7 +51,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
 
   const getUserIdsFollowedByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
-      { controller, userIdDoingFollowing: clientUserId },
+      { controller, userIdDoingFollowing: clientUserId, areFollowsPending: false },
     );
   if (getUserIdsFollowedByUserIdResponse.type === EitherType.failure) {
     return getUserIdsFollowedByUserIdResponse;

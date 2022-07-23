@@ -6,10 +6,10 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { UnrenderableUserFollow } from "../../../controllers/userInteraction/models";
+import { UnrenderableUserFollow, UserFollowingStatus } from "../../../controllers/userInteraction/models";
 import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
-import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
+import { generatePSQLGenericDeleteRowsQueryString, generatePSQLGenericUpdateRowQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
@@ -18,6 +18,7 @@ interface DBUserFollow {
   user_follow_event_id: string;
   user_id_doing_following: string;
   user_id_being_followed: string;
+  is_pending: boolean;
   timestamp: string;
 }
 
@@ -28,6 +29,7 @@ function convertDBUserFollowToUnrenderableUserFollow(
     userFollowEventId: dbUserFollow.user_follow_event_id,
     userIdDoingFollowing: dbUserFollow.user_id_doing_following,
     userIdBeingFollowed: dbUserFollow.user_id_being_followed,
+    isPending: dbUserFollow.is_pending,
     timestamp: parseInt(dbUserFollow.timestamp),
   };
 }
@@ -47,6 +49,7 @@ export class UserFollowsTableService extends TableService {
 
         user_id_doing_following VARCHAR(64) NOT NULL,
         user_id_being_followed VARCHAR(64) NOT NULL,
+        is_pending boolean NOT NULL,
         timestamp BIGINT NOT NULL,
         PRIMARY KEY (user_id_doing_following, user_id_being_followed)
       )
@@ -65,21 +68,26 @@ export class UserFollowsTableService extends TableService {
     userIdDoingFollowing,
     userIdBeingFollowed,
     userFollowEventId,
+    isPending,
     timestamp,
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
     userFollowEventId: string;
+    isPending: boolean;
     timestamp: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
+      const is_pending_value = !!isPending ? "true" : "false";
+
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
         rowsOfFieldsAndValues: [
           [
             { field: "user_id_doing_following", value: userIdDoingFollowing },
             { field: "user_id_being_followed", value: userIdBeingFollowed },
             { field: "user_follow_event_id", value: userFollowEventId },
+            { field: "is_pending", value: is_pending_value },
             { field: "timestamp", value: timestamp },
           ],
         ],
@@ -143,13 +151,49 @@ export class UserFollowsTableService extends TableService {
   public async getUserIdsFollowingUserId({
     controller,
     userIdBeingFollowed,
+    areFollowsPending,
+    limit,
+    createdBeforeTimestamp,
   }: {
     controller: Controller;
     userIdBeingFollowed: string;
+    areFollowsPending: boolean,
+    limit?: number;
+    createdBeforeTimestamp?: number;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow[]>
   > {
     try {
+
+      const queryValues: (string | number)[] = [userIdBeingFollowed];
+
+      const pendingConstraintClause = `
+        AND
+          is_pending = $${queryValues.length + 1}
+      `;
+      const is_pending_value = !!areFollowsPending ? "true" : "false";
+      queryValues.push(is_pending_value);        
+
+      let limitClause = "";
+      if (!!limit) {
+        limitClause = `
+          LIMIT $${queryValues.length + 1}
+        `;
+
+        queryValues.push(limit);
+      }
+
+      let beforeTimestampClause = "";
+      if (!!createdBeforeTimestamp) {
+        beforeTimestampClause = `
+          AND
+            timestamp < $${queryValues.length + 1}
+        `;
+
+        queryValues.push(createdBeforeTimestamp);
+      }
+
+
       const query = {
         text: `
           SELECT
@@ -158,9 +202,13 @@ export class UserFollowsTableService extends TableService {
             ${this.tableName}
           WHERE
             user_id_being_followed = $1
+            ${pendingConstraintClause}
+            ${beforeTimestampClause}
+          ${limitClause}
+
           ;
         `,
-        values: [userIdBeingFollowed],
+        values: queryValues,
       };
 
       const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
@@ -182,11 +230,46 @@ export class UserFollowsTableService extends TableService {
   public async getUserIdsFollowedByUserId({
     controller,
     userIdDoingFollowing,
+    areFollowsPending,
+    limit,
+    createdBeforeTimestamp,
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
+    areFollowsPending: boolean,
+    limit?: number;
+    createdBeforeTimestamp?: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
     try {
+      const queryValues: (string | number)[] = [userIdDoingFollowing];
+
+      const pendingConstraintClause = `
+        AND
+          is_pending = $${queryValues.length + 1}
+      `;
+      const is_pending_value = !!areFollowsPending ? "true" : "false";
+      queryValues.push(is_pending_value);        
+
+
+      let limitClause = "";
+      if (!!limit) {
+        limitClause = `
+          LIMIT $${queryValues.length + 1}
+        `;
+
+        queryValues.push(limit);
+      }
+
+      let beforeTimestampClause = "";
+      if (!!createdBeforeTimestamp) {
+        beforeTimestampClause = `
+          AND
+            timestamp < $${queryValues.length + 1}
+        `;
+
+        queryValues.push(createdBeforeTimestamp);
+      }
+
       const query = {
         text: `
           SELECT
@@ -195,9 +278,12 @@ export class UserFollowsTableService extends TableService {
             ${this.tableName}
           WHERE
             user_id_doing_following = $1
+            ${pendingConstraintClause}
+            ${beforeTimestampClause}
+          ${limitClause}
           ;
         `,
-        values: [userIdDoingFollowing],
+        values: queryValues,
       };
 
       const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
@@ -220,11 +306,23 @@ export class UserFollowsTableService extends TableService {
   public async countFollowersOfUserId({
     controller,
     userIdBeingFollowed,
+    areFollowsPending,
   }: {
     controller: Controller;
     userIdBeingFollowed: string;
+    areFollowsPending: boolean,
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
     try {
+      const queryValues: (string | number)[] = [userIdBeingFollowed];
+
+      const pendingConstraintClause = `
+        AND
+          is_pending = $${queryValues.length + 1}
+      `;
+      const is_pending_value = !!areFollowsPending ? "true" : "false";
+      queryValues.push(is_pending_value);        
+
+
       const query = {
         text: `
           SELECT
@@ -233,9 +331,10 @@ export class UserFollowsTableService extends TableService {
             ${this.tableName}
           WHERE
             user_id_being_followed = $1
+            ${pendingConstraintClause}
           ;
         `,
-        values: [userIdBeingFollowed],
+        values: queryValues,
       };
 
       const response: QueryResult<{
@@ -258,11 +357,22 @@ export class UserFollowsTableService extends TableService {
   public async countFollowsOfUserId({
     controller,
     userIdDoingFollowing,
+    areFollowsPending,
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
+    areFollowsPending: boolean,
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
     try {
+      const queryValues: (string | number)[] = [userIdDoingFollowing];
+
+      const pendingConstraintClause = `
+        AND
+          is_pending = $${queryValues.length + 1}
+      `;
+      const is_pending_value = !!areFollowsPending ? "true" : "false";
+      queryValues.push(is_pending_value);        
+
       const query = {
         text: `
           SELECT
@@ -271,9 +381,10 @@ export class UserFollowsTableService extends TableService {
             ${this.tableName}
           WHERE
             user_id_doing_following = $1
+            ${pendingConstraintClause}
           ;
         `,
-        values: [userIdDoingFollowing],
+        values: queryValues,
       };
 
       const response: QueryResult<{
@@ -297,7 +408,7 @@ export class UserFollowsTableService extends TableService {
     }
   }
 
-  public async isUserIdFollowingUserId({
+  public async getFollowingStatusOfUserIdToUserId({
     controller,
     userIdDoingFollowing,
     userIdBeingFollowed,
@@ -305,7 +416,7 @@ export class UserFollowsTableService extends TableService {
     controller: Controller;
     userIdDoingFollowing: string;
     userIdBeingFollowed: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UserFollowingStatus>> {
     try {
       const query = {
         text: `
@@ -326,7 +437,16 @@ export class UserFollowsTableService extends TableService {
 
       const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
 
-      return Success(response.rows.length > 0);
+      if (response.rows.length === 0) {
+        return Success(UserFollowingStatus.not_following);
+      }
+
+      const userFollow = response.rows[0];
+      if (!!userFollow.is_pending) {
+        Success(UserFollowingStatus.pending);
+      }
+      
+      return Success(UserFollowingStatus.is_following);
     } catch (error) {
       return Failure({
         controller,
@@ -342,7 +462,55 @@ export class UserFollowsTableService extends TableService {
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
+  public async approvePendingFollow({
+    controller,
+    userIdDoingFollowing,
+    userIdBeingFollowed,
+  }: {
+    controller: Controller;
+    userIdDoingFollowing: string;
+    userIdBeingFollowed: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "is_pending", value: "false" }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id_doing_following",
+            value: userIdDoingFollowing,
+          },
+          {
+            field: "user_id_being_followed",
+            value: userIdBeingFollowed,
+          },
+        ],
+        tableName: this.tableName,
+      });
 
+      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(convertDBUserFollowToUnrenderableUserFollow(rows[0]));
+      }
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "User not found.",
+        additionalErrorInformation: "Error at UserFollowsTableService.approvePendingFollow",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at UserFollowsTableService.approvePendingFollow",
+      });
+    }
+  }
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////

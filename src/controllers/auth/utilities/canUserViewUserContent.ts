@@ -12,39 +12,50 @@ import {
   UnrenderableUser,
 } from "../../../controllers/user/models";
 import { DatabaseService } from "../../../services/databaseService";
+import { UserFollowingStatus } from "../../../controllers/userInteraction/models";
 
 export async function canUserViewUserContent({
   controller,
-  clientUserId,
+  requestorUserId,
   targetUser,
   databaseService,
 }: {
   controller: Controller;
-  clientUserId: string | undefined;
+  requestorUserId: string | undefined;
   targetUser: UnrenderableUser;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
   if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public)
     return Success(true);
-  if (!clientUserId) return Success(false);
+  if (!requestorUserId) return Success(false);
 
-  return await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
+
+  const getFollowingStatusOfUserIdToUserIdResponse =
+  await databaseService.tableNameToServicesMap.userFollowsTableService.getFollowingStatusOfUserIdToUserId(
     {
       controller,
-      userIdDoingFollowing: clientUserId,
+      userIdDoingFollowing: requestorUserId,
       userIdBeingFollowed: targetUser.userId,
     },
   );
+
+  if (getFollowingStatusOfUserIdToUserIdResponse.type === EitherType.failure) {
+    return getFollowingStatusOfUserIdToUserIdResponse;
+  }
+  const { success: userFollowingStatus } = getFollowingStatusOfUserIdToUserIdResponse;
+
+  return Success(userFollowingStatus === UserFollowingStatus.is_following);
+
 }
 
 export async function canUserViewUserContentByUserId({
   controller,
-  clientUserId,
+  requestorUserId,
   targetUserId,
   databaseService,
 }: {
   controller: Controller;
-  clientUserId: string | undefined;
+  requestorUserId: string | undefined;
   targetUserId: string;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
@@ -73,7 +84,7 @@ export async function canUserViewUserContentByUserId({
 
   return canUserViewUserContent({
     controller,
-    clientUserId,
+    requestorUserId: requestorUserId,
     targetUser,
     databaseService,
   });

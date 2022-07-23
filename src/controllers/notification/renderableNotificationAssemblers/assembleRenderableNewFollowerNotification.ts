@@ -59,7 +59,7 @@ export async function assembleRenderableNewFollowerNotification({
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUser: unrenderableUserDoingFollowing!,
       blobStorageService,
       databaseService,

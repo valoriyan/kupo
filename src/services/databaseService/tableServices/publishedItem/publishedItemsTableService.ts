@@ -733,10 +733,10 @@ export class PublishedItemsTableService extends TableService {
           },
           { field: "expirationTimestamp", value: expirationTimestamp },
         ],
-        fieldUsedToIdentifyUpdatedRow: {
+        fieldsUsedToIdentifyUpdatedRows: [{
           field: "id",
           value: id,
-        },
+        } ],
         tableName: this.tableName,
       });
 

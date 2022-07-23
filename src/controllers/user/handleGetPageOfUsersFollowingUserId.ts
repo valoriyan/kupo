@@ -50,7 +50,7 @@ export async function handleGetPageOfUsersFollowingUserId({
 
   const getUserIdsFollowingUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
-      { controller, userIdBeingFollowed },
+      { controller, userIdBeingFollowed, areFollowsPending: false },
     );
 
   if (getUserIdsFollowingUserIdResponse.type === EitherType.failure) {
@@ -72,7 +72,7 @@ export async function handleGetPageOfUsersFollowingUserId({
   const constructRenderableUsersFromPartsByUserIdsResponse =
     await constructRenderableUsersFromPartsByUserIds({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       userIds: userIdsDoingFollowing,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

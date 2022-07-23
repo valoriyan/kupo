@@ -9,9 +9,8 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { GenericResponseFailedReason } from "../../../../controllers/models";
-import { ProfilePrivacySetting } from "../../../user/models";
 import { AuthFailedReason } from "../../../auth/models";
+import { canUserViewUserContentByUserId } from "../../../../controllers/auth/utilities/canUserViewUserContent";
 
 export async function assertViewingRightsOnPublishedItem({
   controller,
@@ -26,51 +25,23 @@ export async function assertViewingRightsOnPublishedItem({
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   const { authorUserId } = uncompiledBasePublishedItem;
 
-  const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
+
+  const canUserViewUserContentByUserIdResponse =
+    await canUserViewUserContentByUserId({
       controller,
-      userId: authorUserId,
-    });
+      requestorUserId,
+      targetUserId: authorUserId,
+      databaseService,
+        });
 
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
+  if (canUserViewUserContentByUserIdResponse.type === EitherType.failure) {
+    return canUserViewUserContentByUserIdResponse;
   }
-  const { success: unrenderablePublishedItemAuthor } = selectUserByUserIdResponse;
+  const { success: requestorHasViewingRights } = canUserViewUserContentByUserIdResponse;
 
-  if (!unrenderablePublishedItemAuthor) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at checkViewingRightsOnPublishedItem",
-      additionalErrorInformation: "User not found at checkViewingRightsOnPublishedItem",
-    });
-  }
 
-  if (
-    unrenderablePublishedItemAuthor.profilePrivacySetting === ProfilePrivacySetting.Public
-  ) {
-    return Success(true);
-  }
-
-  if (!!requestorUserId) {
-    const isUserIdFollowingUserIdResponse =
-      await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
-        {
-          controller,
-          userIdDoingFollowing: requestorUserId,
-          userIdBeingFollowed: authorUserId,
-        },
-      );
-
-    if (isUserIdFollowingUserIdResponse.type === EitherType.failure) {
-      return isUserIdFollowingUserIdResponse;
-    }
-    const { success: isUserIdFollowingUserId } = isUserIdFollowingUserIdResponse;
-
-    if (isUserIdFollowingUserId) {
-      return Success({});
-    }
+  if (!!requestorHasViewingRights) {
+    return Success({});
   }
 
   return Failure({

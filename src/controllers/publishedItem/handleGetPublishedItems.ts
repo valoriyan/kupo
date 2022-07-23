@@ -105,7 +105,7 @@ export async function handleGetPublishedItemsByUserId({
 
   const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
     controller,
-    clientUserId,
+    requestorUserId: clientUserId,
     targetUserId: userId,
     databaseService: controller.databaseService,
   });

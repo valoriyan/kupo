@@ -13,16 +13,17 @@ import {
   Success,
 } from "../../utilities/monads";
 import { GenericResponseFailedReason } from "../models";
+import { UserFollowingStatus } from "../userInteraction/models";
 
 export async function constructRenderableUsersFromPartsByUserIds({
   controller,
-  clientUserId,
+  requestorUserId,
   userIds,
   blobStorageService,
   databaseService,
 }: {
   controller: Controller;
-  clientUserId: string;
+  requestorUserId: string;
   userIds: string[];
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
@@ -40,7 +41,7 @@ export async function constructRenderableUsersFromPartsByUserIds({
 
   return await constructRenderableUsersFromParts({
     controller,
-    clientUserId,
+    requestorUserId: requestorUserId,
     unrenderableUsers,
     blobStorageService: blobStorageService,
     databaseService: databaseService,
@@ -49,13 +50,13 @@ export async function constructRenderableUsersFromPartsByUserIds({
 
 export async function constructRenderableUserFromPartsByUserId({
   controller,
-  clientUserId,
+  requestorUserId,
   userId,
   blobStorageService,
   databaseService,
 }: {
   controller: Controller;
-  clientUserId: string;
+  requestorUserId: string;
   userId: string;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
@@ -75,7 +76,7 @@ export async function constructRenderableUserFromPartsByUserId({
   if (!!unrenderableUser) {
     return await constructRenderableUserFromParts({
       controller,
-      clientUserId,
+      requestorUserId: requestorUserId,
       unrenderableUser,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
@@ -93,13 +94,13 @@ export async function constructRenderableUserFromPartsByUserId({
 
 export async function constructRenderableUsersFromParts({
   controller,
-  clientUserId,
+  requestorUserId,
   unrenderableUsers,
   blobStorageService,
   databaseService,
 }: {
   controller: Controller;
-  clientUserId: string;
+  requestorUserId: string;
   unrenderableUsers: UnrenderableUser[];
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
@@ -109,7 +110,7 @@ export async function constructRenderableUsersFromParts({
     async (unrenderableUser) =>
       await constructRenderableUserFromParts({
         controller,
-        clientUserId,
+        requestorUserId: requestorUserId,
         unrenderableUser,
         blobStorageService,
         databaseService,
@@ -123,13 +124,13 @@ export async function constructRenderableUsersFromParts({
 
 export async function constructRenderableUserFromParts({
   controller,
-  clientUserId,
+  requestorUserId,
   unrenderableUser,
   blobStorageService,
   databaseService,
 }: {
   controller: Controller;
-  clientUserId: string | undefined;
+  requestorUserId: string | undefined;
   unrenderableUser: UnrenderableUser;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
@@ -178,7 +179,7 @@ export async function constructRenderableUserFromParts({
 
   const canUserViewUserContentResponse = await canUserViewUserContent({
     controller,
-    clientUserId,
+    requestorUserId: requestorUserId,
     targetUser: unrenderableUser,
     databaseService,
   });
@@ -192,6 +193,7 @@ export async function constructRenderableUserFromParts({
       {
         controller,
         userIdBeingFollowed: userId,
+        areFollowsPending: false,
       },
     );
   if (countFollowersOfUserIdResponse.type === EitherType.failure) {
@@ -204,6 +206,7 @@ export async function constructRenderableUserFromParts({
       {
         controller,
         userIdDoingFollowing: userId,
+        areFollowsPending: false,
       },
     );
   if (countFollowsOfUserIdResponse.type === EitherType.failure) {
@@ -222,20 +225,20 @@ export async function constructRenderableUserFromParts({
 
   const { success: userHashtags } = getHashtagsForUserIdResponse;
 
-  let isBeingFollowedByClient = false;
-  if (!!clientUserId) {
-    const isUserIdFollowingUserIdResponse =
-      await databaseService.tableNameToServicesMap.userFollowsTableService.isUserIdFollowingUserId(
+  let followingStatusOfClientToUser = UserFollowingStatus.not_following;
+  if (!!requestorUserId) {
+    const getFollowingStatusOfUserIdToUserIdResponse =
+      await databaseService.tableNameToServicesMap.userFollowsTableService.getFollowingStatusOfUserIdToUserId(
         {
           controller,
-          userIdDoingFollowing: clientUserId,
+          userIdDoingFollowing: requestorUserId,
           userIdBeingFollowed: userId,
         },
       );
-    if (isUserIdFollowingUserIdResponse.type === EitherType.failure) {
-      return isUserIdFollowingUserIdResponse;
+    if (getFollowingStatusOfUserIdToUserIdResponse.type === EitherType.failure) {
+      return getFollowingStatusOfUserIdToUserIdResponse;
     }
-    isBeingFollowedByClient = isUserIdFollowingUserIdResponse.success;
+    followingStatusOfClientToUser = getFollowingStatusOfUserIdToUserIdResponse.success;
   }
 
   return Success({
@@ -256,7 +259,7 @@ export async function constructRenderableUserFromParts({
     shortBio,
     hashtags: userHashtags,
     preferredPagePrimaryColor,
-    isBeingFollowedByClient,
+    followingStatusOfClientToUser,
     creationTimestamp,
     isAdmin,
   });

@@ -27,11 +27,11 @@ export function generatePostgreSQLCreateEnumTypeQueryString({
 
 export function generatePSQLGenericUpdateRowQueryString<T>({
   updatedFields,
-  fieldUsedToIdentifyUpdatedRow,
+  fieldsUsedToIdentifyUpdatedRows,
   tableName,
 }: {
   updatedFields: PSQLUpdateFieldAndValue<T>[];
-  fieldUsedToIdentifyUpdatedRow: PSQLFieldAndValue<T>;
+  fieldsUsedToIdentifyUpdatedRows: PSQLFieldAndValue<T>[];
   tableName: string;
 }): QueryConfig {
   const filteredUpdatedFields = updatedFields
@@ -71,7 +71,18 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
     })
     .join("\n");
 
-  queryValues.push(fieldUsedToIdentifyUpdatedRow.value);
+
+  let conditionsUsedToIdentifyUpdatedRows = "";
+  fieldsUsedToIdentifyUpdatedRows.forEach((fieldUsedToIdentifyUpdatedRows: PSQLFieldAndValue<T>, index) => {
+    conditionsUsedToIdentifyUpdatedRows += "\n";
+    if (index > 0) {
+      conditionsUsedToIdentifyUpdatedRows += " AND ";
+    }
+    conditionsUsedToIdentifyUpdatedRows += `${fieldUsedToIdentifyUpdatedRows.field} = $${queryValueIndex + index + 1}`
+
+    queryValues.push(fieldUsedToIdentifyUpdatedRows.value);
+  })
+
 
   const queryText = `
     UPDATE
@@ -79,7 +90,7 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
     SET
       ${updateString}
     WHERE
-      ${fieldUsedToIdentifyUpdatedRow.field} = $${queryValueIndex + 1}
+      ${conditionsUsedToIdentifyUpdatedRows}
     RETURNING
       *
     ;

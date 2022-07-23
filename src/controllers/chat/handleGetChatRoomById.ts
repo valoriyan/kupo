@@ -61,7 +61,7 @@ export async function handleGetChatRoomById({
   const constructRenderableUsersFromPartsByUserIdsResponse =
     await constructRenderableUsersFromPartsByUserIds({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       userIds: [...setOfUserIds],
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

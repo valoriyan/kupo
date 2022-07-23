@@ -47,7 +47,7 @@ export async function handleGetUsersByIds({
   const constructRenderableUsersFromPartsByUserIdsResponse =
     await constructRenderableUsersFromPartsByUserIds({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       userIds,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

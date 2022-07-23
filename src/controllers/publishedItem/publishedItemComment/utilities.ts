@@ -95,7 +95,7 @@ export async function constructRenderablePublishedItemCommentFromParts({
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUser,
       blobStorageService,
       databaseService,
@@ -144,7 +144,7 @@ export async function constructRenderablePublishedItemCommentsFromParts({
   const constructRenderableUsersFromPartsResponse =
     await constructRenderableUsersFromParts({
       controller,
-      clientUserId,
+      requestorUserId: clientUserId,
       unrenderableUsers,
       blobStorageService,
       databaseService,

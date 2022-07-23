@@ -132,7 +132,7 @@ export async function handleUserLikesPublishedItem({
     const constructRenderableUserFromPartsResponse =
       await constructRenderableUserFromParts({
         controller,
-        clientUserId,
+        requestorUserId: clientUserId,
         unrenderableUser: unrenderableClientUser,
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
