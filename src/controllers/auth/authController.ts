@@ -78,10 +78,12 @@ export class AuthController extends Controller {
 
   @Post("login")
   public async loginUser(
+    @Request() request: express.Request,
     @Body() requestBody: LoginUserRequestBody,
   ): Promise<HTTPResponse<ErrorReasonTypes<string | AuthFailedReason>, AuthSuccess>> {
     return await handleLoginUser({
       controller: this,
+      request,
       requestBody,
     });
   }
@@ -153,10 +155,12 @@ export class AuthController extends Controller {
 
   @Post("resetPassword")
   public async resetPassword(
+    @Request() request: express.Request,
     @Body() requestBody: ResetPasswordRequestBody,
-  ): Promise<HTTPResponse<ResetPasswordFailedReason, ResetPasswordSuccess>> {
+  ): Promise<HTTPResponse<ErrorReasonTypes<string | ResetPasswordFailedReason>, ResetPasswordSuccess>> {
     return await handleResetPassword({
       controller: this,
+      request,
       requestBody,
     });
   }

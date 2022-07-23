@@ -1,9 +1,11 @@
+import express from "express";
 import { getEnvironmentVariable } from "../../../utilities";
-import { EitherType, HTTPResponse } from "../../../utilities/monads";
+import { EitherType, ErrorReasonTypes, HTTPResponse } from "../../../utilities/monads";
 import { AuthController } from "../authController";
 import { verify } from "jsonwebtoken";
 import { ResetPasswordJWTData } from "../../../services/emailService/models";
 import { encryptPassword } from "../utilities";
+import { getClientIp } from "request-ip";
 
 export interface ResetPasswordRequestBody {
   token: string;
@@ -20,14 +22,18 @@ export enum ResetPasswordFailedReason {
 
 export async function handleResetPassword({
   controller,
+  request,
   requestBody,
 }: {
   controller: AuthController;
+  request: express.Request;
   requestBody: ResetPasswordRequestBody;
-}): Promise<HTTPResponse<ResetPasswordFailedReason, ResetPasswordSuccess>> {
+}): Promise<HTTPResponse<ErrorReasonTypes<string | ResetPasswordFailedReason>, ResetPasswordSuccess>> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const { token, password } = requestBody;
+  const now = Date.now();
+  const clientIpAddress = getClientIp(request)
 
   try {
     const jwtData = verify(token, jwtPrivateKey) as ResetPasswordJWTData;
@@ -42,6 +48,34 @@ export async function handleResetPassword({
         encryptedPassword,
       },
     );
+
+    const selectUserByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      {
+        controller,
+        userId,
+      },
+    );
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const {success: unrenderableUser} = selectUserByUserIdResponse;
+
+
+    const recordLoginAttemptResponse =
+    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+      {
+        controller,
+        username: unrenderableUser!.username,
+        timestamp: now,
+        ipAddress: clientIpAddress || "",
+        wasSuccessful: true,
+          },
+    );
+  if (recordLoginAttemptResponse.type === EitherType.failure) {
+    return recordLoginAttemptResponse;
+  }
+
 
     return {
       type: EitherType.success,

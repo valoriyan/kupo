@@ -1,3 +1,4 @@
+import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -9,6 +10,7 @@ import { AuthController } from "./authController";
 import { AuthFailedReason, AuthSuccess } from "./models";
 import { encryptPassword } from "./utilities";
 import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
+import { getClientIp } from "request-ip";
 
 export interface LoginUserRequestBody {
   username: string;
@@ -17,14 +19,48 @@ export interface LoginUserRequestBody {
 
 export async function handleLoginUser({
   controller,
+  request,
   requestBody,
 }: {
   controller: AuthController;
+  request: express.Request;
   requestBody: LoginUserRequestBody;
 }): Promise<HTTPResponse<ErrorReasonTypes<string | AuthFailedReason>, AuthSuccess>> {
   const { username, password } = requestBody;
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
+  const now = Date.now();
+  const clientIpAddress = getClientIp(request)
+
+  //////////////////////////////////////////////////
+  // CHECK RECENT AUTH ATTEMPTS - ACCOUNT IS LOCKED AT FIVE FAILED CONSECUTIVE ATTEMPTS
+  //////////////////////////////////////////////////
+  const getLoginAttemptsForUsernameResponse =
+    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.getLoginAttemptsForUsername(
+      {
+        controller,
+        username,
+        limit: 5,
+     },
+    );
+  if (getLoginAttemptsForUsernameResponse.type === EitherType.failure) {
+    return getLoginAttemptsForUsernameResponse;
+  }
+  const { success: recentLoginAttempts } = getLoginAttemptsForUsernameResponse;
+
+  if (recentLoginAttempts.length === 5 && recentLoginAttempts.every(recentLoginAttempt => !recentLoginAttempt.was_successful)) {
+    return Failure({
+      controller,
+      httpStatusCode: 401,
+      reason: AuthFailedReason.AccountLocked,
+      error: "Too many failed login attempts at handleLoginUser",
+      additionalErrorInformation: "Too many failed login attempts at handleLoginUser",
+    });
+  }
+
+  //////////////////////////////////////////////////
+  // CHECK PASSWORD
+  //////////////////////////////////////////////////
   const selectUser_WITH_PASSWORD_ByUsernameResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByUsername(
       { controller, username },
@@ -38,10 +74,43 @@ export async function handleLoginUser({
     const hasMatchedPassword =
       encryptPassword({ password }) === user_WITH_PASSWORD.encryptedPassword;
     if (hasMatchedPassword) {
+
+      const recordLoginAttemptResponse =
+      await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+        {
+          controller,
+          username,
+          timestamp: now,
+          ipAddress: clientIpAddress || "",
+          wasSuccessful: true,
+            },
+      );
+    if (recordLoginAttemptResponse.type === EitherType.failure) {
+      return recordLoginAttemptResponse;
+    }
+  
+
+
       const userId = user_WITH_PASSWORD.userId;
       return grantNewAccessToken({ controller, userId, jwtPrivateKey });
     }
   }
+
+  const recordLoginAttemptResponse =
+    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+      {
+        controller,
+        username,
+        timestamp: now,
+        ipAddress: clientIpAddress || "",
+        wasSuccessful: false,
+          },
+    );
+  if (recordLoginAttemptResponse.type === EitherType.failure) {
+    return recordLoginAttemptResponse;
+  }
+
+
   return Failure({
     controller,
     httpStatusCode: 401,

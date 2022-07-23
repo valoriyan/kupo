@@ -22,6 +22,7 @@ import { UserNotificationsTableService } from "./tableServices/userNotifications
 import { SavedItemsTableService } from "./tableServices/savedItemsTableService";
 import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCardDataTableService";
 import { PublishedItemTransactionsTableService } from "./tableServices/publishedItemTransactionsTableService";
+import { UserLoginAttemptsTableService } from "./tableServices/userLoginAttemptsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -64,6 +65,9 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     publishedItemTransactionsTableService: new PublishedItemTransactionsTableService(
+      DatabaseService.datastorePool,
+    ),
+    userLoginAttemptsTableService: new UserLoginAttemptsTableService(
       DatabaseService.datastorePool,
     ),
   };
