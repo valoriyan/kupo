@@ -83,7 +83,11 @@ export async function handleCreateChatMessage({
 
   await controller.webSocketService.notifyUserIdsOfNewChatMessage({
     userIds,
-    chatMessage,
+    newChatMessageNotification: {
+      // TODO: put in actual number of unread chat rooms
+      countOfUnreadChatRooms: 0,
+      chatMessage,
+    },
   });
 
   return Success({

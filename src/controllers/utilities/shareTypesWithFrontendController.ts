@@ -1,4 +1,5 @@
 import { Controller, Post, Route, Body } from "tsoa";
+import { NewChatMessageNotification } from "../chat/models";
 import {
   UnrenderableCanceledCommentOnPublishedItemNotification,
   UnrenderableCanceledNewFollowerNotification,
@@ -14,6 +15,7 @@ export class ShareTypesWithFrontendController extends Controller {
       UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification;
       UnrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification;
       UnrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPublishedItemNotification;
+      NewChatMessageNotification: NewChatMessageNotification;
     },
   ): Promise<{ response: string }> {
     requestBody;

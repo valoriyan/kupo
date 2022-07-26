@@ -19,7 +19,6 @@ export function collectTagsFromText({ text }: { text: string }): string[] {
       if (groupIndex === 1) {
         collectedTags.push(match);
       }
-      // console.log(`Found match, group ${groupIndex}: ${match}`);
     });
   }
 

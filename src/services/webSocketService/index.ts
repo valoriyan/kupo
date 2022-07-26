@@ -5,7 +5,9 @@ import { notifyUserIdsOfNewChatMessage } from "./chat/notifyUserIdsOfNewChatMess
 import { singleton } from "tsyringe";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
-import { RenderableChatMessage } from "../../controllers/chat/models";
+import {
+  NewChatMessageNotification,
+} from "../../controllers/chat/models";
 import { notifyUserIdsOfDeletedChatMessage } from "./chat/notifyUserIdsOfDeletedChatMessage";
 import { getEnvironmentVariable } from "../../utilities";
 import { NewChatNotification } from "./chat/models";
@@ -32,8 +34,6 @@ export class WebSocketService {
     WebSocketService.io = io;
 
     io.on("connection", (socket) => {
-      console.log("USER HAS CONNECTED");
-
       const accessToken = socket.handshake.auth["accessToken"];
 
       try {
@@ -78,16 +78,16 @@ export class WebSocketService {
   }
 
   public async notifyUserIdsOfNewChatMessage({
-    chatMessage,
+    newChatMessageNotification,
     userIds,
   }: {
-    chatMessage: RenderableChatMessage;
+    newChatMessageNotification: NewChatMessageNotification;
     userIds: string[];
   }) {
     await BluebirdPromise.map(userIds, async (userId) => {
       await notifyUserIdsOfNewChatMessage({
         io: WebSocketService.io,
-        chatMessage,
+        newChatMessageNotification: newChatMessageNotification,
         userId,
       });
     });

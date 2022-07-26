@@ -1,4 +1,4 @@
-import { RenderableUser } from "../user/models";
+import { RenderableUser } from "../../user/models";
 
 export interface UnrenderableChatMessage {
   chatMessageId: string;
@@ -24,4 +24,9 @@ export interface UnrenderableChatRoomPreview {
 export interface RenderableChatRoomPreview {
   chatRoomId: string;
   members: RenderableUser[];
+}
+
+export interface NewChatMessageNotification {
+  countOfUnreadChatRooms: number;
+  chatMessage: RenderableChatMessage;
 }

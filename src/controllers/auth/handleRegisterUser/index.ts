@@ -37,8 +37,6 @@ export async function handleRegisterUser({
   const userId = uuidv4();
   const { email, username, password } = requestBody;
 
-  console.log(`Creating user ${username}`);
-
   const usernameErrorReason = validateUsername({ username });
   if (!!usernameErrorReason) {
     console.log(`Not creating user ${username} due to failure to validateUsername`);
