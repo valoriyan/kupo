@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { RenderableChatMessage } from "#/api";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
 import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGetPageOfChatMessagesFromChatRoomId";
@@ -12,9 +11,7 @@ import { styled } from "#/styling";
 import { MessageComposer } from "../MessageComposer";
 import { ChatMessagesList } from "./ChatMessagesList";
 import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
-import { FormStateProvider, useFormState } from "./FormContext";
-
-const NEW_CHAT_MESSAGE_EVENT_NAME = "NEW_CHAT_MESSAGE";
+import { ChatRoomFormStateProvider, useChatRoomFormState } from "./ChatRoomFormContext";
 
 export interface ChatRoomProps {
   chatRoomId: string;
@@ -22,18 +19,29 @@ export interface ChatRoomProps {
 
 export const ChatRoom = ({ chatRoomId }: ChatRoomProps) => {
   return (
-    <FormStateProvider>
+    <ChatRoomFormStateProvider>
       <ChatRoomInner chatRoomId={chatRoomId} />
-    </FormStateProvider>
+    </ChatRoomFormStateProvider>
   );
 };
 
 const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
-  const { receivedChatMessages, receiveNewChatMessage } = useFormState();
-  const { socket } = useWebsocketState();
+  const {
+    subscribeToChatRoomId,
+    mapOfSubscribedChatChannelsToReceivedChatMessages,
+    unsubscribeFromChatRoomId,
+  } = useWebsocketState();
+
+  useEffect(() => {
+    subscribeToChatRoomId({ chatRoomId });
+
+    // return () => {
+    //   unsubscribeFromChatRoomId({ chatRoomId });
+    // };
+  }, [chatRoomId, subscribeToChatRoomId, unsubscribeFromChatRoomId]);
 
   const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
-  const { newChatMessage, setNewChatMessage } = useFormState();
+  const { newChatMessage, setNewChatMessage } = useChatRoomFormState();
 
   const {
     data: clientUserData,
@@ -55,32 +63,6 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     isError: isErrorAcquiringChatRoomMembersData,
     isLoading: isLoadingChatRoomMembersData,
   } = useGetUsersByUserIds({ userIds: chatRoomUserIds });
-
-  useEffect(() => {
-    if (socket) {
-      console.log("MOUNTING SOCKET!");
-
-      function handleNewChatMessage(chatMessage: RenderableChatMessage) {
-        if (
-          chatMessagesQuery.data &&
-          !chatMessagesQuery.data.pages.some((page) => {
-            const chatMessageIds = page.chatMessages.map(
-              (existingChatMessage) => existingChatMessage.chatMessageId,
-            );
-            return chatMessageIds.includes(chatMessage.chatMessageId);
-          })
-        ) {
-          receiveNewChatMessage({ chatMessage });
-        }
-      }
-
-      socket.on(NEW_CHAT_MESSAGE_EVENT_NAME, handleNewChatMessage);
-
-      return function cleanup() {
-        socket.off(NEW_CHAT_MESSAGE_EVENT_NAME, handleNewChatMessage);
-      };
-    }
-  }, [chatMessagesQuery.data, receiveNewChatMessage, socket]);
 
   if (
     (chatMessagesQuery.isError && !chatMessagesQuery.isLoading) ||
@@ -114,6 +96,9 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
 
     setNewChatMessage("");
   }
+
+  const receivedChatMessages =
+    mapOfSubscribedChatChannelsToReceivedChatMessages.get(chatRoomId) || [];
 
   const chatMessages = chatMessagesQuery.data.pages
     .flatMap((page) => page.chatMessages)

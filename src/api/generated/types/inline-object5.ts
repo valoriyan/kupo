@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { NewChatMessageNotification } from "./new-chat-message-notification";
 import { UnrenderableCanceledCommentOnPublishedItemNotification } from "./unrenderable-canceled-comment-on-published-item-notification";
 import { UnrenderableCanceledNewFollowerNotification } from "./unrenderable-canceled-new-follower-notification";
 import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "./unrenderable-canceled-new-like-on-published-item-notification";
@@ -22,6 +23,12 @@ import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "./unrend
  * @interface InlineObject5
  */
 export interface InlineObject5 {
+  /**
+   *
+   * @type {NewChatMessageNotification}
+   * @memberof InlineObject5
+   */
+  NewChatMessageNotification: NewChatMessageNotification;
   /**
    *
    * @type {UnrenderableCanceledNewLikeOnPublishedItemNotification}

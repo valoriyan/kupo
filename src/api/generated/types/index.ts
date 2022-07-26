@@ -335,6 +335,7 @@ export * from "./notificationeventsnewcommentonpublisheditem";
 export * from "./notificationeventsnewfollower";
 export * from "./notificationeventsnewlikeonpublisheditem";
 export * from "./notificationeventsnewtaginpublisheditemcomment";
+export * from "./new-chat-message-notification";
 export * from "./profile-privacy-setting";
 export * from "./published-item-type";
 export * from "./published-item-type-post";
