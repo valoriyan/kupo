@@ -53,18 +53,18 @@ export async function handleLoginUser({
     recentLoginAttempts.every((recentLoginAttempt) => !recentLoginAttempt.was_successful)
   ) {
     const recordLoginAttemptResponse =
-    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
-      {
-        controller,
-        username,
-        timestamp: now,
-        ipAddress: clientIpAddress || "",
-        wasSuccessful: false,
-      },
-    );
-  if (recordLoginAttemptResponse.type === EitherType.failure) {
-    return recordLoginAttemptResponse;
-  }
+      await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+        {
+          controller,
+          username,
+          timestamp: now,
+          ipAddress: clientIpAddress || "",
+          wasSuccessful: false,
+        },
+      );
+    if (recordLoginAttemptResponse.type === EitherType.failure) {
+      return recordLoginAttemptResponse;
+    }
 
     return Failure({
       controller,
