@@ -35,9 +35,9 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
   useEffect(() => {
     subscribeToChatRoomId({ chatRoomId });
 
-    // return () => {
-    //   unsubscribeFromChatRoomId({ chatRoomId });
-    // };
+    return function cleanup() {
+      unsubscribeFromChatRoomId({ chatRoomId });
+    };
   }, [chatRoomId, subscribeToChatRoomId, unsubscribeFromChatRoomId]);
 
   const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
