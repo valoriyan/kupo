@@ -16,6 +16,7 @@ export const generateNewChatMessageNotificationHandler =
 
     if (updatedMapOfSubscribedChatChannelsToReceivedChatMessages.has(chatRoomId)) {
       const oldChatMessages =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         updatedMapOfSubscribedChatChannelsToReceivedChatMessages.get(chatRoomId)!;
       const newChatMessages = [...oldChatMessages, chatMessage];
 
