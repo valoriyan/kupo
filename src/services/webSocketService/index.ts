@@ -5,9 +5,7 @@ import { notifyUserIdsOfNewChatMessage } from "./chat/notifyUserIdsOfNewChatMess
 import { singleton } from "tsyringe";
 import { generatePrivateUserWebSocketRoomName } from "./utilities";
 import { Promise as BluebirdPromise } from "bluebird";
-import {
-  NewChatMessageNotification,
-} from "../../controllers/chat/models";
+import { NewChatMessageNotification } from "../../controllers/chat/models";
 import { notifyUserIdsOfDeletedChatMessage } from "./chat/notifyUserIdsOfDeletedChatMessage";
 import { getEnvironmentVariable } from "../../utilities";
 import { NewChatNotification } from "./chat/models";
