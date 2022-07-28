@@ -398,6 +398,7 @@ export * from "./shared-renderable-post";
 export * from "./shared-shop-item";
 export * from "./store-credit-card-failed-reason";
 export * from "./store-credit-card-request-body";
+export * from "./store-credit-card-success";
 export * from "./success-response-auth-success";
 export * from "./success-response-check-reset-password-token-validity-success";
 export * from "./success-response-create-chat-message-in-new-chat-room-success";
