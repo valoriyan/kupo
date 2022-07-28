@@ -15,8 +15,13 @@ export interface StoreCreditCardRequestBody {
   paymentProcessorCardToken: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface StoreCreditCardSuccess {}
+export interface StoreCreditCardSuccess {
+  userId: string;
+  localCreditCardId: string;
+  paymentProcessorCardId: string;
+  creationTimestamp: number;
+  isPrimaryCard: boolean;
+}
 
 export enum StoreCreditCardFailedReason {
   UNKNOWN_REASON = "UNKNOWN_REASON",
@@ -97,20 +102,21 @@ export async function handleStoreCreditCard({
 
   const currentCreditCardsCount = creditCardsStoredByUserId.length;
 
+  const cardToStore: StoreCreditCardSuccess = {
+    userId: clientUserId,
+    localCreditCardId: uuidv4(),
+    paymentProcessorCardId,
+    creationTimestamp: now,
+    isPrimaryCard: !currentCreditCardsCount,
+  };
+
   const storeUserCreditCardDataResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
-      {
-        controller,
-        userId: clientUserId,
-        localCreditCardId: uuidv4(),
-        paymentProcessorCardId,
-        creationTimestamp: now,
-        isPrimaryCard: !currentCreditCardsCount,
-      },
+      { controller, ...cardToStore },
     );
   if (storeUserCreditCardDataResponse.type === EitherType.failure) {
     return storeUserCreditCardDataResponse;
   }
 
-  return Success({});
+  return Success(cardToStore);
 }
