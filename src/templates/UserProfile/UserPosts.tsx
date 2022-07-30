@@ -1,5 +1,5 @@
-import { RenderablePost, RenderableUser } from "#/api";
-import { useGetPageOfPostsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
+import { PublishedItemType, RenderablePost, RenderableUser } from "#/api";
+import { useGetPublishedItemsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
@@ -13,7 +13,10 @@ export interface UserPostsProps {
 
 export const UserPosts = ({ user }: UserPostsProps) => {
   const { data, isLoading, error, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useGetPageOfPostsByUserId({ userId: user.userId });
+    useGetPublishedItemsByUserId({
+      userId: user.userId,
+      publishedItemType: PublishedItemType.Post,
+    });
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;

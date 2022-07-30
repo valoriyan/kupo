@@ -1,5 +1,5 @@
-import { RenderablePost, RenderableUser } from "#/api";
-import { useGetPageOfShopItemsByUserId } from "#/api/queries/shopItems/useGetPageOfShopItemsByUserId";
+import { PublishedItemType, RenderablePost, RenderableUser } from "#/api";
+import { useGetPublishedItemsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
@@ -13,7 +13,10 @@ export interface UserShopItemsProps {
 
 export const UserShopItems = ({ user }: UserShopItemsProps) => {
   const { data, isLoading, error, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useGetPageOfShopItemsByUserId({ userId: user.userId });
+    useGetPublishedItemsByUserId({
+      userId: user.userId,
+      publishedItemType: PublishedItemType.ShopItem,
+    });
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;
