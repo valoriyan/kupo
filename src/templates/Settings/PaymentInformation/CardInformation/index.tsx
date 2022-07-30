@@ -55,8 +55,12 @@ const CardList = () => {
         <OnFileCard
           key={card.localCreditCardId}
           cardInfo={card}
-          makePrimaryCard={() => makeCreditCardPrimary(card.localCreditCardId)}
-          deleteCard={() => removeCreditCard(card.localCreditCardId)}
+          makePrimaryCard={async () => {
+            await makeCreditCardPrimary(card.localCreditCardId);
+          }}
+          removeCreditCard={async () => {
+            await removeCreditCard(card.localCreditCardId);
+          }}
         />
       ))}
     </>
