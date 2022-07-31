@@ -10,7 +10,7 @@ export interface BaseShopItem extends BaseRenderablePublishedItem {
   renderableShopItemType: RenderableShopItemType;
   title: string;
   price: number;
-  previewMediaElements: MediaElement[];
+  mediaElements: MediaElement[];
 }
 
 export interface RootShopItemPreview extends BaseShopItem {
