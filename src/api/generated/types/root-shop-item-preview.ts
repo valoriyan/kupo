@@ -124,5 +124,5 @@ export interface RootShopItemPreview {
    * @type {Array<MediaElement>}
    * @memberof RootShopItemPreview
    */
-  previewMediaElements: Array<MediaElement>;
+  mediaElements: Array<MediaElement>;
 }

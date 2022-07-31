@@ -30,22 +30,7 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
     );
   }
 
-  const shopItems = data.pages
-    .flatMap((page) => page.publishedItems)
-    .map((shopItem) => ({
-      postId: shopItem.id,
-      authorUserId: shopItem.authorUserId,
-      caption: shopItem.caption,
-      creationTimestamp: shopItem.creationTimestamp,
-      scheduledPublicationTimestamp: shopItem.scheduledPublicationTimestamp,
-      expirationTimestamp: shopItem.expirationTimestamp,
-      mediaElements: shopItem.previewMediaElements,
-      hashtags: shopItem.hashtags,
-      likes: { count: 0 },
-      comments: { count: 0 },
-      isLikedByClient: false,
-      isSavedByClient: false,
-    }));
+  const shopItems = data.pages.flatMap((page) => page.publishedItems);
 
   return shopItems.length === 0 ? (
     <ErrorMessage>No Shop Items Yet</ErrorMessage>
@@ -54,11 +39,11 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={shopItems.map((post) => (
+      items={shopItems.map((shopItem) => (
         <Post
-          key={post.postId}
-          post={post as unknown as RenderablePost}
-          handleClickOfCommentsButton={() => goToPostPage(post.postId)}
+          key={shopItem.id}
+          post={shopItem as unknown as RenderablePost}
+          handleClickOfCommentsButton={() => goToPostPage(shopItem.id)}
         />
       ))}
     />
