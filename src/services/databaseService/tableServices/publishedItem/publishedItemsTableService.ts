@@ -540,7 +540,7 @@ export class PublishedItemsTableService extends TableService {
       );
 
       if (response.rows.length < 1) {
-        throw new Error("Missing published item");
+        throw new Error(`Missing published item: ${id}`);
       }
 
       return Success(
