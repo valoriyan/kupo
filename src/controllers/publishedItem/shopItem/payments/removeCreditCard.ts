@@ -56,14 +56,46 @@ export async function handleRemoveCreditCard({
   const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
     selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
-  const getStoredCreditCardByLocalIdResponse =
-    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getStoredCreditCardByLocalId(
-      { controller, localCreditCardId },
+  const getCreditCardsStoredByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
+      { controller, userId: clientUserId },
     );
-  if (getStoredCreditCardByLocalIdResponse.type === EitherType.failure) {
-    return getStoredCreditCardByLocalIdResponse;
+
+  if (getCreditCardsStoredByUserIdResponse.type === EitherType.failure) {
+    return getCreditCardsStoredByUserIdResponse;
   }
-  const { success: dBStoredCreditCardDatum } = getStoredCreditCardByLocalIdResponse;
+  const { success: creditCardsStoredByUserId } = getCreditCardsStoredByUserIdResponse;
+
+  const dBStoredCreditCardDatum = creditCardsStoredByUserId.find(
+    (card) => card.local_credit_card_id === localCreditCardId,
+  );
+  if (!dBStoredCreditCardDatum)
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
+      error: "Failed to find credit card to remove",
+      additionalErrorInformation: "Failed to find credit card to remove",
+    });
+
+  const remainingCards = creditCardsStoredByUserId.filter(
+    (card) => card.local_credit_card_id !== localCreditCardId,
+  );
+  const cardIdToMakePrimary = remainingCards.reduce((acc, cur) => {
+    if (cur.is_primary_card) return undefined;
+    return acc;
+  }, remainingCards[remainingCards.length - 1]?.local_credit_card_id as string | undefined);
+
+  if (cardIdToMakePrimary) {
+    const makeCreditCardPrimaryResponse =
+      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.makeCreditCardPrimary(
+        { controller, userId: clientUserId, localCreditCardId: cardIdToMakePrimary },
+      );
+
+    if (makeCreditCardPrimaryResponse.type === EitherType.failure) {
+      return makeCreditCardPrimaryResponse;
+    }
+  }
 
   if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
     const unstoreCreditCardResponse =

@@ -76,7 +76,7 @@ export async function assembleRootShopItemPreviewFromParts({
     isLikedByClient,
     isSavedByClient,
     price: parseInt(dbShopItem.price),
-    previewMediaElements,
+    mediaElements: previewMediaElements,
   };
 
   return Success(rootShopItemPreview);
