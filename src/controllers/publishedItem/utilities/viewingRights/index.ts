@@ -25,6 +25,10 @@ export async function assertViewingRightsOnPublishedItem({
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   const { authorUserId } = uncompiledBasePublishedItem;
 
+  if (authorUserId === requestorUserId) {
+    return Success({});
+  }
+
   const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
     controller,
     requestorUserId,
