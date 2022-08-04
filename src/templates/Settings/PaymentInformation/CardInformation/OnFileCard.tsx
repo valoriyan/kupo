@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { CreditCardSummary } from "#/api";
 import { Button } from "#/components/Button";
 import { Flex, Stack } from "#/components/Layout";
 import { Body, Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
+import { openRemoveCardModal } from "./RemoveCardModal";
 
 export interface CardInfo {
   id: string;
@@ -16,15 +18,17 @@ export interface CardInfo {
 
 export interface OnFileCardProps {
   cardInfo: CreditCardSummary;
-  makePrimaryCard: () => void;
-  deleteCard: () => void;
+  makePrimaryCard: () => Promise<void>;
+  removeCreditCard: () => Promise<void>;
 }
 
 export const OnFileCard = ({
   cardInfo,
   makePrimaryCard,
-  deleteCard,
+  removeCreditCard,
 }: OnFileCardProps) => {
+  const [isMakingPrimary, setIsMakingPrimary] = useState(false);
+
   return (
     <Wrapper isPrimary={cardInfo.isPrimaryCard}>
       <Stack css={{ gap: "$4" }}>
@@ -44,11 +48,36 @@ export const OnFileCard = ({
         </Stack>
         <Flex css={{ gap: "$4", justifyContent: "flex-end" }}>
           {!cardInfo.isPrimaryCard && (
-            <Button size="sm" variant="secondary" outlined onClick={makePrimaryCard}>
+            <Button
+              size="sm"
+              variant="secondary"
+              outlined
+              disabled={isMakingPrimary}
+              onClick={async () => {
+                setIsMakingPrimary(true);
+                try {
+                  await makePrimaryCard();
+                  setIsMakingPrimary(false);
+                } catch {
+                  setIsMakingPrimary(false);
+                }
+              }}
+            >
               Make Primary
             </Button>
           )}
-          <Button size="sm" variant="danger" outlined onClick={deleteCard}>
+          <Button
+            size="sm"
+            variant="danger"
+            outlined
+            onClick={() =>
+              openRemoveCardModal({
+                removeCreditCard: async () => {
+                  await removeCreditCard();
+                },
+              })
+            }
+          >
             Remove
           </Button>
         </Flex>

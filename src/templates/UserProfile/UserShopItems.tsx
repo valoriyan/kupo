@@ -1,5 +1,5 @@
-import { RenderablePost, RenderableUser } from "#/api";
-import { useGetPageOfShopItemsByUserId } from "#/api/queries/shopItems/useGetPageOfShopItemsByUserId";
+import { PublishedItemType, RenderablePost, RenderableUser } from "#/api";
+import { useGetPublishedItemsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
 import { Stack } from "#/components/Layout";
@@ -13,7 +13,10 @@ export interface UserShopItemsProps {
 
 export const UserShopItems = ({ user }: UserShopItemsProps) => {
   const { data, isLoading, error, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useGetPageOfShopItemsByUserId({ userId: user.userId });
+    useGetPublishedItemsByUserId({
+      userId: user.userId,
+      publishedItemType: PublishedItemType.ShopItem,
+    });
 
   if (error && !isLoading) {
     return <ErrorMessage>{error.message}</ErrorMessage>;
@@ -27,22 +30,7 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
     );
   }
 
-  const shopItems = data.pages
-    .flatMap((page) => page.publishedItems)
-    .map((shopItem) => ({
-      postId: shopItem.id,
-      authorUserId: shopItem.authorUserId,
-      caption: shopItem.caption,
-      creationTimestamp: shopItem.creationTimestamp,
-      scheduledPublicationTimestamp: shopItem.scheduledPublicationTimestamp,
-      expirationTimestamp: shopItem.expirationTimestamp,
-      mediaElements: shopItem.mediaElements,
-      hashtags: shopItem.hashtags,
-      likes: { count: 0 },
-      comments: { count: 0 },
-      isLikedByClient: false,
-      isSavedByClient: false,
-    }));
+  const shopItems = data.pages.flatMap((page) => page.publishedItems);
 
   return shopItems.length === 0 ? (
     <ErrorMessage>No Shop Items Yet</ErrorMessage>
@@ -51,11 +39,11 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={shopItems.map((post) => (
+      items={shopItems.map((shopItem) => (
         <Post
-          key={post.postId}
-          post={post as unknown as RenderablePost}
-          handleClickOfCommentsButton={() => goToPostPage(post.postId)}
+          key={shopItem.id}
+          post={shopItem as unknown as RenderablePost}
+          handleClickOfCommentsButton={() => goToPostPage(shopItem.id)}
         />
       ))}
     />

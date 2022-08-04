@@ -25,6 +25,7 @@ export const AddCardModal = (props: AddCardModalProps) => {
   const [cardholderName, setCardholderName] = useState("");
   const { mutateAsync: storeCreditCard } = useStoreCreditCard();
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   useEffect(() => {
     if (securion && !formComponents) {
@@ -36,14 +37,22 @@ export const AddCardModal = (props: AddCardModalProps) => {
     e.preventDefault();
 
     setIsLoading(true);
+    setErrorMessage(undefined);
     if (securion && formComponents) {
       try {
         const token = await securion.createToken(formComponents, { cardholderName });
-        await storeCreditCard(token.id);
+        await storeCreditCard({
+          token: token.id,
+          last4: token.last4.toString(),
+          expMonth: token.expMonth.toString(),
+          expYear: token.expYear.toString(),
+          cardholderName: token.cardholderName ?? "",
+          brand: token.brand,
+        });
         props.hide();
-      } catch (error) {
-        // TODO: Put error at top of form
-        console.log("Failed to store credit card", error);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        setErrorMessage(error?.message ?? "");
       }
     }
     setIsLoading(false);
@@ -58,12 +67,23 @@ export const AddCardModal = (props: AddCardModalProps) => {
         bg: "$modalBackground",
         borderRadius: "$2",
         boxShadow: "$3",
+        maxWidth: "400px", // Magic Number
       }}
     >
       <MainTitle>Add a new card</MainTitle>
       <Body css={{ color: "$secondaryText", mb: "$3" }}>
-        Please enter your card information below
+        Your card information will be securely handled <br />
+        by our payment processor{" "}
+        <a href="https://securionpay.com/" target="_blank" rel="noopener noreferrer">
+          SecurionPay
+        </a>
+        .
       </Body>
+      {errorMessage !== undefined && (
+        <Flex css={{ p: "$3", borderRadius: "$2", bg: "$failure", color: "$accentText" }}>
+          {errorMessage ?? "An error occurred"}
+        </Flex>
+      )}
       <form id="payment-form" onSubmit={onSubmit}>
         <Stack css={{ gap: "$5" }}>
           <div>
@@ -123,7 +143,9 @@ const Label = styled("label", subtextStyles, {
 const Input = styled("input", {
   display: "block",
   width: "100%",
-  bg: "$background2",
+  bg: "white", // TODO switch to $background2 when styling the payment inputs is possible
+  color: "black", // TODO remove this when styling the payment inputs is possible
+  colorScheme: "light", // TODO remove this when styling the payment inputs is possible
   border: "solid $borderWidths$1 $border",
   borderRadius: "$2",
   p: "$3",
@@ -136,7 +158,7 @@ const Input = styled("input", {
 });
 
 const FormField = styled("div", {
-  bg: "$background2",
+  bg: "white", // TODO switch to $background2 when styling the payment inputs is possible
   border: "solid $borderWidths$1 $border",
   borderRadius: "$2",
   p: "$3",
