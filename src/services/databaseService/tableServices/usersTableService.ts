@@ -204,12 +204,12 @@ export class UsersTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async selectUser_WITH_PASSWORD_ByUsername({
+  public async selectUser_WITH_PASSWORD_ByEmail({
     controller,
-    username,
+    email,
   }: {
     controller: Controller;
-    username: string;
+    email: string;
   }): Promise<
     InternalServiceResponse<
       ErrorReasonTypes<string>,
@@ -224,12 +224,12 @@ export class UsersTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            username = $1
+            email = $1
           LIMIT
             1
           ;
         `,
-        values: [username],
+        values: [email],
       };
 
       const response: QueryResult<DBUser> = await this.datastorePool.query(query);
@@ -247,7 +247,7 @@ export class UsersTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at usersTableService.selectUser_WITH_PASSWORD_ByUsername",
+          "Error at usersTableService.selectUser_WITH_PASSWORD_ByEmail",
       });
     }
   }

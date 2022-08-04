@@ -67,7 +67,7 @@ export async function handleResetPassword({
       await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
         {
           controller,
-          username: unrenderableUser!.username,
+          email: unrenderableUser!.email,
           timestamp: now,
           ipAddress: clientIpAddress || "",
           wasSuccessful: true,

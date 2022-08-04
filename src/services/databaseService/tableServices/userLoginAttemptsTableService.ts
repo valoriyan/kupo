@@ -13,7 +13,7 @@ import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUserLoginAttempt {
-  username: string;
+  email: string;
   timestamp: string;
   ip_address: string;
   was_successful: boolean;
@@ -30,7 +30,7 @@ export class UserLoginAttemptsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        username VARCHAR(64) NOT NULL,
+        email VARCHAR(64) NOT NULL,
         timestamp BIGINT NOT NULL,
         ip_address VARCHAR(64) NOT NULL,
         was_successful boolean NOT NULL
@@ -47,13 +47,13 @@ export class UserLoginAttemptsTableService extends TableService {
 
   public async recordLoginAttempt({
     controller,
-    username,
+    email,
     timestamp,
     ipAddress,
     wasSuccessful,
   }: {
     controller: Controller;
-    username: string;
+    email: string;
     timestamp: number;
     ipAddress: string;
     wasSuccessful: boolean;
@@ -64,7 +64,7 @@ export class UserLoginAttemptsTableService extends TableService {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
         rowsOfFieldsAndValues: [
           [
-            { field: "username", value: username },
+            { field: "email", value: email },
             { field: "timestamp", value: timestamp },
             { field: "ip_address", value: ipAddress },
             { field: "was_successful", value: was_successful_value },
@@ -91,17 +91,17 @@ export class UserLoginAttemptsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getLoginAttemptsForUsername({
+  public async getLoginAttemptsForEmail({
     controller,
-    username,
+    email,
     limit,
   }: {
     controller: Controller;
-    username: string;
+    email: string;
     limit?: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserLoginAttempt[]>> {
     try {
-      const queryValues = [username];
+      const queryValues = [email];
 
       let limitClause = "";
       if (!!limit) {
@@ -119,7 +119,7 @@ export class UserLoginAttemptsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            username = $1
+            email = $1
           ORDER BY
             timestamp DESC
           ${limitClause}
@@ -141,7 +141,7 @@ export class UserLoginAttemptsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserLoginAttemptsTableService.getLoginAttemptsForUserId",
+          "Error at UserLoginAttemptsTableService.getLoginAttemptsForEmail",
       });
     }
   }

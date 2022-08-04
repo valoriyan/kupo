@@ -13,7 +13,7 @@ import { grantNewAccessToken } from "./utilities/grantNewAccessToken";
 import { getClientIp } from "request-ip";
 
 export interface LoginUserRequestBody {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -26,7 +26,7 @@ export async function handleLoginUser({
   request: express.Request;
   requestBody: LoginUserRequestBody;
 }): Promise<HTTPResponse<ErrorReasonTypes<string | AuthFailedReason>, AuthSuccess>> {
-  const { username, password } = requestBody;
+  const { email, password } = requestBody;
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const now = Date.now();
@@ -35,18 +35,18 @@ export async function handleLoginUser({
   //////////////////////////////////////////////////
   // CHECK RECENT AUTH ATTEMPTS - ACCOUNT IS LOCKED AT FIVE FAILED CONSECUTIVE ATTEMPTS
   //////////////////////////////////////////////////
-  const getLoginAttemptsForUsernameResponse =
-    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.getLoginAttemptsForUsername(
+  const getLoginAttemptsForEmailResponse =
+    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.getLoginAttemptsForEmail(
       {
         controller,
-        username,
+        email,
         limit: 5,
       },
     );
-  if (getLoginAttemptsForUsernameResponse.type === EitherType.failure) {
-    return getLoginAttemptsForUsernameResponse;
+  if (getLoginAttemptsForEmailResponse.type === EitherType.failure) {
+    return getLoginAttemptsForEmailResponse;
   }
-  const { success: recentLoginAttempts } = getLoginAttemptsForUsernameResponse;
+  const { success: recentLoginAttempts } = getLoginAttemptsForEmailResponse;
 
   if (
     recentLoginAttempts.length === 5 &&
@@ -56,7 +56,7 @@ export async function handleLoginUser({
       await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
         {
           controller,
-          username,
+          email,
           timestamp: now,
           ipAddress: clientIpAddress || "",
           wasSuccessful: false,
@@ -79,8 +79,8 @@ export async function handleLoginUser({
   // CHECK PASSWORD
   //////////////////////////////////////////////////
   const selectUser_WITH_PASSWORD_ByUsernameResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByUsername(
-      { controller, username },
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByEmail(
+      { controller, email },
     );
   if (selectUser_WITH_PASSWORD_ByUsernameResponse.type === EitherType.failure) {
     return selectUser_WITH_PASSWORD_ByUsernameResponse;
@@ -95,7 +95,7 @@ export async function handleLoginUser({
         await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
           {
             controller,
-            username,
+            email,
             timestamp: now,
             ipAddress: clientIpAddress || "",
             wasSuccessful: true,
@@ -114,7 +114,7 @@ export async function handleLoginUser({
     await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
       {
         controller,
-        username,
+        email,
         timestamp: now,
         ipAddress: clientIpAddress || "",
         wasSuccessful: false,
