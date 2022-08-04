@@ -124,7 +124,7 @@ export interface RootPurchasedShopItemDetails {
    * @type {Array<MediaElement>}
    * @memberof RootPurchasedShopItemDetails
    */
-  previewMediaElements: Array<MediaElement>;
+  mediaElements: Array<MediaElement>;
   /**
    *
    * @type {Array<MediaElement>}

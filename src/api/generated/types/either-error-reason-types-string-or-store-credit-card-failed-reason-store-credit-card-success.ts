@@ -15,6 +15,7 @@
 import { EitherTypeSuccess } from "./either-type-success";
 import { FailureResponseErrorReasonTypesStringOrStoreCreditCardFailedReason } from "./failure-response-error-reason-types-string-or-store-credit-card-failed-reason";
 import { FailureResponseErrorReasonTypesStringOrStoreCreditCardFailedReasonError } from "./failure-response-error-reason-types-string-or-store-credit-card-failed-reason-error";
+import { StoreCreditCardSuccess } from "./store-credit-card-success";
 import { SuccessResponseStoreCreditCardSuccess } from "./success-response-store-credit-card-success";
 
 /**
@@ -37,8 +38,8 @@ export interface EitherErrorReasonTypesStringOrStoreCreditCardFailedReasonStoreC
   error: FailureResponseErrorReasonTypesStringOrStoreCreditCardFailedReasonError;
   /**
    *
-   * @type {object}
+   * @type {StoreCreditCardSuccess}
    * @memberof EitherErrorReasonTypesStringOrStoreCreditCardFailedReasonStoreCreditCardSuccess
    */
-  success: object;
+  success: StoreCreditCardSuccess;
 }

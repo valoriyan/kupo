@@ -36,7 +36,7 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
       creationTimestamp: shopItem.creationTimestamp,
       scheduledPublicationTimestamp: shopItem.scheduledPublicationTimestamp,
       expirationTimestamp: shopItem.expirationTimestamp,
-      mediaElements: shopItem.previewMediaElements,
+      mediaElements: shopItem.mediaElements,
       hashtags: shopItem.hashtags,
       likes: { count: 0 },
       comments: { count: 0 },

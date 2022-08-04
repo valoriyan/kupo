@@ -23,7 +23,7 @@ export interface LoginUserRequestBody {
    * @type {string}
    * @memberof LoginUserRequestBody
    */
-  username: string;
+  email: string;
   /**
    *
    * @type {string}

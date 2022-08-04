@@ -13,6 +13,7 @@
  */
 
 import { EitherTypeSuccess } from "./either-type-success";
+import { StoreCreditCardSuccess } from "./store-credit-card-success";
 
 /**
  *
@@ -28,8 +29,8 @@ export interface SuccessResponseStoreCreditCardSuccess {
   type: EitherTypeSuccess;
   /**
    *
-   * @type {object}
+   * @type {StoreCreditCardSuccess}
    * @memberof SuccessResponseStoreCreditCardSuccess
    */
-  success: object;
+  success: StoreCreditCardSuccess;
 }

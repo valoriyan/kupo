@@ -140,11 +140,5 @@ export interface RenderablePublishedItem {
    * @type {Array<MediaElement>}
    * @memberof RenderablePublishedItem
    */
-  previewMediaElements: Array<MediaElement>;
-  /**
-   *
-   * @type {Array<MediaElement>}
-   * @memberof RenderablePublishedItem
-   */
   purchasedMediaElements: Array<MediaElement>;
 }

@@ -127,7 +127,7 @@ export interface RenderableShopItem {
    * @type {Array<MediaElement>}
    * @memberof RenderableShopItem
    */
-  previewMediaElements: Array<MediaElement>;
+  mediaElements: Array<MediaElement>;
   /**
    *
    * @type {Array<MediaElement>}

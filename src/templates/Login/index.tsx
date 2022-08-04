@@ -9,14 +9,14 @@ import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { styled } from "#/styling";
 
 export const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { mutateAsync: loginUser, isLoading } = useLoginUser();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (!username || !password) return;
-    loginUser({ username, password });
+    if (!email || !password) return;
+    loginUser({ email, password });
   };
 
   return (
@@ -25,10 +25,10 @@ export const Login = () => {
         <Input
           size="lg"
           required
-          placeholder="username"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.currentTarget.value.toLocaleLowerCase())}
+          placeholder="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.currentTarget.value.toLocaleLowerCase())}
         />
         <Input
           size="lg"
