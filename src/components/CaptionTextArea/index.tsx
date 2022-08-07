@@ -16,6 +16,7 @@ export const CaptionTextArea = ({ caption, setCaption }: CaptionTextAreaProps) =
         placeholder="add caption..."
         value={caption}
         onChange={(e) => setCaption(e.currentTarget.value.slice(0, CAPTION_CHAR_LIMIT))}
+        data-cy="captions-input"
       />
       <Subtext css={{ color: "$secondaryText", p: "$2", pb: 0, alignSelf: "flex-end" }}>
         {caption.length} / {CAPTION_CHAR_LIMIT}

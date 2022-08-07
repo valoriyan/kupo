@@ -44,6 +44,7 @@ export const MediaUpload = ({
       accept="image/png, image/jpeg, video/mp4"
       multiple
       onChange={onChange}
+      data-cy="hidden-file-input"
     />
   );
 

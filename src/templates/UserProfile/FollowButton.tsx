@@ -39,6 +39,7 @@ export const FollowButton = ({
       variant="primary"
       outlined={isBeingFollowedByClient}
       css={{ width: "88px" }} // Width of Unfollow button
+      data-cy={isBeingFollowedByClient ? "unfollow-button" : "follow-button"}
     >
       {isBeingFollowedByClient ? "Unfollow" : "Follow"}
     </Button>

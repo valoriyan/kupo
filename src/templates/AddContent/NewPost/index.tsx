@@ -74,6 +74,7 @@ export const NewPost = (props: NewPostProps) => {
             variant="secondary"
             disabled={!canSubmit || isLoading}
             onClick={() => createPost()}
+            data-cy="create-content-item-button"
           >
             <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>
           </Button>
