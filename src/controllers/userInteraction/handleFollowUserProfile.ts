@@ -41,6 +41,8 @@ export async function handleFollowUser({
 }): Promise<HTTPResponse<FollowUserFailed, FollowUserSuccess>> {
   const { userIdBeingFollowed } = requestBody;
 
+  console.log("userIdBeingFollowed", userIdBeingFollowed);
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -48,6 +50,10 @@ export async function handleFollowUser({
   if (error) return error;
 
   const userFollowEventId = uuidv4();
+
+  console.log("userIdBeingFollowed", userIdBeingFollowed);
+  console.log("userFollowEventId", userFollowEventId);
+
 
   const selectUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
@@ -57,6 +63,10 @@ export async function handleFollowUser({
     return selectUserByUserIdResponse;
   }
   const userBeingFollowed = selectUserByUserIdResponse.success;
+
+  console.log("userBeingFollowed", userBeingFollowed);
+
+
   if (!userBeingFollowed) {
     return Failure({
       controller,
@@ -81,6 +91,8 @@ export async function handleFollowUser({
         isPending,
       },
     );
+  console.log("createUserFollowResponse", userBeingFollowed);
+
   if (createUserFollowResponse.type === EitherType.failure) {
     return createUserFollowResponse;
   }

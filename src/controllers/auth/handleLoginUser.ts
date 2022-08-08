@@ -82,6 +82,7 @@ export async function handleLoginUser({
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUser_WITH_PASSWORD_ByEmail(
       { controller, email },
     );
+
   if (selectUser_WITH_PASSWORD_ByUsernameResponse.type === EitherType.failure) {
     return selectUser_WITH_PASSWORD_ByUsernameResponse;
   }
