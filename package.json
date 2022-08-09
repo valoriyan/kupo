@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "devWithTestApi": "API_BASE_URL='https://test-api.kupono.io/' next dev",
-    "test": "start-server-and-test devWithTestApi http://localhost:3000 cypress:run",
+    "test": "start-server-and-test devWithTestApi http://localhost:3000 'cypress run'",
     "build": "next build",
     "start": "next start",
     "deploy": "heroku git:remote -a kupono-beta-frontend; git add -A; git commit -m 'deploy'; git push heroku main --force",
@@ -18,8 +18,7 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "prepare": "husky install",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^0.1.5",
