@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "@testing-library/cypress/add-commands";
 
 // ***********************************************
@@ -67,14 +68,14 @@ Cypress.Commands.add(
     cy.contains("a", "Create").click();
     cy.contains("New Post").click();
 
-    cy.findByLabelText("Media Upload").selectFile(postData.images[0], {
+    (cy as any).findByLabelText("Media Upload").selectFile(postData.images[0], {
       force: true,
     });
 
     cy.get(`[data-cy="captions-input"]`).type(postData.caption);
     cy.get(`[data-cy="hashtags-input"]`).type(postData.hashtags.join(" "));
 
-    cy.findByText("Post Now").click();
+    (cy as any).findByText("Post Now").click();
 
     cy.url().should("include", "/feed");
 
