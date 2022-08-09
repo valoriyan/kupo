@@ -35,3 +35,6 @@ yarn-error.log*
 
 # storybook
 storybook-static
+
+# cypress videos
+cypress/videos
