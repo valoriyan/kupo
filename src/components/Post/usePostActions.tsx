@@ -1,4 +1,4 @@
-import { RenderablePost } from "#/api";
+import { RenderablePost, RenderableShopItem } from "#/api";
 import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePublishedItem } from "#/api/mutations/posts/likePublishedItem";
 import { useSavePublishedItem } from "#/api/mutations/posts/savePublishedItem";
@@ -8,7 +8,7 @@ import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { useCurrentUserId } from "#/contexts/auth";
 import { InfoIcon, TrashIcon } from "../Icons";
 
-export const usePostActions = (post: RenderablePost) => {
+export const usePostActions = (post: RenderablePost | RenderableShopItem) => {
   const { id: postId, authorUserId, isLikedByClient, isSavedByClient } = post;
 
   const userId = useCurrentUserId();

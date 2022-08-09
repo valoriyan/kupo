@@ -1,4 +1,10 @@
-import { MediaElement, RootRenderablePost } from "#/api";
+import {
+  MediaElement,
+  PublishedItemType,
+  RootPurchasedShopItemDetails,
+  RootRenderablePost,
+  RootShopItemPreview,
+} from "#/api";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { styled } from "#/styling";
 import { goToPostPage } from "#/templates/SinglePost";
@@ -6,7 +12,7 @@ import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { PostBody } from "./PostBody";
 
 export interface SharedPostProps {
-  post: RootRenderablePost;
+  post: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
   setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   contentHeight?: string;
 }
@@ -23,10 +29,13 @@ export const SharedPost = ({
   return (
     <Wrapper>
       <PostBody
+        type={post.type as PublishedItemType}
         authorUserName={user?.username}
         authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
+        title={"title" in post ? post.title : undefined}
+        price={"price" in post ? post.price : undefined}
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
         onPostClick={() => goToPostPage(post.id)}

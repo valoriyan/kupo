@@ -1,5 +1,11 @@
 import { ComponentType, useState } from "react";
-import { MediaElement, RenderablePost, RootRenderablePost } from "#/api";
+import {
+  MediaElement,
+  PublishedItemType,
+  RenderablePost,
+  RenderableShopItem,
+  RootRenderablePost,
+} from "#/api";
 import { styled } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { HashTag } from "../HashTags";
@@ -13,12 +19,13 @@ import { ShareMenu } from "./ShareMenu";
 import { usePostActions } from "./usePostActions";
 
 export interface PostProps {
-  post: RenderablePost;
+  post: RenderablePost | RenderableShopItem;
   handleClickOfCommentsButton?: () => void;
 }
 
 export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
   const {
+    type,
     isLikedByClient,
     isSavedByClient,
     caption,
@@ -40,17 +47,20 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
   return (
     <Box>
       <PostBody
+        type={type as unknown as PublishedItemType}
         authorUserName={user?.username}
         authorUserAvatar={user?.profilePictureTemporaryUrl}
         relativeTimestamp={relativeTimestamp}
         caption={caption}
+        title={"title" in post ? post.title : undefined}
+        price={"price" in post ? post.price : undefined}
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
         sharedItem={sharedItem}
         menuActions={menuActions}
       />
       {!!hashtags.length && (
-        <HashTagsWrapper>
+        <HashTagsWrapper css={{ pt: "price" in post ? "$2" : "$4" }}>
           {hashtags.map((tag) => (
             <HashTag key={tag} hashtag={tag} />
           ))}

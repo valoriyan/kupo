@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { RootRenderablePost } from "#/api";
+import {
+  RootPurchasedShopItemDetails,
+  RootRenderablePost,
+  RootShopItemPreview,
+} from "#/api";
 import { useSharePost } from "#/api/mutations/posts/sharePost";
 import { Button } from "#/components/Button";
 import { CaptionTextArea } from "#/components/CaptionTextArea";
@@ -24,7 +28,7 @@ export const openSharePostModal = (props: SharePostModalProps) =>
   });
 
 export interface SharePostModalProps {
-  post: RootRenderablePost;
+  post: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
 }
 
 export const SharePostModal = ({

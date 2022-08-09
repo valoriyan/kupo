@@ -1,4 +1,4 @@
-import { PublishedItemType, RenderablePost, RenderableUser } from "#/api";
+import { PublishedItemType, RenderableUser } from "#/api";
 import { useGetPublishedItemsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
@@ -42,7 +42,7 @@ export const UserShopItems = ({ user }: UserShopItemsProps) => {
       items={shopItems.map((shopItem) => (
         <Post
           key={shopItem.id}
-          post={shopItem as unknown as RenderablePost}
+          post={shopItem}
           handleClickOfCommentsButton={() => goToPostPage(shopItem.id)}
         />
       ))}

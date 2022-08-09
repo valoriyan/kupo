@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { MediaElement, RootRenderablePost } from "#/api";
+import {
+  MediaElement,
+  RootPurchasedShopItemDetails,
+  RootRenderablePost,
+  RootShopItemPreview,
+} from "#/api";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { getSinglePostUrl } from "#/utils/generateLinkUrls";
@@ -11,7 +16,7 @@ import { openSharePostModal } from "./SharePostModal";
 
 export interface ShareMenuProps {
   hide: () => void;
-  post: RootRenderablePost;
+  post: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
   currentMediaElement: MediaElement | undefined;
 }
 
