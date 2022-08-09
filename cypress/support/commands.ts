@@ -1,3 +1,5 @@
+import "@testing-library/cypress/add-commands";
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -65,15 +67,17 @@ Cypress.Commands.add(
     cy.contains("a", "Create").click();
     cy.contains("New Post").click();
 
-    cy.get(`[data-cy="hidden-file-input"]`).selectFile(postData.images[0], {
+    cy.findByLabelText("Media Upload").selectFile(postData.images[0], {
       force: true,
     });
 
     cy.get(`[data-cy="captions-input"]`).type(postData.caption);
     cy.get(`[data-cy="hashtags-input"]`).type(postData.hashtags.join(" "));
 
-    cy.get(`[data-cy="create-content-item-button"]`).click();
+    cy.findByText("Post Now").click();
 
     cy.url().should("include", "/feed");
+
+    postData;
   },
 );

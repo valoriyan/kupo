@@ -12,10 +12,10 @@ describe("Second User Actions", () => {
 
     cy.url().should("include", `/profile/${mrTestmanUser.username}`);
 
-    // cy.get('[data-cy="unfollow-button"]').should("not.exist");
-    // cy.get('[data-cy="follow-button"]').click();
+    cy.get('[data-cy="unfollow-button"]').should("not.exist");
+    cy.get('[data-cy="follow-button"]').click();
 
-    // cy.get('[data-cy="follow-button"]').should("not.exist");
-    // cy.get(`[data-cy="unfollow-button"]]`).should("exist");
+    cy.get('[data-cy="follow-button"]').should("not.exist");
+    cy.get('[data-cy="unfollow-button"]').click();
   });
 });
