@@ -39,6 +39,7 @@ export const Discover = () => {
             placeholder="Search @user, #tag, or caption"
             value={searchText}
             onChange={(e) => setSearchText(e.currentTarget.value)}
+            data-cy="discover-search-input"
           />
         </SearchBar>
         <AnimatePresence>

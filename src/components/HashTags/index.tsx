@@ -102,6 +102,7 @@ export const HashTags = (props: HashTagsProps) => {
         onKeyDown={handleBackspace}
         onChange={onChange}
         value={text}
+        data-cy="hashtags-input"
       />
     </Wrapper>
   );

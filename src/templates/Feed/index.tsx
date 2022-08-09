@@ -50,7 +50,7 @@ export const Feed = () => {
               )}
             </VerticalSlideDialog>
             <Link href="/discover" passHref>
-              <Flex as="a" css={{ color: "$text" }}>
+              <Flex as="a" css={{ color: "$text" }} data-cy="search-button">
                 <SearchIcon />
               </Flex>
             </Link>

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import { useCurrentUserId } from "#/contexts/auth";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, RenderableUser } from "../..";
+import { Api, RenderableUser, UserFollowingStatus } from "../..";
 import { updateUserFollowingStatus, updateUsersCache } from "./utilities";
 
 export const useFollowUser = ({
@@ -47,14 +47,15 @@ export const useFollowUser = ({
           updateUsersCache({
             updateQueriedUserDataFunction: (user) => {
               if (user) {
-                return {
+                const updatedUser: RenderableUser = {
                   ...user,
                   followers: {
                     ...user.followers,
                     count: user.followers.count + 1,
                   },
-                  isBeingFollowedByClient: true,
+                  followingStatusOfClientToUser: UserFollowingStatus.IsFollowing,
                 };
+                return updatedUser;
               }
               return user;
             },

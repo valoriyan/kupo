@@ -40,6 +40,7 @@ export const MediaUpload = ({
 
   const input = (
     <HiddenInput
+      aria-label="Media Upload"
       type="file"
       accept="image/png, image/jpeg, video/mp4"
       multiple
