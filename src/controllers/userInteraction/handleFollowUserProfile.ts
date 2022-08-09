@@ -54,7 +54,6 @@ export async function handleFollowUser({
   console.log("userIdBeingFollowed", userIdBeingFollowed);
   console.log("userFollowEventId", userFollowEventId);
 
-
   const selectUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
       { controller, userId: userIdBeingFollowed },
@@ -65,7 +64,6 @@ export async function handleFollowUser({
   const userBeingFollowed = selectUserByUserIdResponse.success;
 
   console.log("userBeingFollowed", userBeingFollowed);
-
 
   if (!userBeingFollowed) {
     return Failure({

@@ -10,10 +10,9 @@ async function teardownScript(): Promise<void> {
 
   if (["dev", "test"].includes(productionEnvironment)) {
     const databaseService = new DatabaseService();
-  
+
     await databaseService.teardownDatabaseService();
   }
-
 }
 
 teardownScript();
