@@ -2,13 +2,16 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   HTTPResponse,
   InternalServiceResponse,
   Success,
 } from "../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { constructRenderableUserFromPartsByUserId } from "../user/utilities";
@@ -63,9 +66,12 @@ export async function handleGetFollowerRequests({
     },
   );
 
-  const mappedConstructRenderableUserFromPartsByUserIdResponses = collectMappedResponses({
-    mappedResponses: constructRenderableUserFromPartsByUserIdResponses,
-  });
+  const mappedConstructRenderableUserFromPartsByUserIdResponses =
+    unwrapListOfEitherResponses({
+      eitherResponses: constructRenderableUserFromPartsByUserIdResponses,
+      failureHandlingMethod:
+        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+    });
   if (
     mappedConstructRenderableUserFromPartsByUserIdResponses.type === EitherType.failure
   ) {

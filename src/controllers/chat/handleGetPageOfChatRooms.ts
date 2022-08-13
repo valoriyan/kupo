@@ -1,11 +1,14 @@
 import express from "express";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
@@ -66,8 +69,10 @@ export async function handleGetPageOfChatRooms({
       },
     );
 
-    const arrayOfMatchedUsers = collectMappedResponses({
-      mappedResponses: selectUsersByUsernameMatchingSubstringResponses,
+    const arrayOfMatchedUsers = unwrapListOfEitherResponses({
+      eitherResponses: selectUsersByUsernameMatchingSubstringResponses,
+      failureHandlingMethod:
+        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
     });
     if (arrayOfMatchedUsers.type === EitherType.failure) {
       return arrayOfMatchedUsers;

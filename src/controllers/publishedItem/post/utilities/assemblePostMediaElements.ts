@@ -4,12 +4,15 @@ import { Promise as BluebirdPromise } from "bluebird";
 import { MediaElement } from "../../../models";
 import { Controller } from "tsoa";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../../utilities/monads/unwrapListOfResponses";
 
 export async function assemblePostMediaElements({
   controller,
@@ -58,8 +61,10 @@ export async function assemblePostMediaElements({
     },
   );
 
-  const mappedGetTemporaryImageUrlResponses = collectMappedResponses({
-    mappedResponses: getTemporaryImageUrlResponses,
+  const mappedGetTemporaryImageUrlResponses = unwrapListOfEitherResponses({
+    eitherResponses: getTemporaryImageUrlResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
   if (mappedGetTemporaryImageUrlResponses.type === EitherType.failure) {
     return mappedGetTemporaryImageUrlResponses;

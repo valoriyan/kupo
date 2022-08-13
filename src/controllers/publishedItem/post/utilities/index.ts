@@ -6,12 +6,15 @@ import { PublishedItemType, UncompiledBasePublishedItem } from "../../models";
 import { assembleBaseRenderablePublishedItem } from "../../utilities/assembleBaseRenderablePublishedItem";
 import { Controller } from "tsoa";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../../utilities/monads/unwrapListOfResponses";
 import { assembleRootRenderablePost } from "./assembleRootRenderablePost";
 import { constructPublishedItemFromPartsById } from "../../utilities/constructPublishedItemsFromParts";
 
@@ -40,8 +43,10 @@ export async function constructRenderablePostsFromParts({
       }),
   );
 
-  return collectMappedResponses({
-    mappedResponses: constructRenderablePostFromPartsResponses,
+  return unwrapListOfEitherResponses({
+    eitherResponses: constructRenderablePostFromPartsResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 }
 

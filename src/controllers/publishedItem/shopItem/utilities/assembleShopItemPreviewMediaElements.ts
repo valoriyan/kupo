@@ -5,12 +5,15 @@ import { MediaElement } from "../../../models";
 import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 import { Controller } from "tsoa";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../../utilities/monads/unwrapListOfResponses";
 
 export async function assembleShopItemPreviewMediaElements({
   controller,
@@ -63,5 +66,9 @@ export async function assembleShopItemPreviewMediaElements({
     },
   );
 
-  return collectMappedResponses({ mappedResponses: getTemporaryImageUrlResponses });
+  return unwrapListOfEitherResponses({
+    eitherResponses: getTemporaryImageUrlResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+  });
 }

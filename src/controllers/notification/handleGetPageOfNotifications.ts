@@ -1,7 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   Failure,
@@ -9,6 +8,10 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -182,8 +185,10 @@ async function assembleNotifcations({
     },
   );
 
-  const renderableUserNotificationsResponse = collectMappedResponses({
-    mappedResponses: assembleRenderableNotificationResponses,
+  const renderableUserNotificationsResponse = unwrapListOfEitherResponses({
+    eitherResponses: assembleRenderableNotificationResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
   if (renderableUserNotificationsResponse.type === EitherType.failure) {
     return renderableUserNotificationsResponse;

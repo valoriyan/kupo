@@ -11,12 +11,15 @@ import { constructRenderableShopItemFromParts } from "../shopItem/utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { Controller } from "tsoa";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../utilities/monads/unwrapListOfResponses";
 
 export async function constructPublishedItemsFromParts({
   controller,
@@ -45,8 +48,10 @@ export async function constructPublishedItemsFromParts({
       }),
   );
 
-  return collectMappedResponses({
-    mappedResponses: constructPublishedItemFromPartsResponses,
+  return unwrapListOfEitherResponses({
+    eitherResponses: constructPublishedItemFromPartsResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 }
 

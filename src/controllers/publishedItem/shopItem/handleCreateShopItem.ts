@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 import { v4 as uuidv4 } from "uuid";
@@ -136,8 +139,10 @@ export async function handleCreateShopItem({
     },
   );
 
-  const mappedUploadMediaFileResponses = collectMappedResponses({
-    mappedResponses: uploadMediaFileResponses,
+  const mappedUploadMediaFileResponses = unwrapListOfEitherResponses({
+    eitherResponses: uploadMediaFileResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
   if (mappedUploadMediaFileResponses.type === EitherType.failure) {
     return mappedUploadMediaFileResponses;

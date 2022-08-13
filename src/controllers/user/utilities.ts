@@ -5,13 +5,16 @@ import { RenderableUser, UnrenderableUser } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { Controller } from "tsoa";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   Failure,
   InternalServiceResponse,
   Success,
 } from "../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../utilities/monads/unwrapListOfResponses";
 import { GenericResponseFailedReason } from "../models";
 import { UserFollowingStatus } from "../userInteraction/models";
 
@@ -117,8 +120,10 @@ export async function constructRenderableUsersFromParts({
       }),
   );
 
-  return collectMappedResponses({
-    mappedResponses: constructRenderableUserFromPartsResponses,
+  return unwrapListOfEitherResponses({
+    eitherResponses: constructRenderableUserFromPartsResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 }
 

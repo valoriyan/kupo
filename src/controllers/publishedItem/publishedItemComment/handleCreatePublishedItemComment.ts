@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../../auth/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
@@ -181,9 +184,11 @@ async function considerAndExecuteNotifications({
         }),
     );
 
-  const mappedResponse = collectMappedResponses({
-    mappedResponses:
+  const mappedResponse = unwrapListOfEitherResponses({
+    eitherResponses:
       assembleRecordAndSendNewTagInPublishedItemCommentNotificationResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
   if (mappedResponse.type === EitherType.failure) {
     return mappedResponse;

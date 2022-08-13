@@ -10,12 +10,15 @@ import { PublishedItemType, UncompiledBasePublishedItem } from "../../models";
 import { assembleBaseRenderablePublishedItem } from "../../utilities/assembleBaseRenderablePublishedItem";
 import { Controller } from "tsoa";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../../utilities/monads/unwrapListOfResponses";
 import { assembleRootShopItemPreviewFromParts } from "./assembleRootShopItemPreviewFromParts";
 import { assembleRootPurchasedShopItemDetailsFromParts } from "./assembleRootPurchasedShopItemDetailsFromParts";
 import { constructPublishedItemFromPartsById } from "../../utilities/constructPublishedItemsFromParts";
@@ -45,8 +48,10 @@ export async function constructRenderableShopItemsFromParts({
       }),
   );
 
-  return collectMappedResponses({
-    mappedResponses: constructRenderableShopItemFromPartsResponses,
+  return unwrapListOfEitherResponses({
+    eitherResponses: constructRenderableShopItemFromPartsResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 }
 

@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  collectMappedResponses,
   EitherType,
   ErrorReasonTypes,
   Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { CreditCardSummary } from "./models";
@@ -94,8 +97,10 @@ export async function handleGetCreditCardsStoredByUserId({
     ),
   );
 
-  const mappedGetCustomerCreditCardSummaryResponses = collectMappedResponses({
-    mappedResponses: getCustomerCreditCardSummaryResponses,
+  const mappedGetCustomerCreditCardSummaryResponses = unwrapListOfEitherResponses({
+    eitherResponses: getCustomerCreditCardSummaryResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
   if (mappedGetCustomerCreditCardSummaryResponses.type === EitherType.failure) {
     return mappedGetCustomerCreditCardSummaryResponses;

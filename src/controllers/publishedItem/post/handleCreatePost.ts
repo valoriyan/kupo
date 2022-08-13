@@ -4,8 +4,11 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
-  collectMappedResponses,
 } from "../../../utilities/monads";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../utilities/monads/unwrapListOfResponses";
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -99,8 +102,10 @@ export async function handleCreatePost({
       blobStorageService: controller.blobStorageService,
     }),
   );
-  const mappedUploadMediaFileResponses = collectMappedResponses({
-    mappedResponses: uploadMediaFileResponses,
+  const mappedUploadMediaFileResponses = unwrapListOfEitherResponses({
+    eitherResponses: uploadMediaFileResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
   if (mappedUploadMediaFileResponses.type === EitherType.failure) {
     return mappedUploadMediaFileResponses;
