@@ -107,6 +107,8 @@ export class UsersTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       ${generatePostgreSQLCreateEnumTypeQueryString({
@@ -135,7 +137,8 @@ export class UsersTableService extends TableService {
 
         creation_timestamp BIGINT NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (user_id)
 
       )
       ;

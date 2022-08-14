@@ -26,6 +26,8 @@ export class UserLoginAttemptsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -34,7 +36,8 @@ export class UserLoginAttemptsTableService extends TableService {
         ip_address VARCHAR(64) NOT NULL,
         was_successful boolean NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (email, timestamp, ip_address)        
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (email, timestamp, ip_address)        
       )
       ;
     `;

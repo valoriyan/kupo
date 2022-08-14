@@ -41,6 +41,8 @@ export class UserNotificationsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -54,7 +56,8 @@ export class UserNotificationsTableService extends TableService {
 
         reference_table_id VARCHAR(64) NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_notification_id)        
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (user_notification_id)        
       )
       ;
     `;

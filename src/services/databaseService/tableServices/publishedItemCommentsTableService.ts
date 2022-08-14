@@ -46,6 +46,8 @@ export class PublishedItemCommentsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -55,7 +57,8 @@ export class PublishedItemCommentsTableService extends TableService {
         author_user_id VARCHAR(64) NOT NULL,
         creation_timestamp BIGINT NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_comment_id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (published_item_comment_id)
       )
       ;
     `;

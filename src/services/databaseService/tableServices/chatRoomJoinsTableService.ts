@@ -48,6 +48,8 @@ export class ChatRoomJoinsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -55,7 +57,8 @@ export class ChatRoomJoinsTableService extends TableService {
         user_id VARCHAR(64) NOT NULL,
         join_timestamp BIGINT NOT NULL,
         
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (chat_room_id, user_id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (chat_room_id, user_id)
       )
       ;
     `;

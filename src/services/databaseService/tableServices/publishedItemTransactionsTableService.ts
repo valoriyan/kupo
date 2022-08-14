@@ -25,6 +25,8 @@ export class PublishedItemTransactionsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -33,7 +35,8 @@ export class PublishedItemTransactionsTableService extends TableService {
             non_creator_user_id VARCHAR(64) NOT NULL,
             creation_timestamp BIGINT NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (transaction_id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (transaction_id)
         )
         ;
       `;

@@ -32,6 +32,8 @@ export class StoredCreditCardDataTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -41,7 +43,8 @@ export class StoredCreditCardDataTableService extends TableService {
           is_primary_card boolean NOT NULL,
           creation_timestamp BIGINT NOT NULL,
 
-          CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id, payment_processor_card_id)
+          CONSTRAINT ${this.tableName}_pkey
+            PRIMARY KEY (user_id, payment_processor_card_id)
 
         )
         ;

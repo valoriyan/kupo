@@ -36,6 +36,8 @@ export class ShopItemMediaElementsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -45,7 +47,8 @@ export class ShopItemMediaElementsTableService extends TableService {
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         mimetype VARCHAR(64) NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_id, type, shop_item_element_index)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (published_item_id, type, shop_item_element_index)
       )
       ;
     `;

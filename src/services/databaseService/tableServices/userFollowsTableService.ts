@@ -47,6 +47,8 @@ export class UserFollowsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -57,7 +59,8 @@ export class UserFollowsTableService extends TableService {
         is_pending boolean NOT NULL,
         timestamp BIGINT NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id_doing_following, user_id_being_followed)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (user_id_doing_following, user_id_being_followed)
 
       )
       ;

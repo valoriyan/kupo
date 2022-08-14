@@ -59,6 +59,8 @@ export class PublishedItemsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -71,7 +73,8 @@ export class PublishedItemsTableService extends TableService {
         expiration_timestamp BIGINT,
         id_of_published_item_being_shared VARCHAR(64),
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (id)
 
       )
       ;

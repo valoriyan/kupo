@@ -54,6 +54,8 @@ export class UserContentFeedFiltersTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -63,7 +65,8 @@ export class UserContentFeedFiltersTableService extends TableService {
         value VARCHAR(64) NOT NULL,
         creation_timestamp BIGINT NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (content_feed_filter_id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (content_feed_filter_id)
       )
       ;
     `;

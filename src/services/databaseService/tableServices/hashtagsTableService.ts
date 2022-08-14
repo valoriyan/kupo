@@ -24,6 +24,8 @@ export class HashtagsTableService extends TableService {
     super();
   }
 
+  public dependencies = [];
+
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -31,7 +33,8 @@ export class HashtagsTableService extends TableService {
 
         published_item_id VARCHAR(64) NOT NULL,
 
-        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (hashtag, published_item_id)
+        CONSTRAINT ${this.tableName}_pkey
+          PRIMARY KEY (hashtag, published_item_id)
       )
       ;
     `;

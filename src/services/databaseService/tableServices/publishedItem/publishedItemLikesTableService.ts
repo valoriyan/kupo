@@ -11,6 +11,7 @@ import {
 import { TableService } from "../models";
 import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItemsTableService";
 
 interface DBPublishedItemLike {
   published_item_like_id: string;
@@ -27,6 +28,8 @@ export class PublishedItemLikesTableService extends TableService {
     super();
   }
 
+  public dependencies = [PublishedItemsTableService.tableName];
+
   public async setup(): Promise<void> {
     const queryString = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -35,7 +38,12 @@ export class PublishedItemLikesTableService extends TableService {
           user_id VARCHAR(64) NOT NULL,
           timestamp BIGINT NOT NULL,
 
-          CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_id, user_id)
+          CONSTRAINT ${this.tableName}_pkey
+            PRIMARY KEY (published_item_id, user_id),
+          
+          CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+            FOREIGN KEY (published_item_id)
+            REFERENCES ${PublishedItemsTableService.tableName} (id)
 
         )
         ;
