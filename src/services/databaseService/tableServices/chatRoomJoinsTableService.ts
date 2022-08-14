@@ -41,7 +41,7 @@ function convertDBChatRoomJoinsToUnrenderableChatRoomWithJoinedUsers(
 }
 
 export class ChatRoomJoinsTableService extends TableService {
-  public static readonly tableName = `chat_rooms_joins`;
+  public static readonly tableName = `chat_room_joins`;
   public readonly tableName = ChatRoomJoinsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
