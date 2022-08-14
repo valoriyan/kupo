@@ -25,6 +25,7 @@ export const Login = () => {
         <Input
           size="lg"
           required
+          type="email"
           placeholder="email"
           name="email"
           value={email}

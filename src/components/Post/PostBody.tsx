@@ -1,8 +1,15 @@
-import { MediaElement, PublishedItemType, RootRenderablePost } from "#/api";
+import {
+  MediaElement,
+  PublishedItemType,
+  RootPurchasedShopItemDetails,
+  RootRenderablePost,
+  RootShopItemPreview,
+} from "#/api";
 import { styled } from "#/styling";
 import { goToUserProfilePage } from "#/templates/UserProfile";
 import { Avatar } from "../Avatar";
-import { Flex } from "../Layout";
+import { Button } from "../Button";
+import { Flex, Stack } from "../Layout";
 import { Body } from "../Typography";
 import { UserName } from "../UserName";
 import { ActionMenu, MenuAction } from "./ActionMenu";
@@ -10,13 +17,16 @@ import { ContentViewer } from "./ContentViewer";
 import { SharedPost } from "./SharedPost";
 
 export interface PostBodyProps {
+  type: PublishedItemType;
   authorUserName: string | undefined;
   authorUserAvatar: string | undefined;
   relativeTimestamp: string;
   caption: string;
+  title: string | undefined;
+  price: number | undefined;
   mediaElements: MediaElement[];
   setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
-  sharedItem?: RootRenderablePost;
+  sharedItem?: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
   menuActions?: MenuAction[];
   onPostClick?: () => void;
   contentHeight?: string;
@@ -53,9 +63,7 @@ export const PostBody = (props: PostBodyProps) => {
         </Flex>
       </Flex>
       <Body css={{ px: "$4", py: "$2", mb: "$3" }}>{props.caption}</Body>
-      {props.sharedItem &&
-      (props.sharedItem.type as unknown as PublishedItemType) ===
-        PublishedItemType.Post ? (
+      {props.sharedItem ? (
         <SharedPost
           post={props.sharedItem}
           setCurrentMediaElement={props.setCurrentMediaElement}
@@ -69,10 +77,28 @@ export const PostBody = (props: PostBodyProps) => {
           />
         )
       )}
+      {props.type === PublishedItemType.ShopItem && (
+        <ShopItemDetailsWrapper>
+          <Flex css={{ justifyContent: "space-between", gap: "$3" }}>
+            <Body>{props.title}</Body>
+            <Body>${props.price}</Body>
+          </Flex>
+          <Button>Purchase</Button>
+        </ShopItemDetailsWrapper>
+      )}
     </>
   );
 };
 
 const Timestamp = styled("div", {
   color: "$secondaryText",
+});
+
+const ShopItemDetailsWrapper = styled(Stack, {
+  m: "$3",
+  bg: "$background3",
+  borderRadius: "$3",
+  px: "$5",
+  py: "$4",
+  gap: "$4",
 });

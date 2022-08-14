@@ -37,7 +37,9 @@ export const HashTags = (props: HashTagsProps) => {
 
     // Find entered hashtags
     const matchedHashTags = Array.from(textToMatch.matchAll(HASHTAG_REGEX))
-      .map((match) => match[0].replaceAll("#", "").replaceAll(" ", ""))
+      .map((match) =>
+        match[0].replaceAll("#", "").replaceAll(" ", "").replaceAll(",", ""),
+      )
       .filter((x) => x)
       .filter((match) => !props.hashTags.includes(match));
     // Remove entered hashtags
@@ -67,7 +69,9 @@ export const HashTags = (props: HashTagsProps) => {
 
     // Find entered hashtags
     const matchedHashTags = Array.from(newText.matchAll(HASHTAG_REGEX))
-      .map((match) => match[0].replaceAll("#", "").replaceAll(" ", ""))
+      .map((match) =>
+        match[0].replaceAll("#", "").replaceAll(" ", "").replaceAll(",", ""),
+      )
       .filter((x) => x)
       .filter((match) => !props.hashTags.includes(match));
     // Remove entered hashtags
