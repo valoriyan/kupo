@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { Api } from "../..";
 
 export const useGetPageOfUsersFollowedByUserId = ({
@@ -7,9 +7,6 @@ export const useGetPageOfUsersFollowedByUserId = ({
   userIdBeingFollowed: string;
   usernameBeingFollowed: string;
 }) => {
-  const queryClient = useQueryClient();
-  console.log(queryClient);
-
   return useMutation(
     async () => {
       return await Api.followUser({ userIdBeingFollowed });

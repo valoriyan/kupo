@@ -12,6 +12,7 @@ import { MessageComposer } from "../MessageComposer";
 import { ChatMessagesList } from "./ChatMessagesList";
 import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 import { ChatRoomFormStateProvider, useChatRoomFormState } from "./ChatRoomFormContext";
+import { RenderableChatMessage } from "#/api";
 
 export interface ChatRoomProps {
   chatRoomId: string;
@@ -104,6 +105,17 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     .flatMap((page) => page.chatMessages)
     .concat(receivedChatMessages);
 
+  const chatMessageIds = new Set(
+    chatMessages.map((chatMessage) => chatMessage.chatMessageId),
+  );
+  const deduplicatedChatMessages: RenderableChatMessage[] = [];
+  chatMessages.forEach((chatMessage) => {
+    if (chatMessageIds.has(chatMessage.chatRoomId)) {
+      deduplicatedChatMessages.push(chatMessage);
+      chatMessageIds.delete(chatMessage.chatRoomId);
+    }
+  });
+
   return (
     <Grid>
       <ChatRoomMembersDisplay
@@ -112,7 +124,7 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
       />
       <ChatMessagesList
         clientUserId={clientUserData.userId}
-        chatMessages={chatMessages}
+        chatMessages={deduplicatedChatMessages}
         hasPreviousPage={chatMessagesQuery.hasPreviousPage}
         isFetchingPreviousPage={chatMessagesQuery.isFetchingPreviousPage}
         fetchPreviousPage={chatMessagesQuery.fetchPreviousPage}

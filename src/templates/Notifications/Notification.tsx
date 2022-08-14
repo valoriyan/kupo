@@ -17,8 +17,6 @@ export interface NotificationProps {
 export const Notification = ({ notification }: NotificationProps) => {
   const { type } = notification;
 
-  console.log(notification);
-
   if ((type as unknown as NOTIFICATIONEVENTS) === NOTIFICATIONEVENTS.NewFollower) {
     return (
       <NewFollowerNotification

@@ -12,4 +12,4 @@ COPY . .
 
 RUN API_BASE_URL=$API_BASE_URL yarn build
 
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "start" ]
