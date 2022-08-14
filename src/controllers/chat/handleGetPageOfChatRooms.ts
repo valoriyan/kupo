@@ -12,7 +12,10 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
-import { RenderableChatRoomPreview, UnrenderableChatRoomPreview } from "./models";
+import {
+  RenderableChatRoomWithJoinedUsers,
+  UnrenderableChatRoomWithJoinedUsers,
+} from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { UnrenderableUser } from "../user/models";
 
@@ -23,7 +26,7 @@ export interface GetPageOfChatRoomsRequestBody {
 }
 
 export interface GetPageOfChatRoomsSuccess {
-  chatRooms: RenderableChatRoomPreview[];
+  chatRooms: RenderableChatRoomWithJoinedUsers[];
 
   previousPageCursor?: string;
   nextPageCursor?: string;
@@ -55,7 +58,7 @@ export async function handleGetPageOfChatRooms({
   );
   if (error) return error;
 
-  let unrenderableChatRooms: UnrenderableChatRoomPreview[];
+  let unrenderableChatRooms: UnrenderableChatRoomWithJoinedUsers[];
 
   if (!!query) {
     const usernameSubstrings = query.split(" ");
@@ -131,8 +134,8 @@ export async function handleGetPageOfChatRooms({
     }),
   );
 
-  const renderableChatRooms: RenderableChatRoomPreview[] = unrenderableChatRooms.map(
-    ({ memberUserIds, chatRoomId }) => {
+  const renderableChatRooms: RenderableChatRoomWithJoinedUsers[] =
+    unrenderableChatRooms.map(({ memberUserIds, chatRoomId }) => {
       const members = memberUserIds.map(
         (memberUserId) => mapOfUserIdsToRenderableUsers.get(memberUserId)!,
       );
@@ -141,8 +144,7 @@ export async function handleGetPageOfChatRooms({
         chatRoomId,
         members,
       };
-    },
-  );
+    });
 
   const beginningOfPageCursor = cursor ? +cursor : 0;
   const endOfPageCursor = beginningOfPageCursor + pageSize;

@@ -11,7 +11,6 @@ import {
   UserContentFeedFilterType,
 } from "../../../controllers/feed/models";
 
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -48,7 +47,7 @@ function convertDBUserContentFeedFilterToUserContentFeedFilter(
 }
 
 export class UserContentFeedFiltersTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_user_content_feed_filters`;
+  public static readonly tableName = `user_content_feed_filters`;
   public readonly tableName = UserContentFeedFiltersTableService.tableName;
 
   constructor(public datastorePool: Pool) {

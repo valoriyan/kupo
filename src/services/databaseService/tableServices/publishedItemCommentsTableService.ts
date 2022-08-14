@@ -8,7 +8,6 @@ import {
 } from "../../../utilities/monads";
 import { UnrenderablePublishedItemComment } from "../../../controllers/publishedItem/publishedItemComment/models";
 
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -40,7 +39,7 @@ function convertDBPublishedItemCommentToUnrenderablePublishedItemComment(
 }
 
 export class PublishedItemCommentsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_published_item_comments`;
+  public static readonly tableName = `published_item_comments`;
   public readonly tableName = PublishedItemCommentsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

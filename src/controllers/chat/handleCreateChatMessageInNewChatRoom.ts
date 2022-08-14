@@ -48,7 +48,7 @@ export async function handleCreateChatMessageInNewChatRoom({
   let chatRoomId: string;
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive(
+    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
       { controller, userIds },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
@@ -62,7 +62,7 @@ export async function handleCreateChatMessageInNewChatRoom({
     chatRoomId = uuidv4();
 
     const insertUsersIntoChatRoomResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.insertUsersIntoChatRoom(
+      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.joinUsersWithChatRoom(
         {
           controller,
           userIds,

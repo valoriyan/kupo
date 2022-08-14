@@ -57,7 +57,7 @@ export async function handleDoesChatRoomExistWithUserIds({
   }
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive(
+    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
       { controller, userIds },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {

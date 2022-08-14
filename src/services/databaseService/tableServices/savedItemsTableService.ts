@@ -8,7 +8,6 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -24,7 +23,7 @@ interface DBSavedItem {
 }
 
 export class SavedItemsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_saved_items`;
+  public static readonly tableName = `saved_items`;
   public readonly tableName = SavedItemsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

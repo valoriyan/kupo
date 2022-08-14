@@ -8,7 +8,6 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { TABLE_NAME_PREFIX } from "../../config";
 import { TableService } from "../models";
 import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -21,7 +20,7 @@ interface DBPublishedItemLike {
 }
 
 export class PublishedItemLikesTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_published_item_likes`;
+  public static readonly tableName = `published_item_likes`;
   public readonly tableName = PublishedItemLikesTableService.tableName;
 
   constructor(public datastorePool: Pool) {

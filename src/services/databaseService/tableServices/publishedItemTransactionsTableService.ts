@@ -7,7 +7,6 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
@@ -19,7 +18,7 @@ interface DBPublishedItemTransaction {
 }
 
 export class PublishedItemTransactionsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_published_item_transactions`;
+  public static readonly tableName = `published_item_transactions`;
   public readonly tableName = PublishedItemTransactionsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

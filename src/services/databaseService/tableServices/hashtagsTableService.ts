@@ -8,7 +8,6 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
@@ -18,7 +17,7 @@ interface DBHashtag {
 }
 
 export class HashtagsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_hashtags`;
+  public static readonly tableName = `hashtags`;
   public readonly tableName = HashtagsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

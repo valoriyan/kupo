@@ -4,7 +4,7 @@ import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
 import { ChatMessagesTableService } from "./tableServices/chatMessagesTableService";
-import { ChatRoomsTableService } from "./tableServices/chatRoomsTableService";
+import { ChatRoomJoinsTableService } from "./tableServices/chatRoomJoinsTableService";
 import { HashtagsTableService } from "./tableServices/hashtagsTableService";
 import { PublishedItemCommentsTableService } from "./tableServices/publishedItemCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
@@ -46,7 +46,7 @@ export class DatabaseService {
     ),
     hashtagTableService: new HashtagsTableService(DatabaseService.datastorePool),
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
-    chatRoomsTableService: new ChatRoomsTableService(DatabaseService.datastorePool),
+    chatRoomsTableService: new ChatRoomJoinsTableService(DatabaseService.datastorePool),
     userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
     publishedItemLikesTableService: new PublishedItemLikesTableService(
       DatabaseService.datastorePool,

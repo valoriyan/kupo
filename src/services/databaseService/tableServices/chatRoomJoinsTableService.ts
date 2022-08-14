@@ -6,24 +6,23 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { UnrenderableChatRoomPreview } from "../../../controllers/chat/models";
+import { UnrenderableChatRoomWithJoinedUsers } from "../../../controllers/chat/models";
 
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 
-interface DBChatRoomMembership {
+interface DBChatRoomJoin {
   chat_room_id: string;
   user_id: string;
   join_timestamp: string;
 }
 
-function convertDBChatRoomMembershipsToUnrenderableChatRooms(
-  dbChatRoomMemberships: DBChatRoomMembership[],
-): UnrenderableChatRoomPreview[] {
+function convertDBChatRoomJoinsToUnrenderableChatRoomWithJoinedUsers(
+  dbChatRoomMemberships: DBChatRoomJoin[],
+): UnrenderableChatRoomWithJoinedUsers[] {
   // const chatRoomIdToUserIdsMap: {[chatRoomId: string]: Set<string>} = {};
   const chatRoomIdToUserIdsMap: Map<string, Set<string>> = new Map();
 
@@ -41,9 +40,9 @@ function convertDBChatRoomMembershipsToUnrenderableChatRooms(
   });
 }
 
-export class ChatRoomsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_chat_rooms`;
-  public readonly tableName = ChatRoomsTableService.tableName;
+export class ChatRoomJoinsTableService extends TableService {
+  public static readonly tableName = `chat_rooms_joins`;
+  public readonly tableName = ChatRoomJoinsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
@@ -55,7 +54,8 @@ export class ChatRoomsTableService extends TableService {
         chat_room_id VARCHAR(64) NOT NULL,
         user_id VARCHAR(64) NOT NULL,
         join_timestamp BIGINT NOT NULL,
-        PRIMARY KEY (chat_room_id, user_id)
+        
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (chat_room_id, user_id)
       )
       ;
     `;
@@ -67,7 +67,7 @@ export class ChatRoomsTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async insertUserIntoChatRoom({
+  public async joinUserWithChatRoom({
     controller,
     chatRoomId,
     userId,
@@ -99,12 +99,12 @@ export class ChatRoomsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatRoomsTableService.insertUserIntoChatRoom",
+          "Error at ChatRoomJoinsTableService.joinUserWithChatRoom",
       });
     }
   }
 
-  public async insertUsersIntoChatRoom({
+  public async joinUsersWithChatRoom({
     controller,
     chatRoomId,
     userIds,
@@ -136,7 +136,7 @@ export class ChatRoomsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatRoomsTableService.insertUsersIntoChatRoom",
+          "Error at ChatRoomJoinsTableService.joinUsersWithChatRoom",
       });
     }
   }
@@ -145,14 +145,14 @@ export class ChatRoomsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getChatRoomById({
+  public async getUnrenderableChatRoomWithJoinedUsersByChatRoomId({
     controller,
     chatRoomId,
   }: {
     controller: Controller;
     chatRoomId: string;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatRoomPreview>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatRoomWithJoinedUsers>
   > {
     try {
       const query = {
@@ -168,12 +168,10 @@ export class ChatRoomsTableService extends TableService {
         values: [chatRoomId],
       };
 
-      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-        query,
-      );
+      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
 
       const unrenderableChatRoomPreviews =
-        convertDBChatRoomMembershipsToUnrenderableChatRooms(response.rows);
+        convertDBChatRoomJoinsToUnrenderableChatRoomWithJoinedUsers(response.rows);
       if (unrenderableChatRoomPreviews.length === 0) {
         throw new Error("Missing chat room");
       }
@@ -185,7 +183,8 @@ export class ChatRoomsTableService extends TableService {
         httpStatusCode: 500,
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
-        additionalErrorInformation: "Error at chatRoomsTableService.getChatRoomById",
+        additionalErrorInformation:
+          "Error at ChatRoomJoinsTableService.getUnrenderableChatRoomWithJoinedUsersByChatRoomId",
       });
     }
   }
@@ -211,9 +210,7 @@ export class ChatRoomsTableService extends TableService {
         values: [chatRoomId],
       };
 
-      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-        query,
-      );
+      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
 
       return Success(response.rows.map((dbChatRoom) => dbChatRoom.user_id));
     } catch (error) {
@@ -223,7 +220,7 @@ export class ChatRoomsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatRoomsTableService.getUserIdsJoinedToChatRoomId",
+          "Error at ChatRoomJoinsTableService.getUserIdsJoinedToChatRoomId",
       });
     }
   }
@@ -235,7 +232,10 @@ export class ChatRoomsTableService extends TableService {
     controller: Controller;
     userIds: string[];
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatRoomPreview[]>
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      UnrenderableChatRoomWithJoinedUsers[]
+    >
   > {
     try {
       const whereConditionText = userIds
@@ -266,14 +266,14 @@ export class ChatRoomsTableService extends TableService {
         values: userIds,
       };
 
-      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-        query,
-      );
+      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
 
       const dbChatRoomMemberships = response.rows;
 
       return Success(
-        convertDBChatRoomMembershipsToUnrenderableChatRooms(dbChatRoomMemberships),
+        convertDBChatRoomJoinsToUnrenderableChatRoomWithJoinedUsers(
+          dbChatRoomMemberships,
+        ),
       );
     } catch (error) {
       return Failure({
@@ -282,12 +282,12 @@ export class ChatRoomsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatRoomsTableService.getChatRoomsJoinedByUserIds",
+          "Error at ChatRoomJoinsTableService.getChatRoomsJoinedByUserIds",
       });
     }
   }
 
-  public async getChatRoomIdWithUserIdMembersExclusive({
+  public async getChatRoomIdWithJoinedUserIdMembersExclusive({
     controller,
     userIds,
   }: {
@@ -312,9 +312,7 @@ export class ChatRoomsTableService extends TableService {
         values: userIds,
       };
 
-      const response: QueryResult<DBChatRoomMembership> = await this.datastorePool.query(
-        query,
-      );
+      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
 
       const dbChatRoomMemberships = response.rows;
 
@@ -343,7 +341,7 @@ export class ChatRoomsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatRoomsTableService.getChatRoomIdWithUserIdMembersExclusive",
+          "Error at ChatRoomJoinsTableService.getChatRoomIdWithUserIdMembersExclusive",
       });
     }
   }
@@ -356,7 +354,7 @@ export class ChatRoomsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async removeUserFromChatRoomById({
+  public async removeUserFromChatRoomByIds({
     controller,
     chatRoomId,
     userId,
@@ -383,7 +381,7 @@ export class ChatRoomsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatRoomsTableService.removeUserFromChatRoomById",
+          "Error at ChatRoomJoinsTableService.removeUserFromChatRoomById",
       });
     }
   }

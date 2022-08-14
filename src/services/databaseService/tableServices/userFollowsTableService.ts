@@ -10,7 +10,6 @@ import {
   UnrenderableUserFollow,
   UserFollowingStatus,
 } from "../../../controllers/userInteraction/models";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -41,7 +40,7 @@ function convertDBUserFollowToUnrenderableUserFollow(
 }
 
 export class UserFollowsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_user_follows`;
+  public static readonly tableName = `user_follows`;
   public readonly tableName = UserFollowsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

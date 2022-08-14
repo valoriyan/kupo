@@ -7,7 +7,6 @@ import {
   UnrenderableUser_WITH_PASSWORD,
   UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID,
 } from "../../../controllers/user/models";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
   generatePostgreSQLCreateEnumTypeQueryString,
@@ -101,7 +100,7 @@ function convertDBUserToUnrenderableUser_WITH_PASSWORD(
 }
 
 export class UsersTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_users`;
+  public static readonly tableName = `users`;
   public readonly tableName = UsersTableService.tableName;
 
   constructor(public datastorePool: Pool) {

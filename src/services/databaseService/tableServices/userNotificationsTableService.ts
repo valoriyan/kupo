@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -35,7 +34,7 @@ export interface DBUserNotification {
 }
 
 export class UserNotificationsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_user_notifications`;
+  public static readonly tableName = `user_notifications`;
   public readonly tableName = UserNotificationsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

@@ -8,7 +8,6 @@ import {
 } from "../../../utilities/monads";
 import { UnrenderableChatMessage } from "../../../controllers/chat/models";
 
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -40,7 +39,7 @@ function convertDBChatMessageToUnrenderableChatMessage(
 }
 
 export class ChatMessagesTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_chat_messages`;
+  public static readonly tableName = `chat_messages`;
   public readonly tableName = ChatMessagesTableService.tableName;
 
   constructor(public datastorePool: Pool) {
@@ -54,7 +53,9 @@ export class ChatMessagesTableService extends TableService {
         text VARCHAR(64) NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
         chat_room_id VARCHAR(64) NOT NULL,
-        creation_timestamp BIGINT NOT NULL
+        creation_timestamp BIGINT NOT NULL,
+        
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (chat_message_id)
       )
       ;
     `;

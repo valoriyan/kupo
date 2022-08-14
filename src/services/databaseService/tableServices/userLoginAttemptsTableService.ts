@@ -8,7 +8,6 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
@@ -20,7 +19,7 @@ interface DBUserLoginAttempt {
 }
 
 export class UserLoginAttemptsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_user_login_attempts`;
+  public static readonly tableName = `user_login_attempts`;
   public readonly tableName = UserLoginAttemptsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

@@ -10,7 +10,6 @@ import {
   FiledMediaElement,
   GenericResponseFailedReason,
 } from "../../../controllers/models";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -30,7 +29,7 @@ interface DBShopItemMediaElement {
 }
 
 export class ShopItemMediaElementsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_shop_item_media_elements`;
+  public static readonly tableName = `shop_item_media_elements`;
   public readonly tableName = ShopItemMediaElementsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

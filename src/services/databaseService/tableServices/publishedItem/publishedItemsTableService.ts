@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryConfig, QueryResult } from "pg";
-import { TABLE_NAME_PREFIX } from "../../config";
 import { TableService } from "../models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -53,7 +52,7 @@ function convertDBPublishedItemToUncompiledBasePublishedItem(
 }
 
 export class PublishedItemsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_published_items`;
+  public static readonly tableName = `published_items`;
   public readonly tableName = PublishedItemsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

@@ -10,7 +10,6 @@ import {
   FiledMediaElement,
   GenericResponseFailedReason,
 } from "../../../controllers/models";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
@@ -24,7 +23,7 @@ interface DBPostContentElement {
 }
 
 export class PostContentElementsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_post_content_elements`;
+  public static readonly tableName = `post_content_elements`;
   public readonly tableName = PostContentElementsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

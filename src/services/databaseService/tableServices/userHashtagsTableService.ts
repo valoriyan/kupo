@@ -8,7 +8,6 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { TABLE_NAME_PREFIX } from "../config";
 import { TableService } from "./models";
 
 interface DBUserHashtag {
@@ -21,7 +20,7 @@ interface DBUserHashtag {
 }
 
 export class UserHashtagsTableService extends TableService {
-  public static readonly tableName = `${TABLE_NAME_PREFIX}_user_hashtags`;
+  public static readonly tableName = `user_hashtags`;
   public readonly tableName = UserHashtagsTableService.tableName;
 
   constructor(public datastorePool: Pool) {

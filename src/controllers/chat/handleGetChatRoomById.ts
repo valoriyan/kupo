@@ -8,14 +8,14 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
 import { ChatController } from "./chatController";
-import { RenderableChatRoomPreview } from "./models";
+import { RenderableChatRoomWithJoinedUsers } from "./models";
 
 export interface GetChatRoomByIdRequestBody {
   chatRoomId: string;
 }
 
 export interface GetChatRoomByIdSuccess {
-  chatRoom: RenderableChatRoomPreview;
+  chatRoom: RenderableChatRoomWithJoinedUsers;
 }
 
 export enum GetChatRoomByIdFailedReason {
@@ -45,7 +45,7 @@ export async function handleGetChatRoomById({
   if (error) return error;
 
   const getChatRoomByIdResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomById(
+    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUnrenderableChatRoomWithJoinedUsersByChatRoomId(
       { controller, chatRoomId },
     );
   if (getChatRoomByIdResponse.type === EitherType.failure) {
