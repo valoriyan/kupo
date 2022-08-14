@@ -69,7 +69,10 @@ export class PublishedItemsTableService extends TableService {
         creation_timestamp BIGINT NOT NULL,
         scheduled_publication_timestamp BIGINT NOT NULL,
         expiration_timestamp BIGINT,
-        id_of_published_item_being_shared VARCHAR(64)
+        id_of_published_item_being_shared VARCHAR(64),
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (id)
+
       )
       ;
     `;

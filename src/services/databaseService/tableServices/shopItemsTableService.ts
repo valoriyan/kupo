@@ -35,7 +35,9 @@ export class ShopItemsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         published_item_id VARCHAR(64) UNIQUE NOT NULL,
         title VARCHAR(64) NOT NULL,
-        price DECIMAL(12,2) NOT NULL
+        price DECIMAL(12,2) NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_id)
       )
       ;
     `;

@@ -133,7 +133,10 @@ export class UsersTableService extends TableService {
 
         is_admin boolean NOT NULL,
 
-        creation_timestamp BIGINT NOT NULL
+        creation_timestamp BIGINT NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id)
+
       )
       ;
     `;

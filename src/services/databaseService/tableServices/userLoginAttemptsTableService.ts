@@ -32,7 +32,9 @@ export class UserLoginAttemptsTableService extends TableService {
         email VARCHAR(64) NOT NULL,
         timestamp BIGINT NOT NULL,
         ip_address VARCHAR(64) NOT NULL,
-        was_successful boolean NOT NULL
+        was_successful boolean NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (email, timestamp, ip_address)        
       )
       ;
     `;

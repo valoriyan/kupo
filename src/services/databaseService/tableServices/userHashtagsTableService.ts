@@ -35,7 +35,9 @@ export class UserHashtagsTableService extends TableService {
         hashtag_2 VARCHAR(64),
         hashtag_3 VARCHAR(64),
         hashtag_4 VARCHAR(64),
-        hashtag_5 VARCHAR(64)
+        hashtag_5 VARCHAR(64),
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id)
       )
       ;
     `;

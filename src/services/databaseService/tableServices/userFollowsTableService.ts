@@ -56,7 +56,9 @@ export class UserFollowsTableService extends TableService {
         user_id_being_followed VARCHAR(64) NOT NULL,
         is_pending boolean NOT NULL,
         timestamp BIGINT NOT NULL,
-        PRIMARY KEY (user_id_doing_following, user_id_being_followed)
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id_doing_following, user_id_being_followed)
+
       )
       ;
     `;

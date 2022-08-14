@@ -53,7 +53,9 @@ export class PublishedItemCommentsTableService extends TableService {
         published_item_id VARCHAR(64) NOT NULL,
         text VARCHAR(300) NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
-        creation_timestamp BIGINT NOT NULL
+        creation_timestamp BIGINT NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_comment_id)
       )
       ;
     `;

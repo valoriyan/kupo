@@ -31,7 +31,9 @@ export class PublishedItemTransactionsTableService extends TableService {
             transaction_id VARCHAR(64) UNIQUE NOT NULL,
             published_item_id VARCHAR(64) NOT NULL,
             non_creator_user_id VARCHAR(64) NOT NULL,
-            creation_timestamp BIGINT NOT NULL
+            creation_timestamp BIGINT NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (transaction_id)
         )
         ;
       `;

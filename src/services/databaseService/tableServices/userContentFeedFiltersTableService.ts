@@ -61,7 +61,9 @@ export class UserContentFeedFiltersTableService extends TableService {
         user_id VARCHAR(64) NOT NULL,
         type VARCHAR(64) NOT NULL,
         value VARCHAR(64) NOT NULL,
-        creation_timestamp BIGINT NOT NULL
+        creation_timestamp BIGINT NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (content_feed_filter_id)
       )
       ;
     `;

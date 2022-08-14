@@ -38,7 +38,10 @@ export class SavedItemsTableService extends TableService {
         published_item_id VARCHAR(64) NOT NULL,
         user_id VARCHAR(64) NOT NULL,
         
-        creation_timestamp BIGINT NOT NULL
+        creation_timestamp BIGINT NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (save_id)
+
       )
       ;
     `;

@@ -34,7 +34,9 @@ export class PublishedItemLikesTableService extends TableService {
           published_item_id VARCHAR(64) NOT NULL,
           user_id VARCHAR(64) NOT NULL,
           timestamp BIGINT NOT NULL,
-          PRIMARY KEY (published_item_id, user_id)
+
+          CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_id, user_id)
+
         )
         ;
       `;

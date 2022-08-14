@@ -52,7 +52,9 @@ export class UserNotificationsTableService extends TableService {
         timestamp_seen_by_user BIGINT,
         last_updated_timestamp BIGINT NOT NULL,
 
-        reference_table_id VARCHAR(64) NOT NULL
+        reference_table_id VARCHAR(64) NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_notification_id)        
       )
       ;
     `;

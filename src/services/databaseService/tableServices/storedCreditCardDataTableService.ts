@@ -36,16 +36,13 @@ export class StoredCreditCardDataTableService extends TableService {
     const queryString = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
           local_credit_card_id VARCHAR(64) NOT NULL,
-
           user_id VARCHAR(64) NOT NULL,
-
           payment_processor_card_id VARCHAR(64) UNIQUE NOT NULL,
-
           is_primary_card boolean NOT NULL,
-
           creation_timestamp BIGINT NOT NULL,
 
-          PRIMARY KEY (user_id, payment_processor_card_id)
+          CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (user_id, payment_processor_card_id)
+
         )
         ;
       `;

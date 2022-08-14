@@ -44,7 +44,8 @@ export class ShopItemMediaElementsTableService extends TableService {
         type VARCHAR(64) NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         mimetype VARCHAR(64) NOT NULL,
-        UNIQUE (published_item_id, type, shop_item_element_index)
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_id, type, shop_item_element_index)
       )
       ;
     `;

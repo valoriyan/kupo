@@ -37,7 +37,9 @@ export class PostContentElementsTableService extends TableService {
         post_content_element_index SMALLINT NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         mimetype VARCHAR(64) NOT NULL,
-        UNIQUE (published_item_id, post_content_element_index)
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (published_item_id, post_content_element_index)
+
       )
       ;
     `;

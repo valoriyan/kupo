@@ -29,7 +29,9 @@ export class HashtagsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         hashtag VARCHAR(64) NOT NULL,
 
-        published_item_id VARCHAR(64) NOT NULL
+        published_item_id VARCHAR(64) NOT NULL,
+
+        CONSTRAINT ${this.tableName}_pkey PRIMARY KEY (hashtag, published_item_id)
       )
       ;
     `;

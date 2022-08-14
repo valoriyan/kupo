@@ -57,6 +57,10 @@ export async function canUserViewUserContentByUserId({
   targetUserId: string;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  if (requestorUserId === targetUserId) {
+    return Success(true);
+  }
+
   const selectUsersByUserIdsResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
       controller,
