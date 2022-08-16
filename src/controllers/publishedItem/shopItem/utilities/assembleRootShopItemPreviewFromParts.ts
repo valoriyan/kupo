@@ -1,15 +1,16 @@
+import { Controller } from "tsoa";
 import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../../services/databaseService";
-import { RenderableShopItemType, RootShopItemPreview } from "../models";
-import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
-import { Controller } from "tsoa";
+import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 import {
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { assembleShopItemPreviewMediaElements } from "./assembleShopItemPreviewMediaElements";
+import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
+import { RenderableShopItemType, RootShopItemPreview } from "../models";
+import { assembleShopItemMediaElements } from "./assembleShopItemMediaElements";
 
 export async function assembleRootShopItemPreviewFromParts({
   controller,
@@ -49,9 +50,10 @@ export async function assembleRootShopItemPreviewFromParts({
   const { success: dbShopItem } = getShopItemByPublishedItemIdResponse;
 
   const assembleShopItemPreviewMediaElementsResponse =
-    await assembleShopItemPreviewMediaElements({
+    await assembleShopItemMediaElements({
       controller,
       publishedItemId: id,
+      shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
       blobStorageService,
       databaseService,
     });
@@ -59,6 +61,16 @@ export async function assembleRootShopItemPreviewFromParts({
     return assembleShopItemPreviewMediaElementsResponse;
   }
   const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
+
+  const getShopItemPurchasedMediaElementsMetadataResponse =
+    await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemPurchasedMediaElementsMetadata(
+      { controller, publishedItemId: id },
+    );
+  if (getShopItemPurchasedMediaElementsMetadataResponse.type === EitherType.failure) {
+    return getShopItemPurchasedMediaElementsMetadataResponse;
+  }
+  const { success: purchasedMediaElementsMetadata } =
+    getShopItemPurchasedMediaElementsMetadataResponse;
 
   const rootShopItemPreview: RootShopItemPreview = {
     renderableShopItemType: RenderableShopItemType.SHOP_ITEM_PREVIEW,
@@ -77,6 +89,7 @@ export async function assembleRootShopItemPreviewFromParts({
     isSavedByClient,
     price: parseInt(dbShopItem.price),
     mediaElements: previewMediaElements,
+    purchasedMediaElementsMetadata,
   };
 
   return Success(rootShopItemPreview);

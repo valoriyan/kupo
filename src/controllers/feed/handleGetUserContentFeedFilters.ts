@@ -61,18 +61,20 @@ export async function handleGetUserContentFeedFilters({
   }
   const { success: unrenderableUser } = selectUserByUserIdResponse;
 
-  // ADD ALL_POSTS_FOR_REVIEW_BY_ADMINS FILTER FOR ADMINS
-  if (!!unrenderableUser && !!unrenderableUser.isAdmin) {
-    userContentFeedFilters.push({
-      contentFeedFilterId: "",
+  const defaultFilters: UserContentFeedFilter[] = [];
+
+  // ADD ALL_POSTS_FOR_ADMINS FILTER FOR ADMINS
+  if (!!unrenderableUser?.isAdmin) {
+    defaultFilters.push({
+      contentFeedFilterId: "All Posts",
       userId: clientUserId,
-      type: UserContentFeedFilterType.ALL_POSTS_FOR_REVIEW_BY_ADMINS,
+      type: UserContentFeedFilterType.ALL_POSTS_FOR_ADMINS,
       value: "",
       creationTimestamp: now,
     });
   }
 
   return Success({
-    userContentFeedFilters,
+    userContentFeedFilters: [...defaultFilters, ...userContentFeedFilters],
   });
 }
