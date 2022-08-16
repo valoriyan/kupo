@@ -1,4 +1,7 @@
+import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
+import { v4 as uuidv4 } from "uuid";
+import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -11,12 +14,9 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../../auth/utilities";
-import { ShopItemController } from "./shopItemController";
-import { v4 as uuidv4 } from "uuid";
-import { Promise as BluebirdPromise } from "bluebird";
 import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
 import { PublishedItemType } from "../models";
-import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
+import { ShopItemController } from "./shopItemController";
 
 export enum CreateShopItemFailedReason {
   UnknownCause = "Unknown Cause",
@@ -35,6 +35,7 @@ interface HandlerRequestBody {
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
   mediaFiles: Express.Multer.File[];
+  purchasedMediaFiles: Express.Multer.File[];
 }
 
 export async function handleCreateShopItem({
@@ -59,12 +60,13 @@ export async function handleCreateShopItem({
 
   const {
     caption,
-    scheduledPublicationTimestamp,
-    expirationTimestamp,
+    hashtags,
     title,
     price,
+    scheduledPublicationTimestamp,
+    expirationTimestamp,
     mediaFiles,
-    hashtags,
+    purchasedMediaFiles,
   } = requestBody;
 
   const publishedItemId = uuidv4();
@@ -100,7 +102,57 @@ export async function handleCreateShopItem({
     return createShopItemResponse;
   }
 
-  const uploadMediaFileResponses = await BluebirdPromise.map(
+  const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
+
+  const addHashtagsToPublishedItemResponse =
+    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
+      {
+        controller,
+        hashtags: lowerCaseHashtags,
+        publishedItemId,
+      },
+    );
+  if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
+    return addHashtagsToPublishedItemResponse;
+  }
+
+  const mappedPreviewMedia = mediaFiles.map((file) => ({
+    file,
+    type: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
+  }));
+  const mappedPurchasedMedia = purchasedMediaFiles.map((file) => ({
+    file,
+    type: DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
+  }));
+
+  const uploadMediaFileResponses = await uploadShopItemMedia(
+    publishedItemId,
+    [...mappedPreviewMedia, ...mappedPurchasedMedia],
+    controller,
+  );
+
+  if (uploadMediaFileResponses.type === EitherType.failure) {
+    return uploadMediaFileResponses;
+  }
+  const { success: shopItemMediaElements } = uploadMediaFileResponses;
+
+  const createShopItemMediaElementsResponse =
+    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
+      { controller, shopItemMediaElements },
+    );
+  if (createShopItemMediaElementsResponse.type === EitherType.failure) {
+    return createShopItemMediaElementsResponse;
+  }
+
+  return Success({});
+}
+
+const uploadShopItemMedia = async (
+  publishedItemId: string,
+  mediaFiles: Array<{ file: Express.Multer.File; type: DBShopItemElementType }>,
+  controller: ShopItemController,
+) => {
+  const eitherResponses = await BluebirdPromise.map(
     mediaFiles,
     async (
       mediaFile,
@@ -114,12 +166,13 @@ export async function handleCreateShopItem({
           blobFileKey: string;
           fileTemporaryUrl: string;
           mimetype: string;
+          shopItemType: DBShopItemElementType;
         }
       >
     > => {
       const uploadMediaFileResponse = await uploadMediaFile({
         controller,
-        file: mediaFile,
+        file: mediaFile.file,
         blobStorageService: controller.blobStorageService,
       });
       if (uploadMediaFileResponse.type === EitherType.failure) {
@@ -135,52 +188,14 @@ export async function handleCreateShopItem({
         blobFileKey,
         fileTemporaryUrl,
         mimetype,
+        shopItemType: mediaFile.type,
       });
     },
   );
 
-  const mappedUploadMediaFileResponses = unwrapListOfEitherResponses({
-    eitherResponses: uploadMediaFileResponses,
+  return unwrapListOfEitherResponses({
+    eitherResponses,
     failureHandlingMethod:
       UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
-  if (mappedUploadMediaFileResponses.type === EitherType.failure) {
-    return mappedUploadMediaFileResponses;
-  }
-  const { success: shopItemMediaElements } = mappedUploadMediaFileResponses;
-
-  const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
-
-  const addHashtagsToPublishedItemResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
-      {
-        controller,
-        hashtags: lowerCaseHashtags,
-        publishedItemId,
-      },
-    );
-  if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
-    return addHashtagsToPublishedItemResponse;
-  }
-
-  const createShopItemMediaElementsResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
-      {
-        controller,
-        shopItemMediaElements: shopItemMediaElements.map(
-          ({ publishedItemId, shopItemElementIndex, blobFileKey, mimetype }) => ({
-            publishedItemId,
-            shopItemElementIndex,
-            shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
-            blobFileKey,
-            mimetype,
-          }),
-        ),
-      },
-    );
-  if (createShopItemMediaElementsResponse.type === EitherType.failure) {
-    return createShopItemMediaElementsResponse;
-  }
-
-  return Success({});
-}
+};

@@ -15,33 +15,31 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../../utilities/monads/unwrapListOfResponses";
 
-export async function assembleShopItemPreviewMediaElements({
+export async function assembleShopItemMediaElements({
   controller,
   publishedItemId,
+  shopItemType,
   blobStorageService,
   databaseService,
 }: {
   controller: Controller;
   publishedItemId: string;
+  shopItemType: DBShopItemElementType;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
   const getShopItemMediaElementsByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemMediaElementsByPublishedItemId(
-      {
-        controller,
-        publishedItemId,
-        shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
-      },
+      { controller, publishedItemId, shopItemType },
     );
   if (getShopItemMediaElementsByPublishedItemIdResponse.type === EitherType.failure) {
     return getShopItemMediaElementsByPublishedItemIdResponse;
   }
-  const { success: filedShopItemPreviewMediaElements } =
+  const { success: filedShopItemMediaElements } =
     getShopItemMediaElementsByPublishedItemIdResponse;
 
   const getTemporaryImageUrlResponses = await BluebirdPromise.map(
-    filedShopItemPreviewMediaElements,
+    filedShopItemMediaElements,
     async (
       filedShopItemMediaElement,
     ): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement>> => {

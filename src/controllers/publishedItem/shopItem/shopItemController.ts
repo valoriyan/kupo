@@ -78,12 +78,13 @@ export class ShopItemController extends Controller {
   @Post("create")
   public async createShopItem(
     @Request() request: express.Request,
-    @UploadedFiles() mediaFiles: Express.Multer.File[],
+    @UploadedFiles() combinedMediaFiles: Express.Multer.File[],
+    // @FormField() only supports strings so we'll have to do some parsing
+    // for the following fields
+    @FormField() numberOfPurchasedMediaFiles: string, // number
     @FormField() caption: string,
     @FormField() hashtags: string, // split by " "
     @FormField() title: string,
-    // @FormField() only supports strings so we'll have to do some parsing
-    // for the following fields
     @FormField() price: string,
     @FormField() scheduledPublicationTimestamp: string,
     @FormField() collaboratorUserIds: string,
@@ -94,6 +95,9 @@ export class ShopItemController extends Controller {
       CreateShopItemSuccess
     >
   > {
+    const splitMediaIndex =
+      combinedMediaFiles.length - Number.parseInt(numberOfPurchasedMediaFiles, 10);
+
     return await handleCreateShopItem({
       controller: this,
       request,
@@ -109,7 +113,8 @@ export class ShopItemController extends Controller {
           ? parseInt(expirationTimestamp, 10)
           : undefined,
         collaboratorUserIds: JSON.parse(collaboratorUserIds),
-        mediaFiles,
+        mediaFiles: combinedMediaFiles.slice(0, splitMediaIndex),
+        purchasedMediaFiles: combinedMediaFiles.slice(splitMediaIndex),
       },
     });
   }

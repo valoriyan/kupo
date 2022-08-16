@@ -11,6 +11,9 @@ export interface BaseShopItem extends BaseRenderablePublishedItem {
   title: string;
   price: number;
   mediaElements: MediaElement[];
+  purchasedMediaElementsMetadata: {
+    count: number;
+  };
 }
 
 export interface RootShopItemPreview extends BaseShopItem {

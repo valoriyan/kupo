@@ -1,15 +1,16 @@
+import { Controller } from "tsoa";
 import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../../services/databaseService";
-import { RenderableShopItemType, RootPurchasedShopItemDetails } from "../models";
-import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
-import { Controller } from "tsoa";
+import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
 import {
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { assembleShopItemPreviewMediaElements } from "./assembleShopItemPreviewMediaElements";
+import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
+import { RenderableShopItemType, RootPurchasedShopItemDetails } from "../models";
+import { assembleShopItemMediaElements } from "./assembleShopItemMediaElements";
 
 export async function assembleRootPurchasedShopItemDetailsFromParts({
   controller,
@@ -51,9 +52,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
   const { success: dbShopItem } = getShopItemByPublishedItemIdResponse;
 
   const assembleShopItemPreviewMediaElementsResponse =
-    await assembleShopItemPreviewMediaElements({
+    await assembleShopItemMediaElements({
       controller,
       publishedItemId: id,
+      shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
       blobStorageService,
       databaseService,
     });
@@ -61,6 +63,20 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
     return assembleShopItemPreviewMediaElementsResponse;
   }
   const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
+
+  const assembleShopItemPurchasedMediaElementsResponse =
+    await assembleShopItemMediaElements({
+      controller,
+      publishedItemId: id,
+      shopItemType: DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
+      blobStorageService,
+      databaseService,
+    });
+  if (assembleShopItemPurchasedMediaElementsResponse.type === EitherType.failure) {
+    return assembleShopItemPurchasedMediaElementsResponse;
+  }
+  const { success: purchasedMediaElements } =
+    assembleShopItemPurchasedMediaElementsResponse;
 
   const rootPurchasedShopItemDetails: RootPurchasedShopItemDetails = {
     renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
@@ -79,7 +95,8 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
     isSavedByClient,
     price: parseInt(dbShopItem.price),
     mediaElements: previewMediaElements,
-    purchasedMediaElements: [],
+    purchasedMediaElements,
+    purchasedMediaElementsMetadata: { count: purchasedMediaElements.length },
   };
 
   return Success(rootPurchasedShopItemDetails);

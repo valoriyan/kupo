@@ -116,6 +116,44 @@ export class ShopItemMediaElementsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async getShopItemPurchasedMediaElementsMetadata({
+    controller,
+    publishedItemId,
+  }: {
+    controller: Controller;
+    publishedItemId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, { count: number }>> {
+    try {
+      const query = {
+        text: `
+          SELECT COUNT(*)
+          FROM
+            ${this.tableName}
+          WHERE
+            published_item_id = $1
+            AND type = $2
+          ;
+        `,
+        values: [publishedItemId, DBShopItemElementType.PURCHASED_MEDIA_ELEMENT],
+      };
+
+      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+        query,
+      );
+
+      return Success({ count: Number.parseInt(response.rows[0].count, 10) });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at shopItemMediaElementsTableService.getShopItemPurchasedMediaElementsMetadata",
+      });
+    }
+  }
+
   public async getShopItemMediaElementsByPublishedItemId({
     controller,
     publishedItemId,
@@ -134,8 +172,7 @@ export class ShopItemMediaElementsTableService extends TableService {
             ${this.tableName}
           WHERE
             published_item_id = $1
-            AND
-              type = $2
+            AND type = $2
           ;
         `,
         values: [publishedItemId, shopItemType],
