@@ -12,18 +12,24 @@
  * Do not edit the class manually.
  */
 
-import { RenderableChatRoomWithJoinedUsers } from "./renderable-chat-room-with-joined-users";
+import { RenderableUser } from "./renderable-user";
 
 /**
  *
  * @export
- * @interface GetChatRoomByIdSuccess
+ * @interface RenderableChatRoomWithJoinedUsers
  */
-export interface GetChatRoomByIdSuccess {
+export interface RenderableChatRoomWithJoinedUsers {
   /**
    *
-   * @type {RenderableChatRoomWithJoinedUsers}
-   * @memberof GetChatRoomByIdSuccess
+   * @type {string}
+   * @memberof RenderableChatRoomWithJoinedUsers
    */
-  chatRoom: RenderableChatRoomWithJoinedUsers;
+  chatRoomId: string;
+  /**
+   *
+   * @type {Array<RenderableUser>}
+   * @memberof RenderableChatRoomWithJoinedUsers
+   */
+  members: Array<RenderableUser>;
 }

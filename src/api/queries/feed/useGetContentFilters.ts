@@ -5,7 +5,7 @@ import { Api, UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
 export const useGetContentFilters = ({ clientUserId }: { clientUserId: string }) => {
   const defaultFilters: UserContentFeedFilter[] = [
     {
-      contentFeedFilterId: "following",
+      contentFeedFilterId: "Following",
       userId: clientUserId,
       type: UserContentFeedFilterType.FollowingUsers,
       value: "",
