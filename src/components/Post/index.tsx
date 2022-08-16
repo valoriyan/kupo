@@ -54,6 +54,11 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
         caption={caption}
         title={"title" in post ? post.title : undefined}
         price={"price" in post ? post.price : undefined}
+        purchasedMediaElementsMetadata={
+          "purchasedMediaElementsMetadata" in post
+            ? post.purchasedMediaElementsMetadata
+            : undefined
+        }
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
         sharedItem={sharedItem}

@@ -552,7 +552,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {Array<any>} mediaFiles
+     * @param {Array<any>} combinedMediaFiles
+     * @param {string} numberOfPurchasedMediaFiles
      * @param {string} caption
      * @param {string} hashtags
      * @param {string} title
@@ -564,7 +565,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     createShopItem: async (
-      mediaFiles: Array<any>,
+      combinedMediaFiles: Array<any>,
+      numberOfPurchasedMediaFiles: string,
       caption: string,
       hashtags: string,
       title: string,
@@ -574,8 +576,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       expirationTimestamp?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'mediaFiles' is not null or undefined
-      assertParamExists("createShopItem", "mediaFiles", mediaFiles);
+      // verify required parameter 'combinedMediaFiles' is not null or undefined
+      assertParamExists("createShopItem", "combinedMediaFiles", combinedMediaFiles);
+      // verify required parameter 'numberOfPurchasedMediaFiles' is not null or undefined
+      assertParamExists(
+        "createShopItem",
+        "numberOfPurchasedMediaFiles",
+        numberOfPurchasedMediaFiles,
+      );
       // verify required parameter 'caption' is not null or undefined
       assertParamExists("createShopItem", "caption", caption);
       // verify required parameter 'hashtags' is not null or undefined
@@ -606,10 +614,17 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
         FormData)();
 
-      if (mediaFiles) {
-        mediaFiles.forEach((element) => {
-          localVarFormParams.append("mediaFiles", element as any);
+      if (combinedMediaFiles) {
+        combinedMediaFiles.forEach((element) => {
+          localVarFormParams.append("combinedMediaFiles", element as any);
         });
+      }
+
+      if (numberOfPurchasedMediaFiles !== undefined) {
+        localVarFormParams.append(
+          "numberOfPurchasedMediaFiles",
+          numberOfPurchasedMediaFiles as any,
+        );
       }
 
       if (caption !== undefined) {
@@ -3654,7 +3669,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {Array<any>} mediaFiles
+     * @param {Array<any>} combinedMediaFiles
+     * @param {string} numberOfPurchasedMediaFiles
      * @param {string} caption
      * @param {string} hashtags
      * @param {string} title
@@ -3666,7 +3682,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async createShopItem(
-      mediaFiles: Array<any>,
+      combinedMediaFiles: Array<any>,
+      numberOfPurchasedMediaFiles: string,
       caption: string,
       hashtags: string,
       title: string,
@@ -3682,7 +3699,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
-        mediaFiles,
+        combinedMediaFiles,
+        numberOfPurchasedMediaFiles,
         caption,
         hashtags,
         title,
@@ -5348,7 +5366,8 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {Array<any>} mediaFiles
+     * @param {Array<any>} combinedMediaFiles
+     * @param {string} numberOfPurchasedMediaFiles
      * @param {string} caption
      * @param {string} hashtags
      * @param {string} title
@@ -5360,7 +5379,8 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     createShopItem(
-      mediaFiles: Array<any>,
+      combinedMediaFiles: Array<any>,
+      numberOfPurchasedMediaFiles: string,
       caption: string,
       hashtags: string,
       title: string,
@@ -5372,7 +5392,8 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess> {
       return localVarFp
         .createShopItem(
-          mediaFiles,
+          combinedMediaFiles,
+          numberOfPurchasedMediaFiles,
           caption,
           hashtags,
           title,
@@ -6348,7 +6369,8 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {Array<any>} mediaFiles
+   * @param {Array<any>} combinedMediaFiles
+   * @param {string} numberOfPurchasedMediaFiles
    * @param {string} caption
    * @param {string} hashtags
    * @param {string} title
@@ -6361,7 +6383,8 @@ export class DefaultApi extends BaseAPI {
    * @memberof DefaultApi
    */
   public createShopItem(
-    mediaFiles: Array<any>,
+    combinedMediaFiles: Array<any>,
+    numberOfPurchasedMediaFiles: string,
     caption: string,
     hashtags: string,
     title: string,
@@ -6373,7 +6396,8 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .createShopItem(
-        mediaFiles,
+        combinedMediaFiles,
+        numberOfPurchasedMediaFiles,
         caption,
         hashtags,
         title,

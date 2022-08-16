@@ -18,6 +18,7 @@ export * from "./generated/EyeIcon";
 export * from "./generated/FileDocumentIcon";
 export * from "./generated/HeartIcon";
 export * from "./generated/HomeIcon";
+export * from "./generated/ImageIcon";
 export * from "./generated/InfoIcon";
 export * from "./generated/LinkIcon";
 export * from "./generated/ListIcon";

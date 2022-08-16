@@ -127,6 +127,12 @@ export interface RootPurchasedShopItemDetails {
   mediaElements: Array<MediaElement>;
   /**
    *
+   * @type {RenderableUserFollowers}
+   * @memberof RootPurchasedShopItemDetails
+   */
+  purchasedMediaElementsMetadata: RenderableUserFollowers;
+  /**
+   *
    * @type {Array<MediaElement>}
    * @memberof RootPurchasedShopItemDetails
    */

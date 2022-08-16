@@ -10,10 +10,17 @@ export const useCreateShopItem = () => {
   const userId = useCurrentUserId();
   const formState = useFormState();
 
+  const combinedMediaFiled = [
+    ...formState.mediaFiles.map((media) => media.file),
+    ...formState.purchasedMediaFiles.map((media) => media.file),
+  ];
+
   return useMutation(
     async () => {
       return await Api.createShopItem(
-        formState.mediaFiles.map((media) => media.file),
+        // Gonna have to merge these into one array and figure out how to separate them on the back-end
+        combinedMediaFiled,
+        formState.purchasedMediaFiles.length.toString(),
         formState.caption,
         JSON.stringify(formState.hashTags),
         formState.title,

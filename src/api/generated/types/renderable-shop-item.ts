@@ -130,6 +130,12 @@ export interface RenderableShopItem {
   mediaElements: Array<MediaElement>;
   /**
    *
+   * @type {RenderableUserFollowers}
+   * @memberof RenderableShopItem
+   */
+  purchasedMediaElementsMetadata: RenderableUserFollowers;
+  /**
+   *
    * @type {Array<MediaElement>}
    * @memberof RenderableShopItem
    */

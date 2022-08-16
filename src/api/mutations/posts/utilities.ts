@@ -32,7 +32,7 @@ export const updateCachedPost = ({
       ...queryData,
       pages: queryData.pages.map((page) => ({
         ...page,
-        posts: postUpdater
+        publishedItems: postUpdater
           ? page.publishedItems.map((publishedItem) => {
               if (publishedItem.id === publishedItemId) return postUpdater(publishedItem);
               return publishedItem;
@@ -50,7 +50,7 @@ export const updateCachedPost = ({
       ...userPostsData,
       pages: userPostsData.pages.map((page) => ({
         ...page,
-        posts: postUpdater
+        publishedItems: postUpdater
           ? page.publishedItems.map((publishedItem) => {
               if (publishedItem.id === publishedItemId) return postUpdater(publishedItem);
               return publishedItem;

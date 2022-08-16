@@ -9,29 +9,29 @@ import { useCurrentUserId } from "#/contexts/auth";
 import { InfoIcon, TrashIcon } from "../Icons";
 
 export const usePostActions = (post: RenderablePost | RenderableShopItem) => {
-  const { id: postId, authorUserId, isLikedByClient, isSavedByClient } = post;
+  const { id, authorUserId, isLikedByClient, isSavedByClient } = post;
 
   const userId = useCurrentUserId();
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
 
   const { mutateAsync: likePost } = useLikePublishedItem({
-    publishedItemId: postId,
+    publishedItemId: id,
     authorUserId,
   });
   const { mutateAsync: unlikePost } = useUnlikePublishedItem({
-    publishedItemId: postId,
+    publishedItemId: id,
     authorUserId,
   });
   const { mutateAsync: savePost } = useSavePublishedItem({
-    publishedItemId: postId,
+    publishedItemId: id,
     authorUserId,
   });
   const { mutateAsync: unsavePost } = useUnsavePublishedItem({
-    publishedItemId: postId,
+    publishedItemId: id,
     authorUserId,
   });
   const { mutateAsync: deletePost } = useDeletePost({
-    publishedItemId: postId,
+    publishedItemId: id,
     authorUserId,
   });
 

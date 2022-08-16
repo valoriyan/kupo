@@ -50,7 +50,7 @@
     "@storybook/addon-essentials": "^6.4.9",
     "@storybook/addon-links": "^6.4.9",
     "@storybook/react": "^6.4.9",
-    "@svgr/core": "^5.5.0",
+    "@svgr/core": "^6.3.1",
     "@testing-library/cypress": "^8.0.3",
     "@types/axios": "^0.14.0",
     "@types/jsonwebtoken": "^8.5.4",

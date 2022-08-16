@@ -137,6 +137,12 @@ export interface RenderablePublishedItem {
   price: number;
   /**
    *
+   * @type {RenderableUserFollowers}
+   * @memberof RenderablePublishedItem
+   */
+  purchasedMediaElementsMetadata: RenderableUserFollowers;
+  /**
+   *
    * @type {Array<MediaElement>}
    * @memberof RenderablePublishedItem
    */

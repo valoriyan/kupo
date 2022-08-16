@@ -1,4 +1,4 @@
-import svgr from "@svgr/core";
+import { transform } from "@svgr/core";
 import axios from "axios";
 import { promises as fs } from "fs";
 import path from "path";
@@ -25,6 +25,7 @@ const ICONS_TO_GENERATE = [
   "file-document",
   "heart",
   "home",
+  "image",
   "info",
   "link",
   "list",
@@ -73,23 +74,26 @@ async function generateIcons() {
 
   console.log("Generating Icon Components...");
   const componentPromises = svgs.map(async (svg) => {
-    let code = await svgr(
+    let code = await transform(
       svg.markup,
-      { typescript: true },
+      { typescript: true, jsxRuntime: "automatic" },
       { componentName: svg.componentName },
     );
 
-    // Remove unneeded React import and replace with comment
-    code = code.replace(
-      `import * as React from "react";\n`,
-      `// CODE GENERATED FILE; DO NOT EDIT\n\n/** ${svg.componentName} icon sourced from https://css.gg/${svg.name} */`,
-    );
+    // Add comments to top of file
+    code =
+      `// CODE GENERATED FILE; DO NOT EDIT\n\n/** ${svg.componentName} icon sourced from https://css.gg/${svg.name} */` +
+      code;
+
+    // Get SVGProps type from React namespace instead of explicit import
+    code = code.replace(`import { SVGProps } from "react";\n`, ``);
+    code = code.replace(`SVGProps`, `React.SVGProps`);
 
     // Remove unneeded xmlns attribute
     code = code.replace(`xmlns="http://www.w3.org/2000/svg"`, ``);
 
     // Switch to named exports
-    code = code.replace(`function`, `export function`);
+    code = code.replace(`const`, `export const`);
     code = code.replace(`export default ${svg.componentName};`, ``);
 
     return fs.writeFile(
