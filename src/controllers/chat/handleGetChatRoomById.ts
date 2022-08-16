@@ -45,7 +45,7 @@ export async function handleGetChatRoomById({
   if (error) return error;
 
   const getChatRoomByIdResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUnrenderableChatRoomWithJoinedUsersByChatRoomId(
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUnrenderableChatRoomWithJoinedUsersByChatRoomId(
       { controller, chatRoomId },
     );
   if (getChatRoomByIdResponse.type === EitherType.failure) {

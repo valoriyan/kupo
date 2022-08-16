@@ -14,6 +14,7 @@ import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
+import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
 
 export enum DBShopItemElementType {
   PREVIEW_MEDIA_ELEMENT = "PREVIEW_MEDIA_ELEMENT",
@@ -36,7 +37,7 @@ export class ShopItemMediaElementsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [PublishedItemsTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -48,7 +49,12 @@ export class ShopItemMediaElementsTableService extends TableService {
         mimetype VARCHAR(64) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (published_item_id, type, shop_item_element_index)
+          PRIMARY KEY (published_item_id, type, shop_item_element_index),
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+          FOREIGN KEY (published_item_id)
+          REFERENCES ${PublishedItemsTableService.tableName} (id)
+
       )
       ;
     `;

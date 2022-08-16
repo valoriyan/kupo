@@ -9,6 +9,8 @@ import {
 } from "../../../utilities/monads";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
+import { UsersTableService } from "./usersTableService";
 
 interface DBPublishedItemTransaction {
   transaction_id: string;
@@ -25,7 +27,10 @@ export class PublishedItemTransactionsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [
+    PublishedItemsTableService.tableName,
+    UsersTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -36,7 +41,17 @@ export class PublishedItemTransactionsTableService extends TableService {
             creation_timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (transaction_id)
+          PRIMARY KEY (transaction_id),
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+          FOREIGN KEY (published_item_id)
+          REFERENCES ${PublishedItemsTableService.tableName} (id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (non_creator_user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+          
+
         )
         ;
       `;

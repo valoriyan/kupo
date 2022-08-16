@@ -10,6 +10,7 @@ import {
 } from "../../../utilities/monads";
 import { TableService } from "./models";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
 
 interface DBHashtag {
   hashtag: string;
@@ -24,17 +25,21 @@ export class HashtagsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [PublishedItemsTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         hashtag VARCHAR(64) NOT NULL,
-
         published_item_id VARCHAR(64) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (hashtag, published_item_id)
+          PRIMARY KEY (hashtag, published_item_id),
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+          FOREIGN KEY (published_item_id)
+          REFERENCES ${PublishedItemsTableService.tableName} (id)
+          
       )
       ;
     `;

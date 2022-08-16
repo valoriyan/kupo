@@ -9,6 +9,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { TableService } from "./models";
+import { UsersTableService } from "./usersTableService";
 
 interface DBUserHashtag {
   user_id: string;
@@ -27,7 +28,7 @@ export class UserHashtagsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -40,7 +41,12 @@ export class UserHashtagsTableService extends TableService {
         hashtag_5 VARCHAR(64),
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (user_id)
+          PRIMARY KEY (user_id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+
       )
       ;
     `;

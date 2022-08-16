@@ -90,7 +90,7 @@ export async function handleGetPageOfChatRooms({
     const matchedUserIds = matchedUsers.map(({ userId }) => userId);
 
     const getChatRoomsJoinedByUserIdsResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserIds(
+      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
         { controller, userIds: [clientUserId, ...matchedUserIds] },
       );
     if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {
@@ -99,7 +99,7 @@ export async function handleGetPageOfChatRooms({
     unrenderableChatRooms = getChatRoomsJoinedByUserIdsResponse.success;
   } else {
     const getChatRoomsJoinedByUserIdsResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomsJoinedByUserIds(
+      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
         { controller, userIds: [clientUserId] },
       );
     if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {

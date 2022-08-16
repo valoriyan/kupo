@@ -57,7 +57,7 @@ export async function handleDeleteChatMessage({
   const chatRoomId = deletedChatMessage.chatRoomId;
 
   const getUserIdsJoinedToChatRoomIdResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
       { controller, chatRoomId },
     );
   if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {

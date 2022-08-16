@@ -11,6 +11,8 @@ import {
 import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
+import { UsersTableService } from "./usersTableService";
 
 interface DBSavedItem {
   save_id: string;
@@ -30,7 +32,10 @@ export class SavedItemsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [
+    PublishedItemsTableService.tableName,
+    UsersTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -43,7 +48,16 @@ export class SavedItemsTableService extends TableService {
         creation_timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (save_id)
+          PRIMARY KEY (save_id),
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+          FOREIGN KEY (published_item_id)
+          REFERENCES ${PublishedItemsTableService.tableName} (id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+
 
       )
       ;

@@ -5,18 +5,20 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { UnrenderablePublishedItemComment } from "../../../controllers/publishedItem/publishedItemComment/models";
+} from "../../../../utilities/monads";
+import { UnrenderablePublishedItemComment } from "../../../../controllers/publishedItem/publishedItemComment/models";
 
-import { TableService } from "./models";
+import { TableService } from "../models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
   generatePSQLGenericUpdateRowQueryString,
   isQueryEmpty,
-} from "./utilities";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../utilities";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { PublishedItemsTableService } from "./publishedItemsTableService";
+import { UsersTableService } from "../usersTableService";
 
 interface DBPublishedItemComment {
   published_item_comment_id: string;
@@ -46,7 +48,10 @@ export class PublishedItemCommentsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [
+    PublishedItemsTableService.tableName,
+    UsersTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -58,7 +63,17 @@ export class PublishedItemCommentsTableService extends TableService {
         creation_timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (published_item_comment_id)
+          PRIMARY KEY (published_item_comment_id),
+          
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+          FOREIGN KEY (published_item_id)
+          REFERENCES ${PublishedItemsTableService.tableName} (id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (author_user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+
+
       )
       ;
     `;

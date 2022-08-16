@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { constructRenderablePostFromPartsById } from "../../publishedItem/post/utilities";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
@@ -15,6 +14,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
+import { constructPublishedItemFromPartsById } from "src/controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRecordAndSendNewCommentOnPublishedItemNotification({
   controller,
@@ -33,18 +33,21 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   blobStorageService: BlobStorageServiceInterface;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
-  const constructRenderablePostFromPartsByIdResponse =
-    await constructRenderablePostFromPartsById({
+  //////////////////////////////////////////////////
+  // COMPILE INFORMATION NEEDED TO WRITE NOTIFICATION INTO DATASTORE
+  //////////////////////////////////////////////////
+  const constructPublishedItemFromPartsByIdResponse =
+    await constructPublishedItemFromPartsById({
       controller,
-      requestorUserId: recipientUserId,
+      blobStorageService,
+      databaseService,
       publishedItemId,
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
+      requestorUserId: recipientUserId,
     });
-  if (constructRenderablePostFromPartsByIdResponse.type === EitherType.failure) {
-    return constructRenderablePostFromPartsByIdResponse;
+  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
+    return constructPublishedItemFromPartsByIdResponse;
   }
-  const { success: post } = constructRenderablePostFromPartsByIdResponse;
+  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
 
   const constructRenderablePostCommentFromPartsByIdResponse =
     await constructRenderablePublishedItemCommentFromPartsById({
@@ -59,6 +62,10 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   }
   const { success: postComment } = constructRenderablePostCommentFromPartsByIdResponse;
 
+  //////////////////////////////////////////////////
+  // WRITE NOTIFICATION INTO DATASTORE
+  //////////////////////////////////////////////////
+
   const constructRenderableUserFromPartsByUserIdResponse =
     await constructRenderableUserFromPartsByUserId({
       controller,
@@ -71,16 +78,6 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
     return constructRenderableUserFromPartsByUserIdResponse;
   }
   const { success: userThatCommented } = constructRenderableUserFromPartsByUserIdResponse;
-
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: post.authorUserId },
-    );
-  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   const createUserNotificationResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
@@ -96,13 +93,31 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
     return createUserNotificationResponse;
   }
 
+  //////////////////////////////////////////////////
+  // GET COUNT OF UNREAD NOTIFICATIONS
+  //////////////////////////////////////////////////
+
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { controller, userId: publishedItem.authorUserId },
+    );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  //////////////////////////////////////////////////
+
   const renderableNewCommentOnPostNotification: RenderableNewCommentOnPublishedItemNotification =
     {
       countOfUnreadNotifications,
       type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
       eventTimestamp: Date.now(),
       userThatCommented,
-      publishedItem: post,
+      publishedItem,
       publishedItemComment: postComment,
     };
 

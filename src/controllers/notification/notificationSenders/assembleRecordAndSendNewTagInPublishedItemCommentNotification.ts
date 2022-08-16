@@ -33,6 +33,10 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   blobStorageService: BlobStorageServiceInterface;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+  //////////////////////////////////////////////////
+  // COMPILE INFORMATION NEEDED TO WRITE NOTIFICATION INTO DATASTORE
+  //////////////////////////////////////////////////
+
   const constructRenderablePostFromPartsByIdResponse =
     await constructRenderablePostFromPartsById({
       controller,
@@ -72,15 +76,9 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   }
   const { success: userTaggingClient } = constructRenderableUserFromPartsByUserIdResponse;
 
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: post.authorUserId },
-    );
-  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
+  //////////////////////////////////////////////////
+  // WRITE NOTIFICATION INTO DATASTORE
+  //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
@@ -95,6 +93,23 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   if (createUserNotificationResponse.type === EitherType.failure) {
     return createUserNotificationResponse;
   }
+
+  //////////////////////////////////////////////////
+  // GET COUNT OF UNREAD NOTIFICATIONS
+  //////////////////////////////////////////////////
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { controller, userId: post.authorUserId },
+    );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  //////////////////////////////////////////////////
 
   const renderableNewTagInPublishedItemCommentNotification: RenderableNewTagInPublishedItemCommentNotification =
     {

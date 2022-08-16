@@ -57,7 +57,7 @@ export async function handleDoesChatRoomExistWithUserIds({
   }
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
       { controller, userIds },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
@@ -68,7 +68,7 @@ export async function handleDoesChatRoomExistWithUserIds({
   let doesChatRoomExist = false;
   if (chatRoomId) {
     const getUserIdsJoinedToChatRoomIdResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomsTableService.getUserIdsJoinedToChatRoomId(
+      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
         { controller, chatRoomId },
       );
     if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {

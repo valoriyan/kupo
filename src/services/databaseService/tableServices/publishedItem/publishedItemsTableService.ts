@@ -20,6 +20,7 @@ import {
 } from "../../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { UsersTableService } from "../usersTableService";
 
 interface DBPublishedItem {
   type: PublishedItemType;
@@ -59,7 +60,7 @@ export class PublishedItemsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -74,7 +75,12 @@ export class PublishedItemsTableService extends TableService {
         id_of_published_item_being_shared VARCHAR(64),
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (id)
+          PRIMARY KEY (id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (author_user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+
 
       )
       ;

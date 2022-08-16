@@ -15,6 +15,7 @@ import {
   isQueryEmpty,
 } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { UsersTableService } from "./usersTableService";
 
 export interface DBStoredCreditCardDatum {
   local_credit_card_id: string;
@@ -32,7 +33,7 @@ export class StoredCreditCardDataTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -44,7 +45,12 @@ export class StoredCreditCardDataTableService extends TableService {
           creation_timestamp BIGINT NOT NULL,
 
           CONSTRAINT ${this.tableName}_pkey
-            PRIMARY KEY (user_id, payment_processor_card_id)
+            PRIMARY KEY (user_id, payment_processor_card_id),
+
+          CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+            FOREIGN KEY (user_id)
+            REFERENCES ${UsersTableService.tableName} (user_id)
+
 
         )
         ;

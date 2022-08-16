@@ -15,6 +15,7 @@ import {
   isQueryEmpty,
 } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
 
 interface DBShopItem {
   published_item_id: string;
@@ -30,7 +31,7 @@ export class ShopItemsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [PublishedItemsTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -40,7 +41,12 @@ export class ShopItemsTableService extends TableService {
         price DECIMAL(12,2) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (published_item_id)
+          PRIMARY KEY (published_item_id),
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
+          FOREIGN KEY (published_item_id)
+          REFERENCES ${PublishedItemsTableService.tableName} (id)
+
       )
       ;
     `;

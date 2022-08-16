@@ -16,6 +16,7 @@ import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
+import { UsersTableService } from "./usersTableService";
 
 interface DBUserContentFeedFilter {
   content_feed_filter_id: string;
@@ -54,7 +55,7 @@ export class UserContentFeedFiltersTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -66,7 +67,12 @@ export class UserContentFeedFiltersTableService extends TableService {
         creation_timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (content_feed_filter_id)
+          PRIMARY KEY (content_feed_filter_id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+
       )
       ;
     `;

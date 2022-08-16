@@ -18,6 +18,7 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
+import { UsersTableService } from "./usersTableService";
 
 interface DBUserFollow {
   user_follow_event_id: string;
@@ -47,7 +48,7 @@ export class UserFollowsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -60,7 +61,15 @@ export class UserFollowsTableService extends TableService {
         timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (user_id_doing_following, user_id_being_followed)
+          PRIMARY KEY (user_id_doing_following, user_id_being_followed),
+
+        CONSTRAINT doing_following_${this.tableName}_${UsersTableService.tableName}_following_fkey
+          FOREIGN KEY (user_id_doing_following)
+          REFERENCES ${UsersTableService.tableName} (user_id),
+
+        CONSTRAINT being_followed_${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (user_id_being_followed)
+          REFERENCES ${UsersTableService.tableName} (user_id)
 
       )
       ;

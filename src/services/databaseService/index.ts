@@ -6,7 +6,7 @@ import { setupDatabaseService } from "./setup";
 import { ChatMessagesTableService } from "./tableServices/chatMessagesTableService";
 import { ChatRoomJoinsTableService } from "./tableServices/chatRoomJoinsTableService";
 import { HashtagsTableService } from "./tableServices/hashtagsTableService";
-import { PublishedItemCommentsTableService } from "./tableServices/publishedItemCommentsTableService";
+import { PublishedItemCommentsTableService } from "./tableServices/publishedItem/publishedItemCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PublishedItemLikesTableService } from "./tableServices/publishedItem/publishedItemLikesTableService";
 import { PublishedItemsTableService } from "./tableServices/publishedItem/publishedItemsTableService";
@@ -46,7 +46,9 @@ export class DatabaseService {
     ),
     hashtagTableService: new HashtagsTableService(DatabaseService.datastorePool),
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
-    chatRoomsTableService: new ChatRoomJoinsTableService(DatabaseService.datastorePool),
+    chatRoomJoinsTableService: new ChatRoomJoinsTableService(
+      DatabaseService.datastorePool,
+    ),
     userHashtagsTableService: new UserHashtagsTableService(DatabaseService.datastorePool),
     publishedItemLikesTableService: new PublishedItemLikesTableService(
       DatabaseService.datastorePool,

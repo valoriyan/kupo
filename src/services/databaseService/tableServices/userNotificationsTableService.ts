@@ -15,6 +15,7 @@ import {
 } from "../../../utilities/monads";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { Controller } from "tsoa";
+import { UsersTableService } from "./usersTableService";
 
 export interface DBUserNotification {
   user_notification_id: string;
@@ -57,7 +58,12 @@ export class UserNotificationsTableService extends TableService {
         reference_table_id VARCHAR(64) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (user_notification_id)        
+          PRIMARY KEY (user_notification_id),
+          
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (recipient_user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+          
       )
       ;
     `;

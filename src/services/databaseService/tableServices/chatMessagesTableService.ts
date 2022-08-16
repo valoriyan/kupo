@@ -17,6 +17,7 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
+import { UsersTableService } from "./usersTableService";
 
 interface DBChatMessage {
   chat_message_id: string;
@@ -46,7 +47,7 @@ export class ChatMessagesTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -58,7 +59,12 @@ export class ChatMessagesTableService extends TableService {
         creation_timestamp BIGINT NOT NULL,
         
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (chat_message_id)
+          PRIMARY KEY (chat_message_id),
+
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
+          FOREIGN KEY (author_user_id)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+
       )
       ;
     `;
