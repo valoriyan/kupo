@@ -125,4 +125,10 @@ export interface RootShopItemPreview {
    * @memberof RootShopItemPreview
    */
   mediaElements: Array<MediaElement>;
+  /**
+   *
+   * @type {RenderableUserFollowers}
+   * @memberof RootShopItemPreview
+   */
+  purchasedMediaElementsMetadata: RenderableUserFollowers;
 }

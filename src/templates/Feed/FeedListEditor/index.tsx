@@ -112,7 +112,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           key={filter.contentFeedFilterId}
           filter={filter}
           actions={
-            filter.type === UserContentFeedFilterType.FollowingUsers
+            !filter.value
               ? undefined
               : {
                   moveUp: i === 1 ? undefined : onMoveUp(filter.contentFeedFilterId),

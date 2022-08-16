@@ -44,7 +44,7 @@ export const useCommentOnPublishedItem = () => {
                   );
 
                   const updatedPostComments = !existingPostCommentIds.includes(
-                    createdPostComment.publishedItemId,
+                    createdPostComment.publishedItemCommentId,
                   )
                     ? [...page.postComments, createdPostComment]
                     : page.postComments;

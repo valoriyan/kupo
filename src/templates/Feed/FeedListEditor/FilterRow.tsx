@@ -18,12 +18,12 @@ export interface FilterRowProps {
 export const FilterRow = ({ filter, actions }: FilterRowProps) => {
   let filterDisplayName;
 
-  if (filter.type === UserContentFeedFilterType.Username) {
+  if (!filter.value) {
+    filterDisplayName = filter.contentFeedFilterId;
+  } else if (filter.type === UserContentFeedFilterType.Username) {
     filterDisplayName = `@${filter.value}`;
   } else if (filter.type === UserContentFeedFilterType.Hashtag) {
     filterDisplayName = `#${filter.value}`;
-  } else if (filter.type === UserContentFeedFilterType.FollowingUsers) {
-    filterDisplayName = `Following`;
   }
 
   return (

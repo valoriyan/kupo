@@ -9,8 +9,9 @@ import { styled } from "#/styling";
 import { goToUserProfilePage } from "#/templates/UserProfile";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
+import { ImageIcon } from "../Icons";
 import { Flex, Stack } from "../Layout";
-import { Body } from "../Typography";
+import { Body, Subtext } from "../Typography";
 import { UserName } from "../UserName";
 import { ActionMenu, MenuAction } from "./ActionMenu";
 import { ContentViewer } from "./ContentViewer";
@@ -24,6 +25,7 @@ export interface PostBodyProps {
   caption: string;
   title: string | undefined;
   price: number | undefined;
+  purchasedMediaElementsMetadata: { count: number } | undefined;
   mediaElements: MediaElement[];
   setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   sharedItem?: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
@@ -79,8 +81,16 @@ export const PostBody = (props: PostBodyProps) => {
       )}
       {props.type === PublishedItemType.ShopItem && (
         <ShopItemDetailsWrapper>
-          <Flex css={{ justifyContent: "space-between", gap: "$3" }}>
-            <Body>{props.title}</Body>
+          <Flex
+            css={{ justifyContent: "space-between", alignItems: "center", gap: "$4" }}
+          >
+            <Flex css={{ alignItems: "center", gap: "$4" }}>
+              <Body>{props.title}</Body>
+              <Flex css={{ alignItems: "center", gap: "$3", color: "$primary" }}>
+                <ImageIcon height={16} width={16} style={{ marginBottom: 1 }} />
+                <Subtext>{props.purchasedMediaElementsMetadata?.count}</Subtext>
+              </Flex>
+            </Flex>
             <Body>${props.price}</Body>
           </Flex>
           <Button>Purchase</Button>

@@ -351,7 +351,7 @@ export * from "./remove-credit-card-failed-reason";
 export * from "./remove-credit-card-request-body";
 export * from "./remove-user-like-from-published-item-request-body";
 export * from "./renderable-chat-message";
-export * from "./renderable-chat-room-preview";
+export * from "./renderable-chat-room-with-joined-users";
 export * from "./renderable-new-comment-on-published-item-notification";
 export * from "./renderable-new-follower-notification";
 export * from "./renderable-new-like-on-published-item-notification";

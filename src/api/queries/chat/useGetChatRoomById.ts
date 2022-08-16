@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, RenderableChatRoomPreview } from "../..";
+import { Api, RenderableChatRoomWithJoinedUsers } from "../..";
 
 export const useGetChatRoomById = ({ chatRoomId }: { chatRoomId: string }) => {
-  return useQuery<RenderableChatRoomPreview, Error>(
+  return useQuery<RenderableChatRoomWithJoinedUsers, Error>(
     [CacheKeys.ChatRoomFromId, chatRoomId],
     async () => {
       const res = await Api.getChatRoomById({ chatRoomId });
