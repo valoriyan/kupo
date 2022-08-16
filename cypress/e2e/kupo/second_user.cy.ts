@@ -1,21 +1,30 @@
 // https://github.com/cypress-io/cypress-example-todomvc#cypress-intellisense
 
+import {
+  logInTestUser,
+  searchAndMoveToTestUserProfilePage,
+  toggleTestUserAccountPrivacy,
+} from "../../support/utilities";
+import { moveToChat } from "../../support/utilities/chat";
 import { mrsTestwomanUser, mrTestmanUser } from "../../testData";
 
 describe("Second User Actions", () => {
   it("Runs", () => {
-    cy.login({ userData: mrsTestwomanUser });
+    logInTestUser({ userData: mrsTestwomanUser });
 
-    cy.get(`[data-cy="search-button"]`).click();
-    cy.get(`[data-cy="discover-search-input"]`).type(mrTestmanUser.username);
-    cy.contains(`a`, mrTestmanUser.username).click();
+    toggleTestUserAccountPrivacy();
 
-    cy.url().should("include", `/profile/${mrTestmanUser.username}`);
+    searchAndMoveToTestUserProfilePage({ username: mrTestmanUser.username });
 
-    cy.get('[data-cy="unfollow-button"]').should("not.exist");
-    cy.get('[data-cy="follow-button"]').click();
+    cy.dataCy("unfollow-button").should("not.exist");
+    cy.dataCy("follow-button").click();
 
-    cy.get('[data-cy="follow-button"]').should("not.exist");
-    cy.get('[data-cy="unfollow-button"]').click();
+    cy.dataCy("follow-button").should("not.exist");
+    cy.dataCy("unfollow-button").click();
+  });
+
+  it("Chats", () => {
+    logInTestUser({ userData: mrsTestwomanUser });
+    moveToChat();
   });
 });

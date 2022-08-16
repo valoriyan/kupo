@@ -62,6 +62,7 @@ export const SidePanel = () => {
               Icon={HomeIcon}
               label="Home"
               color={isActive("/feed") ? activeColor : inactiveColor}
+              data-cy="home-button"
             />
             <NavLink
               href="/notifications"
@@ -80,6 +81,7 @@ export const SidePanel = () => {
               label="Messages"
               onClick={setPreviousLocationForMessages}
               color={isActive("/messages") ? activeColor : inactiveColor}
+              data-cy="chat-button"
             />
             <NavLink
               href="/my-lists"

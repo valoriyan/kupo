@@ -11,25 +11,5 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     dataCy(value: string): Cypress.Chainable<JQuery<HTMLElement>>;
-
-    login({
-      userData,
-    }: {
-      userData: {
-        username: string;
-        email: string;
-        password: string;
-      };
-    }): Chainable<null>;
-
-    createPost({
-      postData,
-    }: {
-      postData: {
-        images: string[];
-        caption: string;
-        hashtags: string[];
-      };
-    }): Chainable<null>;
   }
 }

@@ -34,9 +34,15 @@ export const MessageComposer = ({
         placeholder="type a message..."
         value={newChatMessage}
         onChange={onUpdateNewChatMessage}
+        data-cy="chat-room-message-input"
       />
       <ActionBar>
-        <Button round size="sm" disabled={!newChatMessage || disabled}>
+        <Button
+          round
+          size="sm"
+          disabled={!newChatMessage || disabled}
+          data-cy="submit-chat-message-button"
+        >
           Send
         </Button>
       </ActionBar>

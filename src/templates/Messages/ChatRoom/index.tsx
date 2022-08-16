@@ -109,8 +109,9 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     chatMessages.map((chatMessage) => chatMessage.chatMessageId),
   );
   const deduplicatedChatMessages: RenderableChatMessage[] = [];
+  console.log("chatMessages", chatMessages);
   chatMessages.forEach((chatMessage) => {
-    if (chatMessageIds.has(chatMessage.chatRoomId)) {
+    if (!chatMessageIds.has(chatMessage.chatRoomId)) {
       deduplicatedChatMessages.push(chatMessage);
       chatMessageIds.delete(chatMessage.chatRoomId);
     }

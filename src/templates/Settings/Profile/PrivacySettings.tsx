@@ -34,6 +34,7 @@ export const PrivacySettings = (props: PrivacySettingsProps) => {
               value ? ProfilePrivacySetting.Public : ProfilePrivacySetting.Private,
             )
           }
+          data-cy="profile-privacy-toggle"
         />
       </Grid>
     </Stack>

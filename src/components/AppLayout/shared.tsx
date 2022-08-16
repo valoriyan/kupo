@@ -10,6 +10,7 @@ export interface NavLinkProps {
   label: ReactNode;
   onClick?: () => void;
   color?: ThemeScale<"colors">;
+  "data-cy"?: string;
 }
 
 export const NavLink = (props: NavLinkProps) => {
@@ -17,7 +18,7 @@ export const NavLink = (props: NavLinkProps) => {
     <Link href={props.href} passHref>
       <NavItem onClick={props.onClick} css={{ color: props.color || "$text" }}>
         <props.Icon />
-        <div>{props.label}</div>
+        <div data-cy={props["data-cy"]}>{props.label}</div>
       </NavItem>
     </Link>
   );

@@ -33,7 +33,13 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
       </UserInfoWrapper>
       <Stack css={{ gap: "$9", px: "$8", py: "$8" }}>
         <Stack css={{ gap: "$6" }}>
-          <NavLink href="/feed" Icon={HomeIcon} label="Home" onClick={hide} />
+          <NavLink
+            href="/feed"
+            Icon={HomeIcon}
+            label="Home"
+            onClick={hide}
+            data-cy="home-button"
+          />
           <NavLink
             href="/notifications"
             Icon={BellIcon}
@@ -48,6 +54,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
               setPreviousLocationForMessages();
               hide();
             }}
+            data-cy="chat-button"
           />
           <NavLink
             href="/my-lists"

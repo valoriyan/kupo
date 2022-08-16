@@ -96,6 +96,7 @@ export const UsersInput = (props: UsersInputProps) => {
         onKeyDown={handleBackspace}
         onChange={onChange}
         value={text}
+        data-cy="new-chat-room-users-input"
       />
     </Wrapper>
   );

@@ -18,11 +18,12 @@ export const ChatRoomsHeader = (props: ChatRoomsHeaderProps) => {
           placeholder="Search..."
           value={props.query}
           onChange={(e) => props.setQuery(e.currentTarget.value)}
+          data-cy="chat-room-search-input"
         />
       </SearchWrapper>
       <Flex css={{ gap: "$5", alignItems: "center" }}>
         <Link href="/messages/new" passHref>
-          <Flex as="a" css={{ color: "$text", p: "$2" }}>
+          <Flex as="a" css={{ color: "$text", p: "$2" }} data-cy="new-chat-room-button">
             <AddRIcon />
           </Flex>
         </Link>

@@ -5,6 +5,7 @@ export interface ToggleProps {
   toggled: boolean;
   setToggled: Dispatch<SetStateAction<boolean>>;
   id?: string;
+  "data-cy"?: string;
 }
 
 export const Toggle = (props: ToggleProps) => {
@@ -14,6 +15,7 @@ export const Toggle = (props: ToggleProps) => {
       id={props.id}
       checked={props.toggled}
       onChange={(e) => props.setToggled(e.currentTarget.checked)}
+      data-cy={props["data-cy"]}
     />
   );
 };
