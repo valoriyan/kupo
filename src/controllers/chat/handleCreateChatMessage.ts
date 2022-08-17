@@ -9,6 +9,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableChatMessage } from "./models";
+import { getCountOfUnreadChatRooms } from "./utilities";
 
 export enum CreateChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
@@ -73,34 +74,15 @@ export async function handleCreateChatMessage({
   }
   const { success: userIds } = getUserIdsJoinedToChatRoomIdResponse;
 
-  const getCountOfChatRoomsJoinedByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfChatRoomsJoinedByUserId(
-      {
-        controller,
-        userId: clientUserId,
-      },
-    );
-  if (getCountOfChatRoomsJoinedByUserIdResponse.type === EitherType.failure) {
-    return getCountOfChatRoomsJoinedByUserIdResponse;
+  const getCountOfUnreadChatRoomsResponse = await getCountOfUnreadChatRooms({
+    controller,
+    databaseService: controller.databaseService,
+    userId: clientUserId,
+  });
+  if (getCountOfUnreadChatRoomsResponse.type === EitherType.failure) {
+    return getCountOfUnreadChatRoomsResponse;
   }
-  const { success: countOfChatRoomsJoinedByUser } =
-    getCountOfChatRoomsJoinedByUserIdResponse;
-
-  const getCountOfChatRoomsReadByUserIdBeforeTimestampResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomReadRecordsTableService.getCountOfChatRoomsReadByUserIdBeforeTimestamp(
-      {
-        controller,
-        userId: clientUserId,
-        timestamp: Date.now(),
-      },
-    );
-  if (
-    getCountOfChatRoomsReadByUserIdBeforeTimestampResponse.type === EitherType.failure
-  ) {
-    return getCountOfChatRoomsReadByUserIdBeforeTimestampResponse;
-  }
-  const { success: countOfReadChatRooms } =
-    getCountOfChatRoomsReadByUserIdBeforeTimestampResponse;
+  const { success: countOfUnreadChatRooms } = getCountOfUnreadChatRoomsResponse;
 
   const chatMessage: RenderableChatMessage = {
     chatMessageId,
@@ -113,7 +95,7 @@ export async function handleCreateChatMessage({
   await controller.webSocketService.notifyUserIdsOfNewChatMessage({
     userIds,
     newChatMessageNotification: {
-      countOfUnreadChatRooms: countOfChatRoomsJoinedByUser - countOfReadChatRooms,
+      countOfUnreadChatRooms,
       chatMessage,
     },
   });

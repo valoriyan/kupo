@@ -53,6 +53,12 @@ import {
   MarkChatRoomAsReadRequestBody,
   MarkChatRoomAsReadSuccess,
 } from "./handleMarkChatRoomAsRead";
+import {
+  GetCountOfUnreadChatRoomsFailedReason,
+  GetCountOfUnreadChatRoomsRequestBody,
+  GetCountOfUnreadChatRoomsSuccess,
+  handleGetCountOfUnreadChatRooms,
+} from "./handleGetCountOfUnreadChatRooms";
 
 @injectable()
 @Route("chat")
@@ -169,6 +175,23 @@ export class ChatController extends Controller {
     >
   > {
     return await handleDoesChatRoomExistWithUserIds({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getCountOfUnreadChatRooms")
+  public async getCountOfUnreadChatRooms(
+    @Request() request: express.Request,
+    @Body() requestBody: GetCountOfUnreadChatRoomsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetCountOfUnreadChatRoomsFailedReason>,
+      GetCountOfUnreadChatRoomsSuccess
+    >
+  > {
+    return await handleGetCountOfUnreadChatRooms({
       controller: this,
       request,
       requestBody,
