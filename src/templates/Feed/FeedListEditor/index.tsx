@@ -21,7 +21,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   const clientUserId = useCurrentUserId();
 
   const onMoveUp = (contentFeedFilterId: string) => () => {
-    const newFilters = props.contentFilters.splice(1);
+    const newFilters = props.contentFilters.filter((filter) => filter.value);
     const index = newFilters.findIndex(
       (filter) => filter.contentFeedFilterId === contentFeedFilterId,
     );
@@ -30,7 +30,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   };
 
   const onMoveDown = (contentFeedFilterId: string) => () => {
-    const newFilters = props.contentFilters.splice(1);
+    const newFilters = props.contentFilters.filter((filter) => filter.value);
     const index = newFilters.findIndex(
       (filter) => filter.contentFeedFilterId === contentFeedFilterId,
     );
@@ -41,7 +41,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   const onDelete = (contentFeedFilterId: string) => () => {
     props.updateContentFilters(
       props.contentFilters
-        .splice(1)
+        .filter((filter) => filter.value)
         .filter((filter) => filter.contentFeedFilterId !== contentFeedFilterId),
     );
   };
@@ -64,16 +64,15 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
       setNewFilterText("");
       return;
     }
-    const newFilters = [
-      ...props.contentFilters.splice(1),
-      {
+    const newFilters = props.contentFilters
+      .filter((filter) => filter.value)
+      .concat({
         contentFeedFilterId,
         userId: clientUserId ?? "",
         type,
         value,
         creationTimestamp: Date.now(),
-      },
-    ];
+      });
     props.updateContentFilters(newFilters);
     setNewFilterText("");
   };
@@ -107,7 +106,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           <ChevronUpIcon />
         </IconButton>
       </Flex>
-      {props.contentFilters.map((filter, i) => (
+      {props.contentFilters.map((filter, i, filters) => (
         <FilterRow
           key={filter.contentFeedFilterId}
           filter={filter}
@@ -115,7 +114,9 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
             !filter.value
               ? undefined
               : {
-                  moveUp: i === 1 ? undefined : onMoveUp(filter.contentFeedFilterId),
+                  moveUp: !filters[i - 1]?.value
+                    ? undefined
+                    : onMoveUp(filter.contentFeedFilterId),
                   moveDown:
                     i === props.contentFilters.length - 1
                       ? undefined

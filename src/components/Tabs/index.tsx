@@ -80,6 +80,7 @@ const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
   justifyContent: "center",
   height: "$8",
   px: "$5",
+  whiteSpace: "nowrap",
   fontWeight: "$regular",
   color: "$secondaryText",
   transition: "color $1 ease, box-shadow $1 ease",
