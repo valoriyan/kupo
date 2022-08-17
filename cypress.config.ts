@@ -20,6 +20,8 @@ async function resetDb() {
 
 export default defineConfig({
   e2e: {
+    defaultCommandTimeout: 10000,
+
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
