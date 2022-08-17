@@ -13,9 +13,13 @@ export const useUpdateContentFilters = () => {
     },
     {
       onMutate: (data) => {
+        const oldData = queryClient.getQueryData<UserContentFeedFilter[]>([
+          CacheKeys.ContentFilters,
+        ]);
+        const stickiedFilters = oldData?.filter((filter) => !filter.value) ?? [];
         queryClient.setQueryData<UserContentFeedFilter[]>(
           [CacheKeys.ContentFilters],
-          () => data,
+          () => [...stickiedFilters, ...data],
         );
       },
     },
