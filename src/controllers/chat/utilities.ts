@@ -16,34 +16,75 @@ export async function getCountOfUnreadChatRooms({
   databaseService: DatabaseService;
   userId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
-  const getCountOfChatRoomsJoinedByUserIdResponse =
-    await databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfChatRoomsJoinedByUserId(
+  // GET LIST OF CHAT ROOMS JOINED BY USER, WITH MESSAGES CREATED AFTER TIMESTAMP,
+
+  // GET LIST OF CHAT ROOMS JOINED BY USER
+  // ATTACH THE TIMESTAMPS OF THE LAST MESSAGES FOR EACH CHAT ROOM
+  // GET LAST READING TIMESTAMPS FOR EACH CHAT ROOM
+  // COUNT
+
+  const getChatRoomsJoinedByUserIdsResponse =
+    await databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
+      {
+        controller,
+        userIds: [userId],
+      },
+    );
+  if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {
+    return getChatRoomsJoinedByUserIdsResponse;
+  }
+  const { success: unrenderableChatRoomWithJoinedUsers } =
+    getChatRoomsJoinedByUserIdsResponse;
+  const chatRoomIdsJoinedByUser = unrenderableChatRoomWithJoinedUsers.map(
+    ({ chatRoomId }) => chatRoomId,
+  );
+
+  const getChatRoomReadRecordsForUserIdResponse =
+    await databaseService.tableNameToServicesMap.chatRoomReadRecordsTableService.getChatRoomReadRecordsForUserId(
       {
         controller,
         userId,
       },
     );
-  if (getCountOfChatRoomsJoinedByUserIdResponse.type === EitherType.failure) {
-    return getCountOfChatRoomsJoinedByUserIdResponse;
+  if (getChatRoomReadRecordsForUserIdResponse.type === EitherType.failure) {
+    return getChatRoomReadRecordsForUserIdResponse;
   }
-  const { success: countOfChatRoomsJoinedByUser } =
-    getCountOfChatRoomsJoinedByUserIdResponse;
+  const { success: dbChatRoomReadRecords } = getChatRoomReadRecordsForUserIdResponse;
 
-  const getCountOfChatRoomsReadByUserIdBeforeTimestampResponse =
-    await databaseService.tableNameToServicesMap.chatRoomReadRecordsTableService.getCountOfChatRoomsReadByUserIdBeforeTimestamp(
+  const chatRoomIdToTimestampLastReadByUserMap = new Map(
+    dbChatRoomReadRecords.map(({ chat_room_id, timestamp_last_read_by_user }) => [
+      chat_room_id,
+      timestamp_last_read_by_user,
+    ]),
+  );
+  chatRoomIdsJoinedByUser.forEach((chatRoomIdJoinedByUser) => {
+    if (!chatRoomIdToTimestampLastReadByUserMap.has(chatRoomIdJoinedByUser)) {
+      chatRoomIdToTimestampLastReadByUserMap.set(chatRoomIdJoinedByUser, 0);
+    }
+  });
+
+  const chatRoomsIdsWithTimestamps: {
+    chatRoomId: string;
+    timestamp: number;
+  }[] = [...chatRoomIdToTimestampLastReadByUserMap.entries()].map(
+    ([chatRoomId, timestamp]) => ({ chatRoomId, timestamp }),
+  );
+
+  const filterChatRoomIdsToThoseWithNewMessagesAfterTimestampsResponse =
+    await databaseService.tableNameToServicesMap.chatMessagesTableService.filterChatRoomIdsToThoseWithNewMessagesAfterTimestamps(
       {
         controller,
-        userId,
-        timestamp: Date.now(),
+        chatRoomsIdsWithTimestamps,
       },
     );
   if (
-    getCountOfChatRoomsReadByUserIdBeforeTimestampResponse.type === EitherType.failure
+    filterChatRoomIdsToThoseWithNewMessagesAfterTimestampsResponse.type ===
+    EitherType.failure
   ) {
-    return getCountOfChatRoomsReadByUserIdBeforeTimestampResponse;
+    return filterChatRoomIdsToThoseWithNewMessagesAfterTimestampsResponse;
   }
-  const { success: countOfReadChatRooms } =
-    getCountOfChatRoomsReadByUserIdBeforeTimestampResponse;
+  const { success: chatRoomsUnreadByUser } =
+    filterChatRoomIdsToThoseWithNewMessagesAfterTimestampsResponse;
 
-  return Success(countOfChatRoomsJoinedByUser - countOfReadChatRooms);
+  return Success(chatRoomsUnreadByUser.length);
 }

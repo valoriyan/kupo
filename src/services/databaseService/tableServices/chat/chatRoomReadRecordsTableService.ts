@@ -12,6 +12,12 @@ import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "../usersTableService";
 
+interface DBChatRoomReadRecord {
+  user_id: string;
+  chat_room_id: string;
+  timestamp_last_read_by_user: number;
+}
+
 export class ChatRoomReadRecordsTableService extends TableService {
   public static readonly tableName = `chat_room_read_records`;
   public readonly tableName = ChatRoomReadRecordsTableService.tableName;
@@ -101,35 +107,31 @@ export class ChatRoomReadRecordsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getCountOfChatRoomsReadByUserIdBeforeTimestamp({
+  public async getChatRoomReadRecordsForUserId({
     controller,
     userId,
-    timestamp,
   }: {
     controller: Controller;
     userId: string;
-    timestamp: number;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBChatRoomReadRecord[]>> {
     try {
       const query = {
         text: `
           SELECT
-            COUNT(*)
+            *
           FROM
             ${this.tableName}
           WHERE
               user_id = $1
-            AND
-              timestamp_last_read_by_user < $2
           ;
         `,
-        values: [userId, timestamp],
+        values: [userId],
       };
 
-      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+      const response: QueryResult<DBChatRoomReadRecord> = await this.datastorePool.query(
         query,
       );
-      return Success(parseInt(response.rows[0].count));
+      return Success(response.rows);
     } catch (error) {
       return Failure({
         controller,
@@ -137,7 +139,7 @@ export class ChatRoomReadRecordsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at ChatRoomReadRecordsTableService.getCountOfChatRoomsReadByUserIdBeforeTimestamp",
+          "Error at ChatRoomReadRecordsTableService.getChatRoomReadRecordsForUserId",
       });
     }
   }

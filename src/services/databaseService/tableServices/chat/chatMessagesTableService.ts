@@ -173,6 +173,75 @@ export class ChatMessagesTableService extends TableService {
     }
   }
 
+  public async filterChatRoomIdsToThoseWithNewMessagesAfterTimestamps({
+    controller,
+    chatRoomsIdsWithTimestamps,
+  }: {
+    controller: Controller;
+    chatRoomsIdsWithTimestamps: {
+      chatRoomId: string;
+      timestamp: number;
+    }[];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      if (chatRoomsIdsWithTimestamps.length === 0) {
+        return Success([]);
+      }
+
+      const values: (string | number)[] = [];
+
+      const conditionalStrings: string[] = [];
+      chatRoomsIdsWithTimestamps.map(({ chatRoomId, timestamp }) => {
+        const chatRoomIdParameterIndex = values.length + 1;
+        const chatRoomIdTimestampIndex = values.length + 2;
+
+        conditionalStrings.push(`
+        (
+            chat_room_id = $${chatRoomIdParameterIndex}
+          AND
+            creation_timestamp > $${chatRoomIdTimestampIndex}
+        )
+        `);
+        values.push(chatRoomId);
+        values.push(timestamp);
+      });
+
+      const conditionalString = conditionalStrings.join(`
+        OR
+      `);
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            ${conditionalString}
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+
+      const chatRoomIds = Array.from(
+        new Set(response.rows.map((dBChatMessage) => dBChatMessage.chat_room_id)),
+      );
+
+      return Success(chatRoomIds);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at chatMessagesTableService.filterChatRoomIdsToThoseWithNewMessagesAfterTimestamp",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
