@@ -14,13 +14,13 @@ describe("Second User Actions", () => {
 
     toggleTestUserAccountPrivacy();
 
-    searchAndMoveToTestUserProfilePage({ username: mrTestmanUser.username });
+    searchAndMoveToTestUserProfilePage({ username: mrTestmanUser.username }).then(() => {
+      cy.dataCy("unfollow-button").should("not.exist");
+      cy.dataCy("follow-button").click();
 
-    cy.dataCy("unfollow-button").should("not.exist");
-    cy.dataCy("follow-button").click();
-
-    cy.dataCy("follow-button").should("not.exist");
-    cy.dataCy("unfollow-button").click();
+      cy.dataCy("follow-button").should("not.exist");
+      cy.dataCy("unfollow-button").click();
+    });
   });
 
   it("Chats", () => {

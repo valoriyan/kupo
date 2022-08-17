@@ -22,9 +22,11 @@ export const logInTestUser = ({
   cy.get("input[placeholder=email]").type(userData.email);
   cy.get("input[placeholder=password]").type(userData.password);
 
-  cy.contains("button", "log in", { matchCase: false }).click();
-
-  cy.url().should("include", "/feed");
+  cy.contains("button", "log in", { matchCase: false })
+    .click()
+    .then(() => {
+      cy.url().should("include", "/feed");
+    });
 };
 
 export const createTestPost = ({
@@ -55,11 +57,11 @@ export const searchAndMoveToTestUserProfilePage = ({
   username,
 }: {
   username: string;
-}) => {
+}): Cypress.Chainable<string> => {
   cy.dataCy("home-button").click();
   cy.dataCy(`search-button`).click();
   cy.dataCy(`discover-search-input`).type(username);
   cy.contains(`a`, username).click();
 
-  cy.url().should("include", `/profile/${username}`);
+  return cy.url().should("include", `/profile/${username}`);
 };
