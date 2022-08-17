@@ -47,6 +47,12 @@ import {
   GetChatRoomByIdSuccess,
 } from "./handleGetChatRoomById";
 import { BlobStorageService } from "../../services/blobStorageService";
+import {
+  handleMarkChatRoomAsRead,
+  MarkChatRoomAsReadFailedReason,
+  MarkChatRoomAsReadRequestBody,
+  MarkChatRoomAsReadSuccess,
+} from "./handleMarkChatRoomAsRead";
 
 @injectable()
 @Route("chat")
@@ -172,6 +178,23 @@ export class ChatController extends Controller {
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  @Post("markChatRoomAsRead")
+  public async markChatRoomAsRead(
+    @Request() request: express.Request,
+    @Body() requestBody: MarkChatRoomAsReadRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | MarkChatRoomAsReadFailedReason>,
+      MarkChatRoomAsReadSuccess
+    >
+  > {
+    return await handleMarkChatRoomAsRead({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
 
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
