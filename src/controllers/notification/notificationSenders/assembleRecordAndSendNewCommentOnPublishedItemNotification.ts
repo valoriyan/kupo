@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { Controller } from "tsoa";
+import { v4 as uuidv4 } from "uuid";
+import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
-import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
-import { v4 as uuidv4 } from "uuid";
-import { RenderableNewCommentOnPublishedItemNotification } from "../models/renderableUserNotifications";
-import { Controller } from "tsoa";
 import {
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
+import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
+import { RenderableNewCommentOnPublishedItemNotification } from "../models/renderableUserNotifications";
 
 export async function assembleRecordAndSendNewCommentOnPublishedItemNotification({
   controller,
