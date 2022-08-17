@@ -13,6 +13,7 @@ import { ChatMessagesList } from "./ChatMessagesList";
 import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 import { ChatRoomFormStateProvider, useChatRoomFormState } from "./ChatRoomFormContext";
 import { RenderableChatMessage } from "#/api";
+import { useMarkChatRoomAsRead } from "#/api/mutations/chat/markChatRoomAsRead";
 
 export interface ChatRoomProps {
   chatRoomId: string;
@@ -41,8 +42,11 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     };
   }, [chatRoomId, subscribeToChatRoomId, unsubscribeFromChatRoomId]);
 
+  const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
   const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
   const { newChatMessage, setNewChatMessage } = useChatRoomFormState();
+
+  markChatRoomAsRead({ chatRoomId });
 
   const {
     data: clientUserData,

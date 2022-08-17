@@ -123,6 +123,8 @@ import { EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersBy
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonMarkChatRoomAsReadSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrPurchaseShopItemFailedReasonPurchaseShopItemSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrReadPageOfCommentsByPublishedItemIdFailedReasonReadPageOfCommentsByPublishedItemIdSuccess } from "../types";
@@ -226,6 +228,8 @@ import { InlineResponse200 } from "../types";
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
 import { MakeCreditCardPrimaryRequestBody } from "../types";
+// @ts-ignore
+import { MarkChatRoomAsReadRequestBody } from "../types";
 // @ts-ignore
 import { PurchaseShopItemRequestBody } from "../types";
 // @ts-ignore
@@ -2163,6 +2167,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         makeCreditCardPrimaryRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {MarkChatRoomAsReadRequestBody} markChatRoomAsReadRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    markChatRoomAsRead: async (
+      markChatRoomAsReadRequestBody: MarkChatRoomAsReadRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'markChatRoomAsReadRequestBody' is not null or undefined
+      assertParamExists(
+        "markChatRoomAsRead",
+        "markChatRoomAsReadRequestBody",
+        markChatRoomAsReadRequestBody,
+      );
+      const localVarPath = `/chat/markChatRoomAsRead`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        markChatRoomAsReadRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -4541,6 +4594,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {MarkChatRoomAsReadRequestBody} markChatRoomAsReadRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async markChatRoomAsRead(
+      markChatRoomAsReadRequestBody: MarkChatRoomAsReadRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonMarkChatRoomAsReadSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.markChatRoomAsRead(
+        markChatRoomAsReadRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {PurchaseShopItemRequestBody} purchaseShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5854,6 +5933,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {MarkChatRoomAsReadRequestBody} markChatRoomAsReadRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    markChatRoomAsRead(
+      markChatRoomAsReadRequestBody: MarkChatRoomAsReadRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonMarkChatRoomAsReadSuccess> {
+      return localVarFp
+        .markChatRoomAsRead(markChatRoomAsReadRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {PurchaseShopItemRequestBody} purchaseShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6898,6 +6991,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .makeCardPrimary(makeCreditCardPrimaryRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {MarkChatRoomAsReadRequestBody} markChatRoomAsReadRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public markChatRoomAsRead(
+    markChatRoomAsReadRequestBody: MarkChatRoomAsReadRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .markChatRoomAsRead(markChatRoomAsReadRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
