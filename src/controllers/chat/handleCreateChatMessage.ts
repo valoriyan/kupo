@@ -73,6 +73,35 @@ export async function handleCreateChatMessage({
   }
   const { success: userIds } = getUserIdsJoinedToChatRoomIdResponse;
 
+  const getCountOfChatRoomsJoinedByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfChatRoomsJoinedByUserId(
+      {
+        controller,
+        userId: clientUserId,
+      },
+    );
+  if (getCountOfChatRoomsJoinedByUserIdResponse.type === EitherType.failure) {
+    return getCountOfChatRoomsJoinedByUserIdResponse;
+  }
+  const { success: countOfChatRoomsJoinedByUser } =
+    getCountOfChatRoomsJoinedByUserIdResponse;
+
+  const getCountOfChatRoomsReadByUserIdBeforeTimestampResponse =
+    await controller.databaseService.tableNameToServicesMap.chatRoomReadRecordsTableService.getCountOfChatRoomsReadByUserIdBeforeTimestamp(
+      {
+        controller,
+        userId: clientUserId,
+        timestamp: Date.now(),
+      },
+    );
+  if (
+    getCountOfChatRoomsReadByUserIdBeforeTimestampResponse.type === EitherType.failure
+  ) {
+    return getCountOfChatRoomsReadByUserIdBeforeTimestampResponse;
+  }
+  const { success: countOfReadChatRooms } =
+    getCountOfChatRoomsReadByUserIdBeforeTimestampResponse;
+
   const chatMessage: RenderableChatMessage = {
     chatMessageId,
     text: chatMessageText,
@@ -84,8 +113,7 @@ export async function handleCreateChatMessage({
   await controller.webSocketService.notifyUserIdsOfNewChatMessage({
     userIds,
     newChatMessageNotification: {
-      // TODO: put in actual number of unread chat rooms
-      countOfUnreadChatRooms: 0,
+      countOfUnreadChatRooms: countOfChatRoomsJoinedByUser - countOfReadChatRooms,
       chatMessage,
     },
   });

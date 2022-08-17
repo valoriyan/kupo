@@ -3,8 +3,8 @@ import { getEnvironmentVariable } from "../../utilities";
 import { singleton } from "tsyringe";
 import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
-import { ChatMessagesTableService } from "./tableServices/chatMessagesTableService";
-import { ChatRoomJoinsTableService } from "./tableServices/chatRoomJoinsTableService";
+import { ChatMessagesTableService } from "./tableServices/chat/chatMessagesTableService";
+import { ChatRoomJoinsTableService } from "./tableServices/chat/chatRoomJoinsTableService";
 import { HashtagsTableService } from "./tableServices/hashtagsTableService";
 import { PublishedItemCommentsTableService } from "./tableServices/publishedItem/publishedItemCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
@@ -23,6 +23,7 @@ import { SavedItemsTableService } from "./tableServices/savedItemsTableService";
 import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCardDataTableService";
 import { PublishedItemTransactionsTableService } from "./tableServices/publishedItemTransactionsTableService";
 import { UserLoginAttemptsTableService } from "./tableServices/userLoginAttemptsTableService";
+import { ChatRoomReadRecordsTableService } from "./tableServices/chat/chatRoomReadRecordsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -70,6 +71,9 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     userLoginAttemptsTableService: new UserLoginAttemptsTableService(
+      DatabaseService.datastorePool,
+    ),
+    chatRoomReadRecordsTableService: new ChatRoomReadRecordsTableService(
       DatabaseService.datastorePool,
     ),
   };

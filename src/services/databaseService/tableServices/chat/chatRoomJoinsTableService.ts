@@ -5,15 +5,15 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { UnrenderableChatRoomWithJoinedUsers } from "../../../controllers/chat/models";
+} from "../../../../utilities/monads";
+import { UnrenderableChatRoomWithJoinedUsers } from "../../../../controllers/chat/models";
 
-import { TableService } from "./models";
-import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { TableService } from "../models";
+import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
-import { GenericResponseFailedReason } from "../../../controllers/models";
-import { UsersTableService } from "./usersTableService";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { UsersTableService } from "../usersTableService";
 
 interface DBChatRoomJoin {
   chat_room_id: string;
@@ -351,6 +351,43 @@ export class ChatRoomJoinsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at ChatRoomJoinsTableService.getChatRoomIdWithUserIdMembersExclusive",
+      });
+    }
+  }
+
+  public async getCountOfChatRoomsJoinedByUserId({
+    controller,
+    userId,
+  }: {
+    controller: Controller;
+    userId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            COUNT(*)
+          FROM
+            ${this.tableName}
+          WHERE
+              user_id = $1
+          ;
+        `,
+        values: [userId],
+      };
+
+      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+        query,
+      );
+      return Success(parseInt(response.rows[0].count));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at ChatRoomJoinsTableService.getCountOfChatRoomsJoinedByUserId",
       });
     }
   }

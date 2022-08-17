@@ -5,19 +5,19 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { UnrenderableChatMessage } from "../../../controllers/chat/models";
+} from "../../../../utilities/monads";
+import { UnrenderableChatMessage } from "../../../../controllers/chat/models";
 
-import { TableService } from "./models";
+import { TableService } from "../models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
   generatePSQLGenericUpdateRowQueryString,
   isQueryEmpty,
-} from "./utilities";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../utilities";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
-import { GenericResponseFailedReason } from "../../../controllers/models";
-import { UsersTableService } from "./usersTableService";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { UsersTableService } from "../usersTableService";
 
 interface DBChatMessage {
   chat_message_id: string;

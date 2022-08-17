@@ -14,7 +14,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { constructPublishedItemFromPartsById } from "src/controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRecordAndSendNewCommentOnPublishedItemNotification({
   controller,
