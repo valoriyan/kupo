@@ -24,6 +24,7 @@ import { ScrollArea } from "../ScrollArea";
 import { NotificationsIndicator } from "./NotificationsIndicator";
 import { NavItem, NavLink, SidePanelWrapper, UploadLink } from "./shared";
 import { UserInfo } from "./UserInfo";
+import { UnreadMessagesIndicator } from "./UnreadMessagesIndicator";
 
 export const SidePanel = () => {
   const { data, isLoading, error } = useGetClientUserProfile();
@@ -78,7 +79,12 @@ export const SidePanel = () => {
             <NavLink
               href="/messages"
               Icon={MailIcon}
-              label="Messages"
+              label={
+                <Flex css={{ alignItems: "center", gap: "$3" }}>
+                  Messages
+                  <UnreadMessagesIndicator />
+                </Flex>
+              }
               onClick={setPreviousLocationForMessages}
               color={isActive("/messages") ? activeColor : inactiveColor}
               data-cy="chat-button"

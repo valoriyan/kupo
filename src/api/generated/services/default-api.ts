@@ -85,6 +85,8 @@ import { EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdmi
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrGetCountOfUnreadChatRoomsFailedReasonGetCountOfUnreadChatRoomsSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess } from "../types";
@@ -1054,6 +1056,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getChatRoomByIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCountOfUnreadChatRooms: async (
+      body: object,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists("getCountOfUnreadChatRooms", "body", body);
+      const localVarPath = `/chat/getCountOfUnreadChatRooms`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        body,
         localVarRequestOptions,
         configuration,
       );
@@ -3982,6 +4029,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getCountOfUnreadChatRooms(
+      body: object,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetCountOfUnreadChatRoomsFailedReasonGetCountOfUnreadChatRoomsSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getCountOfUnreadChatRooms(
+        body,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5598,6 +5671,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {object} body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getCountOfUnreadChatRooms(
+      body: object,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetCountOfUnreadChatRoomsFailedReasonGetCountOfUnreadChatRoomsSuccess> {
+      return localVarFp
+        .getCountOfUnreadChatRooms(body, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6622,6 +6709,19 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getChatRoomById(getChatRoomByIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {object} body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getCountOfUnreadChatRooms(body: object, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getCountOfUnreadChatRooms(body, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

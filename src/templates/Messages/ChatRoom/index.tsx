@@ -34,19 +34,20 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     unsubscribeFromChatRoomId,
   } = useWebsocketState();
 
+  const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
+
   useEffect(() => {
+    markChatRoomAsRead({ chatRoomId });
+
     subscribeToChatRoomId({ chatRoomId });
 
     return function cleanup() {
       unsubscribeFromChatRoomId({ chatRoomId });
     };
-  }, [chatRoomId, subscribeToChatRoomId, unsubscribeFromChatRoomId]);
+  }, [chatRoomId, subscribeToChatRoomId, unsubscribeFromChatRoomId, markChatRoomAsRead]);
 
-  const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
   const { mutateAsync: createNewChatMessage } = useCreateNewChatMessage();
   const { newChatMessage, setNewChatMessage } = useChatRoomFormState();
-
-  markChatRoomAsRead({ chatRoomId });
 
   const {
     data: clientUserData,
@@ -109,15 +110,13 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     .flatMap((page) => page.chatMessages)
     .concat(receivedChatMessages);
 
-  const chatMessageIds = new Set(
-    chatMessages.map((chatMessage) => chatMessage.chatMessageId),
-  );
-  const deduplicatedChatMessages: RenderableChatMessage[] = [];
   console.log("chatMessages", chatMessages);
+  const encounteredChatMessageIds = new Set();
+  const deduplicatedChatMessages: RenderableChatMessage[] = [];
   chatMessages.forEach((chatMessage) => {
-    if (!chatMessageIds.has(chatMessage.chatRoomId)) {
+    if (!encounteredChatMessageIds.has(chatMessage.chatMessageId)) {
       deduplicatedChatMessages.push(chatMessage);
-      chatMessageIds.delete(chatMessage.chatRoomId);
+      encounteredChatMessageIds.add(chatMessage.chatMessageId);
     }
   });
 
