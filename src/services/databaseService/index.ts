@@ -24,6 +24,7 @@ import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCa
 import { PublishedItemTransactionsTableService } from "./tableServices/publishedItemTransactionsTableService";
 import { UserLoginAttemptsTableService } from "./tableServices/userLoginAttemptsTableService";
 import { ChatRoomReadRecordsTableService } from "./tableServices/chat/chatRoomReadRecordsTableService";
+import { PublishingChannelsTableService } from "./tableServices/publishingChannelsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -74,6 +75,9 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     chatRoomReadRecordsTableService: new ChatRoomReadRecordsTableService(
+      DatabaseService.datastorePool,
+    ),
+    publishingChannelsTableService: new PublishingChannelsTableService(
       DatabaseService.datastorePool,
     ),
   };
