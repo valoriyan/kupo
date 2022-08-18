@@ -55,6 +55,52 @@ export async function constructPublishedItemsFromParts({
   });
 }
 
+export async function constructPublishedItemsFromPartsById({
+  controller,
+  blobStorageService,
+  databaseService,
+  publishedItemIds,
+  requestorUserId,
+}: {
+  controller: Controller;
+  blobStorageService: BlobStorageServiceInterface;
+  databaseService: DatabaseService;
+  publishedItemIds: string[];
+  requestorUserId: string | undefined;
+}): Promise<
+  InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem[]>
+> {
+  const getPublishedItemsByIdsResponse =
+    await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
+      {
+        controller,
+        ids: publishedItemIds,
+      },
+    );
+  if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
+    return getPublishedItemsByIdsResponse;
+  }
+  const { success: uncompiledBasePublishedItems } = getPublishedItemsByIdsResponse;
+
+  const constructPublishedItemFromPartsResponses = await BluebirdPromise.map(
+    uncompiledBasePublishedItems,
+    async (uncompiledBasePublishedItem) =>
+      await constructPublishedItemFromParts({
+        controller,
+        blobStorageService,
+        databaseService,
+        uncompiledBasePublishedItem,
+        requestorUserId,
+      }),
+  );
+
+  return unwrapListOfEitherResponses({
+    eitherResponses: constructPublishedItemFromPartsResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+  });
+}
+
 export async function constructPublishedItemFromPartsById({
   controller,
   blobStorageService,

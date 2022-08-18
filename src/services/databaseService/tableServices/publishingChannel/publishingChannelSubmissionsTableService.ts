@@ -189,16 +189,20 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     publishingChannelId,
     limit,
     getSubmissionsBeforeTimestamp,
+    arePending,
   }: {
     controller: Controller;
     publishingChannelId: string;
     limit?: number;
     getSubmissionsBeforeTimestamp?: number;
+    arePending: boolean;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelSubmission[]>
   > {
     try {
-      const values: (string | number)[] = [publishingChannelId];
+      const isPendingValue = !!arePending ? "true" : "false";
+
+      const values: (string | number)[] = [publishingChannelId, isPendingValue];
 
       let getSubmissionsBeforeTimestampClause = "";
       if (!!getSubmissionsBeforeTimestamp) {
@@ -226,7 +230,9 @@ export class PublishingChannelSubmissionsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            publishing_channel_id = $1
+              publishing_channel_id = $1
+            AND
+              is_pending = $2
             ${getSubmissionsBeforeTimestampClause}
           ORDER BY
             timestamp_of_submission DESC
