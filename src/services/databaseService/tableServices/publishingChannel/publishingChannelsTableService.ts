@@ -5,15 +5,15 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
+} from "../../../../utilities/monads";
 import { Controller } from "tsoa";
 
-import { TableService } from "./models";
-import { UsersTableService } from "./usersTableService";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
-import { GenericResponseFailedReason } from "../../../controllers/models";
-import { generatePSQLGenericUpdateRowQueryString } from "./utilities";
-import { UnrenderablePublishingChannel } from "../../../controllers/publishingChannel/models";
+import { TableService } from "../models";
+import { UsersTableService } from "../usersTableService";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { generatePSQLGenericUpdateRowQueryString } from "../utilities";
+import { UnrenderablePublishingChannel } from "../../../../controllers/publishingChannel/models";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface DBPublishingChannel {
@@ -28,9 +28,7 @@ function convertDBPublishingChannelToUnrenderablePublishingChannel(
 ): UnrenderablePublishingChannel {
   return {
     publishingChannelId: dbPublishingChannel.publishing_channel_id,
-    owner: {
-      userId: dbPublishingChannel.owner_user_id,
-    },
+    ownerUserId: dbPublishingChannel.owner_user_id,
     name: dbPublishingChannel.name,
     description: dbPublishingChannel.description,
   };

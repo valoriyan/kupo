@@ -18,6 +18,24 @@ import {
   UpdatePublishingChannelRequestBody,
   UpdatePublishingChannelSuccess,
 } from "./handleUpdatePublishingChannel";
+import {
+  handleSubmitPublishedItemToPublishingChannel,
+  SubmitPublishedItemToPublishingChannelFailedReason,
+  SubmitPublishedItemToPublishingChannelRequestBody,
+  SubmitPublishedItemToPublishingChannelSuccess,
+} from "./handleSubmitPublishedItemToPublishingChannel";
+import {
+  GetPublishingChannelByIdFailedReason,
+  GetPublishingChannelByIdRequestBody,
+  GetPublishingChannelByIdSuccess,
+  handleGetPublishingChannelById,
+} from "./handleGetPublishingChannelById";
+import {
+  handleResolvePublishingChannelSubmission,
+  ResolvePublishingChannelSubmissionFailedReason,
+  ResolvePublishingChannelSubmissionRequestBody,
+  ResolvePublishingChannelSubmissionSuccess,
+} from "./handleResolvePublishingChannelSubmission";
 
 @injectable()
 @Route("publishing_channel")
@@ -51,10 +69,42 @@ export class PublishingChannelController extends Controller {
     });
   }
 
+  @Post("submitPublishedItemToPublishingChannel")
+  public async submitPublishedItemToPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: SubmitPublishedItemToPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SubmitPublishedItemToPublishingChannelFailedReason>,
+      SubmitPublishedItemToPublishingChannelSuccess
+    >
+  > {
+    return await handleSubmitPublishedItemToPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
-
+  @Post("getPublishingChannelById")
+  public async getPublishingChannelById(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPublishingChannelByIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPublishingChannelByIdFailedReason>,
+      GetPublishingChannelByIdSuccess
+    >
+  > {
+    return await handleGetPublishingChannelById({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -70,6 +120,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleUpdatePublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("resolvePublishingChannelSubmission")
+  public async resolvePublishingChannelSubmission(
+    @Request() request: express.Request,
+    @Body() requestBody: ResolvePublishingChannelSubmissionRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | ResolvePublishingChannelSubmissionFailedReason>,
+      ResolvePublishingChannelSubmissionSuccess
+    >
+  > {
+    return await handleResolvePublishingChannelSubmission({
       controller: this,
       request,
       requestBody,

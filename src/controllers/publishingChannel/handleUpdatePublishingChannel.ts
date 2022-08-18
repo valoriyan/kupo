@@ -78,7 +78,7 @@ export async function handleUpdatePublishingChannel({
 
   const publishingChannel = maybePublishingChannel;
 
-  if (publishingChannel.owner.userId !== clientUserId) {
+  if (publishingChannel.ownerUserId !== clientUserId) {
     return Failure({
       controller,
       httpStatusCode: 403,

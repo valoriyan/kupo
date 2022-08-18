@@ -24,7 +24,8 @@ import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCa
 import { PublishedItemTransactionsTableService } from "./tableServices/publishedItemTransactionsTableService";
 import { UserLoginAttemptsTableService } from "./tableServices/userLoginAttemptsTableService";
 import { ChatRoomReadRecordsTableService } from "./tableServices/chat/chatRoomReadRecordsTableService";
-import { PublishingChannelsTableService } from "./tableServices/publishingChannelsTableService";
+import { PublishingChannelsTableService } from "./tableServices/publishingChannel/publishingChannelsTableService";
+import { PublishingChannelSubmissionsTableService } from "./tableServices/publishingChannel/publishingChannelSubmissionsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -80,6 +81,8 @@ export class DatabaseService {
     publishingChannelsTableService: new PublishingChannelsTableService(
       DatabaseService.datastorePool,
     ),
+    publishingChannelSubmissionsTableService:
+      new PublishingChannelSubmissionsTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {
