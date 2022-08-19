@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { Pool, QueryResult } from "pg";
+import { Pool, QueryConfig, QueryResult } from "pg";
 import {
   ErrorReasonTypes,
   Failure,
@@ -165,6 +165,49 @@ export class PublishingChannelsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at publishedItemsTableService.selectPublishingChannelByPublishingChannelId",
+      });
+    }
+  }
+
+  public async selectPublishingChannelsBySearchString({
+    controller,
+    searchString,
+  }: {
+    controller: Controller;
+    searchString: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePublishingChannel[]>
+  > {
+    try {
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            name LIKE CONCAT('%', $1::text, '%') OR
+            description LIKE CONCAT('%', $1::text, '%')
+          ;
+        `,
+        values: [searchString],
+      };
+
+      const response: QueryResult<DBPublishingChannel> = await this.datastorePool.query(
+        query,
+      );
+
+      return Success(
+        response.rows.map(convertDBPublishingChannelToUnrenderablePublishingChannel),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at DBPublishingChannel.selectPublishingChannelsBySearchString",
       });
     }
   }

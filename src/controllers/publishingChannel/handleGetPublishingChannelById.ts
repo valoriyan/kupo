@@ -2,14 +2,13 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { constructRenderableUserFromPartsByUserId } from "../user/utilities";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
+import { assembleRenderablePublishingChannelByPublishingChannelId } from "./utilities/assembleRenderablePublishingChannel";
 
 export interface GetPublishingChannelByIdRequestBody {
   publishingChannelId: string;
@@ -48,55 +47,24 @@ export async function handleGetPublishingChannelById({
   );
   if (error) return error;
 
-  const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
-      {
-        controller,
-        publishingChannelId,
-      },
-    );
-
-  if (
-    maybeGetPublishingChannelByPublishingChannelIdResponse.type === EitherType.failure
-  ) {
-    return maybeGetPublishingChannelByPublishingChannelIdResponse;
-  }
-
-  const { success: maybePublishingChannel } =
-    maybeGetPublishingChannelByPublishingChannelIdResponse;
-
-  if (!maybePublishingChannel) {
-    return Failure({
+  const assembleRenderablePublishingChannelByPublishingChannelIdResponse =
+    await assembleRenderablePublishingChannelByPublishingChannelId({
       controller,
-      httpStatusCode: 404,
-      reason: GetPublishingChannelByIdFailedReason.PublishingChannelIdNotFound,
-      error,
-      additionalErrorInformation: "Error at handleGetPublishingChannelById",
-    });
-  }
-  const unrenderablePublishingChannel = maybePublishingChannel;
-
-  const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
-      controller,
-      requestorUserId: clientUserId,
-      userId: unrenderablePublishingChannel.ownerUserId,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
+      publishingChannelId,
+      requestorUserId: clientUserId,
     });
-  if (constructRenderableUserFromPartsByUserIdResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsByUserIdResponse;
-  }
-  const { success: publishingChannelOwner } =
-    constructRenderableUserFromPartsByUserIdResponse;
 
-  const renderablePublishingChannel: RenderablePublishingChannel = {
-    publishingChannelId: unrenderablePublishingChannel.publishingChannelId,
-    ownerUserId: unrenderablePublishingChannel.ownerUserId,
-    name: unrenderablePublishingChannel.name,
-    description: unrenderablePublishingChannel.description,
-    owner: publishingChannelOwner,
-  };
+  if (
+    assembleRenderablePublishingChannelByPublishingChannelIdResponse.type ===
+    EitherType.failure
+  ) {
+    return assembleRenderablePublishingChannelByPublishingChannelIdResponse;
+  }
+
+  const { success: renderablePublishingChannel } =
+    assembleRenderablePublishingChannelByPublishingChannelIdResponse;
 
   return Success({
     publishingChannel: renderablePublishingChannel,

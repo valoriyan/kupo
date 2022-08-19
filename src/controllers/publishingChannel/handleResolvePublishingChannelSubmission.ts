@@ -9,7 +9,7 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { PublishingChannelController } from "./publishingChannelController";
-import { doesUserIdHaveRightsToApprovePublishingChannelSubmissions } from "./utilities";
+import { doesUserIdHaveRightsToApprovePublishingChannelSubmissions } from "./utilities/permissions";
 
 export enum PublishingChannelSubmissionDecision {
   accept = "accept",

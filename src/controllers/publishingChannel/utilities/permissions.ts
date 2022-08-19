@@ -5,9 +5,9 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../utilities/monads";
-import { DatabaseService } from "../../services/databaseService";
-import { GenericResponseFailedReason } from "../models";
+} from "../../../utilities/monads";
+import { DatabaseService } from "../../../services/databaseService";
+import { GenericResponseFailedReason } from "../../models";
 
 export async function doesUserIdHaveRightsToApprovePublishingChannelSubmissions({
   controller,

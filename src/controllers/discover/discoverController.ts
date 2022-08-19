@@ -17,6 +17,12 @@ import {
   SearchForPostsSuccess,
 } from "./search/handleSearchForPosts";
 import {
+  handleSearchForPublishingChannels,
+  SearchForPublishingChannelsFailedReason,
+  SearchForPublishingChannelsRequestBody,
+  SearchForPublishingChannelsSuccess,
+} from "./search/handleSearchForPublishingChannels";
+import {
   handleSearchForUsers,
   SearchForUsersFailedReason,
   SearchForUsersRequestBody,
@@ -86,6 +92,23 @@ export class DiscoverController extends Controller {
     >
   > {
     return await handleSearchForUsers({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("searchForPublishingChannels")
+  public async searchForPublishingChannels(
+    @Request() request: express.Request,
+    @Body() requestBody: SearchForPublishingChannelsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SearchForPublishingChannelsFailedReason>,
+      SearchForPublishingChannelsSuccess
+    >
+  > {
+    return await handleSearchForPublishingChannels({
       controller: this,
       request,
       requestBody,
