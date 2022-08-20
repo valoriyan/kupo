@@ -12,9 +12,9 @@ module.exports = {
   images: {
     domains: [
       "localhost",
-      "kupono.io",
-      "kupono-dev.s3.wasabisys.com",
-      "kupono-test.s3.wasabisys.com",
+      "kupo.social",
+      "kupo-dev.s3.wasabisys.com",
+      "kupo-test.s3.wasabisys.com",
     ],
   },
 };

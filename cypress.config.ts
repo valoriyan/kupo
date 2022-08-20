@@ -35,6 +35,6 @@ export default defineConfig({
     baseUrl: "http://localhost:3000",
   },
   env: {
-    API_BASE_URL: "https://test-api.kupono.io/",
+    API_BASE_URL: "https://test-api.kupo.social/",
   },
 });

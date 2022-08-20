@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { RenderableChatRoom } from "#/api/generated/types/renderable-chat-room";
 import { StackedAvatars } from "#/components/Avatar/StackedAvatars";
 import { bodyStyles } from "#/components/Typography";
 import { styled } from "#/styling";
+import { RenderableChatRoomWithJoinedUsers } from "#/api";
 
 export interface ChatRoomListProps {
-  chatRoom: RenderableChatRoom;
+  chatRoom: RenderableChatRoomWithJoinedUsers;
   clientUserId: string;
 }
 

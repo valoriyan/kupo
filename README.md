@@ -4,9 +4,9 @@ Styling keys can be found at src/styling/index.tsx
 
 ## Commands
 
-docker build -t valoriyan/kupono-frontend-alpha .
+docker build -t valoriyan/kupo-frontend-alpha .
 
-docker run --rm -it valoriyan/kupono-frontend-alpha bash
+docker run --rm -it valoriyan/kupo-frontend-alpha bash
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
