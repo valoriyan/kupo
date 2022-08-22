@@ -51,8 +51,8 @@ export class SendGridEmailService extends EmailServiceInterface {
       const message = {
         to: email,
         from: {
-          name: "Kupono.io",
-          email: "noreply@kupono.io",
+          name: "Kupo.social",
+          email: "noreply@kupo.social",
         },
         subject: "Password Reset Requested",
         html: generateForgotPasswordEmailHtml({ resetPasswordUrlWithToken }),
@@ -91,12 +91,12 @@ export class SendGridEmailService extends EmailServiceInterface {
       const message = {
         to: email,
         from: {
-          name: "Kupono.io",
-          email: "hello@kupono.io",
+          name: "Kupo.social",
+          email: "hello@kupo.social",
         },
-        subject: "Welcome to Kupono.io",
+        subject: "Welcome to Kupo.social",
         dynamic_template_data: {
-          subject: "Welcome to Kupono.io",
+          subject: "Welcome to Kupo.social",
         },
         html: generateWelcomeEmailHtml({
           homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,

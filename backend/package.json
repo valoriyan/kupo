@@ -1,5 +1,5 @@
 {
-  "name": "kupono-backend",
+  "name": "kupo-backend",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "resetFakeLocalData": "tsc && yarn run resetLocalDatabase && node build/src/scripts/setupFakeLocalData.js",
     "dev": "yarn run killRunningDev && sleep 4 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "deploy": "yarn deployToBeta && yarn deployToTest",
-    "deployToBeta": "heroku git:remote -a kupono-beta-backend && git add -A; git commit -m 'deploy'; git push heroku main --force",
+    "deployToBeta": "heroku git:remote -a kupo-beta-backend && git add -A; git commit -m 'deploy'; git push heroku main --force",
     "deployToTest": "heroku git:remote -a kupo-test-backend && git add -A; git commit -m 'deploy'; git push heroku main --force",
     "killRunningDev": "lsof -i:4000 -Fp | head -n 1 | sed 's/^p//' | xargs kill",
     "build": "tsoa spec-and-routes && tsc",

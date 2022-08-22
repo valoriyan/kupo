@@ -347,7 +347,7 @@ export function generateForgotPasswordEmailHtml({
   
               <!-- START CENTERED WHITE CONTAINER -->
               <table role="presentation" class="main">
-                <h1>kupono.io</h1>
+                <h1>kupo.social</h1>
                 <!-- START MAIN CONTENT AREA -->
                 <tr>
                   <td class="wrapper">
@@ -392,7 +392,7 @@ export function generateForgotPasswordEmailHtml({
                   </tr>
                   <tr>
                     <td class="content-block">
-                      <span class="apple-link">Kupono.io</span>
+                      <span class="apple-link">Kupo.social</span>
                     </td>
                   </tr>
                 </table>

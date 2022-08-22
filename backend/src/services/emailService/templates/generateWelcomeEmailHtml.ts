@@ -334,7 +334,7 @@ export function generateWelcomeEmailHtml({ homepageUrl }: { homepageUrl: string 
       </style>
     </head>
     <body class="">
-      <span class="preheader">Welcome to <a href="${homepageUrl}" target="_blank">kupono.io</a></span>
+      <span class="preheader">Welcome to <a href="${homepageUrl}" target="_blank">kupo.social</a></span>
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
         <tr>
           <td>&nbsp;</td>
@@ -343,14 +343,14 @@ export function generateWelcomeEmailHtml({ homepageUrl }: { homepageUrl: string 
   
               <!-- START CENTERED WHITE CONTAINER -->
               <table role="presentation" class="main">
-                <h1>kupono.io</h1>
+                <h1>kupo.social</h1>
                 <!-- START MAIN CONTENT AREA -->
                 <tr>
                   <td class="wrapper">
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td>
-                          <p>Welcome to <a href="${homepageUrl}" target="_blank">kupono.io</a></p>
+                          <p>Welcome to <a href="${homepageUrl}" target="_blank">kupo.social</a></p>
                           <p>Your account has successfully been created. Make your profile stand out by filling our your profile </p>
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                             <tbody>
@@ -383,7 +383,7 @@ export function generateWelcomeEmailHtml({ homepageUrl }: { homepageUrl: string 
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td class="content-block">
-                      <span class="apple-link">Kupono.io</span>
+                      <span class="apple-link">Kupo.social</span>
                     </td>
                   </tr>
                 </table>
