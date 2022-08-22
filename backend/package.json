@@ -18,7 +18,7 @@
     "lint": "eslint 'src/**/*.{js,ts}' --cache --fix",
     "prettier:check": "prettier --check 'src/**/*.{js,ts}'",
     "prettier:fix": "prettier --write -l 'src/**/*.{js,ts}'",
-    "prepare": "husky install"
+    "prepare": "cd .. && husky install backend/.husky"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
