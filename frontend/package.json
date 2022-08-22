@@ -17,7 +17,7 @@
     "prettier:fix": "prettier --write -l 'src/**/*.{js,jsx,ts,tsx}'",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install frontend/.husky",
     "cypress:open": "cypress open"
   },
   "dependencies": {
