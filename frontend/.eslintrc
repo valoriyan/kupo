@@ -1,0 +1,36 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "import/no-default-export": "error",
+    "import/order": ["error", { "groups": [["builtin", "external", "internal"]] }],
+    "curly": ["error", "multi-line"],
+    "object-shorthand": "error"
+  },
+  "overrides": [
+    {
+      "files": ["./src/pages/**/*.*"],
+      "rules": {
+        "import/no-default-export": "off",
+        "import/prefer-default-export": "error"
+      }
+    },
+    {
+      "files": "**.stories.tsx",
+      "rules": {
+        "import/no-anonymous-default-export": "off",
+        "import/no-default-export": "off"
+      }
+    }
+  ]
+}

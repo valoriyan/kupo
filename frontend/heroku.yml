@@ -1,0 +1,7 @@
+build:
+  config:
+    API_BASE_URL: https://beta-api.kupo.social
+  docker:
+    web: Dockerfile
+run:
+  web: yarn run start -p $PORT
