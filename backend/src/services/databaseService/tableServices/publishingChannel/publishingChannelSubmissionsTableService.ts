@@ -56,7 +56,7 @@ export class PublishingChannelSubmissionsTableService extends TableService {
 
         CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
           FOREIGN KEY (publishing_channel_id)
-          REFERENCES ${PublishingChannelsTableService.tableName} (publishingChannelId),
+          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id),
 
 
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey

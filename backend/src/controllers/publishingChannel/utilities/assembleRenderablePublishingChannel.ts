@@ -10,7 +10,7 @@ import {
 } from "../../../utilities/monads";
 import { RenderablePublishingChannel, UnrenderablePublishingChannel } from "../models";
 import { GenericResponseFailedReason } from "../../../controllers/models";
-import { constructRenderableUserFromPartsByUserId } from "src/controllers/user/utilities";
+import { constructRenderableUserFromPartsByUserId } from "../../../controllers/user/utilities";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import {
   unwrapListOfEitherResponses,
