@@ -1,5 +1,8 @@
+import Router from "next/router";
 import { useEffect } from "react";
+import { RenderableChatMessage } from "#/api";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
+import { useMarkChatRoomAsRead } from "#/api/mutations/chat/markChatRoomAsRead";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
 import { useGetPageOfChatMessagesFromChatRoomId } from "#/api/queries/chat/useGetPageOfChatMessagesFromChatRoomId";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
@@ -10,10 +13,8 @@ import { LoadingArea } from "#/components/LoadingArea";
 import { styled } from "#/styling";
 import { MessageComposer } from "../MessageComposer";
 import { ChatMessagesList } from "./ChatMessagesList";
-import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 import { ChatRoomFormStateProvider, useChatRoomFormState } from "./ChatRoomFormContext";
-import { RenderableChatMessage } from "#/api";
-import { useMarkChatRoomAsRead } from "#/api/mutations/chat/markChatRoomAsRead";
+import { ChatRoomMembersDisplay } from "./ChatRoomMembersDisplay";
 
 export interface ChatRoomProps {
   chatRoomId: string;
@@ -33,6 +34,8 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     mapOfSubscribedChatChannelsToReceivedChatMessages,
     unsubscribeFromChatRoomId,
   } = useWebsocketState();
+
+  console.log("Router.pathname", Router.pathname)
 
   const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
 

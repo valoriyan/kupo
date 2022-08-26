@@ -15,9 +15,7 @@ export const UnreadMessagesIndicator = () => {
     countOfUnreadChatRooms > 99 ? "99+" : countOfUnreadChatRooms;
 
   return !countOfUnreadChatRooms ? null : (
-    <UnreadChatRoomCountBadge
-      data-cy="count-of-unread-chat-rooms"
-    >
+    <UnreadChatRoomCountBadge data-cy="count-of-unread-chat-rooms">
       {displayedCountOfUnreadChatRooms}
     </UnreadChatRoomCountBadge>
   );

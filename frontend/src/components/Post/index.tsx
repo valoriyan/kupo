@@ -148,8 +148,9 @@ const PostAction = (props: PostActionProps) => {
         color: isSelected ? "$primary" : "$secondaryText",
       }}
       onClick={onClick}
+      data-cy={dataCy}
     >
-      <Icon data-cy={dataCy} />
+      <Icon />
       {metric && <Body>{metric}</Body>}
     </Flex>
   );

@@ -1,0 +1,32 @@
+{
+  "React Function Component": {
+    "scope": "typescriptreact",
+    "prefix": ["rfc"],
+    "body": [
+      "export interface ${1:MyComponent}Props {}",
+      "",
+      "export const ${1} = (props: ${1}Props) => {",
+      "  return null;",
+      "};"
+    ],
+    "description": "A React function component with props"
+  },
+  "React Storybook Template": {
+    "scope": "typescriptreact",
+    "prefix": ["story"],
+    "body": [
+      "import { Story } from \"@storybook/react\";",
+      "import { ${1:MyComponent}, ${1}Props } from \".\";",
+      "",
+      "export default {",
+      "  title: \"${1}\",",
+      "  component: ${1},",
+      "};",
+      "",
+      "export const Template: Story<${1}Props> = (args) => (",
+      "  <${1} {...args} />",
+      ");",
+    ],
+    "description": "A React Storybook CSF story with args"
+  }
+}

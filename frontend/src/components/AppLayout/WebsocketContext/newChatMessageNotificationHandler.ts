@@ -1,5 +1,6 @@
+import Router from "next/router";
 import { GetState, SetState } from "zustand";
-import { NewChatMessageNotification } from "#/api";
+import { Api, NewChatMessageNotification } from "#/api";
 import { WebsocketState } from ".";
 
 export const generateNewChatMessageNotificationHandler =
@@ -25,6 +26,15 @@ export const generateNewChatMessageNotificationHandler =
         newChatMessages,
       );
     }
+
+    try {
+      if (Router.pathname.includes("/messages/") && chatRoomId === Router.query.chatRoomId) {
+        Api.markChatRoomAsRead({ chatRoomId });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
 
     set({
       updatedCountOfUnreadChatRooms: countOfUnreadChatRooms,

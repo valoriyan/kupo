@@ -5,7 +5,7 @@ import { promisify } from "util";
 import { exec } from "child_process";
 
 async function resetTestDb() {
-  console.log("Resetting Local Database");
+  console.log("Resetting Test Database");
   const { stdout, stderr } = await promisify(exec)(
     "cd ../backend && NODE_TLS_REJECT_UNAUTHORIZED=1 yarn resetTestDatabaseWithFakeData",
   );
