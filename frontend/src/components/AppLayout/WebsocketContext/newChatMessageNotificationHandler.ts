@@ -28,13 +28,15 @@ export const generateNewChatMessageNotificationHandler =
     }
 
     try {
-      if (Router.pathname.includes("/messages/") && chatRoomId === Router.query.chatRoomId) {
+      if (
+        Router.pathname.includes("/messages/") &&
+        chatRoomId === Router.query.chatRoomId
+      ) {
         Api.markChatRoomAsRead({ chatRoomId });
       }
     } catch (error) {
       console.log(error);
     }
-
 
     set({
       updatedCountOfUnreadChatRooms: countOfUnreadChatRooms,

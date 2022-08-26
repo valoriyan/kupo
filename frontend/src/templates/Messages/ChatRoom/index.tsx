@@ -35,7 +35,7 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     unsubscribeFromChatRoomId,
   } = useWebsocketState();
 
-  console.log("Router.pathname", Router.pathname)
+  console.log("Router.pathname", Router.pathname);
 
   const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
 
