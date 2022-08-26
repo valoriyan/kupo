@@ -16,7 +16,7 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../utilities/monads/unwrapListOfResponses";
 import { GenericResponseFailedReason } from "../models";
-import { UserFollowingStatus } from "../userInteraction/models";
+import { UserFollowingStatus } from "./userInteraction/models";
 
 export async function constructRenderableUsersFromPartsByUserIds({
   controller,

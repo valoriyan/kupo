@@ -1,12 +1,12 @@
 import express from "express";
-import { WebSocketService } from "../../services/webSocketService";
+import { WebSocketService } from "../../../services/webSocketService";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
-import { DatabaseService } from "../../services/databaseService";
-import { SecuredHTTPResponse } from "../../utilities/monads";
-import { BlobStorageService } from "./../../services/blobStorageService";
+import { DatabaseService } from "../../../services/databaseService";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../../utilities/monads";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import {
-  FollowUserFailed,
+  FollowUserFailedReason,
   FollowUserRequestBody,
   FollowUserSuccess,
   handleFollowUser,
@@ -19,14 +19,14 @@ import {
   UnfollowUserRequestBody,
 } from "./handleUnfollowUserProfile";
 import {
-  GetFollowerRequestsFailed,
+  GetFollowerRequestsFailedReason,
   GetFollowerRequestsRequestBody,
   GetFollowerRequestsSuccess,
   handleGetFollowerRequests,
 } from "./handleGetFollowerRequests";
 import {
   handleResolveFollowRequest,
-  ResolveFollowRequestFailed,
+  ResolveFollowRequestFailedReason,
   ResolveFollowRequestRequestBody,
   ResolveFollowRequestSuccess,
 } from "./handleResolveFollowRequest";
@@ -50,7 +50,7 @@ export class UserInteractionController extends Controller {
   public async followUser(
     @Request() request: express.Request,
     @Body() requestBody: FollowUserRequestBody,
-  ): Promise<SecuredHTTPResponse<FollowUserFailed, FollowUserSuccess>> {
+  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | FollowUserFailedReason>, FollowUserSuccess>> {
     return await handleFollowUser({
       controller: this,
       request,
@@ -66,7 +66,7 @@ export class UserInteractionController extends Controller {
   public async getFollowerRequests(
     @Request() request: express.Request,
     @Body() requestBody: GetFollowerRequestsRequestBody,
-  ): Promise<SecuredHTTPResponse<GetFollowerRequestsFailed, GetFollowerRequestsSuccess>> {
+  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | GetFollowerRequestsFailedReason>, GetFollowerRequestsSuccess>> {
     return await handleGetFollowerRequests({
       controller: this,
       request,
@@ -83,7 +83,7 @@ export class UserInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: ResolveFollowRequestRequestBody,
   ): Promise<
-    SecuredHTTPResponse<ResolveFollowRequestFailed, ResolveFollowRequestSuccess>
+    SecuredHTTPResponse<ErrorReasonTypes<string | ResolveFollowRequestFailedReason>, ResolveFollowRequestSuccess>
   > {
     return await handleResolveFollowRequest({
       controller: this,

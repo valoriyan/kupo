@@ -20,7 +20,9 @@ export interface UserLikesPublishedItemRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UserLikesPublishedItemSuccess {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UserLikesPublishedItemFailed {}
+export enum UserLikesPublishedItemFailedReason {
+  UnknownCause = "Unknown Cause",
+}
 
 export async function handleUserLikesPublishedItem({
   controller,
@@ -32,7 +34,7 @@ export async function handleUserLikesPublishedItem({
   requestBody: UserLikesPublishedItemRequestBody;
 }): Promise<
   HTTPResponse<
-    ErrorReasonTypes<string | UserLikesPublishedItemFailed>,
+    ErrorReasonTypes<string | UserLikesPublishedItemFailedReason>,
     UserLikesPublishedItemSuccess
   >
 > {

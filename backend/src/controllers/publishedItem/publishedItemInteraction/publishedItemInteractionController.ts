@@ -4,27 +4,27 @@ import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
-import { SecuredHTTPResponse } from "../../../utilities/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse } from "../../../utilities/monads";
 import {
   handleUserSavesPublishedItem,
-  UserSavesPublishedItemFailed,
+  UserSavesPublishedItemFailedReason,
   UserSavesPublishedItemRequestBody,
   UserSavesPublishedItemSuccess,
 } from "./handleUserSavesPublishedItem";
 import {
-  FailedToRemoveUserLikeFromPublishedItemResponse,
+  RemoveUserLikeFromPublishedItemFailedReason,
   handleRemoveUserLikeFromPublishedItem,
   RemoveUserLikeFromPublishedItemRequestBody,
-  SuccessfullyRemovedUserLikeFromPostResponse,
+  RemoveUserLikeFromPublishedItemSuccess,
 } from "./handleRemoveUserLikeFromPublishedItem";
 import {
   handleUserUnsavesPublishedItem,
-  UserUnsavesPublishedItemFailed,
+  UserUnsavesPublishedItemFailedReason,
   UserUnsavesPublishedItemSuccess,
 } from "./handleUserUnsavesPublishedItem";
 import {
   handleUserLikesPublishedItem,
-  UserLikesPublishedItemFailed,
+  UserLikesPublishedItemFailedReason,
   UserLikesPublishedItemRequestBody,
   UserLikesPublishedItemSuccess,
 } from "./handleUserLikesPublishedItem";
@@ -48,7 +48,7 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: UserLikesPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<UserLikesPublishedItemFailed, UserLikesPublishedItemSuccess>
+    SecuredHTTPResponse<ErrorReasonTypes<string | UserLikesPublishedItemFailedReason>, UserLikesPublishedItemSuccess>
   > {
     return await handleUserLikesPublishedItem({
       controller: this,
@@ -62,7 +62,7 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: UserSavesPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<UserSavesPublishedItemFailed, UserSavesPublishedItemSuccess>
+    SecuredHTTPResponse<ErrorReasonTypes<string | UserSavesPublishedItemFailedReason>, UserSavesPublishedItemSuccess>
   > {
     return await handleUserSavesPublishedItem({
       controller: this,
@@ -89,8 +89,8 @@ export class PublishedItemInteractionController extends Controller {
     @Body() requestBody: RemoveUserLikeFromPublishedItemRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToRemoveUserLikeFromPublishedItemResponse,
-      SuccessfullyRemovedUserLikeFromPostResponse
+    ErrorReasonTypes<string | RemoveUserLikeFromPublishedItemFailedReason>,
+      RemoveUserLikeFromPublishedItemSuccess
     >
   > {
     return await handleRemoveUserLikeFromPublishedItem({
@@ -105,7 +105,7 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: RemoveUserLikeFromPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<UserUnsavesPublishedItemFailed, UserUnsavesPublishedItemSuccess>
+    SecuredHTTPResponse<ErrorReasonTypes<string | UserUnsavesPublishedItemFailedReason>, UserUnsavesPublishedItemSuccess>
   > {
     return await handleUserUnsavesPublishedItem({
       controller: this,

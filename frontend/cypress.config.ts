@@ -4,11 +4,10 @@ import { defineConfig } from "cypress";
 import { promisify } from "util";
 import { exec } from "child_process";
 
-async function resetDb() {
+async function resetTestDb() {
   console.log("Resetting Local Database");
   const { stdout, stderr } = await promisify(exec)(
-    "pwd",
-    // "yarn --cwd /Users/julian/Desktop/Valoriyan/playhouse-backend resetFakeLocalData",
+    "cd ../backend && NODE_TLS_REJECT_UNAUTHORIZED=1 yarn resetTestDatabaseWithFakeData",
   );
   console.log("stdout:", stdout);
   console.log("stderr:", stderr);
@@ -25,8 +24,8 @@ export default defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
-      on("before:spec", async (spec) => {
-        await resetDb();
+      on("before:run", async (spec) => {
+        await resetTestDb();
         spec;
       });
 

@@ -20,7 +20,7 @@ import {
   handleCreateShopItem,
 } from "./handleCreateShopItem";
 import {
-  DeleteShopItemFailed,
+  DeleteShopItemFailedReason,
   DeleteShopItemRequestBody,
   DeleteShopItemSuccess,
   handleDeleteShopItem,
@@ -236,7 +236,7 @@ export class ShopItemController extends Controller {
   public async deleteShopItem(
     @Request() request: express.Request,
     @Body() requestBody: DeleteShopItemRequestBody,
-  ): Promise<SecuredHTTPResponse<DeleteShopItemFailed, DeleteShopItemSuccess>> {
+  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | DeleteShopItemFailedReason>, DeleteShopItemSuccess>> {
     return await handleDeleteShopItem({
       controller: this,
       request,

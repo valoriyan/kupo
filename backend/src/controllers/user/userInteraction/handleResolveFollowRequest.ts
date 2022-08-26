@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
-import { EitherType, Failure, HTTPResponse } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { EitherType, ErrorReasonTypes, Failure, HTTPResponse } from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
-import { GenericResponseFailedReason } from "../models";
+import { GenericResponseFailedReason } from "../../models";
 
 export enum FollowRequestDecision {
   accept = "accept",
@@ -17,7 +17,9 @@ export interface ResolveFollowRequestRequestBody {
 }
 
 export interface ResolveFollowRequestSuccess {}
-export interface ResolveFollowRequestFailed {}
+export enum ResolveFollowRequestFailedReason {
+  UnknownCause = "Unknown Cause",
+}
 
 export async function handleResolveFollowRequest({
   controller,
@@ -27,7 +29,7 @@ export async function handleResolveFollowRequest({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: ResolveFollowRequestRequestBody;
-}): Promise<HTTPResponse<ResolveFollowRequestFailed, ResolveFollowRequestSuccess>> {
+}): Promise<HTTPResponse<ErrorReasonTypes<string | ResolveFollowRequestFailedReason>, ResolveFollowRequestSuccess>> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,

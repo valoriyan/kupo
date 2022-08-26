@@ -29,6 +29,11 @@ export const logInTestUser = ({
     });
 };
 
+export const logOutTestUser = () => {
+  cy.dataCy("logout-button").click();
+  cy.dataCy("logout-modal-button").click();
+}
+
 export const createTestPost = ({
   postData,
 }: {
@@ -65,3 +70,18 @@ export const searchAndMoveToTestUserProfilePage = ({
 
   return cy.url().should("include", `/profile/${username}`);
 };
+
+
+export const addCommentToPost = ({
+  comment,
+}: {
+  comment: string;
+}) => {
+  // cy.get('div:contains("ago")').eq(1).scrollIntoView().wait(1000);
+
+  comment;
+  cy.dataCy("new-comment-button").eq(1).pause().focus().click();
+  // cy.findByText(`leave a comment...`).click().type(comment);
+  // cy.dataCy("submit-comment-button").click();
+
+}

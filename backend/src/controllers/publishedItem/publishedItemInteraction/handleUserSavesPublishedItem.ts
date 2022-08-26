@@ -15,8 +15,10 @@ export interface UserSavesPublishedItemRequestBody {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UserSavesPublishedItemSuccess {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UserSavesPublishedItemFailed {}
+
+export enum UserSavesPublishedItemFailedReason {
+  UnknownCause = "Unknown Cause",
+}
 
 export async function handleUserSavesPublishedItem({
   controller,
@@ -28,7 +30,7 @@ export async function handleUserSavesPublishedItem({
   requestBody: UserSavesPublishedItemRequestBody;
 }): Promise<
   HTTPResponse<
-    ErrorReasonTypes<string | UserSavesPublishedItemFailed>,
+    ErrorReasonTypes<string | UserSavesPublishedItemFailedReason>,
     UserSavesPublishedItemSuccess
   >
 > {

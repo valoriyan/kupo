@@ -1,6 +1,23 @@
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 import { UncompiledBasePublishedItem } from "../models";
 
+export function getNextPageCursorOfPage<T>({
+  items,
+  getTimestampFromItem,
+}: {
+  items: T[];
+  getTimestampFromItem: (item: T) => string;
+}): string | undefined {
+  if (items.length > 0) {
+    return getTimestampFromItem(items[items.length - 1]);
+  }
+
+  return undefined;
+
+
+  return "2";
+}
+
 export function getEncodedCursorOfNextPageOfSequentialItems<
   T extends { scheduledPublicationTimestamp: number },
 >({ sequentialFeedItems }: { sequentialFeedItems: T[] }): string | undefined {

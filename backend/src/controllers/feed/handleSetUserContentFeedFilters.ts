@@ -18,10 +18,6 @@ export enum SetUserContentFeedFiltersFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface SetUserContentFeedFiltersFailed {
-  reason: SetUserContentFeedFiltersFailedReason;
-}
-
 export interface SetUserContentFeedFiltersSuccess {
   userContentFeedFilters: UserContentFeedFilter[];
 }
@@ -36,7 +32,7 @@ export async function handleSetUserContentFeedFilters({
   requestBody: SetUserContentFeedFiltersRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | SetUserContentFeedFiltersFailed>,
+    ErrorReasonTypes<string | SetUserContentFeedFiltersFailedReason>,
     SetUserContentFeedFiltersSuccess
   >
 > {

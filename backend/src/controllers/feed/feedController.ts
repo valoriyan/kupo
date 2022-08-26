@@ -11,7 +11,7 @@ import {
   GetUserContentFeedFiltersSuccess,
 } from "./handleGetUserContentFeedFilters";
 import {
-  SetUserContentFeedFiltersFailed,
+  SetUserContentFeedFiltersFailedReason,
   handleSetUserContentFeedFilters,
   SetUserContentFeedFiltersRequestBody,
   SetUserContentFeedFiltersSuccess,
@@ -131,7 +131,7 @@ export class FeedController extends Controller {
     @Body() requestBody: SetUserContentFeedFiltersRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | SetUserContentFeedFiltersFailed>,
+      ErrorReasonTypes<string | SetUserContentFeedFiltersFailedReason>,
       SetUserContentFeedFiltersSuccess
     >
   > {

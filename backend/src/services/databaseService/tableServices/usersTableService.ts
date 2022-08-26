@@ -147,6 +147,15 @@ export class UsersTableService extends TableService {
     await this.datastorePool.query(queryString);
   }
 
+  public async teardown(): Promise<void> {
+    const queryString = `
+      DROP TABLE IF EXISTS ${this.tableName};
+      DROP TYPE IF EXISTS enumerated_profile_privacy_setting;
+    `;
+    await this.datastorePool.query(queryString);
+
+  }
+
   //////////////////////////////////////////////////
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////

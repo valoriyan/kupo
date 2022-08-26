@@ -91,7 +91,7 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
             }}
           >
             <LogOutIcon />
-            <div>Log Out</div>
+            <div data-cy="logout-button">Log Out</div>
           </NavItem>
         </Stack>
       </Stack>

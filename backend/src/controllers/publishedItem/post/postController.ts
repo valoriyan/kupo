@@ -21,7 +21,7 @@ import {
 } from "./handleCreatePost";
 import {
   DeletePostRequestBody,
-  DeletePostFailed,
+  DeletePostFailedReason,
   handleDeletePost,
   DeletePostSuccess,
 } from "./handleDeletePost";
@@ -38,7 +38,7 @@ import {
   GetPublishedItemByIdSuccess,
 } from "../handleGetPublishedItemById";
 import {
-  GetPublishedItemsScheduledByUserFailed,
+  GetPublishedItemsScheduledByUserFailedReason,
   GetPublishedItemsScheduledByUserRequestBody,
   handleGetPublishedItemsScheduledByUser,
   GetPublishedItemsScheduledByUserSuccess,
@@ -190,7 +190,7 @@ export class PostController extends Controller {
     @Body() requestBody: GetPublishedItemsScheduledByUserRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      GetPublishedItemsScheduledByUserFailed,
+      ErrorReasonTypes<string | GetPublishedItemsScheduledByUserFailedReason>,
       GetPublishedItemsScheduledByUserSuccess
     >
   > {
@@ -246,7 +246,7 @@ export class PostController extends Controller {
   public async deletePost(
     @Request() request: express.Request,
     @Body() requestBody: DeletePostRequestBody,
-  ): Promise<SecuredHTTPResponse<DeletePostFailed, DeletePostSuccess>> {
+  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | DeletePostFailedReason>, DeletePostSuccess>> {
     return await handleDeletePost({
       controller: this,
       request,

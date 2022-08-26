@@ -90,6 +90,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
             Icon={CommentIcon}
             metric={comments.count}
             onClick={handleClickOfCommentsButton}
+            data-cy="new-comment-button"
           />
         ) : (
           <PostAction Icon={CommentIcon} metric={comments.count} />
@@ -133,10 +134,11 @@ interface PostActionProps {
   isSelected?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: string | ComponentType<any>;
+  "data-cy"?: string;
 }
 
 const PostAction = (props: PostActionProps) => {
-  const { Icon, metric, onClick, isSelected } = props;
+  const { Icon, metric, onClick, isSelected, "data-cy": dataCy } = props;
   return (
     <Flex
       as={props.as ?? "button"}
@@ -147,7 +149,7 @@ const PostAction = (props: PostActionProps) => {
       }}
       onClick={onClick}
     >
-      <Icon />
+      <Icon data-cy={dataCy} />
       {metric && <Body>{metric}</Body>}
     </Flex>
   );

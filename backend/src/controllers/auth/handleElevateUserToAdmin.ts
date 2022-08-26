@@ -18,10 +18,6 @@ export enum ElevateUserToAdminFailedReason {
   ILLEGAL_ACCESS = "ILLEGAL_ACCESS",
 }
 
-export interface ElevateUserToAdminFailed {
-  reason: ElevateUserToAdminFailedReason;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ElevateUserToAdminSuccess {}
 
@@ -35,7 +31,7 @@ export async function handleElevateUserToAdmin({
   requestBody: ElevateUserToAdminRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | ElevateUserToAdminFailed>,
+    ErrorReasonTypes<string | ElevateUserToAdminFailedReason>,
     ElevateUserToAdminSuccess
   >
 > {

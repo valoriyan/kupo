@@ -56,7 +56,7 @@ function hasTableResolvedAllDependencies({
   return unresolvedDependenciesOfTable.size === 0;
 }
 
-function topologicalSortTables({
+export function topologicalSortTables({
   tableNameToServicesMap,
 }: {
   tableNameToServicesMap: { [key: string]: TableService };

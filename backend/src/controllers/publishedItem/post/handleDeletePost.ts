@@ -15,7 +15,9 @@ import { deleteBaseRenderablePublishedItemComponents } from "../utilities/delete
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DeletePostFailed {}
+export enum DeletePostFailedReason {
+  UnknownCause = "Unknown Cause",
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DeletePostSuccess {}
@@ -33,7 +35,7 @@ export async function handleDeletePost({
   request: express.Request;
   requestBody: DeletePostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<ErrorReasonTypes<string | DeletePostFailed>, DeletePostSuccess>
+  SecuredHTTPResponse<ErrorReasonTypes<string | DeletePostFailedReason>, DeletePostSuccess>
 > {
   const { errorResponse: error, clientUserId } = await checkAuthorization(
     controller,

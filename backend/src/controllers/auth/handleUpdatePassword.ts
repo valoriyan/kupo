@@ -17,9 +17,6 @@ export enum UpdatePasswordFailedReason {
   DatabaseFailure = "Database Error",
 }
 
-export interface UpdatePasswordFailed {
-  reason: UpdatePasswordFailedReason;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UpdatePasswordSuccess {}

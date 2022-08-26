@@ -1,5 +1,5 @@
 import { Color } from "../../types/color";
-import { UserFollowingStatus } from "../userInteraction/models";
+import { UserFollowingStatus } from "./userInteraction/models";
 
 export enum ProfilePrivacySetting {
   Public = "Public",

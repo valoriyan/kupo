@@ -9,7 +9,7 @@ import {
 import {
   UnrenderableUserFollow,
   UserFollowingStatus,
-} from "../../../controllers/userInteraction/models";
+} from "../../../controllers/user/userInteraction/models";
 import { TableService } from "./models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -473,6 +473,7 @@ export class UserFollowsTableService extends TableService {
       });
     }
   }
+  
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////

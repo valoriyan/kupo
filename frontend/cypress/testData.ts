@@ -27,3 +27,13 @@ export const michaelangeloPost: {
   caption: "Michaelangelo!",
   hashtags: ["Michaelangelo", "art"],
 };
+
+export const daVinciPost: {
+  images: string[];
+  caption: string;
+  hashtags: string[];
+} = {
+  images: ["cypress/fixtures/LeonardoDaVinci.jpeg"],
+  caption: "DaVinci!",
+  hashtags: ["DaVinci", "art"],
+};

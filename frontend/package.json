@@ -8,7 +8,7 @@
     "test": "start-server-and-test devWithTestApi http://localhost:3000 'cypress run --browser chrome'",
     "build": "next build",
     "start": "next start",
-    "deploy": "heroku git:remote -a kupo-beta-frontend; git add -A; git commit -m 'deploy'; git push heroku main --force",
+    "deploy": "DOCKER_DEFAULT_PLATFORM=linux/amd64 heroku container:push web -a kupo-beta-frontend --arg API_BASE_URL='https://beta-api.kupo.social/' && heroku container:release web",
     "generate:api": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node --script-mode --files ./codegen/generateApiClient.ts",
     "generate:icons": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node --script-mode --files ./codegen/generateIcons.ts",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --cache --fix",

@@ -13,7 +13,7 @@ import {
   RegisterUserRequestBody,
 } from "./handleRegisterUser";
 import {
-  UpdatePasswordFailed,
+  UpdatePasswordFailedReason,
   handleUpdatePassword,
   UpdatePasswordSuccess,
   UpdatePasswordRequestBody,
@@ -22,7 +22,7 @@ import { AuthFailedReason, AuthSuccess } from "./models";
 import { handleLoginUser, LoginUserRequestBody } from "./handleLoginUser";
 import { handleRefreshAccessToken } from "./handleRefreshAccessToken";
 import {
-  GetPasswordResetEmailFailed,
+  GetPasswordResetEmailFailedReason,
   handleGetPasswordResetEmail,
   GetPasswordResetEmailRequestBody,
   GetPasswordResetEmailSuccess,
@@ -30,7 +30,7 @@ import {
 import { handleLogout } from "./handleLogout";
 import { EmailService } from "../../services/emailService";
 import {
-  ElevateUserToAdminFailed,
+  ElevateUserToAdminFailedReason,
   ElevateUserToAdminRequestBody,
   ElevateUserToAdminSuccess,
   handleElevateUserToAdmin,
@@ -103,7 +103,7 @@ export class AuthController extends Controller {
     @Body() requestBody: GetPasswordResetEmailRequestBody,
   ): Promise<
     HTTPResponse<
-      ErrorReasonTypes<string | GetPasswordResetEmailFailed>,
+      ErrorReasonTypes<string | GetPasswordResetEmailFailedReason>,
       GetPasswordResetEmailSuccess
     >
   > {
@@ -142,7 +142,7 @@ export class AuthController extends Controller {
     @Body() requestBody: UpdatePasswordRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | UpdatePasswordFailed>,
+      ErrorReasonTypes<string | UpdatePasswordFailedReason>,
       UpdatePasswordSuccess
     >
   > {
@@ -176,7 +176,7 @@ export class AuthController extends Controller {
     @Body() requestBody: ElevateUserToAdminRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | ElevateUserToAdminFailed>,
+      ErrorReasonTypes<string | ElevateUserToAdminFailedReason>,
       ElevateUserToAdminSuccess
     >
   > {

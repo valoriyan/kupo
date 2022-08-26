@@ -12,10 +12,6 @@ export enum GetPasswordResetEmailFailedReason {
   TooManyAttempts = "Too Many Attempts",
 }
 
-export interface GetPasswordResetEmailFailed {
-  reason: GetPasswordResetEmailFailedReason;
-}
-
 export async function handleGetPasswordResetEmail({
   controller,
   requestBody,
@@ -24,7 +20,7 @@ export async function handleGetPasswordResetEmail({
   requestBody: GetPasswordResetEmailRequestBody;
 }): Promise<
   HTTPResponse<
-    ErrorReasonTypes<string | GetPasswordResetEmailFailed>,
+    ErrorReasonTypes<string | GetPasswordResetEmailFailedReason>,
     GetPasswordResetEmailSuccess
   >
 > {

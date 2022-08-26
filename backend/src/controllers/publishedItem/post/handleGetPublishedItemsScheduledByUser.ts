@@ -23,7 +23,9 @@ export interface GetPublishedItemsScheduledByUserSuccess {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GetPublishedItemsScheduledByUserFailed {}
+export enum GetPublishedItemsScheduledByUserFailedReason {
+  UnknownCause = "Unknown Cause",
+}
 
 export async function handleGetPublishedItemsScheduledByUser({
   controller,
@@ -35,7 +37,7 @@ export async function handleGetPublishedItemsScheduledByUser({
   requestBody: GetPublishedItemsScheduledByUserRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | GetPublishedItemsScheduledByUserFailed>,
+    ErrorReasonTypes<string | GetPublishedItemsScheduledByUserFailedReason>,
     GetPublishedItemsScheduledByUserSuccess
   >
 > {

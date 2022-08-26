@@ -8,18 +8,18 @@ import {
   HTTPResponse,
   InternalServiceResponse,
   Success,
-} from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+} from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromParts } from "../user/utilities";
-import { RenderableNewFollowerNotification } from "../notification/models/renderableUserNotifications";
-import { GenericResponseFailedReason } from "../models";
-import { ProfilePrivacySetting } from "../user/models";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { constructRenderableUserFromParts } from "../utilities";
+import { RenderableNewFollowerNotification } from "../../notification/models/renderableUserNotifications";
+import { GenericResponseFailedReason } from "../../models";
+import { ProfilePrivacySetting } from "../models";
 import { Controller } from "tsoa";
-import { DatabaseService } from "../../services/databaseService";
-import { WebSocketService } from "../../services/webSocketService";
-import { BlobStorageServiceInterface } from "../../services/blobStorageService/models";
+import { DatabaseService } from "../../../services/databaseService";
+import { WebSocketService } from "../../../services/webSocketService";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 
 export interface FollowUserRequestBody {
   userIdBeingFollowed: string;
@@ -27,8 +27,10 @@ export interface FollowUserRequestBody {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FollowUserSuccess {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FollowUserFailed {}
+
+export enum FollowUserFailedReason {
+  UnknownCause = "Unknown Cause",  
+}
 
 export async function handleFollowUser({
   controller,
@@ -38,7 +40,7 @@ export async function handleFollowUser({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: FollowUserRequestBody;
-}): Promise<HTTPResponse<FollowUserFailed, FollowUserSuccess>> {
+}): Promise<HTTPResponse<FollowUserFailedReason | string, FollowUserSuccess>> {
   const { userIdBeingFollowed } = requestBody;
 
   console.log("userIdBeingFollowed", userIdBeingFollowed);

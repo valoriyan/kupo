@@ -1,5 +1,5 @@
 import express from "express";
-import { EitherType, SecuredHTTPResponse } from "../../utilities/monads";
+import { EitherType, ErrorReasonTypes, SecuredHTTPResponse, Success } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserPageController } from "./userPageController";
 
@@ -9,10 +9,6 @@ export interface SetUserHashtagsRequestBody {
 
 export enum SetUserHashtagsFailedReason {
   NotFound = "User Not Found",
-}
-
-export interface SetUserHashtagsFailed {
-  reason: SetUserHashtagsFailedReason;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -26,7 +22,7 @@ export async function handleSetUserHashtags({
   controller: UserPageController;
   request: express.Request;
   requestBody: SetUserHashtagsRequestBody;
-}): Promise<SecuredHTTPResponse<SetUserHashtagsFailed, SetUserHashtagsSuccess>> {
+}): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | SetUserHashtagsFailedReason>, SetUserHashtagsSuccess>> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -47,5 +43,5 @@ export async function handleSetUserHashtags({
     },
   );
 
-  return { type: EitherType.success, success: {} };
+  return Success({});
 }

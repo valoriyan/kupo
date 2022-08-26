@@ -1,8 +1,8 @@
 import express from "express";
-import { NOTIFICATION_EVENTS } from "../../services/webSocketService/eventsConfig";
-import { EitherType, HTTPResponse } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { UnrenderableCanceledNewFollowerNotification } from "../notification/models/unrenderableCanceledUserNotifications";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { EitherType, HTTPResponse, SecuredHTTPResponse } from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
+import { UnrenderableCanceledNewFollowerNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { UserInteractionController } from "./userInteractionController";
 
 export interface UnfollowUserRequestBody {
@@ -23,7 +23,7 @@ export async function handleUnfollowUser({
   request: express.Request;
   requestBody: UnfollowUserRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     FailedToUnfollowUserProfileResponse,
     SuccessfullyUnfollowedUserProfileResponse
   >

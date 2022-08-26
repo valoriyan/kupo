@@ -42,6 +42,7 @@ import {
   GetPublishedItemsInPublishingChannelSuccess,
   handleGetPublishedItemsInPublishingChannel,
 } from "./handleGetPublishedItemsInPublishingChannel";
+import { GetPublishingChannelSubmissionsFailedReason, GetPublishingChannelSubmissionsRequestBody, GetPublishingChannelSubmissionsSuccess, handleGetPublishingChannelSubmissions } from "./handleGetPublishingChannelSubmissions";
 
 @injectable()
 @Route("publishing_channel")
@@ -123,6 +124,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleGetPublishedItemsInPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPublishingChannelSubmissions")
+  public async getPublishingChannelSubmissions(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPublishingChannelSubmissionsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPublishingChannelSubmissionsFailedReason>,
+      GetPublishingChannelSubmissionsSuccess
+    >
+  > {
+    return await handleGetPublishingChannelSubmissions({
       controller: this,
       request,
       requestBody,

@@ -14,8 +14,10 @@ import { checkAuthorization } from "../../auth/utilities";
 import { deleteBaseRenderablePublishedItemComponents } from "../utilities/deleteBasePublishedItemComponents";
 import { ShopItemController } from "./shopItemController";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DeleteShopItemFailed {}
+export enum DeleteShopItemFailedReason {
+  UnknownCause = "Unknown Cause",
+
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DeleteShopItemSuccess {}
@@ -34,7 +36,7 @@ export async function handleDeleteShopItem({
   requestBody: DeleteShopItemRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | DeleteShopItemFailed>,
+    ErrorReasonTypes<string | DeleteShopItemFailedReason>,
     DeleteShopItemSuccess
   >
 > {

@@ -15,9 +15,12 @@ export interface RemoveUserLikeFromPublishedItemRequestBody {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SuccessfullyRemovedUserLikeFromPostResponse {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FailedToRemoveUserLikeFromPublishedItemResponse {}
+export interface RemoveUserLikeFromPublishedItemSuccess {}
+
+
+export enum RemoveUserLikeFromPublishedItemFailedReason {
+  UnknownCause = "Unknown Cause",
+}
 
 export async function handleRemoveUserLikeFromPublishedItem({
   controller,
@@ -29,8 +32,8 @@ export async function handleRemoveUserLikeFromPublishedItem({
   requestBody: RemoveUserLikeFromPublishedItemRequestBody;
 }): Promise<
   HTTPResponse<
-    ErrorReasonTypes<string | FailedToRemoveUserLikeFromPublishedItemResponse>,
-    SuccessfullyRemovedUserLikeFromPostResponse
+    ErrorReasonTypes<string | RemoveUserLikeFromPublishedItemFailedReason>,
+    RemoveUserLikeFromPublishedItemSuccess
   >
 > {
   const { publishedItemId } = requestBody;

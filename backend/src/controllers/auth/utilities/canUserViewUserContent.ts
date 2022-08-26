@@ -12,7 +12,7 @@ import {
   UnrenderableUser,
 } from "../../../controllers/user/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { UserFollowingStatus } from "../../../controllers/userInteraction/models";
+import { UserFollowingStatus } from "../../user/userInteraction/models";
 
 export async function canUserViewUserContent({
   controller,

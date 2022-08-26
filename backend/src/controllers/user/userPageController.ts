@@ -22,8 +22,8 @@ import {
   SearchUserProfilesByUsernameSuccess,
 } from "./handleSearchUserProfilesByUsername";
 import {
-  SetUserHashtagsFailed,
   handleSetUserHashtags,
+  SetUserHashtagsFailedReason,
   SetUserHashtagsRequestBody,
   SetUserHashtagsSuccess,
 } from "./handleSetUserHashtags";
@@ -248,7 +248,7 @@ export class UserPageController extends Controller {
   public async setUserHashtags(
     @Request() request: express.Request,
     @Body() requestBody: SetUserHashtagsRequestBody,
-  ): Promise<SecuredHTTPResponse<SetUserHashtagsFailed, SetUserHashtagsSuccess>> {
+  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | SetUserHashtagsFailedReason>, SetUserHashtagsSuccess>> {
     return await handleSetUserHashtags({
       controller: this,
       request,

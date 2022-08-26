@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import express from "express";
 import {
   EitherType,
@@ -8,7 +9,8 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { RenderablePublishedItem } from "../publishedItem/models";
 import { constructPublishedItemsFromPartsById } from "../publishedItem/utilities/constructPublishedItemsFromParts";
-import { decodeTimestampCursor } from "../utilities/pagination";
+import { getNextPageCursorOfPage } from "../publishedItem/utilities/pagination";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { PublishingChannelController } from "./publishingChannelController";
 
 export interface GetPublishedItemsInPublishingChannelRequestBody {
@@ -20,6 +22,8 @@ export interface GetPublishedItemsInPublishingChannelRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPublishedItemsInPublishingChannelSuccess {
   publishedItems: RenderablePublishedItem[];
+  previousPageCursor?: string;
+  nextPageCursor?: string;
 }
 
 export enum GetPublishedItemsInPublishingChannelFailedReason {
@@ -89,5 +93,15 @@ export async function handleGetPublishedItemsInPublishingChannel({
   }
   const { success: publishedItems } = constructPublishedItemsFromPartsByIdRequest;
 
-  return Success({ publishedItems });
+  return Success({
+    publishedItems,
+    previousPageCursor: requestBody.cursor,
+    nextPageCursor: getNextPageCursorOfPage({
+      items: publishedItems,
+      getTimestampFromItem: (publishedItem: RenderablePublishedItem) => {
+        const {timestamp_of_submission} = dbPublishingChannelSubmissions.find(({published_item_id}) => published_item_id === publishedItem.id)!;
+        return encodeTimestampCursor({timestamp: parseInt(timestamp_of_submission)});
+      }
+    }),
+  });
 }

@@ -42,6 +42,7 @@ export const LogOutModal = ({ onLogout, hide }: LogOutModalProps) => {
             onLogout?.();
             hide();
           }}
+          data-cy="logout-modal-button"
         >
           Log Out
         </Button>
