@@ -153,7 +153,6 @@ export class UsersTableService extends TableService {
       DROP TYPE IF EXISTS enumerated_profile_privacy_setting;
     `;
     await this.datastorePool.query(queryString);
-
   }
 
   //////////////////////////////////////////////////

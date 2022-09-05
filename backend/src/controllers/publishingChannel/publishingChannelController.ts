@@ -42,7 +42,12 @@ import {
   GetPublishedItemsInPublishingChannelSuccess,
   handleGetPublishedItemsInPublishingChannel,
 } from "./handleGetPublishedItemsInPublishingChannel";
-import { GetPublishingChannelSubmissionsFailedReason, GetPublishingChannelSubmissionsRequestBody, GetPublishingChannelSubmissionsSuccess, handleGetPublishingChannelSubmissions } from "./handleGetPublishingChannelSubmissions";
+import {
+  GetPublishingChannelSubmissionsFailedReason,
+  GetPublishingChannelSubmissionsRequestBody,
+  GetPublishingChannelSubmissionsSuccess,
+  handleGetPublishingChannelSubmissions,
+} from "./handleGetPublishingChannelSubmissions";
 
 @injectable()
 @Route("publishing_channel")

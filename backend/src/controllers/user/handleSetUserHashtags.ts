@@ -1,5 +1,5 @@
 import express from "express";
-import { EitherType, ErrorReasonTypes, SecuredHTTPResponse, Success } from "../../utilities/monads";
+import { ErrorReasonTypes, SecuredHTTPResponse, Success } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
 import { UserPageController } from "./userPageController";
 
@@ -22,7 +22,12 @@ export async function handleSetUserHashtags({
   controller: UserPageController;
   request: express.Request;
   requestBody: SetUserHashtagsRequestBody;
-}): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | SetUserHashtagsFailedReason>, SetUserHashtagsSuccess>> {
+}): Promise<
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | SetUserHashtagsFailedReason>,
+    SetUserHashtagsSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,

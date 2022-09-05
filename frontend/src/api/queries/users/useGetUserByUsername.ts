@@ -16,6 +16,7 @@ export const useGetUserByUsername = ({ username }: { username: string }) => {
       throw new Error((res.data.error.reason as string) ?? "Failed to fetch user");
     },
     {
+      enabled: !!username,
       onSuccess: async (data) => {
         queryClient.setQueryData([CacheKeys.UserById, data.userId], data);
       },

@@ -38,14 +38,14 @@ client.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error?.response?.data?.error?.reason) {
-      toast.error(error.response.data.error.reason, {
-        toastId: error.response.data.error.reason ?? "unknown-api-error",
-      });
-    }
+    const errorReason = error?.response?.data?.error?.reason;
 
-    if (error?.response?.status === 500) {
+    if (errorReason) {
+      toast.error(errorReason, { toastId: errorReason });
+    } else if (error?.response?.status === 500) {
       toast.error("An internal server error occurred", { toastId: "500-error" });
+    } else {
+      toast.error("An unknown error ocurred", { toastId: "unknown-error" });
     }
 
     if (error?.response?.status === 401) Router.push("/login");

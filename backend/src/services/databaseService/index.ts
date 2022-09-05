@@ -97,7 +97,7 @@ export class DatabaseService {
 
   public async teardownDatabaseService(): Promise<void> {
     // Only works for local
-    await teardownDatabaseService({tableServices: this.tableNameToServicesMap});
+    await teardownDatabaseService({ tableServices: this.tableNameToServicesMap });
   }
 
   static async get(): Promise<Pool> {

@@ -16,7 +16,7 @@ export interface UserUnsavesPublishedItemRequestBody {
 export interface UserUnsavesPublishedItemSuccess {}
 
 export enum UserUnsavesPublishedItemFailedReason {
-  UnknownCause = "Unknown Cause",  
+  UnknownCause = "Unknown Cause",
 }
 
 export async function handleUserUnsavesPublishedItem({

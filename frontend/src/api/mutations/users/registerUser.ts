@@ -6,7 +6,7 @@ import { Api, RegisterUserRequestBody } from "../..";
 export const useRegisterUser = () => {
   return useMutation(
     async (args: RegisterUserRequestBody) => {
-      return await Api.registerUser(args);
+      return await Api.registerUser(args, { authStrat: "noToken" });
     },
     {
       onSuccess: (data) => {

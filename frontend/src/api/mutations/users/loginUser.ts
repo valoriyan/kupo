@@ -6,11 +6,10 @@ import { Api, LoginUserRequestBody } from "../..";
 export const useLoginUser = () => {
   return useMutation(
     async (args: LoginUserRequestBody) => {
-      return await Api.loginUser(args);
+      return await Api.loginUser(args, { authStrat: "noToken" });
     },
     {
       onSuccess: (data) => {
-        console.log("DATA", data);
         if (data.data.success) {
           setAccessToken(data.data.success.accessToken);
           Router.push("/feed");

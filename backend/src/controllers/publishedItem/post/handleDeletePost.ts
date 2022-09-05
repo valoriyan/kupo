@@ -35,7 +35,10 @@ export async function handleDeletePost({
   request: express.Request;
   requestBody: DeletePostRequestBody;
 }): Promise<
-  SecuredHTTPResponse<ErrorReasonTypes<string | DeletePostFailedReason>, DeletePostSuccess>
+  SecuredHTTPResponse<
+    ErrorReasonTypes<string | DeletePostFailedReason>,
+    DeletePostSuccess
+  >
 > {
   const { errorResponse: error, clientUserId } = await checkAuthorization(
     controller,

@@ -9,14 +9,15 @@ async function teardownTables({
 }: {
   tableServices: { [key: string]: TableService };
 }): Promise<void> {
-  const orderedTablesEntities = topologicalSortTables({ tableNameToServicesMap: tableServices }).slice().reverse();
+  const orderedTablesEntities = topologicalSortTables({
+    tableNameToServicesMap: tableServices,
+  })
+    .slice()
+    .reverse();
 
-  await BluebirdPromise.each(
-    orderedTablesEntities,
-    async ({tableService}) => {
-      return await tableService.teardown();
-    },
-  );
+  await BluebirdPromise.each(orderedTablesEntities, async ({ tableService }) => {
+    return await tableService.teardown();
+  });
 }
 
 async function teardownDatabase() {
@@ -37,6 +38,6 @@ export async function teardownDatabaseService({
 }: {
   tableServices: { [key: string]: TableService };
 }): Promise<void> {
-  await teardownTables({tableServices});
+  await teardownTables({ tableServices });
   await teardownDatabase();
 }

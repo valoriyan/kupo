@@ -26,4 +26,16 @@ export interface GetFollowerRequestsSuccess {
    * @memberof GetFollowerRequestsSuccess
    */
   users: Array<RenderableUser>;
+  /**
+   *
+   * @type {string}
+   * @memberof GetFollowerRequestsSuccess
+   */
+  previousPageCursor?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetFollowerRequestsSuccess
+   */
+  nextPageCursor?: string;
 }

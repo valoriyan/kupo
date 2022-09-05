@@ -236,7 +236,12 @@ export class ShopItemController extends Controller {
   public async deleteShopItem(
     @Request() request: express.Request,
     @Body() requestBody: DeleteShopItemRequestBody,
-  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | DeleteShopItemFailedReason>, DeleteShopItemSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | DeleteShopItemFailedReason>,
+      DeleteShopItemSuccess
+    >
+  > {
     return await handleDeleteShopItem({
       controller: this,
       request,

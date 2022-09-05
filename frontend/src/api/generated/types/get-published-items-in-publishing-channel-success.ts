@@ -26,4 +26,16 @@ export interface GetPublishedItemsInPublishingChannelSuccess {
    * @memberof GetPublishedItemsInPublishingChannelSuccess
    */
   publishedItems: Array<RenderablePublishedItem>;
+  /**
+   *
+   * @type {string}
+   * @memberof GetPublishedItemsInPublishingChannelSuccess
+   */
+  previousPageCursor?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetPublishedItemsInPublishingChannelSuccess
+   */
+  nextPageCursor?: string;
 }

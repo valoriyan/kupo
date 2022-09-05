@@ -19,7 +19,11 @@ export const UserPosts = ({ user }: UserPostsProps) => {
     });
 
   if (error && !isLoading) {
-    return <ErrorMessage>{error.message}</ErrorMessage>;
+    return (
+      <ErrorMessage>
+        {error.data.error.reason ?? "An unknown error occurred"}
+      </ErrorMessage>
+    );
   }
 
   if (isLoading || !data) {

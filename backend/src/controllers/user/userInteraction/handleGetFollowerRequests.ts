@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
 import {
   EitherType,
@@ -40,13 +38,17 @@ export async function handleGetFollowerRequests({
   controller,
   request,
   requestBody,
-}:
-{
+}: {
   controller: UserInteractionController;
   request: express.Request;
   requestBody: GetFollowerRequestsRequestBody;
-}): Promise<HTTPResponse<ErrorReasonTypes<string | GetFollowerRequestsFailedReason>, GetFollowerRequestsSuccess>> {
-  const {cursor, pageSize} = requestBody;
+}): Promise<
+  HTTPResponse<
+    ErrorReasonTypes<string | GetFollowerRequestsFailedReason>,
+    GetFollowerRequestsSuccess
+  >
+> {
+  const { cursor, pageSize } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -58,12 +60,15 @@ export async function handleGetFollowerRequests({
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
-
-    
-
   const getUserIdsFollowingUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
-      { controller, userIdBeingFollowed: clientUserId, areFollowsPending: true, createdBeforeTimestamp: pageTimestamp, limit: pageSize },
+      {
+        controller,
+        userIdBeingFollowed: clientUserId,
+        areFollowsPending: true,
+        createdBeforeTimestamp: pageTimestamp,
+        limit: pageSize,
+      },
     );
   if (getUserIdsFollowingUserIdResponse.type === EitherType.failure) {
     return getUserIdsFollowingUserIdResponse;
@@ -107,10 +112,11 @@ export async function handleGetFollowerRequests({
     nextPageCursor: getNextPageCursorOfPage({
       items: renderableUsers,
       getTimestampFromItem: (user: RenderableUser) => {
-        const {timestamp} = unrenderableUserFollows.find(({userIdDoingFollowing}) => userIdDoingFollowing === user.userId)!;
-        return encodeTimestampCursor({timestamp});
-      }
+        const { timestamp } = unrenderableUserFollows.find(
+          ({ userIdDoingFollowing }) => userIdDoingFollowing === user.userId,
+        )!;
+        return encodeTimestampCursor({ timestamp });
+      },
     }),
   });
-    
 }

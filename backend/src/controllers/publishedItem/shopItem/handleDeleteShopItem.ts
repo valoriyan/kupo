@@ -16,7 +16,6 @@ import { ShopItemController } from "./shopItemController";
 
 export enum DeleteShopItemFailedReason {
   UnknownCause = "Unknown Cause",
-
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

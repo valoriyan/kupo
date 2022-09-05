@@ -39,7 +39,11 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     super();
   }
 
-  public dependencies = [PublishingChannelsTableService.tableName, UsersTableService.tableName, PublishedItemsTableService.tableName];
+  public dependencies = [
+    PublishingChannelsTableService.tableName,
+    UsersTableService.tableName,
+    PublishedItemsTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `

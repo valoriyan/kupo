@@ -14,7 +14,6 @@ export function getNextPageCursorOfPage<T>({
 
   return undefined;
 
-
   return "2";
 }
 
