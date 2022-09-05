@@ -1,6 +1,6 @@
 import express from "express";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { EitherType, HTTPResponse, SecuredHTTPResponse } from "../../../utilities/monads";
+import { EitherType, SecuredHTTPResponse } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { UnrenderableCanceledNewFollowerNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { UserInteractionController } from "./userInteractionController";

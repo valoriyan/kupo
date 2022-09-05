@@ -17,7 +17,6 @@ export interface RemoveUserLikeFromPublishedItemRequestBody {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RemoveUserLikeFromPublishedItemSuccess {}
 
-
 export enum RemoveUserLikeFromPublishedItemFailedReason {
   UnknownCause = "Unknown Cause",
 }

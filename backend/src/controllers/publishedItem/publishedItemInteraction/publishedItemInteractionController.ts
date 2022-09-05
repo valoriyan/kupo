@@ -48,7 +48,10 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: UserLikesPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<ErrorReasonTypes<string | UserLikesPublishedItemFailedReason>, UserLikesPublishedItemSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UserLikesPublishedItemFailedReason>,
+      UserLikesPublishedItemSuccess
+    >
   > {
     return await handleUserLikesPublishedItem({
       controller: this,
@@ -62,7 +65,10 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: UserSavesPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<ErrorReasonTypes<string | UserSavesPublishedItemFailedReason>, UserSavesPublishedItemSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UserSavesPublishedItemFailedReason>,
+      UserSavesPublishedItemSuccess
+    >
   > {
     return await handleUserSavesPublishedItem({
       controller: this,
@@ -89,7 +95,7 @@ export class PublishedItemInteractionController extends Controller {
     @Body() requestBody: RemoveUserLikeFromPublishedItemRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-    ErrorReasonTypes<string | RemoveUserLikeFromPublishedItemFailedReason>,
+      ErrorReasonTypes<string | RemoveUserLikeFromPublishedItemFailedReason>,
       RemoveUserLikeFromPublishedItemSuccess
     >
   > {
@@ -105,7 +111,10 @@ export class PublishedItemInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: RemoveUserLikeFromPublishedItemRequestBody,
   ): Promise<
-    SecuredHTTPResponse<ErrorReasonTypes<string | UserUnsavesPublishedItemFailedReason>, UserUnsavesPublishedItemSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UserUnsavesPublishedItemFailedReason>,
+      UserUnsavesPublishedItemSuccess
+    >
   > {
     return await handleUserUnsavesPublishedItem({
       controller: this,

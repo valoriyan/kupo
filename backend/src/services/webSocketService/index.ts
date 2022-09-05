@@ -24,9 +24,7 @@ export class WebSocketService {
     console.log(`origin: ${origin}`);
 
     const io = new Server(httpServer, {
-      cors: {
-        origin,
-      },
+      cors: { origin },
     });
 
     WebSocketService.io = io;

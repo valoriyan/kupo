@@ -17,6 +17,7 @@ import {
 } from "../../utilities/monads/unwrapListOfResponses";
 import { GenericResponseFailedReason } from "../models";
 import { UserFollowingStatus } from "./userInteraction/models";
+import { ClientUserDetails } from "./handleGetClientUserProfile";
 
 export async function constructRenderableUsersFromPartsByUserIds({
   controller,
@@ -289,4 +290,29 @@ export function mergeArraysOfUnrenderableUsers({
   });
 
   return mergedArray;
+}
+
+export async function getClientUserDetails({
+  controller,
+  databaseService,
+  userId,
+}: {
+  controller: Controller;
+  databaseService: DatabaseService;
+  userId: string;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, ClientUserDetails>> {
+  const numberOfPendingFollowsResponse =
+    await databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
+      {
+        controller,
+        userIdBeingFollowed: userId,
+        areFollowsPending: true,
+      },
+    );
+  if (numberOfPendingFollowsResponse.type === EitherType.failure) {
+    return numberOfPendingFollowsResponse;
+  }
+  const numberOfPendingFollows = numberOfPendingFollowsResponse.success;
+
+  return Success({ followerRequests: { count: numberOfPendingFollows } });
 }

@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
-import { EitherType, ErrorReasonTypes, Failure, HTTPResponse } from "../../../utilities/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  HTTPResponse,
+  Success,
+} from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { GenericResponseFailedReason } from "../../models";
@@ -17,6 +22,7 @@ export interface ResolveFollowRequestRequestBody {
 }
 
 export interface ResolveFollowRequestSuccess {}
+
 export enum ResolveFollowRequestFailedReason {
   UnknownCause = "Unknown Cause",
 }
@@ -29,7 +35,12 @@ export async function handleResolveFollowRequest({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: ResolveFollowRequestRequestBody;
-}): Promise<HTTPResponse<ErrorReasonTypes<string | ResolveFollowRequestFailedReason>, ResolveFollowRequestSuccess>> {
+}): Promise<
+  HTTPResponse<
+    ErrorReasonTypes<string | ResolveFollowRequestFailedReason>,
+    ResolveFollowRequestSuccess
+  >
+> {
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -50,6 +61,7 @@ export async function handleResolveFollowRequest({
     if (approvePendingFollowResponse.type === EitherType.failure) {
       return approvePendingFollowResponse;
     }
+    return Success({});
   } else if (decision === FollowRequestDecision.reject) {
     const deleteUserFollowResponse =
       await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
@@ -62,6 +74,7 @@ export async function handleResolveFollowRequest({
     if (deleteUserFollowResponse.type === EitherType.failure) {
       return deleteUserFollowResponse;
     }
+    return Success({});
   }
 
   return Failure({

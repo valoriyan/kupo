@@ -13,9 +13,9 @@ import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagin
 import { PublishingChannelController } from "./publishingChannelController";
 
 export interface GetPublishingChannelSubmissionsRequestBody {
-    cursor?: string;
-    pageSize: number;
-    publishingChannelId: string;
+  cursor?: string;
+  pageSize: number;
+  publishingChannelId: string;
 }
 
 export interface GetPublishingChannelSubmissionsSuccess {
@@ -40,7 +40,7 @@ export async function handleGetPublishingChannelSubmissions({
     GetPublishingChannelSubmissionsSuccess
   >
 > {
-    const {cursor, pageSize, publishingChannelId} = requestBody;
+  const { cursor, pageSize, publishingChannelId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -71,34 +71,35 @@ export async function handleGetPublishingChannelSubmissions({
   const { success: dbPublishingChannelSubmissions } =
     getPublishingChannelSubmissionsByPublishingChannelIdResponse;
 
-    const publishedItemIds = dbPublishingChannelSubmissions.map(
-        ({ published_item_id }) => published_item_id,
-      );
-        
-    const constructPublishedItemsFromPartsByIdRequest =
-        await constructPublishedItemsFromPartsById({
-          controller,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          publishedItemIds,
-          requestorUserId: clientUserId,
-        });
-      if (constructPublishedItemsFromPartsByIdRequest.type === EitherType.failure) {
-        return constructPublishedItemsFromPartsByIdRequest;
-      }
-      const { success: publishedItems } = constructPublishedItemsFromPartsByIdRequest;
-    
-      return Success({
-        publishedItems,
-        previousPageCursor: requestBody.cursor,
-        nextPageCursor: getNextPageCursorOfPage({
-          items: publishedItems,
-          getTimestampFromItem: (publishedItem: RenderablePublishedItem) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const {timestamp_of_submission} = dbPublishingChannelSubmissions.find(({published_item_id}) => published_item_id === publishedItem.id)!;
-            return encodeTimestampCursor({timestamp: parseInt(timestamp_of_submission)});
-          }
-        }),
-      });
+  const publishedItemIds = dbPublishingChannelSubmissions.map(
+    ({ published_item_id }) => published_item_id,
+  );
 
+  const constructPublishedItemsFromPartsByIdRequest =
+    await constructPublishedItemsFromPartsById({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      publishedItemIds,
+      requestorUserId: clientUserId,
+    });
+  if (constructPublishedItemsFromPartsByIdRequest.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsByIdRequest;
+  }
+  const { success: publishedItems } = constructPublishedItemsFromPartsByIdRequest;
+
+  return Success({
+    publishedItems,
+    previousPageCursor: requestBody.cursor,
+    nextPageCursor: getNextPageCursorOfPage({
+      items: publishedItems,
+      getTimestampFromItem: (publishedItem: RenderablePublishedItem) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const { timestamp_of_submission } = dbPublishingChannelSubmissions.find(
+          ({ published_item_id }) => published_item_id === publishedItem.id,
+        )!;
+        return encodeTimestampCursor({ timestamp: parseInt(timestamp_of_submission) });
+      },
+    }),
+  });
 }

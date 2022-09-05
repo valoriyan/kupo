@@ -27,6 +27,7 @@ export enum CacheKeys {
   SearchForUsers = "SearchForUsers",
   FollowingUsers = "FollowingUsers",
   FollowerUsers = "FollowerUsers",
+  FollowerRequests = "FollowerRequests",
   SavedPosts = "SavedPosts",
   ResetPasswordTokenValidity = "ResetPasswordTokenValidity",
   CountOfUnreadNotifications = "CountOfUnreadNotifications",

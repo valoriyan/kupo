@@ -99,9 +99,11 @@ export async function handleGetPublishedItemsInPublishingChannel({
     nextPageCursor: getNextPageCursorOfPage({
       items: publishedItems,
       getTimestampFromItem: (publishedItem: RenderablePublishedItem) => {
-        const {timestamp_of_submission} = dbPublishingChannelSubmissions.find(({published_item_id}) => published_item_id === publishedItem.id)!;
-        return encodeTimestampCursor({timestamp: parseInt(timestamp_of_submission)});
-      }
+        const { timestamp_of_submission } = dbPublishingChannelSubmissions.find(
+          ({ published_item_id }) => published_item_id === publishedItem.id,
+        )!;
+        return encodeTimestampCursor({ timestamp: parseInt(timestamp_of_submission) });
+      },
     }),
   });
 }

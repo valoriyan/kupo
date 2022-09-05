@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RenderableUser, UserFollowingStatus } from "#/api";
+import { ProfilePrivacySetting, RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
@@ -67,9 +67,10 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
               <FollowButton
                 userId={userId}
                 username={username}
-                isBeingFollowedByClient={
-                  followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+                isUserPrivate={
+                  user.profilePrivacySetting === ProfilePrivacySetting.Private
                 }
+                followingStatus={followingStatusOfClientToUser}
               />
             )}
             <Button

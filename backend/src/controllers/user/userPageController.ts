@@ -2,44 +2,14 @@ import express from "express";
 import { Body, Controller, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
+import { PaymentProcessingService } from "../../services/paymentProcessingService";
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
-import {
-  GetUserProfileRequestBody,
-  GetUserProfileSuccess,
-  GetUserProfileFailedReason,
-  handleGetUserProfile,
-} from "./handleGetUserProfile";
-import {
-  UpdateUserProfileFailedReason,
-  handleUpdateUserProfile,
-  UpdateUserProfileSuccess,
-  UpdateUserProfileRequestBody,
-} from "./handleUpdateUserProfile";
-import {
-  SearchUserProfilesByUsernameFailedReason,
-  handleSearchUserProfilesByUsername,
-  SearchUserProfilesByUsernameRequestBody,
-  SearchUserProfilesByUsernameSuccess,
-} from "./handleSearchUserProfilesByUsername";
-import {
-  handleSetUserHashtags,
-  SetUserHashtagsFailedReason,
-  SetUserHashtagsRequestBody,
-  SetUserHashtagsSuccess,
-} from "./handleSetUserHashtags";
-import {
-  GetUsersByIdsFailedReason,
-  GetUsersByIdsRequestBody,
-  handleGetUsersByIds,
-  GetUsersByIdsSuccess,
-} from "./handleGetUsersByIds";
-import {
-  GetUsersByUsernamesFailedReason,
-  GetUsersByUsernamesRequestBody,
-  handleGetUsersByUsernames,
-  GetUsersByUsernamesSuccess,
-} from "./handleGetUsersByUsernames";
 import { BlobStorageService } from "./../../services/blobStorageService";
+import {
+  GetClientUserProfileFailedReason,
+  GetClientUserProfileSuccess,
+  handleGetClientUserProfile,
+} from "./handleGetClientUserProfile";
 import {
   GetPageOfUsersFollowedByUserIdFailedReason,
   GetPageOfUsersFollowedByUserIdRequestBody,
@@ -53,16 +23,51 @@ import {
   handleGetPageOfUsersFollowingUserId,
 } from "./handleGetPageOfUsersFollowingUserId";
 import {
-  handleUpdateUserProfilePicture,
-  UpdateUserProfilePictureFailedReason,
-  UpdateUserProfilePictureSuccess,
-} from "./handleUpdateUserProfilePicture";
+  GetUserProfileFailedReason,
+  GetUserProfileRequestBody,
+  GetUserProfileSuccess,
+  handleGetUserProfile,
+} from "./handleGetUserProfile";
+import {
+  GetUsersByIdsFailedReason,
+  GetUsersByIdsRequestBody,
+  GetUsersByIdsSuccess,
+  handleGetUsersByIds,
+} from "./handleGetUsersByIds";
+import {
+  GetUsersByUsernamesFailedReason,
+  GetUsersByUsernamesRequestBody,
+  GetUsersByUsernamesSuccess,
+  handleGetUsersByUsernames,
+} from "./handleGetUsersByUsernames";
+import {
+  handleSearchUserProfilesByUsername,
+  SearchUserProfilesByUsernameFailedReason,
+  SearchUserProfilesByUsernameRequestBody,
+  SearchUserProfilesByUsernameSuccess,
+} from "./handleSearchUserProfilesByUsername";
+import {
+  handleSetUserHashtags,
+  SetUserHashtagsFailedReason,
+  SetUserHashtagsRequestBody,
+  SetUserHashtagsSuccess,
+} from "./handleSetUserHashtags";
 import {
   handleUpdateUserBackgroundImage,
   UpdateUserBackgroundImageFailedReason,
   UpdateUserBackgroundImageSuccess,
 } from "./handleUpdateUserBackgroundImage";
-import { PaymentProcessingService } from "../../services/paymentProcessingService";
+import {
+  handleUpdateUserProfile,
+  UpdateUserProfileFailedReason,
+  UpdateUserProfileRequestBody,
+  UpdateUserProfileSuccess,
+} from "./handleUpdateUserProfile";
+import {
+  handleUpdateUserProfilePicture,
+  UpdateUserProfilePictureFailedReason,
+  UpdateUserProfilePictureSuccess,
+} from "./handleUpdateUserProfilePicture";
 
 @injectable()
 @Route("user")
@@ -97,6 +102,21 @@ export class UserPageController extends Controller {
       controller: this,
       request,
       requestBody,
+    });
+  }
+
+  @Post("GetClientUserProfile")
+  public async getClientUserProfile(
+    @Request() request: express.Request,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetClientUserProfileFailedReason>,
+      GetClientUserProfileSuccess
+    >
+  > {
+    return await handleGetClientUserProfile({
+      controller: this,
+      request,
     });
   }
 
@@ -248,7 +268,12 @@ export class UserPageController extends Controller {
   public async setUserHashtags(
     @Request() request: express.Request,
     @Body() requestBody: SetUserHashtagsRequestBody,
-  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | SetUserHashtagsFailedReason>, SetUserHashtagsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | SetUserHashtagsFailedReason>,
+      SetUserHashtagsSuccess
+    >
+  > {
     return await handleSetUserHashtags({
       controller: this,
       request,

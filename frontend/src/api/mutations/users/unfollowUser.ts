@@ -1,6 +1,11 @@
 import { useMutation, useQueryClient } from "react-query";
 import { useCurrentUserId } from "#/contexts/auth";
-import { Api, RenderableUser, UserFollowingStatus } from "../..";
+import {
+  Api,
+  GetClientUserProfileSuccess,
+  RenderableUser,
+  UserFollowingStatus,
+} from "../..";
 import { updateUserFollowingStatus, updateUsersCache } from "./utilities";
 import { CacheKeys } from "#/contexts/queryClient";
 
@@ -30,7 +35,7 @@ export const useUnfollowUser = ({
           });
 
           // Update client user
-          const clientUser = queryClient.getQueryData<RenderableUser>(
+          const clientUser = queryClient.getQueryData<GetClientUserProfileSuccess>(
             CacheKeys.ClientProfile,
           );
           if (clientUser) {

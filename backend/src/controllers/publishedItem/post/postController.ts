@@ -246,7 +246,12 @@ export class PostController extends Controller {
   public async deletePost(
     @Request() request: express.Request,
     @Body() requestBody: DeletePostRequestBody,
-  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | DeletePostFailedReason>, DeletePostSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | DeletePostFailedReason>,
+      DeletePostSuccess
+    >
+  > {
     return await handleDeletePost({
       controller: this,
       request,

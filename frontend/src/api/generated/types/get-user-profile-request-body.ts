@@ -23,5 +23,5 @@ export interface GetUserProfileRequestBody {
    * @type {string}
    * @memberof GetUserProfileRequestBody
    */
-  username?: string;
+  username: string;
 }

@@ -50,7 +50,12 @@ export class UserInteractionController extends Controller {
   public async followUser(
     @Request() request: express.Request,
     @Body() requestBody: FollowUserRequestBody,
-  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | FollowUserFailedReason>, FollowUserSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | FollowUserFailedReason>,
+      FollowUserSuccess
+    >
+  > {
     return await handleFollowUser({
       controller: this,
       request,
@@ -66,7 +71,12 @@ export class UserInteractionController extends Controller {
   public async getFollowerRequests(
     @Request() request: express.Request,
     @Body() requestBody: GetFollowerRequestsRequestBody,
-  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string | GetFollowerRequestsFailedReason>, GetFollowerRequestsSuccess>> {
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetFollowerRequestsFailedReason>,
+      GetFollowerRequestsSuccess
+    >
+  > {
     return await handleGetFollowerRequests({
       controller: this,
       request,
@@ -83,7 +93,10 @@ export class UserInteractionController extends Controller {
     @Request() request: express.Request,
     @Body() requestBody: ResolveFollowRequestRequestBody,
   ): Promise<
-    SecuredHTTPResponse<ErrorReasonTypes<string | ResolveFollowRequestFailedReason>, ResolveFollowRequestSuccess>
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | ResolveFollowRequestFailedReason>,
+      ResolveFollowRequestSuccess
+    >
   > {
     return await handleResolveFollowRequest({
       controller: this,

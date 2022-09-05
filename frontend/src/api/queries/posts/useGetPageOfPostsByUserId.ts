@@ -1,6 +1,12 @@
+import { AxiosResponse } from "axios";
 import { useInfiniteQuery } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, GetPublishedItemsByUsernameSuccess, PublishedItemType } from "../..";
+import {
+  Api,
+  EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess,
+  GetPublishedItemsByUsernameSuccess,
+  PublishedItemType,
+} from "../..";
 
 export interface GetPublishedItemsByUserIdArgs {
   userId: string;
@@ -13,7 +19,7 @@ export const useGetPublishedItemsByUserId = ({
 }: GetPublishedItemsByUserIdArgs) => {
   return useInfiniteQuery<
     GetPublishedItemsByUsernameSuccess,
-    Error,
+    AxiosResponse<EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess>,
     GetPublishedItemsByUsernameSuccess,
     string[]
   >(
@@ -27,6 +33,11 @@ export const useGetPublishedItemsByUserId = ({
     {
       getNextPageParam: (lastPage) => lastPage.nextPageCursor,
       enabled: !!userId,
+      retry: (failureCount, error) => {
+        if (error.status === 404) return false;
+        if (failureCount > 2) return false;
+        return true;
+      },
     },
   );
 };
@@ -53,5 +64,5 @@ export async function fetchPageOfPublishedItem({
     return res.data.success;
   }
 
-  throw new Error(res.data.error.reason as string);
+  throw res;
 }

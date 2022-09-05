@@ -457,8 +457,8 @@ export class UserFollowsTableService extends TableService {
       }
 
       const userFollow = response.rows[0];
-      if (!!userFollow.is_pending) {
-        Success(UserFollowingStatus.pending);
+      if (userFollow.is_pending) {
+        return Success(UserFollowingStatus.pending);
       }
 
       return Success(UserFollowingStatus.is_following);
@@ -473,7 +473,6 @@ export class UserFollowsTableService extends TableService {
       });
     }
   }
-  
 
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////

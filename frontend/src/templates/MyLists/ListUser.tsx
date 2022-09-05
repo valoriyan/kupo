@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { RenderableUser, UserFollowingStatus } from "#/api";
+import { ProfilePrivacySetting, RenderableUser, UserFollowingStatus } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { Avatar } from "#/components/Avatar";
@@ -12,14 +12,22 @@ import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 
 export interface ListUserProps {
   user: RenderableUser;
+  additionalActions?: Array<{
+    variant: "primary" | "secondary" | "danger";
+    label: string;
+    onClick: () => void;
+    isLoading: boolean;
+    isDisabled: boolean;
+  }>;
 }
 
-export const ListUser = ({ user }: ListUserProps) => {
+export const ListUser = ({ user, additionalActions }: ListUserProps) => {
   const profilePageUrl = getProfilePageUrl({ username: user.username });
 
   const { mutateAsync: followUser, isLoading: isFollowing } = useFollowUser({
     userIdBeingFollowed: user.userId,
     usernameBeingFollowed: user.username,
+    isUserPrivate: user.profilePrivacySetting === ProfilePrivacySetting.Private,
   });
 
   const { mutateAsync: unfollowUser, isLoading: isUnfollowing } = useUnfollowUser({
@@ -44,15 +52,42 @@ export const ListUser = ({ user }: ListUserProps) => {
         />
         <UserName username={user.username} />
       </Flex>
-      <Button size="sm" onClick={toggleFollow} disabled={isFollowing || isUnfollowing}>
-        <TextOrSpinner isLoading={isFollowing || isUnfollowing}>
-          {user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
-            ? "Unfollow"
-            : user.followingStatusOfClientToUser === UserFollowingStatus.Pending
-            ? "Pending"
-            : "Follow"}
-        </TextOrSpinner>
-      </Button>
+      <Flex css={{ gap: "$6" }}>
+        <Button
+          size="sm"
+          outlined
+          variant={
+            user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+              ? "secondary"
+              : "primary"
+          }
+          onClick={toggleFollow}
+          disabled={isFollowing || isUnfollowing}
+        >
+          <TextOrSpinner isLoading={isFollowing || isUnfollowing}>
+            {user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+              ? "Unfollow"
+              : user.followingStatusOfClientToUser === UserFollowingStatus.Pending
+              ? "Pending"
+              : "Follow"}
+          </TextOrSpinner>
+        </Button>
+        {additionalActions && (
+          <Flex css={{ gap: "$3" }}>
+            {additionalActions.map((action) => (
+              <Button
+                key={action.label}
+                size="sm"
+                variant={action.variant}
+                onClick={action.onClick}
+                disabled={action.isDisabled || action.isLoading}
+              >
+                <TextOrSpinner isLoading={action.isLoading}>{action.label}</TextOrSpinner>
+              </Button>
+            ))}
+          </Flex>
+        )}
+      </Flex>
     </Wrapper>
   );
 };

@@ -9,7 +9,7 @@ export abstract class TableService {
   abstract setup(): Promise<void>;
 
   async teardown(): Promise<void> {
-    console.log(`Dropping table ${this.tableName}`)
+    console.log(`Dropping table ${this.tableName}`);
 
     const queryString = `
             DROP TABLE IF EXISTS ${this.tableName};

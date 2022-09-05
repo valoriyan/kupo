@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, RenderableUser } from "#/api";
+import { Api, GetClientUserProfileSuccess } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useUpdateOwnProfilePicture = () => {
@@ -12,8 +12,8 @@ export const useUpdateOwnProfilePicture = () => {
     {
       onSuccess: (data) => {
         if (!!data.data.success) {
-          const cacheKey = [CacheKeys.ClientProfile, undefined];
-          const cachedData: RenderableUser | undefined =
+          const cacheKey = [CacheKeys.ClientProfile];
+          const cachedData: GetClientUserProfileSuccess | undefined =
             queryClient.getQueryData(cacheKey);
           if (cachedData) {
             queryClient.setQueryData(cacheKey, {

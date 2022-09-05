@@ -1,15 +1,22 @@
 import { useMutation, useQueryClient } from "react-query";
 import { useCurrentUserId } from "#/contexts/auth";
 import { CacheKeys } from "#/contexts/queryClient";
-import { Api, RenderableUser, UserFollowingStatus } from "../..";
+import {
+  Api,
+  GetClientUserProfileSuccess,
+  RenderableUser,
+  UserFollowingStatus,
+} from "../..";
 import { updateUserFollowingStatus, updateUsersCache } from "./utilities";
 
 export const useFollowUser = ({
   userIdBeingFollowed,
   usernameBeingFollowed,
+  isUserPrivate,
 }: {
   userIdBeingFollowed: string;
   usernameBeingFollowed: string;
+  isUserPrivate: boolean;
 }) => {
   const userId = useCurrentUserId();
   const queryClient = useQueryClient();
@@ -30,7 +37,7 @@ export const useFollowUser = ({
           });
 
           // Update client user
-          const clientUser = queryClient.getQueryData<RenderableUser>(
+          const clientUser = queryClient.getQueryData<GetClientUserProfileSuccess>(
             CacheKeys.ClientProfile,
           );
           if (clientUser) {
@@ -38,7 +45,9 @@ export const useFollowUser = ({
               ...clientUser,
               follows: {
                 ...clientUser.follows,
-                count: clientUser.follows.count + 1,
+                count: isUserPrivate
+                  ? clientUser.follows.count
+                  : clientUser.follows.count + 1,
               },
             });
           }
@@ -51,9 +60,13 @@ export const useFollowUser = ({
                   ...user,
                   followers: {
                     ...user.followers,
-                    count: user.followers.count + 1,
+                    count: isUserPrivate
+                      ? user.followers.count
+                      : user.followers.count + 1,
                   },
-                  followingStatusOfClientToUser: UserFollowingStatus.IsFollowing,
+                  followingStatusOfClientToUser: isUserPrivate
+                    ? UserFollowingStatus.Pending
+                    : UserFollowingStatus.IsFollowing,
                 };
                 return updatedUser;
               }

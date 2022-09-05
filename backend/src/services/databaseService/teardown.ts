@@ -36,6 +36,9 @@ async function teardownTables({
     console.log("\n\n\n\n\n");
     console.log(error);
   }
+  await BluebirdPromise.each(orderedTablesEntities, async ({ tableService }) => {
+    return await tableService.teardown();
+  });
 }
 
 async function teardownDatabase() {

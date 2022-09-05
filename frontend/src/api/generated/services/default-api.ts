@@ -61,10 +61,6 @@ import { EitherAuthFailedReasonAuthSuccess } from "../types";
 // @ts-ignore
 import { EitherCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess } from "../types";
 // @ts-ignore
-import { EitherDeletePostFailedDeletePostSuccess } from "../types";
-// @ts-ignore
-import { EitherDeleteShopItemFailedDeleteShopItemSuccess } from "../types";
-// @ts-ignore
 import { EitherErrorReasonTypesStringOrAuthFailedReasonAuthSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrCreateChatMessageFailedReasonCreateChatMessageSuccess } from "../types";
@@ -81,19 +77,29 @@ import { EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemS
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrDeleteChatMessageFailedReasonDeleteChatMessageSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrDeletePostFailedReasonDeletePostSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrDeleteShopItemFailedReasonDeleteShopItemSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrDoesChatRoomExistWithUserIdsFailedReasonDoesChatRoomExistWithUserIdsSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdminSuccess } from "../types";
+import { EitherErrorReasonTypesStringOrElevateUserToAdminFailedReasonElevateUserToAdminSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrFollowUserFailedReasonFollowUserSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetClientUserProfileFailedReasonGetClientUserProfileSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetCountOfUnreadChatRoomsFailedReasonGetCountOfUnreadChatRoomsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetCountOfUnreadNotificationsFailedReasonGetCountOfUnreadNotificationsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetCreditCardsStoredByUserIdFailedReasonGetCreditCardsStoredByUserIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetFollowerRequestsFailedReasonGetFollowerRequestsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPageOfAllPublishedItemsFailedReasonGetPageOfAllPublishedItemsSuccess } from "../types";
 // @ts-ignore
@@ -107,7 +113,7 @@ import { EitherErrorReasonTypesStringOrGetPageOfUsersFollowedByUserIdFailedReaso
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPageOfUsersFollowingUserIdFailedReasonGetPageOfUsersFollowingUserIdSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess } from "../types";
+import { EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedReasonGetPasswordResetEmailSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublishedItemByIdSuccess } from "../types";
 // @ts-ignore
@@ -119,7 +125,11 @@ import { EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedUsersFailedR
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemsInPublishingChannelFailedReasonGetPublishedItemsInPublishingChannelSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishedItemsScheduledByUserFailedReasonGetPublishedItemsScheduledByUserSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishingChannelByIdFailedReasonGetPublishingChannelByIdSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishingChannelSubmissionsFailedReasonGetPublishingChannelSubmissionsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetSavedPublishedItemsFailedReasonGetSavedPublishedItemsSuccess } from "../types";
 // @ts-ignore
@@ -143,7 +153,11 @@ import { EitherErrorReasonTypesStringOrRegisterUserFailedReasonAuthSuccess } fro
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrRemoveCreditCardFailedReasonRemoveCreditCardSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrRemoveUserLikeFromPublishedItemFailedReasonRemoveUserLikeFromPublishedItemSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrResetPasswordFailedReasonResetPasswordSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrResolveFollowRequestFailedReasonResolveFollowRequestSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrResolvePublishingChannelSubmissionFailedReasonResolvePublishingChannelSubmissionSuccess } from "../types";
 // @ts-ignore
@@ -157,7 +171,9 @@ import { EitherErrorReasonTypesStringOrSearchForUsersFailedReasonSearchForUsersS
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrSearchUserProfilesByUsernameFailedReasonSearchUserProfilesByUsernameSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess } from "../types";
+import { EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedReasonSetUserContentFeedFiltersSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrSetUserHashtagsFailedReasonSetUserHashtagsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrSharePostFailedReasonSharePostSuccess } from "../types";
 // @ts-ignore
@@ -165,7 +181,7 @@ import { EitherErrorReasonTypesStringOrStoreCreditCardFailedReasonStoreCreditCar
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrSubmitPublishedItemToPublishingChannelFailedReasonSubmitPublishedItemToPublishingChannelSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrUpdatePasswordFailedUpdatePasswordSuccess } from "../types";
+import { EitherErrorReasonTypesStringOrUpdatePasswordFailedReasonUpdatePasswordSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUpdatePostFailedReasonUpdatePostSuccess } from "../types";
 // @ts-ignore
@@ -179,31 +195,21 @@ import { EitherErrorReasonTypesStringOrUpdateUserProfileFailedReasonUpdateUserPr
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess } from "../types";
 // @ts-ignore
-import { EitherFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse } from "../types";
+import { EitherErrorReasonTypesStringOrUserLikesPublishedItemFailedReasonUserLikesPublishedItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUserSavesPublishedItemFailedReasonUserSavesPublishedItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUserUnsavesPublishedItemFailedReasonUserUnsavesPublishedItemSuccess } from "../types";
 // @ts-ignore
 import { EitherFailedToUnfollowUserProfileResponseSuccessfullyUnfollowedUserProfileResponse } from "../types";
-// @ts-ignore
-import { EitherFollowUserFailedFollowUserSuccess } from "../types";
-// @ts-ignore
-import { EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess } from "../types";
-// @ts-ignore
-import { EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess } from "../types";
-// @ts-ignore
-import { EitherResolveFollowRequestFailedResolveFollowRequestSuccess } from "../types";
-// @ts-ignore
-import { EitherSetUserHashtagsFailedSetUserHashtagsSuccess } from "../types";
-// @ts-ignore
-import { EitherUserLikesPublishedItemFailedUserLikesPublishedItemSuccess } from "../types";
-// @ts-ignore
-import { EitherUserSavesPublishedItemFailedUserSavesPublishedItemSuccess } from "../types";
-// @ts-ignore
-import { EitherUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess } from "../types";
 // @ts-ignore
 import { ElevateUserToAdminRequestBody } from "../types";
 // @ts-ignore
 import { FollowUserRequestBody } from "../types";
 // @ts-ignore
 import { GetChatRoomByIdRequestBody } from "../types";
+// @ts-ignore
+import { GetFollowerRequestsRequestBody } from "../types";
 // @ts-ignore
 import { GetPageOfAllPublishedItemsRequestBody } from "../types";
 // @ts-ignore
@@ -234,6 +240,8 @@ import { GetPublishedItemsInPublishingChannelRequestBody } from "../types";
 import { GetPublishedItemsScheduledByUserRequestBody } from "../types";
 // @ts-ignore
 import { GetPublishingChannelByIdRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishingChannelSubmissionsRequestBody } from "../types";
 // @ts-ignore
 import { GetSavedPublishedItemsRequestBody } from "../types";
 // @ts-ignore
@@ -1144,6 +1152,38 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getClientUserProfile: async (options: any = {}): Promise<RequestArgs> => {
+      const localVarPath = `/user/GetClientUserProfile`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {object} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1253,16 +1293,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {object} body
+     * @param {GetFollowerRequestsRequestBody} getFollowerRequestsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getFollowerRequests: async (
-      body: object,
+      getFollowerRequestsRequestBody: GetFollowerRequestsRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'body' is not null or undefined
-      assertParamExists("getFollowerRequests", "body", body);
+      // verify required parameter 'getFollowerRequestsRequestBody' is not null or undefined
+      assertParamExists(
+        "getFollowerRequests",
+        "getFollowerRequestsRequestBody",
+        getFollowerRequestsRequestBody,
+      );
       const localVarPath = `/userInteractions/getFollowerRequests`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1286,7 +1330,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        body,
+        getFollowerRequestsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -2022,6 +2066,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPublishingChannelByIdRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishingChannelSubmissions: async (
+      getPublishingChannelSubmissionsRequestBody: GetPublishingChannelSubmissionsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishingChannelSubmissionsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishingChannelSubmissions",
+        "getPublishingChannelSubmissionsRequestBody",
+        getPublishingChannelSubmissionsRequestBody,
+      );
+      const localVarPath = `/publishing_channel/getPublishingChannelSubmissions`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishingChannelSubmissionsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -4253,7 +4346,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherDeletePostFailedDeletePostSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrDeletePostFailedReasonDeletePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deletePost(
         deletePostRequestBody,
@@ -4306,7 +4399,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherDeleteShopItemFailedDeleteShopItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrDeleteShopItemFailedReasonDeleteShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.deleteShopItem(
         deleteShopItemRequestBody,
@@ -4359,7 +4452,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdminSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrElevateUserToAdminFailedReasonElevateUserToAdminSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.elevateUserToAdmin(
         elevateUserToAdminRequestBody,
@@ -4385,7 +4478,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherFollowUserFailedFollowUserSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrFollowUserFailedReasonFollowUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.followUser(
         followUserRequestBody,
@@ -4415,6 +4508,29 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getChatRoomById(
         getChatRoomByIdRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getClientUserProfile(
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetClientUserProfileFailedReasonGetClientUserProfileSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getClientUserProfile(
         options,
       );
       return createRequestFunction(
@@ -4496,21 +4612,21 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {object} body
+     * @param {GetFollowerRequestsRequestBody} getFollowerRequestsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async getFollowerRequests(
-      body: object,
+      getFollowerRequestsRequestBody: GetFollowerRequestsRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetFollowerRequestsFailedReasonGetFollowerRequestsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getFollowerRequests(
-        body,
+        getFollowerRequestsRequestBody,
         options,
       );
       return createRequestFunction(
@@ -4692,7 +4808,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedReasonGetPasswordResetEmailSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPasswordResetEmail(
         getPasswordResetEmailRequestBody,
@@ -4718,7 +4834,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsScheduledByUserFailedReasonGetPublishedItemsScheduledByUserSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.getPostsScheduledByUser(
         getPublishedItemsScheduledByUserRequestBody,
@@ -4910,6 +5026,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         getPublishingChannelByIdRequestBody,
         options,
       );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishingChannelSubmissions(
+      getPublishingChannelSubmissionsRequestBody: GetPublishingChannelSubmissionsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelSubmissionsFailedReasonGetPublishingChannelSubmissionsSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishingChannelSubmissions(
+          getPublishingChannelSubmissionsRequestBody,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -5282,7 +5425,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrRemoveUserLikeFromPublishedItemFailedReasonRemoveUserLikeFromPublishedItemSuccess>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.removeUserLikeFromPublishedItem(
@@ -5335,7 +5478,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherResolveFollowRequestFailedResolveFollowRequestSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrResolveFollowRequestFailedReasonResolveFollowRequestSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.resolveFollowRequest(
         resolveFollowRequestRequestBody,
@@ -5543,7 +5686,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedReasonSetUserContentFeedFiltersSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.setUserContentFeedFilters(
         setUserContentFeedFiltersRequestBody,
@@ -5569,7 +5712,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherSetUserHashtagsFailedSetUserHashtagsSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrSetUserHashtagsFailedReasonSetUserHashtagsSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.setUserHashtags(
         setUserHashtagsRequestBody,
@@ -5700,7 +5843,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdatePasswordFailedUpdatePasswordSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdatePasswordFailedReasonUpdatePasswordSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updatePassword(
         updatePasswordRequestBody,
@@ -5906,7 +6049,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherUserLikesPublishedItemFailedUserLikesPublishedItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUserLikesPublishedItemFailedReasonUserLikesPublishedItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userLikesPublishedItem(
         userLikesPublishedItemRequestBody,
@@ -5932,7 +6075,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherUserSavesPublishedItemFailedUserSavesPublishedItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUserSavesPublishedItemFailedReasonUserSavesPublishedItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userSavesPublishedItem(
         userSavesPublishedItemRequestBody,
@@ -5958,7 +6101,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUserUnsavesPublishedItemFailedReasonUserUnsavesPublishedItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userUnsavesPublishedItem(
         removeUserLikeFromPublishedItemRequestBody,
@@ -6151,7 +6294,7 @@ export const DefaultApiFactory = function (
     deletePost(
       deletePostRequestBody: DeletePostRequestBody,
       options?: any,
-    ): AxiosPromise<EitherDeletePostFailedDeletePostSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrDeletePostFailedReasonDeletePostSuccess> {
       return localVarFp
         .deletePost(deletePostRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6179,7 +6322,7 @@ export const DefaultApiFactory = function (
     deleteShopItem(
       deleteShopItemRequestBody: DeleteShopItemRequestBody,
       options?: any,
-    ): AxiosPromise<EitherDeleteShopItemFailedDeleteShopItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrDeleteShopItemFailedReasonDeleteShopItemSuccess> {
       return localVarFp
         .deleteShopItem(deleteShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6207,7 +6350,7 @@ export const DefaultApiFactory = function (
     elevateUserToAdmin(
       elevateUserToAdminRequestBody: ElevateUserToAdminRequestBody,
       options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrElevateUserToAdminFailedElevateUserToAdminSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrElevateUserToAdminFailedReasonElevateUserToAdminSuccess> {
       return localVarFp
         .elevateUserToAdmin(elevateUserToAdminRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6221,7 +6364,7 @@ export const DefaultApiFactory = function (
     followUser(
       followUserRequestBody: FollowUserRequestBody,
       options?: any,
-    ): AxiosPromise<EitherFollowUserFailedFollowUserSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrFollowUserFailedReasonFollowUserSuccess> {
       return localVarFp
         .followUser(followUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6238,6 +6381,18 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrGetChatRoomByIdFailedReasonGetChatRoomByIdSuccess> {
       return localVarFp
         .getChatRoomById(getChatRoomByIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getClientUserProfile(
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetClientUserProfileFailedReasonGetClientUserProfileSuccess> {
+      return localVarFp
+        .getClientUserProfile(options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -6280,16 +6435,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {object} body
+     * @param {GetFollowerRequestsRequestBody} getFollowerRequestsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getFollowerRequests(
-      body: object,
+      getFollowerRequestsRequestBody: GetFollowerRequestsRequestBody,
       options?: any,
-    ): AxiosPromise<EitherGetFollowerRequestsFailedGetFollowerRequestsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetFollowerRequestsFailedReasonGetFollowerRequestsSuccess> {
       return localVarFp
-        .getFollowerRequests(body, options)
+        .getFollowerRequests(getFollowerRequestsRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -6388,7 +6543,7 @@ export const DefaultApiFactory = function (
     getPasswordResetEmail(
       getPasswordResetEmailRequestBody: GetPasswordResetEmailRequestBody,
       options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedGetPasswordResetEmailSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPasswordResetEmailFailedReasonGetPasswordResetEmailSuccess> {
       return localVarFp
         .getPasswordResetEmail(getPasswordResetEmailRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6402,7 +6557,7 @@ export const DefaultApiFactory = function (
     getPostsScheduledByUser(
       getPublishedItemsScheduledByUserRequestBody: GetPublishedItemsScheduledByUserRequestBody,
       options?: any,
-    ): AxiosPromise<EitherGetPublishedItemsScheduledByUserFailedGetPublishedItemsScheduledByUserSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsScheduledByUserFailedReasonGetPublishedItemsScheduledByUserSuccess> {
       return localVarFp
         .getPostsScheduledByUser(getPublishedItemsScheduledByUserRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6512,6 +6667,23 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelByIdFailedReasonGetPublishingChannelByIdSuccess> {
       return localVarFp
         .getPublishingChannelById(getPublishingChannelByIdRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishingChannelSubmissions(
+      getPublishingChannelSubmissionsRequestBody: GetPublishingChannelSubmissionsRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelSubmissionsFailedReasonGetPublishingChannelSubmissionsSuccess> {
+      return localVarFp
+        .getPublishingChannelSubmissions(
+          getPublishingChannelSubmissionsRequestBody,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -6712,7 +6884,7 @@ export const DefaultApiFactory = function (
     removeUserLikeFromPublishedItem(
       removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<EitherFailedToRemoveUserLikeFromPublishedItemResponseSuccessfullyRemovedUserLikeFromPostResponse> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrRemoveUserLikeFromPublishedItemFailedReasonRemoveUserLikeFromPublishedItemSuccess> {
       return localVarFp
         .removeUserLikeFromPublishedItem(
           removeUserLikeFromPublishedItemRequestBody,
@@ -6743,7 +6915,7 @@ export const DefaultApiFactory = function (
     resolveFollowRequest(
       resolveFollowRequestRequestBody: ResolveFollowRequestRequestBody,
       options?: any,
-    ): AxiosPromise<EitherResolveFollowRequestFailedResolveFollowRequestSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrResolveFollowRequestFailedReasonResolveFollowRequestSuccess> {
       return localVarFp
         .resolveFollowRequest(resolveFollowRequestRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6858,7 +7030,7 @@ export const DefaultApiFactory = function (
     setUserContentFeedFilters(
       setUserContentFeedFiltersRequestBody: SetUserContentFeedFiltersRequestBody,
       options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedSetUserContentFeedFiltersSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSetUserContentFeedFiltersFailedReasonSetUserContentFeedFiltersSuccess> {
       return localVarFp
         .setUserContentFeedFilters(setUserContentFeedFiltersRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6872,7 +7044,7 @@ export const DefaultApiFactory = function (
     setUserHashtags(
       setUserHashtagsRequestBody: SetUserHashtagsRequestBody,
       options?: any,
-    ): AxiosPromise<EitherSetUserHashtagsFailedSetUserHashtagsSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrSetUserHashtagsFailedReasonSetUserHashtagsSuccess> {
       return localVarFp
         .setUserHashtags(setUserHashtagsRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -6945,7 +7117,7 @@ export const DefaultApiFactory = function (
     updatePassword(
       updatePasswordRequestBody: UpdatePasswordRequestBody,
       options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePasswordFailedUpdatePasswordSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePasswordFailedReasonUpdatePasswordSuccess> {
       return localVarFp
         .updatePassword(updatePasswordRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -7070,7 +7242,7 @@ export const DefaultApiFactory = function (
     userLikesPublishedItem(
       userLikesPublishedItemRequestBody: UserLikesPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<EitherUserLikesPublishedItemFailedUserLikesPublishedItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUserLikesPublishedItemFailedReasonUserLikesPublishedItemSuccess> {
       return localVarFp
         .userLikesPublishedItem(userLikesPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -7084,7 +7256,7 @@ export const DefaultApiFactory = function (
     userSavesPublishedItem(
       userSavesPublishedItemRequestBody: UserSavesPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<EitherUserSavesPublishedItemFailedUserSavesPublishedItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUserSavesPublishedItemFailedReasonUserSavesPublishedItemSuccess> {
       return localVarFp
         .userSavesPublishedItem(userSavesPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -7098,7 +7270,7 @@ export const DefaultApiFactory = function (
     userUnsavesPublishedItem(
       removeUserLikeFromPublishedItemRequestBody: RemoveUserLikeFromPublishedItemRequestBody,
       options?: any,
-    ): AxiosPromise<EitherUserUnsavesPublishedItemFailedUserUnsavesPublishedItemSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUserUnsavesPublishedItemFailedReasonUserUnsavesPublishedItemSuccess> {
       return localVarFp
         .userUnsavesPublishedItem(removeUserLikeFromPublishedItemRequestBody, options)
         .then((request) => request(axios, basePath));
@@ -7394,6 +7566,18 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getClientUserProfile(options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getClientUserProfile(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {object} body
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -7431,14 +7615,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {object} body
+   * @param {GetFollowerRequestsRequestBody} getFollowerRequestsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getFollowerRequests(body: object, options?: any) {
+  public getFollowerRequests(
+    getFollowerRequestsRequestBody: GetFollowerRequestsRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .getFollowerRequests(body, options)
+      .getFollowerRequests(getFollowerRequestsRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -7688,6 +7875,25 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPublishingChannelById(getPublishingChannelByIdRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishingChannelSubmissions(
+    getPublishingChannelSubmissionsRequestBody: GetPublishingChannelSubmissionsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishingChannelSubmissions(
+        getPublishingChannelSubmissionsRequestBody,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 

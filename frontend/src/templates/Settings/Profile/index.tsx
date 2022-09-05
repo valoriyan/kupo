@@ -67,7 +67,7 @@ export const Profile = ({ user }: ProfileProps) => {
   const { mutateAsync: updateOwnProfilePicture } = useUpdateOwnProfilePicture();
   const { mutateAsync: updateOwnBackgroundImage } = useUpdateOwnBackgroundImage();
   const { mutateAsync: updateOwnProfile } = useUpdateOwnProfile();
-  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags(user.username);
+  const { mutateAsync: setOwnHashtags } = useSetOwnHashtags();
 
   const [isProfileUpdating, setIsProfileUpdating] = useState(false);
 
