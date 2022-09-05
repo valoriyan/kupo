@@ -51,7 +51,7 @@ export async function handleSearchForPosts({
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const getPublishedItemIdsWithOneOfHashtagsResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemIdsWithOneOfHashtags(
+    await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getPublishedItemIdsWithOneOfHashtags(
       { controller, hashtagSubstring: lowercaseTrimmedQuery },
     );
   if (getPublishedItemIdsWithOneOfHashtagsResponse.type === EitherType.failure) {

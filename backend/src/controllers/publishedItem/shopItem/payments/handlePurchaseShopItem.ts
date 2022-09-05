@@ -62,7 +62,7 @@ export async function handlePurchaseShopItem({
 
   if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
     const getShopItemByPublishedItemIdResponse =
-      await controller.databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
+      await controller.databaseService.tableNameToServicesMap.shopItemsTableService.getShopItemByPublishedItemId(
         { controller, publishedItemId },
       );
     if (getShopItemByPublishedItemIdResponse.type === EitherType.failure) {

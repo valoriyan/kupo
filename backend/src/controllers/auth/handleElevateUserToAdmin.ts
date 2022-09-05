@@ -63,7 +63,7 @@ export async function handleElevateUserToAdmin({
   } else {
     return Failure({
       controller,
-      httpStatusCode: 500,
+      httpStatusCode: 403,
       reason: ElevateUserToAdminFailedReason.ILLEGAL_ACCESS,
       error:
         "Client user does not have permission to create admins at handleElevateUserToAdmin",

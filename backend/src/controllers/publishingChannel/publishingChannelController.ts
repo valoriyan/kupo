@@ -23,7 +23,7 @@ import {
   SubmitPublishedItemToPublishingChannelFailedReason,
   SubmitPublishedItemToPublishingChannelRequestBody,
   SubmitPublishedItemToPublishingChannelSuccess,
-} from "./handleSubmitPublishedItemToPublishingChannel";
+} from "./moderation/handleSubmitPublishedItemToPublishingChannel";
 import {
   GetPublishingChannelByIdFailedReason,
   GetPublishingChannelByIdRequestBody,
@@ -42,7 +42,36 @@ import {
   GetPublishedItemsInPublishingChannelSuccess,
   handleGetPublishedItemsInPublishingChannel,
 } from "./handleGetPublishedItemsInPublishingChannel";
-import { GetPublishingChannelSubmissionsFailedReason, GetPublishingChannelSubmissionsRequestBody, GetPublishingChannelSubmissionsSuccess, handleGetPublishingChannelSubmissions } from "./handleGetPublishingChannelSubmissions";
+import {
+  GetPublishingChannelSubmissionsFailedReason,
+  GetPublishingChannelSubmissionsRequestBody,
+  GetPublishingChannelSubmissionsSuccess,
+  handleGetPublishingChannelSubmissions,
+} from "./handleGetPublishingChannelSubmissions";
+import {
+  BanUserFromPublishingChannelFailedReason,
+  BanUserFromPublishingChannelRequestBody,
+  BanUserFromPublishingChannelSuccess,
+  handleBanUserFromPublishingChannel,
+} from "./moderation/handleBanUserFromPublishingChannel";
+import {
+  handleUndoBanUserFromPublishingChannel,
+  UndoBanUserFromPublishingChannelFailedReason,
+  UndoBanUserFromPublishingChannelRequestBody,
+  UndoBanUserFromPublishingChannelSuccess,
+} from "./handleUndoBanUserFromPublishingChannel";
+import {
+  AddModeratorToPublishingChannelFailedReason,
+  AddModeratorToPublishingChannelRequestBody,
+  AddModeratorToPublishingChannelSuccess,
+  handleAddModeratorToPublishingChannel,
+} from "./moderation/handleAddModeratorToPublishingChannel copy";
+import {
+  handleRemoveModeratorFromPublishingChannel,
+  RemoveModeratorFromPublishingChannelFailedReason,
+  RemoveModeratorFromPublishingChannelRequestBody,
+  RemoveModeratorFromPublishingChannelSuccess,
+} from "./moderation/handleRemoveModeratorFromPublishingChannel";
 
 @injectable()
 @Route("publishing_channel")
@@ -87,6 +116,40 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleSubmitPublishedItemToPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("banUserFromPublishingChannel")
+  public async banUserFromPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: BanUserFromPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | BanUserFromPublishingChannelFailedReason>,
+      BanUserFromPublishingChannelSuccess
+    >
+  > {
+    return await handleBanUserFromPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("addModeratorToPublishingChannel")
+  public async addModeratorToPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: AddModeratorToPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | AddModeratorToPublishingChannelFailedReason>,
+      AddModeratorToPublishingChannelSuccess
+    >
+  > {
+    return await handleAddModeratorToPublishingChannel({
       controller: this,
       request,
       requestBody,
@@ -183,7 +246,42 @@ export class PublishingChannelController extends Controller {
       requestBody,
     });
   }
+
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  @Post("undoBanUserFromPublishingChannel")
+  public async undoBanUserFromPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: UndoBanUserFromPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UndoBanUserFromPublishingChannelFailedReason>,
+      UndoBanUserFromPublishingChannelSuccess
+    >
+  > {
+    return await handleUndoBanUserFromPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("removeModeratorFromPublishingChannel")
+  public async removeModeratorFromPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: RemoveModeratorFromPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | RemoveModeratorFromPublishingChannelFailedReason>,
+      RemoveModeratorFromPublishingChannelSuccess
+    >
+  > {
+    return await handleRemoveModeratorFromPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
 }

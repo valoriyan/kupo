@@ -44,7 +44,7 @@ export async function handleSearchForHashtags({
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
 
   const getHashtagsCountBySubstringResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsCountBySubstring(
+    await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getHashtagsCountBySubstring(
       { controller, hashtagSubstring: lowercaseTrimmedQuery },
     );
   if (getHashtagsCountBySubstringResponse.type === EitherType.failure) {
@@ -60,7 +60,7 @@ export async function handleSearchForHashtags({
   }
 
   const getHashtagsMatchingSubstringResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsMatchingSubstring(
+    await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getHashtagsMatchingSubstring(
       {
         controller,
         hashtagSubstring: lowercaseTrimmedQuery,

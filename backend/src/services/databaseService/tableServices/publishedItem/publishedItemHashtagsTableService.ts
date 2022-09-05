@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryConfig, QueryResult } from "pg";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { Controller } from "tsoa";
 import {
   ErrorReasonTypes,
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { TableService } from "./models";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
-import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
+} from "../../../../utilities/monads";
+import { TableService } from "../models";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItemsTableService";
 
 interface DBHashtag {
   hashtag: string;
   published_item_id: string;
 }
 
-export class HashtagsTableService extends TableService {
-  public static readonly tableName = `hashtags`;
-  public readonly tableName = HashtagsTableService.tableName;
+export class PublishedItemHashtagsTableService extends TableService {
+  public static readonly tableName = `published_item_hashtags`;
+  public readonly tableName = PublishedItemHashtagsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();

@@ -40,7 +40,7 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
   } = baseRenderablePublishedItem;
 
   const getShopItemByPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
+    await databaseService.tableNameToServicesMap.shopItemsTableService.getShopItemByPublishedItemId(
       {
         controller,
         publishedItemId: id,

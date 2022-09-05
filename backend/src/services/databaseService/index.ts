@@ -5,7 +5,7 @@ import { DATABASE_NAME } from "./config";
 import { setupDatabaseService } from "./setup";
 import { ChatMessagesTableService } from "./tableServices/chat/chatMessagesTableService";
 import { ChatRoomJoinsTableService } from "./tableServices/chat/chatRoomJoinsTableService";
-import { HashtagsTableService } from "./tableServices/hashtagsTableService";
+import { PublishedItemHashtagsTableService } from "./tableServices/publishedItem/publishedItemHashtagsTableService";
 import { PublishedItemCommentsTableService } from "./tableServices/publishedItem/publishedItemCommentsTableService";
 import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
 import { PublishedItemLikesTableService } from "./tableServices/publishedItem/publishedItemLikesTableService";
@@ -26,6 +26,8 @@ import { UserLoginAttemptsTableService } from "./tableServices/userLoginAttempts
 import { ChatRoomReadRecordsTableService } from "./tableServices/chat/chatRoomReadRecordsTableService";
 import { PublishingChannelsTableService } from "./tableServices/publishingChannel/publishingChannelsTableService";
 import { PublishingChannelSubmissionsTableService } from "./tableServices/publishingChannel/publishingChannelSubmissionsTableService";
+import { PublishingChannelUserBansTableService } from "./tableServices/publishingChannel/moderation/publishingChannelUserBansTableService";
+import { PublishingChannelModeratorsTableService } from "./tableServices/publishingChannel/moderation/publishingChannelModeratorsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -43,11 +45,13 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     userFollowsTableService: new UserFollowsTableService(DatabaseService.datastorePool),
-    shopItemTableService: new ShopItemsTableService(DatabaseService.datastorePool),
-    shopItemMediaElementTableService: new ShopItemMediaElementsTableService(
+    shopItemsTableService: new ShopItemsTableService(DatabaseService.datastorePool),
+    shopItemMediaElementsTableService: new ShopItemMediaElementsTableService(
       DatabaseService.datastorePool,
     ),
-    hashtagTableService: new HashtagsTableService(DatabaseService.datastorePool),
+    publishedItemHashtagsTableService: new PublishedItemHashtagsTableService(
+      DatabaseService.datastorePool,
+    ),
     chatMessagesTableService: new ChatMessagesTableService(DatabaseService.datastorePool),
     chatRoomJoinsTableService: new ChatRoomJoinsTableService(
       DatabaseService.datastorePool,
@@ -83,6 +87,12 @@ export class DatabaseService {
     ),
     publishingChannelSubmissionsTableService:
       new PublishingChannelSubmissionsTableService(DatabaseService.datastorePool),
+    publishingChannelModeratorsTableService: new PublishingChannelModeratorsTableService(
+      DatabaseService.datastorePool,
+    ),
+    publishingChannelUserBansTableService: new PublishingChannelUserBansTableService(
+      DatabaseService.datastorePool,
+    ),
   };
 
   static async start(): Promise<void> {
@@ -96,8 +106,7 @@ export class DatabaseService {
   }
 
   public async teardownDatabaseService(): Promise<void> {
-    // Only works for local
-    await teardownDatabaseService({tableServices: this.tableNameToServicesMap});
+    await teardownDatabaseService({ tableServices: this.tableNameToServicesMap });
   }
 
   static async get(): Promise<Pool> {
