@@ -1,8 +1,11 @@
 import { InfiniteData, QueryClient } from "react-query";
 import {
+  GetFollowerRequestsSuccess,
   GetPageOfUsersFollowedByUserIdSuccess,
   GetPageOfUsersFollowingUserIdSuccess,
+  ProfilePrivacySetting,
   RenderableUser,
+  UserFollowingStatus,
 } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
@@ -90,9 +93,21 @@ export const updateUserFollowingStatus = ({
       ...clientFollowingData,
       pages: clientFollowingData.pages.map((page) => ({
         ...page,
-        users: page.users.flatMap((user) =>
-          user.userId === userId && !isFollowing ? [] : [user],
-        ),
+        users: page.users.flatMap((user) => {
+          if (user.userId === userId) {
+            if (!isFollowing) return [];
+            return [
+              {
+                ...user,
+                followingStatusOfClientToUser:
+                  user.profilePrivacySetting === ProfilePrivacySetting.Private
+                    ? UserFollowingStatus.Pending
+                    : UserFollowingStatus.IsFollowing,
+              },
+            ];
+          }
+          return [user];
+        }),
       })),
     };
     queryClient.setQueryData(followingUsersCacheKey, updatedFollowingData);
@@ -111,7 +126,14 @@ export const updateUserFollowingStatus = ({
         ...page,
         users: page.users.map((user) => {
           if (user.userId === userId) {
-            return { ...user, isBeingFollowedByClient: isFollowing };
+            return {
+              ...user,
+              followingStatusOfClientToUser: !isFollowing
+                ? UserFollowingStatus.NotFollowing
+                : user.profilePrivacySetting === ProfilePrivacySetting.Private
+                ? UserFollowingStatus.Pending
+                : UserFollowingStatus.IsFollowing,
+            };
           } else {
             return user;
           }
@@ -119,5 +141,37 @@ export const updateUserFollowingStatus = ({
       })),
     };
     queryClient.setQueryData(followerUsersCacheKey, updatedFollowersData);
+
+    const followerRequestsUsersCacheKey = [CacheKeys.FollowerRequests];
+    const clientFollowerRequestsData = queryClient.getQueryData<
+      InfiniteData<GetFollowerRequestsSuccess>
+    >(followerRequestsUsersCacheKey);
+
+    if (clientFollowerRequestsData) {
+      const updatedFollowerRequestsData = {
+        ...clientFollowingData,
+        pages: clientFollowerRequestsData.pages.map((page) => ({
+          ...page,
+          users: page.users.map((user) => {
+            if (user.userId === userId) {
+              return {
+                ...user,
+                followingStatusOfClientToUser: !isFollowing
+                  ? UserFollowingStatus.NotFollowing
+                  : user.profilePrivacySetting === ProfilePrivacySetting.Private
+                  ? UserFollowingStatus.Pending
+                  : UserFollowingStatus.IsFollowing,
+              };
+            } else {
+              return user;
+            }
+          }),
+        })),
+      };
+      queryClient.setQueryData(
+        followerRequestsUsersCacheKey,
+        updatedFollowerRequestsData,
+      );
+    }
   }
 };
