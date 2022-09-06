@@ -79,7 +79,7 @@ export async function handleUpdateShopItem({
   }
 
   const updateShopItemByPublishedItemIdResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemTableService.updateShopItemByPublishedItemId(
+    await controller.databaseService.tableNameToServicesMap.shopItemsTableService.updateShopItemByPublishedItemId(
       {
         controller,
         publishedItemId: uncompiledBasePublishedItem.id,

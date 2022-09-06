@@ -46,7 +46,7 @@ export async function assembleBaseRenderablePublishedItem({
   } = uncompiledBasePublishedItem;
 
   const getHashtagsForPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.hashtagTableService.getHashtagsForPublishedItemId(
+    await databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getHashtagsForPublishedItemId(
       { controller, publishedItemId: id },
     );
 

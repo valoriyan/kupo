@@ -29,7 +29,7 @@ export async function assembleShopItemMediaElements({
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
   const getShopItemMediaElementsByPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemMediaElementsByPublishedItemId(
+    await databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.getShopItemMediaElementsByPublishedItemId(
       { controller, publishedItemId, shopItemType },
     );
   if (getShopItemMediaElementsByPublishedItemIdResponse.type === EitherType.failure) {

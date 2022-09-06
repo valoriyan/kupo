@@ -15,6 +15,27 @@ async function teardownTables({
     .slice()
     .reverse();
 
+  const uncompletedTableServices: Set<string> = new Set(
+    orderedTablesEntities.map(({ tableService }) => tableService.tableName),
+  );
+
+  try {
+    await BluebirdPromise.each(orderedTablesEntities, async ({ tableService }) => {
+      uncompletedTableServices.delete(tableService.tableName);
+      await tableService.teardown();
+    });
+    console.log(`
+    ------------------------
+    Completed teardownTables
+    ------------------------
+    `);
+  } catch (error) {
+    console.log("\n\n\n\n\n");
+    console.log("Uncompleted Table Services:");
+    console.log([...uncompletedTableServices]);
+    console.log("\n\n\n\n\n");
+    console.log(error);
+  }
   await BluebirdPromise.each(orderedTablesEntities, async ({ tableService }) => {
     return await tableService.teardown();
   });

@@ -38,7 +38,7 @@ export async function assembleRootShopItemPreviewFromParts({
   } = baseRenderablePublishedItem;
 
   const getShopItemByPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.shopItemTableService.getShopItemByPublishedItemId(
+    await databaseService.tableNameToServicesMap.shopItemsTableService.getShopItemByPublishedItemId(
       {
         controller,
         publishedItemId: id,
@@ -63,7 +63,7 @@ export async function assembleRootShopItemPreviewFromParts({
   const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
 
   const getShopItemPurchasedMediaElementsMetadataResponse =
-    await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.getShopItemPurchasedMediaElementsMetadata(
+    await databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.getShopItemPurchasedMediaElementsMetadata(
       { controller, publishedItemId: id },
     );
   if (getShopItemPurchasedMediaElementsMetadataResponse.type === EitherType.failure) {

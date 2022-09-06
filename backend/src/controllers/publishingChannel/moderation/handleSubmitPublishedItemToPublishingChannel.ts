@@ -4,9 +4,9 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
-} from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { PublishingChannelController } from "./publishingChannelController";
+} from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
+import { PublishingChannelController } from "../publishingChannelController";
 import { v4 as uuidv4 } from "uuid";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

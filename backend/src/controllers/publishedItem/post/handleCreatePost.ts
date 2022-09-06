@@ -143,7 +143,7 @@ export async function handleCreatePost({
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
   const addHashtagsToPublishedItemResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
+    await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.addHashtagsToPublishedItem(
       {
         controller,
         hashtags: lowerCaseHashtags,

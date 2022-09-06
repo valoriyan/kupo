@@ -56,7 +56,7 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     : 999999999999999;
 
   const getPublishedItemsWithHashtagResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.getPublishedItemsWithHashtag(
+    await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getPublishedItemsWithHashtag(
       { controller, hashtag: hashtag },
     );
   if (getPublishedItemsWithHashtagResponse.type === EitherType.failure) {

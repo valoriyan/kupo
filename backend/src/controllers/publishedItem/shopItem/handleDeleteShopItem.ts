@@ -66,7 +66,7 @@ export async function handleDeleteShopItem({
   //////////////////////////////////////////////////
 
   const deleteShopItemResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemTableService.deleteShopItem(
+    await controller.databaseService.tableNameToServicesMap.shopItemsTableService.deleteShopItem(
       {
         controller,
         publishedItemId,
@@ -106,7 +106,7 @@ const deleteAssociatedBlobFilesForShopItem = async ({
   publishedItemId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
   const deleteShopItemMediaElementsByPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.shopItemMediaElementTableService.deleteShopItemMediaElementsByPublishedItemId(
+    await databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.deleteShopItemMediaElementsByPublishedItemId(
       {
         controller,
         publishedItemId,

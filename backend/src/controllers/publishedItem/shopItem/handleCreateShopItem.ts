@@ -90,7 +90,7 @@ export async function handleCreateShopItem({
   }
 
   const createShopItemResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemTableService.createShopItem(
+    await controller.databaseService.tableNameToServicesMap.shopItemsTableService.createShopItem(
       {
         controller,
         publishedItemId,
@@ -105,7 +105,7 @@ export async function handleCreateShopItem({
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
   const addHashtagsToPublishedItemResponse =
-    await controller.databaseService.tableNameToServicesMap.hashtagTableService.addHashtagsToPublishedItem(
+    await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.addHashtagsToPublishedItem(
       {
         controller,
         hashtags: lowerCaseHashtags,
@@ -137,7 +137,7 @@ export async function handleCreateShopItem({
   const { success: shopItemMediaElements } = uploadMediaFileResponses;
 
   const createShopItemMediaElementsResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementTableService.createShopItemMediaElements(
+    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.createShopItemMediaElements(
       { controller, shopItemMediaElements },
     );
   if (createShopItemMediaElementsResponse.type === EitherType.failure) {
