@@ -17,7 +17,7 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
-import { UsersTableService } from "../usersTableService";
+import { UsersTableService } from "../users/usersTableService";
 
 interface DBChatMessage {
   chat_message_id: string;

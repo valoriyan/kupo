@@ -15,7 +15,7 @@ import {
 } from "../../../utilities/monads";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { Controller } from "tsoa";
-import { UsersTableService } from "./usersTableService";
+import { UsersTableService } from "./users/usersTableService";
 
 export interface DBUserNotification {
   user_notification_id: string;

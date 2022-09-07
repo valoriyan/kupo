@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryConfig, QueryResult } from "pg";
-import { Color } from "../../../types/color";
+import { Color } from "../../../../types/color";
 import {
   ProfilePrivacySetting,
   UnrenderableUser,
   UnrenderableUser_WITH_PASSWORD,
   UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID,
-} from "../../../controllers/user/models";
-import { TableService } from "./models";
+} from "../../../../controllers/user/models";
+import { TableService } from "../models";
 import {
   generatePostgreSQLCreateEnumTypeQueryString,
   generatePSQLGenericUpdateRowQueryString,
-} from "./utilities/index";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../utilities/index";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import {
   ErrorReasonTypes,
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+} from "../../../../utilities/monads";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { Controller } from "tsoa";
 
 interface DBUser {

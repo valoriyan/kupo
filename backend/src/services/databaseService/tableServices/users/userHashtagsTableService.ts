@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { Controller } from "tsoa";
 import {
   ErrorReasonTypes,
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { TableService } from "./models";
+} from "../../../../utilities/monads";
+import { TableService } from "../models";
 import { UsersTableService } from "./usersTableService";
 
 interface DBUserHashtag {

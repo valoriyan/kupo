@@ -5,54 +5,44 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../../../utilities/monads";
+} from "../../../../utilities/monads";
 import { Controller } from "tsoa";
 
-import { TableService } from "../../models";
-import { UsersTableService } from "../../users/usersTableService";
-import { generatePSQLGenericCreateRowsQuery } from "../../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
-import { GenericResponseFailedReason } from "../../../../../controllers/models";
-import { PublishingChannelsTableService } from "../publishingChannelsTableService";
-import { generatePSQLGenericDeleteRowsQueryString } from "../../utilities";
+import { TableService } from "../models";
+import { UsersTableService } from "./usersTableService";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface DBPublishingChannelUserBan {
-  publishing_channel_id: string;
-  banned_user_id: string;
+interface DBUserBlock {
+  blocked_user_id: string;
   executor_user_id: string;
   execution_timestamp: string;
 }
 
-export class PublishingChannelUserBansTableService extends TableService {
-  public static readonly tableName = `publishing_channel_user_bans`;
-  public readonly tableName = PublishingChannelUserBansTableService.tableName;
+export class UserBlocksTableService extends TableService {
+  public static readonly tableName = `user_blocks`;
+  public readonly tableName = UserBlocksTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
   }
 
-  public dependencies = [
-    PublishingChannelsTableService.tableName,
-    UsersTableService.tableName,
-  ];
+  public dependencies = [UsersTableService.tableName];
 
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        publishing_channel_id VARCHAR(64) NOT NULL,
-        banned_user_id VARCHAR(64) NOT NULL,
+        blocked_user_id VARCHAR(64) NOT NULL,
         executor_user_id VARCHAR(64) NOT NULL,
         execution_timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (publishing_channel_id, banned_user_id),
-
-        CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
-          FOREIGN KEY (publishing_channel_id)
-          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id),
+          PRIMARY KEY (blocked_user_id, executor_user_id),
 
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_banned_fkey
-          FOREIGN KEY (banned_user_id)
+          FOREIGN KEY (blocked_user_id)
           REFERENCES ${UsersTableService.tableName} (user_id),
 
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_executor_fkey
@@ -70,16 +60,14 @@ export class PublishingChannelUserBansTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async executeBanOfUserIdForPublishingChannelId({
+  public async executeBlockOfUserIdByUserId({
     controller,
-    publishingChannelId,
-    bannedUserId,
+    blockedUserId,
     executorUserId,
     executionTimestamp,
   }: {
     controller: Controller;
-    publishingChannelId: string;
-    bannedUserId: string;
+    blockedUserId: string;
     executorUserId: string;
     executionTimestamp: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
@@ -87,8 +75,7 @@ export class PublishingChannelUserBansTableService extends TableService {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
         rowsOfFieldsAndValues: [
           [
-            { field: "publishing_channel_id", value: publishingChannelId },
-            { field: "banned_user_id", value: bannedUserId },
+            { field: "blocked_user_id", value: blockedUserId },
             { field: "executor_user_id", value: executorUserId },
             { field: "execution_timestamp", value: executionTimestamp },
           ],
@@ -105,7 +92,7 @@ export class PublishingChannelUserBansTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at PublishingChannelUserBansTableService.executeBanOfUserIdForPublishingChannelId",
+          "Error at UserBansTableService.executeBlockOfUserIdByUserId",
       });
     }
   }
@@ -114,17 +101,17 @@ export class PublishingChannelUserBansTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async isUserIdBannedFromPublishingChannelId({
+  public async isUserIdBlockedByUserId({
     controller,
-    userId,
-    publishingChannelId,
+    maybeBlockedUserId,
+    maybeExecutorUserId,
   }: {
     controller: Controller;
-    userId: string;
-    publishingChannelId: string;
+    maybeBlockedUserId: string;
+    maybeExecutorUserId: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
     try {
-      const values = [userId, publishingChannelId];
+      const values = [maybeBlockedUserId, maybeExecutorUserId];
 
       const query: QueryConfig = {
         text: `
@@ -133,9 +120,9 @@ export class PublishingChannelUserBansTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            banned_user_id = $1
+            blocked_user_id = $1
           AND
-            publishing_channel_id = $2
+            executor_user_id = $2
           LIMIT
             1
           ;
@@ -143,8 +130,7 @@ export class PublishingChannelUserBansTableService extends TableService {
         values,
       };
 
-      const response: QueryResult<DBPublishingChannelUserBan> =
-        await this.datastorePool.query(query);
+      const response: QueryResult<DBUserBlock> = await this.datastorePool.query(query);
 
       return Success(response.rows.length === 1);
     } catch (error) {
@@ -154,7 +140,7 @@ export class PublishingChannelUserBansTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at PublishingChannelUserBansTableService.isUserIdBannedFromPublishingChannelId",
+          "Error at UserBansTableService.isUserIdBlockedByUserId",
       });
     }
   }
@@ -167,27 +153,25 @@ export class PublishingChannelUserBansTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async removeBanFromUserIdForPublishingChannelId({
+  public async removeBlockOfUserIdAgainstUserId({
     controller,
-    userId,
-    publishingChannelId,
+    blockedUserId,
+    executorUserId,
   }: {
     controller: Controller;
-    userId: string;
-    publishingChannelId: string;
-  }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelUserBan>
-  > {
+    blockedUserId: string;
+    executorUserId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserBlock>> {
     try {
       const query = generatePSQLGenericDeleteRowsQueryString({
         fieldsUsedToIdentifyRowsToDelete: [
-          { field: "banned_user_id", value: userId },
-          { field: "publishing_channel_id", value: publishingChannelId },
+          { field: "blocked_user_id", value: blockedUserId },
+          { field: "executor_user_id", value: executorUserId },
         ],
         tableName: this.tableName,
       });
 
-      const response = await this.datastorePool.query<DBPublishingChannelUserBan>(query);
+      const response = await this.datastorePool.query<DBUserBlock>(query);
       return Success(response.rows[0]);
     } catch (error) {
       return Failure({
@@ -196,7 +180,7 @@ export class PublishingChannelUserBansTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at PublishingChannelUserBansTableService.removeBanFromUserIdForPublishingChannelId",
+          "Error at UserBansTableService.removeBlockOfUserIdAgainstUserId",
       });
     }
   }

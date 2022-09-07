@@ -5,10 +5,10 @@ import {
   Failure,
   SecuredHTTPResponse,
   Success,
-} from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { PublishingChannelController } from "./publishingChannelController";
-import { doesUserIdHaveRightsToModeratePublishingChannel } from "./utilities/permissions";
+} from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
+import { PublishingChannelController } from "../publishingChannelController";
+import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
 
 export interface UndoBanUserFromPublishingChannelRequestBody {
   publishingChannelId: string;

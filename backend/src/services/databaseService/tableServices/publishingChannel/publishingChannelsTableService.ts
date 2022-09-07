@@ -9,7 +9,7 @@ import {
 import { Controller } from "tsoa";
 
 import { TableService } from "../models";
-import { UsersTableService } from "../usersTableService";
+import { UsersTableService } from "../users/usersTableService";
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { generatePSQLGenericUpdateRowQueryString } from "../utilities";

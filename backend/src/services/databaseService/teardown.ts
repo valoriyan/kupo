@@ -3,6 +3,7 @@ import { DATABASE_NAME } from "./config";
 import { TableService } from "./tableServices/models";
 import { topologicalSortTables } from "./setup";
 import { Promise as BluebirdPromise } from "bluebird";
+import { sleep } from "../../utilities";
 
 async function teardownTables({
   tableServices,
@@ -22,7 +23,7 @@ async function teardownTables({
   try {
     await BluebirdPromise.each(orderedTablesEntities, async ({ tableService }) => {
       uncompletedTableServices.delete(tableService.tableName);
-      await tableService.teardown();
+      return await tableService.teardown();
     });
     console.log(`
     ------------------------
@@ -36,20 +37,22 @@ async function teardownTables({
     console.log("\n\n\n\n\n");
     console.log(error);
   }
-  await BluebirdPromise.each(orderedTablesEntities, async ({ tableService }) => {
-    return await tableService.teardown();
-  });
 }
 
 async function teardownDatabase() {
   const datastorePool = new Pool();
   console.log("Dropping Database");
 
+  await sleep(10000);
   await datastorePool.query(`
     DROP DATABASE IF EXISTS ${DATABASE_NAME} WITH (FORCE);
   `);
 
-  console.log("Completed Dropping Database\n");
+  console.log(`
+  ------------------------
+  Completed teardownDatabase
+  ------------------------
+  `);
 
   await datastorePool.end();
 }

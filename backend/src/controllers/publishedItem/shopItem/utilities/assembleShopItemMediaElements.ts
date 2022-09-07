@@ -2,7 +2,7 @@ import { BlobStorageServiceInterface } from "../../../../services/blobStorageSer
 import { DatabaseService } from "../../../../services/databaseService";
 import { Promise as BluebirdPromise } from "bluebird";
 import { MediaElement } from "../../../models";
-import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
+import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import { Controller } from "tsoa";
 import {
   EitherType,

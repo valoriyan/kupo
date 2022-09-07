@@ -8,7 +8,7 @@ import {
 import { singleton } from "tsyringe";
 import { CreditCardSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 import { getEnvironmentVariable } from "../../utilities";
-import { DBStoredCreditCardDatum } from "../databaseService/tableServices/storedCreditCardDataTableService";
+import { DBStoredCreditCardDatum } from "../databaseService/tableServices/users/storedCreditCardDataTableService";
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { Controller } from "tsoa";
 

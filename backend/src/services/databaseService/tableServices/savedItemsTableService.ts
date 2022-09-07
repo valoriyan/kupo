@@ -12,7 +12,7 @@ import { TableService } from "./models";
 import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
 import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
-import { UsersTableService } from "./usersTableService";
+import { UsersTableService } from "./users/usersTableService";
 
 interface DBSavedItem {
   save_id: string;

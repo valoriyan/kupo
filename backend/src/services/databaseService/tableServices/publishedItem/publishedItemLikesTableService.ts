@@ -12,7 +12,7 @@ import { TableService } from "../models";
 import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { PublishedItemsTableService } from "./publishedItemsTableService";
-import { UsersTableService } from "../usersTableService";
+import { UsersTableService } from "../users/usersTableService";
 
 interface DBPublishedItemLike {
   published_item_like_id: string;

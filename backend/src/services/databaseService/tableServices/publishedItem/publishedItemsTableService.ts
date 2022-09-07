@@ -20,7 +20,7 @@ import {
 } from "../../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
-import { UsersTableService } from "../usersTableService";
+import { UsersTableService } from "../users/usersTableService";
 
 interface DBPublishedItem {
   type: PublishedItemType;

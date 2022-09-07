@@ -7,27 +7,28 @@ import { ChatMessagesTableService } from "./tableServices/chat/chatMessagesTable
 import { ChatRoomJoinsTableService } from "./tableServices/chat/chatRoomJoinsTableService";
 import { PublishedItemHashtagsTableService } from "./tableServices/publishedItem/publishedItemHashtagsTableService";
 import { PublishedItemCommentsTableService } from "./tableServices/publishedItem/publishedItemCommentsTableService";
-import { PostContentElementsTableService } from "./tableServices/postContentElementsTableService";
+import { PostContentElementsTableService } from "./tableServices/publishedItem/postContentElementsTableService";
 import { PublishedItemLikesTableService } from "./tableServices/publishedItem/publishedItemLikesTableService";
 import { PublishedItemsTableService } from "./tableServices/publishedItem/publishedItemsTableService";
-import { ShopItemMediaElementsTableService } from "./tableServices/shopItemMediaElementsTableService";
-import { ShopItemsTableService } from "./tableServices/shopItemsTableService";
+import { ShopItemMediaElementsTableService } from "./tableServices/publishedItem/shopItemMediaElementsTableService";
+import { ShopItemsTableService } from "./tableServices/publishedItem/shopItemsTableService";
 import { UserContentFeedFiltersTableService } from "./tableServices/userContentFeedFiltersTableService";
-import { UserFollowsTableService } from "./tableServices/userFollowsTableService";
-import { UserHashtagsTableService } from "./tableServices/userHashtagsTableService";
-import { UsersTableService } from "./tableServices/usersTableService";
+import { UserFollowsTableService } from "./tableServices/users/userFollowsTableService";
+import { UserHashtagsTableService } from "./tableServices/users/userHashtagsTableService";
+import { UsersTableService } from "./tableServices/users/usersTableService";
 import { teardownDatabaseService } from "./teardown";
 import { DatabaseServiceType } from "./models";
 import { UserNotificationsTableService } from "./tableServices/userNotificationsTableService";
 import { SavedItemsTableService } from "./tableServices/savedItemsTableService";
-import { StoredCreditCardDataTableService } from "./tableServices/storedCreditCardDataTableService";
-import { PublishedItemTransactionsTableService } from "./tableServices/publishedItemTransactionsTableService";
-import { UserLoginAttemptsTableService } from "./tableServices/userLoginAttemptsTableService";
+import { StoredCreditCardDataTableService } from "./tableServices/users/storedCreditCardDataTableService";
+import { PublishedItemTransactionsTableService } from "./tableServices/publishedItem/publishedItemTransactionsTableService";
+import { UserLoginAttemptsTableService } from "./tableServices/users/userLoginAttemptsTableService";
 import { ChatRoomReadRecordsTableService } from "./tableServices/chat/chatRoomReadRecordsTableService";
 import { PublishingChannelsTableService } from "./tableServices/publishingChannel/publishingChannelsTableService";
 import { PublishingChannelSubmissionsTableService } from "./tableServices/publishingChannel/publishingChannelSubmissionsTableService";
 import { PublishingChannelUserBansTableService } from "./tableServices/publishingChannel/moderation/publishingChannelUserBansTableService";
 import { PublishingChannelModeratorsTableService } from "./tableServices/publishingChannel/moderation/publishingChannelModeratorsTableService";
+import { UserBlocksTableService } from "./tableServices/users/userBlocksTable";
 
 @singleton()
 export class DatabaseService {
@@ -93,6 +94,7 @@ export class DatabaseService {
     publishingChannelUserBansTableService: new PublishingChannelUserBansTableService(
       DatabaseService.datastorePool,
     ),
+    userBlocksTableService: new UserBlocksTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

@@ -30,6 +30,24 @@ import {
   ResolveFollowRequestRequestBody,
   ResolveFollowRequestSuccess,
 } from "./handleResolveFollowRequest";
+import {
+  handleResolveAllFollowRequests,
+  ResolveAllFollowRequestsFailedReason,
+  ResolveAllFollowRequestsRequestBody,
+  ResolveAllFollowRequestsSuccess,
+} from "./handleResolveAllFollowRequests";
+import {
+  BlockUserFailedReason,
+  BlockUserRequestBody,
+  BlockUserSuccess,
+  handleBlockUser,
+} from "./handleBlockUser";
+import {
+  handleUnblockUser,
+  UnblockUserFailedReason,
+  UnblockUserRequestBody,
+  UnblockUserSuccess,
+} from "./handleUnblockUser";
 
 @injectable()
 @Route("userInteractions")
@@ -57,6 +75,23 @@ export class UserInteractionController extends Controller {
     >
   > {
     return await handleFollowUser({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("blockUser")
+  public async blockUser(
+    @Request() request: express.Request,
+    @Body() requestBody: BlockUserRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | BlockUserFailedReason>,
+      BlockUserSuccess
+    >
+  > {
+    return await handleBlockUser({
       controller: this,
       request,
       requestBody,
@@ -105,6 +140,23 @@ export class UserInteractionController extends Controller {
     });
   }
 
+  @Post("resolveAllFollowRequests")
+  public async resolveAllFollowRequests(
+    @Request() request: express.Request,
+    @Body() requestBody: ResolveAllFollowRequestsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | ResolveAllFollowRequestsFailedReason>,
+      ResolveAllFollowRequestsSuccess
+    >
+  > {
+    return await handleResolveAllFollowRequests({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -120,6 +172,23 @@ export class UserInteractionController extends Controller {
     >
   > {
     return await handleUnfollowUser({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("unblockUser")
+  public async unblockUser(
+    @Request() request: express.Request,
+    @Body() requestBody: UnblockUserRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UnblockUserFailedReason>,
+      UnblockUserSuccess
+    >
+  > {
+    return await handleUnblockUser({
       controller: this,
       request,
       requestBody,

@@ -59,7 +59,7 @@ import {
   UndoBanUserFromPublishingChannelFailedReason,
   UndoBanUserFromPublishingChannelRequestBody,
   UndoBanUserFromPublishingChannelSuccess,
-} from "./handleUndoBanUserFromPublishingChannel";
+} from "./moderation/handleUndoBanUserFromPublishingChannel";
 import {
   AddModeratorToPublishingChannelFailedReason,
   AddModeratorToPublishingChannelRequestBody,

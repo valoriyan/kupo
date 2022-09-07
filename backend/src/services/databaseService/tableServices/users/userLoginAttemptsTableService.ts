@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Pool, QueryResult } from "pg";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { Controller } from "tsoa";
 import {
   ErrorReasonTypes,
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { TableService } from "./models";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../../../../utilities/monads";
+import { TableService } from "../models";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 
 interface DBUserLoginAttempt {
   email: string;

@@ -5,27 +5,33 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
+} from "../../../../utilities/monads";
 import {
   FiledMediaElement,
   GenericResponseFailedReason,
-} from "../../../controllers/models";
-import { TableService } from "./models";
-import { generatePSQLGenericDeleteRowsQueryString } from "./utilities";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../../../../controllers/models";
+import { TableService } from "../models";
+import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
-import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
+import { PublishedItemsTableService } from "./publishedItemsTableService";
 
-interface DBPostContentElement {
+export enum DBShopItemElementType {
+  PREVIEW_MEDIA_ELEMENT = "PREVIEW_MEDIA_ELEMENT",
+  PURCHASED_MEDIA_ELEMENT = "PURCHASED_MEDIA_ELEMENT",
+}
+
+interface DBShopItemMediaElement {
   published_item_id: string;
-  post_content_element_index: number;
+  shop_item_element_index: number;
+  type: DBShopItemElementType;
   blob_file_key: string;
   mimetype: string;
 }
 
-export class PostContentElementsTableService extends TableService {
-  public static readonly tableName = `post_content_elements`;
-  public readonly tableName = PostContentElementsTableService.tableName;
+export class ShopItemMediaElementsTableService extends TableService {
+  public static readonly tableName = `shop_item_media_elements`;
+  public readonly tableName = ShopItemMediaElementsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
@@ -37,17 +43,17 @@ export class PostContentElementsTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         published_item_id VARCHAR(64) NOT NULL,
-        post_content_element_index SMALLINT NOT NULL,
+        shop_item_element_index SMALLINT NOT NULL,
+        type VARCHAR(64) NOT NULL,
         blob_file_key VARCHAR(64) UNIQUE NOT NULL,
         mimetype VARCHAR(64) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (published_item_id, post_content_element_index),
+          PRIMARY KEY (published_item_id, type, shop_item_element_index),
 
         CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
           FOREIGN KEY (published_item_id)
           REFERENCES ${PublishedItemsTableService.tableName} (id)
-          
 
       )
       ;
@@ -60,31 +66,34 @@ export class PostContentElementsTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async createPostContentElements({
+  public async createShopItemMediaElements({
     controller,
-    postContentElements,
+    shopItemMediaElements,
   }: {
     controller: Controller;
-    postContentElements: {
+    shopItemMediaElements: {
       publishedItemId: string;
-      postContentElementIndex: number;
+      shopItemElementIndex: number;
+      shopItemType: DBShopItemElementType;
       blobFileKey: string;
       mimetype: string;
     }[];
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
-      const rowsOfFieldsAndValues = postContentElements.map(
+      const rowsOfFieldsAndValues = shopItemMediaElements.map(
         ({
-          publishedItemId: publishedItemId,
-          postContentElementIndex,
+          publishedItemId,
+          shopItemElementIndex,
+          shopItemType,
           blobFileKey,
           mimetype,
         }) => [
           { field: "published_item_id", value: publishedItemId },
           {
-            field: "post_content_element_index",
-            value: `${postContentElementIndex}`,
+            field: "shop_item_element_index",
+            value: `${shopItemElementIndex}`,
           },
+          { field: "type", value: shopItemType },
           { field: "blob_file_key", value: blobFileKey },
           { field: "mimetype", value: mimetype },
         ],
@@ -104,7 +113,7 @@ export class PostContentElementsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at postContentElementsTableService.createPostContentElements",
+          "Error at shopItemMediaElementsTableService.createShopItemMediaElements",
       });
     }
   }
@@ -113,15 +122,55 @@ export class PostContentElementsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPostContentElementsByPublishedItemId({
+  public async getShopItemPurchasedMediaElementsMetadata({
     controller,
     publishedItemId,
   }: {
     controller: Controller;
     publishedItemId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, { count: number }>> {
+    try {
+      const query = {
+        text: `
+          SELECT COUNT(*)
+          FROM
+            ${this.tableName}
+          WHERE
+            published_item_id = $1
+            AND type = $2
+          ;
+        `,
+        values: [publishedItemId, DBShopItemElementType.PURCHASED_MEDIA_ELEMENT],
+      };
+
+      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+        query,
+      );
+
+      return Success({ count: Number.parseInt(response.rows[0].count, 10) });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at shopItemMediaElementsTableService.getShopItemPurchasedMediaElementsMetadata",
+      });
+    }
+  }
+
+  public async getShopItemMediaElementsByPublishedItemId({
+    controller,
+    publishedItemId,
+    shopItemType,
+  }: {
+    controller: Controller;
+    publishedItemId: string;
+    shopItemType: DBShopItemElementType;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, FiledMediaElement[]>> {
     try {
-      const queryString = {
+      const query = {
         text: `
           SELECT
             *
@@ -129,26 +178,25 @@ export class PostContentElementsTableService extends TableService {
             ${this.tableName}
           WHERE
             published_item_id = $1
+            AND type = $2
           ;
         `,
-        values: [publishedItemId],
+        values: [publishedItemId, shopItemType],
       };
 
-      const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
-        queryString,
-      );
+      const response: QueryResult<DBShopItemMediaElement> =
+        await this.datastorePool.query(query);
 
       return Success(
         response.rows
           .sort((firstElement, secondElement) =>
-            firstElement.post_content_element_index >
-            secondElement.post_content_element_index
+            firstElement.shop_item_element_index > secondElement.shop_item_element_index
               ? 1
               : -1,
           )
-          .map((dbPostContentElement) => ({
-            blobFileKey: dbPostContentElement.blob_file_key,
-            mimeType: dbPostContentElement.mimetype,
+          .map((dbShopItemMediaElement) => ({
+            blobFileKey: dbShopItemMediaElement.blob_file_key,
+            mimeType: dbShopItemMediaElement.mimetype,
           })),
       );
     } catch (error) {
@@ -158,7 +206,7 @@ export class PostContentElementsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at postContentElementsTableService.getPostContentElementsByPublishedItemId",
+          "Error at shopItemMediaElementsTableService.getShopItemMediaElementsByPublishedItemId",
       });
     }
   }
@@ -171,9 +219,9 @@ export class PostContentElementsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deletePostContentElementsByPublishedItemId({
+  public async deleteShopItemMediaElementsByPublishedItemId({
     controller,
-    publishedItemId: publishedItemId,
+    publishedItemId,
   }: {
     controller: Controller;
     publishedItemId: string;
@@ -193,13 +241,12 @@ export class PostContentElementsTableService extends TableService {
         tableName: this.tableName,
       });
 
-      const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
-        query,
-      );
+      const response: QueryResult<DBShopItemMediaElement> =
+        await this.datastorePool.query(query);
 
       return Success(
-        response.rows.map((dbPostContentElement) => ({
-          fileKey: dbPostContentElement.blob_file_key,
+        response.rows.map((dbShopItemMediaElement) => ({
+          fileKey: dbShopItemMediaElement.blob_file_key,
         })),
       );
     } catch (error) {
@@ -209,7 +256,7 @@ export class PostContentElementsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at postContentElementsTableService.deletePostContentElementsByPublishedItemId",
+          "Error at shopItemMediaElementsTableService.deleteShopItemMediaElementsByPublishedItemId",
       });
     }
   }

@@ -10,7 +10,7 @@ import {
 import { TableService } from "../models";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
-import { UsersTableService } from "../usersTableService";
+import { UsersTableService } from "../users/usersTableService";
 
 interface DBChatRoomReadRecord {
   user_id: string;

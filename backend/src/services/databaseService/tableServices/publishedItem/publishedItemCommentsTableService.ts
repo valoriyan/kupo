@@ -18,7 +18,7 @@ import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenera
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { PublishedItemsTableService } from "./publishedItemsTableService";
-import { UsersTableService } from "../usersTableService";
+import { UsersTableService } from "../users/usersTableService";
 
 interface DBPublishedItemComment {
   published_item_comment_id: string;

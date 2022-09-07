@@ -5,19 +5,19 @@ import {
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
+} from "../../../../utilities/monads";
 import {
   UnrenderableUserFollow,
   UserFollowingStatus,
-} from "../../../controllers/user/userInteraction/models";
-import { TableService } from "./models";
+} from "../../../../controllers/user/userInteraction/models";
+import { TableService } from "../models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
   generatePSQLGenericUpdateRowQueryString,
-} from "./utilities";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+} from "../utilities";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "./usersTableService";
 
 interface DBUserFollow {
@@ -528,6 +528,43 @@ export class UserFollowsTableService extends TableService {
       });
     }
   }
+
+  public async approveAllPendingFollows({
+    controller,
+    userIdBeingFollowed,
+  }: {
+    controller: Controller;
+    userIdBeingFollowed: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow[]>
+  > {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "is_pending", value: "false" }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id_being_followed",
+            value: userIdBeingFollowed,
+          },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+
+      return Success(response.rows.map(convertDBUserFollowToUnrenderableUserFollow));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at UserFollowsTableService.approvePendingFollow",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -545,6 +582,35 @@ export class UserFollowsTableService extends TableService {
       const query = generatePSQLGenericDeleteRowsQueryString({
         fieldsUsedToIdentifyRowsToDelete: [
           { field: "user_id_doing_following", value: userIdDoingUnfollowing },
+          { field: "user_id_being_followed", value: userIdBeingUnfollowed },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response = await this.datastorePool.query<DBUserFollow>(query);
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at userFollowsTableService.deleteUserFollow",
+      });
+    }
+  }
+
+  public async deleteAllPendingUserFollows({
+    controller,
+    userIdBeingUnfollowed,
+  }: {
+    controller: Controller;
+    userIdBeingUnfollowed: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserFollow>> {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "is_pending", value: "true" },
           { field: "user_id_being_followed", value: userIdBeingUnfollowed },
         ],
         tableName: this.tableName,

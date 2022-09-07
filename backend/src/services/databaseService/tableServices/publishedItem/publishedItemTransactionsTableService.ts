@@ -1,16 +1,16 @@
 import { Pool, QueryResult } from "pg";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { Controller } from "tsoa";
 import {
   ErrorReasonTypes,
   Failure,
   InternalServiceResponse,
   Success,
-} from "../../../utilities/monads";
-import { TableService } from "./models";
-import { generatePSQLGenericCreateRowsQuery } from "./utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
-import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
-import { UsersTableService } from "./usersTableService";
+} from "../../../../utilities/monads";
+import { TableService } from "../models";
+import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
+import { PublishedItemsTableService } from "./publishedItemsTableService";
+import { UsersTableService } from "../users/usersTableService";
 
 interface DBPublishedItemTransaction {
   transaction_id: string;

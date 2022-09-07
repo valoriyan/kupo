@@ -1,7 +1,7 @@
 import { Controller } from "tsoa";
 import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../../services/databaseService";
-import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
+import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
   EitherType,
   ErrorReasonTypes,

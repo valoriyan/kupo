@@ -117,6 +117,12 @@ async function setupTables({
       await tableService.setup();
     },
   );
+
+  console.log(`
+  ------------------------
+  Completed setupTables
+  ------------------------
+  `);
 }
 
 export async function setupDatabaseService({

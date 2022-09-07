@@ -1,7 +1,7 @@
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
-import { DBShopItemElementType } from "../../../services/databaseService/tableServices/shopItemMediaElementsTableService";
+import { DBShopItemElementType } from "../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
   EitherType,
   ErrorReasonTypes,
