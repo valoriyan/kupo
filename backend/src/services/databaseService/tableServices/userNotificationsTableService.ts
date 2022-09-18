@@ -31,6 +31,8 @@ export interface DBUserNotification {
   // if type = NEW_COMMENT_ON_POST: DBPostComment [field: post_comment_id];
   // if type = NEW_POST: DBPost [field: published_item_id]
   // if type = NEW_LIKE_ON_POST: DBPostLike [field: id]
+  // if type = NEW_USER_FOLLOW_REQUEST: DBUserFollow [field: id]
+  // if type = ACCEPTED_USER_FOLLOW_REQUEST: DBUserFollow [field: id]
   reference_table_id: string;
 }
 
@@ -87,7 +89,7 @@ export class UserNotificationsTableService extends TableService {
     recipientUserId: string;
     notificationType: NOTIFICATION_EVENTS;
     referenceTableId: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserNotification>> {
     try {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
         rowsOfFieldsAndValues: [
@@ -102,8 +104,12 @@ export class UserNotificationsTableService extends TableService {
         tableName: this.tableName,
       });
 
-      await this.datastorePool.query(query);
-      return Success({});
+      const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
+        query,
+      );
+      const rows = response.rows;
+
+      return Success(rows[0]);
     } catch (error) {
       return Failure({
         controller,
@@ -185,6 +191,59 @@ export class UserNotificationsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at userNotificationsTableService.selectUserNotificationsByUserId",
+      });
+    }
+  }
+
+  public async maybeGetUserNotification({
+    controller,
+    userId,
+    referenceTableId,
+  }: {
+    controller: Controller;
+    userId: string;
+    referenceTableId: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBUserNotification | undefined>
+  > {
+    try {
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+              recipient_user_id = $1
+            AND
+              reference_table_id = $2
+          ORDER BY
+            last_updated_timestamp DESC
+          LIMIT
+            1
+          ;
+        `,
+        values: [userId, referenceTableId],
+      };
+
+      const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
+        queryString,
+      );
+
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(rows[0]);
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at userNotificationsTableService.doesUserNotificationExist",
       });
     }
   }

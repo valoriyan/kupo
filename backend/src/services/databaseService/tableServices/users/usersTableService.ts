@@ -469,7 +469,7 @@ export class UsersTableService extends TableService {
     }
   }
 
-  public async selectUserByUserId({
+  public async selectMaybeUserByUserId({
     controller,
     userId,
   }: {

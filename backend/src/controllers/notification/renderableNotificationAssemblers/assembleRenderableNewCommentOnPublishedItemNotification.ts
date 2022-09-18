@@ -74,10 +74,12 @@ export async function assembleRenderableNewCommentOnPostNotification({
   const { success: renderablePublishedItem } = constructPublishedItemFromPartsResponse;
 
   const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      controller,
-      userId: unrenderablePostComment.authorUserId,
-    });
+    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      {
+        controller,
+        userId: unrenderablePostComment.authorUserId,
+      },
+    );
   if (selectUserByUserIdResponse.type === EitherType.failure) {
     return selectUserByUserIdResponse;
   }

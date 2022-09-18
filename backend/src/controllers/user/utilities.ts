@@ -66,10 +66,12 @@ export async function constructRenderableUserFromPartsByUserId({
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser>> {
   const unrenderableUserResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      controller,
-      userId,
-    });
+    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      {
+        controller,
+        userId,
+      },
+    );
 
   if (unrenderableUserResponse.type === EitherType.failure) {
     return unrenderableUserResponse;
