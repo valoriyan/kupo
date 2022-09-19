@@ -141,37 +141,34 @@ export const updateUserFollowingStatus = ({
       })),
     };
     queryClient.setQueryData(followerUsersCacheKey, updatedFollowersData);
+  }
 
-    const followerRequestsUsersCacheKey = [CacheKeys.FollowerRequests];
-    const clientFollowerRequestsData = queryClient.getQueryData<
-      InfiniteData<GetFollowerRequestsSuccess>
-    >(followerRequestsUsersCacheKey);
+  const followerRequestsUsersCacheKey = [CacheKeys.FollowerRequests];
+  const clientFollowerRequestsData = queryClient.getQueryData<
+    InfiniteData<GetFollowerRequestsSuccess>
+  >(followerRequestsUsersCacheKey);
 
-    if (clientFollowerRequestsData) {
-      const updatedFollowerRequestsData = {
-        ...clientFollowingData,
-        pages: clientFollowerRequestsData.pages.map((page) => ({
-          ...page,
-          users: page.users.map((user) => {
-            if (user.userId === userId) {
-              return {
-                ...user,
-                followingStatusOfClientToUser: !isFollowing
-                  ? UserFollowingStatus.NotFollowing
-                  : user.profilePrivacySetting === ProfilePrivacySetting.Private
-                  ? UserFollowingStatus.Pending
-                  : UserFollowingStatus.IsFollowing,
-              };
-            } else {
-              return user;
-            }
-          }),
-        })),
-      };
-      queryClient.setQueryData(
-        followerRequestsUsersCacheKey,
-        updatedFollowerRequestsData,
-      );
-    }
+  if (clientFollowerRequestsData) {
+    const updatedFollowerRequestsData = {
+      ...clientFollowingData,
+      pages: clientFollowerRequestsData.pages.map((page) => ({
+        ...page,
+        users: page.users.map((user) => {
+          if (user.userId === userId) {
+            return {
+              ...user,
+              followingStatusOfClientToUser: !isFollowing
+                ? UserFollowingStatus.NotFollowing
+                : user.profilePrivacySetting === ProfilePrivacySetting.Private
+                ? UserFollowingStatus.Pending
+                : UserFollowingStatus.IsFollowing,
+            };
+          } else {
+            return user;
+          }
+        }),
+      })),
+    };
+    queryClient.setQueryData(followerRequestsUsersCacheKey, updatedFollowerRequestsData);
   }
 };
