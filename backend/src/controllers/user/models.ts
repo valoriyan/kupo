@@ -1,5 +1,5 @@
 import { Color } from "../../types/color";
-import { UserFollowingStatus } from "./userInteraction/models";
+import { FollowingStatus } from "./userInteraction/models";
 
 export enum ProfilePrivacySetting {
   Public = "Public",
@@ -46,5 +46,5 @@ export interface RenderableUser extends BaseUnrenderableUser {
   };
   clientCanViewContent: boolean;
   hashtags: string[];
-  followingStatusOfClientToUser: UserFollowingStatus;
+  followingStatusOfClientToUser: FollowingStatus;
 }

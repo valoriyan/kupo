@@ -6,10 +6,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import {
-  UnrenderableUserFollow,
-  FollowingStatus,
-} from "../../../../controllers/user/userInteraction/models";
+import { FollowingStatus } from "../../../../controllers/user/userInteraction/models";
 import { TableService } from "../models";
 import {
   generatePSQLGenericDeleteRowsQueryString,
@@ -18,58 +15,50 @@ import {
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
-import { UsersTableService } from "./usersTableService";
+import { UsersTableService } from "../users/usersTableService";
+import { PublishingChannelsTableService } from "./publishingChannelsTableService";
 
-interface DBUserFollow {
-  user_follow_event_id: string;
+interface DBPublishingChannelFollow {
+  publishing_channel_follow_event_id: string;
   user_id_doing_following: string;
-  user_id_being_followed: string;
+  publishing_channel_id_being_followed: string;
   is_pending: boolean;
   timestamp: string;
 }
 
-function convertDBUserFollowToUnrenderableUserFollow(
-  dbUserFollow: DBUserFollow,
-): UnrenderableUserFollow {
-  return {
-    userFollowEventId: dbUserFollow.user_follow_event_id,
-    userIdDoingFollowing: dbUserFollow.user_id_doing_following,
-    userIdBeingFollowed: dbUserFollow.user_id_being_followed,
-    isPending: dbUserFollow.is_pending,
-    timestamp: parseInt(dbUserFollow.timestamp),
-  };
-}
-
-export class UserFollowsTableService extends TableService {
-  public static readonly tableName = `user_follows`;
-  public readonly tableName = UserFollowsTableService.tableName;
+export class PublishingChannelFollowsTableService extends TableService {
+  public static readonly tableName = `publishing_channel_follows`;
+  public readonly tableName = PublishingChannelFollowsTableService.tableName;
 
   constructor(public datastorePool: Pool) {
     super();
   }
 
-  public dependencies = [UsersTableService.tableName];
+  public dependencies = [
+    UsersTableService.tableName,
+    PublishingChannelsTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        user_follow_event_id VARCHAR(64) NOT NULL,
+        publishing_channel_follow_event_id VARCHAR(64) NOT NULL,
 
         user_id_doing_following VARCHAR(64) NOT NULL,
-        user_id_being_followed VARCHAR(64) NOT NULL,
+        publishing_channel_id_being_followed VARCHAR(64) NOT NULL,
         is_pending boolean NOT NULL,
         timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (user_id_doing_following, user_id_being_followed),
+          PRIMARY KEY (user_id_doing_following, publishing_channel_id_being_followed),
 
-        CONSTRAINT doing_following_${this.tableName}_${UsersTableService.tableName}_following_fkey
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (user_id_doing_following)
           REFERENCES ${UsersTableService.tableName} (user_id),
 
-        CONSTRAINT being_followed_${this.tableName}_${UsersTableService.tableName}_fkey
-          FOREIGN KEY (user_id_being_followed)
-          REFERENCES ${UsersTableService.tableName} (user_id)
+        CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
+          FOREIGN KEY (publishing_channel_id_being_followed)
+          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id)
 
       )
       ;
@@ -82,18 +71,18 @@ export class UserFollowsTableService extends TableService {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async createUserFollow({
+  public async createPublishingChannelFollow({
     controller,
     userIdDoingFollowing,
-    userIdBeingFollowed,
-    userFollowEventId,
+    publishingChannelIdBeingFollowed,
+    publishingChannelFollowEventId,
     isPending,
     timestamp,
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
-    userIdBeingFollowed: string;
-    userFollowEventId: string;
+    publishingChannelIdBeingFollowed: string;
+    publishingChannelFollowEventId: string;
     isPending: boolean;
     timestamp: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
@@ -104,8 +93,14 @@ export class UserFollowsTableService extends TableService {
         rowsOfFieldsAndValues: [
           [
             { field: "user_id_doing_following", value: userIdDoingFollowing },
-            { field: "user_id_being_followed", value: userIdBeingFollowed },
-            { field: "user_follow_event_id", value: userFollowEventId },
+            {
+              field: "publishing_channel_id_being_followed",
+              value: publishingChannelIdBeingFollowed,
+            },
+            {
+              field: "publishing_channel_follow_event_id",
+              value: publishingChannelFollowEventId,
+            },
             { field: "is_pending", value: is_pending_value },
             { field: "timestamp", value: timestamp },
           ],
@@ -121,7 +116,8 @@ export class UserFollowsTableService extends TableService {
         httpStatusCode: 500,
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
-        additionalErrorInformation: "Error at UserFollowsTableService.createUserFollow",
+        additionalErrorInformation:
+          "Error at PublishingChannelFollowsTableService.createPublishingChannelFollow",
       });
     }
   }
@@ -130,13 +126,15 @@ export class UserFollowsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getUserFollowEventById({
+  public async getPublishingChannelFollowEventById({
     controller,
-    userFollowEventId,
+    publishingChannelFollowEventId,
   }: {
     controller: Controller;
-    userFollowEventId: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow>> {
+    publishingChannelFollowEventId: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow>
+  > {
     try {
       const query = {
         text: `
@@ -145,16 +143,17 @@ export class UserFollowsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            user_follow_event_id = $1
+            publishing_channel_follow_event_id = $1
           ;
         `,
-        values: [userFollowEventId],
+        values: [publishingChannelFollowEventId],
       };
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishingChannelFollow> =
+        await this.datastorePool.query(query);
       const rows = response.rows;
 
-      return Success(convertDBUserFollowToUnrenderableUserFollow(rows[0]));
+      return Success(rows[0]);
     } catch (error) {
       return Failure({
         controller,
@@ -162,28 +161,28 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.getUserFollowEventById",
+          "Error at PublishingChannelFollowsTableService.getPublishingChannelFollowEventById",
       });
     }
   }
 
-  public async getUserIdsFollowingUserId({
+  public async getUserIdsFollowingPublishingChannelId({
     controller,
-    userIdBeingFollowed,
+    publishingChannelIdBeingFollowed,
     areFollowsPending,
     limit,
     createdBeforeTimestamp,
   }: {
     controller: Controller;
-    userIdBeingFollowed: string;
+    publishingChannelIdBeingFollowed: string;
     areFollowsPending: boolean;
     limit?: number;
     createdBeforeTimestamp?: number;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow[]>
   > {
     try {
-      const queryValues: (string | number)[] = [userIdBeingFollowed];
+      const queryValues: (string | number)[] = [publishingChannelIdBeingFollowed];
 
       const pendingConstraintClause = `
         AND
@@ -218,7 +217,7 @@ export class UserFollowsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            user_id_being_followed = $1
+            publishing_channel_id_being_followed = $1
             ${pendingConstraintClause}
             ${beforeTimestampClause}
           ${limitClause}
@@ -228,10 +227,11 @@ export class UserFollowsTableService extends TableService {
         values: queryValues,
       };
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishingChannelFollow> =
+        await this.datastorePool.query(query);
       const rows = response.rows;
 
-      return Success(rows.map(convertDBUserFollowToUnrenderableUserFollow));
+      return Success(rows);
     } catch (error) {
       return Failure({
         controller,
@@ -239,12 +239,12 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.getUserIdsFollowingUserId",
+          "Error at PublishingChannelFollowsTableService.getUserIdsFollowingPublishingChannelId",
       });
     }
   }
 
-  public async getUserIdsFollowedByUserId({
+  public async getPublishingChannelIdsFollowedByUserId({
     controller,
     userIdDoingFollowing,
     areFollowsPending,
@@ -302,10 +302,13 @@ export class UserFollowsTableService extends TableService {
         values: queryValues,
       };
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishingChannelFollow> =
+        await this.datastorePool.query(query);
       const rows = response.rows;
 
-      const userIdsBeingFollowed = rows.map((row) => row.user_id_being_followed);
+      const userIdsBeingFollowed = rows.map(
+        (row) => row.publishing_channel_id_being_followed,
+      );
       return Success(userIdsBeingFollowed);
     } catch (error) {
       return Failure({
@@ -314,22 +317,22 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.getUserIdsFollowedByUserId",
+          "Error at PublishingChannelFollowsTableService.getPublishingChannelIdsFollowedByUserId",
       });
     }
   }
 
-  public async countFollowersOfUserId({
+  public async countFollowersOfPublishingChannelId({
     controller,
-    userIdBeingFollowed,
+    publishingChannelIdBeingFollowed,
     areFollowsPending,
   }: {
     controller: Controller;
-    userIdBeingFollowed: string;
+    publishingChannelIdBeingFollowed: string;
     areFollowsPending: boolean;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
     try {
-      const queryValues: (string | number)[] = [userIdBeingFollowed];
+      const queryValues: (string | number)[] = [publishingChannelIdBeingFollowed];
 
       const pendingConstraintClause = `
         AND
@@ -345,7 +348,7 @@ export class UserFollowsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            user_id_being_followed = $1
+            publishing_channel_id_being_followed = $1
             ${pendingConstraintClause}
           ;
         `,
@@ -364,12 +367,12 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.countFollowersOfUserId",
+          "Error at PublishingChannelFollowsTableService.countFollowersOfPublishingChannelId",
       });
     }
   }
 
-  public async countUserFollowsOfUserId({
+  public async countPublishingChannelFollowsOfUserId({
     controller,
     userIdDoingFollowing,
     areFollowsPending,
@@ -418,19 +421,19 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.countFollowsOfUserId",
+          "Error at PublishingChannelFollowsTableService.countPublishingChannelFollowsOfUserId",
       });
     }
   }
 
-  public async getFollowingStatusOfUserIdToUserId({
+  public async getFollowingStatusOfUserIdToPublishingChannelId({
     controller,
     userIdDoingFollowing,
-    userIdBeingFollowed,
+    publishingChannelIdBeingFollowed,
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
-    userIdBeingFollowed: string;
+    publishingChannelIdBeingFollowed: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, FollowingStatus>> {
     try {
       const query = {
@@ -442,15 +445,16 @@ export class UserFollowsTableService extends TableService {
           WHERE
             user_id_doing_following = $1
           AND
-            user_id_being_followed = $2
+            publishing_channel_id_being_followed = $2
           LIMIT
             1
           ;
         `,
-        values: [userIdDoingFollowing, userIdBeingFollowed],
+        values: [userIdDoingFollowing, publishingChannelIdBeingFollowed],
       };
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishingChannelFollow> =
+        await this.datastorePool.query(query);
 
       if (response.rows.length === 0) {
         return Success(FollowingStatus.not_following);
@@ -469,7 +473,7 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.isUserIdFollowingUserId",
+          "Error at PublishingChannelFollowsTableService.getFollowingStatusOfUserIdToPublishingChannelId",
       });
     }
   }
@@ -477,15 +481,17 @@ export class UserFollowsTableService extends TableService {
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////
-  public async approvePendingFollow({
+  public async approvePendingPublishingChannelFollow({
     controller,
     userIdDoingFollowing,
-    userIdBeingFollowed,
+    publishingChannelIdBeingFollowed,
   }: {
     controller: Controller;
     userIdDoingFollowing: string;
-    userIdBeingFollowed: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow>> {
+    publishingChannelIdBeingFollowed: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow>
+  > {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "is_pending", value: "false" }],
@@ -495,19 +501,20 @@ export class UserFollowsTableService extends TableService {
             value: userIdDoingFollowing,
           },
           {
-            field: "user_id_being_followed",
-            value: userIdBeingFollowed,
+            field: "publishing_channel_id_being_followed",
+            value: publishingChannelIdBeingFollowed,
           },
         ],
         tableName: this.tableName,
       });
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishingChannelFollow> =
+        await this.datastorePool.query(query);
 
       const rows = response.rows;
 
       if (rows.length === 1) {
-        return Success(convertDBUserFollowToUnrenderableUserFollow(rows[0]));
+        return Success(rows[0]);
       }
       return Failure({
         controller,
@@ -515,7 +522,7 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error: "User not found.",
         additionalErrorInformation:
-          "Error at UserFollowsTableService.approvePendingFollow",
+          "Error at PublishingChannelFollowsTableService.approvePendingPublishingChannelFollow",
       });
     } catch (error) {
       return Failure({
@@ -524,35 +531,36 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.approvePendingFollow",
+          "Error at PublishingChannelFollowsTableService.approvePendingPublishingChannelFollow",
       });
     }
   }
 
-  public async approveAllPendingFollows({
+  public async approveAllPendingPublishingChannelFollows({
     controller,
-    userIdBeingFollowed,
+    publishingChannelIdBeingFollowed,
   }: {
     controller: Controller;
-    userIdBeingFollowed: string;
+    publishingChannelIdBeingFollowed: string;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUserFollow[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow[]>
   > {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
         updatedFields: [{ field: "is_pending", value: "false" }],
         fieldsUsedToIdentifyUpdatedRows: [
           {
-            field: "user_id_being_followed",
-            value: userIdBeingFollowed,
+            field: "publishing_channel_id_being_followed",
+            value: publishingChannelIdBeingFollowed,
           },
         ],
         tableName: this.tableName,
       });
 
-      const response: QueryResult<DBUserFollow> = await this.datastorePool.query(query);
+      const response: QueryResult<DBPublishingChannelFollow> =
+        await this.datastorePool.query(query);
 
-      return Success(response.rows.map(convertDBUserFollowToUnrenderableUserFollow));
+      return Success(response.rows);
     } catch (error) {
       return Failure({
         controller,
@@ -560,7 +568,7 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.approveAllPendingFollows",
+          "Error at PublishingChannelFollowsTableService.approveAllPendingPublishingChannelFollows",
       });
     }
   }
@@ -569,54 +577,30 @@ export class UserFollowsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async deleteUserFollow({
+  public async deletePublishingChannelFollow({
     controller,
     userIdDoingUnfollowing,
-    userIdBeingUnfollowed,
+    publishingChannelIdBeingUnfollowed,
   }: {
     controller: Controller;
     userIdDoingUnfollowing: string;
-    userIdBeingUnfollowed: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserFollow>> {
+    publishingChannelIdBeingUnfollowed: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow>
+  > {
     try {
       const query = generatePSQLGenericDeleteRowsQueryString({
         fieldsUsedToIdentifyRowsToDelete: [
           { field: "user_id_doing_following", value: userIdDoingUnfollowing },
-          { field: "user_id_being_followed", value: userIdBeingUnfollowed },
+          {
+            field: "publishing_channel_id_being_followed",
+            value: publishingChannelIdBeingUnfollowed,
+          },
         ],
         tableName: this.tableName,
       });
 
-      const response = await this.datastorePool.query<DBUserFollow>(query);
-      return Success(response.rows[0]);
-    } catch (error) {
-      return Failure({
-        controller,
-        httpStatusCode: 500,
-        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        error,
-        additionalErrorInformation: "Error at UserFollowsTableService.deleteUserFollow",
-      });
-    }
-  }
-
-  public async deleteAllPendingUserFollows({
-    controller,
-    userIdBeingUnfollowed,
-  }: {
-    controller: Controller;
-    userIdBeingUnfollowed: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserFollow>> {
-    try {
-      const query = generatePSQLGenericDeleteRowsQueryString({
-        fieldsUsedToIdentifyRowsToDelete: [
-          { field: "is_pending", value: "true" },
-          { field: "user_id_being_followed", value: userIdBeingUnfollowed },
-        ],
-        tableName: this.tableName,
-      });
-
-      const response = await this.datastorePool.query<DBUserFollow>(query);
+      const response = await this.datastorePool.query<DBPublishingChannelFollow>(query);
       return Success(response.rows[0]);
     } catch (error) {
       return Failure({
@@ -625,7 +609,42 @@ export class UserFollowsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserFollowsTableService.deleteAllPendingUserFollows",
+          "Error at PublishingChannelFollowsTableService.deletePublishingChannelFollow",
+      });
+    }
+  }
+
+  public async deleteAllPendingPublishingChannelFollows({
+    controller,
+    publishingChannelIdBeingUnfollowed,
+  }: {
+    controller: Controller;
+    publishingChannelIdBeingUnfollowed: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow>
+  > {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "is_pending", value: "true" },
+          {
+            field: "publishing_channel_id_being_followed",
+            value: publishingChannelIdBeingUnfollowed,
+          },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response = await this.datastorePool.query<DBPublishingChannelFollow>(query);
+      return Success(response.rows[0]);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at PublishingChannelFollowsTableService.deleteAllPendingPublishingChannelFollows",
       });
     }
   }

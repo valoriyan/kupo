@@ -1,4 +1,4 @@
-export enum UserFollowingStatus {
+export enum FollowingStatus {
   is_following = "is_following",
   not_following = "not_following",
   pending = "pending",

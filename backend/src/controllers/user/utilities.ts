@@ -16,7 +16,7 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../utilities/monads/unwrapListOfResponses";
 import { GenericResponseFailedReason } from "../models";
-import { UserFollowingStatus } from "./userInteraction/models";
+import { FollowingStatus } from "./userInteraction/models";
 import { ClientUserDetails } from "./handleGetClientUserProfile";
 
 export async function constructRenderableUsersFromPartsByUserIds({
@@ -210,7 +210,7 @@ export async function constructRenderableUserFromParts({
   const { success: numberOfFollowersOfUserId } = countFollowersOfUserIdResponse;
 
   const countFollowsOfUserIdResponse =
-    await databaseService.tableNameToServicesMap.userFollowsTableService.countFollowsOfUserId(
+    await databaseService.tableNameToServicesMap.userFollowsTableService.countUserFollowsOfUserId(
       {
         controller,
         userIdDoingFollowing: userId,
@@ -233,7 +233,7 @@ export async function constructRenderableUserFromParts({
 
   const { success: userHashtags } = getHashtagsForUserIdResponse;
 
-  let followingStatusOfClientToUser = UserFollowingStatus.not_following;
+  let followingStatusOfClientToUser = FollowingStatus.not_following;
   if (!!requestorUserId) {
     const getFollowingStatusOfUserIdToUserIdResponse =
       await databaseService.tableNameToServicesMap.userFollowsTableService.getFollowingStatusOfUserIdToUserId(
