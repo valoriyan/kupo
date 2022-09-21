@@ -9,4 +9,7 @@ export interface UnrenderablePublishingChannel {
 
 export interface RenderablePublishingChannel extends UnrenderablePublishingChannel {
   owner: RenderableUser;
+  followers: {
+    count: number;
+  };
 }

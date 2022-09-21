@@ -49,7 +49,7 @@ export class PublishingChannelsTableService extends TableService {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         publishing_channel_id VARCHAR(64) NOT NULL,
         owner_user_id VARCHAR(64) NOT NULL,
-        name VARCHAR(64) NOT NULL,
+        name VARCHAR(64) UNIQUE NOT NULL,
         description VARCHAR(64) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey

@@ -172,12 +172,37 @@ export async function assembleRenderablePublishingChannelFromParts({
   const { success: publishingChannelOwner } =
     constructRenderableUserFromPartsByUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // RECORD NOTIFICATION
+  //////////////////////////////////////////////////
+  const countFollowersOfPublishingChannelIdResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.countFollowersOfPublishingChannelId(
+      {
+        controller,
+        publishingChannelIdBeingFollowed:
+          unrenderablePublishingChannel.publishingChannelId,
+        areFollowsPending: false,
+      },
+    );
+
+  if (countFollowersOfPublishingChannelIdResponse.type === EitherType.failure) {
+    return countFollowersOfPublishingChannelIdResponse;
+  }
+
+  const { success: countOfUserFollowers } = countFollowersOfPublishingChannelIdResponse;
+  //////////////////////////////////////////////////
+  // COMPILE
+  //////////////////////////////////////////////////
+
   const renderablePublishingChannel: RenderablePublishingChannel = {
     publishingChannelId: unrenderablePublishingChannel.publishingChannelId,
     ownerUserId: unrenderablePublishingChannel.ownerUserId,
     name: unrenderablePublishingChannel.name,
     description: unrenderablePublishingChannel.description,
     owner: publishingChannelOwner,
+    followers: {
+      count: countOfUserFollowers,
+    },
   };
 
   return Success(renderablePublishingChannel);
