@@ -3,16 +3,16 @@ import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { constructRenderableUserFromParts } from "../../user/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { RenderableNewFollowerNotification } from "../models/renderableUserNotifications";
+import { RenderableNewUserFollowRequestNotification } from "../models/renderableUserNotifications";
+import { Controller } from "tsoa";
 import {
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { Controller } from "tsoa";
 
-export async function assembleRenderableNewFollowerNotification({
+export async function assembleRenderableNewUserFollowRequestNotification({
   controller,
   userNotification,
   blobStorageService,
@@ -25,7 +25,10 @@ export async function assembleRenderableNewFollowerNotification({
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<
-  InternalServiceResponse<ErrorReasonTypes<string>, RenderableNewFollowerNotification>
+  InternalServiceResponse<
+    ErrorReasonTypes<string>,
+    RenderableNewUserFollowRequestNotification
+  >
 > {
   const {
     reference_table_id: userFollowEventId,
@@ -78,7 +81,7 @@ export async function assembleRenderableNewFollowerNotification({
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;
   }
-  const { success: userDoingFollowing } = constructRenderableUserFromPartsResponse;
+  const { success: followRequestingUser } = constructRenderableUserFromPartsResponse;
 
   //////////////////////////////////////////////////
   // GET THE COUNT OF UNREAD NOTIFICATIONS
@@ -100,10 +103,10 @@ export async function assembleRenderableNewFollowerNotification({
   //////////////////////////////////////////////////
 
   return Success({
-    countOfUnreadNotifications,
-    userDoingFollowing,
-    timestampSeenByUser,
-    type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
     eventTimestamp,
+    timestampSeenByUser,
+    type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST,
+    countOfUnreadNotifications,
+    followRequestingUser,
   });
 }

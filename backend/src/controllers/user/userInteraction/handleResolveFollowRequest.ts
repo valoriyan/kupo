@@ -10,6 +10,7 @@ import {
 import { checkAuthorization } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { GenericResponseFailedReason } from "../../models";
+import { generateAndEmitAcceptedUserFollowRequestNotification } from "./utilities/generateAndEmitAcceptedUserFollowRequestNotification";
 
 export enum FollowRequestDecision {
   accept = "accept",
@@ -50,6 +51,11 @@ export async function handleResolveFollowRequest({
   const { decision, userIdDoingFollowing } = requestBody;
 
   if (decision === FollowRequestDecision.accept) {
+    //////////////////////////////////////////////////
+    // IF ACCEPTING
+    //    UPDATE FOLLOWS TABLE
+    //////////////////////////////////////////////////
+
     const approvePendingFollowResponse =
       await controller.databaseService.tableNameToServicesMap.userFollowsTableService.approvePendingFollow(
         {
@@ -61,8 +67,42 @@ export async function handleResolveFollowRequest({
     if (approvePendingFollowResponse.type === EitherType.failure) {
       return approvePendingFollowResponse;
     }
+    const {
+      success: { userFollowEventId },
+    } = approvePendingFollowResponse;
+
+    //////////////////////////////////////////////////
+    // IF ACCEPTING
+    //    GENERATE NOTIFICATION FOR ACCEPTED FOLLOW REQUEST
+    //    AND SEND TO USER
+    //////////////////////////////////////////////////
+    const generateAndEmitAcceptedUserFollowRequestNotificationResponse =
+      await generateAndEmitAcceptedUserFollowRequestNotification({
+        controller,
+        databaseService: controller.databaseService,
+        blobStorageService: controller.blobStorageService,
+        webSocketService: controller.webSocketService,
+        recipientUserId: userIdDoingFollowing,
+        userFollowEventId,
+      });
+    if (
+      generateAndEmitAcceptedUserFollowRequestNotificationResponse.type ===
+      EitherType.failure
+    ) {
+      return generateAndEmitAcceptedUserFollowRequestNotificationResponse;
+    }
+
+    //////////////////////////////////////////////////
+    // RETURN
+    //////////////////////////////////////////////////
+
     return Success({});
   } else if (decision === FollowRequestDecision.reject) {
+    //////////////////////////////////////////////////
+    // IF NOT ACCEPTING
+    //     UPDATE FOLLOWS TABLE
+    //////////////////////////////////////////////////
+
     const deleteUserFollowResponse =
       await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteUserFollow(
         {
@@ -74,8 +114,16 @@ export async function handleResolveFollowRequest({
     if (deleteUserFollowResponse.type === EitherType.failure) {
       return deleteUserFollowResponse;
     }
+
+    //////////////////////////////////////////////////
+    // RETURN
+    //////////////////////////////////////////////////
     return Success({});
   }
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
 
   return Failure({
     controller,

@@ -98,7 +98,7 @@ export async function handleRegisterUser({
   if (newAccessTokenResponse.type === "success") {
     try {
       const selectUserByUserIdResponse =
-        await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+        await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
           { controller, userId },
         );
       if (selectUserByUserIdResponse.type === EitherType.failure) {

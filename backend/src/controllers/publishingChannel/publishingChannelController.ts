@@ -72,6 +72,18 @@ import {
   RemoveModeratorFromPublishingChannelRequestBody,
   RemoveModeratorFromPublishingChannelSuccess,
 } from "./moderation/handleRemoveModeratorFromPublishingChannel";
+import {
+  FollowPublishingChannelFailedReason,
+  FollowPublishingChannelRequestBody,
+  FollowPublishingChannelSuccess,
+  handleFollowPublishingChannel,
+} from "./userInteraction/handleFollowPublishingChannel";
+import {
+  handleUnfollowPublishingChannel,
+  UnfollowPublishingChannelFailedReason,
+  UnfollowPublishingChannelRequestBody,
+  UnfollowPublishingChannelSuccess,
+} from "./userInteraction/handleUnfollowPublishingChannel";
 
 @injectable()
 @Route("publishing_channel")
@@ -99,6 +111,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleCreatePublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("followPublishingChannel")
+  public async followPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: FollowPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | FollowPublishingChannelFailedReason>,
+      FollowPublishingChannelSuccess
+    >
+  > {
+    return await handleFollowPublishingChannel({
       controller: this,
       request,
       requestBody,
@@ -279,6 +308,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleRemoveModeratorFromPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("unfollowPublishingChannel")
+  public async unfollowPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: UnfollowPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UnfollowPublishingChannelFailedReason>,
+      UnfollowPublishingChannelSuccess
+    >
+  > {
+    return await handleUnfollowPublishingChannel({
       controller: this,
       request,
       requestBody,

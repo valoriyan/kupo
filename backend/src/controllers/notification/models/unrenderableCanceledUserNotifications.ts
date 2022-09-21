@@ -20,3 +20,18 @@ export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification
   extends BaseUserNotification {
   publishedItemCommentId: string;
 }
+
+export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification
+  extends BaseUserNotification {
+  publishedItemCommentId: string;
+}
+
+export interface UnrenderableCanceledAcceptedUserFollowRequestNotification
+  extends BaseUserNotification {
+  userIdUnacceptingFollowRequest: string;
+}
+
+export interface UnrenderableCanceledNewUserFollowRequestNotification
+  extends BaseUserNotification {
+  userIdWithdrawingFollowRequest: string;
+}

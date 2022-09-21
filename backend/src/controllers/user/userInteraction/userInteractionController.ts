@@ -13,10 +13,10 @@ import {
 } from "./handleFollowUserProfile";
 
 import {
-  FailedToUnfollowUserProfileResponse,
   handleUnfollowUser,
-  SuccessfullyUnfollowedUserProfileResponse,
+  UnfollowUserSuccess,
   UnfollowUserRequestBody,
+  UnfollowUserFailedReason,
 } from "./handleUnfollowUserProfile";
 import {
   GetFollowerRequestsFailedReason,
@@ -48,6 +48,12 @@ import {
   UnblockUserRequestBody,
   UnblockUserSuccess,
 } from "./handleUnblockUser";
+import {
+  handleRevokeFollower,
+  RevokeFollowerFailedReason,
+  RevokeFollowerRequestBody,
+  RevokeFollowerSuccess,
+} from "./handleRevokeFollower";
 
 @injectable()
 @Route("userInteractions")
@@ -167,11 +173,28 @@ export class UserInteractionController extends Controller {
     @Body() requestBody: UnfollowUserRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      FailedToUnfollowUserProfileResponse,
-      SuccessfullyUnfollowedUserProfileResponse
+      ErrorReasonTypes<string | UnfollowUserFailedReason>,
+      UnfollowUserSuccess
     >
   > {
     return await handleUnfollowUser({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Delete("revokeFollower")
+  public async revokeFollower(
+    @Request() request: express.Request,
+    @Body() requestBody: RevokeFollowerRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | RevokeFollowerFailedReason>,
+      RevokeFollowerSuccess
+    >
+  > {
+    return await handleRevokeFollower({
       controller: this,
       request,
       requestBody,

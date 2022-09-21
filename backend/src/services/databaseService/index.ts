@@ -29,6 +29,7 @@ import { PublishingChannelSubmissionsTableService } from "./tableServices/publis
 import { PublishingChannelUserBansTableService } from "./tableServices/publishingChannel/moderation/publishingChannelUserBansTableService";
 import { PublishingChannelModeratorsTableService } from "./tableServices/publishingChannel/moderation/publishingChannelModeratorsTableService";
 import { UserBlocksTableService } from "./tableServices/users/userBlocksTable";
+import { PublishingChannelFollowsTableService } from "./tableServices/publishingChannel/publishingChannelFollows";
 
 @singleton()
 export class DatabaseService {
@@ -95,6 +96,9 @@ export class DatabaseService {
       DatabaseService.datastorePool,
     ),
     userBlocksTableService: new UserBlocksTableService(DatabaseService.datastorePool),
+    publishingChannelFollowsTableService: new PublishingChannelFollowsTableService(
+      DatabaseService.datastorePool,
+    ),
   };
 
   static async start(): Promise<void> {

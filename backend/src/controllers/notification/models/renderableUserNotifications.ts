@@ -38,8 +38,22 @@ export interface RenderableNewTagInPublishedItemCommentNotification
   publishedItemComment: RenderablePublishedItemComment;
 }
 
+export interface RenderableAcceptedUserFollowRequestNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;
+  userAcceptingFollowRequest: RenderableUser;
+}
+
+export interface RenderableNewUserFollowRequestNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST;
+  followRequestingUser: RenderableUser;
+}
+
 export type RenderableUserNotification =
   | RenderableNewFollowerNotification
   | RenderableNewCommentOnPublishedItemNotification
   | RenderableNewLikeOnPublishedItemNotification
-  | RenderableNewTagInPublishedItemCommentNotification;
+  | RenderableNewTagInPublishedItemCommentNotification
+  | RenderableAcceptedUserFollowRequestNotification
+  | RenderableNewUserFollowRequestNotification;

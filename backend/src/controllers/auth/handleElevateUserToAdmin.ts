@@ -44,7 +44,7 @@ export async function handleElevateUserToAdmin({
   if (error) return error;
 
   const selectUserByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       { controller, userId: clientUserId },
     );
   if (selectUserByUserIdResponse.type === EitherType.failure) {

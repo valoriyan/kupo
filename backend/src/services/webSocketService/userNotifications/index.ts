@@ -1,15 +1,19 @@
 import { Server } from "socket.io";
 import {
+  UnrenderableCanceledAcceptedUserFollowRequestNotification,
   UnrenderableCanceledCommentOnPublishedItemNotification,
   UnrenderableCanceledNewFollowerNotification,
   UnrenderableCanceledNewLikeOnPublishedItemNotification,
   UnrenderableCanceledNewTagInPublishedItemCommentNotification,
+  UnrenderableCanceledNewUserFollowRequestNotification,
 } from "../../../controllers/notification/models/unrenderableCanceledUserNotifications";
 import {
+  RenderableAcceptedUserFollowRequestNotification,
   RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
   RenderableNewLikeOnPublishedItemNotification,
   RenderableNewTagInPublishedItemCommentNotification,
+  RenderableNewUserFollowRequestNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
 import { notifyUserIdOfNewCommentOnPost } from "./notifications/notifyUserIdOfNewCommentOnPost";
@@ -19,6 +23,10 @@ import { notifyUserIdOfCanceledNewCommentOnPost } from "./canceledNotifications/
 import { notifyUserIdOfCanceledNewFollower } from "./canceledNotifications/notifyUserIdOfCanceledNewFollower";
 import { notifyUserIdOfNewTagInPublishedItemComment } from "./notifications/notifyUserIdOfNewTagInPublishedItemComment";
 import { notifyUserIdOfCanceledNewTagInPublishedItemComment } from "./canceledNotifications/notifyUserIdOfCanceledNewTagInPublishedItemComment";
+import { notifyUserIdOfAcceptedUserFollowRequest } from "./notifications/notifyUserIdOfAcceptedUserFollowRequest";
+import { notifyUserIdOfCanceledAcceptedUserFollowRequest } from "./canceledNotifications/notifyUserIdOfCanceledAcceptedUserFollowRequest";
+import { notifyUserIdOfNewUserFollowRequest } from "./notifications/notifyUserIdOfNewUserFollowRequest";
+import { notifyUserIdOfCanceledNewUserFollowRequest } from "./canceledNotifications/notifyUserIdOfCanceledNewUserFollowRequest";
 
 export class UserNotificationsWebsocketService {
   constructor(public websocketIO: Server) {}
@@ -132,6 +140,62 @@ export class UserNotificationsWebsocketService {
       userId,
       io: this.websocketIO,
       unrenderableCanceledNewTagInPublishedItemCommentNotification,
+    });
+  }
+
+  public async notifyUserIdOfAcceptedUserFollowRequest({
+    renderableAcceptedUserFollowRequestNotification,
+    userId,
+  }: {
+    renderableAcceptedUserFollowRequestNotification: RenderableAcceptedUserFollowRequestNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfAcceptedUserFollowRequest({
+      userId,
+      io: this.websocketIO,
+      renderableAcceptedUserFollowRequestNotification,
+    });
+  }
+
+  public async notifyUserIdOfCanceledAcceptedUserFollowRequest({
+    unrenderableCanceledAcceptedUserFollowRequestNotification,
+    userId,
+  }: {
+    unrenderableCanceledAcceptedUserFollowRequestNotification: UnrenderableCanceledAcceptedUserFollowRequestNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfCanceledAcceptedUserFollowRequest({
+      userId,
+      io: this.websocketIO,
+      unrenderableCanceledAcceptedUserFollowRequestNotification,
+    });
+  }
+
+  public async notifyUserIdOfNewUserFollowRequest({
+    renderableNewUserFollowRequestNotification,
+    userId,
+  }: {
+    renderableNewUserFollowRequestNotification: RenderableNewUserFollowRequestNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfNewUserFollowRequest({
+      userId,
+      io: this.websocketIO,
+      renderableNewUserFollowRequestNotification,
+    });
+  }
+
+  public async notifyUserIdOfCanceledNewUserFollowRequest({
+    unrenderableCanceledNewUserFollowRequestNotification,
+    userId,
+  }: {
+    unrenderableCanceledNewUserFollowRequestNotification: UnrenderableCanceledNewUserFollowRequestNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfCanceledNewUserFollowRequest({
+      userId,
+      io: this.websocketIO,
+      unrenderableCanceledNewUserFollowRequestNotification,
     });
   }
 }

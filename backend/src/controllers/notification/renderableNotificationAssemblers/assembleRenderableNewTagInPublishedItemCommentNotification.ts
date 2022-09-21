@@ -71,10 +71,12 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
     constructRenderablePostCommentFromPartsResponse;
 
   const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      controller,
-      userId: unrenderablePublishedItemComment.authorUserId,
-    });
+    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      {
+        controller,
+        userId: unrenderablePublishedItemComment.authorUserId,
+      },
+    );
   if (selectUserByUserIdResponse.type === EitherType.failure) {
     return selectUserByUserIdResponse;
   }

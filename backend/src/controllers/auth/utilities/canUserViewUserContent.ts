@@ -12,7 +12,7 @@ import {
   UnrenderableUser,
 } from "../../../controllers/user/models";
 import { DatabaseService } from "../../../services/databaseService";
-import { UserFollowingStatus } from "../../user/userInteraction/models";
+import { FollowingStatus } from "../../user/userInteraction/models";
 
 export async function canUserViewUserContent({
   controller,
@@ -43,7 +43,7 @@ export async function canUserViewUserContent({
   }
   const { success: userFollowingStatus } = getFollowingStatusOfUserIdToUserIdResponse;
 
-  return Success(userFollowingStatus === UserFollowingStatus.is_following);
+  return Success(userFollowingStatus === FollowingStatus.is_following);
 }
 
 export async function canUserViewUserContentByUserId({

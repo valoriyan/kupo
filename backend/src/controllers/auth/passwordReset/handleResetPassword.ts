@@ -52,7 +52,7 @@ export async function handleResetPassword({
     );
 
     const selectUserByUserIdResponse =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId(
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
         {
           controller,
           userId,

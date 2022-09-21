@@ -23,6 +23,8 @@ import { RenderableUserNotification } from "./models/renderableUserNotifications
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { assembleRenderableNewTagInPublishedItemCommentNotification } from "./renderableNotificationAssemblers/assembleRenderableNewTagInPublishedItemCommentNotification";
 import { GenericResponseFailedReason } from "../models";
+import { assembleRenderableNewUserFollowRequestNotification } from "./renderableNotificationAssemblers/assembleRenderableNewUserFollowRequestNotification";
+import { assembleRenderableAcceptedUserFollowRequestNotification } from "./renderableNotificationAssemblers/assembleRenderableAcceptedUserFollowRequestNotification";
 
 export interface GetPageOfNotificationsRequestBody {
   cursor?: string;
@@ -167,6 +169,27 @@ async function assembleNotifcations({
         NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
       ) {
         return await assembleRenderableNewTagInPublishedItemCommentNotification({
+          controller,
+          userNotification,
+          blobStorageService: controller.blobStorageService,
+          databaseService: controller.databaseService,
+          clientUserId,
+        });
+      } else if (
+        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST
+      ) {
+        return await assembleRenderableNewUserFollowRequestNotification({
+          controller,
+          userNotification,
+          blobStorageService: controller.blobStorageService,
+          databaseService: controller.databaseService,
+          clientUserId,
+        });
+      } else if (
+        userNotification.notification_type ===
+        NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST
+      ) {
+        return await assembleRenderableAcceptedUserFollowRequestNotification({
           controller,
           userNotification,
           blobStorageService: controller.blobStorageService,

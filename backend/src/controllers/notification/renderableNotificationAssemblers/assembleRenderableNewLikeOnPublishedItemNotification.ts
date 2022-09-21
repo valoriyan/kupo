@@ -67,10 +67,12 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
   const { success: renderablePublishedItem } = constructPublishedItemFromPartsResponse;
 
   const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId({
-      controller,
-      userId: userLikingPublishedItemId,
-    });
+    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      {
+        controller,
+        userId: userLikingPublishedItemId,
+      },
+    );
   if (selectUserByUserIdResponse.type === EitherType.failure) {
     return selectUserByUserIdResponse;
   }
