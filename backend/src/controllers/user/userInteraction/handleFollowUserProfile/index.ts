@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
-import { EitherType, Failure, HTTPResponse } from "../../../../utilities/monads";
+import { EitherType, Failure, SecuredHTTPResponse } from "../../../../utilities/monads";
 import { checkAuthorization } from "../../../auth/utilities";
 import { UserInteractionController } from "../userInteractionController";
 import { GenericResponseFailedReason } from "../../../models";
@@ -28,7 +28,7 @@ export async function handleFollowUser({
   controller: UserInteractionController;
   request: express.Request;
   requestBody: FollowUserRequestBody;
-}): Promise<HTTPResponse<FollowUserFailedReason | string, FollowUserSuccess>> {
+}): Promise<SecuredHTTPResponse<FollowUserFailedReason | string, FollowUserSuccess>> {
   const { userIdBeingFollowed } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
