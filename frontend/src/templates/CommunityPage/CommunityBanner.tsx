@@ -1,26 +1,25 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { ProfilePrivacySetting, RenderableUser } from "#/api";
+import { RenderablePublishingChannel } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { ArrowLeftIcon } from "#/components/Icons";
 import { Box, Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 import { translucentBg } from "#/styling/mixins";
-import { FollowButton } from "./FollowButton";
 
-export interface ProfileBannerProps {
-  isOwnProfile: boolean | undefined;
+export interface CommunityBannerProps {
+  isOwnCommunity: boolean | undefined;
   scrollPosition: number;
   backRoute: string | null;
-  user: RenderableUser;
+  community: RenderablePublishingChannel;
 }
 
-export const ProfileBanner = ({
-  isOwnProfile,
+export const CommunityBanner = ({
+  isOwnCommunity,
   scrollPosition,
   backRoute,
-  user,
-}: ProfileBannerProps) => {
+  community,
+}: CommunityBannerProps) => {
   return (
     <Wrapper>
       <Flex css={{ gap: "$3", alignItems: "center" }}>
@@ -32,26 +31,26 @@ export const ProfileBanner = ({
           </Link>
         )}
         <Avatar
-          alt={`@${user.username}'s profile picture`}
-          src={user.profilePictureTemporaryUrl}
+          alt={`+${community.name}'s profile picture`}
+          src={""} // TODO
           size="$7"
         />
-        <Username>@{user.username}</Username>
+        <CommunityName>+{community.name}</CommunityName>
       </Flex>
       <AnimatePresence>
-        {scrollPosition > 0 && !isOwnProfile && (
+        {scrollPosition > 0 && !isOwnCommunity && (
           <motion.div
             transition={{ duration: 0.2 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <FollowButton
+            {/* <FollowButton
               userId={user.userId}
               username={user.username}
               isUserPrivate={user.profilePrivacySetting === ProfilePrivacySetting.Private}
               followingStatus={user.followingStatusOfClientToUser}
-            />
+            /> */}
           </motion.div>
         )}
       </AnimatePresence>
@@ -71,7 +70,7 @@ const Wrapper = styled("div", translucentBg, {
 });
 
 // TODO: Make bold variants of regular fonts
-const Username = styled("div", {
+const CommunityName = styled("div", {
   fontFamily: "$body",
   fontWeight: "$bold",
   fontSize: "$3",

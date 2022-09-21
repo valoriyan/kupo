@@ -25,11 +25,11 @@ import {
   SubmitPublishedItemToPublishingChannelSuccess,
 } from "./moderation/handleSubmitPublishedItemToPublishingChannel";
 import {
-  GetPublishingChannelByIdFailedReason,
-  GetPublishingChannelByIdRequestBody,
-  GetPublishingChannelByIdSuccess,
-  handleGetPublishingChannelById,
-} from "./handleGetPublishingChannelById";
+  GetPublishingChannelByNameFailedReason,
+  GetPublishingChannelByNameRequestBody,
+  GetPublishingChannelByNameSuccess,
+  handleGetPublishingChannelByName,
+} from "./handleGetPublishingChannelByName";
 import {
   handleResolvePublishingChannelSubmission,
   ResolvePublishingChannelSubmissionFailedReason,
@@ -159,17 +159,17 @@ export class PublishingChannelController extends Controller {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
-  @Post("getPublishingChannelById")
-  public async getPublishingChannelById(
+  @Post("getPublishingChannelByName")
+  public async getPublishingChannelByName(
     @Request() request: express.Request,
-    @Body() requestBody: GetPublishingChannelByIdRequestBody,
+    @Body() requestBody: GetPublishingChannelByNameRequestBody,
   ): Promise<
     SecuredHTTPResponse<
-      ErrorReasonTypes<string | GetPublishingChannelByIdFailedReason>,
-      GetPublishingChannelByIdSuccess
+      ErrorReasonTypes<string | GetPublishingChannelByNameFailedReason>,
+      GetPublishingChannelByNameSuccess
     >
   > {
-    return await handleGetPublishingChannelById({
+    return await handleGetPublishingChannelByName({
       controller: this,
       request,
       requestBody,

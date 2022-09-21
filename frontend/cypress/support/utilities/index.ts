@@ -50,7 +50,7 @@ export const createTestPost = ({
     force: true,
   });
 
-  cy.get(`[data-cy="captions-input"]`).type(postData.caption);
+  cy.get(`[data-cy="caption-input"]`).type(postData.caption);
   cy.get(`[data-cy="hashtags-input"]`).type(postData.hashtags.join(" "));
 
   (cy as any).findByText("Post Now").click();

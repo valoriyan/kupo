@@ -46,7 +46,7 @@ export async function handleRemoveModeratorFromPublishingChannel({
   if (error) return error;
 
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
         controller,
         publishingChannelId,

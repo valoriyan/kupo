@@ -31,7 +31,7 @@ export const UserProfile = ({ username }: { username: string }) => {
   const clientUserId = useCurrentUserId();
   const scrollPosition = useAppLayoutState((store) => store.scrollPosition);
 
-  const isOwnProfile = data && clientUserId === data?.userId;
+  const isOwnProfile = data && clientUserId === data.userId;
 
   const backRoute = SessionStorage.getItem<string>(
     PREVIOUS_LOCATION_BASE_KEY + data?.username,
@@ -45,9 +45,9 @@ export const UserProfile = ({ username }: { username: string }) => {
     <Stack>
       <ProfileBanner
         isOwnProfile={isOwnProfile}
-        user={data}
         scrollPosition={scrollPosition}
         backRoute={backRoute}
+        user={data}
       />
       <ProfileHeader isOwnProfile={isOwnProfile} user={data} />
       <Tabs

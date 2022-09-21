@@ -6,11 +6,11 @@ import {
 } from "#/api";
 import { useSharePost } from "#/api/mutations/posts/sharePost";
 import { Button } from "#/components/Button";
-import { CaptionTextArea } from "#/components/CaptionTextArea";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
 import { CloseIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
+import { LimitedTextArea } from "#/components/LimitedTextArea";
 import { openModal } from "#/components/Modal";
 import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
@@ -64,7 +64,12 @@ export const SharePostModal = ({
           <Stack css={{ height: "100%" }}>
             <SectionWrapper css={{ px: 0 }}>
               <Flex css={{ px: "$5" }}>
-                <CaptionTextArea caption={caption} setCaption={setCaption} />
+                <LimitedTextArea
+                  text={caption}
+                  setText={setCaption}
+                  placeholder="add caption..."
+                  dataCy="caption-input"
+                />
               </Flex>
               <SharedPost post={post} contentHeight="30vh" />
             </SectionWrapper>

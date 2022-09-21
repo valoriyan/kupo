@@ -48,7 +48,7 @@ export async function handleAddModeratorToPublishingChannel({
   if (error) return error;
 
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
         controller,
         publishingChannelId,

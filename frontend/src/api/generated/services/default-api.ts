@@ -139,7 +139,7 @@ import { EitherErrorReasonTypesStringOrGetPublishedItemsInPublishingChannelFaile
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemsScheduledByUserFailedReasonGetPublishedItemsScheduledByUserSuccess } from "../types";
 // @ts-ignore
-import { EitherErrorReasonTypesStringOrGetPublishingChannelByIdFailedReasonGetPublishingChannelByIdSuccess } from "../types";
+import { EitherErrorReasonTypesStringOrGetPublishingChannelByNameFailedReasonGetPublishingChannelByNameSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishingChannelSubmissionsFailedReasonGetPublishingChannelSubmissionsSuccess } from "../types";
 // @ts-ignore
@@ -259,7 +259,7 @@ import { GetPublishedItemsInPublishingChannelRequestBody } from "../types";
 // @ts-ignore
 import { GetPublishedItemsScheduledByUserRequestBody } from "../types";
 // @ts-ignore
-import { GetPublishingChannelByIdRequestBody } from "../types";
+import { GetPublishingChannelByNameRequestBody } from "../types";
 // @ts-ignore
 import { GetPublishingChannelSubmissionsRequestBody } from "../types";
 // @ts-ignore
@@ -2199,21 +2199,21 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {GetPublishingChannelByIdRequestBody} getPublishingChannelByIdRequestBody
+     * @param {GetPublishingChannelByNameRequestBody} getPublishingChannelByNameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getPublishingChannelById: async (
-      getPublishingChannelByIdRequestBody: GetPublishingChannelByIdRequestBody,
+    getPublishingChannelByName: async (
+      getPublishingChannelByNameRequestBody: GetPublishingChannelByNameRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'getPublishingChannelByIdRequestBody' is not null or undefined
+      // verify required parameter 'getPublishingChannelByNameRequestBody' is not null or undefined
       assertParamExists(
-        "getPublishingChannelById",
-        "getPublishingChannelByIdRequestBody",
-        getPublishingChannelByIdRequestBody,
+        "getPublishingChannelByName",
+        "getPublishingChannelByNameRequestBody",
+        getPublishingChannelByNameRequestBody,
       );
-      const localVarPath = `/publishing_channel/getPublishingChannelById`;
+      const localVarPath = `/publishing_channel/getPublishingChannelByName`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2236,7 +2236,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        getPublishingChannelByIdRequestBody,
+        getPublishingChannelByNameRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -5452,23 +5452,24 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {GetPublishingChannelByIdRequestBody} getPublishingChannelByIdRequestBody
+     * @param {GetPublishingChannelByNameRequestBody} getPublishingChannelByNameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getPublishingChannelById(
-      getPublishingChannelByIdRequestBody: GetPublishingChannelByIdRequestBody,
+    async getPublishingChannelByName(
+      getPublishingChannelByNameRequestBody: GetPublishingChannelByNameRequestBody,
       options?: any,
     ): Promise<
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelByIdFailedReasonGetPublishingChannelByIdSuccess>
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelByNameFailedReasonGetPublishingChannelByNameSuccess>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.getPublishingChannelById(
-        getPublishingChannelByIdRequestBody,
-        options,
-      );
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishingChannelByName(
+          getPublishingChannelByNameRequestBody,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -7251,16 +7252,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {GetPublishingChannelByIdRequestBody} getPublishingChannelByIdRequestBody
+     * @param {GetPublishingChannelByNameRequestBody} getPublishingChannelByNameRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getPublishingChannelById(
-      getPublishingChannelByIdRequestBody: GetPublishingChannelByIdRequestBody,
+    getPublishingChannelByName(
+      getPublishingChannelByNameRequestBody: GetPublishingChannelByNameRequestBody,
       options?: any,
-    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelByIdFailedReasonGetPublishingChannelByIdSuccess> {
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelByNameFailedReasonGetPublishingChannelByNameSuccess> {
       return localVarFp
-        .getPublishingChannelById(getPublishingChannelByIdRequestBody, options)
+        .getPublishingChannelByName(getPublishingChannelByNameRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8568,17 +8569,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {GetPublishingChannelByIdRequestBody} getPublishingChannelByIdRequestBody
+   * @param {GetPublishingChannelByNameRequestBody} getPublishingChannelByNameRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public getPublishingChannelById(
-    getPublishingChannelByIdRequestBody: GetPublishingChannelByIdRequestBody,
+  public getPublishingChannelByName(
+    getPublishingChannelByNameRequestBody: GetPublishingChannelByNameRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .getPublishingChannelById(getPublishingChannelByIdRequestBody, options)
+      .getPublishingChannelByName(getPublishingChannelByNameRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

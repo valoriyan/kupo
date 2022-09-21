@@ -12,25 +12,25 @@
  * Do not edit the class manually.
  */
 
-import { CreatePublishingChannelSuccess } from "./create-publishing-channel-success";
 import { EitherTypeSuccess } from "./either-type-success";
+import { GetPublishingChannelByNameSuccess } from "./get-publishing-channel-by-name-success";
 
 /**
  *
  * @export
- * @interface SuccessResponseCreatePublishingChannelSuccess
+ * @interface SuccessResponseGetPublishingChannelByNameSuccess
  */
-export interface SuccessResponseCreatePublishingChannelSuccess {
+export interface SuccessResponseGetPublishingChannelByNameSuccess {
   /**
    *
    * @type {EitherTypeSuccess}
-   * @memberof SuccessResponseCreatePublishingChannelSuccess
+   * @memberof SuccessResponseGetPublishingChannelByNameSuccess
    */
   type: EitherTypeSuccess;
   /**
    *
-   * @type {CreatePublishingChannelSuccess}
-   * @memberof SuccessResponseCreatePublishingChannelSuccess
+   * @type {GetPublishingChannelByNameSuccess}
+   * @memberof SuccessResponseGetPublishingChannelByNameSuccess
    */
-  success: CreatePublishingChannelSuccess;
+  success: GetPublishingChannelByNameSuccess;
 }

@@ -14,8 +14,12 @@ export interface CreatePublishingChannelRequestBody {
   publishingChannelDescription: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CreatePublishingChannelSuccess {}
+export interface CreatePublishingChannelSuccess {
+  publishingChannelId: string;
+  ownerUserId: string;
+  name: string;
+  description: string;
+}
 
 export enum CreatePublishingChannelFailedReason {
   UnknownCause = "Unknown Cause",
@@ -60,5 +64,10 @@ export async function handleCreatePublishingChannel({
     return createPublishingChannelResponse;
   }
 
-  return Success({});
+  return Success({
+    publishingChannelId,
+    ownerUserId: clientUserId,
+    name: publishingChannelName,
+    description: publishingChannelDescription,
+  });
 }

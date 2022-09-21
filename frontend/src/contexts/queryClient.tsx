@@ -33,6 +33,7 @@ export enum CacheKeys {
   CountOfUnreadNotifications = "CountOfUnreadNotifications",
   CountOfUnreadChatRooms = "CountOfUnreadChatRooms",
   UserCreditCards = "UserCreditCards",
+  CommunityByName = "CommunityByName",
 }
 
 export const queryClient = new QueryClient({

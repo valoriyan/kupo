@@ -1,4 +1,4 @@
-import { DuplicateIcon, TagIcon } from "#/components/Icons";
+import { CommunityIcon, DuplicateIcon, TagIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -16,6 +16,11 @@ export const Initial = (props: InitialProps) => {
       </NewItemButton>
       <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.ShopItem)}>
         <TagIcon /> New Shop Item
+      </NewItemButton>
+      <NewItemButton
+        onClick={() => props.setCurrentScreen(AddContentScreen.CommunityPage)}
+      >
+        <CommunityIcon /> New Community Page
       </NewItemButton>
       {/* <NewItemButton
         onClick={() => props.setCurrentScreen(AddContentScreen.PostSchedule)}

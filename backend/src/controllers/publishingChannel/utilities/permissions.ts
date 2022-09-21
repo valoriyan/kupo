@@ -21,7 +21,7 @@ export async function doesUserIdHaveRightsToModeratePublishingChannel({
   publishingChannelId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+    await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
         controller,
         publishingChannelId,
