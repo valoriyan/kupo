@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { ProfilePrivacySetting, RenderableUser, UserFollowingStatus } from "#/api";
+import { ProfilePrivacySetting, RenderableUser, FollowingStatus } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { Avatar } from "#/components/Avatar";
@@ -36,7 +36,7 @@ export const ListUser = ({ user, additionalActions }: ListUserProps) => {
   });
 
   const toggleFollow = () => {
-    if (user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing) {
+    if (user.followingStatusOfClientToUser === FollowingStatus.IsFollowing) {
       unfollowUser();
     } else followUser();
   };
@@ -57,7 +57,7 @@ export const ListUser = ({ user, additionalActions }: ListUserProps) => {
           size="sm"
           outlined
           variant={
-            user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+            user.followingStatusOfClientToUser === FollowingStatus.IsFollowing
               ? "secondary"
               : "primary"
           }
@@ -65,9 +65,9 @@ export const ListUser = ({ user, additionalActions }: ListUserProps) => {
           disabled={isFollowing || isUnfollowing}
         >
           <TextOrSpinner isLoading={isFollowing || isUnfollowing}>
-            {user.followingStatusOfClientToUser === UserFollowingStatus.IsFollowing
+            {user.followingStatusOfClientToUser === FollowingStatus.IsFollowing
               ? "Unfollow"
-              : user.followingStatusOfClientToUser === UserFollowingStatus.Pending
+              : user.followingStatusOfClientToUser === FollowingStatus.Pending
               ? "Pending"
               : "Follow"}
           </TextOrSpinner>

@@ -15,10 +15,13 @@
 /**
  *
  * @export
- * @enum {string}
+ * @interface RevokeFollowerRequestBody
  */
-export enum FollowingStatus {
-  IsFollowing = "is_following",
-  NotFollowing = "not_following",
-  Pending = "pending",
+export interface RevokeFollowerRequestBody {
+  /**
+   *
+   * @type {string}
+   * @memberof RevokeFollowerRequestBody
+   */
+  revokedUserId: string;
 }

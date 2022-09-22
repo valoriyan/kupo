@@ -1,13 +1,8 @@
 import { useMutation, useQueryClient } from "react-query";
 import { useCurrentUserId } from "#/contexts/auth";
 import { CacheKeys } from "#/contexts/queryClient";
-import {
-  Api,
-  GetClientUserProfileSuccess,
-  RenderableUser,
-  UserFollowingStatus,
-} from "../..";
-import { updateUserFollowingStatus, updateUsersCache } from "./utilities";
+import { Api, GetClientUserProfileSuccess, RenderableUser, FollowingStatus } from "../..";
+import { updateFollowingStatus, updateUsersCache } from "./utilities";
 
 export const useFollowUser = ({
   userIdBeingFollowed,
@@ -29,7 +24,7 @@ export const useFollowUser = ({
       onSuccess: (data) => {
         if (data.data.success) {
           // Update following/follower lists
-          updateUserFollowingStatus({
+          updateFollowingStatus({
             queryClient,
             clientUserId: userId || "",
             userId: userIdBeingFollowed,
@@ -65,8 +60,8 @@ export const useFollowUser = ({
                       : user.followers.count + 1,
                   },
                   followingStatusOfClientToUser: isUserPrivate
-                    ? UserFollowingStatus.Pending
-                    : UserFollowingStatus.IsFollowing,
+                    ? FollowingStatus.Pending
+                    : FollowingStatus.IsFollowing,
                 };
                 return updatedUser;
               }

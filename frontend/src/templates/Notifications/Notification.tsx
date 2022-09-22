@@ -3,6 +3,7 @@ import {
   RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
   RenderableNewLikeOnPublishedItemNotification,
+  RenderableNewTagInPublishedItemCommentNotification,
   RenderableUserNotification,
 } from "#/api";
 import { NewCommentOnPublishedItemNotification } from "./NewCommentOnPublishedItemNotification";
@@ -48,7 +49,13 @@ export const Notification = ({ notification }: NotificationProps) => {
     (type as unknown as NOTIFICATIONEVENTS) ===
     NOTIFICATIONEVENTS.NewTagInPublishedItemComment
   ) {
-    return <NewTagInPublishedItemCommentNotification notification={notification} />;
+    return (
+      <NewTagInPublishedItemCommentNotification
+        notification={
+          notification as unknown as RenderableNewTagInPublishedItemCommentNotification
+        }
+      />
+    );
   } else {
     return null;
   }

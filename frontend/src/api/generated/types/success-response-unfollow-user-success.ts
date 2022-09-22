@@ -12,13 +12,24 @@
  * Do not edit the class manually.
  */
 
+import { EitherTypeSuccess } from "./either-type-success";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface SuccessResponseUnfollowUserSuccess
  */
-export enum FollowingStatus {
-  IsFollowing = "is_following",
-  NotFollowing = "not_following",
-  Pending = "pending",
+export interface SuccessResponseUnfollowUserSuccess {
+  /**
+   *
+   * @type {EitherTypeSuccess}
+   * @memberof SuccessResponseUnfollowUserSuccess
+   */
+  type: EitherTypeSuccess;
+  /**
+   *
+   * @type {object}
+   * @memberof SuccessResponseUnfollowUserSuccess
+   */
+  success: object;
 }

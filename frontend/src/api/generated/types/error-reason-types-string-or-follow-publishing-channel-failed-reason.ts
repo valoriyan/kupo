@@ -12,13 +12,12 @@
  * Do not edit the class manually.
  */
 
+import { AuthFailedReason } from "./auth-failed-reason";
+import { GenericResponseFailedReason } from "./generic-response-failed-reason";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface ErrorReasonTypesStringOrFollowPublishingChannelFailedReason
  */
-export enum FollowingStatus {
-  IsFollowing = "is_following",
-  NotFollowing = "not_following",
-  Pending = "pending",
-}
+export interface ErrorReasonTypesStringOrFollowPublishingChannelFailedReason {}

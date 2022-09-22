@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { UserFollowingStatus } from "#/api";
+import { FollowingStatus } from "#/api";
 import { useFollowUser } from "#/api/mutations/users/followUser";
 import { useUnfollowUser } from "#/api/mutations/users/unfollowUser";
 import { Button } from "#/components/Button";
@@ -8,7 +8,7 @@ export interface FollowButtonProps {
   userId: string;
   username: string;
   isUserPrivate: boolean;
-  followingStatus: UserFollowingStatus;
+  followingStatus: FollowingStatus;
 }
 
 export const FollowButton = ({
@@ -28,8 +28,8 @@ export const FollowButton = ({
     usernameBeingUnfollowed: username,
   });
 
-  const isFollowing = followingStatus === UserFollowingStatus.IsFollowing;
-  const isPending = followingStatus === UserFollowingStatus.Pending;
+  const isFollowing = followingStatus === FollowingStatus.IsFollowing;
+  const isPending = followingStatus === FollowingStatus.Pending;
 
   function handleClick(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();

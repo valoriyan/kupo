@@ -13,9 +13,9 @@
  */
 
 import { Color } from "./color";
+import { FollowingStatus } from "./following-status";
 import { ProfilePrivacySetting } from "./profile-privacy-setting";
 import { RenderableUserFollowers } from "./renderable-user-followers";
-import { UserFollowingStatus } from "./user-following-status";
 
 /**
  *
@@ -121,8 +121,8 @@ export interface RenderableUser {
   hashtags: Array<string>;
   /**
    *
-   * @type {UserFollowingStatus}
+   * @type {FollowingStatus}
    * @memberof RenderableUser
    */
-  followingStatusOfClientToUser: UserFollowingStatus;
+  followingStatusOfClientToUser: FollowingStatus;
 }

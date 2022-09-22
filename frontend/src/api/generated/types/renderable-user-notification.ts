@@ -12,11 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT } from "./notificationeventsnewtaginpublisheditemcomment";
+import { NOTIFICATIONEVENTSNEWUSERFOLLOWREQUEST } from "./notificationeventsnewuserfollowrequest";
+import { RenderableAcceptedUserFollowRequestNotification } from "./renderable-accepted-user-follow-request-notification";
 import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
 import { RenderableNewLikeOnPublishedItemNotification } from "./renderable-new-like-on-published-item-notification";
 import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable-new-tag-in-published-item-comment-notification";
+import { RenderableNewUserFollowRequestNotification } from "./renderable-new-user-follow-request-notification";
 import { RenderablePublishedItem } from "./renderable-published-item";
 import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
 import { RenderableUser } from "./renderable-user";
@@ -29,10 +31,10 @@ import { RenderableUser } from "./renderable-user";
 export interface RenderableUserNotification {
   /**
    *
-   * @type {NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT}
+   * @type {NOTIFICATIONEVENTSNEWUSERFOLLOWREQUEST}
    * @memberof RenderableUserNotification
    */
-  type: NOTIFICATIONEVENTSNEWTAGINPUBLISHEDITEMCOMMENT;
+  type: NOTIFICATIONEVENTSNEWUSERFOLLOWREQUEST;
   /**
    *
    * @type {number}
@@ -87,4 +89,16 @@ export interface RenderableUserNotification {
    * @memberof RenderableUserNotification
    */
   userTaggingClient: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
+  userAcceptingFollowRequest: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
+  followRequestingUser: RenderableUser;
 }

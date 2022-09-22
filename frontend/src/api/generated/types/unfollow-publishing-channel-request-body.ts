@@ -15,10 +15,13 @@
 /**
  *
  * @export
- * @enum {string}
+ * @interface UnfollowPublishingChannelRequestBody
  */
-export enum FollowingStatus {
-  IsFollowing = "is_following",
-  NotFollowing = "not_following",
-  Pending = "pending",
+export interface UnfollowPublishingChannelRequestBody {
+  /**
+   *
+   * @type {string}
+   * @memberof UnfollowPublishingChannelRequestBody
+   */
+  publishingChannelIdBeingUnfollowed: string;
 }

@@ -13,6 +13,7 @@
  */
 
 import { RenderableUser } from "./renderable-user";
+import { RenderableUserFollowers } from "./renderable-user-followers";
 
 /**
  *
@@ -50,4 +51,10 @@ export interface RenderablePublishingChannel {
    * @memberof RenderablePublishingChannel
    */
   owner: RenderableUser;
+  /**
+   *
+   * @type {RenderableUserFollowers}
+   * @memberof RenderablePublishingChannel
+   */
+  followers: RenderableUserFollowers;
 }

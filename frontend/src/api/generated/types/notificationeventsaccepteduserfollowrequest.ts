@@ -17,8 +17,6 @@
  * @export
  * @enum {string}
  */
-export enum FollowingStatus {
-  IsFollowing = "is_following",
-  NotFollowing = "not_following",
-  Pending = "pending",
+export enum NOTIFICATIONEVENTSACCEPTEDUSERFOLLOWREQUEST {
+  AcceptedUserFollowRequest = "ACCEPTED_USER_FOLLOW_REQUEST",
 }

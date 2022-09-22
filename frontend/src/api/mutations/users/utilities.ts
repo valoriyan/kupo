@@ -5,7 +5,7 @@ import {
   GetPageOfUsersFollowingUserIdSuccess,
   ProfilePrivacySetting,
   RenderableUser,
-  UserFollowingStatus,
+  FollowingStatus,
 } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
@@ -71,7 +71,7 @@ export const updateUsersCache = ({
   });
 };
 
-export const updateUserFollowingStatus = ({
+export const updateFollowingStatus = ({
   queryClient,
   clientUserId,
   userId,
@@ -101,8 +101,8 @@ export const updateUserFollowingStatus = ({
                 ...user,
                 followingStatusOfClientToUser:
                   user.profilePrivacySetting === ProfilePrivacySetting.Private
-                    ? UserFollowingStatus.Pending
-                    : UserFollowingStatus.IsFollowing,
+                    ? FollowingStatus.Pending
+                    : FollowingStatus.IsFollowing,
               },
             ];
           }
@@ -129,10 +129,10 @@ export const updateUserFollowingStatus = ({
             return {
               ...user,
               followingStatusOfClientToUser: !isFollowing
-                ? UserFollowingStatus.NotFollowing
+                ? FollowingStatus.NotFollowing
                 : user.profilePrivacySetting === ProfilePrivacySetting.Private
-                ? UserFollowingStatus.Pending
-                : UserFollowingStatus.IsFollowing,
+                ? FollowingStatus.Pending
+                : FollowingStatus.IsFollowing,
             };
           } else {
             return user;
@@ -158,10 +158,10 @@ export const updateUserFollowingStatus = ({
             return {
               ...user,
               followingStatusOfClientToUser: !isFollowing
-                ? UserFollowingStatus.NotFollowing
+                ? FollowingStatus.NotFollowing
                 : user.profilePrivacySetting === ProfilePrivacySetting.Private
-                ? UserFollowingStatus.Pending
-                : UserFollowingStatus.IsFollowing,
+                ? FollowingStatus.Pending
+                : FollowingStatus.IsFollowing,
             };
           } else {
             return user;
