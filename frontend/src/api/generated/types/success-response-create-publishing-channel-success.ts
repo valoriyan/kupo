@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { CreatePublishingChannelSuccess } from "./create-publishing-channel-success";
 import { EitherTypeSuccess } from "./either-type-success";
 
 /**
@@ -28,8 +29,8 @@ export interface SuccessResponseCreatePublishingChannelSuccess {
   type: EitherTypeSuccess;
   /**
    *
-   * @type {object}
+   * @type {CreatePublishingChannelSuccess}
    * @memberof SuccessResponseCreatePublishingChannelSuccess
    */
-  success: object;
+  success: CreatePublishingChannelSuccess;
 }

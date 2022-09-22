@@ -2,11 +2,11 @@ import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { useCreateShopItem } from "#/api/mutations/shopItems/createShopItem";
 import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
 import { Button } from "#/components/Button";
-import { CaptionTextArea } from "#/components/CaptionTextArea";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
 import { EyeIcon, InfoIcon, TagIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
+import { LimitedTextArea } from "#/components/LimitedTextArea";
 import { MediaUpload } from "#/components/MediaUpload";
 import { Popover } from "#/components/Popover";
 import { PriceInput } from "#/components/PriceInput";
@@ -94,7 +94,12 @@ export const NewShopItem = (props: NewShopItemProps) => {
             <PriceInput price={price} setPrice={setPrice} />
           </LabeledInputSection>
           <SectionWrapper>
-            <CaptionTextArea caption={caption} setCaption={setCaption} />
+            <LimitedTextArea
+              text={caption}
+              setText={setCaption}
+              placeholder="add caption..."
+              dataCy="caption-input"
+            />
           </SectionWrapper>
           <SectionWrapper>
             <HashTags

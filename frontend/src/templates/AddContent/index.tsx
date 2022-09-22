@@ -10,6 +10,7 @@ import { assertUnreachable } from "#/utils/assertUnreachable";
 import { SessionStorageItem } from "#/utils/storage";
 import { FormStateProvider } from "./FormContext";
 import { Initial } from "./Initial";
+import { NewCommunityPage } from "./NewCommunityPage";
 import { NewPost } from "./NewPost";
 import { NewShopItem } from "./NewShopItem";
 
@@ -24,6 +25,7 @@ export enum AddContentScreen {
   Initial = "Initial",
   Post = "Post",
   ShopItem = "Shop Item",
+  CommunityPage = "Community Page",
   // PostSchedule = "PostSchedule",
 }
 
@@ -31,6 +33,7 @@ const screenToHeading = {
   [AddContentScreen.Initial]: "Add Content",
   [AddContentScreen.Post]: "New Post",
   [AddContentScreen.ShopItem]: "New Shop Item",
+  [AddContentScreen.CommunityPage]: "New Community Page",
   // [AddContentScreen.PostSchedule]: "View Post Schedule",
 };
 
@@ -71,6 +74,9 @@ export const AddContent = () => {
       break;
     case AddContentScreen.ShopItem:
       bodyNode = <NewShopItem setAdditionalScreen={setAdditionalScreen} />;
+      break;
+    case AddContentScreen.CommunityPage:
+      bodyNode = <NewCommunityPage />;
       break;
     // case AddContentScreen.PostSchedule:
     //   bodyNode = <PostSchedule calendarState={calendarState} />;

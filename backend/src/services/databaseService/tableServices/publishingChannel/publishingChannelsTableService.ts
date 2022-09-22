@@ -120,12 +120,12 @@ export class PublishingChannelsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async maybeGetPublishingChannelByPublishingChannelId({
+  public async getPublishingChannelByName({
     controller,
-    publishingChannelId,
+    name,
   }: {
     controller: Controller;
-    publishingChannelId: string;
+    name: string;
   }): Promise<
     InternalServiceResponse<
       ErrorReasonTypes<string>,
@@ -133,7 +133,7 @@ export class PublishingChannelsTableService extends TableService {
     >
   > {
     try {
-      const values = [publishingChannelId];
+      const values = [name];
 
       const query = {
         text: `
@@ -142,7 +142,7 @@ export class PublishingChannelsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            publishing_channel_id = $1
+            name = $1
           LIMIT
             1
           ;
@@ -170,7 +170,62 @@ export class PublishingChannelsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at publishedItemsTableService.selectPublishingChannelByPublishingChannelId",
+          "Error at publishedItemsTableService.selectPublishingChannelByName",
+      });
+    }
+  }
+
+  public async getPublishingChannelById({
+    controller,
+    publishingChannelId,
+  }: {
+    controller: Controller;
+    publishingChannelId: string;
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      UnrenderablePublishingChannel | null
+    >
+  > {
+    try {
+      const values = [publishingChannelId];
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            name = $1
+          LIMIT
+            1
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBPublishingChannel> = await this.datastorePool.query(
+        query,
+      );
+
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(
+          convertDBPublishingChannelToUnrenderablePublishingChannel(rows[0]),
+        );
+      } else {
+        return Success(null);
+      }
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemsTableService.selectPublishingChannelById",
       });
     }
   }

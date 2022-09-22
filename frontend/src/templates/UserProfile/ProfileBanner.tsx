@@ -10,16 +10,16 @@ import { FollowButton } from "./FollowButton";
 
 export interface ProfileBannerProps {
   isOwnProfile: boolean | undefined;
-  user: RenderableUser;
   scrollPosition: number;
   backRoute: string | null;
+  user: RenderableUser;
 }
 
 export const ProfileBanner = ({
   isOwnProfile,
-  user,
   scrollPosition,
   backRoute,
+  user,
 }: ProfileBannerProps) => {
   return (
     <Wrapper>
@@ -32,7 +32,7 @@ export const ProfileBanner = ({
           </Link>
         )}
         <Avatar
-          alt={`@${user.username ?? "User"}'s profile picture`}
+          alt={`@${user.username}'s profile picture`}
           src={user.profilePictureTemporaryUrl}
           size="$7"
         />

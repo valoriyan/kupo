@@ -50,7 +50,7 @@ export async function handleUpdatePublishingChannel({
   // GET PUBLISHING CHANNEL AND CHECK THAT USER OWNS THE CHANNEL
 
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
         controller,
         publishingChannelId,

@@ -24,7 +24,7 @@ export async function doesUserIdHaveRightsToModeratePublishingChannel({
   // GET PUBLISHING CHANNEL
   //////////////////////////////////////////////////
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+    await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
         controller,
         publishingChannelId,

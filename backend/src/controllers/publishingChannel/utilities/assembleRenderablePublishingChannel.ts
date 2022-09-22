@@ -17,82 +17,77 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../utilities/monads/unwrapListOfResponses";
 
-export async function assembleRenderablePublishingChannelsByPublishingChannelIds({
+export async function assembleRenderablePublishingChannelsByNames({
   controller,
   blobStorageService,
   databaseService,
-  publishingChannelIds,
+  names,
   requestorUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  publishingChannelIds: string[];
+  names: string[];
   requestorUserId: string;
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel[]>
 > {
-  const assembleRenderablePublishingChannelByPublishingChannelIdResponses =
-    await BluebirdPromise.map(
-      publishingChannelIds,
-      async (publishingChannelId) =>
-        await assembleRenderablePublishingChannelByPublishingChannelId({
-          controller,
-          requestorUserId: requestorUserId,
-          publishingChannelId,
-          blobStorageService,
-          databaseService,
-        }),
-    );
+  const assembleRenderablePublishingChannelByNameResponses = await BluebirdPromise.map(
+    names,
+    async (name) =>
+      await assembleRenderablePublishingChannelByName({
+        controller,
+        requestorUserId: requestorUserId,
+        name,
+        blobStorageService,
+        databaseService,
+      }),
+  );
 
   return unwrapListOfEitherResponses({
-    eitherResponses: assembleRenderablePublishingChannelByPublishingChannelIdResponses,
+    eitherResponses: assembleRenderablePublishingChannelByNameResponses,
     failureHandlingMethod:
       UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 }
 
-export async function assembleRenderablePublishingChannelByPublishingChannelId({
+export async function assembleRenderablePublishingChannelByName({
   controller,
   blobStorageService,
   databaseService,
-  publishingChannelId,
+  name,
   requestorUserId,
 }: {
   controller: Controller;
   blobStorageService: BlobStorageServiceInterface;
   databaseService: DatabaseService;
-  publishingChannelId: string;
+  name: string;
   requestorUserId: string;
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
-  const maybeGetPublishingChannelByPublishingChannelIdResponse =
-    await databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+  const maybeGetPublishingChannelByNameResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
       {
         controller,
-        publishingChannelId,
+        name,
       },
     );
 
-  if (
-    maybeGetPublishingChannelByPublishingChannelIdResponse.type === EitherType.failure
-  ) {
-    return maybeGetPublishingChannelByPublishingChannelIdResponse;
+  if (maybeGetPublishingChannelByNameResponse.type === EitherType.failure) {
+    return maybeGetPublishingChannelByNameResponse;
   }
 
-  const { success: maybePublishingChannel } =
-    maybeGetPublishingChannelByPublishingChannelIdResponse;
+  const { success: maybePublishingChannel } = maybeGetPublishingChannelByNameResponse;
 
   if (!maybePublishingChannel) {
     return Failure({
       controller,
       httpStatusCode: 404,
       reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error:
-        "Missing Publishing Channel at assembleRenderablePublishingChannelByPublishingChannelId",
+      error: "Missing Publishing Channel at assembleRenderablePublishingChannelByName",
       additionalErrorInformation:
-        "Missing Publishing Channel at assembleRenderablePublishingChannelByPublishingChannelId",
+        "Missing Publishing Channel at assembleRenderablePublishingChannelByName",
     });
   }
   const unrenderablePublishingChannel = maybePublishingChannel;

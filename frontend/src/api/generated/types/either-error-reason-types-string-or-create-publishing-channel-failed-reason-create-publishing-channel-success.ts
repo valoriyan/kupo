@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { CreatePublishingChannelSuccess } from "./create-publishing-channel-success";
 import { EitherTypeSuccess } from "./either-type-success";
 import { FailureResponseErrorReasonTypesStringOrCreatePublishingChannelFailedReason } from "./failure-response-error-reason-types-string-or-create-publishing-channel-failed-reason";
 import { FailureResponseErrorReasonTypesStringOrCreatePublishingChannelFailedReasonError } from "./failure-response-error-reason-types-string-or-create-publishing-channel-failed-reason-error";
@@ -37,8 +38,8 @@ export interface EitherErrorReasonTypesStringOrCreatePublishingChannelFailedReas
   error: FailureResponseErrorReasonTypesStringOrCreatePublishingChannelFailedReasonError;
   /**
    *
-   * @type {object}
+   * @type {CreatePublishingChannelSuccess}
    * @memberof EitherErrorReasonTypesStringOrCreatePublishingChannelFailedReasonCreatePublishingChannelSuccess
    */
-  success: object;
+  success: CreatePublishingChannelSuccess;
 }

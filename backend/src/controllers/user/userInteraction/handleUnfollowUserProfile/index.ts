@@ -1,5 +1,4 @@
 import express from "express";
-import { NOTIFICATION_EVENTS } from "../../../../services/webSocketService/eventsConfig";
 import {
   EitherType,
   ErrorReasonTypes,

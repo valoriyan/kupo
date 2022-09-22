@@ -1,12 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import { useCurrentUserId } from "#/contexts/auth";
-import {
-  Api,
-  GetClientUserProfileSuccess,
-  RenderableUser,
-  UserFollowingStatus,
-} from "../..";
-import { updateUserFollowingStatus, updateUsersCache } from "./utilities";
+import { Api, GetClientUserProfileSuccess, RenderableUser, FollowingStatus } from "../..";
+import { updateFollowingStatus, updateUsersCache } from "./utilities";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useUnfollowUser = ({
@@ -27,7 +22,7 @@ export const useUnfollowUser = ({
       onSuccess: (data) => {
         if (data.data.success) {
           // Update following/follower lists
-          updateUserFollowingStatus({
+          updateFollowingStatus({
             queryClient,
             clientUserId: userId || "",
             userId: userIdBeingUnfollowed,
@@ -58,7 +53,7 @@ export const useUnfollowUser = ({
                     ...user.followers,
                     count: user.followers.count - 1,
                   },
-                  followingStatusOfClientToUser: UserFollowingStatus.NotFollowing,
+                  followingStatusOfClientToUser: FollowingStatus.NotFollowing,
                 };
                 return updatedUser;
               }

@@ -14,10 +14,10 @@
 
 import { ClientUserDetails } from "./client-user-details";
 import { Color } from "./color";
+import { FollowingStatus } from "./following-status";
 import { ProfilePrivacySetting } from "./profile-privacy-setting";
 import { RenderableUser } from "./renderable-user";
 import { RenderableUserFollowers } from "./renderable-user-followers";
-import { UserFollowingStatus } from "./user-following-status";
 
 /**
  * @type GetClientUserProfileSuccess

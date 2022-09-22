@@ -19,6 +19,7 @@ const ICONS_TO_GENERATE = [
   "chevron-up-r",
   "close",
   "comment",
+  "community",
   "credit-card",
   "duplicate",
   "eye",

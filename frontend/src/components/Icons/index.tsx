@@ -12,6 +12,7 @@ export * from "./generated/ChevronUpIcon";
 export * from "./generated/ChevronUpRIcon";
 export * from "./generated/CloseIcon";
 export * from "./generated/CommentIcon";
+export * from "./generated/CommunityIcon";
 export * from "./generated/CreditCardIcon";
 export * from "./generated/DuplicateIcon";
 export * from "./generated/EyeIcon";

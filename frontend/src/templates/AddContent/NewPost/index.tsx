@@ -1,9 +1,9 @@
 import { useCreatePost } from "#/api/mutations/posts/createPost";
 import { Button } from "#/components/Button";
-import { CaptionTextArea } from "#/components/CaptionTextArea";
 import { DateTimePicker } from "#/components/DateTimePicker";
 import { HashTags } from "#/components/HashTags";
 import { Flex, Stack } from "#/components/Layout";
+import { LimitedTextArea } from "#/components/LimitedTextArea";
 import { MediaUpload } from "#/components/MediaUpload";
 import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
@@ -45,7 +45,12 @@ export const NewPost = (props: NewPostProps) => {
             />
           </SectionWrapper>
           <SectionWrapper>
-            <CaptionTextArea caption={caption} setCaption={setCaption} />
+            <LimitedTextArea
+              text={caption}
+              setText={setCaption}
+              placeholder="add caption..."
+              dataCy="caption-input"
+            />
           </SectionWrapper>
           <SectionWrapper>
             <HashTags
