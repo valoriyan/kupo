@@ -20,6 +20,9 @@ export async function doesUserIdHaveRightsToModeratePublishingChannel({
   requestingUserId: string;
   publishingChannelId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  //////////////////////////////////////////////////
+  // GET PUBLISHING CHANNEL
+  //////////////////////////////////////////////////
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
     await databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
       {
@@ -50,9 +53,17 @@ export async function doesUserIdHaveRightsToModeratePublishingChannel({
   }
   const publishingChannel = maybePublishingChannel;
 
+  //////////////////////////////////////////////////
+  // RETURN IF OWNER
+  //////////////////////////////////////////////////
+
   if (publishingChannel.ownerUserId === requestingUserId) {
     return Success(true);
   }
+
+  //////////////////////////////////////////////////
+  // GET MODERATORS
+  //////////////////////////////////////////////////
 
   const selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse =
     await databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.selectPublishingChannelModeratorUserIdsByPublishingChannelId(
@@ -70,6 +81,10 @@ export async function doesUserIdHaveRightsToModeratePublishingChannel({
   }
   const { success: moderatorUserIds } =
     selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse;
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
 
   return Success(moderatorUserIds.includes(requestingUserId));
 }
@@ -119,4 +134,54 @@ export async function doesUserIdHaveRightsToApprovePublishingChannelSubmissions(
     requestingUserId,
     publishingChannelId: publishingChannelSubmission.publishing_channel_id,
   });
+}
+
+export async function isUserOwnerOfPublishingChannel({
+  controller,
+  databaseService,
+  requestingUserId,
+  publishingChannelId,
+}: {
+  controller: Controller;
+  databaseService: DatabaseService;
+  requestingUserId: string;
+  publishingChannelId: string;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  //////////////////////////////////////////////////
+  // GET PUBLISHING CHANNEL
+  //////////////////////////////////////////////////
+  const maybeGetPublishingChannelByPublishingChannelIdResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelsTableService.maybeGetPublishingChannelByPublishingChannelId(
+      {
+        controller,
+        publishingChannelId,
+      },
+    );
+
+  if (
+    maybeGetPublishingChannelByPublishingChannelIdResponse.type === EitherType.failure
+  ) {
+    return maybeGetPublishingChannelByPublishingChannelIdResponse;
+  }
+
+  const { success: maybePublishingChannel } =
+    maybeGetPublishingChannelByPublishingChannelIdResponse;
+
+  if (!maybePublishingChannel) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "Publishing Channel not found at isUserOwnerOfPublishingChannel",
+      additionalErrorInformation:
+        "Publishing Channel not found at isUserOwnerOfPublishingChannel",
+    });
+  }
+  const publishingChannel = maybePublishingChannel;
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
+
+  return Success(publishingChannel.ownerUserId === requestingUserId);
 }

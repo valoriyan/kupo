@@ -157,6 +157,9 @@ export async function constructRenderableUserFromParts({
     isAdmin,
   } = unrenderableUser;
 
+  //////////////////////////////////////////////////
+  // GET BACKGROUND IMAGE
+  //////////////////////////////////////////////////
   let backgroundImageTemporaryUrl = undefined;
   if (!!backgroundImageBlobFileKey) {
     const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
@@ -170,6 +173,10 @@ export async function constructRenderableUserFromParts({
     }
     backgroundImageTemporaryUrl = getTemporaryImageUrlResponse.success;
   }
+
+  //////////////////////////////////////////////////
+  // GET PROFILE PICTURE
+  //////////////////////////////////////////////////
 
   let profilePictureTemporaryUrl = undefined;
   if (!!profilePictureBlobFileKey) {
@@ -185,6 +192,10 @@ export async function constructRenderableUserFromParts({
     profilePictureTemporaryUrl = getTemporaryImageUrlResponse.success;
   }
 
+  //////////////////////////////////////////////////
+  // CHECK IF CLIENT CAN VIEW ITEMS PUBLISHED BY USER
+  //////////////////////////////////////////////////
+
   const canUserViewUserContentResponse = await canUserViewUserContent({
     controller,
     requestorUserId: requestorUserId,
@@ -196,6 +207,9 @@ export async function constructRenderableUserFromParts({
   }
   const { success: clientCanViewContent } = canUserViewUserContentResponse;
 
+  //////////////////////////////////////////////////
+  // GET FOLLOWER COUNT
+  //////////////////////////////////////////////////
   const countFollowersOfUserIdResponse =
     await databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
       {
@@ -209,6 +223,9 @@ export async function constructRenderableUserFromParts({
   }
   const { success: numberOfFollowersOfUserId } = countFollowersOfUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // HOW MANY ACCOUNTS IS THIS USER FOLLOWING
+  //////////////////////////////////////////////////
   const countFollowsOfUserIdResponse =
     await databaseService.tableNameToServicesMap.userFollowsTableService.countUserFollowsOfUserId(
       {
@@ -222,6 +239,9 @@ export async function constructRenderableUserFromParts({
   }
   const { success: numberOfFollowsByUserId } = countFollowsOfUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // GET USER HASHTAGS
+  //////////////////////////////////////////////////
   const getHashtagsForUserIdResponse =
     await databaseService.tableNameToServicesMap.userHashtagsTableService.getHashtagsForUserId(
       { controller, userId },
@@ -233,6 +253,9 @@ export async function constructRenderableUserFromParts({
 
   const { success: userHashtags } = getHashtagsForUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // IS CLIENT FOLLOWING USER
+  //////////////////////////////////////////////////
   let followingStatusOfClientToUser = FollowingStatus.not_following;
   if (!!requestorUserId) {
     const getFollowingStatusOfUserIdToUserIdResponse =
@@ -249,6 +272,9 @@ export async function constructRenderableUserFromParts({
     followingStatusOfClientToUser = getFollowingStatusOfUserIdToUserIdResponse.success;
   }
 
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
   return Success({
     backgroundImageTemporaryUrl,
     profilePictureTemporaryUrl,

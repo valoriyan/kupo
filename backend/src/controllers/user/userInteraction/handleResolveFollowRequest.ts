@@ -4,7 +4,7 @@ import {
   EitherType,
   ErrorReasonTypes,
   Failure,
-  HTTPResponse,
+  SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
@@ -37,7 +37,7 @@ export async function handleResolveFollowRequest({
   request: express.Request;
   requestBody: ResolveFollowRequestRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     ErrorReasonTypes<string | ResolveFollowRequestFailedReason>,
     ResolveFollowRequestSuccess
   >

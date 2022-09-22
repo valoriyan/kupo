@@ -2,7 +2,7 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  HTTPResponse,
+  SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
@@ -28,7 +28,7 @@ export async function handleUserUnsavesPublishedItem({
   request: express.Request;
   requestBody: UserUnsavesPublishedItemRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     ErrorReasonTypes<string | UserUnsavesPublishedItemFailedReason>,
     UserUnsavesPublishedItemSuccess
   >

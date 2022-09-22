@@ -3,7 +3,7 @@ import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsCo
 import {
   EitherType,
   ErrorReasonTypes,
-  HTTPResponse,
+  SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
@@ -30,7 +30,7 @@ export async function handleRemoveUserLikeFromPublishedItem({
   request: express.Request;
   requestBody: RemoveUserLikeFromPublishedItemRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     ErrorReasonTypes<string | RemoveUserLikeFromPublishedItemFailedReason>,
     RemoveUserLikeFromPublishedItemSuccess
   >

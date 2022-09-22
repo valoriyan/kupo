@@ -3,7 +3,7 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  HTTPResponse,
+  SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
@@ -29,7 +29,7 @@ export async function handleUserSavesPublishedItem({
   request: express.Request;
   requestBody: UserSavesPublishedItemRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     ErrorReasonTypes<string | UserSavesPublishedItemFailedReason>,
     UserSavesPublishedItemSuccess
   >

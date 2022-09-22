@@ -20,7 +20,10 @@ interface DBPublishingChannel {
   publishing_channel_id: string;
   owner_user_id: string;
   name: string;
-  description: string;
+  description?: string;
+
+  background_image_blob_file_key?: string;
+  profile_picture_blob_file_key?: string;
 }
 
 function convertDBPublishingChannelToUnrenderablePublishingChannel(
@@ -50,7 +53,10 @@ export class PublishingChannelsTableService extends TableService {
         publishing_channel_id VARCHAR(64) NOT NULL,
         owner_user_id VARCHAR(64) NOT NULL,
         name VARCHAR(64) UNIQUE NOT NULL,
-        description VARCHAR(64) NOT NULL,
+        description VARCHAR(64),
+
+        background_image_blob_file_key VARCHAR(64) UNIQUE,
+        profile_picture_blob_file_key VARCHAR(64) UNIQUE,
 
         CONSTRAINT ${this.tableName}_pkey
           PRIMARY KEY (publishing_channel_id),
@@ -81,7 +87,7 @@ export class PublishingChannelsTableService extends TableService {
     publishingChannelId: string;
     ownerUserId: string;
     name: string;
-    description: string;
+    description?: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
@@ -222,12 +228,17 @@ export class PublishingChannelsTableService extends TableService {
     publishingChannelId,
     name,
     description,
+    backgroundImageBlobFileKey,
+    profilePictureBlobFileKey,
   }: {
     controller: Controller;
 
     publishingChannelId: string;
-    name: string;
-    description: string;
+    name?: string;
+    description?: string;
+
+    backgroundImageBlobFileKey?: string;
+    profilePictureBlobFileKey?: string;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePublishingChannel>
   > {
@@ -240,6 +251,8 @@ export class PublishingChannelsTableService extends TableService {
             value: description,
             settings: { includeIfEmpty: true },
           },
+          { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
+          { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },
         ],
         fieldsUsedToIdentifyUpdatedRows: [
           {

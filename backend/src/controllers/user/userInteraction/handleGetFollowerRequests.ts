@@ -3,7 +3,7 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  HTTPResponse,
+  SecuredHTTPResponse,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
@@ -43,7 +43,7 @@ export async function handleGetFollowerRequests({
   request: express.Request;
   requestBody: GetFollowerRequestsRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     ErrorReasonTypes<string | GetFollowerRequestsFailedReason>,
     GetFollowerRequestsSuccess
   >

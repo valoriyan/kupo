@@ -1,5 +1,5 @@
 import express from "express";
-import { Body, Controller, Post, Request, Route } from "tsoa";
+import { Body, Controller, FormField, Post, Request, Route, UploadedFile } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { WebSocketService } from "../../services/webSocketService";
@@ -84,6 +84,16 @@ import {
   UnfollowPublishingChannelRequestBody,
   UnfollowPublishingChannelSuccess,
 } from "./userInteraction/handleUnfollowPublishingChannel";
+import {
+  handleUpdatePublishingChannelBackgroundImage,
+  UpdatePublishingChannelBackgroundImageFailedReason,
+  UpdatePublishingChannelBackgroundImageSuccess,
+} from "./handleUpdatePublishingChannelBackgroundImage";
+import {
+  handleUpdatePublishingChannelProfilePicture,
+  UpdatePublishingChannelProfilePictureFailedReason,
+  UpdatePublishingChannelProfilePictureSuccess,
+} from "./handleUpdatePublishingChannelProfilePicture";
 
 @injectable()
 @Route("publishing_channel")
@@ -256,6 +266,48 @@ export class PublishingChannelController extends Controller {
       controller: this,
       request,
       requestBody,
+    });
+  }
+
+  @Post("updatePublishingChannelProfilePicture")
+  public async updatePublishingChannelProfilePicture(
+    @Request() request: express.Request,
+    @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
+    @FormField() publishingChannelId: string,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UpdatePublishingChannelProfilePictureFailedReason>,
+      UpdatePublishingChannelProfilePictureSuccess
+    >
+  > {
+    return await handleUpdatePublishingChannelProfilePicture({
+      controller: this,
+      request,
+      requestBody: {
+        profilePicture,
+        publishingChannelId,
+      },
+    });
+  }
+
+  @Post("updatePublishingChannelBackgroundImage")
+  public async updatePublishingChannelBackgroundImage(
+    @Request() request: express.Request,
+    @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
+    @FormField() publishingChannelId: string,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | UpdatePublishingChannelBackgroundImageFailedReason>,
+      UpdatePublishingChannelBackgroundImageSuccess
+    >
+  > {
+    return await handleUpdatePublishingChannelBackgroundImage({
+      controller: this,
+      request,
+      requestBody: {
+        backgroundImage,
+        publishingChannelId,
+      },
     });
   }
 

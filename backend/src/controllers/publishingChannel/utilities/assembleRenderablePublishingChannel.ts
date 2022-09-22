@@ -158,11 +158,58 @@ export async function assembleRenderablePublishingChannelFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
+  const {
+    publishingChannelId,
+    ownerUserId,
+    name,
+    description,
+    backgroundImageBlobFileKey,
+    profilePictureBlobFileKey,
+  } = unrenderablePublishingChannel;
+
+  //////////////////////////////////////////////////
+  // GET BACKGROUND IMAGE
+  //////////////////////////////////////////////////
+  let backgroundImageTemporaryUrl = undefined;
+  if (!!backgroundImageBlobFileKey) {
+    const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+      controller,
+      blobItemPointer: {
+        fileKey: backgroundImageBlobFileKey,
+      },
+    });
+    if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+      return getTemporaryImageUrlResponse;
+    }
+    backgroundImageTemporaryUrl = getTemporaryImageUrlResponse.success;
+  }
+
+  //////////////////////////////////////////////////
+  // GET PROFILE PICTURE
+  //////////////////////////////////////////////////
+
+  let profilePictureTemporaryUrl = undefined;
+  if (!!profilePictureBlobFileKey) {
+    const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
+      controller,
+      blobItemPointer: {
+        fileKey: profilePictureBlobFileKey,
+      },
+    });
+    if (getTemporaryImageUrlResponse.type === EitherType.failure) {
+      return getTemporaryImageUrlResponse;
+    }
+    profilePictureTemporaryUrl = getTemporaryImageUrlResponse.success;
+  }
+
+  //////////////////////////////////////////////////
+  // GET RENDERABLE OWNER USER
+  //////////////////////////////////////////////////
   const constructRenderableUserFromPartsByUserIdResponse =
     await constructRenderableUserFromPartsByUserId({
       controller,
       requestorUserId,
-      userId: unrenderablePublishingChannel.ownerUserId,
+      userId: ownerUserId,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
     });
@@ -173,14 +220,13 @@ export async function assembleRenderablePublishingChannelFromParts({
     constructRenderableUserFromPartsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // RECORD NOTIFICATION
+  // GET COUNT OF USERS FOLLOWING PUBLISHING CHANNEL
   //////////////////////////////////////////////////
   const countFollowersOfPublishingChannelIdResponse =
     await databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.countFollowersOfPublishingChannelId(
       {
         controller,
-        publishingChannelIdBeingFollowed:
-          unrenderablePublishingChannel.publishingChannelId,
+        publishingChannelIdBeingFollowed: publishingChannelId,
         areFollowsPending: false,
       },
     );
@@ -190,20 +236,27 @@ export async function assembleRenderablePublishingChannelFromParts({
   }
 
   const { success: countOfUserFollowers } = countFollowersOfPublishingChannelIdResponse;
+
   //////////////////////////////////////////////////
   // COMPILE
   //////////////////////////////////////////////////
 
   const renderablePublishingChannel: RenderablePublishingChannel = {
-    publishingChannelId: unrenderablePublishingChannel.publishingChannelId,
-    ownerUserId: unrenderablePublishingChannel.ownerUserId,
-    name: unrenderablePublishingChannel.name,
-    description: unrenderablePublishingChannel.description,
+    publishingChannelId,
+    ownerUserId,
+    name,
+    description,
     owner: publishingChannelOwner,
+    backgroundImageTemporaryUrl,
+    profilePictureTemporaryUrl,
     followers: {
       count: countOfUserFollowers,
     },
   };
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
 
   return Success(renderablePublishingChannel);
 }

@@ -3,7 +3,7 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  HTTPResponse,
+  SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
@@ -33,7 +33,7 @@ export async function handleUserLikesPublishedItem({
   request: express.Request;
   requestBody: UserLikesPublishedItemRequestBody;
 }): Promise<
-  HTTPResponse<
+  SecuredHTTPResponse<
     ErrorReasonTypes<string | UserLikesPublishedItemFailedReason>,
     UserLikesPublishedItemSuccess
   >
