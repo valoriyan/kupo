@@ -7,7 +7,6 @@ import { WebSocketService } from "../../services/webSocketService";
 import { BlobStorageService } from "../../services/blobStorageService";
 import {
   CreatePublishingChannelFailedReason,
-  CreatePublishingChannelRequestBody,
   CreatePublishingChannelSuccess,
   handleCreatePublishingChannel,
 } from "./handleCreatePublishingChannel";
@@ -113,17 +112,58 @@ export class PublishingChannelController extends Controller {
   @Post("createPublishingChannel")
   public async createPublishingChannel(
     @Request() request: express.Request,
-    @Body() requestBody: CreatePublishingChannelRequestBody,
+    @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
+    @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
+    @FormField() publishingChannelName: string,
+    @FormField() publishingChannelDescription: string,
+    @FormField() externalUrl1?: string,
+    @FormField() externalUrl2?: string,
+    @FormField() externalUrl3?: string,
+    @FormField() externalUrl4?: string,
+    @FormField() externalUrl5?: string,
+    @FormField() publishingChannelRule1?: string,
+    @FormField() publishingChannelRule2?: string,
+    @FormField() publishingChannelRule3?: string,
+    @FormField() publishingChannelRule4?: string,
+    @FormField() publishingChannelRule5?: string,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | CreatePublishingChannelFailedReason>,
       CreatePublishingChannelSuccess
     >
   > {
+    const externalUrls: string[] = [];
+    [externalUrl1, externalUrl2, externalUrl3, externalUrl4, externalUrl5].forEach(
+      (externalUrl) => {
+        if (!!externalUrl) {
+          externalUrls.push(externalUrl);
+        }
+      },
+    );
+    const publishingChannelRules: string[] = [];
+    [
+      publishingChannelRule1,
+      publishingChannelRule2,
+      publishingChannelRule3,
+      publishingChannelRule4,
+      publishingChannelRule5,
+    ].forEach((publishingChannelRule) => {
+      if (!!publishingChannelRule) {
+        publishingChannelRules.push(publishingChannelRule);
+      }
+    });
+
     return await handleCreatePublishingChannel({
       controller: this,
       request,
-      requestBody,
+      requestBody: {
+        profilePicture,
+        backgroundImage,
+        publishingChannelName,
+        publishingChannelDescription,
+        externalUrls,
+        publishingChannelRules,
+      },
     });
   }
 

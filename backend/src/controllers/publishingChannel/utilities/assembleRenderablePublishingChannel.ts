@@ -160,6 +160,8 @@ export async function assembleRenderablePublishingChannelFromParts({
     description,
     backgroundImageBlobFileKey,
     profilePictureBlobFileKey,
+    publishingChannelRules,
+    externalUrls,
   } = unrenderablePublishingChannel;
 
   //////////////////////////////////////////////////
@@ -244,6 +246,8 @@ export async function assembleRenderablePublishingChannelFromParts({
     owner: publishingChannelOwner,
     backgroundImageTemporaryUrl,
     profilePictureTemporaryUrl,
+    publishingChannelRules,
+    externalUrls,
     followers: {
       count: countOfUserFollowers,
     },

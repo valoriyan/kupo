@@ -29,7 +29,7 @@ import { PublishingChannelSubmissionsTableService } from "./tableServices/publis
 import { PublishingChannelUserBansTableService } from "./tableServices/publishingChannel/moderation/publishingChannelUserBansTableService";
 import { PublishingChannelModeratorsTableService } from "./tableServices/publishingChannel/moderation/publishingChannelModeratorsTableService";
 import { UserBlocksTableService } from "./tableServices/users/userBlocksTable";
-import { PublishingChannelFollowsTableService } from "./tableServices/publishingChannel/publishingChannelFollows";
+import { PublishingChannelFollowsTableService } from "./tableServices/publishingChannel/publishingChannelFollowsTableService";
 
 @singleton()
 export class DatabaseService {

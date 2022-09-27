@@ -80,7 +80,7 @@ export async function handleUpdatePublishingChannelBackgroundImage({
   if (!!backgroundImage) {
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: requestBody.backgroundImage?.buffer,
+      image: backgroundImage.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;

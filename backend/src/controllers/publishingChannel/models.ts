@@ -7,6 +7,8 @@ export interface UnrenderablePublishingChannel {
   description?: string;
   backgroundImageBlobFileKey?: string;
   profilePictureBlobFileKey?: string;
+  publishingChannelRules: string[];
+  externalUrls: string[];
 }
 
 export interface RenderablePublishingChannel extends UnrenderablePublishingChannel {

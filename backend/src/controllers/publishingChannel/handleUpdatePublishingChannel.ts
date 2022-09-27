@@ -13,6 +13,8 @@ export interface UpdatePublishingChannelRequestBody {
   publishingChannelId: string;
   publishingChannelName: string;
   publishingChannelDescription: string;
+  updatedExternalUrls?: string[];
+  updatedPublishingChannelRules?: string[];
 }
 
 export enum UpdatePublishingChannelFailedReason {
@@ -44,8 +46,13 @@ export async function handleUpdatePublishingChannel({
   );
   if (error) return error;
 
-  const { publishingChannelId, publishingChannelName, publishingChannelDescription } =
-    requestBody;
+  const {
+    publishingChannelId,
+    publishingChannelName,
+    publishingChannelDescription,
+    updatedExternalUrls,
+    updatedPublishingChannelRules,
+  } = requestBody;
 
   // GET PUBLISHING CHANNEL AND CHECK THAT USER OWNS THE CHANNEL
 
@@ -95,6 +102,8 @@ export async function handleUpdatePublishingChannel({
         publishingChannelId,
         name: publishingChannelName,
         description: publishingChannelDescription,
+        updatedExternalUrls,
+        updatedPublishingChannelRules,
       },
     );
 

@@ -80,7 +80,7 @@ export async function handleUpdatePublishingChannelProfilePicture({
   if (!!profilePicture) {
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: requestBody.profilePicture?.buffer,
+      image: profilePicture.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;

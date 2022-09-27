@@ -10,8 +10,12 @@ import { checkAuthorization } from "../auth/utilities";
 import { PublishingChannelController } from "./publishingChannelController";
 
 export interface CreatePublishingChannelRequestBody {
+  backgroundImage?: Express.Multer.File;
+  profilePicture?: Express.Multer.File;
   publishingChannelName: string;
   publishingChannelDescription: string;
+  externalUrls: string[];
+  publishingChannelRules: string[];
 }
 
 export interface CreatePublishingChannelSuccess {
@@ -39,7 +43,16 @@ export async function handleCreatePublishingChannel({
     CreatePublishingChannelSuccess
   >
 > {
-  const { publishingChannelName, publishingChannelDescription } = requestBody;
+  const publishingChannelId = uuidv4();
+
+  const {
+    publishingChannelName,
+    publishingChannelDescription,
+    backgroundImage,
+    profilePicture,
+    externalUrls,
+    publishingChannelRules,
+  } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -47,8 +60,39 @@ export async function handleCreatePublishingChannel({
   );
   if (error) return error;
 
-  const publishingChannelId = uuidv4();
+  //////////////////////////////////////////////////
+  // SAVE BACKGROUND IMAGE BLOB
+  //////////////////////////////////////////////////
+  let backgroundImageBlobFileKey = undefined;
+  if (!!backgroundImage) {
+    const saveImageResponse = await controller.blobStorageService.saveImage({
+      controller,
+      image: backgroundImage.buffer,
+    });
+    if (saveImageResponse.type === EitherType.failure) {
+      return saveImageResponse;
+    }
+    backgroundImageBlobFileKey = saveImageResponse.success.fileKey;
+  }
 
+  //////////////////////////////////////////////////
+  // SAVE PROFILE PICTURE IMAGE BLOB
+  //////////////////////////////////////////////////
+  let profilePictureBlobFileKey = undefined;
+  if (!!profilePicture) {
+    const saveImageResponse = await controller.blobStorageService.saveImage({
+      controller,
+      image: profilePicture?.buffer,
+    });
+    if (saveImageResponse.type === EitherType.failure) {
+      return saveImageResponse;
+    }
+    profilePictureBlobFileKey = saveImageResponse.success.fileKey;
+  }
+
+  //////////////////////////////////////////////////
+  // WRITE TO DATABASE
+  //////////////////////////////////////////////////
   const createPublishingChannelResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.createPublishingChannel(
       {
@@ -57,12 +101,20 @@ export async function handleCreatePublishingChannel({
         ownerUserId: clientUserId,
         name: publishingChannelName,
         description: publishingChannelDescription,
+        backgroundImageBlobFileKey,
+        profilePictureBlobFileKey,
+        publishingChannelRules,
+        externalUrls,
       },
     );
 
   if (createPublishingChannelResponse.type === EitherType.failure) {
     return createPublishingChannelResponse;
   }
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
 
   return Success({
     publishingChannelId,
