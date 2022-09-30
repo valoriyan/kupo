@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd backend
+yarn prettier:fix && yarn lint
+
+cd ../scripts/checkPSQLTables
+yarn test

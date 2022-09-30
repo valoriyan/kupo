@@ -1,0 +1,3 @@
+yarn run v1.22.11
+$ rm -rf dist && tsc && node dist/app.js
+STARTING DATABASE SERVICE @ 'kupo_dev'
