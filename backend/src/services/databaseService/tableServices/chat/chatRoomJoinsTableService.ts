@@ -14,6 +14,8 @@ import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenera
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "../users/usersTableService";
+import { ChatRoomReadRecordsTableService } from "./chatRoomReadRecordsTableService";
+import { ChatMessagesTableService } from "./chatMessagesTableService";
 
 interface DBChatRoomJoin {
   chat_room_id: string;
@@ -153,6 +155,69 @@ export class ChatRoomJoinsTableService extends TableService {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async getCountOfUnreadChatRoomsByUserId({
+    controller,
+    userId,
+  }: {
+    controller: Controller;
+    userId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const query = {
+        text: `
+          SELECT
+            COUNT(*)
+          FROM
+          (
+            SELECT
+              ${ChatRoomJoinsTableService.tableName}.chat_room_id
+            FROM
+              ${ChatRoomJoinsTableService.tableName}	
+            INNER JOIN
+              ${ChatMessagesTableService.tableName}
+                ON
+                    ${ChatRoomJoinsTableService.tableName} .chat_room_id = ${ChatMessagesTableService.tableName}.chat_room_id
+            LEFT JOIN
+              ${ChatRoomReadRecordsTableService.tableName}
+                ON
+                    ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatRoomReadRecordsTableService.tableName}.chat_room_id
+                  AND	
+                    ${ChatRoomJoinsTableService.tableName}.user_id = ${ChatRoomReadRecordsTableService.tableName}.user_id
+            WHERE
+                ${ChatRoomJoinsTableService.tableName}.user_id = $1
+              AND
+                ${ChatMessagesTableService.tableName}.author_user_id != $1
+              AND (
+                  ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user IS NULL
+                OR
+                  ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user < ${ChatMessagesTableService.tableName}.creation_timestamp
+              )
+            GROuP BY
+              ${ChatRoomJoinsTableService.tableName}.chat_room_id
+          ) as subquery
+          ;
+        `,
+        values: [userId],
+      };
+
+      const response: QueryResult<{ count: number }> = await this.datastorePool.query(
+        query,
+      );
+
+      console.log(response);
+      return Success(response.rows[0].count);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at ChatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId",
+      });
+    }
+  }
 
   public async getUnrenderableChatRoomWithJoinedUsersByChatRoomId({
     controller,

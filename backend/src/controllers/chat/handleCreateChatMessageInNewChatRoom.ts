@@ -37,6 +37,9 @@ export async function handleCreateChatMessageInNewChatRoom({
     CreateChatMessageInNewChatRoomSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // INPUTS & AUTH
+  //////////////////////////////////////////////////
   const { userIds, chatMessageText } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(

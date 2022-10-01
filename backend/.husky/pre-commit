@@ -3,3 +3,4 @@
 
 cd backend
 yarn prettier:fix && yarn lint
+

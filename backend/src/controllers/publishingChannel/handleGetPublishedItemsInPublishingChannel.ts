@@ -7,7 +7,7 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { RenderablePublishedItem } from "../publishedItem/models";
+import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
 import { constructPublishedItemsFromPartsById } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { getNextPageCursorOfPage } from "../publishedItem/utilities/pagination";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
@@ -17,6 +17,7 @@ export interface GetPublishedItemsInPublishingChannelRequestBody {
   publishingChannelId: string;
   cursor?: string;
   pageSize: number;
+  publishedItemType: PublishedItemType;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -45,7 +46,7 @@ export async function handleGetPublishedItemsInPublishingChannel({
     GetPublishedItemsInPublishingChannelSuccess
   >
 > {
-  const { publishingChannelId, cursor, pageSize } = requestBody;
+  const { publishingChannelId, cursor, pageSize, publishedItemType } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -65,6 +66,7 @@ export async function handleGetPublishedItemsInPublishingChannel({
         limit: pageSize,
         getSubmissionsBeforeTimestamp: pageTimestamp,
         arePending: false,
+        publishedItemType,
       },
     );
   if (

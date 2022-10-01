@@ -18,6 +18,7 @@ import {
 } from "../utilities";
 import { PublishingChannelsTableService } from "./publishingChannelsTableService";
 import { PublishedItemsTableService } from "../publishedItem/publishedItemsTableService";
+import { PublishedItemType } from "../../../../controllers/publishedItem/models";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface DBPublishingChannelSubmission {
@@ -194,12 +195,14 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     limit,
     getSubmissionsBeforeTimestamp,
     arePending,
+    publishedItemType,
   }: {
     controller: Controller;
     publishingChannelId: string;
     limit?: number;
     getSubmissionsBeforeTimestamp?: number;
     arePending: boolean;
+    publishedItemType?: PublishedItemType;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelSubmission[]>
   > {
@@ -227,16 +230,31 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         values.push(limit);
       }
 
+      let publishedItemTypeClause = "";
+      if (!!publishedItemType) {
+        publishedItemTypeClause = `
+        AND
+          ${PublishedItemsTableService.tableName}.type = $${values.length + 1}
+        `;
+
+        values.push(publishedItemType);
+      }
+
       const query = {
         text: `
           SELECT
             *
           FROM
             ${this.tableName}
+          INNER JOIN
+            ${PublishedItemsTableService.tableName}
+              ON
+                ${this.tableName}.published_item_id = ${PublishedItemsTableService.tableName}.id
           WHERE
               publishing_channel_id = $1
             AND
               is_pending = $2
+            ${publishedItemTypeClause}
             ${getSubmissionsBeforeTimestampClause}
           ORDER BY
             timestamp_of_submission DESC

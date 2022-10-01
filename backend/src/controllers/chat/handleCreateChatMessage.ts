@@ -38,6 +38,10 @@ export async function handleCreateChatMessage({
     CreateChatMessageSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // INPUTS & AUTH
+  //////////////////////////////////////////////////
+
   const { chatRoomId, chatMessageText } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -50,6 +54,9 @@ export async function handleCreateChatMessage({
 
   const creationTimestamp = Date.now();
 
+  //////////////////////////////////////////////////
+  // WRITE TO DB
+  //////////////////////////////////////////////////
   const createChatMessageResponse =
     await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.createChatMessage(
       {
@@ -65,6 +72,9 @@ export async function handleCreateChatMessage({
     return createChatMessageResponse;
   }
 
+  //////////////////////////////////////////////////
+  // GET USERS IN CHATROOM
+  //////////////////////////////////////////////////
   const getUserIdsJoinedToChatRoomIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
       { controller, chatRoomId },
@@ -72,8 +82,11 @@ export async function handleCreateChatMessage({
   if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {
     return getUserIdsJoinedToChatRoomIdResponse;
   }
-  const { success: userIds } = getUserIdsJoinedToChatRoomIdResponse;
+  const { success: allUserIdsInChatRoom } = getUserIdsJoinedToChatRoomIdResponse;
 
+  //////////////////////////////////////////////////
+  // GET USERS IN CHATROOM
+  //////////////////////////////////////////////////
   const getCountOfUnreadChatRoomsResponse = await getCountOfUnreadChatRooms({
     controller,
     databaseService: controller.databaseService,
@@ -84,6 +97,9 @@ export async function handleCreateChatMessage({
   }
   const { success: countOfUnreadChatRooms } = getCountOfUnreadChatRoomsResponse;
 
+  //////////////////////////////////////////////////
+  // SEND CHAT MESSAGE TO USER
+  //////////////////////////////////////////////////
   const chatMessage: RenderableChatMessage = {
     chatMessageId,
     text: chatMessageText,
@@ -93,12 +109,16 @@ export async function handleCreateChatMessage({
   };
 
   await controller.webSocketService.notifyUserIdsOfNewChatMessage({
-    userIds,
+    userIds: allUserIdsInChatRoom,
     newChatMessageNotification: {
       countOfUnreadChatRooms,
       chatMessage,
     },
   });
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
 
   return Success({
     chatMessage,
