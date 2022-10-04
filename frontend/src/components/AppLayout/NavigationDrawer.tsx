@@ -11,6 +11,7 @@ import {
   LogOutIcon,
   MailIcon,
   OptionsIcon,
+  SearchIcon,
   SupportIcon,
 } from "../Icons";
 import { Flex, Stack } from "../Layout";
@@ -39,6 +40,13 @@ export const NavigationDrawer = ({ hide }: NavigationDrawerProps) => {
             label="Home"
             onClick={hide}
             data-cy="home-button"
+          />
+          <NavLink
+            href="/discover"
+            Icon={SearchIcon}
+            label="Discover"
+            onClick={hide}
+            data-cy="discover-button"
           />
           <NavLink
             href="/notifications"

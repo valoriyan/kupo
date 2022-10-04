@@ -15,6 +15,7 @@ import {
   LogOutIcon,
   MailIcon,
   OptionsIcon,
+  SearchIcon,
   SupportIcon,
 } from "../Icons";
 import { Flex, Stack } from "../Layout";
@@ -64,6 +65,13 @@ export const SidePanel = () => {
               label="Home"
               color={isActive("/feed") ? activeColor : inactiveColor}
               data-cy="home-button"
+            />
+            <NavLink
+              href="/discover"
+              Icon={SearchIcon}
+              label="Discover"
+              color={isActive("/discover") ? activeColor : inactiveColor}
+              data-cy="discover-button"
             />
             <NavLink
               href="/notifications"
