@@ -34,6 +34,8 @@ function convertDBUserContentFeedFilterToUserContentFeedFilter(
     type = UserContentFeedFilterType.HASHTAG;
   } else if (dbUserContentFeedFilter.type === "USERNAME") {
     type = UserContentFeedFilterType.USERNAME;
+  } else if (dbUserContentFeedFilter.type === "COMMUNITY") {
+    type = UserContentFeedFilterType.COMMUNITY;
   } else {
     throw new Error("Invalid UserContentFeedFilterType");
   }

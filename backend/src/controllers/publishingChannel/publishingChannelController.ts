@@ -112,10 +112,10 @@ export class PublishingChannelController extends Controller {
   @Post("createPublishingChannel")
   public async createPublishingChannel(
     @Request() request: express.Request,
-    @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
-    @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
     @FormField() publishingChannelName: string,
     @FormField() publishingChannelDescription: string,
+    @UploadedFile("profilePicture") profilePicture?: Express.Multer.File,
+    @UploadedFile("backgroundImage") backgroundImage?: Express.Multer.File,
     @FormField() externalUrl1?: string,
     @FormField() externalUrl2?: string,
     @FormField() externalUrl3?: string,

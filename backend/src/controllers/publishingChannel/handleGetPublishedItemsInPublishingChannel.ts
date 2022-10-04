@@ -3,10 +3,12 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
+import { GenericResponseFailedReason } from "../models";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
 import { constructPublishedItemsFromPartsById } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { getNextPageCursorOfPage } from "../publishedItem/utilities/pagination";
@@ -14,10 +16,10 @@ import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagin
 import { PublishingChannelController } from "./publishingChannelController";
 
 export interface GetPublishedItemsInPublishingChannelRequestBody {
-  publishingChannelId: string;
+  publishingChannelName: string;
   cursor?: string;
   pageSize: number;
-  publishedItemType: PublishedItemType;
+  publishedItemType?: PublishedItemType;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -46,7 +48,7 @@ export async function handleGetPublishedItemsInPublishingChannel({
     GetPublishedItemsInPublishingChannelSuccess
   >
 > {
-  const { publishingChannelId, cursor, pageSize, publishedItemType } = requestBody;
+  const { publishingChannelName, cursor, pageSize, publishedItemType } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -57,6 +59,29 @@ export async function handleGetPublishedItemsInPublishingChannel({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  const maybeGetPublishingChannelByNameResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
+      {
+        controller,
+        name: publishingChannelName,
+      },
+    );
+  if (maybeGetPublishingChannelByNameResponse.type === EitherType.failure) {
+    return maybeGetPublishingChannelByNameResponse;
+  }
+  const { success: maybePublishingChannel } = maybeGetPublishingChannelByNameResponse;
+  if (!maybePublishingChannel) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "Publishing channel not found",
+      additionalErrorInformation:
+        "Error at PublishingChannelController.selectPublishingChannelByPublishingChannelId",
+    });
+  }
+  const { publishingChannelId } = maybePublishingChannel;
 
   const getPublishingChannelSubmissionsByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelSubmissionsByPublishingChannelId(

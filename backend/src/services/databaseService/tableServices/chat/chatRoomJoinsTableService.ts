@@ -177,13 +177,13 @@ export class ChatRoomJoinsTableService extends TableService {
             INNER JOIN
               ${ChatMessagesTableService.tableName}
                 ON
-                    ${ChatRoomJoinsTableService.tableName} .chat_room_id = ${ChatMessagesTableService.tableName}.chat_room_id
+                  ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatMessagesTableService.tableName}.chat_room_id
             LEFT JOIN
               ${ChatRoomReadRecordsTableService.tableName}
                 ON
-                    ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatRoomReadRecordsTableService.tableName}.chat_room_id
-                  AND	
-                    ${ChatRoomJoinsTableService.tableName}.user_id = ${ChatRoomReadRecordsTableService.tableName}.user_id
+                  ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatRoomReadRecordsTableService.tableName}.chat_room_id
+                AND	
+                  ${ChatRoomJoinsTableService.tableName}.user_id = ${ChatRoomReadRecordsTableService.tableName}.user_id
             WHERE
                 ${ChatRoomJoinsTableService.tableName}.user_id = $1
               AND
@@ -193,7 +193,7 @@ export class ChatRoomJoinsTableService extends TableService {
                 OR
                   ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user < ${ChatMessagesTableService.tableName}.creation_timestamp
               )
-            GROuP BY
+            GROUP BY
               ${ChatRoomJoinsTableService.tableName}.chat_room_id
           ) as subquery
           ;
@@ -201,12 +201,11 @@ export class ChatRoomJoinsTableService extends TableService {
         values: [userId],
       };
 
-      const response: QueryResult<{ count: number }> = await this.datastorePool.query(
+      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
         query,
       );
 
-      console.log(response);
-      return Success(response.rows[0].count);
+      return Success(parseInt(response.rows[0].count, 10));
     } catch (error) {
       return Failure({
         controller,
