@@ -36,4 +36,16 @@ export interface UpdatePublishingChannelRequestBody {
    * @memberof UpdatePublishingChannelRequestBody
    */
   publishingChannelDescription: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof UpdatePublishingChannelRequestBody
+   */
+  updatedExternalUrls?: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof UpdatePublishingChannelRequestBody
+   */
+  updatedPublishingChannelRules?: Array<string>;
 }

@@ -12,15 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { RenderablePublishingChannel } from "./renderable-publishing-channel";
+
 /**
  *
  * @export
- * @enum {string}
+ * @interface UpdatePublishingChannelProfilePictureSuccess
  */
-export enum UserContentFeedFilterType {
-  Hashtag = "HASHTAG",
-  Username = "USERNAME",
-  Community = "COMMUNITY",
-  FollowingUsers = "FOLLOWING_USERS",
-  AllPostsForAdmins = "ALL_POSTS_FOR_ADMINS",
+export interface UpdatePublishingChannelProfilePictureSuccess {
+  /**
+   *
+   * @type {RenderablePublishingChannel}
+   * @memberof UpdatePublishingChannelProfilePictureSuccess
+   */
+  publishingChannel: RenderablePublishingChannel;
 }
