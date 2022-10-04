@@ -24,6 +24,8 @@ export const FilterRow = ({ filter, actions }: FilterRowProps) => {
     filterDisplayName = `@${filter.value}`;
   } else if (filter.type === UserContentFeedFilterType.Hashtag) {
     filterDisplayName = `#${filter.value}`;
+  } else if (filter.type === UserContentFeedFilterType.Community) {
+    filterDisplayName = `+${filter.value}`;
   }
 
   return (

@@ -36,7 +36,7 @@ export const Discover = () => {
             type="text"
             autoComplete="off"
             name="search"
-            placeholder="Search @user, #tag, or caption"
+            placeholder="Search @user, #tag, +community, or caption"
             value={searchText}
             onChange={(e) => setSearchText(e.currentTarget.value)}
             data-cy="discover-search-input"

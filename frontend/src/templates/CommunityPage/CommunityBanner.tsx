@@ -32,7 +32,7 @@ export const CommunityBanner = ({
         )}
         <Avatar
           alt={`+${community.name}'s profile picture`}
-          src={""} // TODO
+          src={community.profilePictureTemporaryUrl}
           size="$7"
         />
         <CommunityName>+{community.name}</CommunityName>

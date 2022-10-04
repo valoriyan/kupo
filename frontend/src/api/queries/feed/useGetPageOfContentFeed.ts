@@ -16,7 +16,7 @@ export const useGetPageOfContentFeed = ({
 }) => {
   return useInfiniteQuery<
     GetPublishedItemsFromFollowedUsersSuccess,
-    Error,
+    { status: number; message: string },
     GetPublishedItemsFromFollowedUsersSuccess,
     string[]
   >(
@@ -28,6 +28,11 @@ export const useGetPageOfContentFeed = ({
         return fetchPageOfContentFromFromFollowedHashtag({
           pageParam,
           hashtag: filterValue,
+        });
+      } else if (filterType === UserContentFeedFilterType.Community) {
+        return fetchPageOfContentFromFromCommunity({
+          pageParam,
+          publishingChannelName: filterValue,
         });
       } else if (filterType === UserContentFeedFilterType.AllPostsForAdmins) {
         return fetchPageOfAllPublishedItems({ pageParam });
@@ -41,6 +46,12 @@ export const useGetPageOfContentFeed = ({
     {
       getPreviousPageParam: (lastPage) => lastPage.previousPageCursor,
       getNextPageParam: (lastPage) => lastPage.nextPageCursor,
+      retry: (failureCount, error) => {
+        const statusCode = error.status;
+        if (statusCode === 404) return false;
+        if (failureCount > 2) return false;
+        return true;
+      },
     },
   );
 };
@@ -56,7 +67,11 @@ async function fetchPageOfContentFromFromFollowedUsers({
   });
 
   if (res.data.success) return res.data.success;
-  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
+  throw {
+    status: res.status,
+    message:
+      res.status === 404 ? "No posts not found" : "Failed to fetch posts from followers",
+  };
 }
 
 async function fetchPageOfContentFromFromFollowedHashtag({
@@ -73,7 +88,31 @@ async function fetchPageOfContentFromFromFollowedHashtag({
   });
 
   if (res.data.success) return res.data.success;
-  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
+  throw {
+    status: res.status,
+    message:
+      res.status === 404 ? "No tagged posts found" : "Failed to fetch posts with tag",
+  };
+}
+
+async function fetchPageOfContentFromFromCommunity({
+  pageParam = undefined,
+  publishingChannelName,
+}: {
+  pageParam: string | undefined;
+  publishingChannelName: string;
+}) {
+  const res = await Api.getPublishedItemsInPublishingChannel({
+    publishingChannelName,
+    cursor: pageParam,
+    pageSize: 5,
+  });
+  if (res.data.success) return res.data.success;
+  throw {
+    status: res.status,
+    message:
+      res.status === 404 ? "Community not found" : "Failed to fetch community's posts",
+  };
 }
 
 async function fetchPageOfContentFromFromFollowedUsername({
@@ -90,7 +129,10 @@ async function fetchPageOfContentFromFromFollowedUsername({
   });
 
   if (res.data.success) return res.data.success;
-  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
+  throw {
+    status: res.status,
+    message: res.status === 404 ? "User not found" : "Failed to fetch user's posts",
+  };
 }
 
 async function fetchPageOfAllPublishedItems({
@@ -111,5 +153,8 @@ async function fetchPageOfAllPublishedItems({
       nextPageCursor: res.data.success.nextPageCursor,
     };
   }
-  throw new Error((res.data.error.reason as string) ?? "Unknown Error");
+  throw {
+    status: res.status,
+    message: res.status === 404 ? "No posts found" : "Failed to fetch posts",
+  };
 }

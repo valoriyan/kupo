@@ -36,6 +36,7 @@ export * from "./generated/PlayButtonOIcon";
 export * from "./generated/RemoveIcon";
 export * from "./generated/SearchIcon";
 export * from "./generated/ShareIcon";
+export * from "./generated/ShieldIcon";
 export * from "./generated/ShoppingBagIcon";
 export * from "./generated/SoftwareDownloadIcon";
 export * from "./generated/SupportIcon";

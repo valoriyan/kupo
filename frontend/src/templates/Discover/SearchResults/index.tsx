@@ -1,4 +1,5 @@
 import { Flex, Stack } from "#/components/Layout";
+import { CommunityResults } from "./CommunityResults";
 import { HashtagResults } from "./HashtagResults";
 import { PostResults } from "./PostResults";
 import { UserResults } from "./UserResults";
@@ -8,15 +9,21 @@ export interface SearchResultsProps {
 }
 
 export const SearchResults = ({ query }: SearchResultsProps) => {
-  const strippedQuery = query.replaceAll(/(#|@)/g, "");
+  const strippedQuery = query.replaceAll(/(#|@|\+)/g, "");
+
+  const divider = (
+    <Flex css={{ height: "1px", width: "100%", bg: "$border", my: "$5" }} />
+  );
 
   return (
     <Stack css={{ pt: "$6" }}>
       <HashtagResults query={strippedQuery} />
-      <Flex css={{ height: "1px", width: "100%", bg: "$border", my: "$5" }} />
+      {divider}
       <UserResults query={strippedQuery} />
-      <Flex css={{ height: "1px", width: "100%", bg: "$border", my: "$5" }} />
+      {divider}
       <PostResults query={strippedQuery} />
+      {divider}
+      <CommunityResults query={strippedQuery} />
     </Stack>
   );
 };

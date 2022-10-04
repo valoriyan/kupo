@@ -49,11 +49,17 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   const addFilter: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (!isFilterValid(newFilterText)) return;
+
     const isHashTag = newFilterText.startsWith("#");
-    const value = newFilterText.split(isHashTag ? "#" : "@")[1];
-    const type = isHashTag
-      ? UserContentFeedFilterType.Hashtag
-      : UserContentFeedFilterType.Username;
+    const isUser = newFilterText.startsWith("@");
+    const isCommunity = newFilterText.startsWith("+");
+
+    const value = newFilterText.slice(1);
+    let type: UserContentFeedFilterType | null = null;
+    if (isHashTag) type = UserContentFeedFilterType.Hashtag;
+    if (isUser) type = UserContentFeedFilterType.Username;
+    if (isCommunity) type = UserContentFeedFilterType.Community;
+    if (type === null) return;
 
     const contentFeedFilterId = type + value;
     if (
@@ -78,9 +84,20 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   };
 
   const isFilterValid = (filterText: string) => {
-    const isHashTag = filterText.includes("#") && !filterText.includes("@");
-    const isUser = !filterText.includes("#") && filterText.includes("@");
-    return (isHashTag || isUser) && filterText.length >= 2;
+    // TODO: We should do a more comprehensive to prevent the user from entering invalid characters
+    const isHashTag =
+      filterText.startsWith("#") &&
+      !filterText.includes("@") &&
+      !filterText.includes("+");
+    const isUser =
+      filterText.startsWith("@") &&
+      !filterText.includes("#") &&
+      !filterText.includes("+");
+    const isCommunity =
+      filterText.startsWith("+") &&
+      !filterText.includes("@") &&
+      !filterText.includes("#");
+    return (isHashTag || isUser || isCommunity) && filterText.length >= 2;
   };
 
   return (
@@ -135,7 +152,7 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
           type="text"
           autoComplete="off"
           name="add filter"
-          placeholder="Add #tag or @user"
+          placeholder="Add #tag, @user, or +community"
           value={newFilterText}
           onChange={(e) => setNewFilterText(e.currentTarget.value.toLocaleLowerCase())}
         />

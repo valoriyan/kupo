@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { PublishedItemType } from "./published-item-type";
+
 /**
  *
  * @export
@@ -23,7 +25,7 @@ export interface GetPublishedItemsInPublishingChannelRequestBody {
    * @type {string}
    * @memberof GetPublishedItemsInPublishingChannelRequestBody
    */
-  publishingChannelId: string;
+  publishingChannelName: string;
   /**
    *
    * @type {string}
@@ -36,4 +38,10 @@ export interface GetPublishedItemsInPublishingChannelRequestBody {
    * @memberof GetPublishedItemsInPublishingChannelRequestBody
    */
   pageSize: number;
+  /**
+   *
+   * @type {PublishedItemType}
+   * @memberof GetPublishedItemsInPublishingChannelRequestBody
+   */
+  publishedItemType?: PublishedItemType;
 }

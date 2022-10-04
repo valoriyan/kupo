@@ -51,8 +51,6 @@ import { CreateChatMessageRequestBody } from "../types";
 // @ts-ignore
 import { CreatePublishedItemCommentRequestBody } from "../types";
 // @ts-ignore
-import { CreatePublishingChannelRequestBody } from "../types";
-// @ts-ignore
 import { DeleteChatMessageRequestBody } from "../types";
 // @ts-ignore
 import { DeletePostRequestBody } from "../types";
@@ -213,7 +211,11 @@ import { EitherErrorReasonTypesStringOrUpdatePasswordFailedReasonUpdatePasswordS
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUpdatePostFailedReasonUpdatePostSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdatePublishingChannelBackgroundImageFailedReasonUpdatePublishingChannelBackgroundImageSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrUpdatePublishingChannelFailedReasonUpdatePublishingChannelSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrUpdatePublishingChannelProfilePictureFailedReasonUpdatePublishingChannelProfilePictureSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUpdateShopItemFailedReasonUpdateShopItemSuccess } from "../types";
 // @ts-ignore
@@ -279,7 +281,7 @@ import { GetUsersByIdsRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
-import { InlineObject5 } from "../types";
+import { InlineObject8 } from "../types";
 // @ts-ignore
 import { InlineResponse200 } from "../types";
 // @ts-ignore
@@ -777,19 +779,51 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
+     * @param {string} publishingChannelName
+     * @param {string} publishingChannelDescription
+     * @param {any} [profilePicture]
+     * @param {any} [backgroundImage]
+     * @param {string} [externalUrl1]
+     * @param {string} [externalUrl2]
+     * @param {string} [externalUrl3]
+     * @param {string} [externalUrl4]
+     * @param {string} [externalUrl5]
+     * @param {string} [publishingChannelRule1]
+     * @param {string} [publishingChannelRule2]
+     * @param {string} [publishingChannelRule3]
+     * @param {string} [publishingChannelRule4]
+     * @param {string} [publishingChannelRule5]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPublishingChannel: async (
-      createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
+      publishingChannelName: string,
+      publishingChannelDescription: string,
+      profilePicture?: any,
+      backgroundImage?: any,
+      externalUrl1?: string,
+      externalUrl2?: string,
+      externalUrl3?: string,
+      externalUrl4?: string,
+      externalUrl5?: string,
+      publishingChannelRule1?: string,
+      publishingChannelRule2?: string,
+      publishingChannelRule3?: string,
+      publishingChannelRule4?: string,
+      publishingChannelRule5?: string,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'createPublishingChannelRequestBody' is not null or undefined
+      // verify required parameter 'publishingChannelName' is not null or undefined
       assertParamExists(
         "createPublishingChannel",
-        "createPublishingChannelRequestBody",
-        createPublishingChannelRequestBody,
+        "publishingChannelName",
+        publishingChannelName,
+      );
+      // verify required parameter 'publishingChannelDescription' is not null or undefined
+      assertParamExists(
+        "createPublishingChannel",
+        "publishingChannelDescription",
+        publishingChannelDescription,
       );
       const localVarPath = `/publishing_channel/createPublishingChannel`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -802,8 +836,84 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
 
-      localVarHeaderParameter["Content-Type"] = "application/json";
+      if (publishingChannelName !== undefined) {
+        localVarFormParams.append("publishingChannelName", publishingChannelName as any);
+      }
+
+      if (publishingChannelDescription !== undefined) {
+        localVarFormParams.append(
+          "publishingChannelDescription",
+          publishingChannelDescription as any,
+        );
+      }
+
+      if (profilePicture !== undefined) {
+        localVarFormParams.append("profilePicture", profilePicture as any);
+      }
+
+      if (backgroundImage !== undefined) {
+        localVarFormParams.append("backgroundImage", backgroundImage as any);
+      }
+
+      if (externalUrl1 !== undefined) {
+        localVarFormParams.append("externalUrl1", externalUrl1 as any);
+      }
+
+      if (externalUrl2 !== undefined) {
+        localVarFormParams.append("externalUrl2", externalUrl2 as any);
+      }
+
+      if (externalUrl3 !== undefined) {
+        localVarFormParams.append("externalUrl3", externalUrl3 as any);
+      }
+
+      if (externalUrl4 !== undefined) {
+        localVarFormParams.append("externalUrl4", externalUrl4 as any);
+      }
+
+      if (externalUrl5 !== undefined) {
+        localVarFormParams.append("externalUrl5", externalUrl5 as any);
+      }
+
+      if (publishingChannelRule1 !== undefined) {
+        localVarFormParams.append(
+          "publishingChannelRule1",
+          publishingChannelRule1 as any,
+        );
+      }
+
+      if (publishingChannelRule2 !== undefined) {
+        localVarFormParams.append(
+          "publishingChannelRule2",
+          publishingChannelRule2 as any,
+        );
+      }
+
+      if (publishingChannelRule3 !== undefined) {
+        localVarFormParams.append(
+          "publishingChannelRule3",
+          publishingChannelRule3 as any,
+        );
+      }
+
+      if (publishingChannelRule4 !== undefined) {
+        localVarFormParams.append(
+          "publishingChannelRule4",
+          publishingChannelRule4 as any,
+        );
+      }
+
+      if (publishingChannelRule5 !== undefined) {
+        localVarFormParams.append(
+          "publishingChannelRule5",
+          publishingChannelRule5 as any,
+        );
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -813,11 +923,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        createPublishingChannelRequestBody,
-        localVarRequestOptions,
-        configuration,
-      );
+      localVarRequestOptions.data = localVarFormParams;
 
       return {
         url: toPathString(localVarUrlObj),
@@ -3590,16 +3696,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {InlineObject5} inlineObject5
+     * @param {InlineObject8} inlineObject8
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     sendDataTypesToFrontend1: async (
-      inlineObject5: InlineObject5,
+      inlineObject8: InlineObject8,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'inlineObject5' is not null or undefined
-      assertParamExists("sendDataTypesToFrontend1", "inlineObject5", inlineObject5);
+      // verify required parameter 'inlineObject8' is not null or undefined
+      assertParamExists("sendDataTypesToFrontend1", "inlineObject8", inlineObject8);
       const localVarPath = `/utilities/sendDataTypesToFrontend1`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3623,7 +3729,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        inlineObject5,
+        inlineObject8,
         localVarRequestOptions,
         configuration,
       );
@@ -4203,6 +4309,132 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarRequestOptions,
         configuration,
       );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {any} backgroundImage
+     * @param {string} publishingChannelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePublishingChannelBackgroundImage: async (
+      backgroundImage: any,
+      publishingChannelId: string,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'backgroundImage' is not null or undefined
+      assertParamExists(
+        "updatePublishingChannelBackgroundImage",
+        "backgroundImage",
+        backgroundImage,
+      );
+      // verify required parameter 'publishingChannelId' is not null or undefined
+      assertParamExists(
+        "updatePublishingChannelBackgroundImage",
+        "publishingChannelId",
+        publishingChannelId,
+      );
+      const localVarPath = `/publishing_channel/updatePublishingChannelBackgroundImage`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (backgroundImage !== undefined) {
+        localVarFormParams.append("backgroundImage", backgroundImage as any);
+      }
+
+      if (publishingChannelId !== undefined) {
+        localVarFormParams.append("publishingChannelId", publishingChannelId as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {any} profilePicture
+     * @param {string} publishingChannelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePublishingChannelProfilePicture: async (
+      profilePicture: any,
+      publishingChannelId: string,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'profilePicture' is not null or undefined
+      assertParamExists(
+        "updatePublishingChannelProfilePicture",
+        "profilePicture",
+        profilePicture,
+      );
+      // verify required parameter 'publishingChannelId' is not null or undefined
+      assertParamExists(
+        "updatePublishingChannelProfilePicture",
+        "publishingChannelId",
+        publishingChannelId,
+      );
+      const localVarPath = `/publishing_channel/updatePublishingChannelProfilePicture`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (profilePicture !== undefined) {
+        localVarFormParams.append("profilePicture", profilePicture as any);
+      }
+
+      if (publishingChannelId !== undefined) {
+        localVarFormParams.append("publishingChannelId", publishingChannelId as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4835,12 +5067,38 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
+     * @param {string} publishingChannelName
+     * @param {string} publishingChannelDescription
+     * @param {any} [profilePicture]
+     * @param {any} [backgroundImage]
+     * @param {string} [externalUrl1]
+     * @param {string} [externalUrl2]
+     * @param {string} [externalUrl3]
+     * @param {string} [externalUrl4]
+     * @param {string} [externalUrl5]
+     * @param {string} [publishingChannelRule1]
+     * @param {string} [publishingChannelRule2]
+     * @param {string} [publishingChannelRule3]
+     * @param {string} [publishingChannelRule4]
+     * @param {string} [publishingChannelRule5]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createPublishingChannel(
-      createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
+      publishingChannelName: string,
+      publishingChannelDescription: string,
+      profilePicture?: any,
+      backgroundImage?: any,
+      externalUrl1?: string,
+      externalUrl2?: string,
+      externalUrl3?: string,
+      externalUrl4?: string,
+      externalUrl5?: string,
+      publishingChannelRule1?: string,
+      publishingChannelRule2?: string,
+      publishingChannelRule3?: string,
+      publishingChannelRule4?: string,
+      publishingChannelRule5?: string,
       options?: any,
     ): Promise<
       (
@@ -4849,7 +5107,20 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrCreatePublishingChannelFailedReasonCreatePublishingChannelSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPublishingChannel(
-        createPublishingChannelRequestBody,
+        publishingChannelName,
+        publishingChannelDescription,
+        profilePicture,
+        backgroundImage,
+        externalUrl1,
+        externalUrl2,
+        externalUrl3,
+        externalUrl4,
+        externalUrl5,
+        publishingChannelRule1,
+        publishingChannelRule2,
+        publishingChannelRule3,
+        publishingChannelRule4,
+        publishingChannelRule5,
         options,
       );
       return createRequestFunction(
@@ -6360,18 +6631,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {InlineObject5} inlineObject5
+     * @param {InlineObject8} inlineObject8
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async sendDataTypesToFrontend1(
-      inlineObject5: InlineObject5,
+      inlineObject8: InlineObject8,
       options?: any,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<InlineResponse200>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.sendDataTypesToFrontend1(
-        inlineObject5,
+        inlineObject8,
         options,
       );
       return createRequestFunction(
@@ -6688,6 +6959,66 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         updatePublishingChannelRequestBody,
         options,
       );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {any} backgroundImage
+     * @param {string} publishingChannelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updatePublishingChannelBackgroundImage(
+      backgroundImage: any,
+      publishingChannelId: string,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelBackgroundImageFailedReasonUpdatePublishingChannelBackgroundImageSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.updatePublishingChannelBackgroundImage(
+          backgroundImage,
+          publishingChannelId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {any} profilePicture
+     * @param {string} publishingChannelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updatePublishingChannelProfilePicture(
+      profilePicture: any,
+      publishingChannelId: string,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelProfilePictureFailedReasonUpdatePublishingChannelProfilePictureSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.updatePublishingChannelProfilePicture(
+          profilePicture,
+          publishingChannelId,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -7050,16 +7381,58 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
+     * @param {string} publishingChannelName
+     * @param {string} publishingChannelDescription
+     * @param {any} [profilePicture]
+     * @param {any} [backgroundImage]
+     * @param {string} [externalUrl1]
+     * @param {string} [externalUrl2]
+     * @param {string} [externalUrl3]
+     * @param {string} [externalUrl4]
+     * @param {string} [externalUrl5]
+     * @param {string} [publishingChannelRule1]
+     * @param {string} [publishingChannelRule2]
+     * @param {string} [publishingChannelRule3]
+     * @param {string} [publishingChannelRule4]
+     * @param {string} [publishingChannelRule5]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPublishingChannel(
-      createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
+      publishingChannelName: string,
+      publishingChannelDescription: string,
+      profilePicture?: any,
+      backgroundImage?: any,
+      externalUrl1?: string,
+      externalUrl2?: string,
+      externalUrl3?: string,
+      externalUrl4?: string,
+      externalUrl5?: string,
+      publishingChannelRule1?: string,
+      publishingChannelRule2?: string,
+      publishingChannelRule3?: string,
+      publishingChannelRule4?: string,
+      publishingChannelRule5?: string,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrCreatePublishingChannelFailedReasonCreatePublishingChannelSuccess> {
       return localVarFp
-        .createPublishingChannel(createPublishingChannelRequestBody, options)
+        .createPublishingChannel(
+          publishingChannelName,
+          publishingChannelDescription,
+          profilePicture,
+          backgroundImage,
+          externalUrl1,
+          externalUrl2,
+          externalUrl3,
+          externalUrl4,
+          externalUrl5,
+          publishingChannelRule1,
+          publishingChannelRule2,
+          publishingChannelRule3,
+          publishingChannelRule4,
+          publishingChannelRule5,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -7900,16 +8273,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {InlineObject5} inlineObject5
+     * @param {InlineObject8} inlineObject8
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     sendDataTypesToFrontend1(
-      inlineObject5: InlineObject5,
+      inlineObject8: InlineObject8,
       options?: any,
     ): AxiosPromise<InlineResponse200> {
       return localVarFp
-        .sendDataTypesToFrontend1(inlineObject5, options)
+        .sendDataTypesToFrontend1(inlineObject8, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8084,6 +8457,46 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelFailedReasonUpdatePublishingChannelSuccess> {
       return localVarFp
         .updatePublishingChannel(updatePublishingChannelRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {any} backgroundImage
+     * @param {string} publishingChannelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePublishingChannelBackgroundImage(
+      backgroundImage: any,
+      publishingChannelId: string,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelBackgroundImageFailedReasonUpdatePublishingChannelBackgroundImageSuccess> {
+      return localVarFp
+        .updatePublishingChannelBackgroundImage(
+          backgroundImage,
+          publishingChannelId,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {any} profilePicture
+     * @param {string} publishingChannelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updatePublishingChannelProfilePicture(
+      profilePicture: any,
+      publishingChannelId: string,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelProfilePictureFailedReasonUpdatePublishingChannelProfilePictureSuccess> {
+      return localVarFp
+        .updatePublishingChannelProfilePicture(
+          profilePicture,
+          publishingChannelId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8369,17 +8782,59 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
+   * @param {string} publishingChannelName
+   * @param {string} publishingChannelDescription
+   * @param {any} [profilePicture]
+   * @param {any} [backgroundImage]
+   * @param {string} [externalUrl1]
+   * @param {string} [externalUrl2]
+   * @param {string} [externalUrl3]
+   * @param {string} [externalUrl4]
+   * @param {string} [externalUrl5]
+   * @param {string} [publishingChannelRule1]
+   * @param {string} [publishingChannelRule2]
+   * @param {string} [publishingChannelRule3]
+   * @param {string} [publishingChannelRule4]
+   * @param {string} [publishingChannelRule5]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createPublishingChannel(
-    createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
+    publishingChannelName: string,
+    publishingChannelDescription: string,
+    profilePicture?: any,
+    backgroundImage?: any,
+    externalUrl1?: string,
+    externalUrl2?: string,
+    externalUrl3?: string,
+    externalUrl4?: string,
+    externalUrl5?: string,
+    publishingChannelRule1?: string,
+    publishingChannelRule2?: string,
+    publishingChannelRule3?: string,
+    publishingChannelRule4?: string,
+    publishingChannelRule5?: string,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .createPublishingChannel(createPublishingChannelRequestBody, options)
+      .createPublishingChannel(
+        publishingChannelName,
+        publishingChannelDescription,
+        profilePicture,
+        backgroundImage,
+        externalUrl1,
+        externalUrl2,
+        externalUrl3,
+        externalUrl4,
+        externalUrl5,
+        publishingChannelRule1,
+        publishingChannelRule2,
+        publishingChannelRule3,
+        publishingChannelRule4,
+        publishingChannelRule5,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -9310,14 +9765,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {InlineObject5} inlineObject5
+   * @param {InlineObject8} inlineObject8
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public sendDataTypesToFrontend1(inlineObject5: InlineObject5, options?: any) {
+  public sendDataTypesToFrontend1(inlineObject8: InlineObject8, options?: any) {
     return DefaultApiFp(this.configuration)
-      .sendDataTypesToFrontend1(inlineObject5, options)
+      .sendDataTypesToFrontend1(inlineObject8, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -9504,6 +9959,46 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .updatePublishingChannel(updatePublishingChannelRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {any} backgroundImage
+   * @param {string} publishingChannelId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updatePublishingChannelBackgroundImage(
+    backgroundImage: any,
+    publishingChannelId: string,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updatePublishingChannelBackgroundImage(
+        backgroundImage,
+        publishingChannelId,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {any} profilePicture
+   * @param {string} publishingChannelId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updatePublishingChannelProfilePicture(
+    profilePicture: any,
+    publishingChannelId: string,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updatePublishingChannelProfilePicture(profilePicture, publishingChannelId, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

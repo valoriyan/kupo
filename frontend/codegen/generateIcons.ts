@@ -43,6 +43,7 @@ const ICONS_TO_GENERATE = [
   "remove",
   "search",
   "share",
+  "shield",
   "shopping-bag",
   "software-download",
   "support",

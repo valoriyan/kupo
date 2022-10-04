@@ -44,13 +44,49 @@ export interface RenderablePublishingChannel {
    * @type {string}
    * @memberof RenderablePublishingChannel
    */
-  description: string;
+  description?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderablePublishingChannel
+   */
+  backgroundImageBlobFileKey?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderablePublishingChannel
+   */
+  profilePictureBlobFileKey?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof RenderablePublishingChannel
+   */
+  publishingChannelRules: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof RenderablePublishingChannel
+   */
+  externalUrls: Array<string>;
   /**
    *
    * @type {RenderableUser}
    * @memberof RenderablePublishingChannel
    */
   owner: RenderableUser;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderablePublishingChannel
+   */
+  backgroundImageTemporaryUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderablePublishingChannel
+   */
+  profilePictureTemporaryUrl?: string;
   /**
    *
    * @type {RenderableUserFollowers}

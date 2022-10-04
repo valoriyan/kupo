@@ -26,6 +26,7 @@ const NotificationBadge = styled(Flex, {
   minWidth: "20px",
   fontSize: "$0",
   fontWeight: "$bold",
+  lineHeight: 0,
   bg: "$failure",
   color: "$accentText",
   borderRadius: "$round",

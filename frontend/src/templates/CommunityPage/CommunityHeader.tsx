@@ -25,7 +25,7 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
       <Wrapper>
         <Flex css={{ position: "relative", width: "100%" }}>
           <BackgroundImage
-            src={""} // TODO
+            src={community.backgroundImageTemporaryUrl}
             alt="Community Background Image"
           />
           <Flex
@@ -80,7 +80,7 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
             }}
           >
             <Avatar
-              src={""} // TODO
+              src={community.profilePictureTemporaryUrl}
               alt="Community Profile Picture"
               size="$11"
             />
@@ -90,7 +90,7 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
               <MainTitle as="a">+{name}</MainTitle>
             </Link>
             <Subtext css={{ color: "$secondaryText" }}>
-              {formatStat(0) /* TODO */} followers
+              {formatStat(community.followers.count)} followers
             </Subtext>
           </Stack>
         </AvatarAndName>
