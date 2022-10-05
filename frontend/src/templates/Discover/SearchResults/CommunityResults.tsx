@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Grid } from "#/components/Layout";
+import { RenderablePublishingChannel } from "#/api";
+import { useSearchForPublishingChannels } from "#/api/queries/discover/useSearchForCommunities";
+import { Avatar } from "#/components/Avatar";
+import { CommunityName } from "#/components/CommunityName";
+import { Flex, Grid, Stack } from "#/components/Layout";
+import { Body } from "#/components/Typography";
+import { styled } from "#/styling";
+import { goToCommunityPage } from "#/templates/CommunityPage";
 import { ResultsWrapper } from "./ResultsWrapper";
 
 export interface CommunityResultsProps {
@@ -10,10 +17,11 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
   const [page, setPage] = useState(0);
   const pageSize = 6;
 
-  // TODO: Implement search for communities endpoint first
-  const data = undefined;
-  const isLoading = false;
-  const isError = true;
+  const { data, isLoading, isError } = useSearchForPublishingChannels({
+    query,
+    pageNumber: page + 1,
+    pageSize,
+  });
 
   useEffect(() => {
     setPage(0);
@@ -26,11 +34,11 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
       errorMessage={
         isError
           ? "Failed to search communities"
-          : data && false // TODO: !data.communities.length
+          : data && !data.publishingChannels.length
           ? "No Results Found"
           : undefined
       }
-      totalCount={undefined} // TODO: data?.totalCount
+      totalCount={data?.totalCount}
       pageSize={pageSize}
       page={page}
       setPage={setPage}
@@ -44,9 +52,37 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
             rowGap: "$3",
           }}
         >
-          {null} {/* TODO: Map over communities */}
+          {data.publishingChannels.map((community) => (
+            <CommunityPreview key={community.publishingChannelId} community={community} />
+          ))}
         </Grid>
       )}
     </ResultsWrapper>
   );
 };
+
+const CommunityPreview = ({ community }: { community: RenderablePublishingChannel }) => {
+  return (
+    <CommunityWrapper>
+      <Flex css={{ alignItems: "center", gap: "$4" }}>
+        <Avatar
+          src={community.profilePictureTemporaryUrl}
+          alt={`${community.name}'s profile picture`}
+          size="$8"
+          onClick={() => goToCommunityPage(community.name)}
+        />
+        <CommunityName name={community.name} />
+      </Flex>
+      <Body>{community.description}</Body>
+    </CommunityWrapper>
+  );
+};
+
+const CommunityWrapper = styled(Stack, {
+  gap: "$4",
+  borderRadius: "$3",
+  px: "$5",
+  py: "$4",
+  bg: "$background2",
+  boxShadow: "$1",
+});

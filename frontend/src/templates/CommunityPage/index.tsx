@@ -14,11 +14,17 @@ import { CommunityHeader } from "./CommunityHeader";
 import { CommunityPosts } from "./CommunityPosts";
 import { CommunityShopItems } from "./CommunityShopItems";
 import { Button } from "#/components/Button";
+import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-community-page";
 
 export const setPreviousLocationForCommunityPage = (name: string) => {
   SessionStorage.setItem<string>(PREVIOUS_LOCATION_BASE_KEY + name, Router.asPath);
+};
+
+export const goToCommunityPage = (name: string) => {
+  setPreviousLocationForCommunityPage(name);
+  Router.push(getCommunityPageUrl({ name }));
 };
 
 export interface CommunityPageProps {
