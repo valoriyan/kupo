@@ -1,5 +1,14 @@
 import express from "express";
-import { Body, Controller, FormField, Post, Request, Route, UploadedFile } from "tsoa";
+import {
+  Body,
+  Controller,
+  FormField,
+  Post,
+  Request,
+  Route,
+  UploadedFile,
+  UploadedFiles,
+} from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { WebSocketService } from "../../services/webSocketService";
@@ -114,8 +123,8 @@ export class PublishingChannelController extends Controller {
     @Request() request: express.Request,
     @FormField() publishingChannelName: string,
     @FormField() publishingChannelDescription: string,
-    @UploadedFile("profilePicture") profilePicture?: Express.Multer.File,
-    @UploadedFile("backgroundImage") backgroundImage?: Express.Multer.File,
+    @UploadedFiles("backgroundImageAndProfilePicture")
+    backgroundImageAndProfilePicture: Express.Multer.File[],
     @FormField() externalUrl1?: string,
     @FormField() externalUrl2?: string,
     @FormField() externalUrl3?: string,
@@ -157,8 +166,7 @@ export class PublishingChannelController extends Controller {
       controller: this,
       request,
       requestBody: {
-        profilePicture,
-        backgroundImage,
+        backgroundImageAndProfilePicture,
         publishingChannelName,
         publishingChannelDescription,
         externalUrls,

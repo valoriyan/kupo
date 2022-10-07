@@ -25,8 +25,7 @@ export const useCreateCommunityPage = () => {
       return await Api.createPublishingChannel(
         args.publishingChannelName,
         args.publishingChannelDescription,
-        args.profilePicture,
-        args.backgroundImage,
+        [args.backgroundImage, args.profilePicture],
         args.externalUrl1,
         args.externalUrl2,
         args.externalUrl3,

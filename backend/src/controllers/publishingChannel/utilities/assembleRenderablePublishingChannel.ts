@@ -168,6 +168,8 @@ export async function assembleRenderablePublishingChannelFromParts({
   // GET BACKGROUND IMAGE
   //////////////////////////////////////////////////
   let backgroundImageTemporaryUrl = undefined;
+  console.log("backgroundImageBlobFileKey", backgroundImageBlobFileKey);
+
   if (!!backgroundImageBlobFileKey) {
     const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
       controller,

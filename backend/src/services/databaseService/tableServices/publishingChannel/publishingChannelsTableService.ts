@@ -72,6 +72,8 @@ function convertDBPublishingChannelToUnrenderablePublishingChannel(
     ownerUserId: dbPublishingChannel.owner_user_id,
     name: dbPublishingChannel.name,
     description: dbPublishingChannel.description,
+    backgroundImageBlobFileKey: dbPublishingChannel.background_image_blob_file_key,
+    profilePictureBlobFileKey: dbPublishingChannel.profile_picture_blob_file_key,
     publishingChannelRules,
     externalUrls,
   };

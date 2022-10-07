@@ -10,8 +10,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { PublishingChannelController } from "./publishingChannelController";
 
 export interface CreatePublishingChannelRequestBody {
-  backgroundImage?: Express.Multer.File;
-  profilePicture?: Express.Multer.File;
+  backgroundImageAndProfilePicture: Express.Multer.File[];
   publishingChannelName: string;
   publishingChannelDescription: string;
   externalUrls: string[];
@@ -48,11 +47,12 @@ export async function handleCreatePublishingChannel({
   const {
     publishingChannelName,
     publishingChannelDescription,
-    backgroundImage,
-    profilePicture,
+    backgroundImageAndProfilePicture,
     externalUrls,
     publishingChannelRules,
   } = requestBody;
+
+  const [backgroundImage, profilePicture] = backgroundImageAndProfilePicture;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,

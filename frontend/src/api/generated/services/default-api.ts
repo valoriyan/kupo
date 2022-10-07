@@ -781,8 +781,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      *
      * @param {string} publishingChannelName
      * @param {string} publishingChannelDescription
-     * @param {any} [profilePicture]
-     * @param {any} [backgroundImage]
+     * @param {Array<any>} backgroundImageAndProfilePicture
      * @param {string} [externalUrl1]
      * @param {string} [externalUrl2]
      * @param {string} [externalUrl3]
@@ -799,8 +798,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     createPublishingChannel: async (
       publishingChannelName: string,
       publishingChannelDescription: string,
-      profilePicture?: any,
-      backgroundImage?: any,
+      backgroundImageAndProfilePicture: Array<any>,
       externalUrl1?: string,
       externalUrl2?: string,
       externalUrl3?: string,
@@ -824,6 +822,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         "createPublishingChannel",
         "publishingChannelDescription",
         publishingChannelDescription,
+      );
+      // verify required parameter 'backgroundImageAndProfilePicture' is not null or undefined
+      assertParamExists(
+        "createPublishingChannel",
+        "backgroundImageAndProfilePicture",
+        backgroundImageAndProfilePicture,
       );
       const localVarPath = `/publishing_channel/createPublishingChannel`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -849,13 +853,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
           publishingChannelDescription as any,
         );
       }
-
-      if (profilePicture !== undefined) {
-        localVarFormParams.append("profilePicture", profilePicture as any);
-      }
-
-      if (backgroundImage !== undefined) {
-        localVarFormParams.append("backgroundImage", backgroundImage as any);
+      if (backgroundImageAndProfilePicture) {
+        backgroundImageAndProfilePicture.forEach((element) => {
+          localVarFormParams.append("backgroundImageAndProfilePicture", element as any);
+        });
       }
 
       if (externalUrl1 !== undefined) {
@@ -5069,8 +5070,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      *
      * @param {string} publishingChannelName
      * @param {string} publishingChannelDescription
-     * @param {any} [profilePicture]
-     * @param {any} [backgroundImage]
+     * @param {Array<any>} backgroundImageAndProfilePicture
      * @param {string} [externalUrl1]
      * @param {string} [externalUrl2]
      * @param {string} [externalUrl3]
@@ -5087,8 +5087,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     async createPublishingChannel(
       publishingChannelName: string,
       publishingChannelDescription: string,
-      profilePicture?: any,
-      backgroundImage?: any,
+      backgroundImageAndProfilePicture: Array<any>,
       externalUrl1?: string,
       externalUrl2?: string,
       externalUrl3?: string,
@@ -5109,8 +5108,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPublishingChannel(
         publishingChannelName,
         publishingChannelDescription,
-        profilePicture,
-        backgroundImage,
+        backgroundImageAndProfilePicture,
         externalUrl1,
         externalUrl2,
         externalUrl3,
@@ -7383,8 +7381,7 @@ export const DefaultApiFactory = function (
      *
      * @param {string} publishingChannelName
      * @param {string} publishingChannelDescription
-     * @param {any} [profilePicture]
-     * @param {any} [backgroundImage]
+     * @param {Array<any>} backgroundImageAndProfilePicture
      * @param {string} [externalUrl1]
      * @param {string} [externalUrl2]
      * @param {string} [externalUrl3]
@@ -7401,8 +7398,7 @@ export const DefaultApiFactory = function (
     createPublishingChannel(
       publishingChannelName: string,
       publishingChannelDescription: string,
-      profilePicture?: any,
-      backgroundImage?: any,
+      backgroundImageAndProfilePicture: Array<any>,
       externalUrl1?: string,
       externalUrl2?: string,
       externalUrl3?: string,
@@ -7419,8 +7415,7 @@ export const DefaultApiFactory = function (
         .createPublishingChannel(
           publishingChannelName,
           publishingChannelDescription,
-          profilePicture,
-          backgroundImage,
+          backgroundImageAndProfilePicture,
           externalUrl1,
           externalUrl2,
           externalUrl3,
@@ -8784,8 +8779,7 @@ export class DefaultApi extends BaseAPI {
    *
    * @param {string} publishingChannelName
    * @param {string} publishingChannelDescription
-   * @param {any} [profilePicture]
-   * @param {any} [backgroundImage]
+   * @param {Array<any>} backgroundImageAndProfilePicture
    * @param {string} [externalUrl1]
    * @param {string} [externalUrl2]
    * @param {string} [externalUrl3]
@@ -8803,8 +8797,7 @@ export class DefaultApi extends BaseAPI {
   public createPublishingChannel(
     publishingChannelName: string,
     publishingChannelDescription: string,
-    profilePicture?: any,
-    backgroundImage?: any,
+    backgroundImageAndProfilePicture: Array<any>,
     externalUrl1?: string,
     externalUrl2?: string,
     externalUrl3?: string,
@@ -8821,8 +8814,7 @@ export class DefaultApi extends BaseAPI {
       .createPublishingChannel(
         publishingChannelName,
         publishingChannelDescription,
-        profilePicture,
-        backgroundImage,
+        backgroundImageAndProfilePicture,
         externalUrl1,
         externalUrl2,
         externalUrl3,
