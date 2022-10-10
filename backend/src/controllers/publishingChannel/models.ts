@@ -1,4 +1,5 @@
 import { RenderableUser } from "../user/models";
+import { FollowingStatus } from "../user/userInteraction/models";
 
 export interface UnrenderablePublishingChannel {
   publishingChannelId: string;
@@ -14,8 +15,12 @@ export interface UnrenderablePublishingChannel {
 export interface RenderablePublishingChannel extends UnrenderablePublishingChannel {
   owner: RenderableUser;
 
+  moderators: RenderableUser[];
+
   backgroundImageTemporaryUrl?: string;
   profilePictureTemporaryUrl?: string;
+
+  followingStatusOfClientToPublishingChannel: FollowingStatus;
 
   followers: {
     count: number;

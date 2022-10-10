@@ -73,7 +73,7 @@ import {
   AddModeratorToPublishingChannelRequestBody,
   AddModeratorToPublishingChannelSuccess,
   handleAddModeratorToPublishingChannel,
-} from "./moderation/handleAddModeratorToPublishingChannel copy";
+} from "./moderation/handleAddModeratorToPublishingChannel";
 import {
   handleRemoveModeratorFromPublishingChannel,
   RemoveModeratorFromPublishingChannelFailedReason,
