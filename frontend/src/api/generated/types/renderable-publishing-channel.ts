@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { FollowingStatus } from "./following-status";
 import { RenderableUser } from "./renderable-user";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 
@@ -77,6 +78,12 @@ export interface RenderablePublishingChannel {
   owner: RenderableUser;
   /**
    *
+   * @type {Array<RenderableUser>}
+   * @memberof RenderablePublishingChannel
+   */
+  moderators: Array<RenderableUser>;
+  /**
+   *
    * @type {string}
    * @memberof RenderablePublishingChannel
    */
@@ -87,6 +94,12 @@ export interface RenderablePublishingChannel {
    * @memberof RenderablePublishingChannel
    */
   profilePictureTemporaryUrl?: string;
+  /**
+   *
+   * @type {FollowingStatus}
+   * @memberof RenderablePublishingChannel
+   */
+  followingStatusOfClientToPublishingChannel: FollowingStatus;
   /**
    *
    * @type {RenderableUserFollowers}

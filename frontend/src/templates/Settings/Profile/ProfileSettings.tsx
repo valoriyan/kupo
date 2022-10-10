@@ -48,7 +48,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
   const input = (type: "pfp" | "bg") => (
     <HiddenInput
       type="file"
-      accept="image/png, image/jpeg4"
+      accept="image/png, image/jpeg"
       multiple
       onChange={(e) => onChange(e, type)}
     />

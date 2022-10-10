@@ -38,6 +38,9 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
   const scrollPosition = useAppLayoutState((store) => store.scrollPosition);
 
   const isOwnCommunity = data && clientUserId === data.ownerUserId;
+  const isModerator =
+    clientUserId &&
+    data?.moderators.map((moderator) => moderator.userId).includes(clientUserId);
 
   const backRoute = SessionStorage.getItem<string>(PREVIOUS_LOCATION_BASE_KEY + name);
 
@@ -76,7 +79,7 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
             trigger: <ClipboardIcon />,
             content: <CommunityDetails community={data} />,
           },
-          ...(isOwnCommunity
+          ...(isOwnCommunity || isModerator
             ? [
                 {
                   id: "moderation",

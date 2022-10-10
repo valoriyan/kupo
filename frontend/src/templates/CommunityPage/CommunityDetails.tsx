@@ -10,7 +10,7 @@ export interface CommunityDetailsProps {
 }
 
 export const CommunityDetails = ({ community }: CommunityDetailsProps) => {
-  const { publishingChannelRules, externalUrls, owner } = community;
+  const { publishingChannelRules, externalUrls, owner, moderators } = community;
 
   return (
     <Stack>
@@ -33,8 +33,20 @@ export const CommunityDetails = ({ community }: CommunityDetailsProps) => {
           </a>
         ))}
       </Section>
+      <Section heading="Owner">
+        <UserName
+          username={owner.username}
+          avatarUrl={owner.profilePictureTemporaryUrl}
+        />
+      </Section>
       <Section heading="Moderators">
-        <UserName username={owner.username} />
+        {moderators.map((moderator) => (
+          <UserName
+            key={moderator.userId}
+            username={moderator.username}
+            avatarUrl={moderator.profilePictureTemporaryUrl}
+          />
+        ))}
       </Section>
     </Stack>
   );
