@@ -10,6 +10,7 @@ export * from "./generated/ChevronLeftIcon";
 export * from "./generated/ChevronRightIcon";
 export * from "./generated/ChevronUpIcon";
 export * from "./generated/ChevronUpRIcon";
+export * from "./generated/ClipboardIcon";
 export * from "./generated/CloseIcon";
 export * from "./generated/CommentIcon";
 export * from "./generated/CommunityIcon";

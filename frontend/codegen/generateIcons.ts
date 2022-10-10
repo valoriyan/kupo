@@ -17,6 +17,7 @@ const ICONS_TO_GENERATE = [
   "chevron-right",
   "chevron-up",
   "chevron-up-r",
+  "clipboard",
   "close",
   "comment",
   "community",
