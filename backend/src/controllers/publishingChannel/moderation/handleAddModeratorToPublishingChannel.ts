@@ -1,5 +1,5 @@
 import express from "express";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../models";
 import {
   EitherType,
   ErrorReasonTypes,

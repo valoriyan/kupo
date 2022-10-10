@@ -10,7 +10,10 @@ import {
 } from "../../../utilities/monads";
 import { RenderablePublishingChannel, UnrenderablePublishingChannel } from "../models";
 import { GenericResponseFailedReason } from "../../../controllers/models";
-import { constructRenderableUserFromPartsByUserId } from "../../../controllers/user/utilities";
+import {
+  constructRenderableUserFromPartsByUserId,
+  constructRenderableUsersFromPartsByUserIds,
+} from "../../../controllers/user/utilities";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import {
   unwrapListOfEitherResponses,
@@ -235,6 +238,65 @@ export async function assembleRenderablePublishingChannelFromParts({
   const { success: countOfUserFollowers } = countFollowersOfPublishingChannelIdResponse;
 
   //////////////////////////////////////////////////
+  // GET FOLLOWING STATUS OF USER TO PUBLISHING CHANNEL
+  //////////////////////////////////////////////////
+
+  const getFollowingStatusOfUserIdToPublishingChannelIdResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.getFollowingStatusOfUserIdToPublishingChannelId(
+      {
+        controller,
+        publishingChannelIdBeingFollowed: publishingChannelId,
+        userIdDoingFollowing: requestorUserId,
+      },
+    );
+
+  if (
+    getFollowingStatusOfUserIdToPublishingChannelIdResponse.type === EitherType.failure
+  ) {
+    return getFollowingStatusOfUserIdToPublishingChannelIdResponse;
+  }
+
+  const { success: followingStatusOfClientToPublishingChannel } =
+    getFollowingStatusOfUserIdToPublishingChannelIdResponse;
+
+  //////////////////////////////////////////////////
+  // GET MODERATORS
+  //////////////////////////////////////////////////
+
+  const selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.selectPublishingChannelModeratorUserIdsByPublishingChannelId(
+      {
+        controller,
+        publishingChannelId,
+      },
+    );
+
+  if (
+    selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse.type ===
+    EitherType.failure
+  ) {
+    return selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse;
+  }
+
+  const { success: moderatorUserIds } =
+    selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse;
+
+  const constructRenderableUsersFromPartsByUserIdsResponse =
+    await constructRenderableUsersFromPartsByUserIds({
+      controller,
+      requestorUserId,
+      userIds: moderatorUserIds,
+      blobStorageService,
+      databaseService,
+    });
+
+  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsByUserIdsResponse;
+  }
+
+  const { success: moderators } = constructRenderableUsersFromPartsByUserIdsResponse;
+
+  //////////////////////////////////////////////////
   // COMPILE
   //////////////////////////////////////////////////
 
@@ -243,11 +305,18 @@ export async function assembleRenderablePublishingChannelFromParts({
     ownerUserId,
     name,
     description,
-    owner: publishingChannelOwner,
-    backgroundImageTemporaryUrl,
-    profilePictureTemporaryUrl,
     publishingChannelRules,
     externalUrls,
+
+    owner: publishingChannelOwner,
+
+    moderators,
+
+    backgroundImageTemporaryUrl,
+    profilePictureTemporaryUrl,
+
+    followingStatusOfClientToPublishingChannel,
+
     followers: {
       count: countOfUserFollowers,
     },
