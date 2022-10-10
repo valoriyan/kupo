@@ -3,6 +3,7 @@ import { ProfilePrivacySetting, RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
+import { FollowUserButton } from "#/components/FollowButton";
 import { HashTag } from "#/components/HashTags";
 import { ShareIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
@@ -12,7 +13,6 @@ import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
-import { FollowButton } from "./FollowButton";
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean | undefined;
@@ -64,7 +64,7 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 </Button>
               </Link>
             ) : (
-              <FollowButton
+              <FollowUserButton
                 userId={userId}
                 username={username}
                 isUserPrivate={

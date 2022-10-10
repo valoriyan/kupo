@@ -2,11 +2,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { ProfilePrivacySetting, RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
+import { FollowUserButton } from "#/components/FollowButton";
 import { ArrowLeftIcon } from "#/components/Icons";
 import { Box, Flex } from "#/components/Layout";
 import { styled } from "#/styling";
 import { translucentBg } from "#/styling/mixins";
-import { FollowButton } from "./FollowButton";
 
 export interface ProfileBannerProps {
   isOwnProfile: boolean | undefined;
@@ -46,7 +46,7 @@ export const ProfileBanner = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <FollowButton
+            <FollowUserButton
               userId={user.userId}
               username={user.username}
               isUserPrivate={user.profilePrivacySetting === ProfilePrivacySetting.Private}

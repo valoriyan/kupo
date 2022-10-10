@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { RenderablePublishingChannel } from "#/api";
+import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
+import { FollowCommunityButton } from "#/components/FollowButton";
+import { ShareIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
+import { Body, MainTitle, Subtext } from "#/components/Typography";
 import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
-import { ShareIcon } from "#/components/Icons";
-import { Avatar } from "#/components/Avatar";
-import { Body, MainTitle, Subtext } from "#/components/Typography";
 import { formatStat } from "#/utils/formatStat";
 import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
 
@@ -18,7 +19,12 @@ export interface CommunityHeaderProps {
 }
 
 export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderProps) => {
-  const { name, description } = community;
+  const {
+    publishingChannelId,
+    name,
+    description,
+    followingStatusOfClientToPublishingChannel,
+  } = community;
 
   return (
     <Stack>
@@ -37,29 +43,25 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
               zIndex: 1,
             }}
           >
-            {
-              isOwnCommunity ? (
-                <Link href={`/settings/community/${name}`} passHref>
-                  <Button
-                    as="a"
-                    size="sm"
-                    variant="primary"
-                    css={{ flex: 1 }}
-                    onClick={setPreviousLocationForSettings}
-                  >
-                    Edit Community
-                  </Button>
-                </Link>
-              ) : null
-              // <FollowButton
-              //   userId={userId}
-              //   username={username}
-              //   isUserPrivate={
-              //     user.profilePrivacySetting === ProfilePrivacySetting.Private
-              //   }
-              //   followingStatus={followingStatusOfClientToUser}
-              // />
-            }
+            {isOwnCommunity ? (
+              <Link href={`/settings/community/${name}`} passHref>
+                <Button
+                  as="a"
+                  size="sm"
+                  variant="primary"
+                  css={{ flex: 1 }}
+                  onClick={setPreviousLocationForSettings}
+                >
+                  Edit Community
+                </Button>
+              </Link>
+            ) : (
+              <FollowCommunityButton
+                communityId={publishingChannelId}
+                communityName={name}
+                followingStatus={followingStatusOfClientToPublishingChannel}
+              />
+            )}
             <Button
               size="sm"
               variant="primary"
