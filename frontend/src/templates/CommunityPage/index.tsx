@@ -2,7 +2,7 @@ import Router from "next/router";
 import { useGetCommunityByName } from "#/api/queries/community/useGetCommunityByName";
 import { useAppLayoutState } from "#/components/AppLayout";
 import { ErrorArea, ErrorMessage } from "#/components/ErrorArea";
-import { MenuBoxedIcon, ShoppingBagIcon } from "#/components/Icons";
+import { ClipboardIcon, MenuBoxedIcon, ShoppingBagIcon } from "#/components/Icons";
 import { ShieldIcon } from "#/components/Icons/generated/ShieldIcon";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
@@ -15,6 +15,7 @@ import { CommunityPosts } from "./CommunityPosts";
 import { CommunityShopItems } from "./CommunityShopItems";
 import { Button } from "#/components/Button";
 import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
+import { CommunityDetails } from "./CommunityDetails";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-community-page";
 
@@ -37,6 +38,9 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
   const scrollPosition = useAppLayoutState((store) => store.scrollPosition);
 
   const isOwnCommunity = data && clientUserId === data.ownerUserId;
+  const isModerator =
+    clientUserId &&
+    data?.moderators.map((moderator) => moderator.userId).includes(clientUserId);
 
   const backRoute = SessionStorage.getItem<string>(PREVIOUS_LOCATION_BASE_KEY + name);
 
@@ -53,7 +57,9 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
         community={data}
       />
       <CommunityHeader isOwnCommunity={isOwnCommunity} community={data} />
-      <Button css={{ mx: "$6", my: "$3" }}>Submit Content to Community</Button>
+      <Button variant="secondary" css={{ mx: "$6", my: "$5" }}>
+        Submit Content to Community
+      </Button>
       <Tabs
         ariaLabel="Community Content Categories"
         stretchTabs
@@ -68,7 +74,12 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
             trigger: <ShoppingBagIcon />,
             content: <CommunityShopItems communityName={data.name} />,
           },
-          ...(isOwnCommunity
+          {
+            id: "communityDetails",
+            trigger: <ClipboardIcon />,
+            content: <CommunityDetails community={data} />,
+          },
+          ...(isOwnCommunity || isModerator
             ? [
                 {
                   id: "moderation",
