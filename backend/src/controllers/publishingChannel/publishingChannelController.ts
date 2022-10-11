@@ -102,6 +102,12 @@ import {
   UpdatePublishingChannelProfilePictureFailedReason,
   UpdatePublishingChannelProfilePictureSuccess,
 } from "./handleUpdatePublishingChannelProfilePicture";
+import {
+  GetPublishingChannelsFollowedByUserIdFailedReason,
+  GetPublishingChannelsFollowedByUserIdRequestBody,
+  GetPublishingChannelsFollowedByUserIdSuccess,
+  handleGetPublishingChannelsFollowedByUserId,
+} from "./userInteraction/handleGetPublishingChannelsFollowedByUserId";
 
 @injectable()
 @Route("publishing_channel")
@@ -291,6 +297,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleGetPublishingChannelSubmissions({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPublishingChannelsFollowedByUserId")
+  public async getPublishingChannelsFollowedByUserId(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPublishingChannelsFollowedByUserIdRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPublishingChannelsFollowedByUserIdFailedReason>,
+      GetPublishingChannelsFollowedByUserIdSuccess
+    >
+  > {
+    return await handleGetPublishingChannelsFollowedByUserId({
       controller: this,
       request,
       requestBody,

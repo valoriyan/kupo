@@ -1,5 +1,8 @@
 FROM node:14.17.3
 
+##################################################
+# Setup App
+##################################################
 WORKDIR /app
 
 COPY package.json package.json
@@ -11,4 +14,4 @@ COPY . .
 RUN npx tsoa spec-and-routes
 RUN npx tsc
 
-CMD node build/src/server.js -p $PORT
+CMD ["/app/scripts/entrypoint.sh"]

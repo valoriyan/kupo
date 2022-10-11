@@ -244,7 +244,7 @@ export class PublishingChannelFollowsTableService extends TableService {
     }
   }
 
-  public async getPublishingChannelIdsFollowedByUserId({
+  public async getPublishingChannelFollowsByUserId({
     controller,
     userIdDoingFollowing,
     areFollowsPending,
@@ -256,7 +256,9 @@ export class PublishingChannelFollowsTableService extends TableService {
     areFollowsPending: boolean;
     limit?: number;
     createdBeforeTimestamp?: number;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelFollow[]>
+  > {
     try {
       const queryValues: (string | number)[] = [userIdDoingFollowing];
 
@@ -306,10 +308,7 @@ export class PublishingChannelFollowsTableService extends TableService {
         await this.datastorePool.query(query);
       const rows = response.rows;
 
-      const userIdsBeingFollowed = rows.map(
-        (row) => row.publishing_channel_id_being_followed,
-      );
-      return Success(userIdsBeingFollowed);
+      return Success(rows);
     } catch (error) {
       return Failure({
         controller,

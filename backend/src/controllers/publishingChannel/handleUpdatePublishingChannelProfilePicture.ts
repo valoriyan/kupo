@@ -10,7 +10,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
-import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel";
+import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
 import { isUserOwnerOfPublishingChannel } from "./utilities/permissions";
 
 export enum UpdatePublishingChannelProfilePictureFailedReason {

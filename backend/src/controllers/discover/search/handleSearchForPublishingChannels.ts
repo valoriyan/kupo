@@ -8,7 +8,7 @@ import {
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePublishingChannel } from "../../../controllers/publishingChannel/models";
-import { assembleRenderablePublishingChannelsFromParts } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
+import { assembleRenderablePublishingChannelsFromParts } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
 
 export interface SearchForPublishingChannelsRequestBody {
   query: string;
