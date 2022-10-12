@@ -92,7 +92,7 @@ export class UserBlocksTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserBansTableService.executeBlockOfUserIdByUserId",
+          "Error at UserBlocksTableService.executeBlockOfUserIdByUserId",
       });
     }
   }
@@ -140,7 +140,64 @@ export class UserBlocksTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserBansTableService.isUserIdBlockedByUserId",
+          "Error at UserBlocksTableService.isUserIdBlockedByUserId",
+      });
+    }
+  }
+
+  public async areAnyOfUserIdsBlockingUserId({
+    controller,
+    maybeBlockedUserId,
+    maybeExecutorUserIds,
+  }: {
+    controller: Controller;
+    maybeBlockedUserId: string;
+    maybeExecutorUserIds: string[];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      if (maybeExecutorUserIds.length === 0) {
+        return Success([]);
+      }
+
+      const values = [maybeBlockedUserId];
+
+      let executorUserIdsCondition = "";
+      executorUserIdsCondition += `AND executor_user_id IN  ( `;
+
+      const executorIdParameterStrings: string[] = [];
+      maybeExecutorUserIds.forEach((maybeExecutorUserId) => {
+        executorIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(maybeExecutorUserId);
+      });
+      executorUserIdsCondition += ` )`;
+
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            blocked_user_id = $1
+            ${executorUserIdsCondition}
+          LIMIT
+            1
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBUserBlock> = await this.datastorePool.query(query);
+
+      return Success(response.rows.map(({ executor_user_id }) => executor_user_id));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at UserBlocksTableService.areAnyOfUserIdsBlockingUserId",
       });
     }
   }
@@ -180,7 +237,7 @@ export class UserBlocksTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at UserBansTableService.removeBlockOfUserIdAgainstUserId",
+          "Error at UserBlocksTableService.removeBlockOfUserIdAgainstUserId",
       });
     }
   }

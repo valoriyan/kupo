@@ -18,7 +18,7 @@ import {
   CreatePublishingChannelFailedReason,
   CreatePublishingChannelSuccess,
   handleCreatePublishingChannel,
-} from "./handleCreatePublishingChannel";
+} from "./creation/handleCreatePublishingChannel";
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import {
   handleUpdatePublishingChannel,
@@ -43,7 +43,7 @@ import {
   ResolvePublishingChannelSubmissionFailedReason,
   ResolvePublishingChannelSubmissionRequestBody,
   ResolvePublishingChannelSubmissionSuccess,
-} from "./handleResolvePublishingChannelSubmission";
+} from "./moderation/handleResolvePublishingChannelSubmission";
 import {
   GetPublishedItemsInPublishingChannelFailedReason,
   GetPublishedItemsInPublishingChannelRequestBody,
@@ -108,6 +108,12 @@ import {
   GetPublishingChannelsFollowedByUserIdSuccess,
   handleGetPublishingChannelsFollowedByUserId,
 } from "./userInteraction/handleGetPublishingChannelsFollowedByUserId";
+import {
+  handleGetPublishingChannelNameValidity,
+  IsPublishingChannelNameValidFailedReason,
+  IsPublishingChannelNameValidRequestBody,
+  IsPublishingChannelNameValidSuccess,
+} from "./creation/handleGetPublishingChannelNameValidity";
 
 @injectable()
 @Route("publishing_channel")
@@ -314,6 +320,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleGetPublishingChannelsFollowedByUserId({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPublishingChannelNameValidity")
+  public async getPublishingChannelNameValidity(
+    @Request() request: express.Request,
+    @Body() requestBody: IsPublishingChannelNameValidRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | IsPublishingChannelNameValidFailedReason>,
+      IsPublishingChannelNameValidSuccess
+    >
+  > {
+    return await handleGetPublishingChannelNameValidity({
       controller: this,
       request,
       requestBody,

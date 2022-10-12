@@ -5,9 +5,9 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
-} from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { PublishingChannelController } from "./publishingChannelController";
+} from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
+import { PublishingChannelController } from "../publishingChannelController";
 
 export interface CreatePublishingChannelRequestBody {
   backgroundImageAndProfilePicture: Express.Multer.File[];

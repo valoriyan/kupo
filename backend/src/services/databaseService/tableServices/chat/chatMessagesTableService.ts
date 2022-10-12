@@ -126,10 +126,12 @@ export class ChatMessagesTableService extends TableService {
     controller,
     chatRoomId,
     beforeTimestamp,
+    excludedUserIds,
   }: {
     controller: Controller;
     chatRoomId: string;
     beforeTimestamp?: number;
+    excludedUserIds?: string[];
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableChatMessage[]>
   > {
@@ -138,8 +140,20 @@ export class ChatMessagesTableService extends TableService {
 
       let beforeTimestampCondition = "";
       if (!!beforeTimestamp) {
-        beforeTimestampCondition = `AND creation_timestamp <  $2`;
+        beforeTimestampCondition = `AND creation_timestamp <  $${values.length + 1}`;
         values.push(beforeTimestamp);
+      }
+
+      let excludedUserIdsCondition = "";
+      if (!!excludedUserIds && excludedUserIds.length > 0) {
+        excludedUserIdsCondition += `AND author_user_id NOT IN  ( `;
+
+        const excludedUserIdParameterStrings: string[] = [];
+        excludedUserIds.forEach((excludedUserId) => {
+          excludedUserIdParameterStrings.push(`$${values.length + 1}`);
+          values.push(excludedUserId);
+        });
+        excludedUserIdsCondition += ` )`;
       }
 
       const query = {
@@ -151,6 +165,7 @@ export class ChatMessagesTableService extends TableService {
           WHERE
               chat_room_id = $1
               ${beforeTimestampCondition}
+              ${excludedUserIdsCondition}
           ORDER BY
             creation_timestamp
           ;

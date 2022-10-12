@@ -8,7 +8,7 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromParts } from "../../user/utilities";
+import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
 import { RenderableNewLikeOnPublishedItemNotification } from "../../notification/models/renderableUserNotifications";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 import { constructPublishedItemFromParts } from "../utilities/constructPublishedItemsFromParts";

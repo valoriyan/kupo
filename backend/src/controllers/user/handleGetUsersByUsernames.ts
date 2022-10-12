@@ -8,7 +8,7 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUsersFromParts } from "./utilities";
+import { constructRenderableUsersFromParts } from "./utilities/constructRenderableUserFromParts";
 
 export interface GetUsersByUsernamesRequestBody {
   usernames: string[];

@@ -3,7 +3,7 @@ import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { constructRenderablePostFromPartsById } from "../../publishedItem/post/utilities";
-import { constructRenderableUserFromParts } from "../../user/utilities";
+import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
 import {

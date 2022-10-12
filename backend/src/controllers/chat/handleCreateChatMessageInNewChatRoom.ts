@@ -48,7 +48,9 @@ export async function handleCreateChatMessageInNewChatRoom({
   );
   if (error) return error;
 
-  let chatRoomId: string;
+  //////////////////////////////////////////////////
+  // Determine if Chat Room Already Exists
+  //////////////////////////////////////////////////
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
@@ -59,12 +61,22 @@ export async function handleCreateChatMessageInNewChatRoom({
   }
   const { success: existingChatRoomId } = getChatRoomIdWithUserIdMembersExclusiveResponse;
 
+  //////////////////////////////////////////////////
+  // If the chat room already exists,w we have its ID
+  //////////////////////////////////////////////////
+
+  let chatRoomId: string;
+
   if (!!existingChatRoomId) {
     chatRoomId = existingChatRoomId;
   } else {
+    //////////////////////////////////////////////////
+    // Create a new chatRoom if the chat room does not already exist
+    //////////////////////////////////////////////////
+
     chatRoomId = uuidv4();
 
-    const insertUsersIntoChatRoomResponse =
+    const joinUsersWithChatRoomResponse =
       await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.joinUsersWithChatRoom(
         {
           controller,
@@ -73,10 +85,14 @@ export async function handleCreateChatMessageInNewChatRoom({
           chatRoomId,
         },
       );
-    if (insertUsersIntoChatRoomResponse.type === EitherType.failure) {
-      return insertUsersIntoChatRoomResponse;
+    if (joinUsersWithChatRoomResponse.type === EitherType.failure) {
+      return joinUsersWithChatRoomResponse;
     }
   }
+
+  //////////////////////////////////////////////////
+  // Create the chat message
+  //////////////////////////////////////////////////
 
   const chatMessageId: string = uuidv4();
 
@@ -94,6 +110,10 @@ export async function handleCreateChatMessageInNewChatRoom({
   if (createChatMessageResponse.type === EitherType.failure) {
     return createChatMessageResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     chatRoomId,

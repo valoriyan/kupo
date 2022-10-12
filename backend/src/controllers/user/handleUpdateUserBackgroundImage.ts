@@ -9,7 +9,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities";
+import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
 
 export enum UpdateUserBackgroundImageFailedReason {
   Unknown = "Unknown",

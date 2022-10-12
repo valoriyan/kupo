@@ -8,10 +8,8 @@ import {
 import { DiscoverController } from "../discoverController";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderableUser } from "../../user/models";
-import {
-  constructRenderableUsersFromParts,
-  mergeArraysOfUnrenderableUsers,
-} from "../../user/utilities";
+import { constructRenderableUsersFromParts } from "../../user/utilities/constructRenderableUserFromParts";
+import { mergeArraysOfUnrenderableUsers } from "../../user/utilities/mergeArraysOfUnrenderableUsers";
 
 export interface SearchForUsersRequestBody {
   query: string;

@@ -10,7 +10,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { ProfilePrivacySetting, RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities";
+import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
 
 export enum UpdateUserProfileFailedReason {
   Unknown = "Unknown",

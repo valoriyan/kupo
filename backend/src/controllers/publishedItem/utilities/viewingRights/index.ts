@@ -23,8 +23,15 @@ export async function assertViewingRightsOnPublishedItem({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   requestorUserId?: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const { authorUserId } = uncompiledBasePublishedItem;
 
+  //////////////////////////////////////////////////
+  // User has viewing rights to their own items
+  //////////////////////////////////////////////////
   if (authorUserId === requestorUserId) {
     return Success({});
   }

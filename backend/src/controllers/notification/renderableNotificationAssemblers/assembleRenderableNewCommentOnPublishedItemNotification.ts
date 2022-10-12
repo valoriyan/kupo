@@ -2,7 +2,7 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderableUserFromParts } from "../../user/utilities";
+import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewCommentOnPublishedItemNotification } from "../models/renderableUserNotifications";
 import { Controller } from "tsoa";

@@ -7,7 +7,7 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities";
+import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
 
 export enum UpdateUserProfilePictureFailedReason {
   Unknown = "Unknown",

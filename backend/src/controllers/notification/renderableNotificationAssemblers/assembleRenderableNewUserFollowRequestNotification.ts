@@ -1,7 +1,7 @@
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderableUserFromParts } from "../../user/utilities";
+import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewUserFollowRequestNotification } from "../models/renderableUserNotifications";
 import { Controller } from "tsoa";

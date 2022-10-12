@@ -12,7 +12,7 @@ import { DatabaseService } from "../../../services/databaseService";
 import {
   constructRenderableUserFromParts,
   constructRenderableUsersFromParts,
-} from "../../user/utilities";
+} from "../../user/utilities/constructRenderableUserFromParts";
 import {
   RenderablePublishedItemComment,
   UnrenderablePublishedItemComment,

@@ -8,6 +8,7 @@ import {
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 import { v4 as uuidv4 } from "uuid";
+import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SubmitPublishedItemToPublishingChannelRequestBody {
@@ -36,6 +37,10 @@ export async function handleSubmitPublishedItemToPublishingChannel({
     SubmitPublishedItemToPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const { publishingChannelId, publishedItemId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -48,6 +53,31 @@ export async function handleSubmitPublishedItemToPublishingChannel({
 
   const timestampOfSubmission = Date.now();
 
+  //////////////////////////////////////////////////
+  // See if user already has moderation privileges
+  //////////////////////////////////////////////////
+
+  const doesUserIdHaveRightsToModeratePublishingChannelResponse =
+    await doesUserIdHaveRightsToModeratePublishingChannel({
+      controller,
+      databaseService: controller.databaseService,
+      requestingUserId: clientUserId,
+      publishingChannelId,
+    });
+
+  if (
+    doesUserIdHaveRightsToModeratePublishingChannelResponse.type === EitherType.failure
+  ) {
+    return doesUserIdHaveRightsToModeratePublishingChannelResponse;
+  }
+
+  const { success: userHasModerationPrivileges } =
+    doesUserIdHaveRightsToModeratePublishingChannelResponse;
+
+  //////////////////////////////////////////////////
+  // Write submission to DB
+  //////////////////////////////////////////////////
+
   const submitPublishedItemToPublishingChannelResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.submitPublishedItemToPublishingChannel(
       {
@@ -57,7 +87,7 @@ export async function handleSubmitPublishedItemToPublishingChannel({
         userIdSubmittingPublishedItem: clientUserId,
         publishedItemId,
         timestampOfSubmission,
-        isPending: false,
+        isPending: !userHasModerationPrivileges,
       },
     );
 
@@ -65,10 +95,9 @@ export async function handleSubmitPublishedItemToPublishingChannel({
     return submitPublishedItemToPublishingChannelResponse;
   }
 
-  clientUserId;
-  controller;
-  request;
-  requestBody;
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }
