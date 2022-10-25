@@ -17,7 +17,6 @@
  * @export
  * @enum {string}
  */
-export enum GetPageOfChatMessagesFailedReason {
-  UnknownCause = "Unknown Cause",
-  IllegalAccess = "ILLEGAL_ACCESS",
+export enum IsPublishingChannelNameValidFailedReason {
+  Unknown = "Unknown",
 }

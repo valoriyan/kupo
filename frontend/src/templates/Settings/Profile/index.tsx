@@ -1,5 +1,4 @@
-import { SetStateAction, useState } from "react";
-import isEqual from "react-fast-compare";
+import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import { RenderableUser } from "#/api";
@@ -12,6 +11,7 @@ import { Box, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { CacheKeys } from "#/contexts/queryClient";
 import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
+import { useFormField } from "#/utils/useFormField";
 import { goToUserProfilePage } from "../../UserProfile";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
@@ -161,16 +161,4 @@ export const Profile = ({ user }: ProfileProps) => {
       </Button>
     </Stack>
   );
-};
-
-const useFormField = <T,>(initialValue: T) => {
-  const [value, setValue] = useState(initialValue);
-  const [isTouched, setIsTouched] = useState(false);
-
-  const updateValue = (newValue: SetStateAction<T>) => {
-    setIsTouched(!isEqual(initialValue, newValue));
-    setValue(newValue);
-  };
-
-  return [value, updateValue, isTouched, setIsTouched] as const;
 };

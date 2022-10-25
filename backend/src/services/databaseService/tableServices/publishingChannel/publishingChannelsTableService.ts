@@ -284,7 +284,7 @@ export class PublishingChannelsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            name = $1
+            publishing_channel_id = $1
           LIMIT
             1
           ;

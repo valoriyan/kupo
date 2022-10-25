@@ -143,6 +143,8 @@ import { EitherErrorReasonTypesStringOrGetPublishingChannelByNameFailedReasonGet
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishingChannelSubmissionsFailedReasonGetPublishingChannelSubmissionsSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishingChannelsFollowedByUserIdFailedReasonGetPublishingChannelsFollowedByUserIdSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrGetSavedPublishedItemsFailedReasonGetSavedPublishedItemsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetUserContentFeedFiltersFailedReasonGetUserContentFeedFiltersSuccess } from "../types";
@@ -152,6 +154,8 @@ import { EitherErrorReasonTypesStringOrGetUserProfileFailedReasonGetUserProfileS
 import { EitherErrorReasonTypesStringOrGetUsersByIdsFailedReasonGetUsersByIdsSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonIsPublishingChannelNameValidSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess } from "../types";
 // @ts-ignore
@@ -273,6 +277,8 @@ import { GetPublishingChannelByNameRequestBody } from "../types";
 // @ts-ignore
 import { GetPublishingChannelSubmissionsRequestBody } from "../types";
 // @ts-ignore
+import { GetPublishingChannelsFollowedByUserIdRequestBody } from "../types";
+// @ts-ignore
 import { GetSavedPublishedItemsRequestBody } from "../types";
 // @ts-ignore
 import { GetUserProfileRequestBody } from "../types";
@@ -284,6 +290,8 @@ import { GetUsersByUsernamesRequestBody } from "../types";
 import { InlineObject8 } from "../types";
 // @ts-ignore
 import { InlineResponse200 } from "../types";
+// @ts-ignore
+import { IsPublishingChannelNameValidRequestBody } from "../types";
 // @ts-ignore
 import { LoginUserRequestBody } from "../types";
 // @ts-ignore
@@ -2416,6 +2424,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {IsPublishingChannelNameValidRequestBody} isPublishingChannelNameValidRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishingChannelNameValidity: async (
+      isPublishingChannelNameValidRequestBody: IsPublishingChannelNameValidRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'isPublishingChannelNameValidRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishingChannelNameValidity",
+        "isPublishingChannelNameValidRequestBody",
+        isPublishingChannelNameValidRequestBody,
+      );
+      const localVarPath = `/publishing_channel/getPublishingChannelNameValidity`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        isPublishingChannelNameValidRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2454,6 +2511,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPublishingChannelSubmissionsRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishingChannelsFollowedByUserIdRequestBody} getPublishingChannelsFollowedByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishingChannelsFollowedByUserId: async (
+      getPublishingChannelsFollowedByUserIdRequestBody: GetPublishingChannelsFollowedByUserIdRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishingChannelsFollowedByUserIdRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishingChannelsFollowedByUserId",
+        "getPublishingChannelsFollowedByUserIdRequestBody",
+        getPublishingChannelsFollowedByUserIdRequestBody,
+      );
+      const localVarPath = `/publishing_channel/getPublishingChannelsFollowedByUserId`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishingChannelsFollowedByUserIdRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -5933,6 +6039,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {IsPublishingChannelNameValidRequestBody} isPublishingChannelNameValidRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishingChannelNameValidity(
+      isPublishingChannelNameValidRequestBody: IsPublishingChannelNameValidRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonIsPublishingChannelNameValidSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishingChannelNameValidity(
+          isPublishingChannelNameValidRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5949,6 +6082,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.getPublishingChannelSubmissions(
           getPublishingChannelSubmissionsRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {GetPublishingChannelsFollowedByUserIdRequestBody} getPublishingChannelsFollowedByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishingChannelsFollowedByUserId(
+      getPublishingChannelsFollowedByUserIdRequestBody: GetPublishingChannelsFollowedByUserIdRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelsFollowedByUserIdFailedReasonGetPublishingChannelsFollowedByUserIdSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishingChannelsFollowedByUserId(
+          getPublishingChannelsFollowedByUserIdRequestBody,
           options,
         );
       return createRequestFunction(
@@ -7885,6 +8045,23 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {IsPublishingChannelNameValidRequestBody} isPublishingChannelNameValidRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishingChannelNameValidity(
+      isPublishingChannelNameValidRequestBody: IsPublishingChannelNameValidRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonIsPublishingChannelNameValidSuccess> {
+      return localVarFp
+        .getPublishingChannelNameValidity(
+          isPublishingChannelNameValidRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7896,6 +8073,23 @@ export const DefaultApiFactory = function (
       return localVarFp
         .getPublishingChannelSubmissions(
           getPublishingChannelSubmissionsRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {GetPublishingChannelsFollowedByUserIdRequestBody} getPublishingChannelsFollowedByUserIdRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishingChannelsFollowedByUserId(
+      getPublishingChannelsFollowedByUserIdRequestBody: GetPublishingChannelsFollowedByUserIdRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishingChannelsFollowedByUserIdFailedReasonGetPublishingChannelsFollowedByUserIdSuccess> {
+      return localVarFp
+        .getPublishingChannelsFollowedByUserId(
+          getPublishingChannelsFollowedByUserIdRequestBody,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -9327,6 +9521,22 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {IsPublishingChannelNameValidRequestBody} isPublishingChannelNameValidRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishingChannelNameValidity(
+    isPublishingChannelNameValidRequestBody: IsPublishingChannelNameValidRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishingChannelNameValidity(isPublishingChannelNameValidRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {GetPublishingChannelSubmissionsRequestBody} getPublishingChannelSubmissionsRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -9339,6 +9549,25 @@ export class DefaultApi extends BaseAPI {
     return DefaultApiFp(this.configuration)
       .getPublishingChannelSubmissions(
         getPublishingChannelSubmissionsRequestBody,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishingChannelsFollowedByUserIdRequestBody} getPublishingChannelsFollowedByUserIdRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishingChannelsFollowedByUserId(
+    getPublishingChannelsFollowedByUserIdRequestBody: GetPublishingChannelsFollowedByUserIdRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishingChannelsFollowedByUserId(
+        getPublishingChannelsFollowedByUserIdRequestBody,
         options,
       )
       .then((request) => request(this.axios, this.basePath));

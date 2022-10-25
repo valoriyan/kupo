@@ -8,6 +8,8 @@ export const Input = styled("input", {
   backgroundColor: "$background1",
   color: "$text",
 
+  "&:disabled": { borderColor: "$disabledText" },
+
   variants: {
     size: {
       md: {

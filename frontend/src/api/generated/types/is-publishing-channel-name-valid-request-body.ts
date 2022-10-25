@@ -15,9 +15,13 @@
 /**
  *
  * @export
- * @enum {string}
+ * @interface IsPublishingChannelNameValidRequestBody
  */
-export enum GetPageOfChatMessagesFailedReason {
-  UnknownCause = "Unknown Cause",
-  IllegalAccess = "ILLEGAL_ACCESS",
+export interface IsPublishingChannelNameValidRequestBody {
+  /**
+   *
+   * @type {string}
+   * @memberof IsPublishingChannelNameValidRequestBody
+   */
+  publishingChannelName: string;
 }
