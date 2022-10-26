@@ -9,11 +9,6 @@ import {
 import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { RenderableChatMessage } from "./models";
-import { Promise as BluebirdPromise } from "bluebird";
-import {
-  unwrapListOfEitherResponses,
-  UnwrapListOfEitherResponsesFailureHandlingMethod,
-} from "../../utilities/monads/unwrapListOfResponses";
 
 export interface GetPageOfChatMessagesRequestBody {
   chatRoomId: string;

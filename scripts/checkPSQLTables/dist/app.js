@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = require("dotenv");
 const assertMatchingDatabaseStructures_1 = require("./assertMatchingDatabaseStructures");
+const assertThatDatabaseFollowsConstraints_1 = require("./assertThatDatabaseFollowsConstraints");
 const getDatabaseStructure_1 = require("./getDatabaseStructure");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -28,6 +29,10 @@ function run() {
         const localDatabaseStructure = yield (0, getDatabaseStructure_1.getDatabaseStructure)(localDatabaseConfig);
         const betaDatabaseStructure = yield (0, getDatabaseStructure_1.getDatabaseStructure)(betaDatabaseConfig);
         (0, assertMatchingDatabaseStructures_1.assertMatchingDatabaseStructures)(localDatabaseStructure, betaDatabaseStructure);
+        (0, assertThatDatabaseFollowsConstraints_1.assertThatDatabaseFollowsConstraints)({
+            databaseConfig: betaDatabaseConfig,
+            databaseStructure: betaDatabaseStructure,
+        });
     });
 }
 run();

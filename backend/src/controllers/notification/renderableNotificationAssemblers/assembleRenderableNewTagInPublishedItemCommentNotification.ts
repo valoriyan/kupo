@@ -9,10 +9,12 @@ import { RenderableNewTagInPublishedItemCommentNotification } from "../models/re
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
+import { GenericResponseFailedReason } from "src/controllers/models";
 
 export async function assembleRenderableNewTagInPublishedItemCommentNotification({
   controller,
@@ -47,14 +49,26 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  const getPostCommentByIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
+  const getMaybePublishedItemCommentByIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
       { controller, publishedItemCommentId: publishedItemCommentId },
     );
-  if (getPostCommentByIdResponse.type === EitherType.failure) {
-    return getPostCommentByIdResponse;
+  if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return getMaybePublishedItemCommentByIdResponse;
   }
-  const { success: unrenderablePublishedItemComment } = getPostCommentByIdResponse;
+  const { success: maybeUnrenderablePublishedItemComment } =
+    getMaybePublishedItemCommentByIdResponse;
+
+  if (!maybeUnrenderablePublishedItemComment) {
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: `Published item with publishedItemCommentId "${publishedItemCommentId}" not found at assembleRenderableNewTagInPublishedItemCommentNotification`,
+      additionalErrorInformation: `Published item with publishedItemCommentId "${publishedItemCommentId}" not found at assembleRenderableNewTagInPublishedItemCommentNotification`,
+    });
+  }
+  const unrenderablePublishedItemComment = maybeUnrenderablePublishedItemComment;
 
   const constructRenderablePostCommentFromPartsResponse =
     await constructRenderablePublishedItemCommentFromParts({

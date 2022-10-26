@@ -9,10 +9,12 @@ import { Controller } from "tsoa";
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
 import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { GenericResponseFailedReason } from "src/controllers/models";
 
 export async function assembleRenderableNewCommentOnPostNotification({
   controller,
@@ -37,14 +39,29 @@ export async function assembleRenderableNewCommentOnPostNotification({
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
-  const getPostCommentByIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
+  const getMaybePublishedItemCommentByIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
       { controller, publishedItemCommentId },
     );
-  if (getPostCommentByIdResponse.type === EitherType.failure) {
-    return getPostCommentByIdResponse;
+  if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return getMaybePublishedItemCommentByIdResponse;
   }
-  const { success: unrenderablePostComment } = getPostCommentByIdResponse;
+  const { success: maybeUnrenderablePostComment } =
+    getMaybePublishedItemCommentByIdResponse;
+
+  if (!maybeUnrenderablePostComment) {
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error:
+        "Published Item Comment not found at assembleRenderableNewCommentOnPostNotification",
+      additionalErrorInformation:
+        "Published Item Comment not found at assembleRenderableNewCommentOnPostNotification",
+    });
+  }
+
+  const unrenderablePostComment = maybeUnrenderablePostComment;
 
   const constructRenderablePostCommentFromPartsResponse =
     await constructRenderablePublishedItemCommentFromParts({

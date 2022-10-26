@@ -27,7 +27,7 @@ function getUniqueConstraintsOfTable({ tableName, pool, }) {
       INNER JOIN
         pg_attribute
           ON
-          pg_attribute.attrelid = pg_class.oid
+            pg_attribute.attrelid = pg_class.oid
       LEFT JOIN
         pg_index
           ON

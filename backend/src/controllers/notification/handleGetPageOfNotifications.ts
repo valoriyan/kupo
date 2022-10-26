@@ -99,7 +99,7 @@ export async function handleGetPageOfNotifications({
   }
   const { success: userNotifications } = selectUserNotificationsByUserIdResponse;
 
-  const assembleNotifcationsResponse = await assembleNotifcations({
+  const assembleNotifcationsResponse = await assembleNotifications({
     userNotifications,
     clientUserId,
     controller,
@@ -114,7 +114,7 @@ export async function handleGetPageOfNotifications({
   });
 }
 
-async function assembleNotifcations({
+async function assembleNotifications({
   userNotifications,
   clientUserId,
   controller,
@@ -132,77 +132,88 @@ async function assembleNotifcations({
     ): Promise<
       InternalServiceResponse<ErrorReasonTypes<string>, RenderableUserNotification | null>
     > => {
-      if (
-        userNotification.notification_type ===
-        NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM
-      ) {
-        return await assembleRenderableNewCommentOnPostNotification({
-          controller,
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_FOLLOWER
-      ) {
-        return await assembleRenderableNewFollowerNotification({
-          controller,
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type ===
-        NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM
-      ) {
-        return await assembleRenderableNewLikeOnPublishedItemNotification({
-          controller,
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type ===
-        NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
-      ) {
-        return await assembleRenderableNewTagInPublishedItemCommentNotification({
-          controller,
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type === NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST
-      ) {
-        return await assembleRenderableNewUserFollowRequestNotification({
-          controller,
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else if (
-        userNotification.notification_type ===
-        NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST
-      ) {
-        return await assembleRenderableAcceptedUserFollowRequestNotification({
-          controller,
-          userNotification,
-          blobStorageService: controller.blobStorageService,
-          databaseService: controller.databaseService,
-          clientUserId,
-        });
-      } else {
+      try {
+        if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM
+        ) {
+          return await assembleRenderableNewCommentOnPostNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type === NOTIFICATION_EVENTS.NEW_FOLLOWER
+        ) {
+          return await assembleRenderableNewFollowerNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM
+        ) {
+          return await assembleRenderableNewLikeOnPublishedItemNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
+        ) {
+          return await assembleRenderableNewTagInPublishedItemCommentNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST
+        ) {
+          return await assembleRenderableNewUserFollowRequestNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST
+        ) {
+          return await assembleRenderableAcceptedUserFollowRequestNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else {
+          return Failure({
+            controller,
+            httpStatusCode: 500,
+            reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+            error: "Unknown event type at assembleNotifcations",
+            additionalErrorInformation: "Unknown event type at assembleNotifcations",
+          });
+        }
+      } catch (error) {
         return Failure({
           controller,
           httpStatusCode: 500,
           reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-          error: "Unknown event type at assembleNotifcations",
-          additionalErrorInformation: "Unknown event type at assembleNotifcations",
+          error: "Unhandled error at assembleNotifications",
+          additionalErrorInformation: "Unhandled error at assembleNotifications",
         });
       }
     },

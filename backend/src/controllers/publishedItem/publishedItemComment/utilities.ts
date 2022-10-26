@@ -33,18 +33,31 @@ export async function constructRenderablePublishedItemCommentFromPartsById({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment>
 > {
-  const getPublishedItemCommentByIdResponse =
-    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
+  const getMaybePublishedItemCommentByIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
       {
         controller,
         publishedItemCommentId: publishedItemCommentId,
       },
     );
-  if (getPublishedItemCommentByIdResponse.type === EitherType.failure) {
-    return getPublishedItemCommentByIdResponse;
+  if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return getMaybePublishedItemCommentByIdResponse;
   }
-  const { success: unrenderablePublishedItemComment } =
-    getPublishedItemCommentByIdResponse;
+  const { success: maybePublishedItemComment } = getMaybePublishedItemCommentByIdResponse;
+
+  if (!maybePublishedItemComment) {
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error:
+        "Published Item Comment not found at constructRenderablePublishedItemCommentFromPartsById",
+      additionalErrorInformation:
+        "Published Item Comment not found at constructRenderablePublishedItemCommentFromPartsById",
+    });
+  }
+
+  const unrenderablePublishedItemComment = maybePublishedItemComment;
 
   return await constructRenderablePublishedItemCommentFromParts({
     controller,

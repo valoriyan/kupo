@@ -132,14 +132,17 @@ export class PublishedItemCommentsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPublishedItemCommentById({
+  public async getMaybePublishedItemCommentById({
     controller,
     publishedItemCommentId,
   }: {
     controller: Controller;
     publishedItemCommentId: string;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePublishedItemComment>
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      UnrenderablePublishedItemComment | null
+    >
   > {
     try {
       const query = {
@@ -158,11 +161,15 @@ export class PublishedItemCommentsTableService extends TableService {
       const response: QueryResult<DBPublishedItemComment> =
         await this.datastorePool.query(query);
 
-      return Success(
-        response.rows.map(
-          convertDBPublishedItemCommentToUnrenderablePublishedItemComment,
-        )[0],
-      );
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(
+          convertDBPublishedItemCommentToUnrenderablePublishedItemComment(rows[0]),
+        );
+      } else {
+        return Success(null);
+      }
     } catch (error) {
       return Failure({
         controller,

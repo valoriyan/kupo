@@ -1,8 +1,10 @@
 import express from "express";
+import { GenericResponseFailedReason } from "src/controllers/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
@@ -43,16 +45,26 @@ export async function handleDeletePublishedItemComment({
   );
   if (error) return error;
 
-  const getPostCommentByIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentById(
+  const getMaybePublishedItemCommentByIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
       { controller, publishedItemCommentId: postCommentId },
     );
-  if (getPostCommentByIdResponse.type === EitherType.failure) {
-    return getPostCommentByIdResponse;
+  if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return getMaybePublishedItemCommentByIdResponse;
   }
-  const {
-    success: { publishedItemId },
-  } = getPostCommentByIdResponse;
+  const { success: maybeUnrenderablePublishedItemComment } =
+    getMaybePublishedItemCommentByIdResponse;
+
+  if (!maybeUnrenderablePublishedItemComment) {
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: `Published item with publishedItemCommentId "${postCommentId}" not found at handleDeletePublishedItemComment`,
+      additionalErrorInformation: `Published item with publishedItemCommentId "${postCommentId}" not found at handleDeletePublishedItemComment`,
+    });
+  }
+  const { publishedItemId } = maybeUnrenderablePublishedItemComment;
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
