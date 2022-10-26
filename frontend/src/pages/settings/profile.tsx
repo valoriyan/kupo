@@ -31,7 +31,7 @@ ProfileSettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
       <NestedPageLayout
-        heading="Settings - Profile"
+        heading="Settings / Profile"
         closeHref={getSettingsCloseHref()}
         backHref="/settings"
       >

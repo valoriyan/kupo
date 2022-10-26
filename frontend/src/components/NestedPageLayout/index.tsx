@@ -9,7 +9,7 @@ import { MainTitle } from "../Typography";
 
 export interface NestedPageLayoutProps {
   children: ReactNode;
-  heading: string;
+  heading: ReactNode;
   closeHref: string;
   backHref?: string;
   handleScroll?: boolean;

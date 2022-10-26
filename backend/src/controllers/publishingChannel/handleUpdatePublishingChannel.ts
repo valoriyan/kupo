@@ -54,8 +54,6 @@ export async function handleUpdatePublishingChannel({
     updatedPublishingChannelRules,
   } = requestBody;
 
-  // GET PUBLISHING CHANNEL AND CHECK THAT USER OWNS THE CHANNEL
-
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {

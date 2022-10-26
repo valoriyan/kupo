@@ -33,7 +33,7 @@ PaymentInformationSettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
       <NestedPageLayout
-        heading="Settings - Payment Information"
+        heading="Settings / Payment Information"
         closeHref={getSettingsCloseHref()}
         backHref="/settings"
       >
