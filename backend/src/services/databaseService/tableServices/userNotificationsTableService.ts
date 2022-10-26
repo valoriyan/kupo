@@ -33,6 +33,7 @@ export interface DBUserNotification {
   // if type = NEW_LIKE_ON_POST: DBPostLike [field: id]
   // if type = NEW_USER_FOLLOW_REQUEST: DBUserFollow [field: id]
   // if type = ACCEPTED_USER_FOLLOW_REQUEST: DBUserFollow [field: id]
+  // if type = NEW_TAG_IN_PUBLISHED_ITEM_COMMENT: DBUserFollow [field: post_comment_id]
   reference_table_id: string;
 }
 

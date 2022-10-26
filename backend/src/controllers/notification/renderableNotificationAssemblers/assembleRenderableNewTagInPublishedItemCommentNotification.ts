@@ -14,7 +14,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import { GenericResponseFailedReason } from "src/controllers/models";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 export async function assembleRenderableNewTagInPublishedItemCommentNotification({
   controller,

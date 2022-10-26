@@ -14,7 +14,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
-import { GenericResponseFailedReason } from "src/controllers/models";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 export async function assembleRenderableNewCommentOnPostNotification({
   controller,

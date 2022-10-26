@@ -1,5 +1,5 @@
 import express from "express";
-import { GenericResponseFailedReason } from "src/controllers/models";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import {
   EitherType,
@@ -9,7 +9,10 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
-import { UnrenderableCanceledCommentOnPublishedItemNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
+import {
+  UnrenderableCanceledCommentOnPublishedItemNotification,
+  UnrenderableCanceledNewTagInPublishedItemCommentNotification,
+} from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
 
 export interface DeletePublishedItemCommentRequestBody {
@@ -37,6 +40,10 @@ export async function handleDeletePublishedItemComment({
     DeletePublishedItemCommentSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // PARSE INPUTS
+  //////////////////////////////////////////////////
+
   const { postCommentId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -44,6 +51,10 @@ export async function handleDeletePublishedItemComment({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // GET COMMENT
+  //////////////////////////////////////////////////
 
   const getMaybePublishedItemCommentByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
@@ -66,6 +77,10 @@ export async function handleDeletePublishedItemComment({
   }
   const { publishedItemId } = maybeUnrenderablePublishedItemComment;
 
+  //////////////////////////////////////////////////
+  // UPDATE PUBLISHED ITEM
+  //////////////////////////////////////////////////
+
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { controller, id: publishedItemId },
@@ -76,6 +91,10 @@ export async function handleDeletePublishedItemComment({
   const {
     success: { authorUserId: postAuthorUserId },
   } = getPublishedItemByIdResponse;
+
+  //////////////////////////////////////////////////
+  // DELETE COMMENT IN DB
+  //////////////////////////////////////////////////
 
   const deletePostCommentResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.deletePublishedItemComment(
@@ -89,7 +108,11 @@ export async function handleDeletePublishedItemComment({
     return deletePostCommentResponse;
   }
 
-  const deleteUserNotificationForUserIdResponse =
+  //////////////////////////////////////////////////
+  // DELETE USER NOTIFICATION
+  //////////////////////////////////////////////////
+
+  const firstDeleteUserNotificationForUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
@@ -98,9 +121,26 @@ export async function handleDeletePublishedItemComment({
         recipientUserId: postAuthorUserId,
       },
     );
-  if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
-    return deleteUserNotificationForUserIdResponse;
+  if (firstDeleteUserNotificationForUserIdResponse.type === EitherType.failure) {
+    return firstDeleteUserNotificationForUserIdResponse;
   }
+
+  const secondDeleteUserNotificationForUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
+      {
+        controller,
+        notificationType: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+        referenceTableId: postCommentId,
+        recipientUserId: postAuthorUserId,
+      },
+    );
+  if (secondDeleteUserNotificationForUserIdResponse.type === EitherType.failure) {
+    return secondDeleteUserNotificationForUserIdResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // GET COUNT OF UNREAD NOTIFICATIONS
+  //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
@@ -112,7 +152,11 @@ export async function handleDeletePublishedItemComment({
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-  const unrenderableCanceledCommentOnPublishedItemNotification: UnrenderableCanceledCommentOnPublishedItemNotification =
+  //////////////////////////////////////////////////
+  // CANCEL NOTIFICATIONS
+  //////////////////////////////////////////////////
+
+  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification =
     {
       type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_PUBLISHED_ITEM,
       countOfUnreadNotifications,
@@ -122,8 +166,21 @@ export async function handleDeletePublishedItemComment({
   await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost(
     {
       userId: postAuthorUserId,
-      unrenderableCanceledCommentOnPostNotification:
-        unrenderableCanceledCommentOnPublishedItemNotification,
+      unrenderableCanceledCommentOnPostNotification,
+    },
+  );
+
+  const unrenderableCanceledNewTagInPublishedItemCommentNotification: UnrenderableCanceledNewTagInPublishedItemCommentNotification =
+    {
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+      countOfUnreadNotifications,
+      publishedItemCommentId: postCommentId,
+    };
+
+  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewTagInPublishedItemComment(
+    {
+      userId: postAuthorUserId,
+      unrenderableCanceledNewTagInPublishedItemCommentNotification,
     },
   );
 
