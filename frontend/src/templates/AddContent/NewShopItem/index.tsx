@@ -20,6 +20,7 @@ import { useFormState } from "../FormContext";
 
 export interface NewShopItemProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
+  publishingChannelId: string | undefined;
 }
 
 export const NewShopItem = (props: NewShopItemProps) => {
@@ -57,7 +58,10 @@ export const NewShopItem = (props: NewShopItemProps) => {
     setCollaboratorUsers(resolvedUsers);
   }, [setCollaboratorUsers, resolvedUsers]);
 
-  const { mutateAsync: createShopItem, isLoading } = useCreateShopItem();
+  const { mutateAsync: createShopItem, isLoading } = useCreateShopItem(
+    props.publishingChannelId,
+  );
+
   const canSubmit =
     !!title && !!mediaFiles.length && !!purchasedMediaFiles.length && !!price;
 

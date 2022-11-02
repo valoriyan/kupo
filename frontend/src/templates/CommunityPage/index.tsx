@@ -1,4 +1,5 @@
 import Router from "next/router";
+import Link from "next/link";
 import { useGetCommunityByName } from "#/api/queries/community/useGetCommunityByName";
 import { useAppLayoutState } from "#/components/AppLayout";
 import { ErrorArea, ErrorMessage } from "#/components/ErrorArea";
@@ -16,6 +17,7 @@ import { CommunityShopItems } from "./CommunityShopItems";
 import { Button } from "#/components/Button";
 import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
 import { CommunityDetails } from "./CommunityDetails";
+import { setPreviousLocationForAddContent } from "../AddContent";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-community-page";
 
@@ -57,9 +59,22 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
         community={data}
       />
       <CommunityHeader isOwnCommunity={isOwnCommunity} community={data} />
-      <Button variant="secondary" css={{ mx: "$6", my: "$5" }}>
-        Submit Content to Community
-      </Button>
+      <Link
+        href={{
+          pathname: "/add-content",
+          query: { publishingChannelId: data.publishingChannelId },
+        }}
+        passHref
+      >
+        <Button
+          as="a"
+          variant="secondary"
+          css={{ mx: "$6", my: "$5" }}
+          onClick={setPreviousLocationForAddContent}
+        >
+          Submit Content to Community
+        </Button>
+      </Link>
       <Tabs
         ariaLabel="Community Content Categories"
         stretchTabs

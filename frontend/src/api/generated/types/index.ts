@@ -24,6 +24,7 @@ export * from "./create-published-item-comment-success";
 export * from "./create-publishing-channel-failed-reason";
 export * from "./create-publishing-channel-success";
 export * from "./create-shop-item-failed-reason";
+export * from "./create-shop-item-success";
 export * from "./credit-card-summary";
 export * from "./delete-chat-message-failed-reason";
 export * from "./delete-chat-message-request-body";

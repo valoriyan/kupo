@@ -1,5 +1,6 @@
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
+import { MediaElement } from "src/controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
@@ -16,16 +17,17 @@ import {
 import { checkAuthorization } from "../../auth/utilities";
 import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
 import { PublishedItemType } from "../models";
+import { RenderableShopItem, RenderableShopItemType } from "./models";
 import { ShopItemController } from "./shopItemController";
 
 export enum CreateShopItemFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CreateShopItemSuccess {}
+export interface CreateShopItemSuccess {
+  renderableShopItem: RenderableShopItem;
+}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HandlerRequestBody {
   caption: string;
   hashtags: string[];
@@ -144,7 +146,52 @@ export async function handleCreateShopItem({
     return createShopItemMediaElementsResponse;
   }
 
-  return Success({});
+  const mediaElements: MediaElement[] = shopItemMediaElements
+    .filter(
+      (element) => element.shopItemType === DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
+    )
+    .map((element) => ({
+      temporaryUrl: element.fileTemporaryUrl,
+      mimeType: element.mimetype,
+    }));
+
+  const purchasedMediaElements: MediaElement[] = shopItemMediaElements
+    .filter(
+      (element) => element.shopItemType === DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
+    )
+    .map((element) => ({
+      temporaryUrl: element.fileTemporaryUrl,
+      mimeType: element.mimetype,
+    }));
+
+  const renderableShopItem: RenderableShopItem = {
+    type: PublishedItemType.SHOP_ITEM,
+    renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
+    id: publishedItemId,
+    authorUserId: clientUserId,
+    caption,
+    creationTimestamp: now,
+    scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+    expirationTimestamp,
+    hashtags: lowerCaseHashtags,
+    title,
+    price,
+    mediaElements,
+    purchasedMediaElements,
+    purchasedMediaElementsMetadata: {
+      count: purchasedMediaElements.length,
+    },
+    likes: {
+      count: 0,
+    },
+    comments: {
+      count: 0,
+    },
+    isLikedByClient: false,
+    isSavedByClient: false,
+  };
+
+  return Success({ renderableShopItem });
 }
 
 const uploadShopItemMedia = async (

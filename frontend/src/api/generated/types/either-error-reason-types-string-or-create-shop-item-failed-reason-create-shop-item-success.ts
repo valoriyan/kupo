@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { CreateShopItemSuccess } from "./create-shop-item-success";
 import { EitherTypeSuccess } from "./either-type-success";
 import { FailureResponseErrorReasonTypesStringOrCreateShopItemFailedReason } from "./failure-response-error-reason-types-string-or-create-shop-item-failed-reason";
 import { FailureResponseErrorReasonTypesStringOrCreateShopItemFailedReasonError } from "./failure-response-error-reason-types-string-or-create-shop-item-failed-reason-error";
@@ -37,8 +38,8 @@ export interface EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateS
   error: FailureResponseErrorReasonTypesStringOrCreateShopItemFailedReasonError;
   /**
    *
-   * @type {object}
+   * @type {CreateShopItemSuccess}
    * @memberof EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess
    */
-  success: object;
+  success: CreateShopItemSuccess;
 }

@@ -31,7 +31,7 @@ import {
   SubmitPublishedItemToPublishingChannelFailedReason,
   SubmitPublishedItemToPublishingChannelRequestBody,
   SubmitPublishedItemToPublishingChannelSuccess,
-} from "./moderation/handleSubmitPublishedItemToPublishingChannel";
+} from "./userInteraction/handleSubmitPublishedItemToPublishingChannel";
 import {
   GetPublishingChannelByNameFailedReason,
   GetPublishingChannelByNameRequestBody,

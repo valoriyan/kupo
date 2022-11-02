@@ -6,6 +6,7 @@ import { AddContentScreen } from ".";
 
 export interface InitialProps {
   setCurrentScreen: (newScreen: AddContentScreen) => void;
+  publishingChannelId: string | undefined;
 }
 
 export const Initial = (props: InitialProps) => {
@@ -17,11 +18,13 @@ export const Initial = (props: InitialProps) => {
       <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.ShopItem)}>
         <TagIcon /> New Shop Item
       </NewItemButton>
-      <NewItemButton
-        onClick={() => props.setCurrentScreen(AddContentScreen.CommunityPage)}
-      >
-        <CommunityIcon /> New Community Page
-      </NewItemButton>
+      {!props.publishingChannelId && (
+        <NewItemButton
+          onClick={() => props.setCurrentScreen(AddContentScreen.CommunityPage)}
+        >
+          <CommunityIcon /> New Community Page
+        </NewItemButton>
+      )}
       {/* <NewItemButton
         onClick={() => props.setCurrentScreen(AddContentScreen.PostSchedule)}
       >

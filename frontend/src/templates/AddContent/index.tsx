@@ -42,7 +42,11 @@ export interface AdditionalScreen {
   heading: string;
 }
 
-export const AddContent = () => {
+export interface AddContentProps {
+  publishingChannelId: string | undefined;
+}
+
+export const AddContent = ({ publishingChannelId }: AddContentProps) => {
   const [currentScreen, setCurrentScreen] = useState(AddContentScreen.Initial);
   const [additionalScreen, setAdditionalScreen] = useState<AdditionalScreen | null>(null);
 
@@ -64,16 +68,36 @@ export const AddContent = () => {
     lastScreen.current = additionalScreen ? "additionalScreen" : currentScreen;
   }, [currentScreen, additionalScreen]);
 
-  let bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
+  let bodyNode = (
+    <Initial
+      setCurrentScreen={setCurrentScreen}
+      publishingChannelId={publishingChannelId}
+    />
+  );
   switch (currentScreen) {
     case AddContentScreen.Initial:
-      bodyNode = <Initial setCurrentScreen={setCurrentScreen} />;
+      bodyNode = (
+        <Initial
+          setCurrentScreen={setCurrentScreen}
+          publishingChannelId={publishingChannelId}
+        />
+      );
       break;
     case AddContentScreen.Post:
-      bodyNode = <NewPost setAdditionalScreen={setAdditionalScreen} />;
+      bodyNode = (
+        <NewPost
+          setAdditionalScreen={setAdditionalScreen}
+          publishingChannelId={publishingChannelId}
+        />
+      );
       break;
     case AddContentScreen.ShopItem:
-      bodyNode = <NewShopItem setAdditionalScreen={setAdditionalScreen} />;
+      bodyNode = (
+        <NewShopItem
+          setAdditionalScreen={setAdditionalScreen}
+          publishingChannelId={publishingChannelId}
+        />
+      );
       break;
     case AddContentScreen.CommunityPage:
       bodyNode = <NewCommunityPage />;

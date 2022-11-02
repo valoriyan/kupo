@@ -14,6 +14,7 @@ import { useFormState } from "../FormContext";
 
 export interface NewPostProps {
   setAdditionalScreen: (additionalScreen: AdditionalScreen) => void;
+  publishingChannelId: string | undefined;
 }
 
 export const NewPost = (props: NewPostProps) => {
@@ -28,7 +29,7 @@ export const NewPost = (props: NewPostProps) => {
     expirationDate,
     setExpirationDate,
   } = useFormState();
-  const { mutateAsync: createPost, isLoading } = useCreatePost();
+  const { mutateAsync: createPost, isLoading } = useCreatePost(props.publishingChannelId);
 
   const canSubmit = !!caption || !!mediaFiles.length;
 

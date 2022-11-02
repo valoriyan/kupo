@@ -5,7 +5,7 @@ import { useFormState } from "#/templates/AddContent/FormContext";
 import { Api } from "../..";
 import { resetShopItemFeeds } from "./utilities";
 
-export const useCreateShopItem = () => {
+export const useCreateShopItem = (publishingChannelId: string | undefined) => {
   const queryClient = useQueryClient();
   const userId = useCurrentUserId();
   const formState = useFormState();
@@ -17,7 +17,7 @@ export const useCreateShopItem = () => {
 
   return useMutation(
     async () => {
-      return await Api.createShopItem(
+      const res = await Api.createShopItem(
         // Gonna have to merge these into one array and figure out how to separate them on the back-end
         combinedMediaFiled,
         formState.purchasedMediaFiles.length.toString(),
@@ -29,6 +29,16 @@ export const useCreateShopItem = () => {
         JSON.stringify(formState.collaboratorUsers.map((user) => user.userId)),
         formState.expirationDate?.valueOf().toString(),
       );
+
+      if (publishingChannelId) {
+        const publishedItemId = res.data.success.renderableShopItem.id;
+        await Api.submitPublishedItemToPublishingChannel({
+          publishingChannelId,
+          publishedItemId,
+        });
+      }
+
+      return res;
     },
     {
       onSuccess: (data) => {

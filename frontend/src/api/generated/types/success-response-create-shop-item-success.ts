@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { CreateShopItemSuccess } from "./create-shop-item-success";
 import { EitherTypeSuccess } from "./either-type-success";
 
 /**
@@ -28,8 +29,8 @@ export interface SuccessResponseCreateShopItemSuccess {
   type: EitherTypeSuccess;
   /**
    *
-   * @type {object}
+   * @type {CreateShopItemSuccess}
    * @memberof SuccessResponseCreateShopItemSuccess
    */
-  success: object;
+  success: CreateShopItemSuccess;
 }
