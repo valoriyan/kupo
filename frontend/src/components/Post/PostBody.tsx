@@ -105,7 +105,7 @@ const Timestamp = styled("div", {
 });
 
 const ShopItemDetailsWrapper = styled(Stack, {
-  m: "$3",
+  m: "$4",
   bg: "$background3",
   borderRadius: "$3",
   px: "$5",

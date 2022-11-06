@@ -10,12 +10,19 @@ import { styled } from "#/styling";
 export const MyLists = () => {
   const { data, isLoading } = useGetClientUserProfile();
 
+  const followingCommunitiesCount = data?.followingCommunities.count ?? "?";
   const followingCount = data?.follows.count ?? "?";
   const followersCount = data?.followers.count ?? "?";
   const followerRequests = data?.followerRequests.count ?? "?";
 
   return (
     <Stack css={{ size: "100%" }}>
+      <Link href="/my-lists/communities" passHref>
+        <ListButton>
+          Communities
+          {isLoading ? <Spinner size="md" /> : <Chip>{followingCommunitiesCount}</Chip>}
+        </ListButton>
+      </Link>
       <Link href="/my-lists/following" passHref>
         <ListButton>
           Following

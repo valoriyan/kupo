@@ -25,5 +25,11 @@ export interface ClientUserDetails {
    * @type {RenderableUserFollowers}
    * @memberof ClientUserDetails
    */
+  followingCommunities: RenderableUserFollowers;
+  /**
+   *
+   * @type {RenderableUserFollowers}
+   * @memberof ClientUserDetails
+   */
   followerRequests: RenderableUserFollowers;
 }

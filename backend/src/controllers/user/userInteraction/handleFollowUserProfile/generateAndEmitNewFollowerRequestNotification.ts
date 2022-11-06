@@ -11,22 +11,22 @@ import { Controller } from "tsoa";
 import { DatabaseService } from "../../../../services/databaseService";
 import { WebSocketService } from "../../../../services/webSocketService";
 import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
-import { assembleRenderableNewUserFollowRequestNotification } from "../../../../controllers/notification/renderableNotificationAssemblers/assembleRenderableNewUserFollowRequestNotification";
+import { assembleRenderableNewUserFollowRequestNotification } from "../../../notification/renderableNotificationAssemblers/assembleRenderableNewUserFollowRequestNotification";
 
-export async function generateAndEmitNewUserFollowRequestNotification({
+export async function generateAndEmitNewFollowerRequestNotification({
   controller,
   databaseService,
   blobStorageService,
   webSocketService,
   recipientUserId,
-  followRequestingUserId,
+  userFollowEventId,
 }: {
   controller: Controller;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageServiceInterface;
   webSocketService: WebSocketService;
   recipientUserId: string;
-  followRequestingUserId: string;
+  userFollowEventId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   const userNotificationId = uuidv4();
 
@@ -40,8 +40,8 @@ export async function generateAndEmitNewUserFollowRequestNotification({
         controller,
         userNotificationId,
         recipientUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_FOLLOWER,
-        referenceTableId: followRequestingUserId,
+        notificationType: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST,
+        referenceTableId: userFollowEventId,
       },
     );
   if (createUserNotificationResponse.type === EitherType.failure) {

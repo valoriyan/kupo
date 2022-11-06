@@ -7,7 +7,7 @@ import { UserInteractionController } from "../userInteractionController";
 import { GenericResponseFailedReason } from "../../../models";
 import { ProfilePrivacySetting } from "../../models";
 import { generateAndEmitNewFollowerNotification } from "./generateAndEmitNewFollowerNotification";
-import { generateAndEmitNewUserFollowRequestNotification } from "./generateAndEmitNewUserFollowRequestNotification";
+import { generateAndEmitNewFollowerRequestNotification } from "./generateAndEmitNewFollowerRequestNotification";
 
 export interface FollowUserRequestBody {
   userIdBeingFollowed: string;
@@ -78,8 +78,8 @@ export async function handleFollowUser({
   }
 
   if (userIdBeingFollowed !== clientUserId) {
-    if (!pending) {
-      await generateAndEmitNewFollowerNotification({
+    if (isPending) {
+      await generateAndEmitNewFollowerRequestNotification({
         controller,
         databaseService: controller.databaseService,
         blobStorageService: controller.blobStorageService,
@@ -88,13 +88,13 @@ export async function handleFollowUser({
         userFollowEventId,
       });
     } else {
-      await generateAndEmitNewUserFollowRequestNotification({
+      await generateAndEmitNewFollowerNotification({
         controller,
         databaseService: controller.databaseService,
         blobStorageService: controller.blobStorageService,
         webSocketService: controller.webSocketService,
         recipientUserId: userIdBeingFollowed,
-        followRequestingUserId: clientUserId,
+        userFollowEventId,
       });
     }
   }

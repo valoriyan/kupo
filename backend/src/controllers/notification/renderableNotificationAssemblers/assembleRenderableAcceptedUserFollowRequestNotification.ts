@@ -50,7 +50,7 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
     return getUserFollowEventByIdResponse;
   }
   const {
-    success: { userIdDoingFollowing, timestamp: eventTimestamp },
+    success: { userIdBeingFollowed, timestamp: eventTimestamp },
   } = getUserFollowEventByIdResponse;
 
   //////////////////////////////////////////////////
@@ -61,7 +61,7 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
     await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       {
         controller,
-        userId: userIdDoingFollowing,
+        userId: userIdBeingFollowed,
       },
     );
   if (selectUserByUserIdResponse.type === EitherType.failure) {

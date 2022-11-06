@@ -70,7 +70,7 @@ export class PublishingChannelSubmissionsTableService extends TableService {
 
         CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
           FOREIGN KEY (published_item_id)
-          REFERENCES ${PublishedItemsTableService.tableName} (id)          
+          REFERENCES ${PublishedItemsTableService.tableName} (id)
       )
       ;
     `;

@@ -16,7 +16,6 @@ export interface GetPublishingChannelsFollowedByUserIdRequestBody {
   areFollowsPending: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetPublishingChannelsFollowedByUserIdSuccess {
   publishingChannels: RenderablePublishingChannel[];
   previousPageCursor?: string;

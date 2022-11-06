@@ -61,9 +61,9 @@ export async function fetchPageOfPublishedItem({
     },
     { authStrat: "tryToken" },
   );
+
   if (res.data && res.data.success) {
     return res.data.success;
   }
-
   throw res;
 }

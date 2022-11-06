@@ -454,6 +454,7 @@ export * from "./get-publishing-channel-by-name-success";
 export * from "./get-publishing-channel-submissions-failed-reason";
 export * from "./get-publishing-channel-submissions-request-body";
 export * from "./get-publishing-channel-submissions-success";
+export * from "./get-publishing-channel-submissions-success-published-submissions";
 export * from "./get-publishing-channels-followed-by-user-id-failed-reason";
 export * from "./get-publishing-channels-followed-by-user-id-request-body";
 export * from "./get-publishing-channels-followed-by-user-id-success";

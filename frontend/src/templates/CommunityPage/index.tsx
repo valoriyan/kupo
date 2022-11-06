@@ -1,23 +1,24 @@
-import Router from "next/router";
 import Link from "next/link";
+import Router from "next/router";
 import { useGetCommunityByName } from "#/api/queries/community/useGetCommunityByName";
 import { useAppLayoutState } from "#/components/AppLayout";
-import { ErrorArea, ErrorMessage } from "#/components/ErrorArea";
+import { Button } from "#/components/Button";
+import { ErrorArea } from "#/components/ErrorArea";
 import { ClipboardIcon, MenuBoxedIcon, ShoppingBagIcon } from "#/components/Icons";
 import { ShieldIcon } from "#/components/Icons/generated/ShieldIcon";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Tabs } from "#/components/Tabs";
 import { useCurrentUserId } from "#/contexts/auth";
+import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
 import { SessionStorage } from "#/utils/storage";
+import { setPreviousLocationForAddContent } from "../AddContent";
 import { CommunityBanner } from "./CommunityBanner";
+import { CommunityDetails } from "./CommunityDetails";
 import { CommunityHeader } from "./CommunityHeader";
 import { CommunityPosts } from "./CommunityPosts";
 import { CommunityShopItems } from "./CommunityShopItems";
-import { Button } from "#/components/Button";
-import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
-import { CommunityDetails } from "./CommunityDetails";
-import { setPreviousLocationForAddContent } from "../AddContent";
+import { PendingSubmissions } from "./PendingSubmissions";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-community-page";
 
@@ -99,7 +100,12 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
                 {
                   id: "moderation",
                   trigger: <ShieldIcon />,
-                  content: <ErrorMessage>Moderation Tools Coming Soon</ErrorMessage>,
+                  content: (
+                    <PendingSubmissions
+                      publishingChannelId={data.publishingChannelId}
+                      publishingChannelName={data.name}
+                    />
+                  ),
                 },
               ]
             : []),

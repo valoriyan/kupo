@@ -21,9 +21,10 @@ import { usePostActions } from "./usePostActions";
 export interface PostProps {
   post: RenderablePost | RenderableShopItem;
   handleClickOfCommentsButton?: () => void;
+  borderLess?: boolean;
 }
 
-export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
+export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProps) => {
   const {
     type,
     isLikedByClient,
@@ -76,7 +77,7 @@ export const Post = ({ post, handleClickOfCommentsButton }: PostProps) => {
           justifyContent: "space-between",
           px: "$5",
           py: "$5",
-          borderBottom: "solid $borderWidths$1 $border",
+          borderBottom: !borderLess ? "solid $borderWidths$1 $border" : undefined,
         }}
       >
         <PostAction

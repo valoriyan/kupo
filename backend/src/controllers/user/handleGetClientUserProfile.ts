@@ -11,6 +11,7 @@ import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromPartsByUserId } from "./utilities";
 
 export interface ClientUserDetails {
+  followingCommunities: { count: number };
   followerRequests: { count: number };
 }
 
@@ -60,6 +61,20 @@ export async function handleGetClientUserProfile({
   // Get Client User Details
   //////////////////////////////////////////////////
 
+  const countPublishingChannelFollowsOfUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.countPublishingChannelFollowsOfUserId(
+      {
+        controller,
+        userIdDoingFollowing: clientUserId,
+        areFollowsPending: false,
+      },
+    );
+  if (countPublishingChannelFollowsOfUserIdResponse.type === EitherType.failure) {
+    return countPublishingChannelFollowsOfUserIdResponse;
+  }
+  const { success: numberOfFollowingCommunities } =
+    countPublishingChannelFollowsOfUserIdResponse;
+
   const countFollowersOfUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
       {
@@ -74,6 +89,7 @@ export async function handleGetClientUserProfile({
   const { success: numberOfPendingFollows } = countFollowersOfUserIdResponse;
 
   const clientUserDetails: ClientUserDetails = {
+    followingCommunities: { count: numberOfFollowingCommunities },
     followerRequests: { count: numberOfPendingFollows },
   };
 

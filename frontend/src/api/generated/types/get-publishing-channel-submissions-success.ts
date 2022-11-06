@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { RenderablePublishedItem } from "./renderable-published-item";
+import { GetPublishingChannelSubmissionsSuccessPublishedSubmissions } from "./get-publishing-channel-submissions-success-published-submissions";
 
 /**
  *
@@ -22,8 +22,20 @@ import { RenderablePublishedItem } from "./renderable-published-item";
 export interface GetPublishingChannelSubmissionsSuccess {
   /**
    *
-   * @type {Array<RenderablePublishedItem>}
+   * @type {Array<GetPublishingChannelSubmissionsSuccessPublishedSubmissions>}
    * @memberof GetPublishingChannelSubmissionsSuccess
    */
-  publishedItems: Array<RenderablePublishedItem>;
+  publishedSubmissions: Array<GetPublishingChannelSubmissionsSuccessPublishedSubmissions>;
+  /**
+   *
+   * @type {string}
+   * @memberof GetPublishingChannelSubmissionsSuccess
+   */
+  previousPageCursor?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GetPublishingChannelSubmissionsSuccess
+   */
+  nextPageCursor?: string;
 }
