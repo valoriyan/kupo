@@ -53,7 +53,7 @@ export class UserFollowsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        user_follow_event_id VARCHAR(64) NOT NULL,
+        user_follow_event_id VARCHAR(64) UNIQUE NOT NULL,
 
         user_id_doing_following VARCHAR(64) NOT NULL,
         user_id_being_followed VARCHAR(64) NOT NULL,
@@ -70,7 +70,6 @@ export class UserFollowsTableService extends TableService {
         CONSTRAINT being_followed_${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (user_id_being_followed)
           REFERENCES ${UsersTableService.tableName} (user_id)
-
       )
       ;
     `;

@@ -65,8 +65,9 @@ export class PublishedItemsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        type VARCHAR(64) NOT NULL,
         id VARCHAR(64) UNIQUE NOT NULL,
+        
+        type VARCHAR(64) NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
         caption VARCHAR(512) NOT NULL,
         creation_timestamp BIGINT NOT NULL,

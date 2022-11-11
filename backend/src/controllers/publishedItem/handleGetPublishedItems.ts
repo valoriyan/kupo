@@ -8,11 +8,11 @@ import {
   Success,
 } from "../../utilities/monads";
 import { getClientUserId } from "../auth/utilities";
-import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities/pagination";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { PublishedItemType, RenderablePublishedItem } from "./models";
 import { constructPublishedItemsFromParts } from "./utilities/constructPublishedItemsFromParts";
+import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
 
 export interface GetPublishedItemsByUserIdRequestBody {
   userId: string;

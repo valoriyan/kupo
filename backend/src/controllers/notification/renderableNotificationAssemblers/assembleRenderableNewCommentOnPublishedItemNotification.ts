@@ -35,13 +35,14 @@ export async function assembleRenderableNewCommentOnPostNotification({
   >
 > {
   const {
-    reference_table_id: publishedItemCommentId,
+    published_item_comment_reference: publishedItemCommentId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
   const getMaybePublishedItemCommentByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
-      { controller, publishedItemCommentId },
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      { controller, publishedItemCommentId: publishedItemCommentId! },
     );
   if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
     return getMaybePublishedItemCommentByIdResponse;

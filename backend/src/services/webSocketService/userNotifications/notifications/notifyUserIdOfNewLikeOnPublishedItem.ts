@@ -3,7 +3,7 @@ import { RenderableNewLikeOnPublishedItemNotification } from "../../../../contro
 import { NOTIFICATION_EVENTS } from "../../eventsConfig";
 import { generatePrivateUserWebSocketRoomName } from "../../utilities";
 
-export async function notifyUserIdOfNewLikeOnPost({
+export async function notifyUserIdOfNewLikeOnPublishedItem({
   io,
   renderableNewLikeOnPostNotification,
   userId,

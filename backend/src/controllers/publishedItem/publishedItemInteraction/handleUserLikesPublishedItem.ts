@@ -48,13 +48,13 @@ export async function handleUserLikesPublishedItem({
   );
   if (error) return error;
 
-  const postLikeId = uuidv4();
+  const publishedItemLikeId = uuidv4();
 
   const createPublishedItemLikeFromUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemLikesTableService.createPublishedItemLikeFromUserId(
       {
         controller,
-        publishedItemLikeId: postLikeId,
+        publishedItemLikeId: publishedItemLikeId,
         publishedItemId,
         userId: clientUserId,
         timestamp: now,
@@ -72,14 +72,13 @@ export async function handleUserLikesPublishedItem({
   if (getPublishedItemByIdResponse.type === EitherType.failure) {
     return getPublishedItemByIdResponse;
   }
-  const { success: unrenderablePostWithoutElementsOrHashtags } =
-    getPublishedItemByIdResponse;
+  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
   const doesUserNotificationExistResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.doesUserNotificationExist(
       {
         controller,
-        userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+        userId: uncompiledBasePublishedItem.authorUserId,
         referenceTableId: publishedItemId,
       },
     );
@@ -101,15 +100,17 @@ export async function handleUserLikesPublishedItem({
       return setLastUpdatedTimestampResponse;
     }
   } else {
-    if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
+    if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
       const createUserNotificationResponse =
         await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
           {
             controller,
             userNotificationId: uuidv4(),
-            recipientUserId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
-            notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
-            referenceTableId: postLikeId,
+            recipientUserId: uncompiledBasePublishedItem.authorUserId,
+            externalReference: {
+              type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
+              publishedItemLikeId,
+            },
           },
         );
       if (createUserNotificationResponse.type === EitherType.failure) {
@@ -149,7 +150,7 @@ export async function handleUserLikesPublishedItem({
         controller,
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,
-        uncompiledBasePublishedItem: unrenderablePostWithoutElementsOrHashtags,
+        uncompiledBasePublishedItem: uncompiledBasePublishedItem,
         requestorUserId: clientUserId,
       },
     );
@@ -160,7 +161,7 @@ export async function handleUserLikesPublishedItem({
 
     const selectCountOfUnreadUserNotificationsByUserIdResponse =
       await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-        { controller, userId: unrenderablePostWithoutElementsOrHashtags.authorUserId },
+        { controller, userId: uncompiledBasePublishedItem.authorUserId },
       );
     if (
       selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure
@@ -170,7 +171,7 @@ export async function handleUserLikesPublishedItem({
     const { success: countOfUnreadNotifications } =
       selectCountOfUnreadUserNotificationsByUserIdResponse;
 
-    const renderableNewLikeOnPostNotification: RenderableNewLikeOnPublishedItemNotification =
+    const renderableNewLikeOnPublishedItemNotification: RenderableNewLikeOnPublishedItemNotification =
       {
         eventTimestamp: now,
         type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
@@ -179,10 +180,11 @@ export async function handleUserLikesPublishedItem({
         publishedItem: renderablePublishedItem,
       };
 
-    await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPost(
+    await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPublishedItem(
       {
-        renderableNewLikeOnPostNotification,
-        userId: unrenderablePostWithoutElementsOrHashtags.authorUserId,
+        renderableNewLikeOnPublishedItemNotification:
+          renderableNewLikeOnPublishedItemNotification,
+        userId: uncompiledBasePublishedItem.authorUserId,
       },
     );
   }

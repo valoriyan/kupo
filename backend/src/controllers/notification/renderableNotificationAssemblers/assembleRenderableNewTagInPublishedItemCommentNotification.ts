@@ -35,7 +35,7 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   >
 > {
   const {
-    reference_table_id: publishedItemCommentId,
+    published_item_comment_reference: publishedItemCommentId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
@@ -51,7 +51,8 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
 
   const getMaybePublishedItemCommentByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
-      { controller, publishedItemCommentId: publishedItemCommentId },
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      { controller, publishedItemCommentId: publishedItemCommentId! },
     );
   if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
     return getMaybePublishedItemCommentByIdResponse;

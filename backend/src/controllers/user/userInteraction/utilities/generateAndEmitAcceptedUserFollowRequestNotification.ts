@@ -40,8 +40,10 @@ export async function generateAndEmitAcceptedUserFollowRequestNotification({
         controller,
         userNotificationId,
         recipientUserId,
-        notificationType: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
-        referenceTableId: userFollowEventId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
+          userFollowEventId,
+        },
       },
     );
   if (createUserNotificationResponse.type === EitherType.failure) {

@@ -16,25 +16,50 @@ import {
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { Controller } from "tsoa";
 import { UsersTableService } from "./users/usersTableService";
+import { UserFollowsTableService } from "./users/userFollowsTableService";
+import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
+import { PublishedItemCommentsTableService } from "./publishedItem/publishedItemCommentsTableService";
+import { PublishedItemLikesTableService } from "./publishedItem/publishedItemLikesTableService";
+
+export type UserNotificationDbReference =
+  | {
+      type: NOTIFICATION_EVENTS.NEW_FOLLOWER;
+      userFollowEventId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST;
+      userFollowEventId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;
+      userFollowEventId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM;
+      publishedItemCommentId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT;
+      publishedItemCommentId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
+      publishedItemLikeId: string;
+    };
 
 export interface DBUserNotification {
   user_notification_id: string;
 
   recipient_user_id: string;
-  notification_type: string;
+  notification_type: NOTIFICATION_EVENTS;
 
   timestamp_seen_by_user?: number;
 
   last_updated_timestamp: number;
 
-  // if type = NEW_FOLLOWER: DBUserFollow [field: id];
-  // if type = NEW_COMMENT_ON_POST: DBPostComment [field: post_comment_id];
-  // if type = NEW_POST: DBPost [field: published_item_id]
-  // if type = NEW_LIKE_ON_POST: DBPostLike [field: id]
-  // if type = NEW_USER_FOLLOW_REQUEST: DBUserFollow [field: id]
-  // if type = ACCEPTED_USER_FOLLOW_REQUEST: DBUserFollow [field: id]
-  // if type = NEW_TAG_IN_PUBLISHED_ITEM_COMMENT: DBUserFollow [field: post_comment_id]
-  reference_table_id: string;
+  user_follow_reference?: string;
+  published_item_comment_reference?: string;
+  published_item_like_reference?: string;
 }
 
 export class UserNotificationsTableService extends TableService {
@@ -45,7 +70,13 @@ export class UserNotificationsTableService extends TableService {
     super();
   }
 
-  public dependencies = [];
+  public dependencies = [
+    UsersTableService.tableName,
+    UserFollowsTableService.tableName,
+    PublishedItemsTableService.tableName,
+    PublishedItemCommentsTableService.tableName,
+    PublishedItemLikesTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -60,13 +91,105 @@ export class UserNotificationsTableService extends TableService {
 
         reference_table_id VARCHAR(64) NOT NULL,
 
+        user_follow_reference VARCHAR(64),
+        published_item_reference VARCHAR(64),
+        published_item_comment_reference VARCHAR(64),
+        published_item_like_reference VARCHAR(64),
+      
+
         CONSTRAINT ${this.tableName}_pkey
           PRIMARY KEY (user_notification_id),
           
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (recipient_user_id)
           REFERENCES ${UsersTableService.tableName} (user_id)
-          
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${UserFollowsTableService.tableName}_reference_fkey
+          FOREIGN KEY (user_follow_reference)
+          REFERENCES ${UserFollowsTableService.tableName} (user_follow_event_id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_reference_fkey
+          FOREIGN KEY (published_item_reference)
+          REFERENCES ${PublishedItemsTableService.tableName} (id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishedItemCommentsTableService.tableName}_reference_fkey
+          FOREIGN KEY (published_item_comment_reference)
+          REFERENCES ${PublishedItemCommentsTableService.tableName} (published_item_comment_id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishedItemLikesTableService.tableName}_reference_fkey
+          FOREIGN KEY (published_item_like_reference)
+          REFERENCES ${PublishedItemLikesTableService.tableName} (published_item_like_id)
+          ON DELETE CASCADE,
+
+
+        CONSTRAINT user_follow_reference_null_constraint 
+          CHECK (
+              (
+                  (
+                      (notification_type = '${NOTIFICATION_EVENTS.NEW_FOLLOWER}')
+                    OR
+                      (notification_type = '${NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST}')
+                    OR
+                      (notification_type = '${NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST}')
+                  )
+                AND
+                  (user_follow_reference IS NOT NULL)
+              )
+            OR
+              (
+                  (
+                      (notification_type != '${NOTIFICATION_EVENTS.NEW_FOLLOWER}')
+                    OR
+                      (notification_type != '${NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST}')
+                    OR
+                      (notification_type != '${NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST}')
+                  )
+                AND
+                  (user_follow_reference IS NULL)
+              )
+          ),
+
+        CONSTRAINT published_item_comment_reference_null_constraint 
+          CHECK (
+              (
+                  (
+                      notification_type != '${NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM}'
+                    OR
+                      notification_type != '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT}'
+                  )
+                AND
+                  (published_item_comment_reference IS NOT NULL)
+              )
+            OR
+              (
+                  (
+                      notification_type != '${NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM}'
+                    OR
+                      notification_type != '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT}'
+                  )
+                AND
+                  (published_item_comment_reference IS NULL)
+              )
+          ),
+
+          CONSTRAINT published_item_like_reference_null_constraint 
+            CHECK (
+                (
+                    (notification_type = '${NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM}')
+                  AND
+                    (published_item_like_reference IS NOT NULL)
+                )
+              OR
+                (
+                    (notification_type != '${NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM}')
+                  AND
+                    (published_item_like_reference IS NULL)
+                )
+            )
       )
       ;
     `;
@@ -82,15 +205,39 @@ export class UserNotificationsTableService extends TableService {
     controller,
     userNotificationId,
     recipientUserId,
-    notificationType,
-    referenceTableId,
+    externalReference,
   }: {
     controller: Controller;
     userNotificationId: string;
     recipientUserId: string;
-    notificationType: NOTIFICATION_EVENTS;
-    referenceTableId: string;
+    externalReference: UserNotificationDbReference;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserNotification>> {
+    const notificationType = externalReference.type;
+    let userFollowReference;
+    let publishedItemReference;
+    let publishedItemCommentReference;
+    let publishedItemLikeReference;
+
+    if (notificationType === NOTIFICATION_EVENTS.NEW_FOLLOWER) {
+      userFollowReference = externalReference.userFollowEventId;
+    } else if (notificationType === NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST) {
+      userFollowReference = externalReference.userFollowEventId;
+    } else if (notificationType === NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST) {
+      userFollowReference = externalReference.userFollowEventId;
+    } else if (notificationType === NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM) {
+      publishedItemCommentReference = externalReference.publishedItemCommentId;
+    } else if (
+      notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
+    ) {
+      publishedItemCommentReference = externalReference.publishedItemCommentId;
+    } else if (notificationType === NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM) {
+      publishedItemLikeReference = externalReference.publishedItemLikeId;
+    } else {
+      throw new Error(
+        `Unhandled notification type "${notificationType}" @ createUserNotification`,
+      );
+    }
+
     try {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
         rowsOfFieldsAndValues: [
@@ -98,7 +245,18 @@ export class UserNotificationsTableService extends TableService {
             { field: "user_notification_id", value: userNotificationId },
             { field: "recipient_user_id", value: recipientUserId },
             { field: "notification_type", value: notificationType },
-            { field: "reference_table_id", value: referenceTableId },
+
+            { field: "user_follow_reference", value: userFollowReference },
+            { field: "published_item_reference", value: publishedItemReference },
+            {
+              field: "published_item_comment_reference",
+              value: publishedItemCommentReference,
+            },
+            {
+              field: "published_item_like_reference",
+              value: publishedItemLikeReference,
+            },
+
             { field: "last_updated_timestamp", value: Date.now() },
           ],
         ],

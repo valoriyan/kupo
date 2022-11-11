@@ -85,8 +85,10 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
         controller,
         userNotificationId: uuidv4(),
         recipientUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
-        referenceTableId: publishedItemCommentId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
+          publishedItemCommentId,
+        },
       },
     );
   if (createUserNotificationResponse.type === EitherType.failure) {

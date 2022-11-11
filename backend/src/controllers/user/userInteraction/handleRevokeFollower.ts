@@ -86,7 +86,7 @@ export async function handleRevokeFollower({
   //////////////////////////////////////////////////
 
   if (!!maybeUserNotification) {
-    const { reference_table_id: userFollowEventId } = maybeUserNotification;
+    const { user_follow_reference: userFollowEventId } = maybeUserNotification;
 
     const deleteAndEmitCanceledAcceptedUserFollowRequestNotificationResponse =
       await deleteAndEmitCanceledAcceptedUserFollowRequestNotification({
@@ -95,7 +95,8 @@ export async function handleRevokeFollower({
         webSocketService: controller.webSocketService,
         recipientUserId: revokedUserId,
         userIdUnacceptingFollowRequest: clientUserId,
-        userFollowEventId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        userFollowEventId: userFollowEventId!,
       });
     if (
       deleteAndEmitCanceledAcceptedUserFollowRequestNotificationResponse.type ===

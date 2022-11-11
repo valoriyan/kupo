@@ -86,8 +86,10 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
         controller,
         userNotificationId: uuidv4(),
         recipientUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
-        referenceTableId: publishedItemCommentId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+          publishedItemCommentId,
+        },
       },
     );
   if (createUserNotificationResponse.type === EitherType.failure) {

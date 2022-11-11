@@ -34,13 +34,14 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
   >
 > {
   const {
-    reference_table_id: publishedItemLikeId,
+    published_item_like_reference: publishedItemLikeId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
   const getPublishedItemLikeByPublishedItemLikeIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPublishedItemLikeByPublishedItemLikeId(
-      { controller, publishedItemLikeId },
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      { controller, publishedItemLikeId: publishedItemLikeId! },
     );
   if (getPublishedItemLikeByPublishedItemLikeIdResponse.type === EitherType.failure) {
     return getPublishedItemLikeByPublishedItemLikeIdResponse;

@@ -31,7 +31,7 @@ export async function assembleRenderableNewUserFollowRequestNotification({
   >
 > {
   const {
-    reference_table_id: userFollowEventId,
+    user_follow_reference: userFollowEventId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
@@ -43,7 +43,8 @@ export async function assembleRenderableNewUserFollowRequestNotification({
     await databaseService.tableNameToServicesMap.userFollowsTableService.getUserFollowEventById(
       {
         controller,
-        userFollowEventId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        userFollowEventId: userFollowEventId!,
       },
     );
   if (getUserFollowEventByIdResponse.type === EitherType.failure) {

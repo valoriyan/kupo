@@ -18,7 +18,7 @@ import {
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
 import { notifyUserIdOfNewCommentOnPost } from "./notifications/notifyUserIdOfNewCommentOnPost";
 import { notifyUserIdOfNewFollower } from "./notifications/notifyUserIdOfNewFollower";
-import { notifyUserIdOfNewLikeOnPost } from "./notifications/notifyUserIdOfNewLikeOnPost";
+import { notifyUserIdOfNewLikeOnPublishedItem } from "./notifications/notifyUserIdOfNewLikeOnPublishedItem";
 import { notifyUserIdOfCanceledNewCommentOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewCommentOnPost";
 import { notifyUserIdOfCanceledNewFollower } from "./canceledNotifications/notifyUserIdOfCanceledNewFollower";
 import { notifyUserIdOfNewTagInPublishedItemComment } from "./notifications/notifyUserIdOfNewTagInPublishedItemComment";
@@ -87,17 +87,17 @@ export class UserNotificationsWebsocketService {
     });
   }
 
-  public async notifyUserIdOfNewLikeOnPost({
-    renderableNewLikeOnPostNotification,
+  public async notifyUserIdOfNewLikeOnPublishedItem({
+    renderableNewLikeOnPublishedItemNotification,
     userId,
   }: {
-    renderableNewLikeOnPostNotification: RenderableNewLikeOnPublishedItemNotification;
+    renderableNewLikeOnPublishedItemNotification: RenderableNewLikeOnPublishedItemNotification;
     userId: string;
   }) {
-    await notifyUserIdOfNewLikeOnPost({
+    await notifyUserIdOfNewLikeOnPublishedItem({
       userId,
       io: this.websocketIO,
-      renderableNewLikeOnPostNotification,
+      renderableNewLikeOnPostNotification: renderableNewLikeOnPublishedItemNotification,
     });
   }
 

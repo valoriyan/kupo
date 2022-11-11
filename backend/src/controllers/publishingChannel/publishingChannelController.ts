@@ -55,7 +55,7 @@ import {
   GetPublishingChannelSubmissionsRequestBody,
   GetPublishingChannelSubmissionsSuccess,
   handleGetPublishingChannelSubmissions,
-} from "./handleGetPublishingChannelSubmissions";
+} from "./moderation/handleGetPublishingChannelSubmissions";
 import {
   BanUserFromPublishingChannelFailedReason,
   BanUserFromPublishingChannelRequestBody,

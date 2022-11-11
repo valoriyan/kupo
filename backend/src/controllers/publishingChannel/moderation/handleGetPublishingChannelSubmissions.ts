@@ -4,13 +4,13 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
-} from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { RenderablePublishedItem } from "../publishedItem/models";
-import { constructPublishedItemFromPartsById } from "../publishedItem/utilities/constructPublishedItemsFromParts";
-import { getNextPageCursorOfPage } from "../publishedItem/utilities/pagination";
-import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
-import { PublishingChannelController } from "./publishingChannelController";
+} from "../../../utilities/monads";
+import { checkAuthorization } from "../../auth/utilities";
+import { RenderablePublishedItem } from "../../publishedItem/models";
+import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { getNextPageCursorOfPage } from "../../publishedItem/utilities/pagination";
+import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
+import { PublishingChannelController } from "../publishingChannelController";
 
 export interface GetPublishingChannelSubmissionsRequestBody {
   cursor?: string;
@@ -45,6 +45,10 @@ export async function handleGetPublishingChannelSubmissions({
     GetPublishingChannelSubmissionsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authorization
+  //////////////////////////////////////////////////
+
   const { cursor, pageSize, publishingChannelId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -56,6 +60,10 @@ export async function handleGetPublishingChannelSubmissions({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Get Unrenderable Submissions
+  //////////////////////////////////////////////////
 
   const getPublishingChannelSubmissionsByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelSubmissionsByPublishingChannelId(
@@ -75,6 +83,10 @@ export async function handleGetPublishingChannelSubmissions({
   }
   const { success: dbPublishingChannelSubmissions } =
     getPublishingChannelSubmissionsByPublishingChannelIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get Renderable Submssions
+  //////////////////////////////////////////////////
 
   const publishedSubmissionPromises = dbPublishingChannelSubmissions.map(
     async (submission) => ({
@@ -102,6 +114,10 @@ export async function handleGetPublishingChannelSubmissions({
       publishedItem: resolvedSubmission.publishedItem.success,
     });
   }
+
+  //////////////////////////////////////////////////
+  // Return page of submissions
+  //////////////////////////////////////////////////
 
   return Success({
     publishedSubmissions,

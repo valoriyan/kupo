@@ -1,7 +1,6 @@
 import { Promise as BluebirdPromise } from "bluebird";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { Controller } from "tsoa";
-import { canUserIdViewUserContentFromUnrenderableUser } from "../../../controllers/auth/utilities/canUserViewUserContent";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import {
@@ -17,6 +16,7 @@ import {
 } from "../../../utilities/monads/unwrapListOfResponses";
 import { RenderableUser, UnrenderableUser } from "../models";
 import { FollowingStatus } from "../userInteraction/models";
+import { canUserIdViewUserContentFromUnrenderableUser } from "../../../controllers/auth/utilities/canUserViewUserContent";
 
 export async function constructRenderableUsersFromParts({
   controller,
