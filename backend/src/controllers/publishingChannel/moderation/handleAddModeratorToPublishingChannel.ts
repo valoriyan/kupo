@@ -37,6 +37,9 @@ export async function handleAddModeratorToPublishingChannel({
     AddModeratorToPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { publishingChannelId, moderatorUserId } = requestBody;
 
   const now = Date.now();
@@ -47,6 +50,9 @@ export async function handleAddModeratorToPublishingChannel({
   );
   if (error) return error;
 
+  //////////////////////////////////////////////////
+  // Get Publishing Channel
+  //////////////////////////////////////////////////
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
@@ -75,6 +81,9 @@ export async function handleAddModeratorToPublishingChannel({
   }
   const publishingChannel = maybePublishingChannel;
 
+  //////////////////////////////////////////////////
+  // Check That User Owns Publishing Channel (Authorization)
+  //////////////////////////////////////////////////
   if (publishingChannel.ownerUserId !== clientUserId) {
     return Failure({
       controller,
@@ -86,6 +95,9 @@ export async function handleAddModeratorToPublishingChannel({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Add moderator
+  //////////////////////////////////////////////////
   const registerPublishingChannelModeratorResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerator(
       {

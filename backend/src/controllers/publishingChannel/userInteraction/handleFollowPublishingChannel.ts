@@ -30,6 +30,10 @@ export async function handleFollowPublishingChannel({
     FollowPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishingChannelIdBeingFollowed } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -38,13 +42,13 @@ export async function handleFollowPublishingChannel({
   );
   if (error) return error;
 
-  //////////////////////////////////////////////////
-  // WRITE FOLLOW
-  //////////////////////////////////////////////////
-
   const publishingChannelFollowEventId = uuidv4();
 
   const isPending = false;
+
+  //////////////////////////////////////////////////
+  // WRITE FOLLOW
+  //////////////////////////////////////////////////
 
   const createPublishingChannelFollowResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.createPublishingChannelFollow(

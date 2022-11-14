@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
 import { PublishingChannelController } from "../publishingChannelController";
-import { EitherType, SecuredHTTPResponse } from "../../../utilities/monads";
+import { EitherType, Failure, SecuredHTTPResponse } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
+import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
 
 export interface UnfollowPublishingChannelRequestBody {
   publishingChannelIdBeingUnfollowed: string;
@@ -13,6 +14,7 @@ export interface UnfollowPublishingChannelSuccess {}
 
 export enum UnfollowPublishingChannelFailedReason {
   UnknownCause = "Unknown Cause",
+  CAN_NOT_UNFOLLOW_OWN_CHANNEL = "CAN_NOT_UNFOLLOW_OWN_CHANNEL",
 }
 
 export async function handleUnfollowPublishingChannel({
@@ -29,6 +31,9 @@ export async function handleUnfollowPublishingChannel({
     UnfollowPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { publishingChannelIdBeingUnfollowed } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -36,6 +41,37 @@ export async function handleUnfollowPublishingChannel({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // CHECK THAT CLIENT IS NOT OWNER OR MODERATOR OF THE CHANNEL
+  //////////////////////////////////////////////////
+
+  const doesUserIdHaveRightsToModeratePublishingChannelResponse =
+    await doesUserIdHaveRightsToModeratePublishingChannel({
+      controller,
+      databaseService: controller.databaseService,
+      requestingUserId: clientUserId,
+      publishingChannelId: publishingChannelIdBeingUnfollowed,
+    });
+  if (
+    doesUserIdHaveRightsToModeratePublishingChannelResponse.type === EitherType.failure
+  ) {
+    return doesUserIdHaveRightsToModeratePublishingChannelResponse;
+  }
+  const { success: userHasRightsToModeration } =
+    doesUserIdHaveRightsToModeratePublishingChannelResponse;
+
+  if (!!userHasRightsToModeration) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: UnfollowPublishingChannelFailedReason.CAN_NOT_UNFOLLOW_OWN_CHANNEL,
+      error:
+        "CAN NOT UNFOLLOW PUBLISHING CHANNEL IF CLIENT IS MODERATOR OR OWNER @ handleUnfollowPublishingChannel",
+      additionalErrorInformation:
+        "CAN NOT UNFOLLOW PUBLISHING CHANNEL IF CLIENT IS MODERATOR OR OWNER @ handleUnfollowPublishingChannel",
+    });
+  }
 
   //////////////////////////////////////////////////
   // DELETE FOLLOW

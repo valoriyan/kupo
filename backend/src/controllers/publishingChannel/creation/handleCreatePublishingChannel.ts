@@ -1,5 +1,6 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
+import { Promise as BluebirdPromise } from "bluebird";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -8,6 +9,10 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
+import {
+  unwrapListOfEitherResponses,
+  UnwrapListOfEitherResponsesFailureHandlingMethod,
+} from "../../../utilities/monads/unwrapListOfResponses";
 
 export interface CreatePublishingChannelRequestBody {
   backgroundImageAndProfilePicture: Express.Multer.File[];
@@ -15,6 +20,7 @@ export interface CreatePublishingChannelRequestBody {
   publishingChannelDescription: string;
   externalUrls: string[];
   publishingChannelRules: string[];
+  moderatorUserIds: string[];
 }
 
 export interface CreatePublishingChannelSuccess {
@@ -42,7 +48,12 @@ export async function handleCreatePublishingChannel({
     CreatePublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const publishingChannelId = uuidv4();
+
+  const now = Date.now();
 
   const {
     publishingChannelName,
@@ -50,6 +61,7 @@ export async function handleCreatePublishingChannel({
     backgroundImageAndProfilePicture,
     externalUrls,
     publishingChannelRules,
+    moderatorUserIds,
   } = requestBody;
 
   const [backgroundImage, profilePicture] = backgroundImageAndProfilePicture;
@@ -110,6 +122,54 @@ export async function handleCreatePublishingChannel({
 
   if (createPublishingChannelResponse.type === EitherType.failure) {
     return createPublishingChannelResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Add moderators
+  //////////////////////////////////////////////////
+  const registerPublishingChannelModeratorResponses = await BluebirdPromise.map(
+    moderatorUserIds,
+    async (moderatorUserId) => {
+      return await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerator(
+        {
+          controller,
+          publishingChannelId,
+          userId: moderatorUserId,
+          creationTimestamp: now,
+        },
+      );
+    },
+  );
+
+  const unwrappedRegisterPublishingChannelModeratorResponses =
+    unwrapListOfEitherResponses({
+      eitherResponses: registerPublishingChannelModeratorResponses,
+      failureHandlingMethod:
+        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+    });
+  if (unwrappedRegisterPublishingChannelModeratorResponses.type === EitherType.failure) {
+    return unwrappedRegisterPublishingChannelModeratorResponses;
+  }
+
+  //////////////////////////////////////////////////
+  // FOLLOW OWNER TO CHANNEL
+  //////////////////////////////////////////////////
+  const publishingChannelFollowEventId = uuidv4();
+
+  const createPublishingChannelFollowResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.createPublishingChannelFollow(
+      {
+        controller,
+        publishingChannelFollowEventId,
+        userIdDoingFollowing: clientUserId,
+        publishingChannelIdBeingFollowed: publishingChannelId,
+        timestamp: Date.now(),
+        isPending: false,
+      },
+    );
+
+  if (createPublishingChannelFollowResponse.type === EitherType.failure) {
+    return createPublishingChannelFollowResponse;
   }
 
   //////////////////////////////////////////////////

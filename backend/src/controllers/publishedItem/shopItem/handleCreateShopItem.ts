@@ -1,6 +1,6 @@
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
-import { MediaElement } from "src/controllers/models";
+import { MediaElement } from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {

@@ -2,6 +2,7 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
@@ -11,6 +12,7 @@ import { constructPublishedItemFromPartsById } from "../../publishedItem/utiliti
 import { getNextPageCursorOfPage } from "../../publishedItem/utilities/pagination";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 import { PublishingChannelController } from "../publishingChannelController";
+import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
 
 export interface GetPublishingChannelSubmissionsRequestBody {
   cursor?: string;
@@ -29,6 +31,7 @@ export interface GetPublishingChannelSubmissionsSuccess {
 
 export enum GetPublishingChannelSubmissionsFailedReason {
   UnknownCause = "Unknown Cause",
+  IllegalAccess = "Illegal Access",
 }
 
 export async function handleGetPublishingChannelSubmissions({
@@ -46,7 +49,7 @@ export async function handleGetPublishingChannelSubmissions({
   >
 > {
   //////////////////////////////////////////////////
-  // Inputs & Authorization
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
   const { cursor, pageSize, publishingChannelId } = requestBody;
@@ -60,6 +63,36 @@ export async function handleGetPublishingChannelSubmissions({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Check Authorization
+  //////////////////////////////////////////////////
+
+  const doesUserIdHaveRightsToModeratePublishingChannelResponse =
+    await doesUserIdHaveRightsToModeratePublishingChannel({
+      controller,
+      databaseService: controller.databaseService,
+      requestingUserId: clientUserId,
+      publishingChannelId,
+    });
+  if (
+    doesUserIdHaveRightsToModeratePublishingChannelResponse.type === EitherType.failure
+  ) {
+    return doesUserIdHaveRightsToModeratePublishingChannelResponse;
+  }
+  const { success: userHasRightsToModeration } =
+    doesUserIdHaveRightsToModeratePublishingChannelResponse;
+
+  if (!userHasRightsToModeration) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetPublishingChannelSubmissionsFailedReason.IllegalAccess,
+      error: "Illegal access at handleGetPublishingChannelSubmissions",
+      additionalErrorInformation:
+        "Illegal access at handleGetPublishingChannelSubmissions",
+    });
+  }
 
   //////////////////////////////////////////////////
   // Get Unrenderable Submissions
