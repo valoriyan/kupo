@@ -19,4 +19,5 @@
  */
 export enum UnfollowPublishingChannelFailedReason {
   UnknownCause = "Unknown Cause",
+  CanNotUnfollowOwnChannel = "CAN_NOT_UNFOLLOW_OWN_CHANNEL",
 }

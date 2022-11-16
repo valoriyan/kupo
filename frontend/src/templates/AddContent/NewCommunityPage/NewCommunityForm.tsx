@@ -1,4 +1,5 @@
-import { ChangeEvent, PropsWithChildren } from "react";
+import { ChangeEvent, Dispatch, PropsWithChildren, SetStateAction } from "react";
+import { RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { HiddenInput } from "#/components/HiddenInput";
@@ -10,6 +11,7 @@ import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
+import { UsersInput } from "#/templates/Messages/CreateChatRoom/UsersInput";
 
 export interface NewCommunityFormProps {
   name: string;
@@ -23,9 +25,12 @@ export interface NewCommunityFormProps {
   setBackgroundImgUrl: (backgroundImgUrl: string) => void;
   setBackgroundImgFile: (backgroundImgFile: File) => void;
   rulesList: string[];
-  setRulesList: (rulesList: string[]) => void;
+  setRulesList: Dispatch<SetStateAction<string[]>>;
   linksList: string[];
-  setLinksList: (linksList: string[]) => void;
+  setLinksList: Dispatch<SetStateAction<string[]>>;
+  moderatorNames: string[];
+  setModeratorNames: Dispatch<SetStateAction<string[]>>;
+  resolvedModerators: RenderableUser[];
   submitLabel: string;
   isSubmitDisabled: boolean;
   onSubmit: () => void;
@@ -47,6 +52,9 @@ export const NewCommunityForm = ({
   setRulesList,
   linksList,
   setLinksList,
+  moderatorNames,
+  setModeratorNames,
+  resolvedModerators,
   submitLabel,
   isSubmitDisabled,
   onSubmit,
@@ -141,6 +149,14 @@ export const NewCommunityForm = ({
               onChange={setLinksList}
               tooltipText="You may add up to 5 links"
               limit={5}
+            />
+          </SectionWrapper>
+          <SectionWrapper>
+            <MainTitle>Moderators</MainTitle>
+            <UsersInput
+              usernames={moderatorNames}
+              setUsernames={setModeratorNames}
+              resolvedUsers={resolvedModerators}
             />
           </SectionWrapper>
         </Stack>

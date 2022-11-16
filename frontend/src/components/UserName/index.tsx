@@ -30,7 +30,7 @@ export const UserName = ({ username, onClick, avatarUrl }: UserNameProps) => {
     </Link>
   );
 
-  if (avatarUrl) {
+  if (avatarUrl !== undefined) {
     return (
       <Flex css={{ gap: "$4", alignItems: "center" }}>
         <Avatar

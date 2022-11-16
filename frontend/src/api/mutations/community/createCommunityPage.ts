@@ -7,6 +7,7 @@ interface CreatePublishingChannelArgs {
   publishingChannelDescription: string;
   profilePicture?: File;
   backgroundImage?: File;
+  commaSeparatedModeratorUserIds?: string;
   externalUrl1?: string;
   externalUrl2?: string;
   externalUrl3?: string;
@@ -26,6 +27,7 @@ export const useCreateCommunityPage = () => {
         args.publishingChannelName,
         args.publishingChannelDescription,
         [args.backgroundImage, args.profilePicture],
+        args.commaSeparatedModeratorUserIds,
         args.externalUrl1,
         args.externalUrl2,
         args.externalUrl3,

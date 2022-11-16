@@ -790,6 +790,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} publishingChannelName
      * @param {string} publishingChannelDescription
      * @param {Array<any>} backgroundImageAndProfilePicture
+     * @param {string} [commaSeparatedModeratorUserIds]
      * @param {string} [externalUrl1]
      * @param {string} [externalUrl2]
      * @param {string} [externalUrl3]
@@ -807,6 +808,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       publishingChannelName: string,
       publishingChannelDescription: string,
       backgroundImageAndProfilePicture: Array<any>,
+      commaSeparatedModeratorUserIds?: string,
       externalUrl1?: string,
       externalUrl2?: string,
       externalUrl3?: string,
@@ -865,6 +867,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         backgroundImageAndProfilePicture.forEach((element) => {
           localVarFormParams.append("backgroundImageAndProfilePicture", element as any);
         });
+      }
+
+      if (commaSeparatedModeratorUserIds !== undefined) {
+        localVarFormParams.append(
+          "commaSeparatedModeratorUserIds",
+          commaSeparatedModeratorUserIds as any,
+        );
       }
 
       if (externalUrl1 !== undefined) {
@@ -5177,6 +5186,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @param {string} publishingChannelName
      * @param {string} publishingChannelDescription
      * @param {Array<any>} backgroundImageAndProfilePicture
+     * @param {string} [commaSeparatedModeratorUserIds]
      * @param {string} [externalUrl1]
      * @param {string} [externalUrl2]
      * @param {string} [externalUrl3]
@@ -5194,6 +5204,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       publishingChannelName: string,
       publishingChannelDescription: string,
       backgroundImageAndProfilePicture: Array<any>,
+      commaSeparatedModeratorUserIds?: string,
       externalUrl1?: string,
       externalUrl2?: string,
       externalUrl3?: string,
@@ -5215,6 +5226,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         publishingChannelName,
         publishingChannelDescription,
         backgroundImageAndProfilePicture,
+        commaSeparatedModeratorUserIds,
         externalUrl1,
         externalUrl2,
         externalUrl3,
@@ -7542,6 +7554,7 @@ export const DefaultApiFactory = function (
      * @param {string} publishingChannelName
      * @param {string} publishingChannelDescription
      * @param {Array<any>} backgroundImageAndProfilePicture
+     * @param {string} [commaSeparatedModeratorUserIds]
      * @param {string} [externalUrl1]
      * @param {string} [externalUrl2]
      * @param {string} [externalUrl3]
@@ -7559,6 +7572,7 @@ export const DefaultApiFactory = function (
       publishingChannelName: string,
       publishingChannelDescription: string,
       backgroundImageAndProfilePicture: Array<any>,
+      commaSeparatedModeratorUserIds?: string,
       externalUrl1?: string,
       externalUrl2?: string,
       externalUrl3?: string,
@@ -7576,6 +7590,7 @@ export const DefaultApiFactory = function (
           publishingChannelName,
           publishingChannelDescription,
           backgroundImageAndProfilePicture,
+          commaSeparatedModeratorUserIds,
           externalUrl1,
           externalUrl2,
           externalUrl3,
@@ -8974,6 +8989,7 @@ export class DefaultApi extends BaseAPI {
    * @param {string} publishingChannelName
    * @param {string} publishingChannelDescription
    * @param {Array<any>} backgroundImageAndProfilePicture
+   * @param {string} [commaSeparatedModeratorUserIds]
    * @param {string} [externalUrl1]
    * @param {string} [externalUrl2]
    * @param {string} [externalUrl3]
@@ -8992,6 +9008,7 @@ export class DefaultApi extends BaseAPI {
     publishingChannelName: string,
     publishingChannelDescription: string,
     backgroundImageAndProfilePicture: Array<any>,
+    commaSeparatedModeratorUserIds?: string,
     externalUrl1?: string,
     externalUrl2?: string,
     externalUrl3?: string,
@@ -9009,6 +9026,7 @@ export class DefaultApi extends BaseAPI {
         publishingChannelName,
         publishingChannelDescription,
         backgroundImageAndProfilePicture,
+        commaSeparatedModeratorUserIds,
         externalUrl1,
         externalUrl2,
         externalUrl3,

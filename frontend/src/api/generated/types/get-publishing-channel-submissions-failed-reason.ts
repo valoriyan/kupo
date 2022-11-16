@@ -19,4 +19,5 @@
  */
 export enum GetPublishingChannelSubmissionsFailedReason {
   UnknownCause = "Unknown Cause",
+  IllegalAccess = "Illegal Access",
 }
