@@ -1,6 +1,5 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
-import { Promise as BluebirdPromise } from "bluebird";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -9,10 +8,6 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
-import {
-  unwrapListOfEitherResponses,
-  UnwrapListOfEitherResponsesFailureHandlingMethod,
-} from "../../../utilities/monads/unwrapListOfResponses";
 
 export interface CreatePublishingChannelRequestBody {
   backgroundImageAndProfilePicture: Express.Multer.File[];
@@ -127,28 +122,22 @@ export async function handleCreatePublishingChannel({
   //////////////////////////////////////////////////
   // Add moderators
   //////////////////////////////////////////////////
-  const registerPublishingChannelModeratorResponses = await BluebirdPromise.map(
-    moderatorUserIds,
-    async (moderatorUserId) => {
-      return await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerator(
-        {
-          controller,
-          publishingChannelId,
-          userId: moderatorUserId,
-          creationTimestamp: now,
-        },
-      );
-    },
-  );
+  const registerPublishingChannelModeratorsResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerators(
+      {
+        controller,
+        publishingChannelModeratorRegistrations: moderatorUserIds.map(
+          (moderatorUserId) => ({
+            publishingChannelId,
+            userId: moderatorUserId,
+            creationTimestamp: now,
+          }),
+        ),
+      },
+    );
 
-  const unwrappedRegisterPublishingChannelModeratorResponses =
-    unwrapListOfEitherResponses({
-      eitherResponses: registerPublishingChannelModeratorResponses,
-      failureHandlingMethod:
-        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
-    });
-  if (unwrappedRegisterPublishingChannelModeratorResponses.type === EitherType.failure) {
-    return unwrappedRegisterPublishingChannelModeratorResponses;
+  if (registerPublishingChannelModeratorsResponse.type === EitherType.failure) {
+    return registerPublishingChannelModeratorsResponse;
   }
 
   //////////////////////////////////////////////////

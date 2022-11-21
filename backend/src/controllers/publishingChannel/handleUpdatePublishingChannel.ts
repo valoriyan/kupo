@@ -15,6 +15,7 @@ export interface UpdatePublishingChannelRequestBody {
   publishingChannelDescription: string;
   updatedExternalUrls?: string[];
   updatedPublishingChannelRules?: string[];
+  moderatorUserIds: string[];
 }
 
 export enum UpdatePublishingChannelFailedReason {
@@ -40,11 +41,17 @@ export async function handleUpdatePublishingChannel({
     UpdatePublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
   );
   if (error) return error;
+
+  const now = Date.now();
 
   const {
     publishingChannelId,
@@ -52,7 +59,12 @@ export async function handleUpdatePublishingChannel({
     publishingChannelDescription,
     updatedExternalUrls,
     updatedPublishingChannelRules,
+    moderatorUserIds,
   } = requestBody;
+
+  //////////////////////////////////////////////////
+  // Get Publishing Channel
+  //////////////////////////////////////////////////
 
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
@@ -67,7 +79,6 @@ export async function handleUpdatePublishingChannel({
   ) {
     return maybeGetPublishingChannelByPublishingChannelIdResponse;
   }
-
   const { success: maybePublishingChannel } =
     maybeGetPublishingChannelByPublishingChannelIdResponse;
 
@@ -93,6 +104,10 @@ export async function handleUpdatePublishingChannel({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Update Publishing Channel
+  //////////////////////////////////////////////////
+
   const updatePublishingChannelResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.updatePublishingChannel(
       {
@@ -107,6 +122,42 @@ export async function handleUpdatePublishingChannel({
 
   if (updatePublishingChannelResponse.type === EitherType.failure) {
     return updatePublishingChannelResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Delete previous moderators and upload new moderators
+  //////////////////////////////////////////////////
+  const removeAllPublishingChannelModeratorsFromPublishingChannelIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.removeAllPublishingChannelModeratorsFromPublishingChannelId(
+      {
+        controller,
+        publishingChannelId,
+      },
+    );
+
+  if (
+    removeAllPublishingChannelModeratorsFromPublishingChannelIdResponse.type ===
+    EitherType.failure
+  ) {
+    return removeAllPublishingChannelModeratorsFromPublishingChannelIdResponse;
+  }
+
+  const registerPublishingChannelModeratorsResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerators(
+      {
+        controller,
+        publishingChannelModeratorRegistrations: moderatorUserIds.map(
+          (moderatorUserId) => ({
+            publishingChannelId,
+            userId: moderatorUserId,
+            creationTimestamp: now,
+          }),
+        ),
+      },
+    );
+
+  if (registerPublishingChannelModeratorsResponse.type === EitherType.failure) {
+    return registerPublishingChannelModeratorsResponse;
   }
 
   return Success({});

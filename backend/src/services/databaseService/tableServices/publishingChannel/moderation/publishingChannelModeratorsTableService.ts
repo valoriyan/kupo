@@ -101,6 +101,45 @@ export class PublishingChannelModeratorsTableService extends TableService {
     }
   }
 
+  public async registerPublishingChannelModerators({
+    controller,
+    publishingChannelModeratorRegistrations,
+  }: {
+    controller: Controller;
+    publishingChannelModeratorRegistrations: {
+      publishingChannelId: string;
+      userId: string;
+      creationTimestamp: number;
+    }[];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const rowsOfFieldsAndValues = publishingChannelModeratorRegistrations.map(
+        ({ publishingChannelId, userId, creationTimestamp }) => [
+          { field: "publishing_channel_id", value: publishingChannelId },
+          { field: "user_id", value: userId },
+          { field: "creation_timestamp", value: creationTimestamp },
+        ],
+      );
+
+      const query = generatePSQLGenericCreateRowsQuery<string | number>({
+        rowsOfFieldsAndValues,
+        tableName: this.tableName,
+      });
+
+      await this.datastorePool.query(query);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at PublishingChannelModeratorsTableService.registerPublishingChannelModerator",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
@@ -231,6 +270,39 @@ export class PublishingChannelModeratorsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at DBPublishingChannel.removePublishingChannelModerator",
+      });
+    }
+  }
+
+  public async removeAllPublishingChannelModeratorsFromPublishingChannelId({
+    controller,
+    publishingChannelId,
+  }: {
+    controller: Controller;
+    publishingChannelId: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelModerator[]>
+  > {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "publishing_channel_id", value: publishingChannelId },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response = await this.datastorePool.query<DBPublishingChannelModerator>(
+        query,
+      );
+      return Success(response.rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at DBPublishingChannel.removeAllPublishingChannelModeratorsFromPublishingChannelId",
       });
     }
   }
