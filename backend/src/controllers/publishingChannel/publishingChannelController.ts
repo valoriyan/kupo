@@ -137,7 +137,7 @@ export class PublishingChannelController extends Controller {
     @FormField() publishingChannelDescription: string,
     @UploadedFiles("backgroundImageAndProfilePicture")
     backgroundImageAndProfilePicture: Express.Multer.File[],
-    @FormField() commaSeparatedModeratorUserIds: string,
+    @FormField() commaSeparatedModeratorUserIds?: string,
     @FormField() externalUrl1?: string,
     @FormField() externalUrl2?: string,
     @FormField() externalUrl3?: string,
@@ -175,7 +175,7 @@ export class PublishingChannelController extends Controller {
       }
     });
 
-    const moderatorUserIds = commaSeparatedModeratorUserIds.split(",");
+    const moderatorUserIds = commaSeparatedModeratorUserIds?.split(",") ?? [];
 
     return await handleCreatePublishingChannel({
       controller: this,

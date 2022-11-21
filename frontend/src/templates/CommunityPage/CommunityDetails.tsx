@@ -36,7 +36,7 @@ export const CommunityDetails = ({ community }: CommunityDetailsProps) => {
       <Section heading="Owner">
         <UserName
           username={owner.username}
-          avatarUrl={owner.profilePictureTemporaryUrl}
+          avatarUrl={owner.profilePictureTemporaryUrl ?? ""}
         />
       </Section>
       <Section heading="Moderators">
@@ -44,7 +44,7 @@ export const CommunityDetails = ({ community }: CommunityDetailsProps) => {
           <UserName
             key={moderator.userId}
             username={moderator.username}
-            avatarUrl={moderator.profilePictureTemporaryUrl}
+            avatarUrl={moderator.profilePictureTemporaryUrl ?? ""}
           />
         ))}
       </Section>

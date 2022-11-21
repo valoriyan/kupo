@@ -97,8 +97,7 @@ export async function handleUpdatePublishingChannelProfilePicture({
       {
         controller,
         publishingChannelId,
-
-        backgroundImageBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+        profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
       },
     );
   if (updatePublishingChannelResponse.type === EitherType.failure) {

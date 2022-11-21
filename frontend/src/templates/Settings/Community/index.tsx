@@ -5,6 +5,7 @@ import { RenderablePublishingChannel } from "#/api";
 import { useUpdateCommunityBackgroundImage } from "#/api/mutations/community/updateCommunityBackgroundImage";
 import { useUpdateCommunityProfilePicture } from "#/api/mutations/community/updateCommunityProfilePicture";
 import { useUpdateCommunityPage } from "#/api/mutations/community/updatedCommunityPage";
+import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
 import { CacheKeys } from "#/contexts/queryClient";
 import { NewCommunityForm } from "#/templates/AddContent/NewCommunityPage/NewCommunityForm";
 import { goToCommunityPage } from "#/templates/CommunityPage";
@@ -34,11 +35,29 @@ export const Community = ({ community }: CommunityProps) => {
     useFormField(community.publishingChannelRules ?? []);
   const [linksList, setLinksList, isLinksListTouched, setIsLinksListTouched] =
     useFormField(community.externalUrls ?? []);
+  const [
+    moderatorNames,
+    setModeratorNames,
+    isModeratorNamesTouched,
+    setIsModeratorNamesTouched,
+  ] = useFormField(community.moderators.map((m) => m.username));
 
   const [pfpFile, setPfpFile] = useState<File>();
   const [backgroundImgFile, setBackgroundImgFile] = useState<File>();
 
+  const { data: users, isLoading: areModeratorsLoading } = useGetUsersByUsernames({
+    usernames: moderatorNames,
+  });
+  const resolvedModerators = !!users
+    ? users?.flatMap((user) => (user ? [user] : []))
+    : [];
+  // TODO: Use this to update the moderator list when the endpoint is ready
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const moderatorIds = resolvedModerators.map((user) => user.userId);
+
   const [isCommunityUpdating, setIsCommunityUpdating] = useState(false);
+
+  const isLoading = isCommunityUpdating || areModeratorsLoading;
 
   const isAnyTouched =
     isNameTouched ||
@@ -46,7 +65,8 @@ export const Community = ({ community }: CommunityProps) => {
     isPfpUrlTouched ||
     isBackgroundImgUrlTouched ||
     isRulesListTouched ||
-    isLinksListTouched;
+    isLinksListTouched ||
+    isModeratorNamesTouched;
 
   const { mutateAsync: updateCommunityProfilePicture } =
     useUpdateCommunityProfilePicture();
@@ -102,6 +122,7 @@ export const Community = ({ community }: CommunityProps) => {
         setIsBackgroundImgUrlTouched(false);
         setIsRulesListTouched(false);
         setIsLinksListTouched(false);
+        setIsModeratorNamesTouched(false);
         queryClient.removeQueries([CacheKeys.CommunityByName, community.name]);
         toast.success("Community updated successfully");
         goToCommunityPage(community.name);
@@ -131,10 +152,13 @@ export const Community = ({ community }: CommunityProps) => {
       setRulesList={setRulesList}
       linksList={linksList}
       setLinksList={setLinksList}
+      moderatorNames={moderatorNames}
+      setModeratorNames={setModeratorNames}
+      resolvedModerators={resolvedModerators}
       submitLabel="Save Settings"
-      isSubmitDisabled={!isAnyTouched || isCommunityUpdating}
+      isSubmitDisabled={!isAnyTouched || isLoading}
       onSubmit={saveCommunitySettings}
-      isSubmitting={isCommunityUpdating}
+      isSubmitting={isLoading}
     />
   );
 };
