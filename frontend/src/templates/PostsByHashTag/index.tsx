@@ -12,8 +12,12 @@ import { goToPostPage } from "../SinglePost";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-post-by-hashtag";
 
-export const goToPostByHashTagPage = (hashtag: string) => {
+export const setPreviousLocationForHashTagPage = (hashtag: string) => {
   SessionStorage.setItem<string>(PREVIOUS_LOCATION_BASE_KEY + hashtag, Router.asPath);
+};
+
+export const goToPostByHashTagPage = (hashtag: string) => {
+  setPreviousLocationForHashTagPage(hashtag);
   Router.push(getPostsByHashtagUrl(hashtag));
 };
 
