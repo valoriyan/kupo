@@ -13,6 +13,7 @@ import { ImageIcon } from "../Icons";
 import { Flex, Stack } from "../Layout";
 import { Body, Subtext } from "../Typography";
 import { UserName } from "../UserName";
+import { WithTags } from "../WithTags";
 import { ActionMenu, MenuAction } from "./ActionMenu";
 import { ContentViewer } from "./ContentViewer";
 import { SharedPost } from "./SharedPost";
@@ -64,7 +65,9 @@ export const PostBody = (props: PostBodyProps) => {
           {props.menuActions && <ActionMenu actions={props.menuActions} />}
         </Flex>
       </Flex>
-      <Body css={{ px: "$4", py: "$2", mb: "$3" }}>{props.caption}</Body>
+      <Body css={{ px: "$4", py: "$2", mb: "$3" }}>
+        <WithTags text={props.caption} />
+      </Body>
       {props.sharedItem ? (
         <SharedPost
           post={props.sharedItem}

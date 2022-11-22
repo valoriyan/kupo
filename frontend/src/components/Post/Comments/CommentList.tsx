@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RenderablePublishedItemComment } from "#/api";
 import { useDeleteCommentFromPublishedItem } from "#/api/mutations/posts/deleteCommentFromPublishedItem";
 import { Avatar } from "#/components/Avatar";
@@ -12,10 +11,10 @@ import {
 import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { Body, truncateByLines } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
+import { WithTags } from "#/components/WithTags";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { goToUserProfilePage } from "#/templates/UserProfile";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { ActionMenu } from "../ActionMenu";
 
@@ -121,20 +120,7 @@ const Comment = ({ comment, updateItemHeight }: CommentProps) => {
             ref={textRef}
             css={{ display: shouldExpandComment ? "block" : "-webkit-box" }}
           >
-            {comment.text.split(/(\B@\w+)/g).map((chunk, i) => (
-              <Fragment key={i}>
-                {chunk.match(/\B@\w+/)?.length ? (
-                  <Link
-                    href={getProfilePageUrl({ username: chunk.split("@")[1] })}
-                    passHref
-                  >
-                    <a>{chunk}</a>
-                  </Link>
-                ) : (
-                  chunk
-                )}
-              </Fragment>
-            ))}
+            <WithTags text={comment.text} />
           </CommentText>
           {hasOverflow && (
             <Body

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, RenderablePublishingChannel } from "#/api";
+import { Api, RenderablePublishingChannel, RenderableUser } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
 
 export const useUpdateCommunityPage = () => {
@@ -12,12 +12,14 @@ export const useUpdateCommunityPage = () => {
       description,
       rulesList,
       linksList,
+      moderators,
     }: {
       id: string;
       name: string;
       description: string;
       rulesList?: string[];
       linksList?: string[];
+      moderators: RenderableUser[];
     }) => {
       return await Api.updatePublishingChannel({
         publishingChannelId: id,
@@ -25,6 +27,7 @@ export const useUpdateCommunityPage = () => {
         publishingChannelDescription: description,
         updatedPublishingChannelRules: rulesList,
         updatedExternalUrls: linksList,
+        moderatorUserIds: moderators.map((moderator) => moderator.userId),
       });
     },
     {
@@ -41,6 +44,7 @@ export const useUpdateCommunityPage = () => {
               description: variables.description,
               publishingChannelRules: variables.rulesList ?? [],
               externalUrls: variables.linksList ?? [],
+              moderators: variables.moderators,
             });
           }
         }

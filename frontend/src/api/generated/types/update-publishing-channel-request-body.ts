@@ -48,4 +48,10 @@ export interface UpdatePublishingChannelRequestBody {
    * @memberof UpdatePublishingChannelRequestBody
    */
   updatedPublishingChannelRules?: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof UpdatePublishingChannelRequestBody
+   */
+  moderatorUserIds: Array<string>;
 }

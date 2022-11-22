@@ -106,11 +106,11 @@ export class PublishingChannelModeratorsTableService extends TableService {
     publishingChannelModeratorRegistrations,
   }: {
     controller: Controller;
-    publishingChannelModeratorRegistrations: {
+    publishingChannelModeratorRegistrations: Array<{
       publishingChannelId: string;
       userId: string;
       creationTimestamp: number;
-    }[];
+    }>;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
       const rowsOfFieldsAndValues = publishingChannelModeratorRegistrations.map(
