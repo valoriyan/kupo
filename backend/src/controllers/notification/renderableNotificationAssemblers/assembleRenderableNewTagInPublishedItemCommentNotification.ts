@@ -2,8 +2,6 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderablePostFromPartsById } from "../../publishedItem/post/utilities";
-import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
 import {
@@ -15,6 +13,8 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
+import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { constructRenderableUserFromPartsByUserId } from "../../../controllers/user/utilities";
 
 export async function assembleRenderableNewTagInPublishedItemCommentNotification({
   controller,
@@ -34,10 +34,17 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
     RenderableNewTagInPublishedItemCommentNotification
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const {
     published_item_comment_reference: publishedItemCommentId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
+
+  //////////////////////////////////////////////////
+  // Get Count of Unread Notifications
+  //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
@@ -48,6 +55,10 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   }
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get Published Item Comment
+  //////////////////////////////////////////////////
 
   const getMaybePublishedItemCommentByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
@@ -71,7 +82,7 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   }
   const unrenderablePublishedItemComment = maybeUnrenderablePublishedItemComment;
 
-  const constructRenderablePostCommentFromPartsResponse =
+  const constructRenderablePublishedItemCommentFromPartsResponse =
     await constructRenderablePublishedItemCommentFromParts({
       controller,
       blobStorageService,
@@ -79,50 +90,51 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
       unrenderablePublishedItemComment: unrenderablePublishedItemComment,
       clientUserId,
     });
-  if (constructRenderablePostCommentFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostCommentFromPartsResponse;
+  if (
+    constructRenderablePublishedItemCommentFromPartsResponse.type === EitherType.failure
+  ) {
+    return constructRenderablePublishedItemCommentFromPartsResponse;
   }
   const { success: publishedItemComment } =
-    constructRenderablePostCommentFromPartsResponse;
+    constructRenderablePublishedItemCommentFromPartsResponse;
 
-  const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
-      {
-        controller,
-        userId: unrenderablePublishedItemComment.authorUserId,
-      },
-    );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
-  }
-  const { success: unrenderableUserTaggingClient } = selectUserByUserIdResponse;
+  //////////////////////////////////////////////////
+  // Get User Tagging Client
+  //////////////////////////////////////////////////
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  const constructRenderableUserFromPartsByUserIdResponse =
+    await constructRenderableUserFromPartsByUserId({
       controller,
       requestorUserId: clientUserId,
-      unrenderableUser: unrenderableUserTaggingClient!,
+      userId: unrenderablePublishedItemComment.authorUserId,
       blobStorageService,
       databaseService,
-    },
-  );
-  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsResponse;
+    });
+  if (constructRenderableUserFromPartsByUserIdResponse.type === EitherType.failure) {
+    return constructRenderableUserFromPartsByUserIdResponse;
   }
-  const { success: userTaggingClient } = constructRenderableUserFromPartsResponse;
+  const { success: userTaggingClient } = constructRenderableUserFromPartsByUserIdResponse;
 
-  const constructRenderablePostFromPartsResponse =
-    await constructRenderablePostFromPartsById({
+  //////////////////////////////////////////////////
+  // Get Published Item Containing Comment
+  //////////////////////////////////////////////////
+
+  const constructPublishedItemFromPartsByIdResponse =
+    await constructPublishedItemFromPartsById({
       controller,
       blobStorageService,
       databaseService,
       publishedItemId: publishedItemComment.publishedItemId,
       requestorUserId: clientUserId,
     });
-  if (constructRenderablePostFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostFromPartsResponse;
+  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
+    return constructPublishedItemFromPartsByIdResponse;
   }
-  const { success: publishedItem } = constructRenderablePostFromPartsResponse;
+  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,

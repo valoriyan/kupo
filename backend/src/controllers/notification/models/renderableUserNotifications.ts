@@ -38,6 +38,13 @@ export interface RenderableNewTagInPublishedItemCommentNotification
   publishedItemComment: RenderablePublishedItemComment;
 }
 
+export interface RenderableNewTagInPublishedItemCaptionNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION;
+  userTaggingClient: RenderableUser;
+  publishedItem: RenderablePublishedItem;
+}
+
 export interface RenderableAcceptedUserFollowRequestNotification
   extends BaseRenderableUserNotification {
   type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;

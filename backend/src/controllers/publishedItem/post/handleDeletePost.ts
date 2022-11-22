@@ -40,6 +40,10 @@ export async function handleDeletePost({
     DeletePostSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { errorResponse: error, clientUserId } = await checkAuthorization(
     controller,
     request,
@@ -109,6 +113,10 @@ const deleteAssociatedBlobFilesForPost = async ({
   if (deleteImagesResponse.type === EitherType.failure) {
     return deleteImagesResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 };

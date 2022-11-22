@@ -43,6 +43,10 @@ export type UserNotificationDbReference =
       publishedItemCommentId: string;
     }
   | {
+      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION;
+      publishedItemId: string;
+    }
+  | {
       type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
       publishedItemLikeId: string;
     };
@@ -58,6 +62,7 @@ export interface DBUserNotification {
   last_updated_timestamp: number;
 
   user_follow_reference?: string;
+  published_item_reference?: string;
   published_item_comment_reference?: string;
   published_item_like_reference?: string;
 }
@@ -190,6 +195,21 @@ export class UserNotificationsTableService extends TableService {
                     (published_item_like_reference IS NULL)
                 )
             )
+
+          CONSTRAINT published_item_reference_null_constraint 
+            CHECK (
+                (
+                    (notification_type = '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION}')
+                  AND
+                    (published_item_reference IS NOT NULL)
+                )
+              OR
+                (
+                    (notification_type != '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION}')
+                  AND
+                    (published_item_reference IS NULL)
+                )
+            )
       )
       ;
     `;
@@ -230,6 +250,10 @@ export class UserNotificationsTableService extends TableService {
       notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
     ) {
       publishedItemCommentReference = externalReference.publishedItemCommentId;
+    } else if (
+      notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION
+    ) {
+      publishedItemReference = externalReference.publishedItemId;
     } else if (notificationType === NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM) {
       publishedItemLikeReference = externalReference.publishedItemLikeId;
     } else {

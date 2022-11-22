@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
@@ -16,8 +18,14 @@ import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
 import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
 import { checkValidityOfMediaFiles } from "../../utilities/mediaFiles/checkValidityOfMediaFiles";
-import { MediaElement } from "../../models";
-import { PublishedItemType } from "../models";
+import { GenericResponseFailedReason, MediaElement } from "../../models";
+import { PublishedItemType, RenderablePublishedItem } from "../models";
+import { Controller } from "tsoa";
+import { collectTagsFromText } from "../../../controllers/utilities/collectTagsFromText";
+import { DatabaseService } from "../../../services/databaseService";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { WebSocketService } from "../../../services/webSocketService";
+import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
 
 export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -51,6 +59,9 @@ export async function handleCreatePost({
     CreatePostSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const {
     caption,
     scheduledPublicationTimestamp,
@@ -70,6 +81,10 @@ export async function handleCreatePost({
 
   const creationTimestamp = now;
 
+  //////////////////////////////////////////////////
+  // Write to db
+  //////////////////////////////////////////////////
+
   const createPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
       {
@@ -87,6 +102,9 @@ export async function handleCreatePost({
     return createPublishedItemResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Upload media files
+  //////////////////////////////////////////////////
   const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
   if (mediaFileErrors.length > 0) {
     return {
@@ -140,6 +158,10 @@ export async function handleCreatePost({
     );
   }
 
+  //////////////////////////////////////////////////
+  // Add hashtags
+  //////////////////////////////////////////////////
+
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
   const addHashtagsToPublishedItemResponse =
@@ -154,16 +176,68 @@ export async function handleCreatePost({
     return addHashtagsToPublishedItemResponse;
   }
 
-  const selectUsersByUserIdsResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
-      { controller, userIds: [clientUserId] },
-    );
-  if (selectUsersByUserIdsResponse.type === EitherType.failure) {
-    return selectUsersByUserIdsResponse;
-  }
-  const { success: unrenderableUsers } = selectUsersByUserIdsResponse;
+  //////////////////////////////////////////////////
+  // Add hashtags
+  //////////////////////////////////////////////////
 
-  const unrenderableUser = unrenderableUsers[0];
+  const selectMaybeUserByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      { controller, userId: clientUserId },
+    );
+  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
+    return selectMaybeUserByUserIdResponse;
+  }
+  const { success: maybeUser } = selectMaybeUserByUserIdResponse;
+
+  if (!maybeUser) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handleCreatePost",
+      additionalErrorInformation: "User not found at handleCreatePost",
+    });
+  }
+  const unrenderableUser = maybeUser;
+
+  //////////////////////////////////////////////////
+  // Compile Post
+  //////////////////////////////////////////////////
+
+  const renderablePost: RenderablePost = {
+    type: PublishedItemType.POST,
+    id: publishedItemId,
+    authorUserId: clientUserId,
+    caption,
+    creationTimestamp,
+    scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+    expirationTimestamp,
+    mediaElements,
+    hashtags: lowerCaseHashtags,
+    likes: {
+      count: 0,
+    },
+    comments: {
+      count: 0,
+    },
+    isLikedByClient: false,
+    isSavedByClient: false,
+  };
+
+  //////////////////////////////////////////////////
+  // Send out relevant notifications
+  //////////////////////////////////////////////////
+
+  const considerAndExecuteNotificationsResponse = await considerAndExecuteNotifications({
+    controller,
+    renderablePublishedItem: renderablePost,
+    databaseService: controller.databaseService,
+    blobStorageService: controller.blobStorageService,
+    webSocketService: controller.webSocketService,
+  });
+  if (considerAndExecuteNotificationsResponse.type === EitherType.failure) {
+    return considerAndExecuteNotificationsResponse;
+  }
 
   await controller.webSocketService.notifyOfNewPublishedItem({
     recipientUserId: clientUserId,
@@ -172,25 +246,81 @@ export async function handleCreatePost({
     username: unrenderableUser!.username,
   });
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({
-    renderablePost: {
-      type: PublishedItemType.POST,
-      id: publishedItemId,
-      authorUserId: clientUserId,
-      caption,
-      creationTimestamp,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-      expirationTimestamp,
-      mediaElements,
-      hashtags: lowerCaseHashtags,
-      likes: {
-        count: 0,
-      },
-      comments: {
-        count: 0,
-      },
-      isLikedByClient: false,
-      isSavedByClient: false,
-    },
+    renderablePost,
   });
+}
+
+async function considerAndExecuteNotifications({
+  controller,
+  renderablePublishedItem,
+  databaseService,
+  blobStorageService,
+  webSocketService,
+}: {
+  controller: Controller;
+  renderablePublishedItem: RenderablePublishedItem;
+  databaseService: DatabaseService;
+  blobStorageService: BlobStorageServiceInterface;
+  webSocketService: WebSocketService;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+  //////////////////////////////////////////////////
+  // Get usernames tagged in caption
+  //////////////////////////////////////////////////
+  const { caption, authorUserId } = renderablePublishedItem;
+
+  const tags = collectTagsFromText({ text: caption });
+
+  //////////////////////////////////////////////////
+  // Get user ids associated with tagged usernames
+  //////////////////////////////////////////////////
+
+  const selectUsersByUsernamesResponse =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
+      { controller, usernames: tags },
+    );
+  if (selectUsersByUsernamesResponse.type === EitherType.failure) {
+    return selectUsersByUsernamesResponse;
+  }
+  const { success: foundUnrenderableUsersMatchingTags } = selectUsersByUsernamesResponse;
+
+  const foundUserIdsMatchingTags = foundUnrenderableUsersMatchingTags
+    .map(({ userId }) => userId)
+    .filter((userId) => userId !== authorUserId);
+
+  //////////////////////////////////////////////////
+  // Send tagged caption notifications to everyone tagged
+  //////////////////////////////////////////////////
+  const assembleRecordAndSendNewTagInPublishedItemCaptionNotificationResponses =
+    await BluebirdPromise.map(
+      foundUserIdsMatchingTags,
+      async (taggedUserId) =>
+        await assembleRecordAndSendNewTagInPublishedItemCaptionNotification({
+          controller,
+          publishedItemId: renderablePublishedItem.id,
+          recipientUserId: taggedUserId,
+          databaseService,
+          blobStorageService,
+          webSocketService,
+        }),
+    );
+
+  const mappedResponse = unwrapListOfEitherResponses({
+    eitherResponses:
+      assembleRecordAndSendNewTagInPublishedItemCaptionNotificationResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+  });
+  if (mappedResponse.type === EitherType.failure) {
+    return mappedResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+  return Success({});
 }

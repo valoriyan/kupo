@@ -1,4 +1,5 @@
 import express from "express";
+import { WebSocketService } from "../../../services/webSocketService";
 import {
   Body,
   Controller,
@@ -67,6 +68,7 @@ export class ShopItemController extends Controller {
     public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
     public paymentProcessingService: PaymentProcessingService,
+    public webSocketService: WebSocketService,
   ) {
     super();
   }

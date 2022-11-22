@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
 import { MediaElement } from "../../../controllers/models";
@@ -16,9 +17,15 @@ import {
 } from "../../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../../auth/utilities";
 import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
-import { PublishedItemType } from "../models";
+import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { RenderableShopItem, RenderableShopItemType } from "./models";
 import { ShopItemController } from "./shopItemController";
+import { Controller } from "tsoa";
+import { DatabaseService } from "../../../services/databaseService";
+import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { WebSocketService } from "../../../services/webSocketService";
+import { collectTagsFromText } from "../../../controllers/utilities/collectTagsFromText";
+import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
 
 export enum CreateShopItemFailedReason {
   UnknownCause = "Unknown Cause",
@@ -54,6 +61,10 @@ export async function handleCreateShopItem({
     CreateShopItemSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -73,6 +84,10 @@ export async function handleCreateShopItem({
 
   const publishedItemId = uuidv4();
   const now = Date.now();
+
+  //////////////////////////////////////////////////
+  // Write to db
+  //////////////////////////////////////////////////
 
   const createPublishedItemResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.createPublishedItem(
@@ -104,6 +119,10 @@ export async function handleCreateShopItem({
     return createShopItemResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Add hashtags
+  //////////////////////////////////////////////////
+
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
   const addHashtagsToPublishedItemResponse =
@@ -117,6 +136,10 @@ export async function handleCreateShopItem({
   if (addHashtagsToPublishedItemResponse.type === EitherType.failure) {
     return addHashtagsToPublishedItemResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Upload media files
+  //////////////////////////////////////////////////
 
   const mappedPreviewMedia = mediaFiles.map((file) => ({
     file,
@@ -164,6 +187,10 @@ export async function handleCreateShopItem({
       mimeType: element.mimetype,
     }));
 
+  //////////////////////////////////////////////////
+  // Compile Shop Item
+  //////////////////////////////////////////////////
+
   const renderableShopItem: RenderableShopItem = {
     type: PublishedItemType.SHOP_ITEM,
     renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
@@ -190,6 +217,25 @@ export async function handleCreateShopItem({
     isLikedByClient: false,
     isSavedByClient: false,
   };
+
+  //////////////////////////////////////////////////
+  // Send out relevant notifications
+  //////////////////////////////////////////////////
+
+  const considerAndExecuteNotificationsResponse = await considerAndExecuteNotifications({
+    controller,
+    renderablePublishedItem: renderableShopItem,
+    databaseService: controller.databaseService,
+    blobStorageService: controller.blobStorageService,
+    webSocketService: controller.webSocketService,
+  });
+  if (considerAndExecuteNotificationsResponse.type === EitherType.failure) {
+    return considerAndExecuteNotificationsResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({ renderableShopItem });
 }
@@ -246,3 +292,73 @@ const uploadShopItemMedia = async (
       UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 };
+
+async function considerAndExecuteNotifications({
+  controller,
+  renderablePublishedItem,
+  databaseService,
+  blobStorageService,
+  webSocketService,
+}: {
+  controller: Controller;
+  renderablePublishedItem: RenderablePublishedItem;
+  databaseService: DatabaseService;
+  blobStorageService: BlobStorageServiceInterface;
+  webSocketService: WebSocketService;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+  //////////////////////////////////////////////////
+  // Get usernames tagged in caption
+  //////////////////////////////////////////////////
+  const { caption, authorUserId } = renderablePublishedItem;
+
+  const tags = collectTagsFromText({ text: caption });
+
+  //////////////////////////////////////////////////
+  // Get user ids associated with tagged usernames
+  //////////////////////////////////////////////////
+
+  const selectUsersByUsernamesResponse =
+    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
+      { controller, usernames: tags },
+    );
+  if (selectUsersByUsernamesResponse.type === EitherType.failure) {
+    return selectUsersByUsernamesResponse;
+  }
+  const { success: foundUnrenderableUsersMatchingTags } = selectUsersByUsernamesResponse;
+
+  const foundUserIdsMatchingTags = foundUnrenderableUsersMatchingTags
+    .map(({ userId }) => userId)
+    .filter((userId) => userId !== authorUserId);
+
+  //////////////////////////////////////////////////
+  // Send tagged caption notifications to everyone tagged
+  //////////////////////////////////////////////////
+  const assembleRecordAndSendNewTagInPublishedItemCaptionNotificationResponses =
+    await BluebirdPromise.map(
+      foundUserIdsMatchingTags,
+      async (taggedUserId) =>
+        await assembleRecordAndSendNewTagInPublishedItemCaptionNotification({
+          controller,
+          publishedItemId: renderablePublishedItem.id,
+          recipientUserId: taggedUserId,
+          databaseService,
+          blobStorageService,
+          webSocketService,
+        }),
+    );
+
+  const mappedResponse = unwrapListOfEitherResponses({
+    eitherResponses:
+      assembleRecordAndSendNewTagInPublishedItemCaptionNotificationResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+  });
+  if (mappedResponse.type === EitherType.failure) {
+    return mappedResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+  return Success({});
+}

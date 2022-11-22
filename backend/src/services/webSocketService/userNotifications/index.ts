@@ -4,6 +4,7 @@ import {
   UnrenderableCanceledCommentOnPublishedItemNotification,
   UnrenderableCanceledNewFollowerNotification,
   UnrenderableCanceledNewLikeOnPublishedItemNotification,
+  UnrenderableCanceledNewTagInPublishedItemCaptionNotification,
   UnrenderableCanceledNewTagInPublishedItemCommentNotification,
   UnrenderableCanceledNewUserFollowRequestNotification,
 } from "../../../controllers/notification/models/unrenderableCanceledUserNotifications";
@@ -12,6 +13,7 @@ import {
   RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
   RenderableNewLikeOnPublishedItemNotification,
+  RenderableNewTagInPublishedItemCaptionNotification,
   RenderableNewTagInPublishedItemCommentNotification,
   RenderableNewUserFollowRequestNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
@@ -27,6 +29,8 @@ import { notifyUserIdOfAcceptedUserFollowRequest } from "./notifications/notifyU
 import { notifyUserIdOfCanceledAcceptedUserFollowRequest } from "./canceledNotifications/notifyUserIdOfCanceledAcceptedUserFollowRequest";
 import { notifyUserIdOfNewUserFollowRequest } from "./notifications/notifyUserIdOfNewUserFollowRequest";
 import { notifyUserIdOfCanceledNewUserFollowRequest } from "./canceledNotifications/notifyUserIdOfCanceledNewUserFollowRequest";
+import { notifyUserIdOfCanceledNewTagInPublishedItemCaption } from "./canceledNotifications/notifyUserIdOfCanceledNewTagInPublishedItemCaption";
+import { notifyUserIdOfNewTagInPublishedItemCaption } from "./notifications/notifyUserIdOfNewTagInPublishedItemCaption";
 
 export class UserNotificationsWebsocketService {
   constructor(public websocketIO: Server) {}
@@ -140,6 +144,34 @@ export class UserNotificationsWebsocketService {
       userId,
       io: this.websocketIO,
       unrenderableCanceledNewTagInPublishedItemCommentNotification,
+    });
+  }
+
+  public async notifyUserIdOfNewTagInPublishedItemCaption({
+    renderableNewTagInPublishedItemCaptionNotification,
+    userId,
+  }: {
+    renderableNewTagInPublishedItemCaptionNotification: RenderableNewTagInPublishedItemCaptionNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfNewTagInPublishedItemCaption({
+      userId,
+      io: this.websocketIO,
+      renderableNewTagInPublishedItemCaptionNotification,
+    });
+  }
+
+  public async notifyUserIdOfCanceledNewTagInPublishedItemCaption({
+    unrenderableCanceledNewTagInPublishedItemCaptionNotification,
+    userId,
+  }: {
+    unrenderableCanceledNewTagInPublishedItemCaptionNotification: UnrenderableCanceledNewTagInPublishedItemCaptionNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfCanceledNewTagInPublishedItemCaption({
+      userId,
+      io: this.websocketIO,
+      unrenderableCanceledNewTagInPublishedItemCaptionNotification,
     });
   }
 

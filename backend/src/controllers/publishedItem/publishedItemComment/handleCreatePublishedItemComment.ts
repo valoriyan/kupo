@@ -52,6 +52,9 @@ export async function handleCreatePublishedItemComment({
     CreatePublishedItemCommentSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { publishedItemId, text } = requestBody;
 
   const { clientUserId, errorResponse } = await checkAuthorization(controller, request);
@@ -59,9 +62,13 @@ export async function handleCreatePublishedItemComment({
 
   const postCommentId: string = uuidv4();
 
-  const creationTimestamp = Date.now();
+  const now = Date.now();
 
-  const createPostCommentResponse =
+  //////////////////////////////////////////////////
+  // Write Published Item Comment to DB
+  //////////////////////////////////////////////////
+
+  const createPublishedItemCommentResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.createPublishedItemComment(
       {
         controller,
@@ -69,14 +76,18 @@ export async function handleCreatePublishedItemComment({
         publishedItemId: publishedItemId,
         text,
         authorUserId: clientUserId,
-        creationTimestamp,
+        creationTimestamp: now,
       },
     );
-  if (createPostCommentResponse.type === EitherType.failure) {
-    return createPostCommentResponse;
+  if (createPublishedItemCommentResponse.type === EitherType.failure) {
+    return createPublishedItemCommentResponse;
   }
 
-  const constructRenderablePostCommentFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Compile renderable comment
+  //////////////////////////////////////////////////
+
+  const constructRenderablePublishedItemCommentFromPartsResponse =
     await constructRenderablePublishedItemCommentFromParts({
       controller,
       blobStorageService: controller.blobStorageService,
@@ -86,15 +97,21 @@ export async function handleCreatePublishedItemComment({
         publishedItemId: publishedItemId,
         text,
         authorUserId: clientUserId,
-        creationTimestamp,
+        creationTimestamp: now,
       },
       clientUserId,
     });
-  if (constructRenderablePostCommentFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostCommentFromPartsResponse;
+  if (
+    constructRenderablePublishedItemCommentFromPartsResponse.type === EitherType.failure
+  ) {
+    return constructRenderablePublishedItemCommentFromPartsResponse;
   }
   const { success: renderablePostComment } =
-    constructRenderablePostCommentFromPartsResponse;
+    constructRenderablePublishedItemCommentFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Get user owning the post hosting the comment
+  //////////////////////////////////////////////////
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
@@ -107,9 +124,13 @@ export async function handleCreatePublishedItemComment({
     success: { authorUserId: authorOfPublishedItemUserId },
   } = getPublishedItemByIdResponse;
 
+  //////////////////////////////////////////////////
+  // Send out relevant notifications
+  //////////////////////////////////////////////////
+
   const considerAndExecuteNotificationsResponse = await considerAndExecuteNotifications({
     controller,
-    renderablePostComment,
+    renderablePublishedItemComment: renderablePostComment,
     authorOfPublishedItemUserId: authorOfPublishedItemUserId,
     databaseService: controller.databaseService,
     blobStorageService: controller.blobStorageService,
@@ -119,27 +140,42 @@ export async function handleCreatePublishedItemComment({
     return considerAndExecuteNotificationsResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({ postComment: renderablePostComment });
 }
 
 async function considerAndExecuteNotifications({
   controller,
-  renderablePostComment,
+  renderablePublishedItemComment,
   authorOfPublishedItemUserId,
   databaseService,
   blobStorageService,
   webSocketService,
 }: {
   controller: Controller;
-  renderablePostComment: RenderablePublishedItemComment;
+  renderablePublishedItemComment: RenderablePublishedItemComment;
   authorOfPublishedItemUserId: string;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageServiceInterface;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
-  const authorOfCommentUserId = renderablePostComment.authorUserId;
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+  const authorOfCommentUserId = renderablePublishedItemComment.authorUserId;
 
-  const tags = collectTagsFromText({ text: renderablePostComment.text });
+  //////////////////////////////////////////////////
+  // Get usernames tagged in comment
+  //////////////////////////////////////////////////
+
+  const tags = collectTagsFromText({ text: renderablePublishedItemComment.text });
+
+  //////////////////////////////////////////////////
+  // Get user ids associated with tagged usernames
+  //////////////////////////////////////////////////
 
   const selectUsersByUsernamesResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
@@ -154,29 +190,39 @@ async function considerAndExecuteNotifications({
     .map(({ userId }) => userId)
     .filter((userId) => userId !== authorOfCommentUserId);
 
-  // IF THE AUTHOR WAS NOT TAGGED, THEN SEND NEW COMMENT MESSAGE
+  //////////////////////////////////////////////////
+  // Send a new comment notification to the author of the post
+  // If both:
+  //      - the author of the comment is not the author of the post
+  //      - and the tags do not include the author of the post
+  //////////////////////////////////////////////////
+
   if (
     !(authorOfPublishedItemUserId === authorOfCommentUserId) &&
     !foundUserIdsMatchingTags.includes(authorOfPublishedItemUserId)
   ) {
     await assembleRecordAndSendNewCommentOnPublishedItemNotification({
       controller,
-      publishedItemId: renderablePostComment.publishedItemId,
-      publishedItemCommentId: renderablePostComment.publishedItemCommentId,
+      publishedItemId: renderablePublishedItemComment.publishedItemId,
+      publishedItemCommentId: renderablePublishedItemComment.publishedItemCommentId,
       recipientUserId: authorOfPublishedItemUserId,
       databaseService,
       blobStorageService,
       webSocketService,
     });
   }
+
+  //////////////////////////////////////////////////
+  // Send tagged comment notifications to everyone tagged
+  //////////////////////////////////////////////////
   const assembleRecordAndSendNewTagInPublishedItemCommentNotificationResponses =
     await BluebirdPromise.map(
       foundUserIdsMatchingTags,
       async (taggedUserId) =>
         await assembleRecordAndSendNewTagInPublishedItemCommentNotification({
           controller,
-          publishedItemId: renderablePostComment.publishedItemId,
-          publishedItemCommentId: renderablePostComment.publishedItemCommentId,
+          publishedItemId: renderablePublishedItemComment.publishedItemId,
+          publishedItemCommentId: renderablePublishedItemComment.publishedItemCommentId,
           recipientUserId: taggedUserId,
           databaseService,
           blobStorageService,
@@ -193,6 +239,10 @@ async function considerAndExecuteNotifications({
   if (mappedResponse.type === EitherType.failure) {
     return mappedResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }
