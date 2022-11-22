@@ -194,7 +194,7 @@ export class UserNotificationsTableService extends TableService {
                   AND
                     (published_item_like_reference IS NULL)
                 )
-            )
+            ),
 
           CONSTRAINT published_item_reference_null_constraint 
             CHECK (
