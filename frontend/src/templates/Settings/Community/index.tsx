@@ -51,9 +51,6 @@ export const Community = ({ community }: CommunityProps) => {
   const resolvedModerators = !!users
     ? users?.flatMap((user) => (user ? [user] : []))
     : [];
-  // TODO: Use this to update the moderator list when the endpoint is ready
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const moderatorIds = resolvedModerators.map((user) => user.userId);
 
   const [isCommunityUpdating, setIsCommunityUpdating] = useState(false);
 
@@ -98,7 +95,8 @@ export const Community = ({ community }: CommunityProps) => {
       isNameTouched ||
       isDescriptionTouched ||
       isRulesListTouched ||
-      isLinksListTouched
+      isLinksListTouched ||
+      isModeratorNamesTouched
     ) {
       promises.push(
         updateCommunity({
@@ -107,6 +105,7 @@ export const Community = ({ community }: CommunityProps) => {
           description,
           rulesList,
           linksList,
+          moderators: resolvedModerators,
         }),
       );
     }

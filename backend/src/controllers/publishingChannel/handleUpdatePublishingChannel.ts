@@ -142,22 +142,24 @@ export async function handleUpdatePublishingChannel({
     return removeAllPublishingChannelModeratorsFromPublishingChannelIdResponse;
   }
 
-  const registerPublishingChannelModeratorsResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerators(
-      {
-        controller,
-        publishingChannelModeratorRegistrations: moderatorUserIds.map(
-          (moderatorUserId) => ({
-            publishingChannelId,
-            userId: moderatorUserId,
-            creationTimestamp: now,
-          }),
-        ),
-      },
-    );
+  if (moderatorUserIds.length) {
+    const registerPublishingChannelModeratorsResponse =
+      await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerators(
+        {
+          controller,
+          publishingChannelModeratorRegistrations: moderatorUserIds.map(
+            (moderatorUserId) => ({
+              publishingChannelId,
+              userId: moderatorUserId,
+              creationTimestamp: now,
+            }),
+          ),
+        },
+      );
 
-  if (registerPublishingChannelModeratorsResponse.type === EitherType.failure) {
-    return registerPublishingChannelModeratorsResponse;
+    if (registerPublishingChannelModeratorsResponse.type === EitherType.failure) {
+      return registerPublishingChannelModeratorsResponse;
+    }
   }
 
   return Success({});
