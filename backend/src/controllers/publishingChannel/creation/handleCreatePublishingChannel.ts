@@ -1,4 +1,5 @@
 import express from "express";
+import { BackendKupoFile, UploadableKupoFile } from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import {
   EitherType,
@@ -8,9 +9,11 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
+import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
 
 export interface CreatePublishingChannelRequestBody {
-  backgroundImageAndProfilePicture: Express.Multer.File[];
+  backgroundImage?: UploadableKupoFile;
+  profilePicture?: UploadableKupoFile;
   publishingChannelName: string;
   publishingChannelDescription: string;
   externalUrls: string[];
@@ -53,13 +56,12 @@ export async function handleCreatePublishingChannel({
   const {
     publishingChannelName,
     publishingChannelDescription,
-    backgroundImageAndProfilePicture,
+    backgroundImage,
+    profilePicture,
     externalUrls,
     publishingChannelRules,
     moderatorUserIds,
   } = requestBody;
-
-  const [backgroundImage, profilePicture] = backgroundImageAndProfilePicture;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -72,9 +74,13 @@ export async function handleCreatePublishingChannel({
   //////////////////////////////////////////////////
   let backgroundImageBlobFileKey = undefined;
   if (!!backgroundImage) {
+    const ingestedBackgroundImage: BackendKupoFile = ingestUploadedFile({
+      uploadableKupoFile: backgroundImage,
+    });
+
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: backgroundImage.buffer,
+      image: ingestedBackgroundImage.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;
@@ -87,9 +93,13 @@ export async function handleCreatePublishingChannel({
   //////////////////////////////////////////////////
   let profilePictureBlobFileKey = undefined;
   if (!!profilePicture) {
+    const ingestedProfilePicture: BackendKupoFile = ingestUploadedFile({
+      uploadableKupoFile: profilePicture,
+    });
+
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: profilePicture?.buffer,
+      image: ingestedProfilePicture.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;

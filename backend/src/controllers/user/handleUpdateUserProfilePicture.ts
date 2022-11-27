@@ -5,6 +5,8 @@ import {
   SecuredHTTPResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
+import { UploadableKupoFile } from "../models";
+import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
@@ -16,7 +18,7 @@ export enum UpdateUserProfilePictureFailedReason {
 export type UpdateUserProfilePictureSuccess = RenderableUser;
 
 export interface UpdateUserProfilePictureRequestBody {
-  profilePicture: Express.Multer.File;
+  profilePicture: UploadableKupoFile;
 }
 
 export async function handleUpdateUserProfilePicture({
@@ -33,6 +35,9 @@ export async function handleUpdateUserProfilePicture({
     UpdateUserProfilePictureSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { profilePicture } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -41,11 +46,19 @@ export async function handleUpdateUserProfilePicture({
   );
   if (error) return error;
 
+  //////////////////////////////////////////////////
+  // SAVE IMAGE BLOB
+  //////////////////////////////////////////////////
+
   let profilePictureBlobItemPointer = undefined;
   if (!!profilePicture) {
+    const profilePictureKupoFile = ingestUploadedFile({
+      uploadableKupoFile: profilePicture,
+    });
+
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: requestBody.profilePicture?.buffer,
+      image: profilePictureKupoFile.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;
@@ -53,6 +66,9 @@ export async function handleUpdateUserProfilePicture({
     profilePictureBlobItemPointer = saveImageResponse.success;
   }
 
+  //////////////////////////////////////////////////
+  // UPDATE DATABASE ENTRY
+  //////////////////////////////////////////////////
   const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
       {
@@ -77,6 +93,10 @@ export async function handleUpdateUserProfilePicture({
     };
   }
 
+  //////////////////////////////////////////////////
+  // RECOMPILE USER
+  //////////////////////////////////////////////////
+
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
@@ -90,6 +110,10 @@ export async function handleUpdateUserProfilePicture({
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;
   }
+
+  //////////////////////////////////////////////////
+  // RETURN
+  //////////////////////////////////////////////////
 
   return constructRenderableUserFromPartsResponse;
 }

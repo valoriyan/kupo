@@ -18,14 +18,20 @@ import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
 import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
 import { checkValidityOfMediaFiles } from "../../utilities/mediaFiles/checkValidityOfMediaFiles";
-import { GenericResponseFailedReason, MediaElement } from "../../models";
+import {
+  BackendKupoFile,
+  GenericResponseFailedReason,
+  MediaElement,
+  UploadableKupoFile,
+} from "../../models";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { Controller } from "tsoa";
-import { collectTagsFromText } from "../../../controllers/utilities/collectTagsFromText";
+import { collectTagsFromText } from "../../utilities/collectTagsFromText";
 import { DatabaseService } from "../../../services/databaseService";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { WebSocketService } from "../../../services/webSocketService";
-import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
+import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
+import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
 
 export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -37,8 +43,8 @@ export interface CreatePostSuccess {
   renderablePost: RenderablePost;
 }
 
-interface HandlerRequestBody {
-  mediaFiles: Express.Multer.File[];
+export interface CreatePostRequestBody {
+  mediaFiles: UploadableKupoFile[];
   caption: string;
   hashtags: string[];
   scheduledPublicationTimestamp?: number;
@@ -52,7 +58,7 @@ export async function handleCreatePost({
 }: {
   controller: PostController;
   request: express.Request;
-  requestBody: HandlerRequestBody;
+  requestBody: CreatePostRequestBody;
 }): Promise<
   SecuredHTTPResponse<
     ErrorReasonTypes<string | CreatePostFailedReason>,
@@ -105,7 +111,11 @@ export async function handleCreatePost({
   //////////////////////////////////////////////////
   // Upload media files
   //////////////////////////////////////////////////
-  const mediaFileErrors = await checkValidityOfMediaFiles({ files: mediaFiles });
+  const backendKupoFiles: BackendKupoFile[] = mediaFiles.map((mediaFile) =>
+    ingestUploadedFile({ uploadableKupoFile: mediaFile }),
+  );
+
+  const mediaFileErrors = await checkValidityOfMediaFiles({ files: backendKupoFiles });
   if (mediaFileErrors.length > 0) {
     return {
       type: EitherType.failure,
@@ -113,12 +123,14 @@ export async function handleCreatePost({
     };
   }
 
-  const uploadMediaFileResponses = await BluebirdPromise.map(mediaFiles, async (file) =>
-    uploadMediaFile({
-      controller,
-      file,
-      blobStorageService: controller.blobStorageService,
-    }),
+  const uploadMediaFileResponses = await BluebirdPromise.map(
+    backendKupoFiles,
+    async (file) =>
+      uploadMediaFile({
+        controller,
+        file,
+        blobStorageService: controller.blobStorageService,
+      }),
   );
   const mappedUploadMediaFileResponses = unwrapListOfEitherResponses({
     eitherResponses: uploadMediaFileResponses,
@@ -267,6 +279,7 @@ async function considerAndExecuteNotifications({
   databaseService: DatabaseService;
   blobStorageService: BlobStorageServiceInterface;
   webSocketService: WebSocketService;
+  // eslint-disable-next-line @typescript-eslint/ban-types
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
   // Get usernames tagged in caption

@@ -6,6 +6,17 @@ export enum GenericResponseFailedReason {
   BLOB_STORAGE_ERROR = "BLOB_STORAGE_ERROR",
 }
 
+export interface UploadableKupoFile {
+  blobSize: number;
+  blobText: string;
+  mimetype: string;
+}
+
+export interface BackendKupoFile {
+  mimetype: string;
+  buffer: Buffer;
+}
+
 export interface FiledMediaElement {
   blobFileKey: string;
   mimeType: string;

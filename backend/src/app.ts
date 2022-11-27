@@ -15,7 +15,7 @@ const origin = getEnvironmentVariable("FRONTEND_BASE_URL");
 app.set("trust proxy", true);
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // To parse the incoming requests with JSON payloads
+app.use(express.json({ limit: "50mb" })); // To parse the incoming requests with JSON payloads
 app.use(cookieParser());
 
 app.use(cors({ origin, credentials: true }));

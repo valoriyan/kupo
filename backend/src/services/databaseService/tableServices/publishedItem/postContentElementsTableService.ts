@@ -47,8 +47,7 @@ export class PostContentElementsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
           FOREIGN KEY (published_item_id)
           REFERENCES ${PublishedItemsTableService.tableName} (id)
-          
-
+          ON DELETE CASCADE
       )
       ;
     `;

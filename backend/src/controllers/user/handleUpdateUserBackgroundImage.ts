@@ -6,7 +6,12 @@ import {
   SecuredHTTPResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { GenericResponseFailedReason } from "../models";
+import {
+  BackendKupoFile,
+  GenericResponseFailedReason,
+  UploadableKupoFile,
+} from "../models";
+import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
@@ -18,7 +23,7 @@ export enum UpdateUserBackgroundImageFailedReason {
 export type UpdateUserBackgroundImageSuccess = RenderableUser;
 
 export interface UpdateUserBackgroundImageRequestBody {
-  backgroundImage: Express.Multer.File;
+  backgroundImage: UploadableKupoFile;
 }
 
 export async function handleUpdateUserBackgroundImage({
@@ -45,9 +50,13 @@ export async function handleUpdateUserBackgroundImage({
 
   let backgroundImageBlobItemPointer = undefined;
   if (!!backgroundImage) {
+    const backgroundImageKupoFile: BackendKupoFile = ingestUploadedFile({
+      uploadableKupoFile: backgroundImage,
+    });
+
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: requestBody.backgroundImage?.buffer,
+      image: backgroundImageKupoFile.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;

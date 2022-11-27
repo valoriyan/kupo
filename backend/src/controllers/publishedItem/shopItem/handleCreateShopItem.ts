@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
-import { MediaElement } from "../../../controllers/models";
+import {
+  BackendKupoFile,
+  MediaElement,
+  UploadableKupoFile,
+} from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
@@ -26,6 +30,7 @@ import { BlobStorageServiceInterface } from "../../../services/blobStorageServic
 import { WebSocketService } from "../../../services/webSocketService";
 import { collectTagsFromText } from "../../../controllers/utilities/collectTagsFromText";
 import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
+import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
 
 export enum CreateShopItemFailedReason {
   UnknownCause = "Unknown Cause",
@@ -35,7 +40,7 @@ export interface CreateShopItemSuccess {
   renderableShopItem: RenderableShopItem;
 }
 
-interface HandlerRequestBody {
+export interface CreateShopItemRequestBody {
   caption: string;
   hashtags: string[];
   title: string;
@@ -43,8 +48,8 @@ interface HandlerRequestBody {
   collaboratorUserIds: string[];
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
-  mediaFiles: Express.Multer.File[];
-  purchasedMediaFiles: Express.Multer.File[];
+  mediaFiles: UploadableKupoFile[];
+  purchasedMediaFiles: UploadableKupoFile[];
 }
 
 export async function handleCreateShopItem({
@@ -54,7 +59,7 @@ export async function handleCreateShopItem({
 }: {
   controller: ShopItemController;
   request: express.Request;
-  requestBody: HandlerRequestBody;
+  requestBody: CreateShopItemRequestBody;
 }): Promise<
   SecuredHTTPResponse<
     ErrorReasonTypes<string | CreateShopItemFailedReason>,
@@ -141,11 +146,19 @@ export async function handleCreateShopItem({
   // Upload media files
   //////////////////////////////////////////////////
 
-  const mappedPreviewMedia = mediaFiles.map((file) => ({
+  const backendKupoMediaFiles: BackendKupoFile[] = mediaFiles.map((mediaFile) =>
+    ingestUploadedFile({ uploadableKupoFile: mediaFile }),
+  );
+
+  const backendPurchasedKupoMediaFiles: BackendKupoFile[] = purchasedMediaFiles.map(
+    (mediaFile) => ingestUploadedFile({ uploadableKupoFile: mediaFile }),
+  );
+
+  const mappedPreviewMedia = backendKupoMediaFiles.map((file) => ({
     file,
     type: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
   }));
-  const mappedPurchasedMedia = purchasedMediaFiles.map((file) => ({
+  const mappedPurchasedMedia = backendPurchasedKupoMediaFiles.map((file) => ({
     file,
     type: DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
   }));
@@ -242,7 +255,7 @@ export async function handleCreateShopItem({
 
 const uploadShopItemMedia = async (
   publishedItemId: string,
-  mediaFiles: Array<{ file: Express.Multer.File; type: DBShopItemElementType }>,
+  mediaFiles: Array<{ file: BackendKupoFile; type: DBShopItemElementType }>,
   controller: ShopItemController,
 ) => {
   const eitherResponses = await BluebirdPromise.map(

@@ -56,7 +56,7 @@ export const NewCommunityPage = () => {
           publishingChannelDescription: description,
           profilePicture: pfpFile,
           backgroundImage: backgroundImgFile,
-          commaSeparatedModeratorUserIds: moderatorIds.join(",") || undefined,
+          moderatorUserIds: moderatorIds,
           externalUrl1: linksList[0],
           externalUrl2: linksList[1],
           externalUrl3: linksList[2],

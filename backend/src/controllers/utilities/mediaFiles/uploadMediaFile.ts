@@ -7,6 +7,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BackendKupoFile } from "../../../controllers/models";
 
 export async function uploadMediaFile({
   controller,
@@ -14,7 +15,7 @@ export async function uploadMediaFile({
   blobStorageService,
 }: {
   controller: Controller;
-  file: Express.Multer.File;
+  file: BackendKupoFile;
   blobStorageService: BlobStorageServiceInterface;
 }): Promise<
   InternalServiceResponse<

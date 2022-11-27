@@ -55,6 +55,7 @@ import {
 import {
   handleUpdateUserBackgroundImage,
   UpdateUserBackgroundImageFailedReason,
+  UpdateUserBackgroundImageRequestBody,
   UpdateUserBackgroundImageSuccess,
 } from "./handleUpdateUserBackgroundImage";
 import {
@@ -66,6 +67,7 @@ import {
 import {
   handleUpdateUserProfilePicture,
   UpdateUserProfilePictureFailedReason,
+  UpdateUserProfilePictureRequestBody,
   UpdateUserProfilePictureSuccess,
 } from "./handleUpdateUserProfilePicture";
 
@@ -229,7 +231,7 @@ export class UserPageController extends Controller {
   @Post("UpdateUserProfilePicture")
   public async updateUserProfilePicture(
     @Request() request: express.Request,
-    @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
+    @Body() requestBody: UpdateUserProfilePictureRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | UpdateUserProfilePictureFailedReason>,
@@ -239,16 +241,14 @@ export class UserPageController extends Controller {
     return await handleUpdateUserProfilePicture({
       controller: this,
       request,
-      requestBody: {
-        profilePicture,
-      },
+      requestBody,
     });
   }
 
   @Post("UpdateUserBackgroundImage")
   public async updateUserBackgroundImage(
     @Request() request: express.Request,
-    @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
+    @Body() requestBody: UpdateUserBackgroundImageRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | UpdateUserBackgroundImageFailedReason>,
@@ -258,9 +258,7 @@ export class UserPageController extends Controller {
     return await handleUpdateUserBackgroundImage({
       controller: this,
       request,
-      requestBody: {
-        backgroundImage,
-      },
+      requestBody,
     });
   }
 

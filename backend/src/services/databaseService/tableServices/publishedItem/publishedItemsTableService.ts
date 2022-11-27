@@ -81,6 +81,7 @@ export class PublishedItemsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (author_user_id)
           REFERENCES ${UsersTableService.tableName} (user_id)
+          ON DELETE CASCADE
 
 
       )

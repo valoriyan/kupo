@@ -32,5 +32,7 @@ export enum NOTIFICATIONEVENTS {
   CanceledNewLikeOnPublishedItem = "CANCELED_NEW_LIKE_ON_PUBLISHED_ITEM",
   NewTagInPublishedItemComment = "NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
   CanceledNewTagInPublishedItemComment = "CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
+  NewTagInPublishedItemCaption = "NEW_TAG_IN_PUBLISHED_ITEM_CAPTION",
+  CanceledNewTagInPublishedItemCaption = "CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_CAPTION",
   NewPublishedItem = "NEW_PUBLISHED_ITEM",
 }

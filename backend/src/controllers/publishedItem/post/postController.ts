@@ -1,24 +1,10 @@
 import express from "express";
-import {
-  Body,
-  Controller,
-  Delete,
-  FormField,
-  Post,
-  Request,
-  Route,
-  UploadedFiles,
-} from "tsoa";
+import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../../utilities/monads";
-import {
-  CreatePostFailedReason,
-  handleCreatePost,
-  CreatePostSuccess,
-} from "./handleCreatePost";
 import {
   DeletePostRequestBody,
   DeletePostFailedReason,
@@ -63,6 +49,12 @@ import {
   handleGetPublishedItemsByUsername,
   GetPublishedItemsByUsernameSuccess,
 } from "../handleGetPublishedItems";
+import {
+  CreatePostFailedReason,
+  CreatePostRequestBody,
+  CreatePostSuccess,
+  handleCreatePost,
+} from "./handleCreatePost";
 
 @injectable()
 @Route("post")
@@ -82,13 +74,7 @@ export class PostController extends Controller {
   @Post("createPost")
   public async createPost(
     @Request() request: express.Request,
-    @UploadedFiles() mediaFiles: Express.Multer.File[],
-    @FormField() caption: string,
-    // @FormField() only supports strings so we'll have to do some parsing
-    // for the following fields
-    @FormField() hashtags: string, // string[]
-    @FormField() scheduledPublicationTimestamp?: string, // number
-    @FormField() expirationTimestamp?: string, // number
+    @Body() requestBody: CreatePostRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | CreatePostFailedReason>,
@@ -98,17 +84,7 @@ export class PostController extends Controller {
     return await handleCreatePost({
       controller: this,
       request,
-      requestBody: {
-        mediaFiles,
-        caption,
-        hashtags: JSON.parse(hashtags),
-        scheduledPublicationTimestamp: scheduledPublicationTimestamp
-          ? parseInt(scheduledPublicationTimestamp, 10)
-          : undefined,
-        expirationTimestamp: expirationTimestamp
-          ? parseInt(expirationTimestamp, 10)
-          : undefined,
-      },
+      requestBody,
     });
   }
 

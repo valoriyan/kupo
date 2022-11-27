@@ -7,7 +7,12 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { GenericResponseFailedReason } from "../models";
+import {
+  BackendKupoFile,
+  GenericResponseFailedReason,
+  UploadableKupoFile,
+} from "../models";
+import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
 import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
@@ -23,7 +28,7 @@ export interface UpdatePublishingChannelBackgroundImageSuccess {
 }
 
 export interface UpdatePublishingChannelBackgroundImageRequestBody {
-  backgroundImage: Express.Multer.File;
+  backgroundImage: UploadableKupoFile;
   publishingChannelId: string;
 }
 
@@ -41,6 +46,9 @@ export async function handleUpdatePublishingChannelBackgroundImage({
     UpdatePublishingChannelBackgroundImageSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { backgroundImage, publishingChannelId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -78,9 +86,13 @@ export async function handleUpdatePublishingChannelBackgroundImage({
   //////////////////////////////////////////////////
   let backgroundImageBlobItemPointer = undefined;
   if (!!backgroundImage) {
+    const backgroundImageKupoFile: BackendKupoFile = ingestUploadedFile({
+      uploadableKupoFile: backgroundImage,
+    });
+
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: backgroundImage.buffer,
+      image: backgroundImageKupoFile.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;

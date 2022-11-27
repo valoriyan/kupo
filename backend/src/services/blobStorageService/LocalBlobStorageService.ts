@@ -38,7 +38,8 @@ export class LocalBlobStorageService extends BlobStorageServiceInterface {
       await mkdirSync(LocalBlobStorageService.localBlobStorageDirectory, {
         recursive: true,
       });
-      await writeFileSync(fileWritePath, image);
+
+      await writeFileSync(fileWritePath, image, "base64");
 
       return Success({
         fileKey,

@@ -1,4 +1,5 @@
 import express from "express";
+import { UploadableKupoFile } from "../../../controllers/models";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -16,8 +17,7 @@ export enum UpdateShopItemFailedReason {
   IllegalAccess = "Illegal Access",
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface HandlerRequestBody {
+export interface UpdateShopItemRequestBody {
   publishedItemId: string;
   description?: string;
   title?: string;
@@ -26,7 +26,6 @@ interface HandlerRequestBody {
   expirationTimestamp?: number;
   collaboratorUserIds?: string[];
   hashtags?: string[];
-  mediaFiles?: Express.Multer.File[];
 }
 
 export async function handleUpdateShopItem({
@@ -36,13 +35,16 @@ export async function handleUpdateShopItem({
 }: {
   controller: ShopItemController;
   request: express.Request;
-  requestBody: HandlerRequestBody;
+  requestBody: UpdateShopItemRequestBody;
 }): Promise<
   SecuredHTTPResponse<
     ErrorReasonTypes<string | UpdateShopItemFailedReason>,
     UpdateShopItemSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -58,6 +60,10 @@ export async function handleUpdateShopItem({
     expirationTimestamp,
   } = requestBody;
 
+  //////////////////////////////////////////////////
+  // Get Published Item
+  //////////////////////////////////////////////////
+
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { controller, id: publishedItemId },
@@ -68,6 +74,10 @@ export async function handleUpdateShopItem({
   }
   const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
+  //////////////////////////////////////////////////
+  // Check that published item author is client
+  //////////////////////////////////////////////////
+
   if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
     return Failure({
       controller,
@@ -77,6 +87,10 @@ export async function handleUpdateShopItem({
       additionalErrorInformation: "Illegal access at handleUpdateShopItem",
     });
   }
+
+  //////////////////////////////////////////////////
+  // Write update to DB
+  //////////////////////////////////////////////////
 
   const updateShopItemByPublishedItemIdResponse =
     await controller.databaseService.tableNameToServicesMap.shopItemsTableService.updateShopItemByPublishedItemId(
@@ -93,6 +107,10 @@ export async function handleUpdateShopItem({
   if (updateShopItemByPublishedItemIdResponse.type === EitherType.failure) {
     return updateShopItemByPublishedItemIdResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

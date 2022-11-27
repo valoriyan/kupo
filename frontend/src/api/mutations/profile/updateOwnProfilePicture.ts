@@ -1,13 +1,22 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, GetClientUserProfileSuccess } from "#/api";
+import { Api, GetClientUserProfileSuccess, UploadableKupoFile } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
+import { fileToBase64 } from "#/utils/fileToBase64";
 
 export const useUpdateOwnProfilePicture = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
     async (file: File) => {
-      return await Api.updateUserProfilePicture(file);
+      const uploadableProfilePicture: UploadableKupoFile = {
+        blobSize: file.size,
+        blobText: await fileToBase64(file),
+        mimetype: file.type,
+      };
+
+      return await Api.updateUserProfilePicture({
+        profilePicture: uploadableProfilePicture,
+      });
     },
     {
       onSuccess: (data) => {

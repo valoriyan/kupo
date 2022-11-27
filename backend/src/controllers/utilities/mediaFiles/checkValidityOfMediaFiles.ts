@@ -1,6 +1,7 @@
 import getVideoDurationInSeconds from "get-video-duration";
 import { createReadStream } from "streamifier";
 import { Promise as BluebirdPromise } from "bluebird";
+import { BackendKupoFile } from "../../../controllers/models";
 
 export enum InvalidMediaFileReason {
   VideoLengthTooLong = "Video Length Is Too Long",
@@ -11,12 +12,12 @@ const FOUR_MINUTES_IN_SECONDS = 4 * 60;
 export async function checkValidityOfMediaFiles({
   files,
 }: {
-  files: Express.Multer.File[];
+  files: BackendKupoFile[];
 }): Promise<InvalidMediaFileReason[]> {
   const unfilteredErrors: (InvalidMediaFileReason | null)[] = await BluebirdPromise.map(
     files,
-    async (file: Express.Multer.File): Promise<InvalidMediaFileReason | null> => {
-      const { mimetype, buffer } = file;
+    async (file: BackendKupoFile): Promise<InvalidMediaFileReason | null> => {
+      const { mimetype: mimetype, buffer } = file;
 
       const permittedImageTypes = ["image/jpeg", "image/png"];
 

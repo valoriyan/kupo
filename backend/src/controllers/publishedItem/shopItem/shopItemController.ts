@@ -17,6 +17,7 @@ import { PaymentProcessingService } from "../../../services/paymentProcessingSer
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../../utilities/monads";
 import {
   CreateShopItemFailedReason,
+  CreateShopItemRequestBody,
   CreateShopItemSuccess,
   handleCreateShopItem,
 } from "./handleCreateShopItem";
@@ -29,6 +30,7 @@ import {
 import {
   handleUpdateShopItem,
   UpdateShopItemFailedReason,
+  UpdateShopItemRequestBody,
   UpdateShopItemSuccess,
 } from "./handleUpdateShopItem";
 import {
@@ -80,44 +82,17 @@ export class ShopItemController extends Controller {
   @Post("create")
   public async createShopItem(
     @Request() request: express.Request,
-    @UploadedFiles() combinedMediaFiles: Express.Multer.File[],
-    // @FormField() only supports strings so we'll have to do some parsing
-    // for the following fields
-    @FormField() numberOfPurchasedMediaFiles: string, // number
-    @FormField() caption: string,
-    @FormField() hashtags: string, // split by " "
-    @FormField() title: string,
-    @FormField() price: string,
-    @FormField() scheduledPublicationTimestamp: string,
-    @FormField() collaboratorUserIds: string,
-    @FormField() expirationTimestamp?: string, // number
+    @Body() requestBody: CreateShopItemRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | CreateShopItemFailedReason>,
       CreateShopItemSuccess
     >
   > {
-    const splitMediaIndex =
-      combinedMediaFiles.length - Number.parseInt(numberOfPurchasedMediaFiles, 10);
-
     return await handleCreateShopItem({
       controller: this,
       request,
-      requestBody: {
-        caption,
-        hashtags: JSON.parse(hashtags),
-        title,
-        price: parseInt(price, 10),
-        scheduledPublicationTimestamp: scheduledPublicationTimestamp
-          ? parseInt(scheduledPublicationTimestamp, 10)
-          : undefined,
-        expirationTimestamp: expirationTimestamp
-          ? parseInt(expirationTimestamp, 10)
-          : undefined,
-        collaboratorUserIds: JSON.parse(collaboratorUserIds),
-        mediaFiles: combinedMediaFiles.slice(0, splitMediaIndex),
-        purchasedMediaFiles: combinedMediaFiles.slice(splitMediaIndex),
-      },
+      requestBody,
     });
   }
 
@@ -181,15 +156,7 @@ export class ShopItemController extends Controller {
   @Post("update")
   public async updateShopItem(
     @Request() request: express.Request,
-    @FormField() publishedItemId: string,
-    @FormField() description?: string,
-    @FormField() hashtags?: string[],
-    @FormField() title?: string,
-    @FormField() price?: number,
-    @FormField() scheduledPublicationTimestamp?: number,
-    @FormField() expirationTimestamp?: number,
-    @FormField() collaboratorUserIds?: string[],
-    @UploadedFiles() mediaFiles?: Express.Multer.File[],
+    @Body() requestBody: UpdateShopItemRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | UpdateShopItemFailedReason>,
@@ -199,17 +166,7 @@ export class ShopItemController extends Controller {
     return await handleUpdateShopItem({
       controller: this,
       request,
-      requestBody: {
-        publishedItemId,
-        description,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        collaboratorUserIds,
-        mediaFiles,
-      },
+      requestBody,
     });
   }
 

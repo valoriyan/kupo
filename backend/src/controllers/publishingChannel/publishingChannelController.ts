@@ -16,6 +16,7 @@ import { WebSocketService } from "../../services/webSocketService";
 import { BlobStorageService } from "../../services/blobStorageService";
 import {
   CreatePublishingChannelFailedReason,
+  CreatePublishingChannelRequestBody,
   CreatePublishingChannelSuccess,
   handleCreatePublishingChannel,
 } from "./creation/handleCreatePublishingChannel";
@@ -95,11 +96,13 @@ import {
 import {
   handleUpdatePublishingChannelBackgroundImage,
   UpdatePublishingChannelBackgroundImageFailedReason,
+  UpdatePublishingChannelBackgroundImageRequestBody,
   UpdatePublishingChannelBackgroundImageSuccess,
 } from "./handleUpdatePublishingChannelBackgroundImage";
 import {
   handleUpdatePublishingChannelProfilePicture,
   UpdatePublishingChannelProfilePictureFailedReason,
+  UpdatePublishingChannelProfilePictureRequestBody,
   UpdatePublishingChannelProfilePictureSuccess,
 } from "./handleUpdatePublishingChannelProfilePicture";
 import {
@@ -133,61 +136,17 @@ export class PublishingChannelController extends Controller {
   @Post("createPublishingChannel")
   public async createPublishingChannel(
     @Request() request: express.Request,
-    @FormField() publishingChannelName: string,
-    @FormField() publishingChannelDescription: string,
-    @UploadedFiles("backgroundImageAndProfilePicture")
-    backgroundImageAndProfilePicture: Express.Multer.File[],
-    @FormField() commaSeparatedModeratorUserIds?: string,
-    @FormField() externalUrl1?: string,
-    @FormField() externalUrl2?: string,
-    @FormField() externalUrl3?: string,
-    @FormField() externalUrl4?: string,
-    @FormField() externalUrl5?: string,
-    @FormField() publishingChannelRule1?: string,
-    @FormField() publishingChannelRule2?: string,
-    @FormField() publishingChannelRule3?: string,
-    @FormField() publishingChannelRule4?: string,
-    @FormField() publishingChannelRule5?: string,
+    @Body() requestBody: CreatePublishingChannelRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | CreatePublishingChannelFailedReason>,
       CreatePublishingChannelSuccess
     >
   > {
-    const externalUrls: string[] = [];
-    [externalUrl1, externalUrl2, externalUrl3, externalUrl4, externalUrl5].forEach(
-      (externalUrl) => {
-        if (!!externalUrl) {
-          externalUrls.push(externalUrl);
-        }
-      },
-    );
-    const publishingChannelRules: string[] = [];
-    [
-      publishingChannelRule1,
-      publishingChannelRule2,
-      publishingChannelRule3,
-      publishingChannelRule4,
-      publishingChannelRule5,
-    ].forEach((publishingChannelRule) => {
-      if (!!publishingChannelRule) {
-        publishingChannelRules.push(publishingChannelRule);
-      }
-    });
-
-    const moderatorUserIds = commaSeparatedModeratorUserIds?.split(",") ?? [];
-
     return await handleCreatePublishingChannel({
       controller: this,
       request,
-      requestBody: {
-        backgroundImageAndProfilePicture,
-        publishingChannelName,
-        publishingChannelDescription,
-        externalUrls,
-        publishingChannelRules,
-        moderatorUserIds,
-      },
+      requestBody,
     });
   }
 
@@ -370,8 +329,7 @@ export class PublishingChannelController extends Controller {
   @Post("updatePublishingChannelProfilePicture")
   public async updatePublishingChannelProfilePicture(
     @Request() request: express.Request,
-    @UploadedFile("profilePicture") profilePicture: Express.Multer.File,
-    @FormField() publishingChannelId: string,
+    @Body() requestBody: UpdatePublishingChannelProfilePictureRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | UpdatePublishingChannelProfilePictureFailedReason>,
@@ -381,18 +339,14 @@ export class PublishingChannelController extends Controller {
     return await handleUpdatePublishingChannelProfilePicture({
       controller: this,
       request,
-      requestBody: {
-        profilePicture,
-        publishingChannelId,
-      },
+      requestBody,
     });
   }
 
   @Post("updatePublishingChannelBackgroundImage")
   public async updatePublishingChannelBackgroundImage(
     @Request() request: express.Request,
-    @UploadedFile("backgroundImage") backgroundImage: Express.Multer.File,
-    @FormField() publishingChannelId: string,
+    @Body() requestBody: UpdatePublishingChannelBackgroundImageRequestBody,
   ): Promise<
     SecuredHTTPResponse<
       ErrorReasonTypes<string | UpdatePublishingChannelBackgroundImageFailedReason>,
@@ -402,10 +356,7 @@ export class PublishingChannelController extends Controller {
     return await handleUpdatePublishingChannelBackgroundImage({
       controller: this,
       request,
-      requestBody: {
-        backgroundImage,
-        publishingChannelId,
-      },
+      requestBody,
     });
   }
 

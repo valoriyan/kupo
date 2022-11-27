@@ -12,12 +12,26 @@
  * Do not edit the class manually.
  */
 
+import { UploadableKupoFile } from "./uploadable-kupo-file";
+
 /**
  *
  * @export
  * @interface CreatePublishingChannelRequestBody
  */
 export interface CreatePublishingChannelRequestBody {
+  /**
+   *
+   * @type {UploadableKupoFile}
+   * @memberof CreatePublishingChannelRequestBody
+   */
+  backgroundImage?: UploadableKupoFile;
+  /**
+   *
+   * @type {UploadableKupoFile}
+   * @memberof CreatePublishingChannelRequestBody
+   */
+  profilePicture?: UploadableKupoFile;
   /**
    *
    * @type {string}
@@ -30,4 +44,22 @@ export interface CreatePublishingChannelRequestBody {
    * @memberof CreatePublishingChannelRequestBody
    */
   publishingChannelDescription: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof CreatePublishingChannelRequestBody
+   */
+  externalUrls: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof CreatePublishingChannelRequestBody
+   */
+  publishingChannelRules: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof CreatePublishingChannelRequestBody
+   */
+  moderatorUserIds: Array<string>;
 }

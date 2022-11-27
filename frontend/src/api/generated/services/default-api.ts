@@ -49,7 +49,13 @@ import { CreateChatMessageInNewRoomRequestBody } from "../types";
 // @ts-ignore
 import { CreateChatMessageRequestBody } from "../types";
 // @ts-ignore
+import { CreatePostRequestBody } from "../types";
+// @ts-ignore
 import { CreatePublishedItemCommentRequestBody } from "../types";
+// @ts-ignore
+import { CreatePublishingChannelRequestBody } from "../types";
+// @ts-ignore
+import { CreateShopItemRequestBody } from "../types";
 // @ts-ignore
 import { DeleteChatMessageRequestBody } from "../types";
 // @ts-ignore
@@ -287,7 +293,7 @@ import { GetUsersByIdsRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
-import { InlineObject8 } from "../types";
+import { InlineObject } from "../types";
 // @ts-ignore
 import { InlineResponse200 } from "../types";
 // @ts-ignore
@@ -353,7 +359,17 @@ import { UpdatePasswordRequestBody } from "../types";
 // @ts-ignore
 import { UpdatePostRequestBody } from "../types";
 // @ts-ignore
+import { UpdatePublishingChannelBackgroundImageRequestBody } from "../types";
+// @ts-ignore
+import { UpdatePublishingChannelProfilePictureRequestBody } from "../types";
+// @ts-ignore
 import { UpdatePublishingChannelRequestBody } from "../types";
+// @ts-ignore
+import { UpdateShopItemRequestBody } from "../types";
+// @ts-ignore
+import { UpdateUserBackgroundImageRequestBody } from "../types";
+// @ts-ignore
+import { UpdateUserProfilePictureRequestBody } from "../types";
 // @ts-ignore
 import { UpdateUserProfileRequestBody } from "../types";
 // @ts-ignore
@@ -658,28 +674,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {Array<any>} mediaFiles
-     * @param {string} caption
-     * @param {string} hashtags
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
+     * @param {CreatePostRequestBody} createPostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost: async (
-      mediaFiles: Array<any>,
-      caption: string,
-      hashtags: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
+      createPostRequestBody: CreatePostRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'mediaFiles' is not null or undefined
-      assertParamExists("createPost", "mediaFiles", mediaFiles);
-      // verify required parameter 'caption' is not null or undefined
-      assertParamExists("createPost", "caption", caption);
-      // verify required parameter 'hashtags' is not null or undefined
-      assertParamExists("createPost", "hashtags", hashtags);
+      // verify required parameter 'createPostRequestBody' is not null or undefined
+      assertParamExists("createPost", "createPostRequestBody", createPostRequestBody);
       const localVarPath = `/post/createPost`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -691,35 +695,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (mediaFiles) {
-        mediaFiles.forEach((element) => {
-          localVarFormParams.append("mediaFiles", element as any);
-        });
-      }
-
-      if (caption !== undefined) {
-        localVarFormParams.append("caption", caption as any);
-      }
-
-      if (hashtags !== undefined) {
-        localVarFormParams.append("hashtags", hashtags as any);
-      }
-
-      if (scheduledPublicationTimestamp !== undefined) {
-        localVarFormParams.append(
-          "scheduledPublicationTimestamp",
-          scheduledPublicationTimestamp as any,
-        );
-      }
-
-      if (expirationTimestamp !== undefined) {
-        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -729,7 +706,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createPostRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -787,57 +768,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} publishingChannelName
-     * @param {string} publishingChannelDescription
-     * @param {Array<any>} backgroundImageAndProfilePicture
-     * @param {string} [commaSeparatedModeratorUserIds]
-     * @param {string} [externalUrl1]
-     * @param {string} [externalUrl2]
-     * @param {string} [externalUrl3]
-     * @param {string} [externalUrl4]
-     * @param {string} [externalUrl5]
-     * @param {string} [publishingChannelRule1]
-     * @param {string} [publishingChannelRule2]
-     * @param {string} [publishingChannelRule3]
-     * @param {string} [publishingChannelRule4]
-     * @param {string} [publishingChannelRule5]
+     * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPublishingChannel: async (
-      publishingChannelName: string,
-      publishingChannelDescription: string,
-      backgroundImageAndProfilePicture: Array<any>,
-      commaSeparatedModeratorUserIds?: string,
-      externalUrl1?: string,
-      externalUrl2?: string,
-      externalUrl3?: string,
-      externalUrl4?: string,
-      externalUrl5?: string,
-      publishingChannelRule1?: string,
-      publishingChannelRule2?: string,
-      publishingChannelRule3?: string,
-      publishingChannelRule4?: string,
-      publishingChannelRule5?: string,
+      createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'publishingChannelName' is not null or undefined
+      // verify required parameter 'createPublishingChannelRequestBody' is not null or undefined
       assertParamExists(
         "createPublishingChannel",
-        "publishingChannelName",
-        publishingChannelName,
-      );
-      // verify required parameter 'publishingChannelDescription' is not null or undefined
-      assertParamExists(
-        "createPublishingChannel",
-        "publishingChannelDescription",
-        publishingChannelDescription,
-      );
-      // verify required parameter 'backgroundImageAndProfilePicture' is not null or undefined
-      assertParamExists(
-        "createPublishingChannel",
-        "backgroundImageAndProfilePicture",
-        backgroundImageAndProfilePicture,
+        "createPublishingChannelRequestBody",
+        createPublishingChannelRequestBody,
       );
       const localVarPath = `/publishing_channel/createPublishingChannel`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -850,88 +793,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (publishingChannelName !== undefined) {
-        localVarFormParams.append("publishingChannelName", publishingChannelName as any);
-      }
-
-      if (publishingChannelDescription !== undefined) {
-        localVarFormParams.append(
-          "publishingChannelDescription",
-          publishingChannelDescription as any,
-        );
-      }
-      if (backgroundImageAndProfilePicture) {
-        backgroundImageAndProfilePicture.forEach((element) => {
-          localVarFormParams.append("backgroundImageAndProfilePicture", element as any);
-        });
-      }
-
-      if (commaSeparatedModeratorUserIds !== undefined) {
-        localVarFormParams.append(
-          "commaSeparatedModeratorUserIds",
-          commaSeparatedModeratorUserIds as any,
-        );
-      }
-
-      if (externalUrl1 !== undefined) {
-        localVarFormParams.append("externalUrl1", externalUrl1 as any);
-      }
-
-      if (externalUrl2 !== undefined) {
-        localVarFormParams.append("externalUrl2", externalUrl2 as any);
-      }
-
-      if (externalUrl3 !== undefined) {
-        localVarFormParams.append("externalUrl3", externalUrl3 as any);
-      }
-
-      if (externalUrl4 !== undefined) {
-        localVarFormParams.append("externalUrl4", externalUrl4 as any);
-      }
-
-      if (externalUrl5 !== undefined) {
-        localVarFormParams.append("externalUrl5", externalUrl5 as any);
-      }
-
-      if (publishingChannelRule1 !== undefined) {
-        localVarFormParams.append(
-          "publishingChannelRule1",
-          publishingChannelRule1 as any,
-        );
-      }
-
-      if (publishingChannelRule2 !== undefined) {
-        localVarFormParams.append(
-          "publishingChannelRule2",
-          publishingChannelRule2 as any,
-        );
-      }
-
-      if (publishingChannelRule3 !== undefined) {
-        localVarFormParams.append(
-          "publishingChannelRule3",
-          publishingChannelRule3 as any,
-        );
-      }
-
-      if (publishingChannelRule4 !== undefined) {
-        localVarFormParams.append(
-          "publishingChannelRule4",
-          publishingChannelRule4 as any,
-        );
-      }
-
-      if (publishingChannelRule5 !== undefined) {
-        localVarFormParams.append(
-          "publishingChannelRule5",
-          publishingChannelRule5 as any,
-        );
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -941,7 +804,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createPublishingChannelRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -950,54 +817,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {Array<any>} combinedMediaFiles
-     * @param {string} numberOfPurchasedMediaFiles
-     * @param {string} caption
-     * @param {string} hashtags
-     * @param {string} title
-     * @param {string} price
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} collaboratorUserIds
-     * @param {string} [expirationTimestamp]
+     * @param {CreateShopItemRequestBody} createShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createShopItem: async (
-      combinedMediaFiles: Array<any>,
-      numberOfPurchasedMediaFiles: string,
-      caption: string,
-      hashtags: string,
-      title: string,
-      price: string,
-      scheduledPublicationTimestamp: string,
-      collaboratorUserIds: string,
-      expirationTimestamp?: string,
+      createShopItemRequestBody: CreateShopItemRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'combinedMediaFiles' is not null or undefined
-      assertParamExists("createShopItem", "combinedMediaFiles", combinedMediaFiles);
-      // verify required parameter 'numberOfPurchasedMediaFiles' is not null or undefined
+      // verify required parameter 'createShopItemRequestBody' is not null or undefined
       assertParamExists(
         "createShopItem",
-        "numberOfPurchasedMediaFiles",
-        numberOfPurchasedMediaFiles,
+        "createShopItemRequestBody",
+        createShopItemRequestBody,
       );
-      // verify required parameter 'caption' is not null or undefined
-      assertParamExists("createShopItem", "caption", caption);
-      // verify required parameter 'hashtags' is not null or undefined
-      assertParamExists("createShopItem", "hashtags", hashtags);
-      // verify required parameter 'title' is not null or undefined
-      assertParamExists("createShopItem", "title", title);
-      // verify required parameter 'price' is not null or undefined
-      assertParamExists("createShopItem", "price", price);
-      // verify required parameter 'scheduledPublicationTimestamp' is not null or undefined
-      assertParamExists(
-        "createShopItem",
-        "scheduledPublicationTimestamp",
-        scheduledPublicationTimestamp,
-      );
-      // verify required parameter 'collaboratorUserIds' is not null or undefined
-      assertParamExists("createShopItem", "collaboratorUserIds", collaboratorUserIds);
       const localVarPath = `/shopitem/create`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1009,54 +842,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (combinedMediaFiles) {
-        combinedMediaFiles.forEach((element) => {
-          localVarFormParams.append("combinedMediaFiles", element as any);
-        });
-      }
-
-      if (numberOfPurchasedMediaFiles !== undefined) {
-        localVarFormParams.append(
-          "numberOfPurchasedMediaFiles",
-          numberOfPurchasedMediaFiles as any,
-        );
-      }
-
-      if (caption !== undefined) {
-        localVarFormParams.append("caption", caption as any);
-      }
-
-      if (hashtags !== undefined) {
-        localVarFormParams.append("hashtags", hashtags as any);
-      }
-
-      if (title !== undefined) {
-        localVarFormParams.append("title", title as any);
-      }
-
-      if (price !== undefined) {
-        localVarFormParams.append("price", price as any);
-      }
-
-      if (scheduledPublicationTimestamp !== undefined) {
-        localVarFormParams.append(
-          "scheduledPublicationTimestamp",
-          scheduledPublicationTimestamp as any,
-        );
-      }
-
-      if (collaboratorUserIds !== undefined) {
-        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
-      }
-
-      if (expirationTimestamp !== undefined) {
-        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -1066,7 +853,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createShopItemRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -3812,16 +3603,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {InlineObject8} inlineObject8
+     * @param {InlineObject} inlineObject
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     sendDataTypesToFrontend1: async (
-      inlineObject8: InlineObject8,
+      inlineObject: InlineObject,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'inlineObject8' is not null or undefined
-      assertParamExists("sendDataTypesToFrontend1", "inlineObject8", inlineObject8);
+      // verify required parameter 'inlineObject' is not null or undefined
+      assertParamExists("sendDataTypesToFrontend1", "inlineObject", inlineObject);
       const localVarPath = `/utilities/sendDataTypesToFrontend1`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3845,7 +3636,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        inlineObject8,
+        inlineObject,
         localVarRequestOptions,
         configuration,
       );
@@ -4433,27 +4224,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {any} backgroundImage
-     * @param {string} publishingChannelId
+     * @param {UpdatePublishingChannelBackgroundImageRequestBody} updatePublishingChannelBackgroundImageRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePublishingChannelBackgroundImage: async (
-      backgroundImage: any,
-      publishingChannelId: string,
+      updatePublishingChannelBackgroundImageRequestBody: UpdatePublishingChannelBackgroundImageRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'backgroundImage' is not null or undefined
+      // verify required parameter 'updatePublishingChannelBackgroundImageRequestBody' is not null or undefined
       assertParamExists(
         "updatePublishingChannelBackgroundImage",
-        "backgroundImage",
-        backgroundImage,
-      );
-      // verify required parameter 'publishingChannelId' is not null or undefined
-      assertParamExists(
-        "updatePublishingChannelBackgroundImage",
-        "publishingChannelId",
-        publishingChannelId,
+        "updatePublishingChannelBackgroundImageRequestBody",
+        updatePublishingChannelBackgroundImageRequestBody,
       );
       const localVarPath = `/publishing_channel/updatePublishingChannelBackgroundImage`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4466,18 +4249,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (backgroundImage !== undefined) {
-        localVarFormParams.append("backgroundImage", backgroundImage as any);
-      }
-
-      if (publishingChannelId !== undefined) {
-        localVarFormParams.append("publishingChannelId", publishingChannelId as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -4487,7 +4260,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updatePublishingChannelBackgroundImageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4496,27 +4273,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {any} profilePicture
-     * @param {string} publishingChannelId
+     * @param {UpdatePublishingChannelProfilePictureRequestBody} updatePublishingChannelProfilePictureRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePublishingChannelProfilePicture: async (
-      profilePicture: any,
-      publishingChannelId: string,
+      updatePublishingChannelProfilePictureRequestBody: UpdatePublishingChannelProfilePictureRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'profilePicture' is not null or undefined
+      // verify required parameter 'updatePublishingChannelProfilePictureRequestBody' is not null or undefined
       assertParamExists(
         "updatePublishingChannelProfilePicture",
-        "profilePicture",
-        profilePicture,
-      );
-      // verify required parameter 'publishingChannelId' is not null or undefined
-      assertParamExists(
-        "updatePublishingChannelProfilePicture",
-        "publishingChannelId",
-        publishingChannelId,
+        "updatePublishingChannelProfilePictureRequestBody",
+        updatePublishingChannelProfilePictureRequestBody,
       );
       const localVarPath = `/publishing_channel/updatePublishingChannelProfilePicture`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4529,18 +4298,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (profilePicture !== undefined) {
-        localVarFormParams.append("profilePicture", profilePicture as any);
-      }
-
-      if (publishingChannelId !== undefined) {
-        localVarFormParams.append("publishingChannelId", publishingChannelId as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -4550,7 +4309,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updatePublishingChannelProfilePictureRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4559,32 +4322,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} publishedItemId
-     * @param {string} [description]
-     * @param {string} [hashtags]
-     * @param {string} [title]
-     * @param {string} [price]
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
-     * @param {string} [collaboratorUserIds]
-     * @param {Array<any>} [mediaFiles]
+     * @param {UpdateShopItemRequestBody} updateShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateShopItem: async (
-      publishedItemId: string,
-      description?: string,
-      hashtags?: string,
-      title?: string,
-      price?: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
-      collaboratorUserIds?: string,
-      mediaFiles?: Array<any>,
+      updateShopItemRequestBody: UpdateShopItemRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'publishedItemId' is not null or undefined
-      assertParamExists("updateShopItem", "publishedItemId", publishedItemId);
+      // verify required parameter 'updateShopItemRequestBody' is not null or undefined
+      assertParamExists(
+        "updateShopItem",
+        "updateShopItemRequestBody",
+        updateShopItemRequestBody,
+      );
       const localVarPath = `/shopitem/update`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4596,50 +4347,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (publishedItemId !== undefined) {
-        localVarFormParams.append("publishedItemId", publishedItemId as any);
-      }
-
-      if (description !== undefined) {
-        localVarFormParams.append("description", description as any);
-      }
-
-      if (hashtags !== undefined) {
-        localVarFormParams.append("hashtags", hashtags as any);
-      }
-
-      if (title !== undefined) {
-        localVarFormParams.append("title", title as any);
-      }
-
-      if (price !== undefined) {
-        localVarFormParams.append("price", price as any);
-      }
-
-      if (scheduledPublicationTimestamp !== undefined) {
-        localVarFormParams.append(
-          "scheduledPublicationTimestamp",
-          scheduledPublicationTimestamp as any,
-        );
-      }
-
-      if (expirationTimestamp !== undefined) {
-        localVarFormParams.append("expirationTimestamp", expirationTimestamp as any);
-      }
-
-      if (collaboratorUserIds !== undefined) {
-        localVarFormParams.append("collaboratorUserIds", collaboratorUserIds as any);
-      }
-      if (mediaFiles) {
-        mediaFiles.forEach((element) => {
-          localVarFormParams.append("mediaFiles", element as any);
-        });
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -4649,7 +4358,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateShopItemRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4658,16 +4371,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {any} backgroundImage
+     * @param {UpdateUserBackgroundImageRequestBody} updateUserBackgroundImageRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserBackgroundImage: async (
-      backgroundImage: any,
+      updateUserBackgroundImageRequestBody: UpdateUserBackgroundImageRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'backgroundImage' is not null or undefined
-      assertParamExists("updateUserBackgroundImage", "backgroundImage", backgroundImage);
+      // verify required parameter 'updateUserBackgroundImageRequestBody' is not null or undefined
+      assertParamExists(
+        "updateUserBackgroundImage",
+        "updateUserBackgroundImageRequestBody",
+        updateUserBackgroundImageRequestBody,
+      );
       const localVarPath = `/user/UpdateUserBackgroundImage`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4679,14 +4396,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (backgroundImage !== undefined) {
-        localVarFormParams.append("backgroundImage", backgroundImage as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -4696,7 +4407,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateUserBackgroundImageRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4754,16 +4469,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {any} profilePicture
+     * @param {UpdateUserProfilePictureRequestBody} updateUserProfilePictureRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfilePicture: async (
-      profilePicture: any,
+      updateUserProfilePictureRequestBody: UpdateUserProfilePictureRequestBody,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'profilePicture' is not null or undefined
-      assertParamExists("updateUserProfilePicture", "profilePicture", profilePicture);
+      // verify required parameter 'updateUserProfilePictureRequestBody' is not null or undefined
+      assertParamExists(
+        "updateUserProfilePicture",
+        "updateUserProfilePictureRequestBody",
+        updateUserProfilePictureRequestBody,
+      );
       const localVarPath = `/user/UpdateUserProfilePicture`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4775,14 +4494,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
-        FormData)();
 
-      if (profilePicture !== undefined) {
-        localVarFormParams.append("profilePicture", profilePicture as any);
-      }
-
-      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -4792,7 +4505,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = localVarFormParams;
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateUserProfilePictureRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -5118,20 +4835,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {Array<any>} mediaFiles
-     * @param {string} caption
-     * @param {string} hashtags
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
+     * @param {CreatePostRequestBody} createPostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createPost(
-      mediaFiles: Array<any>,
-      caption: string,
-      hashtags: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
+      createPostRequestBody: CreatePostRequestBody,
       options?: any,
     ): Promise<
       (
@@ -5140,11 +4849,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrCreatePostFailedReasonCreatePostSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(
-        mediaFiles,
-        caption,
-        hashtags,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
+        createPostRequestBody,
         options,
       );
       return createRequestFunction(
@@ -5183,38 +4888,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} publishingChannelName
-     * @param {string} publishingChannelDescription
-     * @param {Array<any>} backgroundImageAndProfilePicture
-     * @param {string} [commaSeparatedModeratorUserIds]
-     * @param {string} [externalUrl1]
-     * @param {string} [externalUrl2]
-     * @param {string} [externalUrl3]
-     * @param {string} [externalUrl4]
-     * @param {string} [externalUrl5]
-     * @param {string} [publishingChannelRule1]
-     * @param {string} [publishingChannelRule2]
-     * @param {string} [publishingChannelRule3]
-     * @param {string} [publishingChannelRule4]
-     * @param {string} [publishingChannelRule5]
+     * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createPublishingChannel(
-      publishingChannelName: string,
-      publishingChannelDescription: string,
-      backgroundImageAndProfilePicture: Array<any>,
-      commaSeparatedModeratorUserIds?: string,
-      externalUrl1?: string,
-      externalUrl2?: string,
-      externalUrl3?: string,
-      externalUrl4?: string,
-      externalUrl5?: string,
-      publishingChannelRule1?: string,
-      publishingChannelRule2?: string,
-      publishingChannelRule3?: string,
-      publishingChannelRule4?: string,
-      publishingChannelRule5?: string,
+      createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
       options?: any,
     ): Promise<
       (
@@ -5223,20 +4902,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrCreatePublishingChannelFailedReasonCreatePublishingChannelSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createPublishingChannel(
-        publishingChannelName,
-        publishingChannelDescription,
-        backgroundImageAndProfilePicture,
-        commaSeparatedModeratorUserIds,
-        externalUrl1,
-        externalUrl2,
-        externalUrl3,
-        externalUrl4,
-        externalUrl5,
-        publishingChannelRule1,
-        publishingChannelRule2,
-        publishingChannelRule3,
-        publishingChannelRule4,
-        publishingChannelRule5,
+        createPublishingChannelRequestBody,
         options,
       );
       return createRequestFunction(
@@ -5248,28 +4914,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {Array<any>} combinedMediaFiles
-     * @param {string} numberOfPurchasedMediaFiles
-     * @param {string} caption
-     * @param {string} hashtags
-     * @param {string} title
-     * @param {string} price
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} collaboratorUserIds
-     * @param {string} [expirationTimestamp]
+     * @param {CreateShopItemRequestBody} createShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async createShopItem(
-      combinedMediaFiles: Array<any>,
-      numberOfPurchasedMediaFiles: string,
-      caption: string,
-      hashtags: string,
-      title: string,
-      price: string,
-      scheduledPublicationTimestamp: string,
-      collaboratorUserIds: string,
-      expirationTimestamp?: string,
+      createShopItemRequestBody: CreateShopItemRequestBody,
       options?: any,
     ): Promise<
       (
@@ -5278,15 +4928,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.createShopItem(
-        combinedMediaFiles,
-        numberOfPurchasedMediaFiles,
-        caption,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        collaboratorUserIds,
-        expirationTimestamp,
+        createShopItemRequestBody,
         options,
       );
       return createRequestFunction(
@@ -6801,18 +6443,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {InlineObject8} inlineObject8
+     * @param {InlineObject} inlineObject
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async sendDataTypesToFrontend1(
-      inlineObject8: InlineObject8,
+      inlineObject: InlineObject,
       options?: any,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<InlineResponse200>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.sendDataTypesToFrontend1(
-        inlineObject8,
+        inlineObject,
         options,
       );
       return createRequestFunction(
@@ -7138,14 +6780,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {any} backgroundImage
-     * @param {string} publishingChannelId
+     * @param {UpdatePublishingChannelBackgroundImageRequestBody} updatePublishingChannelBackgroundImageRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updatePublishingChannelBackgroundImage(
-      backgroundImage: any,
-      publishingChannelId: string,
+      updatePublishingChannelBackgroundImageRequestBody: UpdatePublishingChannelBackgroundImageRequestBody,
       options?: any,
     ): Promise<
       (
@@ -7155,8 +6795,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.updatePublishingChannelBackgroundImage(
-          backgroundImage,
-          publishingChannelId,
+          updatePublishingChannelBackgroundImageRequestBody,
           options,
         );
       return createRequestFunction(
@@ -7168,14 +6807,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {any} profilePicture
-     * @param {string} publishingChannelId
+     * @param {UpdatePublishingChannelProfilePictureRequestBody} updatePublishingChannelProfilePictureRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updatePublishingChannelProfilePicture(
-      profilePicture: any,
-      publishingChannelId: string,
+      updatePublishingChannelProfilePictureRequestBody: UpdatePublishingChannelProfilePictureRequestBody,
       options?: any,
     ): Promise<
       (
@@ -7185,8 +6822,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.updatePublishingChannelProfilePicture(
-          profilePicture,
-          publishingChannelId,
+          updatePublishingChannelProfilePictureRequestBody,
           options,
         );
       return createRequestFunction(
@@ -7198,28 +6834,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} publishedItemId
-     * @param {string} [description]
-     * @param {string} [hashtags]
-     * @param {string} [title]
-     * @param {string} [price]
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
-     * @param {string} [collaboratorUserIds]
-     * @param {Array<any>} [mediaFiles]
+     * @param {UpdateShopItemRequestBody} updateShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateShopItem(
-      publishedItemId: string,
-      description?: string,
-      hashtags?: string,
-      title?: string,
-      price?: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
-      collaboratorUserIds?: string,
-      mediaFiles?: Array<any>,
+      updateShopItemRequestBody: UpdateShopItemRequestBody,
       options?: any,
     ): Promise<
       (
@@ -7228,15 +6848,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateShopItemFailedReasonUpdateShopItemSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateShopItem(
-        publishedItemId,
-        description,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        collaboratorUserIds,
-        mediaFiles,
+        updateShopItemRequestBody,
         options,
       );
       return createRequestFunction(
@@ -7248,12 +6860,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {any} backgroundImage
+     * @param {UpdateUserBackgroundImageRequestBody} updateUserBackgroundImageRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateUserBackgroundImage(
-      backgroundImage: any,
+      updateUserBackgroundImageRequestBody: UpdateUserBackgroundImageRequestBody,
       options?: any,
     ): Promise<
       (
@@ -7262,7 +6874,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserBackgroundImage(
-        backgroundImage,
+        updateUserBackgroundImageRequestBody,
         options,
       );
       return createRequestFunction(
@@ -7300,12 +6912,12 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {any} profilePicture
+     * @param {UpdateUserProfilePictureRequestBody} updateUserProfilePictureRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async updateUserProfilePicture(
-      profilePicture: any,
+      updateUserProfilePictureRequestBody: UpdateUserProfilePictureRequestBody,
       options?: any,
     ): Promise<
       (
@@ -7314,7 +6926,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfilePicture(
-        profilePicture,
+        updateUserProfilePictureRequestBody,
         options,
       );
       return createRequestFunction(
@@ -7508,31 +7120,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {Array<any>} mediaFiles
-     * @param {string} caption
-     * @param {string} hashtags
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
+     * @param {CreatePostRequestBody} createPostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPost(
-      mediaFiles: Array<any>,
-      caption: string,
-      hashtags: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
+      createPostRequestBody: CreatePostRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrCreatePostFailedReasonCreatePostSuccess> {
       return localVarFp
-        .createPost(
-          mediaFiles,
-          caption,
-          hashtags,
-          scheduledPublicationTimestamp,
-          expirationTimestamp,
-          options,
-        )
+        .createPost(createPostRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -7551,99 +7148,30 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {string} publishingChannelName
-     * @param {string} publishingChannelDescription
-     * @param {Array<any>} backgroundImageAndProfilePicture
-     * @param {string} [commaSeparatedModeratorUserIds]
-     * @param {string} [externalUrl1]
-     * @param {string} [externalUrl2]
-     * @param {string} [externalUrl3]
-     * @param {string} [externalUrl4]
-     * @param {string} [externalUrl5]
-     * @param {string} [publishingChannelRule1]
-     * @param {string} [publishingChannelRule2]
-     * @param {string} [publishingChannelRule3]
-     * @param {string} [publishingChannelRule4]
-     * @param {string} [publishingChannelRule5]
+     * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createPublishingChannel(
-      publishingChannelName: string,
-      publishingChannelDescription: string,
-      backgroundImageAndProfilePicture: Array<any>,
-      commaSeparatedModeratorUserIds?: string,
-      externalUrl1?: string,
-      externalUrl2?: string,
-      externalUrl3?: string,
-      externalUrl4?: string,
-      externalUrl5?: string,
-      publishingChannelRule1?: string,
-      publishingChannelRule2?: string,
-      publishingChannelRule3?: string,
-      publishingChannelRule4?: string,
-      publishingChannelRule5?: string,
+      createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrCreatePublishingChannelFailedReasonCreatePublishingChannelSuccess> {
       return localVarFp
-        .createPublishingChannel(
-          publishingChannelName,
-          publishingChannelDescription,
-          backgroundImageAndProfilePicture,
-          commaSeparatedModeratorUserIds,
-          externalUrl1,
-          externalUrl2,
-          externalUrl3,
-          externalUrl4,
-          externalUrl5,
-          publishingChannelRule1,
-          publishingChannelRule2,
-          publishingChannelRule3,
-          publishingChannelRule4,
-          publishingChannelRule5,
-          options,
-        )
+        .createPublishingChannel(createPublishingChannelRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {Array<any>} combinedMediaFiles
-     * @param {string} numberOfPurchasedMediaFiles
-     * @param {string} caption
-     * @param {string} hashtags
-     * @param {string} title
-     * @param {string} price
-     * @param {string} scheduledPublicationTimestamp
-     * @param {string} collaboratorUserIds
-     * @param {string} [expirationTimestamp]
+     * @param {CreateShopItemRequestBody} createShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     createShopItem(
-      combinedMediaFiles: Array<any>,
-      numberOfPurchasedMediaFiles: string,
-      caption: string,
-      hashtags: string,
-      title: string,
-      price: string,
-      scheduledPublicationTimestamp: string,
-      collaboratorUserIds: string,
-      expirationTimestamp?: string,
+      createShopItemRequestBody: CreateShopItemRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrCreateShopItemFailedReasonCreateShopItemSuccess> {
       return localVarFp
-        .createShopItem(
-          combinedMediaFiles,
-          numberOfPurchasedMediaFiles,
-          caption,
-          hashtags,
-          title,
-          price,
-          scheduledPublicationTimestamp,
-          collaboratorUserIds,
-          expirationTimestamp,
-          options,
-        )
+        .createShopItem(createShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8477,16 +8005,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {InlineObject8} inlineObject8
+     * @param {InlineObject} inlineObject
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     sendDataTypesToFrontend1(
-      inlineObject8: InlineObject8,
+      inlineObject: InlineObject,
       options?: any,
     ): AxiosPromise<InlineResponse200> {
       return localVarFp
-        .sendDataTypesToFrontend1(inlineObject8, options)
+        .sendDataTypesToFrontend1(inlineObject, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8665,97 +8193,64 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {any} backgroundImage
-     * @param {string} publishingChannelId
+     * @param {UpdatePublishingChannelBackgroundImageRequestBody} updatePublishingChannelBackgroundImageRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePublishingChannelBackgroundImage(
-      backgroundImage: any,
-      publishingChannelId: string,
+      updatePublishingChannelBackgroundImageRequestBody: UpdatePublishingChannelBackgroundImageRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelBackgroundImageFailedReasonUpdatePublishingChannelBackgroundImageSuccess> {
       return localVarFp
         .updatePublishingChannelBackgroundImage(
-          backgroundImage,
-          publishingChannelId,
+          updatePublishingChannelBackgroundImageRequestBody,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {any} profilePicture
-     * @param {string} publishingChannelId
+     * @param {UpdatePublishingChannelProfilePictureRequestBody} updatePublishingChannelProfilePictureRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updatePublishingChannelProfilePicture(
-      profilePicture: any,
-      publishingChannelId: string,
+      updatePublishingChannelProfilePictureRequestBody: UpdatePublishingChannelProfilePictureRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdatePublishingChannelProfilePictureFailedReasonUpdatePublishingChannelProfilePictureSuccess> {
       return localVarFp
         .updatePublishingChannelProfilePicture(
-          profilePicture,
-          publishingChannelId,
+          updatePublishingChannelProfilePictureRequestBody,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} publishedItemId
-     * @param {string} [description]
-     * @param {string} [hashtags]
-     * @param {string} [title]
-     * @param {string} [price]
-     * @param {string} [scheduledPublicationTimestamp]
-     * @param {string} [expirationTimestamp]
-     * @param {string} [collaboratorUserIds]
-     * @param {Array<any>} [mediaFiles]
+     * @param {UpdateShopItemRequestBody} updateShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateShopItem(
-      publishedItemId: string,
-      description?: string,
-      hashtags?: string,
-      title?: string,
-      price?: string,
-      scheduledPublicationTimestamp?: string,
-      expirationTimestamp?: string,
-      collaboratorUserIds?: string,
-      mediaFiles?: Array<any>,
+      updateShopItemRequestBody: UpdateShopItemRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateShopItemFailedReasonUpdateShopItemSuccess> {
       return localVarFp
-        .updateShopItem(
-          publishedItemId,
-          description,
-          hashtags,
-          title,
-          price,
-          scheduledPublicationTimestamp,
-          expirationTimestamp,
-          collaboratorUserIds,
-          mediaFiles,
-          options,
-        )
+        .updateShopItem(updateShopItemRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {any} backgroundImage
+     * @param {UpdateUserBackgroundImageRequestBody} updateUserBackgroundImageRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserBackgroundImage(
-      backgroundImage: any,
+      updateUserBackgroundImageRequestBody: UpdateUserBackgroundImageRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserBackgroundImageFailedReasonUpdateUserBackgroundImageSuccess> {
       return localVarFp
-        .updateUserBackgroundImage(backgroundImage, options)
+        .updateUserBackgroundImage(updateUserBackgroundImageRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8774,16 +8269,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {any} profilePicture
+     * @param {UpdateUserProfilePictureRequestBody} updateUserProfilePictureRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     updateUserProfilePicture(
-      profilePicture: any,
+      updateUserProfilePictureRequestBody: UpdateUserProfilePictureRequestBody,
       options?: any,
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess> {
       return localVarFp
-        .updateUserProfilePicture(profilePicture, options)
+        .updateUserProfilePicture(updateUserProfilePictureRequestBody, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8939,32 +8434,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {Array<any>} mediaFiles
-   * @param {string} caption
-   * @param {string} hashtags
-   * @param {string} [scheduledPublicationTimestamp]
-   * @param {string} [expirationTimestamp]
+   * @param {CreatePostRequestBody} createPostRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public createPost(
-    mediaFiles: Array<any>,
-    caption: string,
-    hashtags: string,
-    scheduledPublicationTimestamp?: string,
-    expirationTimestamp?: string,
-    options?: any,
-  ) {
+  public createPost(createPostRequestBody: CreatePostRequestBody, options?: any) {
     return DefaultApiFp(this.configuration)
-      .createPost(
-        mediaFiles,
-        caption,
-        hashtags,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        options,
-      )
+      .createPost(createPostRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -8986,102 +8463,33 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {string} publishingChannelName
-   * @param {string} publishingChannelDescription
-   * @param {Array<any>} backgroundImageAndProfilePicture
-   * @param {string} [commaSeparatedModeratorUserIds]
-   * @param {string} [externalUrl1]
-   * @param {string} [externalUrl2]
-   * @param {string} [externalUrl3]
-   * @param {string} [externalUrl4]
-   * @param {string} [externalUrl5]
-   * @param {string} [publishingChannelRule1]
-   * @param {string} [publishingChannelRule2]
-   * @param {string} [publishingChannelRule3]
-   * @param {string} [publishingChannelRule4]
-   * @param {string} [publishingChannelRule5]
+   * @param {CreatePublishingChannelRequestBody} createPublishingChannelRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createPublishingChannel(
-    publishingChannelName: string,
-    publishingChannelDescription: string,
-    backgroundImageAndProfilePicture: Array<any>,
-    commaSeparatedModeratorUserIds?: string,
-    externalUrl1?: string,
-    externalUrl2?: string,
-    externalUrl3?: string,
-    externalUrl4?: string,
-    externalUrl5?: string,
-    publishingChannelRule1?: string,
-    publishingChannelRule2?: string,
-    publishingChannelRule3?: string,
-    publishingChannelRule4?: string,
-    publishingChannelRule5?: string,
+    createPublishingChannelRequestBody: CreatePublishingChannelRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .createPublishingChannel(
-        publishingChannelName,
-        publishingChannelDescription,
-        backgroundImageAndProfilePicture,
-        commaSeparatedModeratorUserIds,
-        externalUrl1,
-        externalUrl2,
-        externalUrl3,
-        externalUrl4,
-        externalUrl5,
-        publishingChannelRule1,
-        publishingChannelRule2,
-        publishingChannelRule3,
-        publishingChannelRule4,
-        publishingChannelRule5,
-        options,
-      )
+      .createPublishingChannel(createPublishingChannelRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {Array<any>} combinedMediaFiles
-   * @param {string} numberOfPurchasedMediaFiles
-   * @param {string} caption
-   * @param {string} hashtags
-   * @param {string} title
-   * @param {string} price
-   * @param {string} scheduledPublicationTimestamp
-   * @param {string} collaboratorUserIds
-   * @param {string} [expirationTimestamp]
+   * @param {CreateShopItemRequestBody} createShopItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public createShopItem(
-    combinedMediaFiles: Array<any>,
-    numberOfPurchasedMediaFiles: string,
-    caption: string,
-    hashtags: string,
-    title: string,
-    price: string,
-    scheduledPublicationTimestamp: string,
-    collaboratorUserIds: string,
-    expirationTimestamp?: string,
+    createShopItemRequestBody: CreateShopItemRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .createShopItem(
-        combinedMediaFiles,
-        numberOfPurchasedMediaFiles,
-        caption,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        collaboratorUserIds,
-        expirationTimestamp,
-        options,
-      )
+      .createShopItem(createShopItemRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -10004,14 +9412,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {InlineObject8} inlineObject8
+   * @param {InlineObject} inlineObject
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public sendDataTypesToFrontend1(inlineObject8: InlineObject8, options?: any) {
+  public sendDataTypesToFrontend1(inlineObject: InlineObject, options?: any) {
     return DefaultApiFp(this.configuration)
-      .sendDataTypesToFrontend1(inlineObject8, options)
+      .sendDataTypesToFrontend1(inlineObject, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -10203,21 +9611,18 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {any} backgroundImage
-   * @param {string} publishingChannelId
+   * @param {UpdatePublishingChannelBackgroundImageRequestBody} updatePublishingChannelBackgroundImageRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public updatePublishingChannelBackgroundImage(
-    backgroundImage: any,
-    publishingChannelId: string,
+    updatePublishingChannelBackgroundImageRequestBody: UpdatePublishingChannelBackgroundImageRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
       .updatePublishingChannelBackgroundImage(
-        backgroundImage,
-        publishingChannelId,
+        updatePublishingChannelBackgroundImageRequestBody,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -10225,60 +9630,18 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {any} profilePicture
-   * @param {string} publishingChannelId
+   * @param {UpdatePublishingChannelProfilePictureRequestBody} updatePublishingChannelProfilePictureRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
   public updatePublishingChannelProfilePicture(
-    profilePicture: any,
-    publishingChannelId: string,
+    updatePublishingChannelProfilePictureRequestBody: UpdatePublishingChannelProfilePictureRequestBody,
     options?: any,
   ) {
     return DefaultApiFp(this.configuration)
-      .updatePublishingChannelProfilePicture(profilePicture, publishingChannelId, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {string} publishedItemId
-   * @param {string} [description]
-   * @param {string} [hashtags]
-   * @param {string} [title]
-   * @param {string} [price]
-   * @param {string} [scheduledPublicationTimestamp]
-   * @param {string} [expirationTimestamp]
-   * @param {string} [collaboratorUserIds]
-   * @param {Array<any>} [mediaFiles]
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public updateShopItem(
-    publishedItemId: string,
-    description?: string,
-    hashtags?: string,
-    title?: string,
-    price?: string,
-    scheduledPublicationTimestamp?: string,
-    expirationTimestamp?: string,
-    collaboratorUserIds?: string,
-    mediaFiles?: Array<any>,
-    options?: any,
-  ) {
-    return DefaultApiFp(this.configuration)
-      .updateShopItem(
-        publishedItemId,
-        description,
-        hashtags,
-        title,
-        price,
-        scheduledPublicationTimestamp,
-        expirationTimestamp,
-        collaboratorUserIds,
-        mediaFiles,
+      .updatePublishingChannelProfilePicture(
+        updatePublishingChannelProfilePictureRequestBody,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -10286,14 +9649,33 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {any} backgroundImage
+   * @param {UpdateShopItemRequestBody} updateShopItemRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public updateUserBackgroundImage(backgroundImage: any, options?: any) {
+  public updateShopItem(
+    updateShopItemRequestBody: UpdateShopItemRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .updateUserBackgroundImage(backgroundImage, options)
+      .updateShopItem(updateShopItemRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {UpdateUserBackgroundImageRequestBody} updateUserBackgroundImageRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public updateUserBackgroundImage(
+    updateUserBackgroundImageRequestBody: UpdateUserBackgroundImageRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .updateUserBackgroundImage(updateUserBackgroundImageRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -10315,14 +9697,17 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {any} profilePicture
+   * @param {UpdateUserProfilePictureRequestBody} updateUserProfilePictureRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public updateUserProfilePicture(profilePicture: any, options?: any) {
+  public updateUserProfilePicture(
+    updateUserProfilePictureRequestBody: UpdateUserProfilePictureRequestBody,
+    options?: any,
+  ) {
     return DefaultApiFp(this.configuration)
-      .updateUserProfilePicture(profilePicture, options)
+      .updateUserProfilePicture(updateUserProfilePictureRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

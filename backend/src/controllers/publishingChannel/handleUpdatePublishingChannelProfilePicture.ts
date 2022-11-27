@@ -7,7 +7,8 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { GenericResponseFailedReason } from "../models";
+import { GenericResponseFailedReason, UploadableKupoFile } from "../models";
+import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
 import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
@@ -23,7 +24,7 @@ export interface UpdatePublishingChannelProfilePictureSuccess {
 }
 
 export interface UpdatePublishingChannelProfilePictureRequestBody {
-  profilePicture: Express.Multer.File;
+  profilePicture: UploadableKupoFile;
   publishingChannelId: string;
 }
 
@@ -41,6 +42,10 @@ export async function handleUpdatePublishingChannelProfilePicture({
     UpdatePublishingChannelProfilePictureSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { profilePicture, publishingChannelId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -78,9 +83,13 @@ export async function handleUpdatePublishingChannelProfilePicture({
   //////////////////////////////////////////////////
   let profilePictureBlobItemPointer = undefined;
   if (!!profilePicture) {
+    const profilePictureKupoFile = ingestUploadedFile({
+      uploadableKupoFile: profilePicture,
+    });
+
     const saveImageResponse = await controller.blobStorageService.saveImage({
       controller,
-      image: profilePicture.buffer,
+      image: profilePictureKupoFile.buffer,
     });
     if (saveImageResponse.type === EitherType.failure) {
       return saveImageResponse;
