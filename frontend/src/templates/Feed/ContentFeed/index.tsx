@@ -1,7 +1,7 @@
 import { RenderablePost, UserContentFeedFilter } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { DEFAULT_EOL_MESSAGE, InfiniteList } from "#/components/InfiniteList";
 import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
@@ -35,17 +35,19 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
   return posts.length === 0 ? (
     <ErrorMessage>No Posts Found</ErrorMessage>
   ) : (
-    <InfiniteScrollArea
+    <InfiniteList
+      data={posts as unknown as RenderablePost[]}
+      renderItem={(index, post) => (
+        <Post
+          key={post.id}
+          post={post}
+          handleClickOfCommentsButton={() => goToPostPage(post.id)}
+        />
+      )}
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={posts.map((post) => (
-        <Post
-          key={post.id}
-          post={post as unknown as RenderablePost}
-          handleClickOfCommentsButton={() => goToPostPage(post.id)}
-        />
-      ))}
+      endOfListMessage={DEFAULT_EOL_MESSAGE}
     />
   );
 };

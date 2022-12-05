@@ -29,7 +29,7 @@ export async function uploadMediaFile({
 > {
   const { mimetype } = file;
 
-  const permittedImageTypes = ["image/jpeg", "image/png"];
+  const permittedImageTypes = ["image/jpeg", "image/png", "image/gif"];
 
   const permittedVideoTypes = ["video/mp4"];
 
@@ -56,7 +56,7 @@ export async function uploadMediaFile({
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
         .png({ compressionLevel: 8 })
         .toBuffer();
-    } else {
+    } else if (mimetype.includes("jpeg")) {
       buffer = await sharp(file.buffer)
         .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })

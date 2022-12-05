@@ -1,6 +1,6 @@
 import { useGetFollowingUsers } from "#/api/queries/users/useGetFollowingUsers";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { useCurrentUserId } from "#/contexts/auth";
@@ -30,13 +30,12 @@ export const Following = () => {
   }
 
   return (
-    <InfiniteScrollArea
+    <InfiniteList
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={users.map((user) => (
-        <ListUser key={user.userId} user={user} />
-      ))}
+      data={users}
+      renderItem={(index, user) => <ListUser key={user.userId} user={user} />}
     />
   );
 };

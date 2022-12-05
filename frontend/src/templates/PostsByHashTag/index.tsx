@@ -3,7 +3,7 @@ import { RenderablePost, UserContentFeedFilterType } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { DetailLayout } from "#/components/DetailLayout";
 import { ErrorArea } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { DEFAULT_EOL_MESSAGE, InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { getPostsByHashtagUrl } from "#/utils/generateLinkUrls";
@@ -44,17 +44,19 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
       ) : isLoading || !posts ? (
         <LoadingArea size="lg" />
       ) : (
-        <InfiniteScrollArea
+        <InfiniteList
           hasNextPage={hasNextPage ?? false}
           isNextPageLoading={isFetchingNextPage}
           loadNextPage={fetchNextPage}
-          items={posts.map((post) => (
+          data={posts as unknown as RenderablePost[]}
+          renderItem={(index, post) => (
             <Post
               key={post.id}
-              post={post as unknown as RenderablePost}
+              post={post}
               handleClickOfCommentsButton={() => goToPostPage(post.id)}
             />
-          ))}
+          )}
+          endOfListMessage={DEFAULT_EOL_MESSAGE}
         />
       )}
     </DetailLayout>

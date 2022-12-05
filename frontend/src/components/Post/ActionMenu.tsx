@@ -19,7 +19,11 @@ export interface ActionMenuProps {
 
 export const ActionMenu = (props: ActionMenuProps) => {
   return (
-    <Popover trigger={<Trigger css={{ size: props.triggerSize }} />}>
+    <Popover
+      trigger={<Trigger css={{ size: props.triggerSize }} />}
+      align="end"
+      side="bottom"
+    >
       {({ hide }) => (
         <Stack>
           {props.actions.map(({ Icon, iconColor, label, onClick }) => (

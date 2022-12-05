@@ -3,7 +3,7 @@ import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGet
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
 import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Notification } from "./Notification";
 
@@ -31,13 +31,14 @@ export const Notifications = () => {
         ) : !oldNotifications.length ? (
           <ErrorMessage>You&apos;re all caught up!</ErrorMessage>
         ) : (
-          <InfiniteScrollArea
+          <InfiniteList
             hasNextPage={hasNextPage ?? false}
             isNextPageLoading={isFetchingNextPage}
             loadNextPage={fetchNextPage}
-            items={oldNotifications.map((notification, index) => (
+            data={oldNotifications}
+            renderItem={(index, notification) => (
               <Notification key={index} notification={notification} />
-            ))}
+            )}
           />
         )}
       </div>

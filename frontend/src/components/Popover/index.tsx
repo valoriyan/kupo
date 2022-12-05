@@ -11,6 +11,7 @@ export interface PopoverProps {
   trigger: ReactNode;
   children: ReactNode | ((renderProps: PopoverRenderProps) => ReactNode);
   align?: "start" | "center" | "end" | undefined;
+  side?: "bottom" | "left" | "right" | "top" | undefined;
 }
 
 export const Popover = (props: PopoverProps) => {
@@ -23,7 +24,7 @@ export const Popover = (props: PopoverProps) => {
       <Trigger>{props.trigger}</Trigger>
       <AnimatePresence initial={false}>
         {open ? (
-          <Content sideOffset={8} align={props.align ?? "start"} forceMount>
+          <ContentWrapper sideOffset={8} align={props.align} side={props.side} forceMount>
             <ContentBody
               transition={{ duration: prefersMotion ? 0.25 : 0 }}
               initial={{ scale: 0, opacity: 0.5 }}
@@ -34,17 +35,20 @@ export const Popover = (props: PopoverProps) => {
                 ? props.children({ hide })
                 : props.children}
             </ContentBody>
-          </Content>
+          </ContentWrapper>
         ) : null}
       </AnimatePresence>
     </Root>
   );
 };
 
+const ContentWrapper = styled(Content, {
+  zIndex: "$dropdown",
+});
+
 const ContentBody = styled(motion.div, {
   bg: "$background1",
   borderRadius: "$1",
   border: "solid $borderWidths$1 $border",
-  zIndex: "$dropdown",
   transformOrigin: "var(--radix-popover-content-transform-origin)",
 });

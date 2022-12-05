@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { RenderableChatMessage } from "#/api";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { Flex, Stack } from "#/components/Layout";
 import { ScrollArea } from "#/components/ScrollArea";
 import { ChatRoomMessage } from "./ChatRoomMessage";
@@ -30,11 +30,12 @@ export const ChatMessagesList = ({
   return (
     <ScrollArea ref={listRef}>
       <Stack css={{ p: "$4", pb: 0 }}>
-        <InfiniteScrollArea
+        <InfiniteList
           hasNextPage={hasPreviousPage ?? false}
           isNextPageLoading={isFetchingPreviousPage}
           loadNextPage={fetchPreviousPage}
-          items={chatMessages.map((message) => {
+          data={chatMessages}
+          renderItem={(index, message) => {
             const isClientMessage = message.authorUserId === clientUserId;
 
             return (
@@ -48,7 +49,7 @@ export const ChatMessagesList = ({
                 <ChatRoomMessage message={message} isClientMessage={isClientMessage} />
               </Flex>
             );
-          })}
+          }}
         />
       </Stack>
     </ScrollArea>
