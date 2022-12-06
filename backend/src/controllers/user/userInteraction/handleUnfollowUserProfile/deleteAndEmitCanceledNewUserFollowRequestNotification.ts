@@ -33,8 +33,10 @@ export async function deleteAndEmitCanceledNewUserFollowRequestNotification({
     await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        notificationType: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST,
-        referenceTableId: userFollowEventId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST,
+          userFollowEventId,
+        },
         recipientUserId,
       },
     );

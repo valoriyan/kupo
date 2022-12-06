@@ -1,7 +1,7 @@
 import { Pool, QueryResult } from "pg";
 import {
   Constraint,
-  TableConstaints,
+  TableConstraints,
 } from "../models/TableConstraintStructure";
 
 async function getUniqueConstraintsOfTable({
@@ -137,7 +137,7 @@ export async function getTableConstraints({
 }: {
   tableName: string;
   pool: Pool;
-}): Promise<TableConstaints> {
+}): Promise<TableConstraints> {
   const foreignKeyConstraints = await getForeignKeysOfTable({
     tableName,
     pool,

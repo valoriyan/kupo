@@ -23,5 +23,5 @@ export interface DeletePublishedItemCommentRequestBody {
    * @type {string}
    * @memberof DeletePublishedItemCommentRequestBody
    */
-  postCommentId: string;
+  publishedItemCommentId: string;
 }

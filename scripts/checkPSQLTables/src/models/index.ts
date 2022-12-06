@@ -1,5 +1,5 @@
 import { ColumnStructure } from "./ColumnStructure";
-import { TableConstaints } from "./TableConstraintStructure";
+import { TableConstraints } from "./TableConstraintStructure";
 
 export interface DatabaseConfig {
   databaseName: string;
@@ -11,7 +11,7 @@ export interface TableStructure {
   columns: {
     [columnName: string]: ColumnStructure;
   };
-  constraints: TableConstaints;
+  constraints: TableConstraints;
 }
 
 export interface DatabaseStructure {

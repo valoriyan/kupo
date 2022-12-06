@@ -66,18 +66,19 @@ export async function handleRevokeFollower({
   // DETERMINE IF ACCEPTED FOLLOW REQUEST NOTIFCATION EXISTS
   //////////////////////////////////////////////////
 
-  const maybeGetUserNotificationResponse =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.maybeGetUserNotification(
+  const maybeGetUserNotificationByUserFollowReferenceResponse =
+    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.maybeGetUserNotificationByUserFollowReference(
       {
         controller,
         userId: revokedUserId,
-        referenceTableId: user_follow_event_id,
+        userFollowReference: user_follow_event_id,
       },
     );
-  if (maybeGetUserNotificationResponse.type === EitherType.failure) {
-    return maybeGetUserNotificationResponse;
+  if (maybeGetUserNotificationByUserFollowReferenceResponse.type === EitherType.failure) {
+    return maybeGetUserNotificationByUserFollowReferenceResponse;
   }
-  const { success: maybeUserNotification } = maybeGetUserNotificationResponse;
+  const { success: maybeUserNotification } =
+    maybeGetUserNotificationByUserFollowReferenceResponse;
 
   //////////////////////////////////////////////////
   // IF EXISTS

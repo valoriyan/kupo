@@ -23,4 +23,5 @@ export enum GenericResponseFailedReason {
   PaymentProcessorError = "PAYMENT_PROCESSOR_ERROR",
   EmailServiceError = "EMAIL_SERVICE_ERROR",
   BlobStorageError = "BLOB_STORAGE_ERROR",
+  ImproperUseOfFunction = "IMPROPER_USE_OF_FUNCTION",
 }

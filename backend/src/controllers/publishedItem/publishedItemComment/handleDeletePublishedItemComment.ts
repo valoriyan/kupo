@@ -16,7 +16,7 @@ import {
 import { PublishedItemCommentController } from "./publishedItemCommentController";
 
 export interface DeletePublishedItemCommentRequestBody {
-  postCommentId: string;
+  publishedItemCommentId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -44,7 +44,7 @@ export async function handleDeletePublishedItemComment({
   // PARSE INPUTS
   //////////////////////////////////////////////////
 
-  const { postCommentId } = requestBody;
+  const { publishedItemCommentId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
@@ -58,7 +58,7 @@ export async function handleDeletePublishedItemComment({
 
   const getMaybePublishedItemCommentByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
-      { controller, publishedItemCommentId: postCommentId },
+      { controller, publishedItemCommentId: publishedItemCommentId },
     );
   if (getMaybePublishedItemCommentByIdResponse.type === EitherType.failure) {
     return getMaybePublishedItemCommentByIdResponse;
@@ -71,8 +71,8 @@ export async function handleDeletePublishedItemComment({
       controller,
       httpStatusCode: 500,
       reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: `Published item with publishedItemCommentId "${postCommentId}" not found at handleDeletePublishedItemComment`,
-      additionalErrorInformation: `Published item with publishedItemCommentId "${postCommentId}" not found at handleDeletePublishedItemComment`,
+      error: `Published item with publishedItemCommentId "${publishedItemCommentId}" not found at handleDeletePublishedItemComment`,
+      additionalErrorInformation: `Published item with publishedItemCommentId "${publishedItemCommentId}" not found at handleDeletePublishedItemComment`,
     });
   }
   const { publishedItemId } = maybeUnrenderablePublishedItemComment;
@@ -100,7 +100,7 @@ export async function handleDeletePublishedItemComment({
     await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.deletePublishedItemComment(
       {
         controller,
-        publishedItemCommentId: postCommentId,
+        publishedItemCommentId: publishedItemCommentId,
         authorUserId: clientUserId,
       },
     );
@@ -116,8 +116,10 @@ export async function handleDeletePublishedItemComment({
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        notificationType: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
-        referenceTableId: postCommentId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
+          publishedItemCommentId: publishedItemCommentId,
+        },
         recipientUserId: postAuthorUserId,
       },
     );
@@ -129,8 +131,10 @@ export async function handleDeletePublishedItemComment({
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        notificationType: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
-        referenceTableId: postCommentId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+          publishedItemCommentId,
+        },
         recipientUserId: postAuthorUserId,
       },
     );
@@ -160,7 +164,7 @@ export async function handleDeletePublishedItemComment({
     {
       type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_PUBLISHED_ITEM,
       countOfUnreadNotifications,
-      publishedItemCommentId: postCommentId,
+      publishedItemCommentId: publishedItemCommentId,
     };
 
   await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost(
@@ -174,7 +178,7 @@ export async function handleDeletePublishedItemComment({
     {
       type: NOTIFICATION_EVENTS.CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
       countOfUnreadNotifications,
-      publishedItemCommentId: postCommentId,
+      publishedItemCommentId: publishedItemCommentId,
     };
 
   await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewTagInPublishedItemComment(

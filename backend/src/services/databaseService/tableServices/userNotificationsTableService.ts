@@ -67,6 +67,55 @@ export interface DBUserNotification {
   published_item_like_reference?: string;
 }
 
+function generateReferenceTableRow({
+  userNotificationDbReference,
+}: {
+  userNotificationDbReference: UserNotificationDbReference;
+}) {
+  const notificationType = userNotificationDbReference.type;
+
+  if (notificationType === NOTIFICATION_EVENTS.NEW_FOLLOWER) {
+    return {
+      field: "user_follow_reference",
+      value: userNotificationDbReference.userFollowEventId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST) {
+    return {
+      field: "user_follow_reference",
+      value: userNotificationDbReference.userFollowEventId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST) {
+    return {
+      field: "user_follow_reference",
+      value: userNotificationDbReference.userFollowEventId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM) {
+    return {
+      field: "published_item_comment_reference",
+      value: userNotificationDbReference.publishedItemCommentId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT) {
+    return {
+      field: "published_item_comment_reference",
+      value: userNotificationDbReference.publishedItemCommentId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION) {
+    return {
+      field: "published_item_reference",
+      value: userNotificationDbReference.publishedItemId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM) {
+    return {
+      field: "published_item_like_reference",
+      value: userNotificationDbReference.publishedItemLikeId,
+    };
+  } else {
+    throw new Error(
+      `Unhandled notification type "${notificationType}" @ generateReferenceTableRow`,
+    );
+  }
+}
+
 export class UserNotificationsTableService extends TableService {
   public static readonly tableName = `user_notifications`;
   public readonly tableName = UserNotificationsTableService.tableName;
@@ -93,8 +142,6 @@ export class UserNotificationsTableService extends TableService {
 
         timestamp_seen_by_user BIGINT,
         last_updated_timestamp BIGINT NOT NULL,
-
-        reference_table_id VARCHAR(64) NOT NULL,
 
         user_follow_reference VARCHAR(64),
         published_item_reference VARCHAR(64),
@@ -233,34 +280,10 @@ export class UserNotificationsTableService extends TableService {
     externalReference: UserNotificationDbReference;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, DBUserNotification>> {
     const notificationType = externalReference.type;
-    let userFollowReference;
-    let publishedItemReference;
-    let publishedItemCommentReference;
-    let publishedItemLikeReference;
 
-    if (notificationType === NOTIFICATION_EVENTS.NEW_FOLLOWER) {
-      userFollowReference = externalReference.userFollowEventId;
-    } else if (notificationType === NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST) {
-      userFollowReference = externalReference.userFollowEventId;
-    } else if (notificationType === NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST) {
-      userFollowReference = externalReference.userFollowEventId;
-    } else if (notificationType === NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM) {
-      publishedItemCommentReference = externalReference.publishedItemCommentId;
-    } else if (
-      notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT
-    ) {
-      publishedItemCommentReference = externalReference.publishedItemCommentId;
-    } else if (
-      notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION
-    ) {
-      publishedItemReference = externalReference.publishedItemId;
-    } else if (notificationType === NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM) {
-      publishedItemLikeReference = externalReference.publishedItemLikeId;
-    } else {
-      throw new Error(
-        `Unhandled notification type "${notificationType}" @ createUserNotification`,
-      );
-    }
+    const referenceTableRow = generateReferenceTableRow({
+      userNotificationDbReference: externalReference,
+    });
 
     try {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
@@ -270,16 +293,7 @@ export class UserNotificationsTableService extends TableService {
             { field: "recipient_user_id", value: recipientUserId },
             { field: "notification_type", value: notificationType },
 
-            { field: "user_follow_reference", value: userFollowReference },
-            { field: "published_item_reference", value: publishedItemReference },
-            {
-              field: "published_item_comment_reference",
-              value: publishedItemCommentReference,
-            },
-            {
-              field: "published_item_like_reference",
-              value: publishedItemLikeReference,
-            },
+            referenceTableRow,
 
             { field: "last_updated_timestamp", value: Date.now() },
           ],
@@ -378,14 +392,14 @@ export class UserNotificationsTableService extends TableService {
     }
   }
 
-  public async maybeGetUserNotification({
+  public async maybeGetUserNotificationByUserFollowReference({
     controller,
     userId,
-    referenceTableId,
+    userFollowReference,
   }: {
     controller: Controller;
     userId: string;
-    referenceTableId: string;
+    userFollowReference: string;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, DBUserNotification | undefined>
   > {
@@ -399,14 +413,14 @@ export class UserNotificationsTableService extends TableService {
           WHERE
               recipient_user_id = $1
             AND
-              reference_table_id = $2
+              user_follow_reference = $2
           ORDER BY
             last_updated_timestamp DESC
           LIMIT
             1
           ;
         `,
-        values: [userId, referenceTableId],
+        values: [userId, userFollowReference],
       };
 
       const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
@@ -426,55 +440,7 @@ export class UserNotificationsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at userNotificationsTableService.doesUserNotificationExist",
-      });
-    }
-  }
-
-  public async doesUserNotificationExist({
-    controller,
-    userId,
-    referenceTableId,
-  }: {
-    controller: Controller;
-    userId: string;
-    referenceTableId: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
-    try {
-      const queryString = {
-        text: `
-          SELECT
-            *
-          FROM
-            ${this.tableName}
-          WHERE
-              recipient_user_id = $1
-            AND
-              reference_table_id = $2
-          ORDER BY
-            last_updated_timestamp DESC
-          LIMIT
-            1
-          ;
-        `,
-        values: [userId, referenceTableId],
-      };
-
-      const response: QueryResult<DBUserNotification> = await this.datastorePool.query(
-        queryString,
-      );
-
-      const rows = response.rows;
-
-      return Success(rows.length === 1);
-    } catch (error) {
-      return Failure({
-        controller,
-        httpStatusCode: 500,
-        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        error,
-        additionalErrorInformation:
-          "Error at userNotificationsTableService.doesUserNotificationExist",
+          "Error at userNotificationsTableService.maybeGetUserNotificationByUserFollowReference",
       });
     }
   }
@@ -603,20 +569,22 @@ export class UserNotificationsTableService extends TableService {
 
   public async deleteUserNotificationForUserId({
     controller,
-    referenceTableId,
     recipientUserId,
-    notificationType,
+    externalReference,
   }: {
     controller: Controller;
-    referenceTableId: string;
     recipientUserId: string;
-    notificationType: string;
+    externalReference: UserNotificationDbReference;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    const referenceTableRow = generateReferenceTableRow({
+      userNotificationDbReference: externalReference,
+    });
+
     try {
       const query = generatePSQLGenericDeleteRowsQueryString({
         fieldsUsedToIdentifyRowsToDelete: [
-          { field: "reference_table_id", value: referenceTableId },
-          { field: "notification_type", value: notificationType },
+          referenceTableRow,
+          { field: "notification_type", value: externalReference.type },
           { field: "recipient_user_id", value: recipientUserId },
         ],
         tableName: this.tableName,
@@ -636,22 +604,23 @@ export class UserNotificationsTableService extends TableService {
     }
   }
 
-  public async deleteUserNotificationsForAllUsersByReferenceTableIds({
+  public async deleteNewLikeOnPublishedItemUserNotificationsForAllUsers({
     controller,
-    referenceTableIds,
-    notificationType,
+    publishedItemLikeIds,
   }: {
     controller: Controller;
-    referenceTableIds: string[];
-    notificationType: string;
+    publishedItemLikeIds: string[];
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
       const query = generatePSQLGenericDeleteRowsQueryString({
         fieldsUsedToIdentifyRowsToDelete: [
-          { field: "notification_type", value: notificationType },
+          {
+            field: "notification_type",
+            value: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
+          },
         ],
         fieldsUsedToIdentifyRowsToDeleteUsingInClauses: [
-          { field: "reference_table_id", values: referenceTableIds },
+          { field: "published_item_like_reference", values: publishedItemLikeIds },
         ],
         tableName: this.tableName,
       });

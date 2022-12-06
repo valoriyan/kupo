@@ -6,7 +6,7 @@ import { Promise as BluebirdPromise } from "bluebird";
 import { ColumnStructure } from "../models/ColumnStructure";
 import { getTableNames } from "./getTableNames";
 import { getTableConstraints } from "./getTableConstraints";
-import { TableConstaints } from "../models/TableConstraintStructure";
+import { TableConstraints } from "../models/TableConstraintStructure";
 
 export async function getDatabaseStructure(
   databaseConfig: DatabaseConfig
@@ -42,7 +42,7 @@ async function getTableStructure({
     tableName,
   });
 
-  const tableConstraints: TableConstaints = await getTableConstraints({
+  const tableConstraints: TableConstraints = await getTableConstraints({
     tableName,
     pool,
   });

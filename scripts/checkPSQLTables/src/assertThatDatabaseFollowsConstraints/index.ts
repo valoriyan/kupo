@@ -1,9 +1,9 @@
 import { Pool, QueryResult } from "pg";
 import { getDatabasePool } from "../getDatabasePool";
 import { DatabaseConfig, DatabaseStructure, TableStructure } from "../models";
-import { TableConstaints } from "../models/TableConstraintStructure";
+import { TableConstraints } from "../models/TableConstraintStructure";
 import { Promise as BluebirdPromise } from "bluebird";
-import { assertForeignKeyConstraint } from "./assertForeignKeyConstraints";
+import { assertForeignKeyConstraintsForTable } from "./assertForeignKeyConstraints";
 
 export async function assertThatDatabaseFollowsConstraints({
   databaseConfig,
@@ -24,9 +24,9 @@ export async function assertThatDatabaseFollowsConstraints({
 
     const tableStructure: TableStructure = databaseStructure[tableName];
 
-    const tableConstaints: TableConstaints = tableStructure.constraints;
+    const tableConstaints: TableConstraints = tableStructure.constraints;
 
-    await assertForeignKeyConstraint({
+    await assertForeignKeyConstraintsForTable({
       pool,
       tableConstaints,
       tableName,

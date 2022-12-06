@@ -1,4 +1,4 @@
-export interface TableConstaints {
+export interface TableConstraints {
   foreignKeyConstraints: {
     [constraintName: string]: Constraint;
   };

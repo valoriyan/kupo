@@ -1,6 +1,6 @@
 import {
   Constraint,
-  TableConstaints,
+  TableConstraints,
 } from "../models/TableConstraintStructure";
 
 export function assertMatchingTableConstaints({
@@ -8,8 +8,8 @@ export function assertMatchingTableConstaints({
   betaTableConstraints,
   tableName,
 }: {
-  localTableConstraints: TableConstaints;
-  betaTableConstraints: TableConstaints;
+  localTableConstraints: TableConstraints;
+  betaTableConstraints: TableConstraints;
   tableName: string;
 }) {
   [
@@ -56,8 +56,8 @@ function assertMatchingConstraintsByType({
   tableName,
   constraintType,
 }: {
-  localTableConstraints: TableConstaints;
-  betaTableConstraints: TableConstaints;
+  localTableConstraints: TableConstraints;
+  betaTableConstraints: TableConstraints;
   tableName: string;
   constraintType: string;
 }) {

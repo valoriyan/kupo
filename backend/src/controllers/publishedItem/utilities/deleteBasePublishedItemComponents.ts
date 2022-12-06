@@ -45,7 +45,7 @@ export const deleteBaseRenderablePublishedItemComponents = async ({
   const deleteAssociatedNotificationsResponse = await deleteAssociatedNotifications({
     controller,
     databaseService,
-    postLikeIds,
+    publishedItemLikeIds: postLikeIds,
   });
   if (deleteAssociatedNotificationsResponse.type === EitherType.failure) {
     return deleteAssociatedNotificationsResponse;
@@ -107,19 +107,18 @@ const deleteAssociatedPostLikes = async ({
 const deleteAssociatedNotifications = async ({
   controller,
   databaseService,
-  postLikeIds,
+  publishedItemLikeIds,
 }: {
   controller: Controller;
   databaseService: DatabaseService;
-  postLikeIds: string[];
+  publishedItemLikeIds: string[];
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
-  if (postLikeIds.length > 0) {
+  if (publishedItemLikeIds.length > 0) {
     const deleteUserNotificationsForAllUsersByReferenceTableIdsResponse =
-      await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationsForAllUsersByReferenceTableIds(
+      await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteNewLikeOnPublishedItemUserNotificationsForAllUsers(
         {
           controller,
-          notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
-          referenceTableIds: postLikeIds,
+          publishedItemLikeIds: publishedItemLikeIds,
         },
       );
     if (

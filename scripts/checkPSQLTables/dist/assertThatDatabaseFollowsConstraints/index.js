@@ -24,7 +24,7 @@ function assertThatDatabaseFollowsConstraints({ databaseConfig, databaseStructur
             console.log(`tableName: "${tableName}"`);
             const tableStructure = databaseStructure[tableName];
             const tableConstaints = tableStructure.constraints;
-            yield (0, assertForeignKeyConstraints_1.assertForeignKeyConstraint)({
+            yield (0, assertForeignKeyConstraints_1.assertForeignKeyConstraintsForTable)({
                 pool,
                 tableConstaints,
                 tableName,

@@ -54,7 +54,7 @@ export async function handleRemoveUserLikeFromPublishedItem({
   if (removePublishedItemLikeByUserIdResponse.type === EitherType.failure) {
     return removePublishedItemLikeByUserIdResponse;
   }
-  const { success: deletedPostLike } = removePublishedItemLikeByUserIdResponse;
+  const { success: deletedPublishedItemLike } = removePublishedItemLikeByUserIdResponse;
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
@@ -70,8 +70,10 @@ export async function handleRemoveUserLikeFromPublishedItem({
       {
         controller,
         recipientUserId: unrenderablePost.authorUserId,
-        notificationType: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
-        referenceTableId: deletedPostLike.published_item_like_id,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
+          publishedItemLikeId: deletedPublishedItemLike.published_item_like_id,
+        },
       },
     );
   if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
