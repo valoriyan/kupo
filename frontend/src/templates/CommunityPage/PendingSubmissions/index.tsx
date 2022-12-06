@@ -3,7 +3,7 @@ import { useResolvePendingCommunitySubmission } from "#/api/mutations/community/
 import { useGetPendingSubmissions } from "#/api/queries/community/useGetPendingSubmissions";
 import { Button } from "#/components/Button";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
@@ -43,11 +43,12 @@ export const PendingSubmissions = ({
   return submissions.length === 0 ? (
     <ErrorMessage>No Pending Submissions Found</ErrorMessage>
   ) : (
-    <InfiniteScrollArea
+    <InfiniteList
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={submissions.map((submission) => (
+      data={submissions}
+      renderItem={(index, submission) => (
         <Stack
           key={submission.submissionId}
           css={{ borderBottom: "solid $borderWidths$1 $border" }}
@@ -91,7 +92,7 @@ export const PendingSubmissions = ({
             </Button>
           </Flex>
         </Stack>
-      ))}
+      )}
     />
   );
 };

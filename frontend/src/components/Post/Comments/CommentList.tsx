@@ -4,10 +4,7 @@ import { useDeleteCommentFromPublishedItem } from "#/api/mutations/posts/deleteC
 import { Avatar } from "#/components/Avatar";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfoIcon, TrashIcon } from "#/components/Icons";
-import {
-  InfiniteScrollArea,
-  InfiniteScrollItemRenderProps,
-} from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { Body, truncateByLines } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
@@ -31,28 +28,23 @@ export const CommentList = (props: CommentListProps) => {
   }
 
   return (
-    <InfiniteScrollArea
+    <InfiniteList
+      data={props.comments}
+      renderItem={(index, comment) => (
+        <Comment key={comment.publishedItemCommentId} comment={comment} />
+      )}
       hasNextPage={props.hasNextPage ?? false}
       isNextPageLoading={props.isFetchingNextPage}
       loadNextPage={props.fetchNextPage}
-      // eslint-disable-next-line react/display-name
-      items={props.comments.map((comment) => ({ updateItemHeight }) => (
-        <Comment
-          key={comment.publishedItemCommentId}
-          comment={comment}
-          updateItemHeight={updateItemHeight}
-        />
-      ))}
     />
   );
 };
 
 interface CommentProps {
   comment: RenderablePublishedItemComment;
-  updateItemHeight: InfiniteScrollItemRenderProps["updateItemHeight"];
 }
 
-const Comment = ({ comment, updateItemHeight }: CommentProps) => {
+const Comment = ({ comment }: CommentProps) => {
   const userId = useCurrentUserId();
   const { mutateAsync: deleteComment } = useDeleteCommentFromPublishedItem({
     publishedItemId: comment.publishedItemId,
@@ -61,10 +53,6 @@ const Comment = ({ comment, updateItemHeight }: CommentProps) => {
   const [shouldExpandComment, setShouldExpandComment] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    updateItemHeight();
-  }, [shouldExpandComment, hasOverflow, updateItemHeight]);
 
   useEffect(() => {
     if (

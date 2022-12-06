@@ -2,7 +2,7 @@ import { RenderablePost } from "#/api";
 import { useGetSavedPosts } from "#/api/queries/posts/useGetSavedPosts";
 import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { goToPostPage } from "../SinglePost";
@@ -24,17 +24,18 @@ export const SavedPosts = () => {
         ) : !posts.length ? (
           <ErrorMessage>You haven&apos;t saved any posts yet</ErrorMessage>
         ) : (
-          <InfiniteScrollArea
+          <InfiniteList
             hasNextPage={hasNextPage ?? false}
             isNextPageLoading={isFetchingNextPage}
             loadNextPage={fetchNextPage}
-            items={posts.map((post) => (
+            data={posts as unknown as RenderablePost[]}
+            renderItem={(index, post) => (
               <Post
                 key={post.id}
-                post={post as unknown as RenderablePost}
+                post={post}
                 handleClickOfCommentsButton={() => goToPostPage(post.id)}
               />
-            ))}
+            )}
           />
         )}
       </div>

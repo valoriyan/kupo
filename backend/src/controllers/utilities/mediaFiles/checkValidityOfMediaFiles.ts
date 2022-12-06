@@ -19,7 +19,7 @@ export async function checkValidityOfMediaFiles({
     async (file: BackendKupoFile): Promise<InvalidMediaFileReason | null> => {
       const { mimetype: mimetype, buffer } = file;
 
-      const permittedImageTypes = ["image/jpeg", "image/png"];
+      const permittedImageTypes = ["image/jpeg", "image/png", "image/gif"];
 
       const permittedVideoTypes = ["video/mp4"];
 

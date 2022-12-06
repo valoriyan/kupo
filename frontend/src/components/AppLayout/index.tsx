@@ -103,6 +103,6 @@ const SidePanelWrapper = styled(Flex, {
 });
 
 const Content = styled(ScrollArea, {
-  "@md": { maxWidth: MAX_APP_CONTENT_WIDTH },
+  "@md": { paddingRight: `max(calc(100% - ${MAX_APP_CONTENT_WIDTH}), 0px)` },
   height: "100%",
 });

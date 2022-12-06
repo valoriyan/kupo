@@ -1,6 +1,6 @@
 import { useGetFollowingCommunities } from "#/api/queries/users/useGetFollowingCommunities";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { ListCommunity } from "../ListCommunities";
@@ -28,13 +28,14 @@ export const Communities = () => {
   }
 
   return (
-    <InfiniteScrollArea
+    <InfiniteList
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={communities.map((community) => (
+      data={communities}
+      renderItem={(index, community) => (
         <ListCommunity key={community.publishingChannelId} community={community} />
-      ))}
+      )}
     />
   );
 };

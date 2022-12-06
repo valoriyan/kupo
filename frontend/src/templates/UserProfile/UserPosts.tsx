@@ -1,7 +1,7 @@
 import { PublishedItemType, RenderablePost, RenderableUser } from "#/api";
 import { useGetPublishedItemsByUserId } from "#/api/queries/posts/useGetPageOfPostsByUserId";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { DEFAULT_EOL_MESSAGE, InfiniteList } from "#/components/InfiniteList";
 import { Stack } from "#/components/Layout";
 import { Post } from "#/components/Post";
 import { Spinner } from "#/components/Spinner";
@@ -39,17 +39,19 @@ export const UserPosts = ({ user }: UserPostsProps) => {
   return posts.length === 0 ? (
     <ErrorMessage>No Posts Yet</ErrorMessage>
   ) : (
-    <InfiniteScrollArea
+    <InfiniteList
+      data={posts as unknown as RenderablePost[]}
+      renderItem={(index, post) => (
+        <Post
+          key={post.id}
+          post={post}
+          handleClickOfCommentsButton={() => goToPostPage(post.id)}
+        />
+      )}
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={posts.map((post) => (
-        <Post
-          key={post.id}
-          post={post as unknown as RenderablePost}
-          handleClickOfCommentsButton={() => goToPostPage(post.id)}
-        />
-      ))}
+      endOfListMessage={DEFAULT_EOL_MESSAGE}
     />
   );
 };

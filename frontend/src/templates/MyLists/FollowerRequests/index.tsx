@@ -2,7 +2,7 @@ import { FollowRequestDecision } from "#/api";
 import { useResolveFollowRequest } from "#/api/mutations/users/resolveFollowRequest";
 import { useGetFollowerRequestUsers } from "#/api/queries/users/useGetFollowerRequestUsers";
 import { ErrorMessage } from "#/components/ErrorArea";
-import { InfiniteScrollArea } from "#/components/InfiniteScrollArea";
+import { InfiniteList } from "#/components/InfiniteList";
 import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { ListUser } from "../ListUser";
@@ -32,11 +32,12 @@ export const FollowerRequests = () => {
   }
 
   return (
-    <InfiniteScrollArea
+    <InfiniteList
       hasNextPage={hasNextPage ?? false}
       isNextPageLoading={isFetchingNextPage}
       loadNextPage={fetchNextPage}
-      items={users.map((user) => (
+      data={users}
+      renderItem={(index, user) => (
         <ListUser
           key={user.userId}
           user={user}
@@ -65,7 +66,7 @@ export const FollowerRequests = () => {
             },
           ]}
         />
-      ))}
+      )}
     />
   );
 };
