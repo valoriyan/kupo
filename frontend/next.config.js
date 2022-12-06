@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 module.exports = {
+  staticPageGenerationTimeout: 1000,
   reactStrictMode: true,
   publicRuntimeConfig: {
     API_BASE_URL: process.env.API_BASE_URL,

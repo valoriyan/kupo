@@ -40,7 +40,9 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
   const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
 
   useEffect(() => {
-    markChatRoomAsRead({ chatRoomId });
+    if (!!chatRoomId) {
+      markChatRoomAsRead({ chatRoomId });
+    }
 
     subscribeToChatRoomId({ chatRoomId });
 

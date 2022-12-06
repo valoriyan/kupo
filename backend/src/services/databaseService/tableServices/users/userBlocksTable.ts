@@ -169,6 +169,7 @@ export class UserBlocksTableService extends TableService {
         executorIdParameterStrings.push(`$${values.length + 1}`);
         values.push(maybeExecutorUserId);
       });
+      executorUserIdsCondition += executorIdParameterStrings.join(", ");
       executorUserIdsCondition += ` )`;
 
       const query: QueryConfig = {
