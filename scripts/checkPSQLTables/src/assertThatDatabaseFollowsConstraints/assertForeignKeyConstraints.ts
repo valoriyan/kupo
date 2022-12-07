@@ -100,9 +100,12 @@ async function assertForeignKeyConstraintForTable({
   );
 
   distinctForeignKeyValues.forEach((distinctForeignKeyValue) => {
-    if (!distinctForeignTableValues.has(distinctForeignKeyValue)) {
+    if (
+      !!distinctForeignKeyValue &&
+      !distinctForeignTableValues.has(distinctForeignKeyValue)
+    ) {
       throw new Error(
-        `'Reviewing table '${tableName}'  |   ${distinctForeignKeyValue}' foreign key value missing from table "${tableName}", column ${referencedKey}`
+        `'Reviewing table '${tableName}'  |   '${distinctForeignKeyValue}' foreign key value missing from table "${tableName}", column ${referencedKey}`
       );
     }
   });

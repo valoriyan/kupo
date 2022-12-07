@@ -75,8 +75,9 @@ function assertForeignKeyConstraintForTable({ pool, constraintDefinition, tableN
         const foreignTableResponse = yield pool.query(foreignTableQuery);
         const distinctForeignTableValues = new Set(foreignTableResponse.rows.map((row) => row[referencedKey]));
         distinctForeignKeyValues.forEach((distinctForeignKeyValue) => {
-            if (!distinctForeignTableValues.has(distinctForeignKeyValue)) {
-                throw new Error(`'Reviewing table '${tableName}'  |   ${distinctForeignKeyValue}' foreign key value missing from table "${tableName}", column ${referencedKey}`);
+            if (!!distinctForeignKeyValue &&
+                !distinctForeignTableValues.has(distinctForeignKeyValue)) {
+                throw new Error(`'Reviewing table '${tableName}'  |   '${distinctForeignKeyValue}' foreign key value missing from table "${tableName}", column ${referencedKey}`);
             }
         });
     });
