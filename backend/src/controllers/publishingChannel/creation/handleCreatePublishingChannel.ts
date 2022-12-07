@@ -10,6 +10,10 @@ import {
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
+import {
+  validatePublishingChannelName,
+  ValidatePublishingChannelNameFailedReason,
+} from "./validations";
 
 export interface CreatePublishingChannelRequestBody {
   backgroundImage?: UploadableKupoFile;
@@ -42,7 +46,11 @@ export async function handleCreatePublishingChannel({
   requestBody: CreatePublishingChannelRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | CreatePublishingChannelFailedReason>,
+    ErrorReasonTypes<
+      | string
+      | CreatePublishingChannelFailedReason
+      | ValidatePublishingChannelNameFailedReason
+    >,
     CreatePublishingChannelSuccess
   >
 > {
@@ -68,6 +76,20 @@ export async function handleCreatePublishingChannel({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // VALIDATE PUBLISHING CHANNEL NAME
+  //////////////////////////////////////////////////
+
+  const validatePublishingChannelNameResponse = await validatePublishingChannelName({
+    controller,
+    databaseService: controller.databaseService,
+    publishingChannelName,
+  });
+
+  if (validatePublishingChannelNameResponse.type === EitherType.failure) {
+    return validatePublishingChannelNameResponse;
+  }
 
   //////////////////////////////////////////////////
   // SAVE BACKGROUND IMAGE BLOB

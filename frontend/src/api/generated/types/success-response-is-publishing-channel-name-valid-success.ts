@@ -13,7 +13,6 @@
  */
 
 import { EitherTypeSuccess } from "./either-type-success";
-import { IsPublishingChannelNameValidSuccess } from "./is-publishing-channel-name-valid-success";
 
 /**
  *
@@ -29,8 +28,8 @@ export interface SuccessResponseIsPublishingChannelNameValidSuccess {
   type: EitherTypeSuccess;
   /**
    *
-   * @type {IsPublishingChannelNameValidSuccess}
+   * @type {object}
    * @memberof SuccessResponseIsPublishingChannelNameValidSuccess
    */
-  success: IsPublishingChannelNameValidSuccess;
+  success: object;
 }

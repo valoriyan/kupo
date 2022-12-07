@@ -14,7 +14,7 @@ export const useDeleteCommentFromPublishedItem = ({
   return useMutation(
     async () => {
       const res = await Api.deletePublishedItemComment({
-        postCommentId: publishedItemCommentId,
+        publishedItemCommentId,
       });
 
       if (res.data.success) return res.data.success;

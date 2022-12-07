@@ -7,6 +7,10 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { PublishingChannelController } from "../publishingChannelController";
+import {
+  validatePublishingChannelName,
+  ValidatePublishingChannelNameFailedReason,
+} from "./validations";
 
 export interface IsPublishingChannelNameValidRequestBody {
   publishingChannelName: string;
@@ -17,9 +21,7 @@ export enum IsPublishingChannelNameValidFailedReason {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IsPublishingChannelNameValidSuccess {
-  isPublishingChannelNameAvailable: boolean;
-}
+export interface IsPublishingChannelNameValidSuccess {}
 
 export async function handleGetPublishingChannelNameValidity({
   controller,
@@ -31,7 +33,11 @@ export async function handleGetPublishingChannelNameValidity({
   requestBody: IsPublishingChannelNameValidRequestBody;
 }): Promise<
   SecuredHTTPResponse<
-    ErrorReasonTypes<string | IsPublishingChannelNameValidFailedReason>,
+    ErrorReasonTypes<
+      | string
+      | IsPublishingChannelNameValidFailedReason
+      | ValidatePublishingChannelNameFailedReason
+    >,
     IsPublishingChannelNameValidSuccess
   >
 > {
@@ -45,30 +51,22 @@ export async function handleGetPublishingChannelNameValidity({
   const { publishingChannelName } = requestBody;
 
   //////////////////////////////////////////////////
-  // Check if Publishing Channel Name Exists
+  // Validate publishing channel name
   //////////////////////////////////////////////////
 
-  const maybeGetPublishingChannelByNameResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
-      {
-        controller,
-        name: publishingChannelName,
-      },
-    );
+  const validatePublishingChannelNameResponse = await validatePublishingChannelName({
+    controller,
+    databaseService: controller.databaseService,
+    publishingChannelName,
+  });
 
-  if (maybeGetPublishingChannelByNameResponse.type === EitherType.failure) {
-    return maybeGetPublishingChannelByNameResponse;
+  if (validatePublishingChannelNameResponse.type === EitherType.failure) {
+    return validatePublishingChannelNameResponse;
   }
-
-  const { success: maybePublishingChannel } = maybeGetPublishingChannelByNameResponse;
-
-  const isPublishingChannelNameAvailable = !maybePublishingChannel;
 
   //////////////////////////////////////////////////
   // Return
   //////////////////////////////////////////////////
 
-  return Success({
-    isPublishingChannelNameAvailable,
-  });
+  return Success({});
 }

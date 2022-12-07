@@ -478,7 +478,6 @@ export * from "./inline-object";
 export * from "./inline-response200";
 export * from "./is-publishing-channel-name-valid-failed-reason";
 export * from "./is-publishing-channel-name-valid-request-body";
-export * from "./is-publishing-channel-name-valid-success";
 export * from "./login-user-request-body";
 export * from "./make-credit-card-primary-failed-reason";
 export * from "./make-credit-card-primary-request-body";

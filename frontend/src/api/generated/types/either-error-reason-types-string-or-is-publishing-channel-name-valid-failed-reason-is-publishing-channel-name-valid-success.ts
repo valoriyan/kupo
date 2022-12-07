@@ -15,7 +15,6 @@
 import { EitherTypeSuccess } from "./either-type-success";
 import { FailureResponseErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReason } from "./failure-response-error-reason-types-string-or-is-publishing-channel-name-valid-failed-reason";
 import { FailureResponseErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonError } from "./failure-response-error-reason-types-string-or-is-publishing-channel-name-valid-failed-reason-error";
-import { IsPublishingChannelNameValidSuccess } from "./is-publishing-channel-name-valid-success";
 import { SuccessResponseIsPublishingChannelNameValidSuccess } from "./success-response-is-publishing-channel-name-valid-success";
 
 /**
@@ -38,8 +37,8 @@ export interface EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFaile
   error: FailureResponseErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonError;
   /**
    *
-   * @type {IsPublishingChannelNameValidSuccess}
+   * @type {object}
    * @memberof EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonIsPublishingChannelNameValidSuccess
    */
-  success: IsPublishingChannelNameValidSuccess;
+  success: object;
 }
