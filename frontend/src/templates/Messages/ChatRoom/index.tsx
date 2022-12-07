@@ -1,4 +1,3 @@
-import Router from "next/router";
 import { useEffect } from "react";
 import { RenderableChatMessage } from "#/api";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
@@ -34,8 +33,6 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     mapOfSubscribedChatChannelsToReceivedChatMessages,
     unsubscribeFromChatRoomId,
   } = useWebsocketState();
-
-  console.log("Router.pathname", Router.pathname);
 
   const { mutateAsync: markChatRoomAsRead } = useMarkChatRoomAsRead();
 
@@ -115,7 +112,6 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     .flatMap((page) => page.chatMessages)
     .concat(receivedChatMessages);
 
-  console.log("chatMessages", chatMessages);
   const encounteredChatMessageIds = new Set();
   const deduplicatedChatMessages: RenderableChatMessage[] = [];
   chatMessages.forEach((chatMessage) => {

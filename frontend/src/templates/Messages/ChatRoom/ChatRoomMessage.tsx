@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { RenderableChatMessage } from "#/api";
 import { Stack } from "#/components/Layout";
-import { Subtext } from "#/components/Typography";
+import { Body, Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
 
 export interface ChatRoomMessageProps {
@@ -16,7 +16,9 @@ export const ChatRoomMessage = ({ message, isClientMessage }: ChatRoomMessagePro
 
   return (
     <Wrapper css={{ bg: isClientMessage ? "$primaryTranslucent" : "$background3" }}>
-      <div>{message.text}</div>
+      <Body as="pre" css={{ m: 0 }}>
+        {message.text}
+      </Body>
       <Subtext
         css={{
           fontSize: "$0",

@@ -34,7 +34,7 @@ async function fetchPageOfChatMessagesFromChatRoomId({
   const res = await Api.getPageOfChatMessages({
     chatRoomId: `${chatRoomId}`,
     cursor: pageParam,
-    pageSize: 5,
+    pageSize: 25,
   });
   if (res.data && res.data.success) {
     return res.data.success;
