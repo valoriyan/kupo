@@ -5,6 +5,7 @@ import { useAppLayoutState } from "../AppLayout";
 import { Body } from "../Typography";
 
 export const DEFAULT_EOL_MESSAGE = "Amazing! You've seen it all 😎";
+const OVERSCAN_PIXELS = 600;
 
 export interface InfiniteListProps<T> {
   data: T[];
@@ -13,7 +14,7 @@ export interface InfiniteListProps<T> {
   loadNextPage: () => void;
   isNextPageLoading: boolean;
   scrollParent?: HTMLElement | undefined;
-  endOfListMessage?: string; // TODO: Handle this
+  endOfListMessage?: string;
 }
 
 type ListContext = Pick<
@@ -27,7 +28,7 @@ export const InfiniteList = <T,>(props: InfiniteListProps<T>) => {
   return (
     <Virtuoso
       customScrollParent={props.scrollParent ?? contentContainer}
-      overscan={600}
+      overscan={OVERSCAN_PIXELS}
       data={props.data}
       itemContent={props.renderItem}
       endReached={props.hasNextPage ? props.loadNextPage : undefined}
@@ -35,12 +36,34 @@ export const InfiniteList = <T,>(props: InfiniteListProps<T>) => {
         isNextPageLoading: props.isNextPageLoading,
         endOfListMessage: props.endOfListMessage,
       }}
-      components={{ Footer }}
+      components={{ Footer: EndOfList }}
     />
   );
 };
 
-const Footer = ({ context }: { context?: ListContext }) => {
+export const ReverseInfiniteList = <T,>(props: InfiniteListProps<T>) => {
+  const contentContainer = useAppLayoutState((store) => store.contentContainer);
+
+  return (
+    <Virtuoso
+      customScrollParent={props.scrollParent ?? contentContainer}
+      overscan={OVERSCAN_PIXELS}
+      firstItemIndex={Number.MAX_SAFE_INTEGER - props.data.length}
+      initialTopMostItemIndex={props.data.length - 1}
+      data={props.data}
+      itemContent={props.renderItem}
+      startReached={props.hasNextPage ? props.loadNextPage : undefined}
+      context={{
+        isNextPageLoading: props.isNextPageLoading,
+        endOfListMessage: props.endOfListMessage,
+      }}
+      components={{ Header: EndOfList }}
+      followOutput="smooth"
+    />
+  );
+};
+
+const EndOfList = ({ context }: { context?: ListContext }) => {
   const message = context?.isNextPageLoading
     ? "Loading..."
     : context?.endOfListMessage
@@ -48,10 +71,10 @@ const Footer = ({ context }: { context?: ListContext }) => {
     : "";
 
   if (!message) return null;
-  return <FooterWrapper>{message}</FooterWrapper>;
+  return <EndOfListWrapper>{message}</EndOfListWrapper>;
 };
 
-const FooterWrapper = styled(Body, {
+const EndOfListWrapper = styled(Body, {
   textAlign: "center",
   px: "$3",
   py: "$4",
