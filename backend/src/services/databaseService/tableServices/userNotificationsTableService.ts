@@ -288,7 +288,7 @@ export class UserNotificationsTableService extends TableService {
                   AND
                     (published_item_transaction_reference IS NULL)
                 )
-            ),
+            )
       )
       ;
     `;
