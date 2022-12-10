@@ -16,6 +16,7 @@ import {
   RenderableNewTagInPublishedItemCaptionNotification,
   RenderableNewTagInPublishedItemCommentNotification,
   RenderableNewUserFollowRequestNotification,
+  RenderableShopItemSoldNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
 import { notifyUserIdOfNewCommentOnPost } from "./notifications/notifyUserIdOfNewCommentOnPost";
@@ -31,6 +32,7 @@ import { notifyUserIdOfNewUserFollowRequest } from "./notifications/notifyUserId
 import { notifyUserIdOfCanceledNewUserFollowRequest } from "./canceledNotifications/notifyUserIdOfCanceledNewUserFollowRequest";
 import { notifyUserIdOfCanceledNewTagInPublishedItemCaption } from "./canceledNotifications/notifyUserIdOfCanceledNewTagInPublishedItemCaption";
 import { notifyUserIdOfNewTagInPublishedItemCaption } from "./notifications/notifyUserIdOfNewTagInPublishedItemCaption";
+import { notifyUserIdOfShopItemSold } from "./notifications/notifyUserIdOfShopItemSold";
 
 export class UserNotificationsWebsocketService {
   constructor(public websocketIO: Server) {}
@@ -228,6 +230,20 @@ export class UserNotificationsWebsocketService {
       userId,
       io: this.websocketIO,
       unrenderableCanceledNewUserFollowRequestNotification,
+    });
+  }
+
+  public async notifyUserIdOfShopItemSold({
+    renderableShopItemSoldNotification,
+    userId,
+  }: {
+    renderableShopItemSoldNotification: RenderableShopItemSoldNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfShopItemSold({
+      userId,
+      io: this.websocketIO,
+      renderableShopItemSoldNotification,
     });
   }
 }

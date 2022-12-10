@@ -3,6 +3,7 @@ import { RenderablePublishedItemComment } from "../../publishedItem/publishedIte
 import { RenderableUser } from "../../user/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderablePublishedItem } from "../../../controllers/publishedItem/models";
+import { RenderableShopItem } from "../../../controllers/publishedItem/shopItem/models";
 
 export interface BaseRenderableUserNotification extends BaseUserNotification {
   eventTimestamp: number;
@@ -57,10 +58,18 @@ export interface RenderableNewUserFollowRequestNotification
   followRequestingUser: RenderableUser;
 }
 
+export interface RenderableShopItemSoldNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
+  purchaser: RenderableUser;
+  shopItem: RenderableShopItem;
+}
+
 export type RenderableUserNotification =
   | RenderableNewFollowerNotification
   | RenderableNewCommentOnPublishedItemNotification
   | RenderableNewLikeOnPublishedItemNotification
   | RenderableNewTagInPublishedItemCommentNotification
   | RenderableAcceptedUserFollowRequestNotification
-  | RenderableNewUserFollowRequestNotification;
+  | RenderableNewUserFollowRequestNotification
+  | RenderableShopItemSoldNotification;

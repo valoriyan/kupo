@@ -13,7 +13,7 @@ import { PublishedItemsTableService } from "./publishedItemsTableService";
 import { UsersTableService } from "../users/usersTableService";
 
 interface DBPublishedItemTransaction {
-  transaction_id: string;
+  published_item_transaction_id: string;
   published_item_id: string;
   non_creator_user_id: string;
   creation_timestamp: string;
@@ -35,13 +35,13 @@ export class PublishedItemTransactionsTableService extends TableService {
   public async setup(): Promise<void> {
     const queryString = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
-            transaction_id VARCHAR(64) UNIQUE NOT NULL,
+            published_item_transaction_id VARCHAR(64) UNIQUE NOT NULL,
             published_item_id VARCHAR(64) NOT NULL,
             non_creator_user_id VARCHAR(64) NOT NULL,
             creation_timestamp BIGINT NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
-          PRIMARY KEY (transaction_id),
+          PRIMARY KEY (published_item_transaction_id),
 
         CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
           FOREIGN KEY (published_item_id)
@@ -81,7 +81,7 @@ export class PublishedItemTransactionsTableService extends TableService {
       const query = generatePSQLGenericCreateRowsQuery<string | number>({
         rowsOfFieldsAndValues: [
           [
-            { field: "transaction_id", value: transactionId },
+            { field: "published_item_transaction_id", value: transactionId },
             { field: "published_item_id", value: publishedItemId },
             { field: "non_creator_user_id", value: nonCreatorUserId },
             { field: "creation_timestamp", value: creationTimestamp },
@@ -107,6 +107,55 @@ export class PublishedItemTransactionsTableService extends TableService {
   //////////////////////////////////////////////////
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async maybeGetPublishedItemTransactionById({
+    controller,
+    publishedItemTransactionId,
+  }: {
+    controller: Controller;
+    publishedItemTransactionId: string;
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      DBPublishedItemTransaction | undefined
+    >
+  > {
+    try {
+      const query = {
+        text: `
+            SELECT
+              *
+            FROM
+              ${this.tableName}
+            WHERE
+                published_item_transaction_id = $1
+            LIMIT
+              1
+            ;
+          `,
+        values: [publishedItemTransactionId],
+      };
+
+      const response: QueryResult<DBPublishedItemTransaction> =
+        await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(rows[0]);
+      }
+      return Success(undefined);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemTransactionsTableService.maybeGetPublishedItemTransactionById",
+      });
+    }
+  }
 
   public async hasPublishedItemBeenPurchasedByUserId({
     controller,

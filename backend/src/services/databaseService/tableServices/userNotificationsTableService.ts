@@ -20,6 +20,7 @@ import { UserFollowsTableService } from "./users/userFollowsTableService";
 import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableService";
 import { PublishedItemCommentsTableService } from "./publishedItem/publishedItemCommentsTableService";
 import { PublishedItemLikesTableService } from "./publishedItem/publishedItemLikesTableService";
+import { PublishedItemTransactionsTableService } from "./publishedItem/publishedItemTransactionsTableService";
 
 export type UserNotificationDbReference =
   | {
@@ -49,6 +50,10 @@ export type UserNotificationDbReference =
   | {
       type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
       publishedItemLikeId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
+      publishedItemTransactionId: string;
     };
 
 export interface DBUserNotification {
@@ -65,6 +70,7 @@ export interface DBUserNotification {
   published_item_reference?: string;
   published_item_comment_reference?: string;
   published_item_like_reference?: string;
+  published_item_transaction_reference?: string;
 }
 
 function generateReferenceTableRow({
@@ -109,6 +115,11 @@ function generateReferenceTableRow({
       field: "published_item_like_reference",
       value: userNotificationDbReference.publishedItemLikeId,
     };
+  } else if (notificationType === NOTIFICATION_EVENTS.SHOP_ITEM_SOLD) {
+    return {
+      field: "published_item_transaction_reference",
+      value: userNotificationDbReference.publishedItemTransactionId,
+    };
   } else {
     throw new Error(
       `Unhandled notification type "${notificationType}" @ generateReferenceTableRow`,
@@ -147,6 +158,7 @@ export class UserNotificationsTableService extends TableService {
         published_item_reference VARCHAR(64),
         published_item_comment_reference VARCHAR(64),
         published_item_like_reference VARCHAR(64),
+        published_item_transaction_reference VARCHAR(64),
       
 
         CONSTRAINT ${this.tableName}_pkey
@@ -175,6 +187,11 @@ export class UserNotificationsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${PublishedItemLikesTableService.tableName}_reference_fkey
           FOREIGN KEY (published_item_like_reference)
           REFERENCES ${PublishedItemLikesTableService.tableName} (published_item_like_id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishedItemTransactionsTableService.tableName}_reference_fkey
+          FOREIGN KEY (published_item_transaction_reference)
+          REFERENCES ${PublishedItemTransactionsTableService.tableName} (published_item_transaction_id)
           ON DELETE CASCADE,
 
 
@@ -256,7 +273,22 @@ export class UserNotificationsTableService extends TableService {
                   AND
                     (published_item_reference IS NULL)
                 )
-            )
+            ),
+            
+          CONSTRAINT published_item_transaction_reference_null_constraint 
+            CHECK (
+                (
+                    (notification_type = '${NOTIFICATION_EVENTS.SHOP_ITEM_SOLD}')
+                  AND
+                    (published_item_transaction_reference IS NOT NULL)
+                )
+              OR
+                (
+                    (notification_type != '${NOTIFICATION_EVENTS.SHOP_ITEM_SOLD}')
+                  AND
+                    (published_item_transaction_reference IS NULL)
+                )
+            ),
       )
       ;
     `;

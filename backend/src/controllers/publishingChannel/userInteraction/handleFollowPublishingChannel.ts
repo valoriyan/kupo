@@ -66,6 +66,10 @@ export async function handleFollowPublishingChannel({
     return createPublishingChannelFollowResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return {
     type: EitherType.success,
     success: {},
