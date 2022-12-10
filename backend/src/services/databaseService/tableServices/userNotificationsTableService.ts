@@ -141,6 +141,7 @@ export class UserNotificationsTableService extends TableService {
     PublishedItemsTableService.tableName,
     PublishedItemCommentsTableService.tableName,
     PublishedItemLikesTableService.tableName,
+    PublishedItemTransactionsTableService.tableName,
   ];
 
   public async setup(): Promise<void> {
