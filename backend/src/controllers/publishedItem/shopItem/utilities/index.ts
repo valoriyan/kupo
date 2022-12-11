@@ -182,7 +182,7 @@ export async function constructRenderableShopItemFromParts({
         hasPublishedItemBeenPurchasedByUserIdResponse.success;
     }
 
-    if (hasPublishedItemBeenPurchasedByUserId) {
+    if (hasPublishedItemBeenPurchasedByUserId || authorUserId === requestorUserId) {
       const assembleRootPurchasedShopItemDetailsFromPartsResponse =
         await assembleRootPurchasedShopItemDetailsFromParts({
           controller,
