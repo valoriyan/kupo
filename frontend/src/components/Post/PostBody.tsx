@@ -27,6 +27,7 @@ export interface PostBodyProps {
   title: string | undefined;
   price: number | undefined;
   purchasedMediaElementsMetadata: { count: number } | undefined;
+  purchasedMediaElements: MediaElement[] | undefined;
   mediaElements: MediaElement[];
   setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   sharedItem?: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
@@ -36,6 +37,9 @@ export interface PostBodyProps {
 }
 
 export const PostBody = (props: PostBodyProps) => {
+  const mediaElements = props.mediaElements;
+  const isPurchased = !!props.purchasedMediaElements;
+
   return (
     <>
       <Flex
@@ -74,9 +78,9 @@ export const PostBody = (props: PostBodyProps) => {
           setCurrentMediaElement={props.setCurrentMediaElement}
         />
       ) : (
-        !!props.mediaElements?.length && (
+        !!mediaElements?.length && (
           <ContentViewer
-            mediaElements={props.mediaElements}
+            mediaElements={mediaElements}
             setCurrentMediaElement={props.setCurrentMediaElement}
             contentHeight={props.contentHeight}
           />
@@ -94,9 +98,15 @@ export const PostBody = (props: PostBodyProps) => {
                 <Subtext>{props.purchasedMediaElementsMetadata?.count}</Subtext>
               </Flex>
             </Flex>
-            <Body>${props.price}</Body>
+            {isPurchased ? (
+              <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
+                Purchased
+              </Body>
+            ) : (
+              <Body>${props.price}</Body>
+            )}
           </Flex>
-          <Button>Purchase</Button>
+          <Button>{isPurchased ? "View Content" : "Purchase"}</Button>
         </ShopItemDetailsWrapper>
       )}
     </>
