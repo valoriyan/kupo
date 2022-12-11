@@ -49,7 +49,8 @@ export class PublishingChannelUserBansTableService extends TableService {
 
         CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
           FOREIGN KEY (publishing_channel_id)
-          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id),
+          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id)
+          ON DELETE CASCADE,
 
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_banned_fkey
           FOREIGN KEY (banned_user_id)

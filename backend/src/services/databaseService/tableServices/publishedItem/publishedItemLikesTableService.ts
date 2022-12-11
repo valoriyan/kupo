@@ -47,11 +47,13 @@ export class PublishedItemLikesTableService extends TableService {
           
           CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
             FOREIGN KEY (published_item_id)
-            REFERENCES ${PublishedItemsTableService.tableName} (id),
+            REFERENCES ${PublishedItemsTableService.tableName} (id)
+            ON DELETE CASCADE,
 
           CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
             FOREIGN KEY (user_id)
             REFERENCES ${UsersTableService.tableName} (user_id)
+            ON DELETE CASCADE
   
 
         )
