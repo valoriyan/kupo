@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
 import { IconButton } from "#/components/Button";
-import { ChevronDownRIcon, ChevronUpRIcon, TrashIcon } from "#/components/Icons";
+import { ChevronDownOIcon, ChevronUpOIcon, TrashIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { Body } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -35,12 +35,12 @@ export const FilterRow = ({ filter, actions }: FilterRowProps) => {
         <Flex css={{ gap: "$3" }}>
           {actions.moveUp && (
             <IconButton onClick={actions.moveUp}>
-              <ChevronUpRIcon />
+              <ChevronUpOIcon />
             </IconButton>
           )}
           {actions.moveDown && (
             <IconButton onClick={actions.moveDown}>
-              <ChevronDownRIcon />
+              <ChevronDownOIcon />
             </IconButton>
           )}
           {actions.delete && (

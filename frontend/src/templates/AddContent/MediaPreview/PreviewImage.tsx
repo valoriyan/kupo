@@ -1,8 +1,8 @@
 import { MouseEventHandler } from "react";
 import { IconButton } from "#/components/Button";
 import {
-  ChevronDownRIcon,
-  ChevronUpRIcon,
+  ChevronDownOIcon,
+  ChevronUpOIcon,
   PlayButtonOIcon,
   TrashIcon,
 } from "#/components/Icons";
@@ -46,10 +46,10 @@ export const PreviewImage = (props: PreviewImageProps) => {
         <ActionsBanner>
           <Flex css={{ gap: "$3" }}>
             <IconButton onClick={actionHandler(props.actions.moveUp)}>
-              <ChevronUpRIcon />
+              <ChevronUpOIcon />
             </IconButton>
             <IconButton onClick={actionHandler(props.actions.moveDown)}>
-              <ChevronDownRIcon />
+              <ChevronDownOIcon />
             </IconButton>
           </Flex>
           <IconButton onClick={actionHandler(props.actions.delete)}>
