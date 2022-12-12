@@ -29,6 +29,8 @@ interface DBPublishingChannelSubmission {
   published_item_id: string;
   timestamp_of_submission: string;
 
+  reason_for_rejected_submission?: string;
+
   is_pending: boolean;
 }
 
@@ -55,6 +57,8 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         published_item_id VARCHAR(64) NOT NULL,
         timestamp_of_submission BIGINT NOT NULL,
         is_pending boolean NOT NULL,
+
+        reason_for_rejected_submission VARCHAR(64),
 
         CONSTRAINT ${this.tableName}_pkey
           PRIMARY KEY (publishing_channel_submission_id),
@@ -197,6 +201,7 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     getSubmissionsBeforeTimestamp,
     arePending,
     publishedItemType,
+    hasBeenRejectedWithAReason,
   }: {
     controller: Controller;
     publishingChannelId: string;
@@ -204,6 +209,7 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     getSubmissionsBeforeTimestamp?: number;
     arePending: boolean;
     publishedItemType?: PublishedItemType;
+    hasBeenRejectedWithAReason: boolean;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelSubmission[]>
   > {
@@ -241,6 +247,19 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         values.push(publishedItemType);
       }
 
+      const reasonForRejectedSubmissionClause = "";
+      if (!!hasBeenRejectedWithAReason) {
+        publishedItemTypeClause = `
+          AND
+            reason_for_rejected_submission IS NOT NULL
+        `;
+      } else {
+        publishedItemTypeClause = `
+          AND
+            reason_for_rejected_submission IS NULL
+        `;
+      }
+
       const query = {
         text: `
           SELECT
@@ -257,6 +276,7 @@ export class PublishingChannelSubmissionsTableService extends TableService {
               is_pending = $2
             ${publishedItemTypeClause}
             ${getSubmissionsBeforeTimestampClause}
+            ${reasonForRejectedSubmissionClause}
           ORDER BY
             timestamp_of_submission DESC
           ${limitClause}
@@ -332,6 +352,60 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at PublishingChannelSubmissionsTableService.approvePendingChannelSubmission",
+      });
+    }
+  }
+
+  public async rejectPendingChannelSubmissionWithReasonString({
+    controller,
+    publishingChannelSubmissionId,
+    reasonForRejectedSubmission,
+  }: {
+    controller: Controller;
+    publishingChannelSubmissionId: string;
+    reasonForRejectedSubmission: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelSubmission>
+  > {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [
+          { field: "is_pending", value: "false" },
+          { field: "reason_for_rejected_submission", value: reasonForRejectedSubmission },
+        ],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "publishing_channel_submission_id",
+            value: publishingChannelSubmissionId,
+          },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response: QueryResult<DBPublishingChannelSubmission> =
+        await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(rows[0]);
+      }
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "User not found.",
+        additionalErrorInformation:
+          "Error at PublishingChannelSubmissionsTableService.rejectPendingChannelSubmissionWithReasonString",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at PublishingChannelSubmissionsTableService.rejectPendingChannelSubmissionWithReasonString",
       });
     }
   }

@@ -13,31 +13,29 @@
  */
 
 import { PublishingChannelSubmissionDecisionREJECT } from "./publishing-channel-submission-decision-reject";
-import { ResolvePublishingChannelSubmissionRequestBodyAccept } from "./resolve-publishing-channel-submission-request-body-accept";
-import { ResolvePublishingChannelSubmissionRequestBodyReject } from "./resolve-publishing-channel-submission-request-body-reject";
 
 /**
  *
  * @export
- * @interface ResolvePublishingChannelSubmissionRequestBody
+ * @interface ResolvePublishingChannelSubmissionRequestBodyReject
  */
-export interface ResolvePublishingChannelSubmissionRequestBody {
+export interface ResolvePublishingChannelSubmissionRequestBodyReject {
   /**
    *
    * @type {PublishingChannelSubmissionDecisionREJECT}
-   * @memberof ResolvePublishingChannelSubmissionRequestBody
+   * @memberof ResolvePublishingChannelSubmissionRequestBodyReject
    */
   decision: PublishingChannelSubmissionDecisionREJECT;
   /**
    *
    * @type {string}
-   * @memberof ResolvePublishingChannelSubmissionRequestBody
+   * @memberof ResolvePublishingChannelSubmissionRequestBodyReject
    */
   publishingChannelSubmissionId: string;
   /**
    *
    * @type {string}
-   * @memberof ResolvePublishingChannelSubmissionRequestBody
+   * @memberof ResolvePublishingChannelSubmissionRequestBodyReject
    */
   reasonString: string;
 }

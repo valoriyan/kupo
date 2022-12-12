@@ -41,6 +41,10 @@ export async function handleGetPublishedItemsFromFollowedUsers({
     GetPublishedItemsFromFollowedUsersSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { cursor, pageSize, publishedItemType } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -49,6 +53,9 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   );
   if (error) return error;
 
+  //////////////////////////////////////////////////
+  // Get users ids followed by client
+  //////////////////////////////////////////////////
   const getUserIdsFollowedByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
       { controller, userIdDoingFollowing: clientUserId, areFollowsPending: false },
@@ -57,6 +64,10 @@ export async function handleGetPublishedItemsFromFollowedUsers({
     return getUserIdsFollowedByUserIdResponse;
   }
   const { success: userIdsBeingFollowed } = getUserIdsFollowedByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get published items by followed user ids
+  //////////////////////////////////////////////////
 
   const getPublishedItemsByCreatorUserIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCreatorUserIds(
@@ -76,6 +87,10 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   const { success: uncompiledBasePublishedItems } =
     getPublishedItemsByCreatorUserIdsResponse;
 
+  //////////////////////////////////////////////////
+  // Assemble published items
+  //////////////////////////////////////////////////
+
   const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
     {
       controller,
@@ -90,6 +105,10 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   }
   const { success: renderablePublishedItems } = constructPublishedItemsFromPartsResponse;
 
+  //////////////////////////////////////////////////
+  // Generate Next-Page-Cursor
+  //////////////////////////////////////////////////
+
   const nextPageCursor =
     renderablePublishedItems.length > 0
       ? encodeTimestampCursor({
@@ -98,6 +117,10 @@ export async function handleGetPublishedItemsFromFollowedUsers({
               .scheduledPublicationTimestamp,
         })
       : undefined;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishedItems: renderablePublishedItems,

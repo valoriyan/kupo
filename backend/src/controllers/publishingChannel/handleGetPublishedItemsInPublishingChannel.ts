@@ -48,6 +48,9 @@ export async function handleGetPublishedItemsInPublishingChannel({
     GetPublishedItemsInPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { publishingChannelName, cursor, pageSize, publishedItemType } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -59,6 +62,10 @@ export async function handleGetPublishedItemsInPublishingChannel({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Get publishing channel
+  //////////////////////////////////////////////////
 
   const maybeGetPublishingChannelByNameResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
@@ -83,6 +90,10 @@ export async function handleGetPublishedItemsInPublishingChannel({
   }
   const { publishingChannelId } = maybePublishingChannel;
 
+  //////////////////////////////////////////////////
+  // Get content items in channel
+  //////////////////////////////////////////////////
+
   const getPublishingChannelSubmissionsByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelSubmissionsByPublishingChannelId(
       {
@@ -92,6 +103,7 @@ export async function handleGetPublishedItemsInPublishingChannel({
         getSubmissionsBeforeTimestamp: pageTimestamp,
         arePending: false,
         publishedItemType,
+        hasBeenRejectedWithAReason: false,
       },
     );
   if (
@@ -107,6 +119,10 @@ export async function handleGetPublishedItemsInPublishingChannel({
     ({ published_item_id }) => published_item_id,
   );
 
+  //////////////////////////////////////////////////
+  // Construct renderable published items
+  //////////////////////////////////////////////////
+
   const constructPublishedItemsFromPartsByIdRequest =
     await constructPublishedItemsFromPartsById({
       controller,
@@ -119,6 +135,10 @@ export async function handleGetPublishedItemsInPublishingChannel({
     return constructPublishedItemsFromPartsByIdRequest;
   }
   const { success: publishedItems } = constructPublishedItemsFromPartsByIdRequest;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishedItems,

@@ -107,6 +107,10 @@ export async function constructRenderableShopItemFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   requestorUserId: string | undefined;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItem>> {
+  //////////////////////////////////////////////////
+  // Get Published Item
+  //////////////////////////////////////////////////
+
   const assembleBaseRenderablePublishedItemResponse =
     await assembleBaseRenderablePublishedItem({
       controller,
@@ -136,6 +140,12 @@ export async function constructRenderableShopItemFromParts({
   } = baseRenderablePublishedItem;
 
   if (!!idOfPublishedItemBeingShared) {
+    //////////////////////////////////////////////////
+    // If Published Item is a Shared Item
+    //
+    //     Get Published Item Being Shared
+    //////////////////////////////////////////////////
+
     const constructPublishedItemFromPartsByIdResponse =
       await constructPublishedItemFromPartsById({
         controller,
@@ -148,6 +158,10 @@ export async function constructRenderableShopItemFromParts({
       return constructPublishedItemFromPartsByIdResponse;
     }
     const { success: sharedItem } = constructPublishedItemFromPartsByIdResponse;
+
+    //////////////////////////////////////////////////
+    // Return
+    //////////////////////////////////////////////////
 
     return Success({
       type: PublishedItemType.SHOP_ITEM,
@@ -165,6 +179,12 @@ export async function constructRenderableShopItemFromParts({
       sharedItem: sharedItem as RootShopItemPreview | RootPurchasedShopItemDetails,
     });
   } else {
+    //////////////////////////////////////////////////
+    // If Published Item is NOT a Shared Item
+    //
+    //     Check if base published item has been purchased by user id
+    //////////////////////////////////////////////////
+
     let hasPublishedItemBeenPurchasedByUserId = false;
     if (!!requestorUserId) {
       const hasPublishedItemBeenPurchasedByUserIdResponse =
@@ -182,7 +202,13 @@ export async function constructRenderableShopItemFromParts({
         hasPublishedItemBeenPurchasedByUserIdResponse.success;
     }
 
-    if (hasPublishedItemBeenPurchasedByUserId || authorUserId === requestorUserId) {
+    if (!!hasPublishedItemBeenPurchasedByUserId || authorUserId === requestorUserId) {
+      //////////////////////////////////////////////////
+      // If client has purchased the item or if the author is the client
+      //
+      //     assemble the PURCHASED shop item
+      //////////////////////////////////////////////////
+
       const assembleRootPurchasedShopItemDetailsFromPartsResponse =
         await assembleRootPurchasedShopItemDetailsFromParts({
           controller,
@@ -198,8 +224,18 @@ export async function constructRenderableShopItemFromParts({
       const { success: rootPurchasedShopItemDetails } =
         assembleRootPurchasedShopItemDetailsFromPartsResponse;
 
+      //////////////////////////////////////////////////
+      // Return
+      //////////////////////////////////////////////////
+
       return Success(rootPurchasedShopItemDetails);
     } else {
+      //////////////////////////////////////////////////
+      // If client has NOT purchased the item
+      //
+      //     assemble the shop item PREVIEW
+      //////////////////////////////////////////////////
+
       const assembleRootShopItemPreviewFromPartsResponse =
         await assembleRootShopItemPreviewFromParts({
           controller,
@@ -212,6 +248,10 @@ export async function constructRenderableShopItemFromParts({
       }
       const { success: rootShopItemPreview } =
         assembleRootShopItemPreviewFromPartsResponse;
+
+      //////////////////////////////////////////////////
+      // Return
+      //////////////////////////////////////////////////
 
       return Success(rootShopItemPreview);
     }

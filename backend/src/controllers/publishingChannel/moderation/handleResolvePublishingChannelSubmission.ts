@@ -12,14 +12,29 @@ import { PublishingChannelController } from "../publishingChannelController";
 import { doesUserIdHaveRightsToApprovePublishingChannelSubmissions } from "../utilities/permissions";
 
 export enum PublishingChannelSubmissionDecision {
-  accept = "accept",
-  reject = "reject",
+  ACCEPT = "accept",
+  REJECT = "reject",
 }
 
-export interface ResolvePublishingChannelSubmissionRequestBody {
+export interface ResolvePublishingChannelSubmissionRequestBodyBase {
   decision: PublishingChannelSubmissionDecision;
   publishingChannelSubmissionId: string;
 }
+
+export interface ResolvePublishingChannelSubmissionRequestBodyAccept
+  extends ResolvePublishingChannelSubmissionRequestBodyBase {
+  decision: PublishingChannelSubmissionDecision.ACCEPT;
+}
+
+export interface ResolvePublishingChannelSubmissionRequestBodyReject
+  extends ResolvePublishingChannelSubmissionRequestBodyBase {
+  decision: PublishingChannelSubmissionDecision.REJECT;
+  reasonString: string;
+}
+
+export type ResolvePublishingChannelSubmissionRequestBody =
+  | ResolvePublishingChannelSubmissionRequestBodyAccept
+  | ResolvePublishingChannelSubmissionRequestBodyReject;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ResolvePublishingChannelSubmissionSuccess {}
@@ -78,7 +93,7 @@ export async function handleResolvePublishingChannelSubmission({
     });
   }
 
-  if (decision === PublishingChannelSubmissionDecision.accept) {
+  if (decision === PublishingChannelSubmissionDecision.ACCEPT) {
     const approvePendingChannelSubmissionResponse =
       await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.approvePendingChannelSubmission(
         {
@@ -90,7 +105,7 @@ export async function handleResolvePublishingChannelSubmission({
       return approvePendingChannelSubmissionResponse;
     }
     return Success({});
-  } else if (decision === PublishingChannelSubmissionDecision.reject) {
+  } else if (decision === PublishingChannelSubmissionDecision.REJECT) {
     const deletePublishingChannelSubmissionResponse =
       await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.deletePublishingChannelSubmission(
         {

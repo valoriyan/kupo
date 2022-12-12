@@ -42,8 +42,6 @@ export class WebSocketService {
         socket.join(rooms);
 
         // socket.on(NEW_CHAT_MESSAGE_EVENT_NAME, (incomingMessage: ChatMessage) => {
-        //   console.log("MESSAGE CAME IN!");
-        //   console.log(incomingMessage);
         // });
       } catch (error) {
         console.log(error);

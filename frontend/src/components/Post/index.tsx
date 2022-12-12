@@ -60,6 +60,11 @@ export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProp
             ? post.purchasedMediaElementsMetadata
             : undefined
         }
+        purchasedMediaElements={
+          "purchasedMediaElementsMetadata" in post
+            ? post.purchasedMediaElements
+            : undefined
+        }
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
         sharedItem={sharedItem}

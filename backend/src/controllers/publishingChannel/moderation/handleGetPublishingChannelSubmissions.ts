@@ -106,6 +106,7 @@ export async function handleGetPublishingChannelSubmissions({
         limit: pageSize,
         getSubmissionsBeforeTimestamp: pageTimestamp,
         arePending: true,
+        hasBeenRejectedWithAReason: false,
       },
     );
   if (

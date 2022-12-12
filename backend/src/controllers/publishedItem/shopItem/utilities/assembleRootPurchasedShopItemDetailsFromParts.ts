@@ -25,6 +25,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RootPurchasedShopItemDetails>
 > {
+  //////////////////////////////////////////////////
+  // Parse Inputs
+  //////////////////////////////////////////////////
+
   const {
     id,
     creationTimestamp,
@@ -39,6 +43,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
+  //////////////////////////////////////////////////
+  // Get Unrenderable Shop Item
+  //////////////////////////////////////////////////
+
   const getShopItemByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemsTableService.getShopItemByPublishedItemId(
       {
@@ -50,6 +58,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
     return getShopItemByPublishedItemIdResponse;
   }
   const { success: dbShopItem } = getShopItemByPublishedItemIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get Preview Media Elements
+  //////////////////////////////////////////////////
 
   const assembleShopItemPreviewMediaElementsResponse =
     await assembleShopItemMediaElements({
@@ -64,6 +76,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
   }
   const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
 
+  //////////////////////////////////////////////////
+  // Get Purchased Media Elements
+  //////////////////////////////////////////////////
+
   const assembleShopItemPurchasedMediaElementsResponse =
     await assembleShopItemMediaElements({
       controller,
@@ -77,6 +93,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
   }
   const { success: purchasedMediaElements } =
     assembleShopItemPurchasedMediaElementsResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble Root Purchased Shop Item Details
+  //////////////////////////////////////////////////
 
   const rootPurchasedShopItemDetails: RootPurchasedShopItemDetails = {
     renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
@@ -98,6 +118,10 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
     purchasedMediaElements,
     purchasedMediaElementsMetadata: { count: purchasedMediaElements.length },
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(rootPurchasedShopItemDetails);
 }

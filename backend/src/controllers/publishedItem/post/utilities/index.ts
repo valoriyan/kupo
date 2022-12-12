@@ -103,6 +103,9 @@ export async function constructRenderablePostFromParts({
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   requestorUserId?: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost>> {
+  //////////////////////////////////////////////////
+  // Get Base Renderable Published Item
+  //////////////////////////////////////////////////
   const assembleBaseRenderablePublishedItemResponse =
     await assembleBaseRenderablePublishedItem({
       controller,
@@ -132,6 +135,11 @@ export async function constructRenderablePostFromParts({
   } = baseRenderablePublishedItem;
 
   if (!idOfPublishedItemBeingShared) {
+    //////////////////////////////////////////////////
+    // If Published Item is NOT a Shared Item
+    //
+    //     Get Base Post
+    //////////////////////////////////////////////////
     const assembleRootRenderablePostResponse = await assembleRootRenderablePost({
       controller,
       blobStorageService,
@@ -143,8 +151,18 @@ export async function constructRenderablePostFromParts({
     }
     const { success: rootRenderablePost } = assembleRootRenderablePostResponse;
 
+    //////////////////////////////////////////////////
+    // Return
+    //////////////////////////////////////////////////
+
     return Success(rootRenderablePost);
   } else {
+    //////////////////////////////////////////////////
+    // If Published Item IS a Shared Item
+    //
+    //     Get Published Item Being Shared
+    //////////////////////////////////////////////////
+
     const constructPublishedItemFromPartsByIdResponse =
       await constructPublishedItemFromPartsById({
         controller,
@@ -175,6 +193,11 @@ export async function constructRenderablePostFromParts({
       isSavedByClient,
       sharedItem: sharedRootRenderablePost as RootRenderablePost,
     };
+
+    //////////////////////////////////////////////////
+    // Return
+    //////////////////////////////////////////////////
+
     return Success(sharedRenderablePost);
   }
 }

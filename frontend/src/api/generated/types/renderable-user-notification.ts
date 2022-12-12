@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { NOTIFICATIONEVENTSNEWUSERFOLLOWREQUEST } from "./notificationeventsnewuserfollowrequest";
+import { NOTIFICATIONEVENTSSHOPITEMSOLD } from "./notificationeventsshopitemsold";
 import { RenderableAcceptedUserFollowRequestNotification } from "./renderable-accepted-user-follow-request-notification";
 import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
@@ -21,6 +21,8 @@ import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable
 import { RenderableNewUserFollowRequestNotification } from "./renderable-new-user-follow-request-notification";
 import { RenderablePublishedItem } from "./renderable-published-item";
 import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
+import { RenderableShopItem } from "./renderable-shop-item";
+import { RenderableShopItemSoldNotification } from "./renderable-shop-item-sold-notification";
 import { RenderableUser } from "./renderable-user";
 
 /**
@@ -31,10 +33,10 @@ import { RenderableUser } from "./renderable-user";
 export interface RenderableUserNotification {
   /**
    *
-   * @type {NOTIFICATIONEVENTSNEWUSERFOLLOWREQUEST}
+   * @type {NOTIFICATIONEVENTSSHOPITEMSOLD}
    * @memberof RenderableUserNotification
    */
-  type: NOTIFICATIONEVENTSNEWUSERFOLLOWREQUEST;
+  type: NOTIFICATIONEVENTSSHOPITEMSOLD;
   /**
    *
    * @type {number}
@@ -101,4 +103,16 @@ export interface RenderableUserNotification {
    * @memberof RenderableUserNotification
    */
   followRequestingUser: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
+  purchaser: RenderableUser;
+  /**
+   *
+   * @type {RenderableShopItem}
+   * @memberof RenderableUserNotification
+   */
+  shopItem: RenderableShopItem;
 }
