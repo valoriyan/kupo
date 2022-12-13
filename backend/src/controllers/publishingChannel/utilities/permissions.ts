@@ -100,6 +100,9 @@ export async function doesUserIdHaveRightsToApprovePublishingChannelSubmissions(
   requestingUserId: string;
   publishingChannelSubmissionId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
+  //////////////////////////////////////////////////
+  // Get Publishing Channel Submission
+  //////////////////////////////////////////////////
   const getPublishingChannelSubmissionByIdResponse =
     await databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelSubmissionById(
       {
@@ -127,6 +130,10 @@ export async function doesUserIdHaveRightsToApprovePublishingChannelSubmissions(
     });
   }
   const publishingChannelSubmission = maybePublishingChannelSubmission;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return doesUserIdHaveRightsToModeratePublishingChannel({
     controller,

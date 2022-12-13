@@ -4,6 +4,7 @@ import { RenderableUser } from "../../user/models";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderablePublishedItem } from "../../../controllers/publishedItem/models";
 import { RenderableShopItem } from "../../../controllers/publishedItem/shopItem/models";
+import { RenderablePublishingChannel } from "../../../controllers/publishingChannel/models";
 
 export interface BaseRenderableUserNotification extends BaseUserNotification {
   eventTimestamp: number;
@@ -58,6 +59,24 @@ export interface RenderableNewUserFollowRequestNotification
   followRequestingUser: RenderableUser;
 }
 
+export interface RenderableAcceptedPublishingChannelSubmissionNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION;
+  publishedItem: RenderablePublishedItem;
+  publishingChannel: RenderablePublishingChannel;
+}
+
+export interface RenderableRejectedPublishingChannelSubmissionNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION;
+  publishedItem: RenderablePublishedItem;
+  publishingChannel: RenderablePublishingChannel;
+  rejectionSummary: {
+    // maybe add the user who rejected the submission
+    rejectionReason: string;
+  };
+}
+
 export interface RenderableShopItemSoldNotification
   extends BaseRenderableUserNotification {
   type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
@@ -72,4 +91,6 @@ export type RenderableUserNotification =
   | RenderableNewTagInPublishedItemCommentNotification
   | RenderableAcceptedUserFollowRequestNotification
   | RenderableNewUserFollowRequestNotification
+  | RenderableAcceptedPublishingChannelSubmissionNotification
+  | RenderableRejectedPublishingChannelSubmissionNotification
   | RenderableShopItemSoldNotification;

@@ -21,6 +21,7 @@ import { PublishedItemsTableService } from "./publishedItem/publishedItemsTableS
 import { PublishedItemCommentsTableService } from "./publishedItem/publishedItemCommentsTableService";
 import { PublishedItemLikesTableService } from "./publishedItem/publishedItemLikesTableService";
 import { PublishedItemTransactionsTableService } from "./publishedItem/publishedItemTransactionsTableService";
+import { PublishingChannelSubmissionsTableService } from "./publishingChannel/publishingChannelSubmissionsTableService";
 
 export type UserNotificationDbReference =
   | {
@@ -52,6 +53,14 @@ export type UserNotificationDbReference =
       publishedItemLikeId: string;
     }
   | {
+      type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION;
+      publishingChannelSubmissionId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION;
+      publishingChannelSubmissionId: string;
+    }
+  | {
       type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
       publishedItemTransactionId: string;
     };
@@ -71,6 +80,7 @@ export interface DBUserNotification {
   published_item_comment_reference?: string;
   published_item_like_reference?: string;
   published_item_transaction_reference?: string;
+  publishing_channel_submission_reference?: string;
 }
 
 function generateReferenceTableRow({
@@ -120,6 +130,20 @@ function generateReferenceTableRow({
       field: "published_item_transaction_reference",
       value: userNotificationDbReference.publishedItemTransactionId,
     };
+  } else if (
+    notificationType === NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION
+  ) {
+    return {
+      field: "published_item_transaction_reference",
+      value: userNotificationDbReference.publishingChannelSubmissionId,
+    };
+  } else if (
+    notificationType === NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION
+  ) {
+    return {
+      field: "published_item_transaction_reference",
+      value: userNotificationDbReference.publishingChannelSubmissionId,
+    };
   } else {
     throw new Error(
       `Unhandled notification type "${notificationType}" @ generateReferenceTableRow`,
@@ -160,6 +184,7 @@ export class UserNotificationsTableService extends TableService {
         published_item_comment_reference VARCHAR(64),
         published_item_like_reference VARCHAR(64),
         published_item_transaction_reference VARCHAR(64),
+        publishing_channel_submission_reference VARCHAR(64),
       
 
         CONSTRAINT ${this.tableName}_pkey
@@ -193,6 +218,11 @@ export class UserNotificationsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${PublishedItemTransactionsTableService.tableName}_reference_fkey
           FOREIGN KEY (published_item_transaction_reference)
           REFERENCES ${PublishedItemTransactionsTableService.tableName} (published_item_transaction_id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishingChannelSubmissionsTableService.tableName}_reference_fkey
+          FOREIGN KEY (publishing_channel_submission_reference)
+          REFERENCES ${PublishingChannelSubmissionsTableService.tableName} (publishing_channel_submission_id)
           ON DELETE CASCADE,
 
 
@@ -289,7 +319,31 @@ export class UserNotificationsTableService extends TableService {
                   AND
                     (published_item_transaction_reference IS NULL)
                 )
-            )
+            ),
+
+            CONSTRAINT publishing_channel_submission_reference_null_constraint 
+            CHECK (
+                (
+                    (
+                        notification_type != '${NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION}'
+                      OR
+                        notification_type != '${NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION}'
+                    )
+                  AND
+                    (publishing_channel_submission_reference IS NOT NULL)
+                )
+              OR
+                (
+                    (
+                        notification_type != '${NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION}'
+                      OR
+                        notification_type != '${NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION}'
+                    )
+                  AND
+                    (publishing_channel_submission_reference IS NULL)
+                )
+            )       
+
       )
       ;
     `;

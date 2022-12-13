@@ -9,6 +9,7 @@ import {
   UnrenderableCanceledNewUserFollowRequestNotification,
 } from "../../../controllers/notification/models/unrenderableCanceledUserNotifications";
 import {
+  RenderableAcceptedPublishingChannelSubmissionNotification,
   RenderableAcceptedUserFollowRequestNotification,
   RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
@@ -16,6 +17,7 @@ import {
   RenderableNewTagInPublishedItemCaptionNotification,
   RenderableNewTagInPublishedItemCommentNotification,
   RenderableNewUserFollowRequestNotification,
+  RenderableRejectedPublishingChannelSubmissionNotification,
   RenderableShopItemSoldNotification,
 } from "../../../controllers/notification/models/renderableUserNotifications";
 import { notifyUserIdOfCanceledNewLikeOnPost } from "./canceledNotifications/notifyUserIdOfCanceledNewLikeOnPost";
@@ -33,6 +35,8 @@ import { notifyUserIdOfCanceledNewUserFollowRequest } from "./canceledNotificati
 import { notifyUserIdOfCanceledNewTagInPublishedItemCaption } from "./canceledNotifications/notifyUserIdOfCanceledNewTagInPublishedItemCaption";
 import { notifyUserIdOfNewTagInPublishedItemCaption } from "./notifications/notifyUserIdOfNewTagInPublishedItemCaption";
 import { notifyUserIdOfShopItemSold } from "./notifications/notifyUserIdOfShopItemSold";
+import { notifyUserIdOfAcceptedPublishingChannelSubmission } from "./notifications/notifyUserIdOfAcceptedPublishingChannelSubmission";
+import { notifyUserIdOfRejectedPublishingChannelSubmission } from "./notifications/notifyUserIdOfRejectedPublishingChannelSubmission";
 
 export class UserNotificationsWebsocketService {
   constructor(public websocketIO: Server) {}
@@ -244,6 +248,34 @@ export class UserNotificationsWebsocketService {
       userId,
       io: this.websocketIO,
       renderableShopItemSoldNotification,
+    });
+  }
+
+  public async notifyUserIdOfAcceptedPublishingChannelSubmission({
+    renderableAcceptedPublishingChannelSubmissionNotification,
+    userId,
+  }: {
+    renderableAcceptedPublishingChannelSubmissionNotification: RenderableAcceptedPublishingChannelSubmissionNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfAcceptedPublishingChannelSubmission({
+      userId,
+      io: this.websocketIO,
+      renderableAcceptedPublishingChannelSubmissionNotification,
+    });
+  }
+
+  public async notifyUserIdOfRejectedPublishingChannelSubmission({
+    renderableRejectedPublishingChannelSubmissionNotification,
+    userId,
+  }: {
+    renderableRejectedPublishingChannelSubmissionNotification: RenderableRejectedPublishingChannelSubmissionNotification;
+    userId: string;
+  }) {
+    await notifyUserIdOfRejectedPublishingChannelSubmission({
+      userId,
+      io: this.websocketIO,
+      renderableRejectedPublishingChannelSubmissionNotification,
     });
   }
 }

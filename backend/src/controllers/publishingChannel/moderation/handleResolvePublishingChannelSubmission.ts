@@ -1,4 +1,6 @@
 import express from "express";
+import { assembleRecordAndSendRejectedPublishingChannelSubmissionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendRejectedPublishingChannelSubmissionNotification";
+import { assembleRecordAndSendAcceptedPublishingChannelSubmissionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendAcceptedPublishingChannelSubmissionNotification";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -58,6 +60,9 @@ export async function handleResolvePublishingChannelSubmission({
     ResolvePublishingChannelSubmissionSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { decision, publishingChannelSubmissionId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -65,6 +70,10 @@ export async function handleResolvePublishingChannelSubmission({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Check if client has rights to resolve submission
+  //////////////////////////////////////////////////
 
   const doesUserIdHaveRightsToApprovePublishingChannelSubmissionsResponse =
     await doesUserIdHaveRightsToApprovePublishingChannelSubmissions({
@@ -93,7 +102,45 @@ export async function handleResolvePublishingChannelSubmission({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Get Publishing Channel Submission
+  //////////////////////////////////////////////////
+
+  const getPublishingChannelSubmissionByIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelSubmissionById(
+      {
+        controller,
+        publishingChannelSubmissionId,
+      },
+    );
+
+  if (getPublishingChannelSubmissionByIdResponse.type === EitherType.failure) {
+    return getPublishingChannelSubmissionByIdResponse;
+  }
+
+  const { success: maybePublishingChannelSubmission } =
+    getPublishingChannelSubmissionByIdResponse;
+
+  if (!maybePublishingChannelSubmission) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error:
+        "Publishing Channel Submission not found at handleResolvePublishingChannelSubmission",
+      additionalErrorInformation:
+        "Publishing Channel Submission not found at handleResolvePublishingChannelSubmission",
+    });
+  }
+  const publishingChannelSubmission = maybePublishingChannelSubmission;
+
   if (decision === PublishingChannelSubmissionDecision.ACCEPT) {
+    //////////////////////////////////////////////////
+    // If Submission is ACCEPTED
+    //
+    //     Write to DB
+    //////////////////////////////////////////////////
+
     const approvePendingChannelSubmissionResponse =
       await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.approvePendingChannelSubmission(
         {
@@ -104,8 +151,41 @@ export async function handleResolvePublishingChannelSubmission({
     if (approvePendingChannelSubmissionResponse.type === EitherType.failure) {
       return approvePendingChannelSubmissionResponse;
     }
+
+    //////////////////////////////////////////////////
+    // Handle Notifications
+    //////////////////////////////////////////////////
+
+    const assembleRecordAndSendAcceptedPublishingChannelSubmissionNotificationResponse =
+      await assembleRecordAndSendAcceptedPublishingChannelSubmissionNotification({
+        controller,
+        publishingChannelSubmissionId,
+        publishingChannelId: publishingChannelSubmission.publishing_channel_id,
+        publishedItemId: publishingChannelSubmission.published_item_id,
+        recipientUserId: publishingChannelSubmission.user_id_submitting_published_item,
+        databaseService: controller.databaseService,
+        blobStorageService: controller.blobStorageService,
+        webSocketService: controller.webSocketService,
+      });
+    if (
+      assembleRecordAndSendAcceptedPublishingChannelSubmissionNotificationResponse.type ===
+      EitherType.failure
+    ) {
+      return assembleRecordAndSendAcceptedPublishingChannelSubmissionNotificationResponse;
+    }
+
+    //////////////////////////////////////////////////
+    // Return
+    //////////////////////////////////////////////////
+
     return Success({});
   } else if (decision === PublishingChannelSubmissionDecision.REJECT) {
+    //////////////////////////////////////////////////
+    // If Submission is REJECTED
+    //
+    //     Write to DB
+    //////////////////////////////////////////////////
+
     const deletePublishingChannelSubmissionResponse =
       await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.deletePublishingChannelSubmission(
         {
@@ -116,8 +196,41 @@ export async function handleResolvePublishingChannelSubmission({
     if (deletePublishingChannelSubmissionResponse.type === EitherType.failure) {
       return deletePublishingChannelSubmissionResponse;
     }
+
+    //////////////////////////////////////////////////
+    // Handle Notifications
+    //////////////////////////////////////////////////
+
+    const assembleRecordAndSendRejectedPublishingChannelSubmissionNotificationResponse =
+      await assembleRecordAndSendRejectedPublishingChannelSubmissionNotification({
+        controller,
+        publishingChannelSubmissionId,
+        publishingChannelId: publishingChannelSubmission.publishing_channel_id,
+        publishedItemId: publishingChannelSubmission.published_item_id,
+        recipientUserId: publishingChannelSubmission.user_id_submitting_published_item,
+        databaseService: controller.databaseService,
+        blobStorageService: controller.blobStorageService,
+        webSocketService: controller.webSocketService,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        rejectionReason: publishingChannelSubmission.reason_for_rejected_submission!,
+      });
+    if (
+      assembleRecordAndSendRejectedPublishingChannelSubmissionNotificationResponse.type ===
+      EitherType.failure
+    ) {
+      return assembleRecordAndSendRejectedPublishingChannelSubmissionNotificationResponse;
+    }
+
+    //////////////////////////////////////////////////
+    // Return
+    //////////////////////////////////////////////////
+
     return Success({});
   }
+
+  //////////////////////////////////////////////////
+  // Return Failure if Decision type is unknown
+  //////////////////////////////////////////////////
 
   return Failure({
     controller,
