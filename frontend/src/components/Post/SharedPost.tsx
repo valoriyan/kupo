@@ -41,6 +41,9 @@ export const SharedPost = ({
             ? post.purchasedMediaElementsMetadata
             : undefined
         }
+        purchasedMediaElements={
+          "purchasedMediaElements" in post ? post.purchasedMediaElements : undefined
+        }
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
         onPostClick={() => goToPostPage(post.id)}

@@ -61,9 +61,7 @@ export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProp
             : undefined
         }
         purchasedMediaElements={
-          "purchasedMediaElementsMetadata" in post
-            ? post.purchasedMediaElements
-            : undefined
+          "purchasedMediaElements" in post ? post.purchasedMediaElements : undefined
         }
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}

@@ -13,6 +13,7 @@
  */
 
 import { NOTIFICATIONEVENTSSHOPITEMSOLD } from "./notificationeventsshopitemsold";
+import { RenderableAcceptedPublishingChannelSubmissionNotification } from "./renderable-accepted-publishing-channel-submission-notification";
 import { RenderableAcceptedUserFollowRequestNotification } from "./renderable-accepted-user-follow-request-notification";
 import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
@@ -21,6 +22,9 @@ import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable
 import { RenderableNewUserFollowRequestNotification } from "./renderable-new-user-follow-request-notification";
 import { RenderablePublishedItem } from "./renderable-published-item";
 import { RenderablePublishedItemComment } from "./renderable-published-item-comment";
+import { RenderablePublishingChannel } from "./renderable-publishing-channel";
+import { RenderableRejectedPublishingChannelSubmissionNotification } from "./renderable-rejected-publishing-channel-submission-notification";
+import { RenderableRejectedPublishingChannelSubmissionNotificationRejectionSummary } from "./renderable-rejected-publishing-channel-submission-notification-rejection-summary";
 import { RenderableShopItem } from "./renderable-shop-item";
 import { RenderableShopItemSoldNotification } from "./renderable-shop-item-sold-notification";
 import { RenderableUser } from "./renderable-user";
@@ -103,6 +107,18 @@ export interface RenderableUserNotification {
    * @memberof RenderableUserNotification
    */
   followRequestingUser: RenderableUser;
+  /**
+   *
+   * @type {RenderablePublishingChannel}
+   * @memberof RenderableUserNotification
+   */
+  publishingChannel: RenderablePublishingChannel;
+  /**
+   *
+   * @type {RenderableRejectedPublishingChannelSubmissionNotificationRejectionSummary}
+   * @memberof RenderableUserNotification
+   */
+  rejectionSummary: RenderableRejectedPublishingChannelSubmissionNotificationRejectionSummary;
   /**
    *
    * @type {RenderableUser}
