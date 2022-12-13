@@ -67,7 +67,9 @@ export const PendingSubmissions = ({
               onClick={() =>
                 resolvePendingSubmission({
                   publishingChannelSubmissionId: submission.submissionId,
-                  decision: PublishingChannelSubmissionDecision.Reject,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  decision: PublishingChannelSubmissionDecision.Reject as any,
+                  reasonString: "",
                 })
               }
             >
@@ -83,7 +85,8 @@ export const PendingSubmissions = ({
                 resolvePendingSubmission({
                   publishingChannelSubmissionId: submission.submissionId,
                   decision: PublishingChannelSubmissionDecision.Accept,
-                })
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any)
               }
             >
               <TextOrSpinner size="lg" isLoading={isResolvingSubmission}>
