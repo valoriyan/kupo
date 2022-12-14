@@ -1,0 +1,90 @@
+steps:
+- id: 'kupo-beta-backend steps'
+  name: 'hashicorp/terraform:1.3.5'
+  entrypoint: 'sh'
+  secretEnv: [
+        'APPNAME',
+        'DATABASE_NAME',
+        'DATABASE_URL',
+        'FRONTEND_BASE_URL',
+        'IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE',
+        'IMPLEMENTED_DATABASE_SERVICE_TYPE',
+        'IMPLEMENTED_EMAIL_SERVICE_TYPE',
+        'JWT_PRIVATE_KEY',
+        'LOCAL_BLOB_STORAGE_DIRECTORY',
+        'NODE_OPTIONS',
+        'PRODUCTION_ENVIRONMENT',
+        'SALT',
+        'SECURION_PAY_PRIVATE_KEY',
+        'SENDGRID_API_KEY',
+        'WASABI_ACCESS_KEY',
+        'WASABI_BUCKET',
+        'WASABI_BUCKET_REGION',
+  ]
+  args:
+  - '-c'
+  - |
+    set -x
+    echo "branch $BRANCH_NAME"
+    if [ ! -z "$BRANCH_NAME" -a -d "terraform/environments/$BRANCH_NAME/" ]; then
+      cd terraform/environments/$BRANCH_NAME
+      printf "$$APPNAME $$DATABASE_NAME $$DATABASE_URL $$FRONTEND_BASE_URL $$IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE $$IMPLEMENTED_DATABASE_SERVICE_TYPE $$IMPLEMENTED_EMAIL_SERVICE_TYPE $$JWT_PRIVATE_KEY $$LOCAL_BLOB_STORAGE_DIRECTORY $$NODE_OPTIONS $$PRODUCTION_ENVIRONMENT $$SALT $$SECURION_PAY_PRIVATE_KEY $$SENDGRID_API_KEY $$WASABI_ACCESS_KEY $$WASABI_BUCKET $$WASABI_BUCKET_REGION\n" > $BRANCH_NAME.auto.tfvars
+      echo "run init"
+      terraform init
+      echo "run validate"
+      terraform validate
+      echo "run plan"
+      terraform plan -out terraform.plan
+      terraform apply -auto-approve terraform.plan
+    else
+      for dir in terraform/environments/beta/*/
+      do
+        cd ${dir}
+        env=${dir%*/}
+        env=${env#*/}
+        echo ""
+        echo "******************** TERRAFORM PLAN *******************"
+        echo "************ Environment: ${env} ************"
+        echo "*******************************************************"
+        terraform init
+        terraform validate
+        terraform plan || exit 1
+        cd ../../
+      done
+    fi
+availableSecrets:
+  secretManager:
+    - env: 'APPNAME'
+      versionName: 'projects/955075264221/secrets/beta_backend_APPNAME/versions/latest'
+    - env: 'DATABASE_NAME'
+      versionName: 'projects/955075264221/secrets/beta_backend_DATABASE_NAME/versions/latest'
+    - env: 'DATABASE_URL'
+      versionName: 'projects/955075264221/secrets/beta_backend_DATABASE_URL/versions/latest'
+    - env: 'FRONTEND_BASE_URL'
+      versionName: 'projects/955075264221/secrets/beta_backend_FRONTEND_BASE_URL/versions/latest'
+    - env: 'IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE'
+      versionName: 'projects/955075264221/secrets/beta_backend_IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE/versions/latest'
+    - env: 'IMPLEMENTED_DATABASE_SERVICE_TYPE'
+      versionName: 'projects/955075264221/secrets/beta_backend_IMPLEMENTED_DATABASE_SERVICE_TYPE/versions/latest'
+    - env: 'IMPLEMENTED_EMAIL_SERVICE_TYPE'
+      versionName: 'projects/955075264221/secrets/beta_backend_IMPLEMENTED_EMAIL_SERVICE_TYPE/versions/latest'
+    - env: 'JWT_PRIVATE_KEY'
+      versionName: 'projects/955075264221/secrets/beta_backend_JWT_PRIVATE_KEY/versions/latest'
+    - env: 'LOCAL_BLOB_STORAGE_DIRECTORY'
+      versionName: 'projects/955075264221/secrets/beta_backend_LOCAL_BLOB_STORAGE_DIRECTORY/versions/latest'
+    - env: 'NODE_OPTIONS'
+      versionName: 'projects/955075264221/secrets/beta_backend_NODE_OPTIONS/versions/latest'
+    - env: 'PRODUCTION_ENVIRONMENT'
+      versionName: 'projects/955075264221/secrets/beta_backend_PRODUCTION_ENVIRONMENT/versions/latest'
+    - env: 'SALT'
+      versionName: 'projects/955075264221/secrets/beta_backend_SALT/versions/latest'
+    - env: 'SECURION_PAY_PRIVATE_KEY'
+      versionName: 'projects/955075264221/secrets/beta_backend_SECURION_PAY_PRIVATE_KEY/versions/latest'
+    - env: 'SENDGRID_API_KEY'
+      versionName: 'projects/955075264221/secrets/beta_backend_SENDGRID_API_KEY/versions/latest'
+    - env: 'WASABI_ACCESS_KEY'
+      versionName: 'projects/955075264221/secrets/beta_backend_WASABI_ACCESS_KEY/versions/latest'
+    - env: 'WASABI_BUCKET'
+      versionName: 'projects/955075264221/secrets/beta_backend_WASABI_BUCKET/versions/latest'
+    - env: 'WASABI_BUCKET_REGION'
+      versionName: 'projects/955075264221/secrets/beta_backend_WASABI_BUCKET_REGION/versions/latest'

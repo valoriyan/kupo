@@ -53,7 +53,7 @@ export class ChatMessagesTableService extends TableService {
     const queryString = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         chat_message_id VARCHAR(64) UNIQUE NOT NULL,
-        text VARCHAR(64) NOT NULL,
+        text VARCHAR(5000) NOT NULL,
         author_user_id VARCHAR(64) NOT NULL,
         chat_room_id VARCHAR(64) NOT NULL,
         creation_timestamp BIGINT NOT NULL,
