@@ -23,20 +23,18 @@ steps:
       terraform plan -out terraform.plan
       terraform apply -auto-approve terraform.plan
     else
-      for dir in terraform/environments/beta/*/
-      do
-        cd ${dir}
-        env=${dir%*/}
-        env=${env#*/}
-        echo ""
-        echo "******************** TERRAFORM PLAN *******************"
-        echo "************ Environment: ${env} ************"
-        echo "*******************************************************"
-        terraform init
-        terraform validate
-        terraform plan || exit 1
-        cd ../../
-      done
+      dir="terraform/environments/beta/frontend"
+      cd ${dir}
+      env=${dir%*/}
+      env=${env#*/}
+      echo ""
+      echo "******************** TERRAFORM PLAN *******************"
+      echo "************ Environment: ${env} ************"
+      echo "*******************************************************"
+      terraform init
+      terraform validate
+      terraform plan || exit 1
+      cd ../../
     fi
 availableSecrets:
   secretManager:

@@ -3,7 +3,7 @@ provider "google" {
 }
 
 resource "google_cloud_run_service" "default" {
-    name     = "kupo-beta-frontend"
+    name     = "kupo-beta-backend"
     location = "us-east4"
 
     metadata {
@@ -15,7 +15,7 @@ resource "google_cloud_run_service" "default" {
     template {
       spec {
         containers {
-          image = "us-east4-docker.pkg.dev/keen-boulder-370101/kupo-beta-docker-repo/kupo-beta-frontend:1.0"
+          image = "us-east4-docker.pkg.dev/keen-boulder-370101/kupo-beta-docker-repo/kupo-beta-backend:1.0"
         }
       }
     }
