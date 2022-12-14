@@ -15,7 +15,7 @@ resource "google_cloud_run_service" "default" {
     template {
       spec {
         containers {
-          image = "us-east4-docker.pkg.dev/keen-boulder-370101/kupo-beta-docker-repo/kupo-beta-frontend:1.0"
+          image = "us.gcr.io/keen-boulder-370101/kupo/kupo-beta-frontend:1.0"
         }
       }
     }
