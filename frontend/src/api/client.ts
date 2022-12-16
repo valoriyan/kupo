@@ -7,6 +7,9 @@ import { jsonDateReviver } from "#/utils/jsonRevivers";
 
 const { publicRuntimeConfig } = getConfig();
 
+console.log("PUBLIC RUNTIME CONFIG");
+console.log(`publicRuntimeConfig.API_BASE_URL: '${publicRuntimeConfig.API_BASE_URL}'`);
+
 export const client: AxiosInstance = axios.create({
   baseURL: publicRuntimeConfig.API_BASE_URL,
   timeout: 10 * 1000,
