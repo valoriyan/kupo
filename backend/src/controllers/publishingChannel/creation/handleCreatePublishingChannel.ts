@@ -22,6 +22,7 @@ export interface CreatePublishingChannelRequestBody {
   publishingChannelDescription: string;
   externalUrls: string[];
   publishingChannelRules: string[];
+  bannedWords: string[];
   moderatorUserIds: string[];
 }
 
@@ -69,6 +70,7 @@ export async function handleCreatePublishingChannel({
     externalUrls,
     publishingChannelRules,
     moderatorUserIds,
+    bannedWords,
   } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -144,6 +146,7 @@ export async function handleCreatePublishingChannel({
         profilePictureBlobFileKey,
         publishingChannelRules,
         externalUrls,
+        commaSeparatedBannedWords: bannedWords.join(","),
       },
     );
 

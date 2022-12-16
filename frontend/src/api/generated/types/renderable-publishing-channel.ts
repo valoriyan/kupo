@@ -72,6 +72,12 @@ export interface RenderablePublishingChannel {
   externalUrls: Array<string>;
   /**
    *
+   * @type {Array<string>}
+   * @memberof RenderablePublishingChannel
+   */
+  bannedWords: Array<string>;
+  /**
+   *
    * @type {RenderableUser}
    * @memberof RenderablePublishingChannel
    */

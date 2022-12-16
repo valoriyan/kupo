@@ -76,6 +76,7 @@ export async function assembleRenderablePublishingChannelFromParts({
     profilePictureBlobFileKey,
     publishingChannelRules,
     externalUrls,
+    bannedWords,
   } = unrenderablePublishingChannel;
 
   //////////////////////////////////////////////////
@@ -218,6 +219,8 @@ export async function assembleRenderablePublishingChannelFromParts({
     description,
     publishingChannelRules,
     externalUrls,
+
+    bannedWords,
 
     owner: publishingChannelOwner,
 

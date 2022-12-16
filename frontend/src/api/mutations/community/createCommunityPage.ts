@@ -100,6 +100,7 @@ export const useCreateCommunityPage = () => {
         externalUrls,
         publishingChannelRules,
         moderatorUserIds,
+        bannedWords: [],
       });
     },
     {

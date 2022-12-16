@@ -37,6 +37,8 @@ interface DBPublishingChannel {
 
   background_image_blob_file_key?: string;
   profile_picture_blob_file_key?: string;
+
+  comma_separated_banned_words: string;
 }
 
 function convertDBPublishingChannelToUnrenderablePublishingChannel(
@@ -76,6 +78,7 @@ function convertDBPublishingChannelToUnrenderablePublishingChannel(
     profilePictureBlobFileKey: dbPublishingChannel.profile_picture_blob_file_key,
     publishingChannelRules,
     externalUrls,
+    bannedWords: dbPublishingChannel.comma_separated_banned_words.split(","),
   };
 }
 
@@ -107,6 +110,8 @@ export class PublishingChannelsTableService extends TableService {
         publishing_channel_rule_3 VARCHAR(64),
         publishing_channel_rule_4 VARCHAR(64),
         publishing_channel_rule_5 VARCHAR(64),
+        
+        comma_separated_banned_words VARCHAR(256),
 
         background_image_blob_file_key VARCHAR(64) UNIQUE,
         profile_picture_blob_file_key VARCHAR(64) UNIQUE,
@@ -139,6 +144,7 @@ export class PublishingChannelsTableService extends TableService {
     profilePictureBlobFileKey,
     externalUrls,
     publishingChannelRules,
+    commaSeparatedBannedWords,
   }: {
     controller: Controller;
     publishingChannelId: string;
@@ -149,6 +155,7 @@ export class PublishingChannelsTableService extends TableService {
     profilePictureBlobFileKey?: string;
     externalUrls: string[];
     publishingChannelRules: string[];
+    commaSeparatedBannedWords: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     const [externalUrl1, externalUrl2, externalUrl3, externalUrl4, externalUrl5] =
       externalUrls;
@@ -184,6 +191,8 @@ export class PublishingChannelsTableService extends TableService {
             { field: "publishing_channel_rule_3", value: publishingChannelRule3 },
             { field: "publishing_channel_rule_4", value: publishingChannelRule4 },
             { field: "publishing_channel_rule_5", value: publishingChannelRule5 },
+
+            { field: "comma_separated_banned_words", value: commaSeparatedBannedWords },
           ],
         ],
         tableName: this.tableName,
@@ -374,6 +383,7 @@ export class PublishingChannelsTableService extends TableService {
     profilePictureBlobFileKey,
     updatedExternalUrls,
     updatedPublishingChannelRules,
+    updatedCommaSeparatedBannedWords,
   }: {
     controller: Controller;
 
@@ -385,6 +395,7 @@ export class PublishingChannelsTableService extends TableService {
     profilePictureBlobFileKey?: string;
     updatedExternalUrls?: string[];
     updatedPublishingChannelRules?: string[];
+    updatedCommaSeparatedBannedWords?: string;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePublishingChannel>
   > {
@@ -417,6 +428,11 @@ export class PublishingChannelsTableService extends TableService {
         {
           field: "external_url_5",
           value: externalUrl5,
+          settings: { includeIfEmpty: true },
+        },
+        {
+          field: "comma_separated_banned_words",
+          value: updatedCommaSeparatedBannedWords,
           settings: { includeIfEmpty: true },
         },
       ];

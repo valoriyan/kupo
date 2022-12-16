@@ -61,5 +61,11 @@ export interface CreatePublishingChannelRequestBody {
    * @type {Array<string>}
    * @memberof CreatePublishingChannelRequestBody
    */
+  bannedWords: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof CreatePublishingChannelRequestBody
+   */
   moderatorUserIds: Array<string>;
 }

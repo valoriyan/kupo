@@ -10,6 +10,7 @@ export interface UnrenderablePublishingChannel {
   profilePictureBlobFileKey?: string;
   publishingChannelRules: string[];
   externalUrls: string[];
+  bannedWords: string[];
 }
 
 export interface RenderablePublishingChannel extends UnrenderablePublishingChannel {
