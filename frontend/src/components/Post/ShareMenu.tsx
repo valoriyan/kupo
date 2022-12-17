@@ -36,7 +36,9 @@ export const ShareMenu = ({ hide, post, currentMediaElement }: ShareMenuProps) =
   const saveMedia = async () => {
     if (!currentMediaElement) return;
     setIsLoading(true);
-    const blob = await (await fetch(currentMediaElement.temporaryUrl)).blob();
+    const blob = await (
+      await fetch(currentMediaElement.temporaryUrl, { mode: "no-cors" })
+    ).blob();
     const blobUrl = URL.createObjectURL(blob);
     const dlAnchor = document.createElement("a");
     dlAnchor.style.display = "none";

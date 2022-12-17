@@ -1,0 +1,12 @@
+{
+  "name": "embedding_generator_service",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "deploy": "gcloud builds submit --tag us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-ai-embedding-generator-service:latest --project valoriyan && gcloud run deploy kupo-beta-ai-embedding-generator-service --project valoriyan --region us-central1 --image us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-ai-embedding-generator-service:latest",
+    "build_local_docker": "docker build -t kupo/embedding_generator_service . && docker run -it kupo/embedding_generator_service bash"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
