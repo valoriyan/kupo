@@ -10,6 +10,8 @@ import { ShopItemController } from "../shopItemController";
 import { v4 as uuidv4 } from "uuid";
 import { assembleRecordAndSendShopItemSoldNotification } from "../../../../controllers/notification/notificationSenders/assembleRecordAndSendShopItemSoldNotification";
 import { constructRenderableShopItemFromPartsById } from "../utilities";
+import { GenericResponseFailedReason } from "../../../../controllers/models";
+import { RootPurchasedShopItemDetails } from "../models";
 
 export interface PurchaseShopItemRequestBody {
   publishedItemId: string;
@@ -163,6 +165,46 @@ export async function handlePurchaseShopItem({
 
   const { success: renderableShopItem } =
     constructRenderableShopItemFromPartsByIdResponse;
+
+  //////////////////////////////////////////////////
+  // Send confirmation email to purchaser
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      {
+        controller,
+        userId: clientUserId,
+      },
+    );
+  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
+    return selectMaybeUserByUserIdResponse;
+  }
+  const { success: maybeUnrenderableClientUser } = selectMaybeUserByUserIdResponse;
+
+  if (!maybeUnrenderableClientUser) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handlePurchaseShopItem",
+      additionalErrorInformation: "Error at handlePurchaseShopItem",
+    });
+  }
+  const unrenderableClientUser = maybeUnrenderableClientUser;
+
+  const sendOrderReceiptEmailResponse =
+    await controller.emailService.sendOrderReceiptEmail({
+      user: unrenderableClientUser,
+      renderableShopItemPurchaseSummary: {
+        transactionId,
+        transactionTimestamp: now,
+        purchasedShopItem: renderableShopItem as RootPurchasedShopItemDetails,
+      },
+    });
+  if (sendOrderReceiptEmailResponse.type === EitherType.failure) {
+    return sendOrderReceiptEmailResponse;
+  }
 
   //////////////////////////////////////////////////
   // Send notification to seller

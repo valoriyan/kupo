@@ -62,11 +62,13 @@ import {
   StoreCreditCardRequestBody,
   StoreCreditCardSuccess,
 } from "./payments/storeCreditCard";
+import { EmailService } from "../../../services/emailService";
 
 @injectable()
 @Route("shopitem")
 export class ShopItemController extends Controller {
   constructor(
+    public emailService: EmailService,
     public blobStorageService: BlobStorageService,
     public databaseService: DatabaseService,
     public paymentProcessingService: PaymentProcessingService,
