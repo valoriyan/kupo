@@ -11,6 +11,7 @@ import { EmailServiceInterface } from "./models";
 import { generateResetPasswordToken, generateResetPasswordURL } from "./utilities";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
+import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 
 export class LocalEmailService extends EmailServiceInterface {
   private static JWT_PRIVATE_KEY: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
@@ -67,6 +68,39 @@ export class LocalEmailService extends EmailServiceInterface {
 
       console.log(`
         Hi ${username}!
+      `);
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendWelcomeEmail",
+      });
+    }
+  }
+
+  async sendOrderReceiptEmail({
+    controller,
+    user,
+    renderableShopItemPurchaseSummary,
+  }: {
+    controller: Controller;
+    user: UnrenderableUser;
+    renderableShopItemPurchaseSummary: RenderableShopItemPurchaseSummary;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const { username } = user;
+      const { transactionTimestamp, purchasedShopItem } =
+        renderableShopItemPurchaseSummary;
+      const { id: contentItemId } = purchasedShopItem;
+
+      console.log(`
+        Hi ${username}!
+
+        At ${transactionTimestamp} you purchased ${contentItemId}
       `);
 
       return Success({});

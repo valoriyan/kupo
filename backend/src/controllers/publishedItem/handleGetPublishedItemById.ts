@@ -37,6 +37,9 @@ export async function handleGetPublishedItemById({
     GetPublishedItemByIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { publishedItemId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -44,6 +47,10 @@ export async function handleGetPublishedItemById({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Assemble Published Item
+  //////////////////////////////////////////////////
 
   const constructPublishedItemFromPartsByIdResponse =
     await constructPublishedItemFromPartsById({
@@ -57,5 +64,10 @@ export async function handleGetPublishedItemById({
     return constructPublishedItemFromPartsByIdResponse;
   }
   const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({ publishedItem });
 }

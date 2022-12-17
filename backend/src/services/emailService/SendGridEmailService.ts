@@ -14,6 +14,8 @@ import {
 } from "../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
+import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
+import { generateShopItemOrderReceiptEmailHtml } from "./templates/generateShopItemOrderReceiptEmailHtml";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
@@ -100,6 +102,58 @@ export class SendGridEmailService extends EmailServiceInterface {
         },
         html: generateWelcomeEmailHtml({
           homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,
+        }),
+      };
+
+      await SendgridMailer.send(message)
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendWelcomeEmail",
+      });
+    }
+  }
+
+  async sendOrderReceiptEmail({
+    controller,
+    user,
+    renderableShopItemPurchaseSummary,
+  }: {
+    controller: Controller;
+    user: UnrenderableUser;
+    renderableShopItemPurchaseSummary: RenderableShopItemPurchaseSummary;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const { email } = user;
+      const { transactionId, purchasedShopItem } = renderableShopItemPurchaseSummary;
+      const { title, price } = purchasedShopItem;
+
+      const message = {
+        to: email,
+        from: {
+          name: "Kupo.social",
+          email: "hello@kupo.social",
+        },
+        subject: "Welcome to Kupo.social",
+        dynamic_template_data: {
+          subject: "Welcome to Kupo.social",
+        },
+        html: generateShopItemOrderReceiptEmailHtml({
+          homepageUrl: SendGridEmailService.FRONTEND_BASE_URL,
+          transactionId,
+          shopItemTitle: title,
+          price: price.toString(),
         }),
       };
 

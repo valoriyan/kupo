@@ -1,3 +1,5 @@
+import { RootPurchasedShopItemDetails } from "../models";
+
 export interface CreditCardSummary {
   localCreditCardId: string;
   userId: string;
@@ -8,4 +10,11 @@ export interface CreditCardSummary {
   expYear: string;
   cardholderName: string;
   brand: string;
+}
+
+export interface RenderableShopItemPurchaseSummary {
+  transactionId: string;
+  transactionTimestamp: number;
+
+  purchasedShopItem: RootPurchasedShopItemDetails;
 }

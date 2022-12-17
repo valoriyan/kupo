@@ -17,6 +17,7 @@ interface DBPublishedItemTransaction {
   published_item_id: string;
   non_creator_user_id: string;
   creation_timestamp: string;
+  associated_securion_charge_id: string;
 }
 
 export class PublishedItemTransactionsTableService extends TableService {
@@ -39,6 +40,7 @@ export class PublishedItemTransactionsTableService extends TableService {
             published_item_id VARCHAR(64) NOT NULL,
             non_creator_user_id VARCHAR(64) NOT NULL,
             creation_timestamp BIGINT NOT NULL,
+            associated_securion_charge_id VARCHAR(64) NOT NULL,
 
         CONSTRAINT ${this.tableName}_pkey
           PRIMARY KEY (published_item_transaction_id),
@@ -69,12 +71,14 @@ export class PublishedItemTransactionsTableService extends TableService {
     publishedItemId,
     nonCreatorUserId,
     creationTimestamp,
+    associatedShift4ChargeId,
   }: {
     controller: Controller;
     transactionId: string;
     publishedItemId: string;
     nonCreatorUserId: string;
     creationTimestamp: number;
+    associatedShift4ChargeId: string;
     // eslint-disable-next-line @typescript-eslint/ban-types
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
@@ -85,6 +89,7 @@ export class PublishedItemTransactionsTableService extends TableService {
             { field: "published_item_id", value: publishedItemId },
             { field: "non_creator_user_id", value: nonCreatorUserId },
             { field: "creation_timestamp", value: creationTimestamp },
+            { field: "associated_securion_charge_id", value: associatedShift4ChargeId },
           ],
         ],
         tableName: this.tableName,

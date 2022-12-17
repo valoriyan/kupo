@@ -122,6 +122,8 @@ export async function handlePurchaseShopItem({
   if (chargeCustomerWithCachedCreditCardResponse.type === EitherType.failure) {
     return chargeCustomerWithCachedCreditCardResponse;
   }
+  const { success: associatedShift4ChargeId } =
+    chargeCustomerWithCachedCreditCardResponse;
 
   //////////////////////////////////////////////////
   // Record user transaction
@@ -135,6 +137,7 @@ export async function handlePurchaseShopItem({
         publishedItemId,
         nonCreatorUserId: clientUserId,
         creationTimestamp: now,
+        associatedShift4ChargeId,
       },
     );
 
