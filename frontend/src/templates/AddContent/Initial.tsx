@@ -1,4 +1,4 @@
-import { CommunityIcon, DuplicateIcon, TagIcon } from "#/components/Icons";
+import { CommunityIcon, DuplicateIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -15,9 +15,10 @@ export const Initial = (props: InitialProps) => {
       <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.Post)}>
         <DuplicateIcon /> New Post
       </NewItemButton>
-      <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.ShopItem)}>
+      {/* TODO: Uncomment to re-enable shop items */}
+      {/* <NewItemButton onClick={() => props.setCurrentScreen(AddContentScreen.ShopItem)}>
         <TagIcon /> New Shop Item
-      </NewItemButton>
+      </NewItemButton> */}
       {!props.publishingChannelId && (
         <NewItemButton
           onClick={() => props.setCurrentScreen(AddContentScreen.CommunityPage)}

@@ -285,6 +285,8 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         values,
       };
 
+      console.log(query);
+
       const response: QueryResult<DBPublishingChannelSubmission> =
         await this.datastorePool.query(query);
 

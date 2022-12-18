@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CreditCardIcon, LockIcon, UserIcon } from "#/components/Icons";
+import { LockIcon, UserIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
 import { mainTitleStyles } from "#/components/Typography";
 import { styled } from "#/styling";
@@ -17,11 +17,12 @@ export const Settings = () => {
           <LockIcon /> Account
         </NavButton>
       </Link>
-      <Link href="/settings/payment-information" passHref>
+      {/* TODO: Uncomment to re-enable shop items */}
+      {/* <Link href="/settings/payment-information" passHref>
         <NavButton>
           <CreditCardIcon /> Payment Information
         </NavButton>
-      </Link>
+      </Link> */}
     </Stack>
   );
 };
