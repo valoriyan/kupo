@@ -25,6 +25,8 @@ import { assembleRenderableNewTagInPublishedItemCommentNotification } from "./re
 import { GenericResponseFailedReason } from "../models";
 import { assembleRenderableNewUserFollowRequestNotification } from "./renderableNotificationAssemblers/assembleRenderableNewUserFollowRequestNotification";
 import { assembleRenderableAcceptedUserFollowRequestNotification } from "./renderableNotificationAssemblers/assembleRenderableAcceptedUserFollowRequestNotification";
+import { assembleRenderableAcceptedPublishingChannelSubmissionNotification } from "./renderableNotificationAssemblers/assembleRenderableAcceptedPublishingChannelSubmissionNotification";
+import { assembleRenderableRejectedPublishingChannelSubmissionNotification } from "./renderableNotificationAssemblers/assembleRenderableRejectedPublishingChannelSubmissionNotification";
 
 export interface GetPageOfNotificationsRequestBody {
   cursor?: string;
@@ -198,13 +200,35 @@ async function assembleNotifications({
             databaseService: controller.databaseService,
             clientUserId,
           });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION
+        ) {
+          return await assembleRenderableAcceptedPublishingChannelSubmissionNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION
+        ) {
+          return await assembleRenderableRejectedPublishingChannelSubmissionNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
         } else {
           return Failure({
             controller,
             httpStatusCode: 500,
             reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
             error: "Unknown event type at assembleNotifcations",
-            additionalErrorInformation: "Unknown event type at assembleNotifcations",
+            additionalErrorInformation: `Unknown event type '${userNotification.notification_type}' at assembleNotifcations`,
           });
         }
       } catch (error) {

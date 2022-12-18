@@ -27,7 +27,9 @@ interface DBPublishingChannelSubmission {
   publishing_channel_id: string;
   user_id_submitting_published_item: string;
   published_item_id: string;
+
   timestamp_of_submission: string;
+  timestamp_of_resolution_decision: string;
 
   reason_for_rejected_submission?: string;
 
@@ -56,6 +58,7 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         user_id_submitting_published_item VARCHAR(64) NOT NULL,
         published_item_id VARCHAR(64) NOT NULL,
         timestamp_of_submission BIGINT NOT NULL,
+        timestamp_of_resolution_decision BIGINT,
         is_pending boolean NOT NULL,
 
         reason_for_rejected_submission VARCHAR(64),
@@ -310,15 +313,23 @@ export class PublishingChannelSubmissionsTableService extends TableService {
   public async approvePendingChannelSubmission({
     controller,
     publishingChannelSubmissionId,
+    timestampOfResolutionDecision,
   }: {
     controller: Controller;
     publishingChannelSubmissionId: string;
+    timestampOfResolutionDecision: number;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelSubmission>
   > {
     try {
       const query = generatePSQLGenericUpdateRowQueryString<string | number>({
-        updatedFields: [{ field: "is_pending", value: "false" }],
+        updatedFields: [
+          { field: "is_pending", value: "false" },
+          {
+            field: "timestamp_of_resolution_decision",
+            value: timestampOfResolutionDecision,
+          },
+        ],
         fieldsUsedToIdentifyUpdatedRows: [
           {
             field: "publishing_channel_submission_id",
@@ -360,10 +371,12 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     controller,
     publishingChannelSubmissionId,
     reasonForRejectedSubmission,
+    timestampOfResolutionDecision,
   }: {
     controller: Controller;
     publishingChannelSubmissionId: string;
     reasonForRejectedSubmission: string;
+    timestampOfResolutionDecision: number;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, DBPublishingChannelSubmission>
   > {
@@ -372,6 +385,10 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         updatedFields: [
           { field: "is_pending", value: "false" },
           { field: "reason_for_rejected_submission", value: reasonForRejectedSubmission },
+          {
+            field: "timestamp_of_resolution_decision",
+            value: timestampOfResolutionDecision,
+          },
         ],
         fieldsUsedToIdentifyUpdatedRows: [
           {

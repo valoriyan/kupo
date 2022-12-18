@@ -71,6 +71,8 @@ export async function handleResolvePublishingChannelSubmission({
   );
   if (error) return error;
 
+  const now = Date.now();
+
   //////////////////////////////////////////////////
   // Check if client has rights to resolve submission
   //////////////////////////////////////////////////
@@ -146,6 +148,7 @@ export async function handleResolvePublishingChannelSubmission({
         {
           controller,
           publishingChannelSubmissionId,
+          timestampOfResolutionDecision: now,
         },
       );
     if (approvePendingChannelSubmissionResponse.type === EitherType.failure) {
@@ -186,11 +189,15 @@ export async function handleResolvePublishingChannelSubmission({
     //     Write to DB
     //////////////////////////////////////////////////
 
+    const reasonString = requestBody.reasonString;
+
     const deletePublishingChannelSubmissionResponse =
-      await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.deletePublishingChannelSubmission(
+      await controller.databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.rejectPendingChannelSubmissionWithReasonString(
         {
           controller,
           publishingChannelSubmissionId,
+          reasonForRejectedSubmission: reasonString,
+          timestampOfResolutionDecision: now,
         },
       );
     if (deletePublishingChannelSubmissionResponse.type === EitherType.failure) {
