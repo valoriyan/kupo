@@ -20,8 +20,10 @@
 export enum GenericResponseFailedReason {
   BadRequest = "BAD_REQUEST",
   DatabaseTransactionError = "DATABASE_TRANSACTION_ERROR",
+  FastCacheTransactionError = "FAST_CACHE_TRANSACTION_ERROR",
   PaymentProcessorError = "PAYMENT_PROCESSOR_ERROR",
   EmailServiceError = "EMAIL_SERVICE_ERROR",
   BlobStorageError = "BLOB_STORAGE_ERROR",
   ImproperUseOfFunction = "IMPROPER_USE_OF_FUNCTION",
+  IdempotentycyTokenAlreadyEncountered = "IDEMPOTENTYCY_TOKEN_ALREADY_ENCOUNTERED",
 }

@@ -1,15 +1,6 @@
 import express from "express";
 import { WebSocketService } from "../../../services/webSocketService";
-import {
-  Body,
-  Controller,
-  Delete,
-  FormField,
-  Post,
-  Request,
-  Route,
-  UploadedFiles,
-} from "tsoa";
+import { Body, Controller, Delete, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
@@ -63,6 +54,7 @@ import {
   StoreCreditCardSuccess,
 } from "./payments/storeCreditCard";
 import { EmailService } from "../../../services/emailService";
+import { FastCacheService } from "../../../services/fastCacheService";
 
 @injectable()
 @Route("shopitem")
@@ -73,6 +65,7 @@ export class ShopItemController extends Controller {
     public databaseService: DatabaseService,
     public paymentProcessingService: PaymentProcessingService,
     public webSocketService: WebSocketService,
+    public fastCacheService: FastCacheService,
   ) {
     super();
   }

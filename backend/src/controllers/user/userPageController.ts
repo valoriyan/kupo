@@ -1,5 +1,5 @@
 import express from "express";
-import { Body, Controller, Post, Request, Route, UploadedFile } from "tsoa";
+import { Body, Controller, Post, Request, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
 import { PaymentProcessingService } from "../../services/paymentProcessingService";

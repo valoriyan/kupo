@@ -25,6 +25,12 @@ export interface CreateShopItemRequestBody {
    * @type {string}
    * @memberof CreateShopItemRequestBody
    */
+  idempotentcyToken: string;
+  /**
+   *
+   * @type {string}
+   * @memberof CreateShopItemRequestBody
+   */
   caption: string;
   /**
    *

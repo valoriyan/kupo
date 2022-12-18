@@ -1,5 +1,4 @@
 import express from "express";
-import { UploadableKupoFile } from "../../../controllers/models";
 import {
   EitherType,
   ErrorReasonTypes,

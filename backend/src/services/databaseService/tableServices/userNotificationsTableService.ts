@@ -134,14 +134,14 @@ function generateReferenceTableRow({
     notificationType === NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION
   ) {
     return {
-      field: "published_item_transaction_reference",
+      field: "publishing_channel_submission_reference",
       value: userNotificationDbReference.publishingChannelSubmissionId,
     };
   } else if (
     notificationType === NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION
   ) {
     return {
-      field: "published_item_transaction_reference",
+      field: "publishing_channel_submission_reference",
       value: userNotificationDbReference.publishingChannelSubmissionId,
     };
   } else {

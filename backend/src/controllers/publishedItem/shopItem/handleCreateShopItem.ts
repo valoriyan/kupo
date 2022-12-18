@@ -41,6 +41,7 @@ export interface CreateShopItemSuccess {
 }
 
 export interface CreateShopItemRequestBody {
+  idempotentcyToken: string;
   caption: string;
   hashtags: string[];
   title: string;
@@ -85,10 +86,32 @@ export async function handleCreateShopItem({
     expirationTimestamp,
     mediaFiles,
     purchasedMediaFiles,
+    idempotentcyToken,
   } = requestBody;
 
   const publishedItemId = uuidv4();
   const now = Date.now();
+
+  //////////////////////////////////////////////////
+  // Handle idempotentcy token
+  //////////////////////////////////////////////////
+  const assertThatIdempotentcyTokenDoesNotExistResponse =
+    await controller.fastCacheService.assertThatIdempotentcyTokenDoesNotExist({
+      controller,
+      idempotentcyToken,
+    });
+  if (assertThatIdempotentcyTokenDoesNotExistResponse.type === EitherType.failure) {
+    return assertThatIdempotentcyTokenDoesNotExistResponse;
+  }
+
+  const addIdempotentcyTokenResponse =
+    await controller.fastCacheService.addIdempotentcyToken({
+      controller,
+      idempotentcyToken,
+    });
+  if (addIdempotentcyTokenResponse.type === EitherType.failure) {
+    return addIdempotentcyTokenResponse;
+  }
 
   //////////////////////////////////////////////////
   // Write to db

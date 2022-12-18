@@ -7,7 +7,6 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { DatabaseService } from "../../../services/databaseService";
-import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 
 export const deleteBaseRenderablePublishedItemComponents = async ({
   controller,
