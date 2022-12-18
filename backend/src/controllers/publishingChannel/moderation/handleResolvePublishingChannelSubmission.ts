@@ -18,25 +18,11 @@ export enum PublishingChannelSubmissionDecision {
   REJECT = "reject",
 }
 
-export interface ResolvePublishingChannelSubmissionRequestBodyBase {
+export interface ResolvePublishingChannelSubmissionRequestBody {
   decision: PublishingChannelSubmissionDecision;
   publishingChannelSubmissionId: string;
-}
-
-export interface ResolvePublishingChannelSubmissionRequestBodyAccept
-  extends ResolvePublishingChannelSubmissionRequestBodyBase {
-  decision: PublishingChannelSubmissionDecision.ACCEPT;
-}
-
-export interface ResolvePublishingChannelSubmissionRequestBodyReject
-  extends ResolvePublishingChannelSubmissionRequestBodyBase {
-  decision: PublishingChannelSubmissionDecision.REJECT;
   reasonString: string;
 }
-
-export type ResolvePublishingChannelSubmissionRequestBody =
-  | ResolvePublishingChannelSubmissionRequestBodyAccept
-  | ResolvePublishingChannelSubmissionRequestBodyReject;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ResolvePublishingChannelSubmissionSuccess {}

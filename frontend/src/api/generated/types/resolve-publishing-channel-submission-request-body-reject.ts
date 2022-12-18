@@ -22,16 +22,16 @@ import { PublishingChannelSubmissionDecisionREJECT } from "./publishing-channel-
 export interface ResolvePublishingChannelSubmissionRequestBodyReject {
   /**
    *
-   * @type {PublishingChannelSubmissionDecisionREJECT}
-   * @memberof ResolvePublishingChannelSubmissionRequestBodyReject
-   */
-  decision: PublishingChannelSubmissionDecisionREJECT;
-  /**
-   *
    * @type {string}
    * @memberof ResolvePublishingChannelSubmissionRequestBodyReject
    */
   publishingChannelSubmissionId: string;
+  /**
+   *
+   * @type {PublishingChannelSubmissionDecisionREJECT}
+   * @memberof ResolvePublishingChannelSubmissionRequestBodyReject
+   */
+  decision: PublishingChannelSubmissionDecisionREJECT;
   /**
    *
    * @type {string}
