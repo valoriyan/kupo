@@ -12,9 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { PublishingChannelSubmissionDecisionREJECT } from "./publishing-channel-submission-decision-reject";
-import { ResolvePublishingChannelSubmissionRequestBodyAccept } from "./resolve-publishing-channel-submission-request-body-accept";
-import { ResolvePublishingChannelSubmissionRequestBodyReject } from "./resolve-publishing-channel-submission-request-body-reject";
+import { PublishingChannelSubmissionDecision } from "./publishing-channel-submission-decision";
 
 /**
  *
@@ -24,10 +22,10 @@ import { ResolvePublishingChannelSubmissionRequestBodyReject } from "./resolve-p
 export interface ResolvePublishingChannelSubmissionRequestBody {
   /**
    *
-   * @type {PublishingChannelSubmissionDecisionREJECT}
+   * @type {PublishingChannelSubmissionDecision}
    * @memberof ResolvePublishingChannelSubmissionRequestBody
    */
-  decision: PublishingChannelSubmissionDecisionREJECT;
+  decision: PublishingChannelSubmissionDecision;
   /**
    *
    * @type {string}

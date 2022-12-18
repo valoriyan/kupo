@@ -22,14 +22,14 @@ import { PublishingChannelSubmissionDecisionACCEPT } from "./publishing-channel-
 export interface ResolvePublishingChannelSubmissionRequestBodyAccept {
   /**
    *
-   * @type {PublishingChannelSubmissionDecisionACCEPT}
-   * @memberof ResolvePublishingChannelSubmissionRequestBodyAccept
-   */
-  decision: PublishingChannelSubmissionDecisionACCEPT;
-  /**
-   *
    * @type {string}
    * @memberof ResolvePublishingChannelSubmissionRequestBodyAccept
    */
   publishingChannelSubmissionId: string;
+  /**
+   *
+   * @type {PublishingChannelSubmissionDecisionACCEPT}
+   * @memberof ResolvePublishingChannelSubmissionRequestBodyAccept
+   */
+  decision: PublishingChannelSubmissionDecisionACCEPT;
 }
