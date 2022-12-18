@@ -157,22 +157,25 @@ export async function handleCreatePublishingChannel({
   //////////////////////////////////////////////////
   // Add moderators
   //////////////////////////////////////////////////
-  const registerPublishingChannelModeratorsResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerators(
-      {
-        controller,
-        publishingChannelModeratorRegistrations: moderatorUserIds.map(
-          (moderatorUserId) => ({
-            publishingChannelId,
-            userId: moderatorUserId,
-            creationTimestamp: now,
-          }),
-        ),
-      },
-    );
 
-  if (registerPublishingChannelModeratorsResponse.type === EitherType.failure) {
-    return registerPublishingChannelModeratorsResponse;
+  if (moderatorUserIds.length > 0) {
+    const registerPublishingChannelModeratorsResponse =
+      await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.registerPublishingChannelModerators(
+        {
+          controller,
+          publishingChannelModeratorRegistrations: moderatorUserIds.map(
+            (moderatorUserId) => ({
+              publishingChannelId,
+              userId: moderatorUserId,
+              creationTimestamp: now,
+            }),
+          ),
+        },
+      );
+
+    if (registerPublishingChannelModeratorsResponse.type === EitherType.failure) {
+      return registerPublishingChannelModeratorsResponse;
+    }
   }
 
   //////////////////////////////////////////////////

@@ -73,7 +73,7 @@ export async function validatePublishingChannelUniqueName({
 
   const { success: maybePublishingChannel } = maybeGetPublishingChannelByNameResponse;
 
-  if (!maybePublishingChannel) {
+  if (maybePublishingChannel) {
     return Failure({
       controller,
       httpStatusCode: 400,

@@ -247,14 +247,14 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         values.push(publishedItemType);
       }
 
-      const reasonForRejectedSubmissionClause = "";
+      let reasonForRejectedSubmissionClause = "";
       if (!!hasBeenRejectedWithAReason) {
-        publishedItemTypeClause = `
+        reasonForRejectedSubmissionClause = `
           AND
             reason_for_rejected_submission IS NOT NULL
         `;
       } else {
-        publishedItemTypeClause = `
+        reasonForRejectedSubmissionClause = `
           AND
             reason_for_rejected_submission IS NULL
         `;
@@ -284,6 +284,8 @@ export class PublishingChannelSubmissionsTableService extends TableService {
         `,
         values,
       };
+
+      console.log(query);
 
       const response: QueryResult<DBPublishingChannelSubmission> =
         await this.datastorePool.query(query);

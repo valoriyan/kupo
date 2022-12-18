@@ -4,7 +4,7 @@ import { useGetCommunityByName } from "#/api/queries/community/useGetCommunityBy
 import { useAppLayoutState } from "#/components/AppLayout";
 import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";
-import { ClipboardIcon, MenuBoxedIcon, ShoppingBagIcon } from "#/components/Icons";
+import { ClipboardIcon, MenuBoxedIcon } from "#/components/Icons";
 import { ShieldIcon } from "#/components/Icons/generated/ShieldIcon";
 import { Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
@@ -17,7 +17,6 @@ import { CommunityBanner } from "./CommunityBanner";
 import { CommunityDetails } from "./CommunityDetails";
 import { CommunityHeader } from "./CommunityHeader";
 import { CommunityPosts } from "./CommunityPosts";
-import { CommunityShopItems } from "./CommunityShopItems";
 import { PendingSubmissions } from "./PendingSubmissions";
 
 const PREVIOUS_LOCATION_BASE_KEY = "previous-location-community-page";
@@ -85,11 +84,12 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
             trigger: <MenuBoxedIcon />,
             content: <CommunityPosts communityName={data.name} />,
           },
-          {
-            id: "shopItems",
-            trigger: <ShoppingBagIcon />,
-            content: <CommunityShopItems communityName={data.name} />,
-          },
+          // TODO: Uncomment to re-enable shop items
+          // {
+          //   id: "shopItems",
+          //   trigger: <ShoppingBagIcon />,
+          //   content: <CommunityShopItems communityName={data.name} />,
+          // },
           {
             id: "communityDetails",
             trigger: <ClipboardIcon />,
