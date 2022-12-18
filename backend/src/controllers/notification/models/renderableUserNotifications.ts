@@ -89,6 +89,7 @@ export type RenderableUserNotification =
   | RenderableNewCommentOnPublishedItemNotification
   | RenderableNewLikeOnPublishedItemNotification
   | RenderableNewTagInPublishedItemCommentNotification
+  | RenderableNewTagInPublishedItemCaptionNotification
   | RenderableAcceptedUserFollowRequestNotification
   | RenderableNewUserFollowRequestNotification
   | RenderableAcceptedPublishingChannelSubmissionNotification

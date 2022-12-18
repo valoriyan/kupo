@@ -7,19 +7,17 @@ import { UserName } from "#/components/UserName";
 import {
   goToUserProfilePage,
   setPreviousLocationForUserProfilePage,
-} from "../UserProfile";
-import { NotificationWrapper } from "./shared";
+} from "../../UserProfile";
+import { NotificationWrapper } from "../shared";
 import { Button } from "#/components/Button";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 
-export interface AcceptedFollowRequestNotificationProps {
+export interface AcceptedFollowRequestProps {
   notification: RenderableAcceptedUserFollowRequestNotification;
 }
 
-export const AcceptedFollowRequestNotification = ({
-  notification,
-}: AcceptedFollowRequestNotificationProps) => {
+export const AcceptedFollowRequest = ({ notification }: AcceptedFollowRequestProps) => {
   const {
     userAcceptingFollowRequest: { username, profilePictureTemporaryUrl },
     eventTimestamp,

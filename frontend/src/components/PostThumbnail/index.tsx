@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { RenderablePost } from "#/api";
+import { RenderablePost, RenderableShopItem } from "#/api";
 import { styled } from "#/styling";
 import { goToPostPage } from "#/templates/SinglePost";
 import { FileDocumentIcon } from "../Icons";
 import { Flex } from "../Layout";
 
 export interface PostThumbnailProps {
-  post: RenderablePost;
+  post: RenderablePost | RenderableShopItem;
 }
 
 export const PostThumbnail = ({ post }: PostThumbnailProps) => {

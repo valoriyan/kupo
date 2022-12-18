@@ -1,4 +1,7 @@
-import { RenderableNewCommentOnPublishedItemNotification, RenderablePost } from "#/api";
+import {
+  RenderableNewTagInPublishedItemCaptionNotification,
+  RenderablePost,
+} from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Stack } from "#/components/Layout";
 import { PostThumbnail } from "#/components/PostThumbnail";
@@ -6,17 +9,18 @@ import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { truncate } from "#/utils/truncate";
-import { goToUserProfilePage } from "../UserProfile";
-import { NotificationWrapper } from "./shared";
+import { goToUserProfilePage } from "../../UserProfile";
+import { NotificationWrapper } from "../shared";
 
-export const NewCommentOnPublishedItemNotification = ({
+export interface NewTagInPublishedItemCaptionProps {
+  notification: RenderableNewTagInPublishedItemCaptionNotification;
+}
+
+export const NewTagInPublishedItemCaption = ({
   notification,
-}: {
-  notification: RenderableNewCommentOnPublishedItemNotification;
-}) => {
+}: NewTagInPublishedItemCaptionProps) => {
   const {
-    userThatCommented: { username, profilePictureTemporaryUrl },
-    publishedItemComment: { text: publishedItemCommentText },
+    userTaggingClient: { username, profilePictureTemporaryUrl },
     publishedItem,
     eventTimestamp,
   } = notification;
@@ -32,13 +36,12 @@ export const NewCommentOnPublishedItemNotification = ({
 
       <Stack css={{ gap: "$2" }}>
         <Body>
-          <UserName username={username} /> commented{" "}
+          <UserName username={username} /> tagged you in a post{" "}
           <em>
             &ldquo;
-            {truncate(publishedItemCommentText, 60)}
+            {truncate(publishedItem.caption, 60)}
             &rdquo;
-          </em>{" "}
-          on your post.
+          </em>
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago

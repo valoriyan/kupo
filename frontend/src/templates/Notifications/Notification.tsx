@@ -1,19 +1,27 @@
 import {
   NOTIFICATIONEVENTS,
+  RenderableAcceptedPublishingChannelSubmissionNotification,
   RenderableAcceptedUserFollowRequestNotification,
   RenderableNewCommentOnPublishedItemNotification,
   RenderableNewFollowerNotification,
   RenderableNewLikeOnPublishedItemNotification,
+  RenderableNewTagInPublishedItemCaptionNotification,
   RenderableNewTagInPublishedItemCommentNotification,
   RenderableNewUserFollowRequestNotification,
+  RenderableRejectedPublishingChannelSubmissionNotification,
+  RenderableShopItemSoldNotification,
   RenderableUserNotification,
 } from "#/api";
-import { AcceptedFollowRequestNotification } from "./AcceptedFollowRequestNotification";
-import { NewCommentOnPublishedItemNotification } from "./NewCommentOnPublishedItemNotification";
-import { NewFollowerNotification } from "./NewFollowerNotification";
-import { NewFollowerRequestNotification } from "./NewFollowerRequestNotification";
-import { NewLikeOnPublishedItemNotification } from "./NewLikeOnPublishedItemNotification";
-import { NewTagInPublishedItemCommentNotification } from "./NewTagInPublishedItemCommentNotification";
+import { AcceptedFollowRequest } from "./Notifications/AcceptedFollowRequest";
+import { AcceptedPublishingChannelSubmission } from "./Notifications/AcceptedPublishingChannelSubmission";
+import { NewCommentOnPublishedItem } from "./Notifications/NewCommentOnPublishedItem";
+import { NewFollower } from "./Notifications/NewFollower";
+import { NewFollowerRequest } from "./Notifications/NewFollowerRequest";
+import { NewLikeOnPublishedItem } from "./Notifications/NewLikeOnPublishedItem";
+import { NewTagInPublishedItemCaption } from "./Notifications/NewTagInPublishedItemCaption";
+import { NewTagInPublishedItemComment } from "./Notifications/NewTagInPublishedItemComment";
+import { RejectedPublishingChannelSubmission } from "./Notifications/RejectedPublishingChannelSubmission";
+import { ShopItemSold } from "./Notifications/ShopItemSold";
 
 export interface NotificationProps {
   notification: RenderableUserNotification;
@@ -24,7 +32,7 @@ export const Notification = ({ notification }: NotificationProps) => {
 
   if (type === NOTIFICATIONEVENTS.NewFollower) {
     return (
-      <NewFollowerNotification
+      <NewFollower
         notification={notification as unknown as RenderableNewFollowerNotification}
       />
     );
@@ -32,7 +40,7 @@ export const Notification = ({ notification }: NotificationProps) => {
 
   if (type === NOTIFICATIONEVENTS.NewUserFollowRequest) {
     return (
-      <NewFollowerRequestNotification
+      <NewFollowerRequest
         notification={
           notification as unknown as RenderableNewUserFollowRequestNotification
         }
@@ -42,7 +50,7 @@ export const Notification = ({ notification }: NotificationProps) => {
 
   if (type === NOTIFICATIONEVENTS.AcceptedUserFollowRequest) {
     return (
-      <AcceptedFollowRequestNotification
+      <AcceptedFollowRequest
         notification={
           notification as unknown as RenderableAcceptedUserFollowRequestNotification
         }
@@ -52,7 +60,7 @@ export const Notification = ({ notification }: NotificationProps) => {
 
   if (type === NOTIFICATIONEVENTS.NewCommentOnPublishedItem) {
     return (
-      <NewCommentOnPublishedItemNotification
+      <NewCommentOnPublishedItem
         notification={
           notification as unknown as RenderableNewCommentOnPublishedItemNotification
         }
@@ -62,7 +70,7 @@ export const Notification = ({ notification }: NotificationProps) => {
 
   if (type === NOTIFICATIONEVENTS.NewLikeOnPublishedItem) {
     return (
-      <NewLikeOnPublishedItemNotification
+      <NewLikeOnPublishedItem
         notification={
           notification as unknown as RenderableNewLikeOnPublishedItemNotification
         }
@@ -72,10 +80,48 @@ export const Notification = ({ notification }: NotificationProps) => {
 
   if (type === NOTIFICATIONEVENTS.NewTagInPublishedItemComment) {
     return (
-      <NewTagInPublishedItemCommentNotification
+      <NewTagInPublishedItemComment
         notification={
           notification as unknown as RenderableNewTagInPublishedItemCommentNotification
         }
+      />
+    );
+  }
+
+  if (type === NOTIFICATIONEVENTS.NewTagInPublishedItemCaption) {
+    return (
+      <NewTagInPublishedItemCaption
+        notification={
+          notification as unknown as RenderableNewTagInPublishedItemCaptionNotification
+        }
+      />
+    );
+  }
+
+  if (type === NOTIFICATIONEVENTS.AcceptedPublishingChannelSubmission) {
+    return (
+      <AcceptedPublishingChannelSubmission
+        notification={
+          notification as unknown as RenderableAcceptedPublishingChannelSubmissionNotification
+        }
+      />
+    );
+  }
+
+  if (type === NOTIFICATIONEVENTS.RejectedPublishingChannelSubmission) {
+    return (
+      <RejectedPublishingChannelSubmission
+        notification={
+          notification as unknown as RenderableRejectedPublishingChannelSubmissionNotification
+        }
+      />
+    );
+  }
+
+  if (type === NOTIFICATIONEVENTS.ShopItemSold) {
+    return (
+      <ShopItemSold
+        notification={notification as unknown as RenderableShopItemSoldNotification}
       />
     );
   }

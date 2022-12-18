@@ -1,25 +1,22 @@
 import Link from "next/link";
-import { RenderableNewFollowerNotification } from "#/api";
+import { RenderableNewUserFollowRequestNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
-import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
-import {
-  goToUserProfilePage,
-  setPreviousLocationForUserProfilePage,
-} from "../UserProfile";
-import { NotificationWrapper } from "./shared";
+import { goToUserProfilePage } from "../../UserProfile";
+import { NotificationWrapper } from "../shared";
+import { setPreviousLocationForMyLists } from "#/pages/my-lists";
 
-export const NewFollowerNotification = ({
-  notification,
-}: {
-  notification: RenderableNewFollowerNotification;
-}) => {
+export interface NewFollowerRequestProps {
+  notification: RenderableNewUserFollowRequestNotification;
+}
+
+export const NewFollowerRequest = ({ notification }: NewFollowerRequestProps) => {
   const {
-    userDoingFollowing: { username, profilePictureTemporaryUrl },
+    followRequestingUser: { username, profilePictureTemporaryUrl },
     eventTimestamp,
   } = notification;
 
@@ -34,20 +31,16 @@ export const NewFollowerNotification = ({
 
       <Stack css={{ gap: "$2" }}>
         <Body>
-          <UserName username={username} /> followed you.
+          <UserName username={username} /> requested to follow you.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago
         </Body>
       </Stack>
 
-      <Link href={getProfilePageUrl({ username })} passHref>
-        <Button
-          as="a"
-          size="sm"
-          onClick={() => setPreviousLocationForUserProfilePage(username)}
-        >
-          View Profile
+      <Link href="/my-lists/follower-requests" passHref>
+        <Button as="a" size="sm" onClick={setPreviousLocationForMyLists}>
+          View Request
         </Button>
       </Link>
     </NotificationWrapper>

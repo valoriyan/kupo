@@ -1,24 +1,21 @@
-import { RenderablePost } from "#/api";
-import { RenderableNewTagInPublishedItemCommentNotification } from "#/api/generated/types/renderable-new-tag-in-published-item-comment-notification";
+import { RenderableNewLikeOnPublishedItemNotification, RenderablePost } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Stack } from "#/components/Layout";
 import { PostThumbnail } from "#/components/PostThumbnail";
 import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
-import { truncate } from "#/utils/truncate";
-import { goToUserProfilePage } from "../UserProfile";
-import { NotificationWrapper } from "./shared";
+import { goToUserProfilePage } from "../../UserProfile";
+import { NotificationWrapper } from "../shared";
 
-export const NewTagInPublishedItemCommentNotification = ({
-  notification,
-}: {
-  notification: RenderableNewTagInPublishedItemCommentNotification;
-}) => {
+export interface NewLikeOnPublishedItemProps {
+  notification: RenderableNewLikeOnPublishedItemNotification;
+}
+
+export const NewLikeOnPublishedItem = ({ notification }: NewLikeOnPublishedItemProps) => {
   const {
-    userTaggingClient: { username, profilePictureTemporaryUrl },
+    userThatLikedPublishedItem: { username, profilePictureTemporaryUrl },
     publishedItem,
-    publishedItemComment: { text: postCommentText },
     eventTimestamp,
   } = notification;
 
@@ -33,12 +30,7 @@ export const NewTagInPublishedItemCommentNotification = ({
 
       <Stack css={{ gap: "$2" }}>
         <Body>
-          <UserName username={username} /> tagged you in a post{" "}
-          <em>
-            &ldquo;
-            {truncate(postCommentText, 60)}
-            &rdquo;
-          </em>
+          <UserName username={username} /> liked your post.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago
