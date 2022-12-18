@@ -18,6 +18,7 @@ import { RenderableAcceptedUserFollowRequestNotification } from "./renderable-ac
 import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
 import { RenderableNewLikeOnPublishedItemNotification } from "./renderable-new-like-on-published-item-notification";
+import { RenderableNewTagInPublishedItemCaptionNotification } from "./renderable-new-tag-in-published-item-caption-notification";
 import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable-new-tag-in-published-item-comment-notification";
 import { RenderableNewUserFollowRequestNotification } from "./renderable-new-user-follow-request-notification";
 import { RenderablePublishedItem } from "./renderable-published-item";

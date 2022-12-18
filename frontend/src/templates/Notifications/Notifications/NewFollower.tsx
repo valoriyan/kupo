@@ -1,24 +1,25 @@
 import Link from "next/link";
-import { RenderableNewUserFollowRequestNotification } from "#/api";
+import { RenderableNewFollowerNotification } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { Stack } from "#/components/Layout";
 import { Body } from "#/components/Typography";
 import { UserName } from "#/components/UserName";
+import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getShortRelativeTimestamp } from "#/utils/getRelativeTimestamp";
-import { goToUserProfilePage } from "../UserProfile";
-import { NotificationWrapper } from "./shared";
-import { setPreviousLocationForMyLists } from "#/pages/my-lists";
+import {
+  goToUserProfilePage,
+  setPreviousLocationForUserProfilePage,
+} from "../../UserProfile";
+import { NotificationWrapper } from "../shared";
 
-export interface NewFollowerRequestNotificationProps {
-  notification: RenderableNewUserFollowRequestNotification;
+export interface NewFollowerProps {
+  notification: RenderableNewFollowerNotification;
 }
 
-export const NewFollowerRequestNotification = ({
-  notification,
-}: NewFollowerRequestNotificationProps) => {
+export const NewFollower = ({ notification }: NewFollowerProps) => {
   const {
-    followRequestingUser: { username, profilePictureTemporaryUrl },
+    userDoingFollowing: { username, profilePictureTemporaryUrl },
     eventTimestamp,
   } = notification;
 
@@ -33,16 +34,20 @@ export const NewFollowerRequestNotification = ({
 
       <Stack css={{ gap: "$2" }}>
         <Body>
-          <UserName username={username} /> requested to follow you.
+          <UserName username={username} /> followed you.
         </Body>
         <Body css={{ color: "$secondaryText", fontStyle: "italic" }}>
           {getShortRelativeTimestamp(eventTimestamp)} ago
         </Body>
       </Stack>
 
-      <Link href="/my-lists/follower-requests" passHref>
-        <Button as="a" size="sm" onClick={setPreviousLocationForMyLists}>
-          View Request
+      <Link href={getProfilePageUrl({ username })} passHref>
+        <Button
+          as="a"
+          size="sm"
+          onClick={() => setPreviousLocationForUserProfilePage(username)}
+        >
+          View Profile
         </Button>
       </Link>
     </NotificationWrapper>
