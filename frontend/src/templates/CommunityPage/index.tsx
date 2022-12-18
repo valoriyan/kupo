@@ -104,6 +104,7 @@ export const CommunityPage = ({ name }: CommunityPageProps) => {
                     <PendingSubmissions
                       publishingChannelId={data.publishingChannelId}
                       publishingChannelName={data.name}
+                      publishingChannelRules={data.publishingChannelRules}
                     />
                   ),
                 },

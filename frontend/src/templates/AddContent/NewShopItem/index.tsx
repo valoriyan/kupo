@@ -1,4 +1,5 @@
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { v4 as uuid } from "uuid";
 import { useCreateShopItem } from "#/api/mutations/shopItems/createShopItem";
 import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
 import { Button } from "#/components/Button";
@@ -144,7 +145,7 @@ export const NewShopItem = (props: NewShopItemProps) => {
             size="lg"
             variant="secondary"
             disabled={!canSubmit || isLoading}
-            onClick={() => createShopItem()}
+            onClick={() => createShopItem(uuid())}
           >
             <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>
           </Button>

@@ -13,6 +13,7 @@ import { goToPostPage } from "#/templates/SinglePost";
 export interface PendingSubmissionsProps {
   publishingChannelId: string;
   publishingChannelName: string;
+  publishingChannelRules: string[];
 }
 
 export const PendingSubmissions = ({

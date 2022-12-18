@@ -13,7 +13,7 @@ export const useCreateShopItem = (publishingChannelId: string | undefined) => {
   const formState = useFormState();
 
   return useMutation(
-    async () => {
+    async (requestId: string) => {
       const scheduledPublicationTimestamp = formState.publicationDate
         ? formState.publicationDate.valueOf()
         : Date.now();
@@ -42,6 +42,7 @@ export const useCreateShopItem = (publishingChannelId: string | undefined) => {
         );
 
       const res = await Api.createShopItem({
+        idempotentcyToken: requestId,
         caption: formState.caption,
         hashtags: formState.hashTags,
         title: formState.title,
