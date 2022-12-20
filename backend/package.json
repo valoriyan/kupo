@@ -9,7 +9,7 @@
     "resetLocalDatabaseWithFakeData": "tsc && yarn run resetLocalDatabase && node build/src/scripts/setupFakeLocalData.js",
     "resetTestDatabaseWithFakeData": "tsc && yarn run resetTestDatabase && JWT_PRIVATE_KEY='temporary_test_key' SALT='temporary_test_salt' DATABASE_NAME='kupo_test' IMPLEMENTED_DATABASE_SERVICE_TYPE='REMOTE_POSTGRES' DATABASE_URL='postgres://dmvstvcmejnxfy:ebeb997f3647796a57f5dc1194815a54dd42228417261ddd9c61b65f66d1dbf8@ec2-54-208-104-27.compute-1.amazonaws.com:5432/d6dqgerrmc0814' PRODUCTION_ENVIRONMENT='test' node build/src/scripts/setupFakeLocalData.js",
     "dev": "yarn run killRunningDev && sleep 4 && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
-    "deploy": "gcloud builds submit --tag us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-backend:latest --project valoriyan && gcloud run deploy kupo-beta-backend --project valoriyan --region us-central1 --image us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-backend:latest",
+    "deploy": "gcloud builds submit --tag us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-backend:latest --project valoriyan",
     "killRunningDev": "lsof -i:4000 -Fp | head -n 1 | sed 's/^p//' | xargs kill",
     "build": "tsoa spec-and-routes && tsc",
     "type-check": "tsc",

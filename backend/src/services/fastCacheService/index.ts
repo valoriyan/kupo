@@ -84,6 +84,7 @@ export class FastCacheService {
   }
 
   static async start() {
+    console.log("STARTING REDIS SERVICE");
     const client: RedisClientType = createClient();
     await client.connect();
     client.on("error", (err) => console.log("Redis Client Error", err));
