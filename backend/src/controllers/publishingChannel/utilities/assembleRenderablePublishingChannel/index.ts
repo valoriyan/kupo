@@ -9,7 +9,7 @@ import {
 } from "../../../../utilities/monads";
 import { RenderablePublishingChannel } from "../../models";
 import { GenericResponseFailedReason } from "../../../models";
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
@@ -24,7 +24,7 @@ export async function assembleRenderablePublishingChannelsByNames({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   names: string[];
   requestorUserId: string;
@@ -58,7 +58,7 @@ export async function assembleRenderablePublishingChannelsByIds({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishingChannelIds: string[];
   requestorUserId: string;
@@ -92,7 +92,7 @@ export async function assembleRenderablePublishingChannelByName({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   name: string;
   requestorUserId: string;
@@ -145,7 +145,7 @@ export async function assembleRenderablePublishingChannelById({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishingChannelId: string;
   requestorUserId: string;

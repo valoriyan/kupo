@@ -6,57 +6,41 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
-import { BackendKupoFile } from "../../../controllers/models";
+import { BlobStorageService } from "src/services/blobStorageService";
 
 export async function uploadMediaFile({
   controller,
   file,
+  mimeType,
   blobStorageService,
 }: {
   controller: Controller;
-  file: BackendKupoFile;
-  blobStorageService: BlobStorageServiceInterface;
+  file: Express.Multer.File;
+  mimeType: string;
+  blobStorageService: BlobStorageService;
 }): Promise<
+  // eslint-disable-next-line @typescript-eslint/ban-types
   InternalServiceResponse<
     ErrorReasonTypes<string>,
-    {
-      blobFileKey: string;
-      fileTemporaryUrl: string;
-      mimetype: string;
-    }
+    { blobFileKey: string; fileTemporaryUrl: string }
   >
 > {
-  const { mimetype } = file;
-
-  const permittedImageTypes = ["image/jpeg", "image/png", "image/gif"];
-
-  const permittedVideoTypes = ["video/mp4"];
-
-  const permittedMimeTypes = [...permittedImageTypes, ...permittedVideoTypes];
-
-  if (!permittedMimeTypes.includes(mimetype)) {
-    throw new Error(`Cannot handle file of type ${mimetype}`);
-  }
-
-  if (permittedImageTypes.includes(mimetype)) {
-    // TODO: ADD IMAGE VALIDATION
-  } else if (permittedVideoTypes.includes(mimetype)) {
-    // TODO: ADD VIDEO VALIDATION
-  }
-
   let buffer = file.buffer;
   const ogBufferSizeInKB = file.buffer.byteLength / 1024;
 
+  //////////////////////////////////////////////////
+  // Compress image
+  //////////////////////////////////////////////////
+
   // Image compression
-  if (permittedImageTypes.includes(mimetype) && ogBufferSizeInKB > 256) {
-    if (mimetype.includes("png")) {
+  if (ogBufferSizeInKB > 256) {
+    if (mimeType == "image/png") {
       buffer = await sharp(file.buffer)
         .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
         .png({ compressionLevel: 8 })
         .toBuffer();
-    } else if (mimetype.includes("jpeg")) {
+    } else if (mimeType == "image/jpeg") {
       buffer = await sharp(file.buffer)
         .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
@@ -70,6 +54,10 @@ export async function uploadMediaFile({
   // Revert to original file if compression somehow made the file larger (it could happen...)
   buffer = newBufferSizeInKB < ogBufferSizeInKB ? buffer : file.buffer;
 
+  //////////////////////////////////////////////////
+  // Upload File
+  //////////////////////////////////////////////////
+
   const saveImageResponse = await blobStorageService.saveImage({
     controller,
     image: buffer,
@@ -78,6 +66,10 @@ export async function uploadMediaFile({
     return saveImageResponse;
   }
   const { success: blobItemPointer } = saveImageResponse;
+
+  //////////////////////////////////////////////////
+  // Get File Url
+  //////////////////////////////////////////////////
 
   const getTemporaryImageUrlResponse = await blobStorageService.getTemporaryImageUrl({
     controller,
@@ -88,9 +80,12 @@ export async function uploadMediaFile({
   }
   const { success: fileTemporaryUrl } = getTemporaryImageUrlResponse;
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({
     blobFileKey: blobItemPointer.fileKey,
     fileTemporaryUrl,
-    mimetype,
   });
 }

@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { RenderableUser } from "../models";
 import { Controller } from "tsoa";
@@ -24,7 +24,7 @@ export async function constructRenderableUsersFromPartsByUserIds({
   controller: Controller;
   requestorUserId: string;
   userIds: string[];
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser[]>> {
   const unrenderableUsersResponse =
@@ -57,7 +57,7 @@ export async function constructRenderableUserFromPartsByUserId({
   controller: Controller;
   requestorUserId: string;
   userId: string;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser>> {
   const unrenderableUserResponse =

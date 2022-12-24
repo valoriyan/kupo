@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
@@ -21,7 +21,7 @@ export async function assembleRenderableNewFollowerNotification({
 }: {
   controller: Controller;
   userNotification: DBUserNotification;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<

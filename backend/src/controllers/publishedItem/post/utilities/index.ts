@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { DatabaseService } from "../../../../services/databaseService";
 import { RenderablePost, RootRenderablePost, SharedRenderablePost } from "../models";
 import { Promise as BluebirdPromise } from "bluebird";
@@ -26,7 +26,7 @@ export async function constructRenderablePostsFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   requestorUserId: string | undefined;
@@ -58,7 +58,7 @@ export async function constructRenderablePostFromPartsById({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishedItemId: string;
   requestorUserId: string | undefined;
@@ -98,7 +98,7 @@ export async function constructRenderablePostFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   requestorUserId?: string;

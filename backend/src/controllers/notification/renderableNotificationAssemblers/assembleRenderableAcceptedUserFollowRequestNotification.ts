@@ -1,4 +1,3 @@
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
@@ -11,6 +10,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function assembleRenderableAcceptedUserFollowRequestNotification({
   controller,
@@ -21,7 +21,7 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
 }: {
   controller: Controller;
   userNotification: DBUserNotification;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<

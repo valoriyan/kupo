@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -14,6 +13,7 @@ import {
 import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
 import { RenderableShopItemSoldNotification } from "../models/renderableUserNotifications";
 import { RenderableShopItem } from "../../../controllers/publishedItem/shopItem/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function assembleRecordAndSendShopItemSoldNotification({
   controller,
@@ -29,7 +29,7 @@ export async function assembleRecordAndSendShopItemSoldNotification({
   recipientUserId: string;
   publishedItemTransactionId: string;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
@@ -25,7 +25,7 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
 }: {
   controller: Controller;
   userNotification: DBUserNotification;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<

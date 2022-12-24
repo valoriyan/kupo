@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { DatabaseService } from "../../../../services/databaseService";
 import { Promise as BluebirdPromise } from "bluebird";
 import { MediaElement } from "../../../models";
@@ -22,7 +22,7 @@ export async function assemblePostMediaElements({
 }: {
   controller: Controller;
   publishedItemId: string;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
   const getPostContentElementsByPublishedItemIdResponse =

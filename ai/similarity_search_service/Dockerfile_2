@@ -1,0 +1,86 @@
+# https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-service
+
+# FROM python:3.9.7
+FROM continuumio/anaconda3
+
+
+RUN pip install --upgrade pip
+
+
+##################################################
+# SETUP FAISS
+##################################################
+RUN pip install numpy
+
+RUN apt update
+
+# dependency: blas
+RUN apt install -y libblas-dev
+RUN apt install -y libatlas-base-dev libatlas3-base
+
+RUN apt install -y \
+  cmake \
+  g++ \
+  bison \
+  flex
+
+
+# INSTALL SWIG
+RUN git clone https://github.com/swig/swig.git
+WORKDIR "/swig"
+RUN ./autogen.sh
+RUN ./configure
+RUN make
+RUN make install
+
+WORKDIR "/"
+RUN git clone https://github.com/facebookresearch/faiss.git faiss_xx
+WORKDIR "/faiss_xx"
+
+# Step 1: invoking CMake
+RUN cmake -B build . -DFAISS_ENABLE_GPU=OFF -DFAISS_ENABLE_PYTHON=ON
+# Step 2: Invoking Make
+RUN make -C build -j faiss
+# Step 3: Building the python bindings
+RUN make -C build -j swigfaiss
+RUN (cd build/faiss/python && python setup.py install)
+# # Step 4: Installing the C++ library and headers
+# RUN make -C build install
+
+
+# RUN LD_LIBRARY_PATH= MKLROOT=/private/home/matthijs/anaconda3/envs/host_env_for_faiss/lib CXX=$(which g++) \
+#   $cmake -B build -DBUILD_TESTING=ON -DFAISS_ENABLE_GPU=OFF \
+#   -DFAISS_OPT_LEVEL=axv2 \
+#   -DFAISS_ENABLE_C_API=ON \
+#   -DCMAKE_BUILD_TYPE=Release \
+#   -DBLA_VENDOR=Intel10_64_dyn .
+
+# RUN make -C build -j10 swigfaiss && (cd build/faiss/python ; python3 setup.py build)
+
+
+# CPU-only version
+# RUN conda install -c pytorch faiss-cpu
+# RUN conda install -c conda-forge faiss-cpu
+# RUN conda install -c pytorch/label/nightly faiss-cpu
+
+# GPU(+CPU) version
+# RUN conda install -c pytorch faiss-gpu
+
+# or for a specific CUDA version
+# RUN conda install -c pytorch faiss-gpu cudatoolkit=10.2 # for CUDA 10.2
+
+
+
+
+
+##################################################
+# STANDARD SETUP
+##################################################
+
+WORKDIR "/"
+COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

@@ -12,7 +12,7 @@ import {
   constructRenderableUserFromPartsByUserId,
   constructRenderableUsersFromPartsByUserIds,
 } from "../../../user/utilities";
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
@@ -26,7 +26,7 @@ export async function assembleRenderablePublishingChannelsFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   unrenderablePublishingChannels: UnrenderablePublishingChannel[];
   requestorUserId: string;
@@ -60,7 +60,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   unrenderablePublishingChannel: UnrenderablePublishingChannel;
   requestorUserId: string;

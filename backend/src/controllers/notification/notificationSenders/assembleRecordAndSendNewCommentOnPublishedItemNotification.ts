@@ -2,7 +2,6 @@
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
 import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -15,6 +14,7 @@ import {
 import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
 import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
 import { RenderableNewCommentOnPublishedItemNotification } from "../models/renderableUserNotifications";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function assembleRecordAndSendNewCommentOnPublishedItemNotification({
   controller,
@@ -30,7 +30,7 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   publishedItemCommentId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////

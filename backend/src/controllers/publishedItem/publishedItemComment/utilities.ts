@@ -7,7 +7,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import {
   constructRenderableUserFromParts,
@@ -26,7 +26,7 @@ export async function constructRenderablePublishedItemCommentFromPartsById({
   clientUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishedItemCommentId: string;
   clientUserId: string;
@@ -76,7 +76,7 @@ export async function constructRenderablePublishedItemCommentFromParts({
   clientUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   unrenderablePublishedItemComment: UnrenderablePublishedItemComment;
   clientUserId: string;
@@ -135,7 +135,7 @@ export async function constructRenderablePublishedItemCommentsFromParts({
   clientUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   unrenderablePublishedItemComments: UnrenderablePublishedItemComment[];
   clientUserId: string;

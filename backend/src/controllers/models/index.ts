@@ -9,15 +9,9 @@ export enum GenericResponseFailedReason {
   IDEMPOTENTYCY_TOKEN_ALREADY_ENCOUNTERED = "IDEMPOTENTYCY_TOKEN_ALREADY_ENCOUNTERED",
 }
 
-export interface UploadableKupoFile {
-  blobSize: number;
-  blobText: string;
-  mimetype: string;
-}
-
-export interface BackendKupoFile {
-  mimetype: string;
-  buffer: Buffer;
+export interface ClientKeyToFiledMediaElement {
+  blobFileKey: string;
+  mimeType: string;
 }
 
 export interface FiledMediaElement {

@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { DatabaseService } from "../../../../services/databaseService";
 import { RootRenderablePost } from "../models";
 import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
@@ -18,7 +18,7 @@ export async function assembleRootRenderablePost({
   baseRenderablePublishedItem,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RootRenderablePost>> {

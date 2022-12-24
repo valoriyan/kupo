@@ -7,12 +7,7 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import {
-  BackendKupoFile,
-  GenericResponseFailedReason,
-  UploadableKupoFile,
-} from "../models";
-import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
+import { ClientKeyToFiledMediaElement, GenericResponseFailedReason } from "../models";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
 import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
@@ -28,7 +23,7 @@ export interface UpdatePublishingChannelBackgroundImageSuccess {
 }
 
 export interface UpdatePublishingChannelBackgroundImageRequestBody {
-  backgroundImage: UploadableKupoFile;
+  backgroundImage: ClientKeyToFiledMediaElement;
   publishingChannelId: string;
 }
 
@@ -82,25 +77,6 @@ export async function handleUpdatePublishingChannelBackgroundImage({
   }
 
   //////////////////////////////////////////////////
-  // SAVE IMAGE BLOB
-  //////////////////////////////////////////////////
-  let backgroundImageBlobItemPointer = undefined;
-  if (!!backgroundImage) {
-    const backgroundImageKupoFile: BackendKupoFile = ingestUploadedFile({
-      uploadableKupoFile: backgroundImage,
-    });
-
-    const saveImageResponse = await controller.blobStorageService.saveImage({
-      controller,
-      image: backgroundImageKupoFile.buffer,
-    });
-    if (saveImageResponse.type === EitherType.failure) {
-      return saveImageResponse;
-    }
-    backgroundImageBlobItemPointer = saveImageResponse.success;
-  }
-
-  //////////////////////////////////////////////////
   // UPDATE PUBLISHING CHANNEL
   //////////////////////////////////////////////////
   const updatePublishingChannelResponse =
@@ -109,7 +85,7 @@ export async function handleUpdatePublishingChannelBackgroundImage({
         controller,
         publishingChannelId,
 
-        backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
+        backgroundImageBlobFileKey: backgroundImage.blobFileKey,
       },
     );
   if (updatePublishingChannelResponse.type === EitherType.failure) {

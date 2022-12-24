@@ -18,7 +18,7 @@ import { RenderablePublishedItemComment } from "./models";
 import { constructRenderablePublishedItemCommentFromParts } from "./utilities";
 import { DatabaseService } from "../../../services/databaseService";
 import { collectTagsFromText } from "../../utilities/collectTagsFromText";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { Promise as BluebirdPromise } from "bluebird";
 import { assembleRecordAndSendNewTagInPublishedItemCommentNotification } from "../../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCommentNotification";
@@ -159,7 +159,7 @@ async function considerAndExecuteNotifications({
   renderablePublishedItemComment: RenderablePublishedItemComment;
   authorOfPublishedItemUserId: string;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////

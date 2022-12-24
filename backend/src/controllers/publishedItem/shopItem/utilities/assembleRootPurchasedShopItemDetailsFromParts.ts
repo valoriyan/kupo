@@ -1,5 +1,5 @@
 import { Controller } from "tsoa";
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { DatabaseService } from "../../../../services/databaseService";
 import { DBShopItemElementType } from "../../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
@@ -19,7 +19,7 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
   baseRenderablePublishedItem,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
 }): Promise<

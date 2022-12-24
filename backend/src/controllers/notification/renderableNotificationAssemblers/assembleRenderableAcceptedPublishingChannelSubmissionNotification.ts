@@ -1,4 +1,3 @@
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -14,6 +13,7 @@ import {
 import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { assembleRenderablePublishingChannelById } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function assembleRenderableAcceptedPublishingChannelSubmissionNotification({
   controller,
@@ -24,7 +24,7 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
 }: {
   controller: Controller;
   userNotification: DBUserNotification;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   clientUserId: string;
 }): Promise<

@@ -1,7 +1,7 @@
 import { Promise as BluebirdPromise } from "bluebird";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { Controller } from "tsoa";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import {
   EitherType,
@@ -28,7 +28,7 @@ export async function constructRenderableUsersFromParts({
   controller: Controller;
   requestorUserId: string;
   unrenderableUsers: UnrenderableUser[];
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser[]>> {
   const constructRenderableUserFromPartsResponses = await BluebirdPromise.map(
@@ -60,7 +60,7 @@ export async function constructRenderableUserFromParts({
   controller: Controller;
   requestorUserId: string | undefined;
   unrenderableUser: UnrenderableUser;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser>> {
   const {

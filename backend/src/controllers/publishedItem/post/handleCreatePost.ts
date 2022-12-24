@@ -16,22 +16,18 @@ import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
-import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
-import { checkValidityOfMediaFiles } from "../../utilities/mediaFiles/checkValidityOfMediaFiles";
 import {
-  BackendKupoFile,
+  ClientKeyToFiledMediaElement,
   GenericResponseFailedReason,
   MediaElement,
-  UploadableKupoFile,
 } from "../../models";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { Controller } from "tsoa";
 import { collectTagsFromText } from "../../utilities/collectTagsFromText";
 import { DatabaseService } from "../../../services/databaseService";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
-import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
 
 export enum CreatePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -44,7 +40,7 @@ export interface CreatePostSuccess {
 }
 
 export interface CreatePostRequestBody {
-  mediaFiles: UploadableKupoFile[];
+  contentElementFiles: ClientKeyToFiledMediaElement[];
   caption: string;
   hashtags: string[];
   scheduledPublicationTimestamp?: number;
@@ -72,7 +68,7 @@ export async function handleCreatePost({
     caption,
     scheduledPublicationTimestamp,
     hashtags,
-    mediaFiles,
+    contentElementFiles,
     expirationTimestamp,
   } = requestBody;
 
@@ -109,66 +105,56 @@ export async function handleCreatePost({
   }
 
   //////////////////////////////////////////////////
-  // Upload media files
+  // Write media items to db
   //////////////////////////////////////////////////
-  const backendKupoFiles: BackendKupoFile[] = mediaFiles.map((mediaFile) =>
-    ingestUploadedFile({ uploadableKupoFile: mediaFile }),
-  );
 
-  const mediaFileErrors = await checkValidityOfMediaFiles({ files: backendKupoFiles });
-  if (mediaFileErrors.length > 0) {
-    return {
-      type: EitherType.failure,
-      error: { reason: CreatePostFailedReason.UnknownCause },
-    };
-  }
-
-  const uploadMediaFileResponses = await BluebirdPromise.map(
-    backendKupoFiles,
-    async (file) =>
-      uploadMediaFile({
-        controller,
-        file,
-        blobStorageService: controller.blobStorageService,
-      }),
-  );
-  const mappedUploadMediaFileResponses = unwrapListOfEitherResponses({
-    eitherResponses: uploadMediaFileResponses,
-    failureHandlingMethod:
-      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
-  });
-  if (mappedUploadMediaFileResponses.type === EitherType.failure) {
-    return mappedUploadMediaFileResponses;
-  }
-  const { success: filedAndRenderablePostMediaElements } = mappedUploadMediaFileResponses;
-
-  const mediaElements: MediaElement[] = filedAndRenderablePostMediaElements.map(
-    (filedAndRenderablePostMediaElement) => ({
-      temporaryUrl: filedAndRenderablePostMediaElement.fileTemporaryUrl,
-      mimeType: filedAndRenderablePostMediaElement.mimetype,
-    }),
-  );
-
-  const mediaElementTemporaryUrls = filedAndRenderablePostMediaElements.map(
-    (filedAndRenderablePostMediaElement) =>
-      filedAndRenderablePostMediaElement.fileTemporaryUrl,
-  );
-
-  if (filedAndRenderablePostMediaElements.length > 0) {
+  if (contentElementFiles.length > 0) {
     await controller.databaseService.tableNameToServicesMap.postContentElementsTableService.createPostContentElements(
       {
         controller,
-        postContentElements: filedAndRenderablePostMediaElements.map(
-          ({ blobFileKey, mimetype }, index) => ({
+        postContentElements: contentElementFiles.map(
+          ({ blobFileKey, mimeType }, index) => ({
             publishedItemId,
             postContentElementIndex: index,
             blobFileKey,
-            mimetype,
+            mimetype: mimeType,
           }),
         ),
       },
     );
   }
+
+  //////////////////////////////////////////////////
+  // Get media file temporary urls
+  //////////////////////////////////////////////////
+
+  const getTemporaryImageUrlResponses = await BluebirdPromise.map(
+    contentElementFiles,
+    async ({ blobFileKey }) => {
+      return await controller.blobStorageService.getTemporaryImageUrl({
+        controller,
+        blobItemPointer: { fileKey: blobFileKey },
+      });
+    },
+  );
+
+  const unwrappedGetTemporaryImageUrlResponses = unwrapListOfEitherResponses({
+    eitherResponses: getTemporaryImageUrlResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+  });
+  if (unwrappedGetTemporaryImageUrlResponses.type === EitherType.failure) {
+    return unwrappedGetTemporaryImageUrlResponses;
+  }
+
+  const { success: mediaElementTemporaryUrls } = unwrappedGetTemporaryImageUrlResponses;
+
+  const mediaElements: MediaElement[] = mediaElementTemporaryUrls.map(
+    (mediaElementTemporaryUrl, index) => ({
+      temporaryUrl: mediaElementTemporaryUrl,
+      mimeType: contentElementFiles[index].mimeType,
+    }),
+  );
 
   //////////////////////////////////////////////////
   // Add hashtags
@@ -189,7 +175,7 @@ export async function handleCreatePost({
   }
 
   //////////////////////////////////////////////////
-  // Add hashtags
+  // Get Client User
   //////////////////////////////////////////////////
 
   const selectMaybeUserByUserIdResponse =
@@ -277,7 +263,7 @@ async function considerAndExecuteNotifications({
   controller: Controller;
   renderablePublishedItem: RenderablePublishedItem;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
   // eslint-disable-next-line @typescript-eslint/ban-types
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {

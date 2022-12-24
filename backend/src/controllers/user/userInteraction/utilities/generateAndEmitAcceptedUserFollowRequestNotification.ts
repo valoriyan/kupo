@@ -10,7 +10,7 @@ import { NOTIFICATION_EVENTS } from "../../../../services/webSocketService/event
 import { Controller } from "tsoa";
 import { DatabaseService } from "../../../../services/databaseService";
 import { WebSocketService } from "../../../../services/webSocketService";
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { assembleRenderableAcceptedUserFollowRequestNotification } from "../../../notification/renderableNotificationAssemblers/assembleRenderableAcceptedUserFollowRequestNotification";
 
 export async function generateAndEmitAcceptedUserFollowRequestNotification({
@@ -23,7 +23,7 @@ export async function generateAndEmitAcceptedUserFollowRequestNotification({
 }: {
   controller: Controller;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
   recipientUserId: string;
   userFollowEventId: string;

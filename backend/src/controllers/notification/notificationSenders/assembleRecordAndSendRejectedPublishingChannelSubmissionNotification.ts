@@ -2,7 +2,6 @@
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
 import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -14,6 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { RenderableRejectedPublishingChannelSubmissionNotification } from "../models/renderableUserNotifications";
 import { assembleRenderablePublishingChannelById } from "../../publishingChannel/utilities/assembleRenderablePublishingChannel";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNotification({
   controller,
@@ -33,7 +33,7 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   publishedItemId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import {
   PublishedItemType,
@@ -29,7 +29,7 @@ export async function constructPublishedItemsFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   requestorUserId: string | undefined;
@@ -63,7 +63,7 @@ export async function constructPublishedItemsFromPartsById({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishedItemIds: string[];
   requestorUserId: string | undefined;
@@ -109,7 +109,7 @@ export async function constructPublishedItemFromPartsById({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishedItemId: string;
   requestorUserId: string | undefined;
@@ -147,7 +147,7 @@ export async function constructPublishedItemFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   requestorUserId?: string;

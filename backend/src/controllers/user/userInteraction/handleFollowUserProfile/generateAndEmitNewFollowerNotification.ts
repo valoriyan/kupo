@@ -10,7 +10,7 @@ import { NOTIFICATION_EVENTS } from "../../../../services/webSocketService/event
 import { Controller } from "tsoa";
 import { DatabaseService } from "../../../../services/databaseService";
 import { WebSocketService } from "../../../../services/webSocketService";
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { assembleRenderableNewFollowerNotification } from "../../../notification/renderableNotificationAssemblers/assembleRenderableNewFollowerNotification";
 
 export async function generateAndEmitNewFollowerNotification({
@@ -23,7 +23,7 @@ export async function generateAndEmitNewFollowerNotification({
 }: {
   controller: Controller;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
   recipientUserId: string;
   userFollowEventId: string;

@@ -5,11 +5,10 @@ import {
   SecuredHTTPResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { UploadableKupoFile } from "../models";
-import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
+import { ClientKeyToFiledMediaElement } from "../models";
 
 export enum UpdateUserProfilePictureFailedReason {
   Unknown = "Unknown",
@@ -18,7 +17,7 @@ export enum UpdateUserProfilePictureFailedReason {
 export type UpdateUserProfilePictureSuccess = RenderableUser;
 
 export interface UpdateUserProfilePictureRequestBody {
-  profilePicture: UploadableKupoFile;
+  profilePicture: ClientKeyToFiledMediaElement;
 }
 
 export async function handleUpdateUserProfilePicture({
@@ -47,26 +46,6 @@ export async function handleUpdateUserProfilePicture({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // SAVE IMAGE BLOB
-  //////////////////////////////////////////////////
-
-  let profilePictureBlobItemPointer = undefined;
-  if (!!profilePicture) {
-    const profilePictureKupoFile = ingestUploadedFile({
-      uploadableKupoFile: profilePicture,
-    });
-
-    const saveImageResponse = await controller.blobStorageService.saveImage({
-      controller,
-      image: profilePictureKupoFile.buffer,
-    });
-    if (saveImageResponse.type === EitherType.failure) {
-      return saveImageResponse;
-    }
-    profilePictureBlobItemPointer = saveImageResponse.success;
-  }
-
-  //////////////////////////////////////////////////
   // UPDATE DATABASE ENTRY
   //////////////////////////////////////////////////
   const updateUserByUserIdResponse =
@@ -75,7 +54,7 @@ export async function handleUpdateUserProfilePicture({
         controller,
         userId: clientUserId,
 
-        profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+        profilePictureBlobFileKey: profilePicture.blobFileKey,
       },
     );
 

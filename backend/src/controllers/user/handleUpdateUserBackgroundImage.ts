@@ -6,12 +6,7 @@ import {
   SecuredHTTPResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import {
-  BackendKupoFile,
-  GenericResponseFailedReason,
-  UploadableKupoFile,
-} from "../models";
-import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
+import { ClientKeyToFiledMediaElement, GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
@@ -23,7 +18,7 @@ export enum UpdateUserBackgroundImageFailedReason {
 export type UpdateUserBackgroundImageSuccess = RenderableUser;
 
 export interface UpdateUserBackgroundImageRequestBody {
-  backgroundImage: UploadableKupoFile;
+  backgroundImage: ClientKeyToFiledMediaElement;
 }
 
 export async function handleUpdateUserBackgroundImage({
@@ -40,6 +35,9 @@ export async function handleUpdateUserBackgroundImage({
     UpdateUserBackgroundImageSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { backgroundImage } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -48,21 +46,9 @@ export async function handleUpdateUserBackgroundImage({
   );
   if (error) return error;
 
-  let backgroundImageBlobItemPointer = undefined;
-  if (!!backgroundImage) {
-    const backgroundImageKupoFile: BackendKupoFile = ingestUploadedFile({
-      uploadableKupoFile: backgroundImage,
-    });
-
-    const saveImageResponse = await controller.blobStorageService.saveImage({
-      controller,
-      image: backgroundImageKupoFile.buffer,
-    });
-    if (saveImageResponse.type === EitherType.failure) {
-      return saveImageResponse;
-    }
-    backgroundImageBlobItemPointer = saveImageResponse.success;
-  }
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
 
   const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
@@ -70,7 +56,7 @@ export async function handleUpdateUserBackgroundImage({
         controller,
         userId: clientUserId,
 
-        backgroundImageBlobFileKey: backgroundImageBlobItemPointer?.fileKey,
+        backgroundImageBlobFileKey: backgroundImage.blobFileKey,
       },
     );
   if (updateUserByUserIdResponse.type === EitherType.failure) {
@@ -89,6 +75,10 @@ export async function handleUpdateUserBackgroundImage({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Get Renderable User
+  //////////////////////////////////////////////////
+
   const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
     {
       controller,
@@ -98,6 +88,10 @@ export async function handleUpdateUserBackgroundImage({
       databaseService: controller.databaseService,
     },
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return constructRenderableUserFromPartsResponse;
 }

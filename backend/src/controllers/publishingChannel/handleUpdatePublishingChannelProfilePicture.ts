@@ -7,8 +7,7 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { GenericResponseFailedReason, UploadableKupoFile } from "../models";
-import { ingestUploadedFile } from "../utilities/mediaFiles/ingestUploadedFile";
+import { ClientKeyToFiledMediaElement, GenericResponseFailedReason } from "../models";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
 import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
@@ -24,7 +23,7 @@ export interface UpdatePublishingChannelProfilePictureSuccess {
 }
 
 export interface UpdatePublishingChannelProfilePictureRequestBody {
-  profilePicture: UploadableKupoFile;
+  profilePicture: ClientKeyToFiledMediaElement;
   publishingChannelId: string;
 }
 
@@ -79,25 +78,6 @@ export async function handleUpdatePublishingChannelProfilePicture({
   }
 
   //////////////////////////////////////////////////
-  // SAVE IMAGE BLOB
-  //////////////////////////////////////////////////
-  let profilePictureBlobItemPointer = undefined;
-  if (!!profilePicture) {
-    const profilePictureKupoFile = ingestUploadedFile({
-      uploadableKupoFile: profilePicture,
-    });
-
-    const saveImageResponse = await controller.blobStorageService.saveImage({
-      controller,
-      image: profilePictureKupoFile.buffer,
-    });
-    if (saveImageResponse.type === EitherType.failure) {
-      return saveImageResponse;
-    }
-    profilePictureBlobItemPointer = saveImageResponse.success;
-  }
-
-  //////////////////////////////////////////////////
   // UPDATE PUBLISHING CHANNEL
   //////////////////////////////////////////////////
 
@@ -106,7 +86,7 @@ export async function handleUpdatePublishingChannelProfilePicture({
       {
         controller,
         publishingChannelId,
-        profilePictureBlobFileKey: profilePictureBlobItemPointer?.fileKey,
+        profilePictureBlobFileKey: profilePicture.blobFileKey,
       },
     );
   if (updatePublishingChannelResponse.type === EitherType.failure) {

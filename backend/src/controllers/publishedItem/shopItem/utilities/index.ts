@@ -1,4 +1,4 @@
-import { BlobStorageServiceInterface } from "../../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../../services/blobStorageService";
 import { DatabaseService } from "../../../../services/databaseService";
 import { Promise as BluebirdPromise } from "bluebird";
 import {
@@ -31,7 +31,7 @@ export async function constructRenderableShopItemsFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
   requestorUserId: string | undefined;
@@ -63,7 +63,7 @@ export async function constructRenderableShopItemFromPartsById({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   publishedItemId: string;
   requestorUserId: string | undefined;
@@ -102,7 +102,7 @@ export async function constructRenderableShopItemFromParts({
   requestorUserId,
 }: {
   controller: Controller;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
   uncompiledBasePublishedItem: UncompiledBasePublishedItem;
   requestorUserId: string | undefined;

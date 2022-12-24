@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { constructRenderablePostFromPartsById } from "../../publishedItem/post/utilities";
 import { WebSocketService } from "../../../services/webSocketService";
@@ -14,6 +13,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotification({
   controller,
@@ -27,7 +27,7 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
   publishedItemId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 import express from "express";
-import { BackendKupoFile, UploadableKupoFile } from "../../../controllers/models";
+import { ClientKeyToFiledMediaElement } from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import {
   EitherType,
@@ -9,15 +9,14 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthorization } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
-import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
 import {
   validatePublishingChannelName,
   ValidatePublishingChannelNameFailedReason,
 } from "./validations";
 
 export interface CreatePublishingChannelRequestBody {
-  backgroundImage?: UploadableKupoFile;
-  profilePicture?: UploadableKupoFile;
+  backgroundImage?: ClientKeyToFiledMediaElement;
+  profilePicture?: ClientKeyToFiledMediaElement;
   publishingChannelName: string;
   publishingChannelDescription: string;
   externalUrls: string[];
@@ -94,44 +93,6 @@ export async function handleCreatePublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // SAVE BACKGROUND IMAGE BLOB
-  //////////////////////////////////////////////////
-  let backgroundImageBlobFileKey = undefined;
-  if (!!backgroundImage) {
-    const ingestedBackgroundImage: BackendKupoFile = ingestUploadedFile({
-      uploadableKupoFile: backgroundImage,
-    });
-
-    const saveImageResponse = await controller.blobStorageService.saveImage({
-      controller,
-      image: ingestedBackgroundImage.buffer,
-    });
-    if (saveImageResponse.type === EitherType.failure) {
-      return saveImageResponse;
-    }
-    backgroundImageBlobFileKey = saveImageResponse.success.fileKey;
-  }
-
-  //////////////////////////////////////////////////
-  // SAVE PROFILE PICTURE IMAGE BLOB
-  //////////////////////////////////////////////////
-  let profilePictureBlobFileKey = undefined;
-  if (!!profilePicture) {
-    const ingestedProfilePicture: BackendKupoFile = ingestUploadedFile({
-      uploadableKupoFile: profilePicture,
-    });
-
-    const saveImageResponse = await controller.blobStorageService.saveImage({
-      controller,
-      image: ingestedProfilePicture.buffer,
-    });
-    if (saveImageResponse.type === EitherType.failure) {
-      return saveImageResponse;
-    }
-    profilePictureBlobFileKey = saveImageResponse.success.fileKey;
-  }
-
-  //////////////////////////////////////////////////
   // WRITE TO DATABASE
   //////////////////////////////////////////////////
   const createPublishingChannelResponse =
@@ -142,8 +103,8 @@ export async function handleCreatePublishingChannel({
         ownerUserId: clientUserId,
         name: publishingChannelName,
         description: publishingChannelDescription,
-        backgroundImageBlobFileKey,
-        profilePictureBlobFileKey,
+        backgroundImageBlobFileKey: backgroundImage?.blobFileKey,
+        profilePictureBlobFileKey: profilePicture?.blobFileKey,
         publishingChannelRules,
         externalUrls,
         commaSeparatedBannedWords: bannedWords.join(","),

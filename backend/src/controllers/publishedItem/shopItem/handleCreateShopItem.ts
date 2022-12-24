@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
-import {
-  BackendKupoFile,
-  MediaElement,
-  UploadableKupoFile,
-} from "../../../controllers/models";
+import { ClientKeyToFiledMediaElement, MediaElement } from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
@@ -20,17 +16,15 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../utilities/monads/unwrapListOfResponses";
 import { checkAuthorization } from "../../auth/utilities";
-import { uploadMediaFile } from "../../utilities/mediaFiles/uploadMediaFile";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { RenderableShopItem, RenderableShopItemType } from "./models";
 import { ShopItemController } from "./shopItemController";
 import { Controller } from "tsoa";
 import { DatabaseService } from "../../../services/databaseService";
-import { BlobStorageServiceInterface } from "../../../services/blobStorageService/models";
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { collectTagsFromText } from "../../../controllers/utilities/collectTagsFromText";
 import { assembleRecordAndSendNewTagInPublishedItemCaptionNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification";
-import { ingestUploadedFile } from "../../../controllers/utilities/mediaFiles/ingestUploadedFile";
 
 export enum CreateShopItemFailedReason {
   UnknownCause = "Unknown Cause",
@@ -49,8 +43,8 @@ export interface CreateShopItemRequestBody {
   collaboratorUserIds: string[];
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
-  mediaFiles: UploadableKupoFile[];
-  purchasedMediaFiles: UploadableKupoFile[];
+  mediaFiles: ClientKeyToFiledMediaElement[];
+  purchasedMediaFiles: ClientKeyToFiledMediaElement[];
 }
 
 export async function handleCreateShopItem({
@@ -166,62 +160,115 @@ export async function handleCreateShopItem({
   }
 
   //////////////////////////////////////////////////
-  // Upload media files
+  // Write media items to db
   //////////////////////////////////////////////////
 
-  const backendKupoMediaFiles: BackendKupoFile[] = mediaFiles.map((mediaFile) =>
-    ingestUploadedFile({ uploadableKupoFile: mediaFile }),
-  );
-
-  const backendPurchasedKupoMediaFiles: BackendKupoFile[] = purchasedMediaFiles.map(
-    (mediaFile) => ingestUploadedFile({ uploadableKupoFile: mediaFile }),
-  );
-
-  const mappedPreviewMedia = backendKupoMediaFiles.map((file) => ({
-    file,
-    type: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
-  }));
-  const mappedPurchasedMedia = backendPurchasedKupoMediaFiles.map((file) => ({
-    file,
-    type: DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
-  }));
-
-  const uploadMediaFileResponses = await uploadShopItemMedia(
-    publishedItemId,
-    [...mappedPreviewMedia, ...mappedPurchasedMedia],
-    controller,
-  );
-
-  if (uploadMediaFileResponses.type === EitherType.failure) {
-    return uploadMediaFileResponses;
-  }
-  const { success: shopItemMediaElements } = uploadMediaFileResponses;
-
-  const createShopItemMediaElementsResponse =
-    await controller.databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.createShopItemMediaElements(
-      { controller, shopItemMediaElements },
-    );
-  if (createShopItemMediaElementsResponse.type === EitherType.failure) {
-    return createShopItemMediaElementsResponse;
+  if (mediaFiles.length > 0) {
+    const createShopItemMediaElementsResponse =
+      await controller.databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.createShopItemMediaElements(
+        {
+          controller,
+          shopItemMediaElements: mediaFiles.map(({ blobFileKey, mimeType }, index) => ({
+            publishedItemId,
+            shopItemElementIndex: index,
+            shopItemType: DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
+            blobFileKey,
+            mimetype: mimeType,
+          })),
+        },
+      );
+    if (createShopItemMediaElementsResponse.type === EitherType.failure) {
+      return createShopItemMediaElementsResponse;
+    }
   }
 
-  const mediaElements: MediaElement[] = shopItemMediaElements
-    .filter(
-      (element) => element.shopItemType === DBShopItemElementType.PREVIEW_MEDIA_ELEMENT,
-    )
-    .map((element) => ({
-      temporaryUrl: element.fileTemporaryUrl,
-      mimeType: element.mimetype,
-    }));
+  if (purchasedMediaFiles.length > 0) {
+    const createShopItemMediaElementsResponse =
+      await controller.databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.createShopItemMediaElements(
+        {
+          controller,
+          shopItemMediaElements: purchasedMediaFiles.map(
+            ({ blobFileKey, mimeType }, index) => ({
+              publishedItemId,
+              shopItemElementIndex: index,
+              shopItemType: DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
+              blobFileKey,
+              mimetype: mimeType,
+            }),
+          ),
+        },
+      );
+    if (createShopItemMediaElementsResponse.type === EitherType.failure) {
+      return createShopItemMediaElementsResponse;
+    }
+  }
 
-  const purchasedMediaElements: MediaElement[] = shopItemMediaElements
-    .filter(
-      (element) => element.shopItemType === DBShopItemElementType.PURCHASED_MEDIA_ELEMENT,
-    )
-    .map((element) => ({
-      temporaryUrl: element.fileTemporaryUrl,
-      mimeType: element.mimetype,
-    }));
+  //////////////////////////////////////////////////
+  // Get media file temporary urls
+  //////////////////////////////////////////////////
+  const getTemporaryImageUrlResponsesForMediaFiles = await BluebirdPromise.map(
+    mediaFiles,
+    async ({ blobFileKey }) => {
+      return await controller.blobStorageService.getTemporaryImageUrl({
+        controller,
+        blobItemPointer: { fileKey: blobFileKey },
+      });
+    },
+  );
+
+  const unwrappedGetTemporaryImageUrlResponsesForMediaFiles = unwrapListOfEitherResponses(
+    {
+      eitherResponses: getTemporaryImageUrlResponsesForMediaFiles,
+      failureHandlingMethod:
+        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+    },
+  );
+  if (unwrappedGetTemporaryImageUrlResponsesForMediaFiles.type === EitherType.failure) {
+    return unwrappedGetTemporaryImageUrlResponsesForMediaFiles;
+  }
+
+  const { success: mediaFileTemporaryUrls } =
+    unwrappedGetTemporaryImageUrlResponsesForMediaFiles;
+
+  const mediaElements: MediaElement[] = mediaFileTemporaryUrls.map(
+    (mediaElementTemporaryUrl, index) => ({
+      temporaryUrl: mediaElementTemporaryUrl,
+      mimeType: mediaFiles[index].mimeType,
+    }),
+  );
+
+  const getTemporaryImageUrlResponsesForPurchasedMediaFiles = await BluebirdPromise.map(
+    purchasedMediaFiles,
+    async ({ blobFileKey }) => {
+      return await controller.blobStorageService.getTemporaryImageUrl({
+        controller,
+        blobItemPointer: { fileKey: blobFileKey },
+      });
+    },
+  );
+
+  const unwrappedGetTemporaryImageUrlResponsesForPurchasedMediaFiles =
+    unwrapListOfEitherResponses({
+      eitherResponses: getTemporaryImageUrlResponsesForPurchasedMediaFiles,
+      failureHandlingMethod:
+        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+    });
+  if (
+    unwrappedGetTemporaryImageUrlResponsesForPurchasedMediaFiles.type ===
+    EitherType.failure
+  ) {
+    return unwrappedGetTemporaryImageUrlResponsesForPurchasedMediaFiles;
+  }
+
+  const { success: purchasedMediaFileTemporaryUrls } =
+    unwrappedGetTemporaryImageUrlResponsesForPurchasedMediaFiles;
+
+  const purchasedMediaElements: MediaElement[] = purchasedMediaFileTemporaryUrls.map(
+    (mediaElementTemporaryUrl, index) => ({
+      temporaryUrl: mediaElementTemporaryUrl,
+      mimeType: purchasedMediaFiles[index].mimeType,
+    }),
+  );
 
   //////////////////////////////////////////////////
   // Compile Shop Item
@@ -276,59 +323,6 @@ export async function handleCreateShopItem({
   return Success({ renderableShopItem });
 }
 
-const uploadShopItemMedia = async (
-  publishedItemId: string,
-  mediaFiles: Array<{ file: BackendKupoFile; type: DBShopItemElementType }>,
-  controller: ShopItemController,
-) => {
-  const eitherResponses = await BluebirdPromise.map(
-    mediaFiles,
-    async (
-      mediaFile,
-      index,
-    ): Promise<
-      InternalServiceResponse<
-        ErrorReasonTypes<string>,
-        {
-          publishedItemId: string;
-          shopItemElementIndex: number;
-          blobFileKey: string;
-          fileTemporaryUrl: string;
-          mimetype: string;
-          shopItemType: DBShopItemElementType;
-        }
-      >
-    > => {
-      const uploadMediaFileResponse = await uploadMediaFile({
-        controller,
-        file: mediaFile.file,
-        blobStorageService: controller.blobStorageService,
-      });
-      if (uploadMediaFileResponse.type === EitherType.failure) {
-        return uploadMediaFileResponse;
-      }
-      const {
-        success: { blobFileKey, fileTemporaryUrl, mimetype },
-      } = uploadMediaFileResponse;
-
-      return Success({
-        publishedItemId,
-        shopItemElementIndex: index,
-        blobFileKey,
-        fileTemporaryUrl,
-        mimetype,
-        shopItemType: mediaFile.type,
-      });
-    },
-  );
-
-  return unwrapListOfEitherResponses({
-    eitherResponses,
-    failureHandlingMethod:
-      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
-  });
-};
-
 async function considerAndExecuteNotifications({
   controller,
   renderablePublishedItem,
@@ -339,7 +333,7 @@ async function considerAndExecuteNotifications({
   controller: Controller;
   renderablePublishedItem: RenderablePublishedItem;
   databaseService: DatabaseService;
-  blobStorageService: BlobStorageServiceInterface;
+  blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
