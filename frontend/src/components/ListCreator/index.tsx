@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { styled } from "#/styling";
 import { IconButton } from "../Button";
 import { InfoIcon, MathPlusIcon, TrashIcon } from "../Icons";
@@ -10,7 +10,7 @@ import { Tooltip } from "../Tooltip";
 export interface ListCreatorProps {
   list: string[];
   onChange: (list: string[]) => void;
-  tooltipText: string;
+  tooltipText: ReactNode;
   limit?: number;
 }
 

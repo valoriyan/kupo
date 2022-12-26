@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { UploadableKupoFile } from "./uploadable-kupo-file";
+import { FileDescriptor } from "./file-descriptor";
 
 /**
  *
@@ -22,10 +22,10 @@ import { UploadableKupoFile } from "./uploadable-kupo-file";
 export interface UpdatePublishingChannelProfilePictureRequestBody {
   /**
    *
-   * @type {UploadableKupoFile}
+   * @type {FileDescriptor}
    * @memberof UpdatePublishingChannelProfilePictureRequestBody
    */
-  profilePicture: UploadableKupoFile;
+  profilePicture: FileDescriptor;
   /**
    *
    * @type {string}

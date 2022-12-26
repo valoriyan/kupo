@@ -7,14 +7,16 @@ export interface SpinnerProps {
   size: "xs" | "sm" | "md" | "lg";
   /** Optional text to render below the spinner */
   text?: string;
+  /** Optional class name for overriding default styles */
+  className?: string;
 }
 
 /** This component is used to indicate a loading state */
-export const Spinner = ({ size = "md", text }: SpinnerProps) => {
+export const Spinner = ({ size = "md", text, className }: SpinnerProps) => {
   const spinner = spinnerProperties[size];
 
   return (
-    <Stack css={{ gap: "$3", alignItems: "center" }}>
+    <Stack className={className} css={{ gap: "$3", alignItems: "center" }}>
       <SpinningSVG
         width={spinner.size}
         height={spinner.size}

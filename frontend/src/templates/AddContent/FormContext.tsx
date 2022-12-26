@@ -1,11 +1,11 @@
 import { PropsWithChildren } from "react";
 import create from "zustand";
 import createContext from "zustand/context";
-import { RenderableUser } from "#/api";
+import { FileDescriptor, RenderableUser } from "#/api";
 
-export interface Media {
-  file: File;
+export interface MediaDescriptor extends FileDescriptor {
   src: string;
+  isLoading: boolean;
 }
 
 export interface FormState {
@@ -17,9 +17,10 @@ export interface FormState {
   setPublicationDate: (publicationDate: Date | undefined) => void;
   expirationDate: Date | undefined;
   setExpirationDate: (expirationDate: Date | undefined) => void;
-  mediaFiles: Media[];
-  addMedia: (media: Media) => void;
-  getMediaActions: (media: Media) => {
+  mediaFiles: MediaDescriptor[];
+  addMedia: (media: MediaDescriptor) => void;
+  updateMedia: (media: Partial<MediaDescriptor> & { src: string }) => void;
+  getMediaActions: (media: MediaDescriptor) => {
     moveUp: () => void;
     moveDown: () => void;
     delete: () => void;
@@ -31,9 +32,10 @@ export interface FormState {
   setPrice: (price: number) => void;
   collaboratorUsers: RenderableUser[];
   setCollaboratorUsers: (collaboratorUsers: RenderableUser[]) => void;
-  purchasedMediaFiles: Media[];
-  addPurchasedMedia: (media: Media) => void;
-  getPurchasedMediaActions: (media: Media) => {
+  purchasedMediaFiles: MediaDescriptor[];
+  addPurchasedMedia: (media: MediaDescriptor) => void;
+  updatePurchasedMedia: (media: Partial<MediaDescriptor> & { src: string }) => void;
+  getPurchasedMediaActions: (media: MediaDescriptor) => {
     moveUp: () => void;
     moveDown: () => void;
     delete: () => void;
@@ -64,6 +66,16 @@ const createFormStateStore = () =>
 
     addMedia: (media) => {
       set((prev) => ({ ...prev, mediaFiles: [...prev.mediaFiles, media] }));
+    },
+
+    updateMedia: (media) => {
+      set((prev) => {
+        const next = [...prev.mediaFiles];
+        const currentIndex = next.findIndex((curMedia) => curMedia.src === media.src);
+        if (currentIndex === -1) return;
+        next[currentIndex] = { ...next[currentIndex], ...media };
+        return { ...prev, mediaFiles: next };
+      });
     },
 
     getMediaActions: (media) => ({
@@ -108,6 +120,16 @@ const createFormStateStore = () =>
         ...prev,
         purchasedMediaFiles: [...prev.purchasedMediaFiles, media],
       }));
+    },
+
+    updatePurchasedMedia: (media) => {
+      set((prev) => {
+        const next = [...prev.purchasedMediaFiles];
+        const currentIndex = next.findIndex((curMedia) => curMedia.src === media.src);
+        if (currentIndex === -1) return;
+        next[currentIndex] = { ...next[currentIndex], ...media };
+        return { ...prev, purchasedMediaFiles: next };
+      });
     },
 
     getPurchasedMediaActions: (media) => ({

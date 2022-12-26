@@ -9,12 +9,7 @@ export enum GenericResponseFailedReason {
   IDEMPOTENTYCY_TOKEN_ALREADY_ENCOUNTERED = "IDEMPOTENTYCY_TOKEN_ALREADY_ENCOUNTERED",
 }
 
-export interface ClientKeyToFiledMediaElement {
-  blobFileKey: string;
-  mimeType: string;
-}
-
-export interface FiledMediaElement {
+export interface FileDescriptor {
   blobFileKey: string;
   mimeType: string;
 }

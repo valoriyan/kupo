@@ -78,7 +78,7 @@ function convertDBPublishingChannelToUnrenderablePublishingChannel(
     profilePictureBlobFileKey: dbPublishingChannel.profile_picture_blob_file_key,
     publishingChannelRules,
     externalUrls,
-    bannedWords: dbPublishingChannel.comma_separated_banned_words.split(","),
+    bannedWords: dbPublishingChannel.comma_separated_banned_words?.split(","),
   };
 }
 

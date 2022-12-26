@@ -7,7 +7,7 @@ import {
   Success,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { ClientKeyToFiledMediaElement, GenericResponseFailedReason } from "../models";
+import { FileDescriptor, GenericResponseFailedReason } from "../models";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
 import { assembleRenderablePublishingChannelFromParts } from "./utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
@@ -23,7 +23,7 @@ export interface UpdatePublishingChannelProfilePictureSuccess {
 }
 
 export interface UpdatePublishingChannelProfilePictureRequestBody {
-  profilePicture: ClientKeyToFiledMediaElement;
+  profilePicture: FileDescriptor;
   publishingChannelId: string;
 }
 

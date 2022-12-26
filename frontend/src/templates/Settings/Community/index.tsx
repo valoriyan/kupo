@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import { RenderablePublishingChannel } from "#/api";
+import { FileDescriptor, RenderablePublishingChannel } from "#/api";
 import { useUpdateCommunityBackgroundImage } from "#/api/mutations/community/updateCommunityBackgroundImage";
 import { useUpdateCommunityProfilePicture } from "#/api/mutations/community/updateCommunityProfilePicture";
 import { useUpdateCommunityPage } from "#/api/mutations/community/updatedCommunityPage";
@@ -42,8 +42,8 @@ export const Community = ({ community }: CommunityProps) => {
     setIsModeratorNamesTouched,
   ] = useFormField(community.moderators.map((m) => m.username));
 
-  const [pfpFile, setPfpFile] = useState<File>();
-  const [backgroundImgFile, setBackgroundImgFile] = useState<File>();
+  const [pfpFile, setPfpFile] = useState<FileDescriptor>();
+  const [backgroundImgFile, setBackgroundImgFile] = useState<FileDescriptor>();
 
   const { data: users, isLoading: areModeratorsLoading } = useGetUsersByUsernames({
     usernames: moderatorNames,

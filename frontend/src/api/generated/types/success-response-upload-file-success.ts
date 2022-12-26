@@ -12,24 +12,25 @@
  * Do not edit the class manually.
  */
 
-import { FileDescriptor } from "./file-descriptor";
+import { EitherTypeSuccess } from "./either-type-success";
+import { UploadFileSuccess } from "./upload-file-success";
 
 /**
  *
  * @export
- * @interface UpdatePublishingChannelBackgroundImageRequestBody
+ * @interface SuccessResponseUploadFileSuccess
  */
-export interface UpdatePublishingChannelBackgroundImageRequestBody {
+export interface SuccessResponseUploadFileSuccess {
   /**
    *
-   * @type {FileDescriptor}
-   * @memberof UpdatePublishingChannelBackgroundImageRequestBody
+   * @type {EitherTypeSuccess}
+   * @memberof SuccessResponseUploadFileSuccess
    */
-  backgroundImage: FileDescriptor;
+  type: EitherTypeSuccess;
   /**
    *
-   * @type {string}
-   * @memberof UpdatePublishingChannelBackgroundImageRequestBody
+   * @type {UploadFileSuccess}
+   * @memberof SuccessResponseUploadFileSuccess
    */
-  publishingChannelId: string;
+  success: UploadFileSuccess;
 }

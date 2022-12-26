@@ -1,17 +1,25 @@
-import { ChangeEvent, Dispatch, PropsWithChildren, SetStateAction } from "react";
-import { RenderableUser } from "#/api";
+import {
+  ChangeEvent,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useState,
+} from "react";
+import { FileDescriptor, RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { HiddenInput } from "#/components/HiddenInput";
 import { PenIcon } from "#/components/Icons";
-import { Flex, Grid, Stack } from "#/components/Layout";
+import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { LimitedTextArea } from "#/components/LimitedTextArea";
 import { ListCreator } from "#/components/ListCreator";
 import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
-import { styled } from "#/styling";
+import { css, styled } from "#/styling";
 import { UsersInput } from "#/templates/Messages/CreateChatRoom/UsersInput";
+import { useUploadFile } from "#/api/mutations/fileUpload/uploadFile";
+import { Spinner } from "#/components/Spinner";
 
 export interface NewCommunityFormProps {
   name: string;
@@ -20,10 +28,10 @@ export interface NewCommunityFormProps {
   setDescription: (description: string) => void;
   pfpUrl: string | undefined;
   setPfpUrl: (pfpUrl: string) => void;
-  setPfpFile: (pfpFile: File) => void;
+  setPfpFile: (pfpFile: FileDescriptor) => void;
   backgroundImgUrl: string | undefined;
   setBackgroundImgUrl: (backgroundImgUrl: string) => void;
-  setBackgroundImgFile: (backgroundImgFile: File) => void;
+  setBackgroundImgFile: (backgroundImgFile: FileDescriptor) => void;
   rulesList: string[];
   setRulesList: Dispatch<SetStateAction<string[]>>;
   linksList: string[];
@@ -60,18 +68,39 @@ export const NewCommunityForm = ({
   onSubmit,
   isSubmitting,
 }: NewCommunityFormProps) => {
-  const onFileChange = (e: ChangeEvent<HTMLInputElement>, type: "pfp" | "bg") => {
+  const { mutateAsync: uploadFile } = useUploadFile();
+  const [isUploadingPfp, setIsUploadingPfp] = useState(false);
+  const [isUploadingBackgroundImg, setIsUploadingBackgroundImg] = useState(false);
+
+  const onFileChange = async (e: ChangeEvent<HTMLInputElement>, type: "pfp" | "bg") => {
     const { files } = e.currentTarget;
     if (!files?.length) return;
 
     for (const file of files) {
       const src = URL.createObjectURL(file);
+      const mimeType = file.type;
       if (type === "pfp") {
         setPfpUrl(src);
-        setPfpFile(file);
+        setIsUploadingPfp(true);
+        try {
+          const { blobFileKey } = await uploadFile({ file, mimeType });
+          setPfpFile({ blobFileKey, mimeType });
+          setIsUploadingPfp(false);
+        } catch {
+          setPfpUrl("");
+          setIsUploadingPfp(false);
+        }
       } else if (type === "bg") {
         setBackgroundImgUrl(src);
-        setBackgroundImgFile(file);
+        setIsUploadingBackgroundImg(true);
+        try {
+          const { blobFileKey } = await uploadFile({ file, mimeType });
+          setBackgroundImgFile({ blobFileKey, mimeType });
+          setIsUploadingBackgroundImg(false);
+        } catch {
+          setBackgroundImgUrl("");
+          setIsUploadingBackgroundImg(false);
+        }
       }
     }
   };
@@ -80,7 +109,6 @@ export const NewCommunityForm = ({
     <HiddenInput
       type="file"
       accept="image/png, image/jpeg"
-      multiple
       onChange={(e) => onFileChange(e, type)}
     />
   );
@@ -100,20 +128,25 @@ export const NewCommunityForm = ({
             <Stack css={{ alignItems: "center", gap: "$4" }}>
               <Body>Profile Picture</Body>
               <EditMedia>
-                <Darken>
+                <Box css={{ filter: `brightness(${isUploadingPfp ? 0.4 : 0.8})` }}>
                   <Avatar src={pfpUrl} alt="Current Profile Picture" size="$11" />
-                </Darken>
-                <EditIcon />
+                </Box>
+                {isUploadingPfp ? <LoadingSpinner size="md" /> : <EditIcon />}
                 {fileInput("pfp")}
               </EditMedia>
             </Stack>
             <Stack css={{ alignItems: "center", gap: "$3" }}>
               <Body css={{ alignSelf: "start" }}>Background Image</Body>
               <EditMedia>
-                <Darken css={{ size: "100%" }}>
+                <Box
+                  css={{
+                    size: "100%",
+                    filter: `brightness(${isUploadingBackgroundImg ? 0.4 : 0.8})`,
+                  }}
+                >
                   <BackgroundImage src={backgroundImgUrl} />
-                </Darken>
-                <EditIcon />
+                </Box>
+                {isUploadingBackgroundImg ? <LoadingSpinner size="md" /> : <EditIcon />}
                 {fileInput("bg")}
               </EditMedia>
             </Stack>
@@ -138,7 +171,16 @@ export const NewCommunityForm = ({
             <ListCreator
               list={rulesList}
               onChange={setRulesList}
-              tooltipText="You may add up to 5 rules"
+              tooltipText={
+                <>
+                  You may add up to 5 rules.
+                  <br />
+                  <br />
+                  You may not reject posts until
+                  <br />
+                  your community has rules.
+                </>
+              }
               limit={5}
             />
           </SectionWrapper>
@@ -147,7 +189,7 @@ export const NewCommunityForm = ({
             <ListCreator
               list={linksList}
               onChange={setLinksList}
-              tooltipText="You may add up to 5 links"
+              tooltipText="You may add up to 5 links."
               limit={5}
             />
           </SectionWrapper>
@@ -164,7 +206,12 @@ export const NewCommunityForm = ({
           <Button
             size="lg"
             variant="secondary"
-            disabled={isSubmitDisabled || isSubmitting}
+            disabled={
+              isSubmitDisabled ||
+              isSubmitting ||
+              isUploadingPfp ||
+              isUploadingBackgroundImg
+            }
             onClick={onSubmit}
           >
             <TextOrSpinner isLoading={isSubmitting}>{submitLabel}</TextOrSpinner>
@@ -242,13 +289,13 @@ const EditMedia = styled("label", {
   cursor: "pointer",
 });
 
-const Darken = styled("div", {
-  filter: "brightness(0.9)",
-});
-
-const EditIcon = styled(PenIcon, {
+const centered = css({
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
 });
+
+const EditIcon = styled(PenIcon, centered);
+
+const LoadingSpinner = styled(Spinner, centered);

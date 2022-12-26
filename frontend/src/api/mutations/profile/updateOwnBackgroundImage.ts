@@ -1,21 +1,14 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, GetClientUserProfileSuccess, UploadableKupoFile } from "#/api";
+import { Api, FileDescriptor, GetClientUserProfileSuccess } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
-import { fileToBase64 } from "#/utils/fileToBase64";
 
 export const useUpdateOwnBackgroundImage = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (file: File) => {
-      const uploadableBackgroundImage: UploadableKupoFile = {
-        blobSize: file.size,
-        blobText: await fileToBase64(file),
-        mimetype: file.type,
-      };
-
+    async (fileDescriptor: FileDescriptor) => {
       return await Api.updateUserBackgroundImage({
-        backgroundImage: uploadableBackgroundImage,
+        backgroundImage: fileDescriptor,
       });
     },
     {

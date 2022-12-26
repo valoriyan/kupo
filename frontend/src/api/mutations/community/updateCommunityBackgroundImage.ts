@@ -1,21 +1,14 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, RenderablePublishingChannel } from "#/api";
+import { Api, FileDescriptor, RenderablePublishingChannel } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
-import { fileToBase64 } from "#/utils/fileToBase64";
 
 export const useUpdateCommunityBackgroundImage = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ id, file }: { id: string; file: File }) => {
-      const uploadableBackgroundImage = {
-        blobSize: file.size,
-        blobText: await fileToBase64(file),
-        mimetype: file.type,
-      };
-
+    async ({ id, file }: { id: string; file: FileDescriptor }) => {
       return await Api.updatePublishingChannelBackgroundImage({
-        backgroundImage: uploadableBackgroundImage,
+        backgroundImage: file,
         publishingChannelId: id,
       });
     },

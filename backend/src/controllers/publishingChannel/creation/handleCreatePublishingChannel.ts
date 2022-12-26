@@ -1,5 +1,5 @@
 import express from "express";
-import { ClientKeyToFiledMediaElement } from "../../../controllers/models";
+import { FileDescriptor } from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import {
   EitherType,
@@ -15,8 +15,8 @@ import {
 } from "./validations";
 
 export interface CreatePublishingChannelRequestBody {
-  backgroundImage?: ClientKeyToFiledMediaElement;
-  profilePicture?: ClientKeyToFiledMediaElement;
+  backgroundImage?: FileDescriptor;
+  profilePicture?: FileDescriptor;
   publishingChannelName: string;
   publishingChannelDescription: string;
   externalUrls: string[];

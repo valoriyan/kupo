@@ -12,18 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { FileDescriptor } from "./file-descriptor";
+import { AuthFailedReason } from "./auth-failed-reason";
+import { GenericResponseFailedReason } from "./generic-response-failed-reason";
 
 /**
  *
  * @export
- * @interface UpdateUserProfilePictureRequestBody
+ * @interface ErrorReasonTypesStringOrUploadFileFailedReason
  */
-export interface UpdateUserProfilePictureRequestBody {
-  /**
-   *
-   * @type {FileDescriptor}
-   * @memberof UpdateUserProfilePictureRequestBody
-   */
-  profilePicture: FileDescriptor;
-}
+export interface ErrorReasonTypesStringOrUploadFileFailedReason {}

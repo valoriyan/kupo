@@ -6,12 +6,13 @@ export interface TooltipProps {
   content: ReactNode;
   children: ReactNode;
   asChild?: boolean;
+  disabled?: boolean;
 }
 
-export const Tooltip = ({ content, children, asChild }: TooltipProps) => {
+export const Tooltip = ({ content, children, asChild, disabled }: TooltipProps) => {
   return (
     <RadixTooltip.Provider>
-      <RadixTooltip.Root delayDuration={0}>
+      <RadixTooltip.Root delayDuration={0} open={disabled ? false : undefined}>
         <RadixTooltip.Trigger asChild={asChild}>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <Content sideOffset={4}>{content}</Content>
