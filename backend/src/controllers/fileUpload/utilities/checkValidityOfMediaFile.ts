@@ -23,7 +23,14 @@ export async function checkValidityOfMediaFile({
   // eslint-disable-next-line @typescript-eslint/ban-types
   InternalServiceResponse<ErrorReasonTypes<string | InvalidMediaFileReason>, {}>
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const { mimetype, buffer } = file;
+
+  //////////////////////////////////////////////////
+  // Check Mime Type
+  //////////////////////////////////////////////////
 
   const permittedImageTypes = ["image/jpeg", "image/png", "image/gif"];
 
@@ -68,5 +75,10 @@ export async function checkValidityOfMediaFile({
       });
     }
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({});
 }

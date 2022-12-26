@@ -40,6 +40,9 @@ export async function handleSearchForUsers({
     SearchForUsersSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -48,6 +51,10 @@ export async function handleSearchForUsers({
 
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
+
+  //////////////////////////////////////////////////
+  // Select Users with Usernames Matching Search
+  //////////////////////////////////////////////////
 
   const selectUsersBySearchStringResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersBySearchString(
@@ -59,6 +66,10 @@ export async function handleSearchForUsers({
   const { success: unrenderableUsersMatchingSearchString } =
     selectUsersBySearchStringResponse;
 
+  //////////////////////////////////////////////////
+  // Select User Ids with Hashtags Matching Search
+  //////////////////////////////////////////////////
+
   const getUserIdsWithHashtagResponse =
     await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.getUserIdsWithHashtag(
       { controller, hashtag: lowercaseTrimmedQuery },
@@ -68,6 +79,10 @@ export async function handleSearchForUsers({
   }
   const { success: unrenderableUsersIdsMatchingHashtag } = getUserIdsWithHashtagResponse;
 
+  //////////////////////////////////////////////////
+  // Get Users with Hashtags Matching Search
+  //////////////////////////////////////////////////
+
   const selectUsersByUserIdsResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds(
       { controller, userIds: unrenderableUsersIdsMatchingHashtag },
@@ -76,6 +91,10 @@ export async function handleSearchForUsers({
     return selectUsersByUserIdsResponse;
   }
   const { success: unrenderableUsersMatchingHashtag } = selectUsersByUserIdsResponse;
+
+  //////////////////////////////////////////////////
+  // Merge Results of Username and Hashtag Search
+  //////////////////////////////////////////////////
 
   const unrenderableUsers = mergeArraysOfUnrenderableUsers({
     arrays: [unrenderableUsersMatchingSearchString, unrenderableUsersMatchingHashtag],
@@ -88,10 +107,18 @@ export async function handleSearchForUsers({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Create Page of Results
+  //////////////////////////////////////////////////
+
   const pageOfUnrenderableUsers = unrenderableUsers.slice(
     pageSize * pageNumber - pageSize,
     pageSize * pageNumber,
   );
+
+  //////////////////////////////////////////////////
+  // Get Renderable Users
+  //////////////////////////////////////////////////
 
   const constructRenderableUsersFromPartsResponse =
     await constructRenderableUsersFromParts({
@@ -105,6 +132,10 @@ export async function handleSearchForUsers({
     return constructRenderableUsersFromPartsResponse;
   }
   const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     users: renderableUsers,
