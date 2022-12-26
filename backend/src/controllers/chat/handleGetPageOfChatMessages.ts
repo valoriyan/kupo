@@ -44,7 +44,7 @@ export async function handleGetPageOfChatMessages({
   >
 > {
   //////////////////////////////////////////////////
-  // INPUTS & AUTH
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
   const { chatRoomId, pageSize, cursor } = requestBody;
@@ -58,7 +58,7 @@ export async function handleGetPageOfChatMessages({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // Check that user is in the chat room
+  // Check That User is in the Chat Room
   //////////////////////////////////////////////////
   const getUserIdsJoinedToChatRoomIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
@@ -80,7 +80,7 @@ export async function handleGetPageOfChatMessages({
   }
 
   //////////////////////////////////////////////////
-  // Get users in the channel that blocked the client
+  // Get Users in the Channel That Blocked the Client
   //////////////////////////////////////////////////
 
   const areAnyOfUserIdsBlockingUserIdResponse =
@@ -98,7 +98,7 @@ export async function handleGetPageOfChatMessages({
     areAnyOfUserIdsBlockingUserIdResponse;
 
   //////////////////////////////////////////////////
-  // Get unrenderable chat messages
+  // Get Unrenderable Chat Messages
   //////////////////////////////////////////////////
 
   const getChatMessagesByChatRoomIdResponse =
@@ -116,7 +116,7 @@ export async function handleGetPageOfChatMessages({
   const { success: unrenderableChatMessages } = getChatMessagesByChatRoomIdResponse;
 
   //////////////////////////////////////////////////
-  // Get renderable chat messages
+  // Get Renderable Chat Messages
   //////////////////////////////////////////////////
 
   const renderableChatMessages = unrenderableChatMessages.map(
@@ -129,6 +129,10 @@ export async function handleGetPageOfChatMessages({
     renderableChatMessages.length > pageSize
       ? pageOfRenderableChatMessages[0].creationTimestamp.toString()
       : undefined;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     chatMessages: pageOfRenderableChatMessages,

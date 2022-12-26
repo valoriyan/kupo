@@ -37,11 +37,18 @@ export async function handleSearchForHashtags({
     SearchForHashtagsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { errorResponse: error } = await checkAuthorization(controller, request);
   if (error) return error;
 
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
+
+  //////////////////////////////////////////////////
+  // Get the Number of Hashtags Matching Search
+  //////////////////////////////////////////////////
 
   const getHashtagsCountBySubstringResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getHashtagsCountBySubstring(
@@ -59,6 +66,10 @@ export async function handleSearchForHashtags({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Get a Page of the Hashtags Matching Search
+  //////////////////////////////////////////////////
+
   const getHashtagsMatchingSubstringResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getHashtagsMatchingSubstring(
       {
@@ -72,6 +83,10 @@ export async function handleSearchForHashtags({
     return getHashtagsMatchingSubstringResponse;
   }
   const { success: matchingHashtags } = getHashtagsMatchingSubstringResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     hashtags: matchingHashtags,

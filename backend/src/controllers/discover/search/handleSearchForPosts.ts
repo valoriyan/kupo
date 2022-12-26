@@ -41,6 +41,10 @@ export async function handleSearchForPosts({
     SearchForPostsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -49,6 +53,10 @@ export async function handleSearchForPosts({
 
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
+
+  //////////////////////////////////////////////////
+  // Get Published Item Ids With Hashtag Matching Search
+  //////////////////////////////////////////////////
 
   const getPublishedItemIdsWithOneOfHashtagsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getPublishedItemIdsWithOneOfHashtags(
@@ -59,6 +67,10 @@ export async function handleSearchForPosts({
   }
   const { success: publishedItemIds } = getPublishedItemIdsWithOneOfHashtagsResponse;
 
+  //////////////////////////////////////////////////
+  // Get Published Items With Hashtag Matching Search
+  //////////////////////////////////////////////////
+
   const getPublishedItemsByIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       { controller, ids: publishedItemIds, restrictedToType: PublishedItemType.POST },
@@ -67,6 +79,10 @@ export async function handleSearchForPosts({
     return getPublishedItemsByIdsResponse;
   }
   const { success: unrenderablePostsMatchingHashtag } = getPublishedItemsByIdsResponse;
+
+  //////////////////////////////////////////////////
+  // Get Published Items With Caption Matching Search
+  //////////////////////////////////////////////////
 
   const getPublishedItemsByCaptionMatchingSubstringResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring(
@@ -82,6 +98,10 @@ export async function handleSearchForPosts({
   const { success: unrenderablePostsMatchingCaption } =
     getPublishedItemsByCaptionMatchingSubstringResponse;
 
+  //////////////////////////////////////////////////
+  // Merge Search Results
+  //////////////////////////////////////////////////
+
   const unrenderablePostsWithoutElementsOrHashtags =
     mergeArraysOfUncompiledBasePublishedItem({
       arrays: [unrenderablePostsMatchingHashtag, unrenderablePostsMatchingCaption],
@@ -94,10 +114,18 @@ export async function handleSearchForPosts({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Create Page of Results
+  //////////////////////////////////////////////////
+
   const pageOfUnrenderablePosts = unrenderablePostsWithoutElementsOrHashtags.slice(
     pageSize * pageNumber - pageSize,
     pageSize * pageNumber,
   );
+
+  //////////////////////////////////////////////////
+  // Get Renderable Published Items
+  //////////////////////////////////////////////////
 
   const constructRenderablePostsFromPartsResponse =
     await constructRenderablePostsFromParts({
@@ -111,6 +139,10 @@ export async function handleSearchForPosts({
     return constructRenderablePostsFromPartsResponse;
   }
   const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     posts: renderablePosts,

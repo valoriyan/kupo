@@ -39,6 +39,10 @@ export async function handleSearchForPublishingChannels({
     SearchForPublishingChannelsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthorization(
     controller,
     request,
@@ -47,6 +51,10 @@ export async function handleSearchForPublishingChannels({
 
   const { pageNumber, query, pageSize } = requestBody;
   const lowercaseTrimmedQuery = query.trim().toLowerCase();
+
+  //////////////////////////////////////////////////
+  // Get Publishing Channels Matching Search
+  //////////////////////////////////////////////////
 
   const selectPublishingChannelsBySearchStringResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.selectPublishingChannelsBySearchString(
@@ -64,6 +72,10 @@ export async function handleSearchForPublishingChannels({
       totalCount: 0,
     });
   }
+
+  //////////////////////////////////////////////////
+  // Get a Page of the Publishing Channels Matching Search
+  //////////////////////////////////////////////////
 
   const pageOfUnrenderablePublishingChannels =
     unrenderablePublishingChannelMatchingSearchString.slice(
@@ -84,6 +96,10 @@ export async function handleSearchForPublishingChannels({
   }
   const { success: renderablePublishingChannels } =
     assembleRenderablePublishingChannelsFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishingChannels: renderablePublishingChannels,

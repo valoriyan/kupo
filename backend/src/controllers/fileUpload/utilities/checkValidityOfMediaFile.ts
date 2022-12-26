@@ -25,7 +25,14 @@ export async function checkValidityOfMediaFile({
   // eslint-disable-next-line @typescript-eslint/ban-types
   InternalServiceResponse<ErrorReasonTypes<string | InvalidMediaFileReason>, {}>
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const { mimetype, buffer } = file;
+
+  //////////////////////////////////////////////////
+  // Check Mime Type
+  //////////////////////////////////////////////////
 
   const permittedImageTypes = ["image/jpeg", "image/png"];
 
@@ -43,9 +50,11 @@ export async function checkValidityOfMediaFile({
     });
   }
 
-  if (permittedImageTypes.includes(mimetype)) {
-    // TODO: ADD IMAGE VALIDATION
-  } else if (permittedVideoTypes.includes(mimetype)) {
+  //////////////////////////////////////////////////
+  // Check Video Length
+  //////////////////////////////////////////////////
+
+  if (permittedVideoTypes.includes(mimetype)) {
     // TODO: ADD VIDEO VALIDATION
     const videoStream = createReadStream(buffer);
 
@@ -61,5 +70,10 @@ export async function checkValidityOfMediaFile({
       });
     }
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({});
 }
