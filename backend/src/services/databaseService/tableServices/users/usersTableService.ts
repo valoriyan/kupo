@@ -608,7 +608,7 @@ export class UsersTableService extends TableService {
     }
   }
 
-  public async selectUserByEmail({
+  public async selectMaybeUserByEmail({
     controller,
     email,
   }: {

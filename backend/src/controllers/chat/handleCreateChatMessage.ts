@@ -9,7 +9,6 @@ import { checkAuthorization } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableChatMessage } from "./models";
-import { getCountOfUnreadChatRooms } from "./utilities";
 
 export enum CreateChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
@@ -39,7 +38,7 @@ export async function handleCreateChatMessage({
   >
 > {
   //////////////////////////////////////////////////
-  // INPUTS & AUTH
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
   const { chatRoomId, chatMessageText } = requestBody;
@@ -55,7 +54,7 @@ export async function handleCreateChatMessage({
   const creationTimestamp = Date.now();
 
   //////////////////////////////////////////////////
-  // WRITE TO DB
+  // Write to DB
   //////////////////////////////////////////////////
   const createChatMessageResponse =
     await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.createChatMessage(
@@ -73,7 +72,7 @@ export async function handleCreateChatMessage({
   }
 
   //////////////////////////////////////////////////
-  // GET USERS IN CHATROOM
+  // Get Users In Chatroom
   //////////////////////////////////////////////////
   const getUserIdsJoinedToChatRoomIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
@@ -85,20 +84,22 @@ export async function handleCreateChatMessage({
   const { success: allUserIdsInChatRoom } = getUserIdsJoinedToChatRoomIdResponse;
 
   //////////////////////////////////////////////////
-  // GET USERS IN CHATROOM
+  // Get Count Of Chat Rooms With Unread Messages
   //////////////////////////////////////////////////
-  const getCountOfUnreadChatRoomsResponse = await getCountOfUnreadChatRooms({
-    controller,
-    databaseService: controller.databaseService,
-    userId: clientUserId,
-  });
+  const getCountOfUnreadChatRoomsResponse =
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId(
+      {
+        controller,
+        userId: clientUserId,
+      },
+    );
   if (getCountOfUnreadChatRoomsResponse.type === EitherType.failure) {
     return getCountOfUnreadChatRoomsResponse;
   }
   const { success: countOfUnreadChatRooms } = getCountOfUnreadChatRoomsResponse;
 
   //////////////////////////////////////////////////
-  // SEND CHAT MESSAGE TO USER
+  // Compile Chat Message
   //////////////////////////////////////////////////
   const chatMessage: RenderableChatMessage = {
     chatMessageId,
@@ -107,6 +108,10 @@ export async function handleCreateChatMessage({
     chatRoomId,
     creationTimestamp,
   };
+
+  //////////////////////////////////////////////////
+  // Send Chat Message to Target Users
+  //////////////////////////////////////////////////
 
   await controller.webSocketService.notifyUserIdsOfNewChatMessage({
     userIds: allUserIdsInChatRoom,
@@ -117,7 +122,7 @@ export async function handleCreateChatMessage({
   });
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({

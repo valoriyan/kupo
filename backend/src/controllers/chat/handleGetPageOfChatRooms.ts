@@ -2,6 +2,7 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
+  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
@@ -18,6 +19,8 @@ import {
 } from "./models";
 import { Promise as BluebirdPromise } from "bluebird";
 import { UnrenderableUser } from "../user/models";
+import { DatabaseService } from "../../services/databaseService";
+import { Controller } from "tsoa";
 
 export interface GetPageOfChatRoomsRequestBody {
   cursor?: string;
@@ -50,6 +53,9 @@ export async function handleGetPageOfChatRooms({
     GetPageOfChatRoomsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { pageSize, cursor, query } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -58,45 +64,25 @@ export async function handleGetPageOfChatRooms({
   );
   if (error) return error;
 
+  //////////////////////////////////////////////////
+  // Get Unrenderable Chat Rooms
+  //    If Query: Matching Query
+  // Or If No Query: Joined By Client
+  //////////////////////////////////////////////////
   let unrenderableChatRooms: UnrenderableChatRoomWithJoinedUsers[];
 
   if (!!query) {
-    const usernameSubstrings = query.split(" ");
-
-    const selectUsersByUsernameMatchingSubstringResponses = await BluebirdPromise.map(
-      usernameSubstrings,
-      async (usernameSubstring) => {
-        return await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
-          { controller, usernameSubstring },
-        );
-      },
-    );
-
-    const arrayOfMatchedUsers = unwrapListOfEitherResponses({
-      eitherResponses: selectUsersByUsernameMatchingSubstringResponses,
-      failureHandlingMethod:
-        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
-    });
-    if (arrayOfMatchedUsers.type === EitherType.failure) {
-      return arrayOfMatchedUsers;
+    const getUnrenderableChatRoomsMatchingQueryResponse =
+      await getUnrenderableChatRoomsMatchingQuery({
+        controller,
+        query,
+        databaseService: controller.databaseService,
+        requestorUserId: clientUserId,
+      });
+    if (getUnrenderableChatRoomsMatchingQueryResponse.type === EitherType.failure) {
+      return getUnrenderableChatRoomsMatchingQueryResponse;
     }
-
-    const matchedUsers = arrayOfMatchedUsers.success.reduce(
-      (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
-        memo.concat(...matchedUsers),
-      [],
-    );
-
-    const matchedUserIds = matchedUsers.map(({ userId }) => userId);
-
-    const getChatRoomsJoinedByUserIdsResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
-        { controller, userIds: [clientUserId, ...matchedUserIds] },
-      );
-    if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {
-      return getChatRoomsJoinedByUserIdsResponse;
-    }
-    unrenderableChatRooms = getChatRoomsJoinedByUserIdsResponse.success;
+    unrenderableChatRooms = getUnrenderableChatRoomsMatchingQueryResponse.success;
   } else {
     const getChatRoomsJoinedByUserIdsResponse =
       await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
@@ -108,12 +94,20 @@ export async function handleGetPageOfChatRooms({
     unrenderableChatRooms = getChatRoomsJoinedByUserIdsResponse.success;
   }
 
+  //////////////////////////////////////////////////
+  // Get List of UserIds in Chat Rooms
+  //////////////////////////////////////////////////
+
   const setOfUserIds: Set<string> = new Set();
   unrenderableChatRooms.forEach(({ memberUserIds }) => {
     memberUserIds.forEach((memberUserId) => {
       setOfUserIds.add(memberUserId);
     });
   });
+
+  //////////////////////////////////////////////////
+  // Get Renderable Users in Chat Rooms
+  //////////////////////////////////////////////////
 
   const constructRenderableUsersFromPartsByUserIdsResponse =
     await constructRenderableUsersFromPartsByUserIds({
@@ -128,6 +122,9 @@ export async function handleGetPageOfChatRooms({
   }
   const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
+  //////////////////////////////////////////////////
+  // Generate Renderable Chat Rooms
+  //////////////////////////////////////////////////
   const mapOfUserIdsToRenderableUsers = new Map(
     renderableUsers.map((renderableUser) => {
       return [renderableUser.userId, renderableUser];
@@ -146,6 +143,10 @@ export async function handleGetPageOfChatRooms({
       };
     });
 
+  //////////////////////////////////////////////////
+  // Generate Page of Results
+  //////////////////////////////////////////////////
+
   const beginningOfPageCursor = cursor ? +cursor : 0;
   const endOfPageCursor = beginningOfPageCursor + pageSize;
   const pageOfRenderableChatRooms = renderableChatRooms.slice(
@@ -156,9 +157,75 @@ export async function handleGetPageOfChatRooms({
   const adjustedEndOfPageCursor =
     renderableChatRooms.length > endOfPageCursor ? endOfPageCursor.toString() : undefined;
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({
     chatRooms: pageOfRenderableChatRooms,
     previousPageCursor: cursor,
     nextPageCursor: adjustedEndOfPageCursor,
   });
+}
+
+async function getUnrenderableChatRoomsMatchingQuery({
+  controller,
+  query,
+  databaseService,
+  requestorUserId,
+}: {
+  controller: Controller;
+  query: string;
+  databaseService: DatabaseService;
+  requestorUserId: string;
+}): Promise<InternalServiceResponse<string, UnrenderableChatRoomWithJoinedUsers[]>> {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+  const usernameSubstrings = query.split(" ");
+
+  //////////////////////////////////////////////////
+  // Select Users Matching Query
+  //////////////////////////////////////////////////
+
+  const selectUsersByUsernameMatchingSubstringResponses = await BluebirdPromise.map(
+    usernameSubstrings,
+    async (usernameSubstring) => {
+      return await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
+        { controller, usernameSubstring },
+      );
+    },
+  );
+
+  const arrayOfMatchedUsers = unwrapListOfEitherResponses({
+    eitherResponses: selectUsersByUsernameMatchingSubstringResponses,
+    failureHandlingMethod:
+      UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
+  });
+  if (arrayOfMatchedUsers.type === EitherType.failure) {
+    return arrayOfMatchedUsers;
+  }
+
+  const matchedUsers = arrayOfMatchedUsers.success.reduce(
+    (memo: UnrenderableUser[], matchedUsers: UnrenderableUser[]) =>
+      memo.concat(...matchedUsers),
+    [],
+  );
+
+  const matchedUserIds = matchedUsers.map(({ userId }) => userId);
+
+  //////////////////////////////////////////////////
+  // Get Chat Rooms Joined By Users Matching Query
+  //////////////////////////////////////////////////
+
+  const getChatRoomsJoinedByUserIdsResponse =
+    await databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
+      { controller, userIds: [requestorUserId, ...matchedUserIds] },
+    );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
+  return getChatRoomsJoinedByUserIdsResponse;
 }

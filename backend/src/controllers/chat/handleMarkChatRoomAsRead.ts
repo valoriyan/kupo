@@ -33,6 +33,9 @@ export async function handleMarkChatRoomAsRead({
     MarkChatRoomAsReadSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { chatRoomId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -42,6 +45,10 @@ export async function handleMarkChatRoomAsRead({
   if (error) return error;
 
   const timestamp = Date.now();
+
+  //////////////////////////////////////////////////
+  // Write to DB
+  //////////////////////////////////////////////////
 
   const recordChatRoomAsReadByUserIdAtTimestampResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomReadRecordsTableService.recordChatRoomAsReadByUserIdAtTimestamp(
@@ -55,6 +62,10 @@ export async function handleMarkChatRoomAsRead({
   if (recordChatRoomAsReadByUserIdAtTimestampResponse.type === EitherType.failure) {
     return recordChatRoomAsReadByUserIdAtTimestampResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

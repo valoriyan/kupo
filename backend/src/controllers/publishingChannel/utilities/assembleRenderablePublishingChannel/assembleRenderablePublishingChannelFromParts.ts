@@ -67,6 +67,10 @@ export async function assembleRenderablePublishingChannelFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const {
     publishingChannelId,
     ownerUserId,

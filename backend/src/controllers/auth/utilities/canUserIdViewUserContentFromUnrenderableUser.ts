@@ -1,16 +1,11 @@
-import { GenericResponseFailedReason } from "../../../controllers/models";
 import {
   EitherType,
   ErrorReasonTypes,
-  Failure,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import {
-  ProfilePrivacySetting,
-  UnrenderableUser,
-} from "../../../controllers/user/models";
+import { ProfilePrivacySetting, UnrenderableUser } from "../../user/models";
 import { DatabaseService } from "../../../services/databaseService";
 import { FollowingStatus } from "../../user/userInteraction/models";
 
@@ -26,11 +21,14 @@ export async function canUserIdViewUserContentFromUnrenderableUser({
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
   //////////////////////////////////////////////////
-  // Check User If Requestor Is Blocked
-  //      If requestor is logged in
+  // If Requestor Is Logged In
   //////////////////////////////////////////////////
 
   if (!!requestorUserId) {
+    //////////////////////////////////////////////////
+    // Check if Requestor Is Blocked By Target User
+    //////////////////////////////////////////////////
+
     const isUserIdBlockedByUserIdResponse =
       await databaseService.tableNameToServicesMap.userBlocksTableService.isUserIdBlockedByUserId(
         {
@@ -45,24 +43,31 @@ export async function canUserIdViewUserContentFromUnrenderableUser({
     const { success: userIsBlocked } = isUserIdBlockedByUserIdResponse;
 
     if (userIsBlocked) {
+      //////////////////////////////////////////////////
+      // Return if Requestor Is Blocked By Target User
+      // and Logged In
+      //////////////////////////////////////////////////
       return Success(false);
     }
   }
 
   //////////////////////////////////////////////////
-  // If target user has a public profile then profile is viewable
+  // If Target User Has a Public Profile Then
+  // the Target User Profile is Viewable
   //////////////////////////////////////////////////
   if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public)
     return Success(true);
 
   //////////////////////////////////////////////////
-  // If target user has a private profile then requestor must be logged in
+  // Return if Target User Has a Private Profile
+  // and if the Requestor is not Logged In
   //////////////////////////////////////////////////
 
   if (!requestorUserId) return Success(false);
 
   //////////////////////////////////////////////////
-  // Check if requestor is following private user
+  // Determine if the Requestor is Following the
+  // Targeted Private User
   //////////////////////////////////////////////////
   const getFollowingStatusOfUserIdToUserIdResponse =
     await databaseService.tableNameToServicesMap.userFollowsTableService.getFollowingStatusOfUserIdToUserId(
@@ -83,66 +88,4 @@ export async function canUserIdViewUserContentFromUnrenderableUser({
   //////////////////////////////////////////////////
 
   return Success(userFollowingStatus === FollowingStatus.is_following);
-}
-
-export async function canUserViewUserContentByUserId({
-  controller,
-  requestorUserId,
-  targetUserId,
-  databaseService,
-}: {
-  controller: Controller;
-  requestorUserId: string | undefined;
-  targetUserId: string;
-  databaseService: DatabaseService;
-}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, boolean>> {
-  //////////////////////////////////////////////////
-  // User has viewing rights to their own items
-  //////////////////////////////////////////////////
-  if (requestorUserId === targetUserId) {
-    return Success(true);
-  }
-
-  //////////////////////////////////////////////////
-  // Get targt user if target user exists
-  //////////////////////////////////////////////////
-
-  const selectMaybeUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
-      {
-        controller,
-        userId: targetUserId,
-      },
-    );
-
-  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
-    return selectMaybeUserByUserIdResponse;
-  }
-  const { success: maybeUnrenderableUser } = selectMaybeUserByUserIdResponse;
-
-  //////////////////////////////////////////////////
-  // If target user does not exist, return error
-  //////////////////////////////////////////////////
-
-  if (!maybeUnrenderableUser) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at canUserViewUserContentByUserId",
-      additionalErrorInformation: "User not found at canUserViewUserContentByUserId",
-    });
-  }
-  const targetUser = maybeUnrenderableUser;
-
-  //////////////////////////////////////////////////
-  // If target user does exist, continue checking if user can view content
-  //////////////////////////////////////////////////
-
-  return canUserIdViewUserContentFromUnrenderableUser({
-    controller,
-    requestorUserId,
-    targetUser,
-    databaseService,
-  });
 }

@@ -31,56 +31,23 @@ export async function handleResetPassword({
 }): Promise<
   HTTPResponse<ErrorReasonTypes<string | ResetPasswordFailedReason>, ResetPasswordSuccess>
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const { token, password } = requestBody;
   const now = Date.now();
   const clientIpAddress = getClientIp(request);
 
+  //////////////////////////////////////////////////
+  // Read and Verify Reset Password Token
+  //////////////////////////////////////////////////
+
+  let jwtData: ResetPasswordJWTData;
   try {
-    const jwtData = verify(token, jwtPrivateKey) as ResetPasswordJWTData;
-    const userId = jwtData.resetPasswordData.userId;
-
-    const encryptedPassword = encryptPassword({ password });
-
-    await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
-      {
-        controller,
-        userId,
-        encryptedPassword,
-      },
-    );
-
-    const selectUserByUserIdResponse =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
-        {
-          controller,
-          userId,
-        },
-      );
-    if (selectUserByUserIdResponse.type === EitherType.failure) {
-      return selectUserByUserIdResponse;
-    }
-    const { success: unrenderableUser } = selectUserByUserIdResponse;
-
-    const recordLoginAttemptResponse =
-      await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
-        {
-          controller,
-          email: unrenderableUser!.email,
-          timestamp: now,
-          ipAddress: clientIpAddress || "",
-          wasSuccessful: true,
-        },
-      );
-    if (recordLoginAttemptResponse.type === EitherType.failure) {
-      return recordLoginAttemptResponse;
-    }
-
-    return {
-      type: EitherType.success,
-      success: {},
-    };
+    jwtData = verify(token, jwtPrivateKey) as ResetPasswordJWTData;
   } catch (error) {
     console.log(`handleResetPassword error: ${error}`);
     return {
@@ -88,4 +55,66 @@ export async function handleResetPassword({
       error: { reason: ResetPasswordFailedReason.InvalidToken },
     };
   }
+
+  const userId = jwtData.resetPasswordData.userId;
+  const encryptedPassword = encryptPassword({ password });
+
+  //////////////////////////////////////////////////
+  // Write Updated Password to DB
+  //////////////////////////////////////////////////
+
+  const updateUserPasswordResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
+      {
+        controller,
+        userId,
+        encryptedPassword,
+      },
+    );
+  if (updateUserPasswordResponse.type === EitherType.failure) {
+    return updateUserPasswordResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Get User
+  //////////////////////////////////////////////////
+
+  const selectUserByUserIdResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
+      {
+        controller,
+        userId,
+      },
+    );
+  if (selectUserByUserIdResponse.type === EitherType.failure) {
+    return selectUserByUserIdResponse;
+  }
+  const { success: unrenderableUser } = selectUserByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Reset Login Attempts
+  //////////////////////////////////////////////////
+
+  const recordLoginAttemptResponse =
+    await controller.databaseService.tableNameToServicesMap.userLoginAttemptsTableService.recordLoginAttempt(
+      {
+        controller,
+        email: unrenderableUser!.email,
+        timestamp: now,
+        ipAddress: clientIpAddress || "",
+        wasSuccessful: true,
+      },
+    );
+  if (recordLoginAttemptResponse.type === EitherType.failure) {
+    return recordLoginAttemptResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
+  return {
+    type: EitherType.success,
+    success: {},
+  };
 }

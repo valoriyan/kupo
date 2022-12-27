@@ -38,7 +38,7 @@ export async function handleCreateChatMessageInNewChatRoom({
   >
 > {
   //////////////////////////////////////////////////
-  // INPUTS & AUTH
+  // Inputs & Authentication
   //////////////////////////////////////////////////
   const { userIds, chatMessageText } = requestBody;
 
@@ -54,7 +54,7 @@ export async function handleCreateChatMessageInNewChatRoom({
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
-      { controller, userIds },
+      { controller, userIds: new Set(userIds) },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
     return getChatRoomIdWithUserIdMembersExclusiveResponse;

@@ -16,7 +16,7 @@ import {
 } from "../../../utilities/monads/unwrapListOfResponses";
 import { RenderableUser, UnrenderableUser } from "../models";
 import { FollowingStatus } from "../userInteraction/models";
-import { canUserIdViewUserContentFromUnrenderableUser } from "../../../controllers/auth/utilities/canUserViewUserContent";
+import { canUserIdViewUserContentFromUnrenderableUser } from "../../auth/utilities/canUserIdViewUserContentFromUnrenderableUser";
 
 export async function constructRenderableUsersFromParts({
   controller,

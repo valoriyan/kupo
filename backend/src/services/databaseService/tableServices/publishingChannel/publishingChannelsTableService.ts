@@ -12,7 +12,10 @@ import { TableService } from "../models";
 import { UsersTableService } from "../users/usersTableService";
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
-import { generatePSQLGenericUpdateRowQueryString } from "../utilities";
+import {
+  generatePSQLGenericDeleteRowsQueryString,
+  generatePSQLGenericUpdateRowQueryString,
+} from "../utilities";
 import { UnrenderablePublishingChannel } from "../../../../controllers/publishingChannel/models";
 import { PSQLUpdateFieldAndValue } from "../utilities/models";
 
@@ -539,4 +542,56 @@ export class PublishingChannelsTableService extends TableService {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  public async deletePublishingChannel({
+    controller,
+    publishingChannelId,
+    userId,
+  }: {
+    controller: Controller;
+    publishingChannelId: string;
+    userId: string;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePublishingChannel>
+  > {
+    try {
+      const query = generatePSQLGenericDeleteRowsQueryString({
+        fieldsUsedToIdentifyRowsToDelete: [
+          { field: "publishing_channel_id", value: publishingChannelId },
+          { field: "owner_user_id", value: userId },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response: QueryResult<DBPublishingChannel> = await this.datastorePool.query(
+        query,
+      );
+
+      const rows = response.rows;
+
+      if (!!rows.length) {
+        const row = response.rows[0];
+        return Success(convertDBPublishingChannelToUnrenderablePublishingChannel(row));
+      }
+
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error:
+          "Publishing Channel not found at PublishingChannelsTableService.deletePublishingChannel",
+        additionalErrorInformation:
+          "Error at PublishingChannelsTableService.deletePublishingChannel",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at PublishingChannelsTableService.deletePublishingChannel",
+      });
+    }
+  }
 }

@@ -10,7 +10,7 @@ import {
   Success,
 } from "../../../../utilities/monads";
 import { AuthFailedReason } from "../../../auth/models";
-import { canUserViewUserContentByUserId } from "../../../../controllers/auth/utilities/canUserViewUserContent";
+import { canUserViewUserContentByUserId } from "../../../../controllers/auth/utilities/canUserViewUserContentByUserId";
 
 export async function assertViewingRightsOnPublishedItem({
   controller,

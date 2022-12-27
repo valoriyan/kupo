@@ -36,6 +36,10 @@ export async function handleGetChatRoomById({
     GetChatRoomByIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { chatRoomId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -43,6 +47,10 @@ export async function handleGetChatRoomById({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Get Chat Rooms Joins
+  //////////////////////////////////////////////////
 
   const getChatRoomByIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUnrenderableChatRoomWithJoinedUsersByChatRoomId(
@@ -58,6 +66,10 @@ export async function handleGetChatRoomById({
     setOfUserIds.add(memberUserId);
   });
 
+  //////////////////////////////////////////////////
+  // Get Renderable Users
+  //////////////////////////////////////////////////
+
   const constructRenderableUsersFromPartsByUserIdsResponse =
     await constructRenderableUsersFromPartsByUserIds({
       controller,
@@ -71,6 +83,10 @@ export async function handleGetChatRoomById({
   }
   const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
+  //////////////////////////////////////////////////
+  // Put Together Renderable Chat Room
+  //////////////////////////////////////////////////
+
   const mapOfUserIdsToRenderableUsers = new Map(
     renderableUsers.map((renderableUser) => {
       return [renderableUser.userId, renderableUser];
@@ -81,10 +97,14 @@ export async function handleGetChatRoomById({
     (memberUserId) => mapOfUserIdsToRenderableUsers.get(memberUserId)!,
   );
 
-  const renderableChatRoom = {
+  const renderableChatRoom: RenderableChatRoomWithJoinedUsers = {
     chatRoomId,
     members: chatRoomMembers,
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     chatRoom: renderableChatRoom,

@@ -108,6 +108,12 @@ import {
   IsPublishingChannelNameValidRequestBody,
   IsPublishingChannelNameValidSuccess,
 } from "./creation/handleGetPublishingChannelNameValidity";
+import {
+  DeletePublishingChannelFailedReason,
+  DeletePublishingChannelRequestBody,
+  DeletePublishingChannelSuccess,
+  handleDeletePublishingChannel,
+} from "./handleDeletePublishingChannelById";
 
 @injectable()
 @Route("publishing_channel")
@@ -371,6 +377,23 @@ export class PublishingChannelController extends Controller {
   //////////////////////////////////////////////////
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  @Post("deletePublishingChannel")
+  public async deletePublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: DeletePublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | DeletePublishingChannelFailedReason>,
+      DeletePublishingChannelSuccess
+    >
+  > {
+    return await handleDeletePublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
 
   @Post("undoBanUserFromPublishingChannel")
   public async undoBanUserFromPublishingChannel(

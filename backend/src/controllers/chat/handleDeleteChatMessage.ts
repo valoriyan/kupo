@@ -33,6 +33,10 @@ export async function handleDeleteChatMessage({
     DeleteChatMessageSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { chatMessageId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthorization(
@@ -40,6 +44,10 @@ export async function handleDeleteChatMessage({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Delete From DB
+  //////////////////////////////////////////////////
 
   const deleteChatMessageResponse =
     await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.deleteChatMessage(
@@ -56,6 +64,10 @@ export async function handleDeleteChatMessage({
 
   const chatRoomId = deletedChatMessage.chatRoomId;
 
+  //////////////////////////////////////////////////
+  // Get List of UserIds In Chat Room
+  //////////////////////////////////////////////////
+
   const getUserIdsJoinedToChatRoomIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
       { controller, chatRoomId },
@@ -65,10 +77,18 @@ export async function handleDeleteChatMessage({
   }
   const { success: userIds } = getUserIdsJoinedToChatRoomIdResponse;
 
+  //////////////////////////////////////////////////
+  // Notify User Ids of Deleted Message
+  //////////////////////////////////////////////////
+
   await controller.webSocketService.notifyUserIdsOfDeletedChatMessage({
     userIds,
     deletedChatMessageId: deletedChatMessage.chatMessageId,
   });
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

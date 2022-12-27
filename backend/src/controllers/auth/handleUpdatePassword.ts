@@ -34,11 +34,19 @@ export async function handleUpdatePassword({
     UpdatePasswordSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: errorResponseWithSetHttpStatusCode } =
     await checkAuthorization(controller, request);
   if (errorResponseWithSetHttpStatusCode) return errorResponseWithSetHttpStatusCode;
 
   const encryptedPassword = encryptPassword({ password: requestBody.updatedPassword });
+
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
 
   const updateUserPasswordResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserPassword(
@@ -51,6 +59,10 @@ export async function handleUpdatePassword({
   if (updateUserPasswordResponse.type === EitherType.failure) {
     return updateUserPasswordResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }
