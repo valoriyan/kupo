@@ -1,13 +1,12 @@
 import Router from "next/router";
 import { useMutation } from "react-query";
-import { Api } from "#/api";
-import { fileToBase64 } from "#/utils/fileToBase64";
+import { Api, FileDescriptor } from "#/api";
 
 interface CreatePublishingChannelArgs {
   publishingChannelName: string;
   publishingChannelDescription: string;
-  profilePicture?: File;
-  backgroundImage?: File;
+  profilePicture?: FileDescriptor;
+  backgroundImage?: FileDescriptor;
   moderatorUserIds: string[];
   externalUrl1?: string;
   externalUrl2?: string;
@@ -41,22 +40,6 @@ export const useCreateCommunityPage = () => {
         publishingChannelRule5,
         moderatorUserIds,
       } = args;
-
-      const uploadableBackgroundImage = backgroundImage
-        ? {
-            blobSize: backgroundImage.size,
-            blobText: await fileToBase64(backgroundImage),
-            mimetype: backgroundImage.type,
-          }
-        : undefined;
-
-      const uploadableProfilePicture = profilePicture
-        ? {
-            blobSize: profilePicture.size,
-            blobText: await fileToBase64(profilePicture),
-            mimetype: profilePicture.type,
-          }
-        : undefined;
 
       const externalUrls: string[] = [];
       if (!!externalUrl1) {
@@ -93,8 +76,8 @@ export const useCreateCommunityPage = () => {
       }
 
       return await Api.createPublishingChannel({
-        backgroundImage: uploadableBackgroundImage,
-        profilePicture: uploadableProfilePicture,
+        backgroundImage,
+        profilePicture,
         publishingChannelName,
         publishingChannelDescription,
         externalUrls,

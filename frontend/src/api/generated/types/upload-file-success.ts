@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-import { FileDescriptor } from "./file-descriptor";
-
 /**
  *
  * @export
- * @interface UpdateUserProfilePictureRequestBody
+ * @interface UploadFileSuccess
  */
-export interface UpdateUserProfilePictureRequestBody {
+export interface UploadFileSuccess {
   /**
    *
-   * @type {FileDescriptor}
-   * @memberof UpdateUserProfilePictureRequestBody
+   * @type {string}
+   * @memberof UploadFileSuccess
    */
-  profilePicture: FileDescriptor;
+  blobFileKey: string;
 }

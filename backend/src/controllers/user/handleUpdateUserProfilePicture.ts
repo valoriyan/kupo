@@ -8,7 +8,7 @@ import { checkAuthorization } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
-import { ClientKeyToFiledMediaElement } from "../models";
+import { FileDescriptor } from "../models";
 
 export enum UpdateUserProfilePictureFailedReason {
   Unknown = "Unknown",
@@ -17,7 +17,7 @@ export enum UpdateUserProfilePictureFailedReason {
 export type UpdateUserProfilePictureSuccess = RenderableUser;
 
 export interface UpdateUserProfilePictureRequestBody {
-  profilePicture: ClientKeyToFiledMediaElement;
+  profilePicture: FileDescriptor;
 }
 
 export async function handleUpdateUserProfilePicture({

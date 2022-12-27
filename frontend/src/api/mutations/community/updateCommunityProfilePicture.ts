@@ -1,21 +1,14 @@
 import { useMutation, useQueryClient } from "react-query";
-import { Api, RenderablePublishingChannel, UploadableKupoFile } from "#/api";
+import { Api, FileDescriptor, RenderablePublishingChannel } from "#/api";
 import { CacheKeys } from "#/contexts/queryClient";
-import { fileToBase64 } from "#/utils/fileToBase64";
 
 export const useUpdateCommunityProfilePicture = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async ({ id, file }: { id: string; file: File }) => {
-      const uploadableProfilePicture: UploadableKupoFile = {
-        blobSize: file.size,
-        blobText: await fileToBase64(file),
-        mimetype: file.type,
-      };
-
+    async ({ id, file }: { id: string; file: FileDescriptor }) => {
       return await Api.updatePublishingChannelProfilePicture({
-        profilePicture: uploadableProfilePicture,
+        profilePicture: file,
         publishingChannelId: id,
       });
     },

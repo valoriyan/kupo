@@ -3,16 +3,18 @@ import { HiddenInput } from "#/components/HiddenInput";
 import { DuplicateIcon } from "#/components/Icons";
 import { styled } from "#/styling";
 import { AdditionalScreen } from "#/templates/AddContent";
-import { Media } from "#/templates/AddContent/FormContext";
 import { MediaPreview, PreviewImage } from "#/templates/AddContent/MediaPreview";
 import { EyeIcon } from "../Icons/generated/EyeIcon";
 import { Flex, Stack } from "../Layout";
 import { Heading } from "../Typography";
+import { MediaDescriptor } from "#/templates/AddContent/FormContext";
+import { useUploadFile } from "#/api/mutations/fileUpload/uploadFile";
 
 export interface MediaUploadProps {
-  mediaFiles: Media[];
-  addMedia: (media: Media) => void;
-  getMediaActions: (media: Media) => {
+  mediaFiles: MediaDescriptor[];
+  addMedia: (media: MediaDescriptor) => void;
+  updateMedia: (media: Partial<MediaDescriptor> & { src: string }) => void;
+  getMediaActions: (media: MediaDescriptor) => {
     moveUp: () => void;
     moveDown: () => void;
     delete: () => void;
@@ -24,17 +26,29 @@ export interface MediaUploadProps {
 export const MediaUpload = ({
   mediaFiles,
   addMedia,
+  updateMedia,
   getMediaActions,
   setAdditionalScreen,
   heading,
 }: MediaUploadProps) => {
+  const { mutateAsync: uploadFile } = useUploadFile();
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.currentTarget;
     if (!files?.length) return;
 
     for (const file of files) {
       const src = URL.createObjectURL(file);
-      addMedia({ file, src });
+      const mimeType = file.type;
+      const media = { mimeType, src, blobFileKey: "", isLoading: true };
+      addMedia(media);
+      uploadFile({ file, mimeType })
+        .then(({ blobFileKey }) => {
+          updateMedia({ src, blobFileKey, isLoading: false });
+        })
+        .catch(() => {
+          getMediaActions(media).delete();
+        });
     }
   };
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Promise as BluebirdPromise } from "bluebird";
 import express from "express";
-import { ClientKeyToFiledMediaElement, MediaElement } from "../../../controllers/models";
+import { FileDescriptor, MediaElement } from "../../../controllers/models";
 import { v4 as uuidv4 } from "uuid";
 import { DBShopItemElementType } from "../../../services/databaseService/tableServices/publishedItem/shopItemMediaElementsTableService";
 import {
@@ -43,8 +43,8 @@ export interface CreateShopItemRequestBody {
   collaboratorUserIds: string[];
   scheduledPublicationTimestamp?: number;
   expirationTimestamp?: number;
-  mediaFiles: ClientKeyToFiledMediaElement[];
-  purchasedMediaFiles: ClientKeyToFiledMediaElement[];
+  mediaFiles: FileDescriptor[];
+  purchasedMediaFiles: FileDescriptor[];
 }
 
 export async function handleCreateShopItem({

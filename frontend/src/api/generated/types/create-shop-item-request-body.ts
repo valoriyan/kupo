@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { UploadableKupoFile } from "./uploadable-kupo-file";
+import { FileDescriptor } from "./file-descriptor";
 
 /**
  *
@@ -70,14 +70,14 @@ export interface CreateShopItemRequestBody {
   expirationTimestamp?: number;
   /**
    *
-   * @type {Array<UploadableKupoFile>}
+   * @type {Array<FileDescriptor>}
    * @memberof CreateShopItemRequestBody
    */
-  mediaFiles: Array<UploadableKupoFile>;
+  mediaFiles: Array<FileDescriptor>;
   /**
    *
-   * @type {Array<UploadableKupoFile>}
+   * @type {Array<FileDescriptor>}
    * @memberof CreateShopItemRequestBody
    */
-  purchasedMediaFiles: Array<UploadableKupoFile>;
+  purchasedMediaFiles: Array<FileDescriptor>;
 }

@@ -12,18 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { FileDescriptor } from "./file-descriptor";
-
 /**
  *
  * @export
- * @interface UpdateUserProfilePictureRequestBody
+ * @enum {string}
  */
-export interface UpdateUserProfilePictureRequestBody {
-  /**
-   *
-   * @type {FileDescriptor}
-   * @memberof UpdateUserProfilePictureRequestBody
-   */
-  profilePicture: FileDescriptor;
+export enum UploadFileFailedReason {
+  UnknownCause = "Unknown Cause",
 }

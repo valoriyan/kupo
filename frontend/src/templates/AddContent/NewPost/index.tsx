@@ -21,6 +21,7 @@ export const NewPost = (props: NewPostProps) => {
   const {
     mediaFiles,
     addMedia,
+    updateMedia,
     getMediaActions,
     caption,
     setCaption,
@@ -31,7 +32,8 @@ export const NewPost = (props: NewPostProps) => {
   } = useFormState();
   const { mutateAsync: createPost, isLoading } = useCreatePost(props.publishingChannelId);
 
-  const canSubmit = !!caption || !!mediaFiles.length;
+  const canSubmit =
+    !!caption || (!!mediaFiles.length && mediaFiles.every((file) => !file.isLoading));
 
   return (
     <ScrollArea>
@@ -41,6 +43,7 @@ export const NewPost = (props: NewPostProps) => {
             <MediaUpload
               mediaFiles={mediaFiles}
               addMedia={addMedia}
+              updateMedia={updateMedia}
               getMediaActions={getMediaActions}
               setAdditionalScreen={props.setAdditionalScreen}
             />

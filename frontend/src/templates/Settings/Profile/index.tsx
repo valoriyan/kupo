@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import { RenderableUser } from "#/api";
+import { FileDescriptor, RenderableUser } from "#/api";
 import { useSetOwnHashtags } from "#/api/mutations/profile/setOwnHashtags";
 import { useUpdateOwnBackgroundImage } from "#/api/mutations/profile/updateOwnBackgroundImage";
 import { useUpdateOwnProfile } from "#/api/mutations/profile/updateOwnProfile";
@@ -52,8 +52,8 @@ export const Profile = ({ user }: ProfileProps) => {
     setIsBackgroundImageUrlTouched,
   ] = useFormField(user.backgroundImageTemporaryUrl);
 
-  const [profilePictureFile, setProfilePictureFile] = useState<File>();
-  const [backgroundImageFile, setBackgroundImageFile] = useState<File>();
+  const [profilePictureFile, setProfilePictureFile] = useState<FileDescriptor>();
+  const [backgroundImageFile, setBackgroundImageFile] = useState<FileDescriptor>();
 
   const isAnyTouched =
     isUsernameTouched ||

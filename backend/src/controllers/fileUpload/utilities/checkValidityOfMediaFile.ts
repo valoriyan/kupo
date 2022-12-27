@@ -1,5 +1,3 @@
-import getVideoDurationInSeconds from "get-video-duration";
-import { createReadStream } from "streamifier";
 import {
   ErrorReasonTypes,
   Failure,
@@ -9,11 +7,11 @@ import {
 import { Controller } from "tsoa";
 
 export enum InvalidMediaFileReason {
-  VideoLengthTooLong = "Video Length Is Too Long",
+  FileSizeTooLarge = "File Is Too Large",
   UnacceptedFileType = "File Type Not Accepted",
 }
 
-const FOUR_MINUTES_IN_SECONDS = 4 * 60;
+const MAX_VIDEO_SIZE_IN_MB = 20; // 20 MB maximum
 
 export async function checkValidityOfMediaFile({
   controller,
@@ -34,7 +32,7 @@ export async function checkValidityOfMediaFile({
   // Check Mime Type
   //////////////////////////////////////////////////
 
-  const permittedImageTypes = ["image/jpeg", "image/png"];
+  const permittedImageTypes = ["image/jpeg", "image/png", "image/gif"];
 
   const permittedVideoTypes = ["video/mp4"];
 
@@ -50,23 +48,30 @@ export async function checkValidityOfMediaFile({
     });
   }
 
-  //////////////////////////////////////////////////
-  // Check Video Length
-  //////////////////////////////////////////////////
-
-  if (permittedVideoTypes.includes(mimetype)) {
-    // TODO: ADD VIDEO VALIDATION
-    const videoStream = createReadStream(buffer);
-
-    const videoDurationInSeconds = await getVideoDurationInSeconds(videoStream);
-
-    if (videoDurationInSeconds > FOUR_MINUTES_IN_SECONDS) {
+  if (mimetype === "image/gif") {
+    // Enforce max size for gifs
+    const bufferSizeInMb = buffer.byteLength / 1024 / 1024;
+    if (bufferSizeInMb > MAX_VIDEO_SIZE_IN_MB) {
       return Failure({
         controller,
         httpStatusCode: 400,
-        reason: InvalidMediaFileReason.VideoLengthTooLong,
+        reason: InvalidMediaFileReason.FileSizeTooLarge,
         error: "Unhandled error at checkValidityOfMediaFiles",
-        additionalErrorInformation: `Video file exceeds maximum length of ${FOUR_MINUTES_IN_SECONDS} seconds.`,
+        additionalErrorInformation: `File exceeded maximum size of ${MAX_VIDEO_SIZE_IN_MB} MB.`,
+      });
+    }
+  } else if (permittedImageTypes.includes(mimetype)) {
+    // TODO: ADD IMAGE VALIDATION
+  } else if (permittedVideoTypes.includes(mimetype)) {
+    // Limit video size until we implement proper video compression and streaming
+    const bufferSizeInMb = buffer.byteLength / 1024 / 1024;
+    if (bufferSizeInMb > MAX_VIDEO_SIZE_IN_MB) {
+      return Failure({
+        controller,
+        httpStatusCode: 400,
+        reason: InvalidMediaFileReason.FileSizeTooLarge,
+        error: "Unhandled error at checkValidityOfMediaFiles",
+        additionalErrorInformation: `File exceeded maximum size of ${MAX_VIDEO_SIZE_IN_MB} MB.`,
       });
     }
   }

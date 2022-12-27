@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { UploadableKupoFile } from "./uploadable-kupo-file";
+import { FileDescriptor } from "./file-descriptor";
 
 /**
  *
@@ -22,8 +22,8 @@ import { UploadableKupoFile } from "./uploadable-kupo-file";
 export interface UpdateUserBackgroundImageRequestBody {
   /**
    *
-   * @type {UploadableKupoFile}
+   * @type {FileDescriptor}
    * @memberof UpdateUserBackgroundImageRequestBody
    */
-  backgroundImage: UploadableKupoFile;
+  backgroundImage: FileDescriptor;
 }

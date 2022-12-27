@@ -235,6 +235,8 @@ import { EitherErrorReasonTypesStringOrUpdateUserProfileFailedReasonUpdateUserPr
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrUploadFileFailedReasonUploadFileSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrUserLikesPublishedItemFailedReasonUserLikesPublishedItemSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUserSavesPublishedItemFailedReasonUserSavesPublishedItemSuccess } from "../types";
@@ -293,7 +295,7 @@ import { GetUsersByIdsRequestBody } from "../types";
 // @ts-ignore
 import { GetUsersByUsernamesRequestBody } from "../types";
 // @ts-ignore
-import { InlineObject } from "../types";
+import { InlineObject1 } from "../types";
 // @ts-ignore
 import { InlineResponse200 } from "../types";
 // @ts-ignore
@@ -3603,16 +3605,16 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {InlineObject} inlineObject
+     * @param {InlineObject1} inlineObject1
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     sendDataTypesToFrontend1: async (
-      inlineObject: InlineObject,
+      inlineObject1: InlineObject1,
       options: any = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'inlineObject' is not null or undefined
-      assertParamExists("sendDataTypesToFrontend1", "inlineObject", inlineObject);
+      // verify required parameter 'inlineObject1' is not null or undefined
+      assertParamExists("sendDataTypesToFrontend1", "inlineObject1", inlineObject1);
       const localVarPath = `/utilities/sendDataTypesToFrontend1`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3636,7 +3638,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        inlineObject,
+        inlineObject1,
         localVarRequestOptions,
         configuration,
       );
@@ -4510,6 +4512,61 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarRequestOptions,
         configuration,
       );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {any} mediaFile
+     * @param {string} mimeType
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    uploadFile: async (
+      mediaFile: any,
+      mimeType: string,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'mediaFile' is not null or undefined
+      assertParamExists("uploadFile", "mediaFile", mediaFile);
+      // verify required parameter 'mimeType' is not null or undefined
+      assertParamExists("uploadFile", "mimeType", mimeType);
+      const localVarPath = `/file_upload/uploadFile`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) ||
+        FormData)();
+
+      if (mediaFile !== undefined) {
+        localVarFormParams.append("mediaFile", mediaFile as any);
+      }
+
+      if (mimeType !== undefined) {
+        localVarFormParams.append("mimeType", mimeType as any);
+      }
+
+      localVarHeaderParameter["Content-Type"] = "multipart/form-data";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = localVarFormParams;
 
       return {
         url: toPathString(localVarUrlObj),
@@ -6443,18 +6500,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {InlineObject} inlineObject
+     * @param {InlineObject1} inlineObject1
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async sendDataTypesToFrontend1(
-      inlineObject: InlineObject,
+      inlineObject1: InlineObject1,
       options?: any,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<InlineResponse200>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.sendDataTypesToFrontend1(
-        inlineObject,
+        inlineObject1,
         options,
       );
       return createRequestFunction(
@@ -6927,6 +6984,35 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserProfilePicture(
         updateUserProfilePictureRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {any} mediaFile
+     * @param {string} mimeType
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async uploadFile(
+      mediaFile: any,
+      mimeType: string,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrUploadFileFailedReasonUploadFileSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.uploadFile(
+        mediaFile,
+        mimeType,
         options,
       );
       return createRequestFunction(
@@ -8005,16 +8091,16 @@ export const DefaultApiFactory = function (
     },
     /**
      *
-     * @param {InlineObject} inlineObject
+     * @param {InlineObject1} inlineObject1
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     sendDataTypesToFrontend1(
-      inlineObject: InlineObject,
+      inlineObject1: InlineObject1,
       options?: any,
     ): AxiosPromise<InlineResponse200> {
       return localVarFp
-        .sendDataTypesToFrontend1(inlineObject, options)
+        .sendDataTypesToFrontend1(inlineObject1, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -8279,6 +8365,22 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrUpdateUserProfilePictureFailedReasonUpdateUserProfilePictureSuccess> {
       return localVarFp
         .updateUserProfilePicture(updateUserProfilePictureRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {any} mediaFile
+     * @param {string} mimeType
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    uploadFile(
+      mediaFile: any,
+      mimeType: string,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrUploadFileFailedReasonUploadFileSuccess> {
+      return localVarFp
+        .uploadFile(mediaFile, mimeType, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -9412,14 +9514,14 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
-   * @param {InlineObject} inlineObject
+   * @param {InlineObject1} inlineObject1
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public sendDataTypesToFrontend1(inlineObject: InlineObject, options?: any) {
+  public sendDataTypesToFrontend1(inlineObject1: InlineObject1, options?: any) {
     return DefaultApiFp(this.configuration)
-      .sendDataTypesToFrontend1(inlineObject, options)
+      .sendDataTypesToFrontend1(inlineObject1, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -9708,6 +9810,20 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .updateUserProfilePicture(updateUserProfilePictureRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {any} mediaFile
+   * @param {string} mimeType
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public uploadFile(mediaFile: any, mimeType: string, options?: any) {
+    return DefaultApiFp(this.configuration)
+      .uploadFile(mediaFile, mimeType, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

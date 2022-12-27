@@ -2,16 +2,17 @@ import { useState } from "react";
 import { useCreateCommunityPage } from "#/api/mutations/community/createCommunityPage";
 import { useGetUsersByUsernames } from "#/api/queries/users/useGetUsersByUsernames";
 import { NewCommunityForm } from "./NewCommunityForm";
+import { FileDescriptor } from "#/api";
 
 export const NewCommunityPage = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   const [pfpUrl, setPfpUrl] = useState<string>();
-  const [pfpFile, setPfpFile] = useState<File>();
+  const [pfpFile, setPfpFile] = useState<FileDescriptor>();
 
   const [backgroundImgUrl, setBackgroundImgUrl] = useState<string>();
-  const [backgroundImgFile, setBackgroundImgFile] = useState<File>();
+  const [backgroundImgFile, setBackgroundImgFile] = useState<FileDescriptor>();
 
   const [rulesList, setRulesList] = useState<string[]>([]);
   const [linksList, setLinksList] = useState<string[]>([]);

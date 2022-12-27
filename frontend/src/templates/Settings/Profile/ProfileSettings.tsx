@@ -1,21 +1,24 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useId } from "@radix-ui/react-id";
-import { Grid, Stack } from "#/components/Layout";
-import { Body, MainTitle } from "#/components/Typography";
-import { Input } from "#/components/Input";
-import { TextArea } from "#/components/TextArea";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { FileDescriptor } from "#/api";
+import { useUploadFile } from "#/api/mutations/fileUpload/uploadFile";
 import { Avatar } from "#/components/Avatar";
-import { styled } from "#/styling";
-import { PenIcon } from "#/components/Icons";
 import { HiddenInput } from "#/components/HiddenInput";
+import { PenIcon } from "#/components/Icons";
+import { Input } from "#/components/Input";
+import { Box, Grid, Stack } from "#/components/Layout";
+import { Spinner } from "#/components/Spinner";
+import { TextArea } from "#/components/TextArea";
+import { Body, MainTitle } from "#/components/Typography";
+import { css, styled } from "#/styling";
 
 export interface ProfileSettingsProps {
   profilePictureUrl: string | undefined;
   setProfilePictureUrl: (newValue: string | undefined) => void;
-  setProfilePictureFile: Dispatch<SetStateAction<File | undefined>>;
+  setProfilePictureFile: Dispatch<SetStateAction<FileDescriptor | undefined>>;
   backgroundImageUrl: string | undefined;
   setBackgroundImageUrl: (newValue: string | undefined) => void;
-  setBackgroundImageFile: Dispatch<SetStateAction<File | undefined>>;
+  setBackgroundImageFile: Dispatch<SetStateAction<FileDescriptor | undefined>>;
   username: string;
   setUsername: (newValue: string) => void;
   bio: string | undefined;
@@ -29,18 +32,39 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
   const bioId = useId();
   const websiteId = useId();
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>, type: "pfp" | "bg") => {
+  const { mutateAsync: uploadFile } = useUploadFile();
+  const [isUploadingPfp, setIsUploadingPfp] = useState(false);
+  const [isUploadingBackgroundImg, setIsUploadingBackgroundImg] = useState(false);
+
+  const onChange = async (e: ChangeEvent<HTMLInputElement>, type: "pfp" | "bg") => {
     const { files } = e.currentTarget;
     if (!files?.length) return;
 
     for (const file of files) {
       const src = URL.createObjectURL(file);
+      const mimeType = file.type;
       if (type === "pfp") {
         props.setProfilePictureUrl(src);
-        props.setProfilePictureFile(file);
+        setIsUploadingPfp(true);
+        try {
+          const { blobFileKey } = await uploadFile({ file, mimeType });
+          props.setProfilePictureFile({ blobFileKey, mimeType });
+          setIsUploadingPfp(false);
+        } catch {
+          props.setProfilePictureUrl("");
+          setIsUploadingPfp(false);
+        }
       } else if (type === "bg") {
         props.setBackgroundImageUrl(src);
-        props.setBackgroundImageFile(file);
+        setIsUploadingBackgroundImg(true);
+        try {
+          const { blobFileKey } = await uploadFile({ file, mimeType });
+          props.setBackgroundImageFile({ blobFileKey, mimeType });
+          setIsUploadingBackgroundImg(false);
+        } catch {
+          props.setBackgroundImageUrl("");
+          setIsUploadingBackgroundImg(false);
+        }
       }
     }
   };
@@ -66,24 +90,29 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
         <Stack css={{ alignItems: "center", gap: "$4" }}>
           <Body>Profile Picture</Body>
           <EditMedia>
-            <Darken>
+            <Box css={{ filter: `brightness(${isUploadingPfp ? 0.4 : 0.8})` }}>
               <Avatar
                 src={props.profilePictureUrl}
                 alt="Current Profile Picture"
                 size="$11"
               />
-            </Darken>
-            <EditIcon />
+            </Box>
+            {isUploadingPfp ? <LoadingSpinner size="md" /> : <EditIcon />}
             {input("pfp")}
           </EditMedia>
         </Stack>
         <Stack css={{ alignItems: "center", gap: "$3" }}>
           <Body css={{ alignSelf: "start" }}>Background Image</Body>
           <EditMedia>
-            <Darken css={{ size: "100%" }}>
+            <Box
+              css={{
+                size: "100%",
+                filter: `brightness(${isUploadingBackgroundImg ? 0.4 : 0.8})`,
+              }}
+            >
               <BackgroundImage src={props.backgroundImageUrl} />
-            </Darken>
-            <EditIcon />
+            </Box>
+            {isUploadingBackgroundImg ? <LoadingSpinner size="md" /> : <EditIcon />}
             {input("bg")}
           </EditMedia>
         </Stack>
@@ -150,13 +179,13 @@ const EditMedia = styled("label", {
   cursor: "pointer",
 });
 
-const Darken = styled("div", {
-  filter: "brightness(0.9)",
-});
-
-const EditIcon = styled(PenIcon, {
+const centered = css({
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
 });
+
+const EditIcon = styled(PenIcon, centered);
+
+const LoadingSpinner = styled(Spinner, centered);

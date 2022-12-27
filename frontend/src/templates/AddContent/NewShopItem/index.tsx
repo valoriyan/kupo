@@ -28,9 +28,11 @@ export const NewShopItem = (props: NewShopItemProps) => {
   const {
     mediaFiles,
     addMedia,
+    updateMedia,
     getMediaActions,
     purchasedMediaFiles,
     addPurchasedMedia,
+    updatePurchasedMedia,
     getPurchasedMediaActions,
     title,
     setTitle,
@@ -74,6 +76,7 @@ export const NewShopItem = (props: NewShopItemProps) => {
             <MediaUpload
               mediaFiles={mediaFiles}
               addMedia={addMedia}
+              updateMedia={updateMedia}
               getMediaActions={getMediaActions}
               setAdditionalScreen={props.setAdditionalScreen}
               heading={{ label: "Preview", Icon: EyeIcon }}
@@ -83,6 +86,7 @@ export const NewShopItem = (props: NewShopItemProps) => {
             <MediaUpload
               mediaFiles={purchasedMediaFiles}
               addMedia={addPurchasedMedia}
+              updateMedia={updatePurchasedMedia}
               getMediaActions={getPurchasedMediaActions}
               setAdditionalScreen={props.setAdditionalScreen}
               heading={{ label: "Product", Icon: TagIcon }}

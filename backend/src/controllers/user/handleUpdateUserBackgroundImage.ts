@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
 } from "../../utilities/monads";
 import { checkAuthorization } from "../auth/utilities";
-import { ClientKeyToFiledMediaElement, GenericResponseFailedReason } from "../models";
+import { FileDescriptor, GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
@@ -18,7 +18,7 @@ export enum UpdateUserBackgroundImageFailedReason {
 export type UpdateUserBackgroundImageSuccess = RenderableUser;
 
 export interface UpdateUserBackgroundImageRequestBody {
-  backgroundImage: ClientKeyToFiledMediaElement;
+  backgroundImage: FileDescriptor;
 }
 
 export async function handleUpdateUserBackgroundImage({

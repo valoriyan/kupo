@@ -8,6 +8,7 @@ import { Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { Tooltip } from "#/components/Tooltip";
 import { goToPostPage } from "#/templates/SinglePost";
 
 export interface PendingSubmissionsProps {
@@ -19,6 +20,7 @@ export interface PendingSubmissionsProps {
 export const PendingSubmissions = ({
   publishingChannelId,
   publishingChannelName,
+  publishingChannelRules,
 }: PendingSubmissionsProps) => {
   const { data, isLoading, error, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useGetPendingSubmissions(publishingChannelId);
@@ -60,23 +62,35 @@ export const PendingSubmissions = ({
             borderLess
           />
           <Flex css={{ gap: "$4", px: "$4", pb: "$5", "> *": { flex: 1 } }}>
-            <Button
-              size="lg"
-              variant="danger"
-              outlined
-              disabled={isResolvingSubmission}
-              onClick={() =>
-                resolvePendingSubmission({
-                  publishingChannelSubmissionId: submission.submissionId,
-                  decision: PublishingChannelSubmissionDecision.Reject,
-                  reasonString: "",
-                })
+            <Tooltip
+              disabled={!!publishingChannelRules.length}
+              content={
+                <>
+                  You cannot reject posts until you
+                  <br />
+                  set up rules for your community.
+                </>
               }
             >
-              <TextOrSpinner size="lg" isLoading={isResolvingSubmission}>
-                Reject
-              </TextOrSpinner>
-            </Button>
+              <Button
+                size="lg"
+                variant="danger"
+                outlined
+                disabled={isResolvingSubmission || !publishingChannelRules.length}
+                onClick={() =>
+                  resolvePendingSubmission({
+                    publishingChannelSubmissionId: submission.submissionId,
+                    decision: PublishingChannelSubmissionDecision.Reject,
+                    reasonString: "",
+                  })
+                }
+                css={{ width: "100%" }}
+              >
+                <TextOrSpinner size="lg" isLoading={isResolvingSubmission}>
+                  Reject
+                </TextOrSpinner>
+              </Button>
+            </Tooltip>
             <Button
               size="lg"
               variant="secondary"

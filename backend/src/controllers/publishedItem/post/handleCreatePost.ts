@@ -16,11 +16,7 @@ import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
 import { checkAuthorization } from "../../auth/utilities";
 import { RenderablePost } from "./models";
-import {
-  ClientKeyToFiledMediaElement,
-  GenericResponseFailedReason,
-  MediaElement,
-} from "../../models";
+import { FileDescriptor, GenericResponseFailedReason, MediaElement } from "../../models";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { Controller } from "tsoa";
 import { collectTagsFromText } from "../../utilities/collectTagsFromText";
@@ -40,7 +36,7 @@ export interface CreatePostSuccess {
 }
 
 export interface CreatePostRequestBody {
-  contentElementFiles: ClientKeyToFiledMediaElement[];
+  contentElementFiles: FileDescriptor[];
   caption: string;
   hashtags: string[];
   scheduledPublicationTimestamp?: number;

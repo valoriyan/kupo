@@ -19,7 +19,6 @@ export async function uploadMediaFile({
   mimeType: string;
   blobStorageService: BlobStorageService;
 }): Promise<
-  // eslint-disable-next-line @typescript-eslint/ban-types
   InternalServiceResponse<
     ErrorReasonTypes<string>,
     { blobFileKey: string; fileTemporaryUrl: string }
@@ -37,13 +36,13 @@ export async function uploadMediaFile({
 
   // Image compression
   if (ogBufferSizeInKB > 256) {
-    if (mimeType == "image/png") {
+    if (mimeType === "image/png") {
       buffer = await sharp(file.buffer)
         .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })
         .png({ compressionLevel: 8 })
         .toBuffer();
-    } else if (mimeType == "image/jpeg") {
+    } else if (mimeType === "image/jpeg") {
       buffer = await sharp(file.buffer)
         .rotate()
         .resize({ fit: sharp.fit.contain, width: 1000, withoutEnlargement: true })

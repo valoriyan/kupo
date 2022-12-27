@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { UploadableKupoFile } from "./uploadable-kupo-file";
+import { FileDescriptor } from "./file-descriptor";
 
 /**
  *
@@ -22,10 +22,10 @@ import { UploadableKupoFile } from "./uploadable-kupo-file";
 export interface CreatePostRequestBody {
   /**
    *
-   * @type {Array<UploadableKupoFile>}
+   * @type {Array<FileDescriptor>}
    * @memberof CreatePostRequestBody
    */
-  mediaFiles: Array<UploadableKupoFile>;
+  contentElementFiles: Array<FileDescriptor>;
   /**
    *
    * @type {string}

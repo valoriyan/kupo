@@ -7,11 +7,12 @@ import {
   TrashIcon,
 } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
+import { Spinner } from "#/components/Spinner";
 import { css, styled } from "#/styling";
-import { Media } from "../FormContext";
+import { MediaDescriptor } from "../FormContext";
 
 export interface PreviewImageProps {
-  media: Media;
+  media: MediaDescriptor;
   id?: string;
   onClick?: () => void;
   overlayText?: string;
@@ -32,15 +33,20 @@ export const PreviewImage = (props: PreviewImageProps) => {
 
   return (
     <Wrapper id={props.id} as={props.onClick ? "button" : "div"} onClick={props.onClick}>
-      {props.media.file.type.includes("image") ? (
+      {props.media.mimeType.includes("image") ? (
         <Image src={props.media.src} alt="Preview Image" />
       ) : (
         <Video controls={!!props.id}>
-          <source src={props.media.src} type={props.media.file.type} />
+          <source src={props.media.src} type={props.media.mimeType} />
         </Video>
       )}
-      {(props.overlayText || (props.media.file.type.includes("video") && !props.id)) && (
+      {(props.overlayText || (props.media.mimeType.includes("video") && !props.id)) && (
         <Overlay>{props.overlayText || <PlayButtonOIcon />}</Overlay>
+      )}
+      {props.media.isLoading && (
+        <LoadingOverlay>
+          <Spinner size="md" />
+        </LoadingOverlay>
       )}
       {props.actions && (
         <ActionsBanner>
@@ -79,13 +85,16 @@ const Image = styled("img", mediaStyles);
 
 const Video = styled("video", mediaStyles);
 
-const Overlay = styled("div", {
+const absoluteFlex = css({
   position: "absolute",
   top: 0,
   bottom: 0,
   left: 0,
   right: 0,
   display: "flex",
+});
+
+const Overlay = styled("div", absoluteFlex, {
   justifyContent: "center",
   alignItems: "center",
   fontWeight: "$bold",
@@ -95,16 +104,18 @@ const Overlay = styled("div", {
   backgroundColor: "$mediaOverlay",
 });
 
-const ActionsBanner = styled("div", {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  display: "flex",
+const ActionsBanner = styled("div", absoluteFlex, {
+  bottom: "unset",
   justifyContent: "space-between",
   p: "$2",
   gap: "$3",
   bg: "$heavyOverlay",
   color: "$accentText",
   svg: { flexShrink: 0 },
+});
+
+const LoadingOverlay = styled("div", absoluteFlex, {
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "$overlay",
 });

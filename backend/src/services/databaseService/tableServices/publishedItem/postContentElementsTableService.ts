@@ -7,7 +7,7 @@ import {
   Success,
 } from "../../../../utilities/monads";
 import {
-  FiledMediaElement,
+  FileDescriptor,
   GenericResponseFailedReason,
 } from "../../../../controllers/models";
 import { TableService } from "../models";
@@ -118,7 +118,7 @@ export class PostContentElementsTableService extends TableService {
   }: {
     controller: Controller;
     publishedItemId: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, FiledMediaElement[]>> {
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, FileDescriptor[]>> {
     try {
       const queryString = {
         text: `
