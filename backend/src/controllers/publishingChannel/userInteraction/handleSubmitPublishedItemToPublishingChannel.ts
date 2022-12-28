@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 import { v4 as uuidv4 } from "uuid";
 import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
@@ -43,7 +43,7 @@ export async function handleSubmitPublishedItemToPublishingChannel({
 
   const { publishingChannelId, publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

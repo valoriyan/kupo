@@ -10,7 +10,7 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../../utilities/monads/unwrapListOfResponses";
-import { checkAuthorization } from "../../../auth/utilities";
+import { checkAuthentication } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { CreditCardSummary } from "./models";
 
@@ -34,7 +34,7 @@ export async function handleGetCreditCardsStoredByUserId({
     GetCreditCardsStoredByUserIdSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

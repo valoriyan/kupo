@@ -6,7 +6,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { DiscoverController } from "../discoverController";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePublishingChannel } from "../../../controllers/publishingChannel/models";
 import { assembleRenderablePublishingChannelsFromParts } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts";
 
@@ -43,7 +43,7 @@ export async function handleSearchForPublishingChannels({
   // Inputs & Authentication
   //////////////////////////////////////////////////
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

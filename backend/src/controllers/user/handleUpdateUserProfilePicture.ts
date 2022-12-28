@@ -4,10 +4,10 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
+import { assembleRenderableUserFromCachedComponents } from "./utilities/assembleRenderableUserFromCachedComponents";
 import { FileDescriptor } from "../models";
 
 export enum UpdateUserProfilePictureFailedReason {
@@ -39,7 +39,7 @@ export async function handleUpdateUserProfilePicture({
   //////////////////////////////////////////////////
   const { profilePicture } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -76,15 +76,14 @@ export async function handleUpdateUserProfilePicture({
   // RECOMPILE USER
   //////////////////////////////////////////////////
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  const constructRenderableUserFromPartsResponse =
+    await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUser: updatedUnrenderableUser,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-    },
-  );
+    });
 
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;

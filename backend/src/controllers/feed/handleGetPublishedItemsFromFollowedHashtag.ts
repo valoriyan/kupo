@@ -5,10 +5,10 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
 import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/utilities/pagination";
-import { constructPublishedItemsFromParts } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
@@ -43,7 +43,7 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     GetPublishedItemsFromFollowedHashtagSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -85,15 +85,14 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     pageSize: pageSize,
   });
 
-  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
-    {
+  const constructPublishedItemsFromPartsResponse =
+    await assemblePublishedItemsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: pageOfUncompiledBasePublishedItem,
       requestorUserId: clientUserId,
-    },
-  );
+    });
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemsFromPartsResponse;
   }

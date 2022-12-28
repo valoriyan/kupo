@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
 
@@ -37,15 +37,23 @@ export async function handleBanUserFromPublishingChannel({
     BanUserFromPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishingChannelId, bannedUserId } = requestBody;
 
   const now = Date.now();
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Check Authorization
+  //////////////////////////////////////////////////
 
   const doesUserIdHaveRightsToModeratePublishingChannelResponse =
     await doesUserIdHaveRightsToModeratePublishingChannel({
@@ -74,6 +82,10 @@ export async function handleBanUserFromPublishingChannel({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Write to DB
+  //////////////////////////////////////////////////
+
   const executeBanOfUserIdForPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelUserBansTableService.executeBanOfUserIdForPublishingChannelId(
       {
@@ -88,6 +100,10 @@ export async function handleBanUserFromPublishingChannel({
   if (executeBanOfUserIdForPublishingChannelIdResponse.type === EitherType.failure) {
     return executeBanOfUserIdForPublishingChannelIdResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

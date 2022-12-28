@@ -2,7 +2,7 @@
 import express from "express";
 import { PublishingChannelController } from "../publishingChannelController";
 import { EitherType, Failure, SecuredHTTPResponse } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { doesUserIdHaveRightsToModeratePublishingChannel } from "../utilities/permissions";
 
 export interface UnfollowPublishingChannelRequestBody {
@@ -36,7 +36,7 @@ export async function handleUnfollowPublishingChannel({
   //////////////////////////////////////////////////
   const { publishingChannelIdBeingUnfollowed } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

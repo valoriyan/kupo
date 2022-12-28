@@ -8,7 +8,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { GenericResponseFailedReason } from "../../models";
 import { PublishingChannelController } from "../publishingChannelController";
 import { doesUserIdHaveRightsToApprovePublishingChannelSubmissions } from "../utilities/permissions";
@@ -51,7 +51,7 @@ export async function handleResolvePublishingChannelSubmission({
   //////////////////////////////////////////////////
   const { decision, publishingChannelSubmissionId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -60,7 +60,7 @@ export async function handleResolvePublishingChannelSubmission({
   const now = Date.now();
 
   //////////////////////////////////////////////////
-  // Check if client has rights to resolve submission
+  // Check Authorization
   //////////////////////////////////////////////////
 
   const doesUserIdHaveRightsToApprovePublishingChannelSubmissionsResponse =

@@ -1,73 +1,15 @@
-To Do
+## Naming Convention
 
-- Edit Posts controller to accept ordered list of Media (https://softwareengineering.stackexchange.com/questions/304593/how-to-store-ordered-information-in-a-relational-database)
-
-- add image validation
-
-docker build -t valoriyan/kupo-backend-alpha .
-docker run --rm -it valoriyan/kupo-backend-alpha bash
+- assembler = a method that collects the various pieces of a renderable item
+  - assemble--{plural}--FromCachedComponents
+  - assemble--{singular}--FromCachedComponents
+  - assemble--{plural}--ByIds
+  - assemble--{singular}--ById
 
 ## Remaining files to add comments to in Controller
 
-./auth/handleLogout.ts
-./auth/handleRegisterUser
-./auth/handleRegisterUser/validations.ts
-./auth/handleRegisterUser/index.ts
-./notification
-./notification/renderableNotificationAssemblers
-./notification/renderableNotificationAssemblers/assembleRenderableAcceptedPublishingChannelSubmissionNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableRejectedPublishingChannelSubmissionNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableNewLikeOnPublishedItemNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableAcceptedUserFollowRequestNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableNewTagInPublishedItemCommentNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableShopItemSoldNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableNewUserFollowRequestNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableNewCommentOnPublishedItemNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableNewTagInPublishedItemCaptionNotification.ts
-./notification/renderableNotificationAssemblers/assembleRenderableNewFollowerNotification.ts
-./notification/handleGetCountOfUnreadNotifications.ts
-./notification/models
-./notification/models/renderableUserNotifications.ts
-./notification/models/unrenderableCanceledUserNotifications.ts
-./notification/models/index.ts
-./notification/handleGetPageOfNotifications.ts
-./notification/notificationController.ts
-./notification/notificationSenders
-./notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCaptionNotification.ts
-./notification/notificationSenders/assembleRecordAndSendNewCommentOnPublishedItemNotification.ts
-./notification/notificationSenders/assembleRecordAndSendShopItemSoldNotification.ts
-./notification/notificationSenders/assembleRecordAndSendRejectedPublishingChannelSubmissionNotification.ts
-./notification/notificationSenders/assembleRecordAndSendAcceptedPublishingChannelSubmissionNotification.ts
-./notification/notificationSenders/assembleRecordAndSendNewTagInPublishedItemCommentNotification.ts
-./publishedItem
-./publishedItem/post
-./publishedItem/post/handleCreatePost.ts
-./publishedItem/post/handleUpdatePost.ts
-./publishedItem/post/handleDeletePost.ts
-./publishedItem/post/handleGetPublishedItemsScheduledByUser.ts
-./publishedItem/post/utilities
-./publishedItem/post/utilities/index.ts
-./publishedItem/post/utilities/assemblePostMediaElements.ts
-./publishedItem/post/utilities/assembleRootRenderablePost.ts
-./publishedItem/post/handleSharePost.ts
-./publishedItem/post/models.ts
-./publishedItem/post/postController.ts
-./publishedItem/publishedItemComment
-./publishedItem/publishedItemComment/utilities.ts
-./publishedItem/publishedItemComment/handleDeletePublishedItemComment.ts
-./publishedItem/publishedItemComment/models.ts
-./publishedItem/publishedItemComment/handleReadPageOfCommentsByPublishedItemId.ts
-./publishedItem/publishedItemComment/publishedItemCommentController.ts
-./publishedItem/publishedItemComment/handleCreatePublishedItemComment.ts
-./publishedItem/handleGetSavedPublishedItems.ts
-./publishedItem/publishedItemInteraction
-./publishedItem/publishedItemInteraction/handleUserUnsavesPublishedItem.ts
-./publishedItem/publishedItemInteraction/handleUserSavesPublishedItem.ts
-./publishedItem/publishedItemInteraction/handleUserLikesPublishedItem.ts
-./publishedItem/publishedItemInteraction/publishedItemInteractionController.ts
-./publishedItem/publishedItemInteraction/handleRemoveUserLikeFromPublishedItem.ts
-./publishedItem/utilities
 ./publishedItem/utilities/constructPublishedItemsFromParts.ts
+./publishedItem/publishedItemInteraction/handleRemoveUserLikeFromPublishedItem.ts
 ./publishedItem/utilities/assembleBaseRenderablePublishedItem.ts
 ./publishedItem/utilities/pagination.ts
 ./publishedItem/utilities/viewingRights
@@ -94,16 +36,9 @@ docker run --rm -it valoriyan/kupo-backend-alpha bash
 ./publishedItem/shopItem/models.ts
 ./publishedItem/handleGetPublishedItemById.ts
 ./publishedItem/handleGetPublishedItems.ts
-./publishedItem/models.ts
-./user
 ./user/handleGetPageOfUsersFollowingUserId.ts
 ./user/handleGetUsersByUsernames.ts
 ./user/handleGetPageOfUsersFollowedByUserId.ts
-./user/userInteraction
-./user/userInteraction/userInteractionController.ts
-./user/userInteraction/handleGetFollowerRequests.ts
-./user/userInteraction/handleUnfollowUserProfile
-./user/userInteraction/handleUnfollowUserProfile/deleteAndEmitCanceledNewUserFollowRequestNotification.ts
 ./user/userInteraction/handleUnfollowUserProfile/deleteAndEmitCanceledNewFollowerNotification.ts
 ./user/userInteraction/handleUnfollowUserProfile/index.ts
 ./user/userInteraction/handleResolveAllFollowRequests.ts
@@ -161,19 +96,4 @@ docker run --rm -it valoriyan/kupo-backend-alpha bash
 ./publishingChannel/utilities/assembleRenderablePublishingChannel/assembleRenderablePublishingChannelFromParts.ts
 ./publishingChannel/utilities/assembleRenderablePublishingChannel/index.ts
 ./publishingChannel/utilities/permissions.ts
-./publishingChannel/creation
 ./publishingChannel/creation/validations.ts
-./publishingChannel/creation/handleGetPublishingChannelNameValidity.ts
-./publishingChannel/creation/handleCreatePublishingChannel.ts
-./publishingChannel/handleUpdatePublishingChannel.ts
-./publishingChannel/handleUpdatePublishingChannelBackgroundImage.ts
-./publishingChannel/handleUpdatePublishingChannelProfilePicture.ts
-./publishingChannel/models.ts
-./publishingChannel/handleGetPublishedItemsInPublishingChannel.ts
-./publishingChannel/moderation
-./publishingChannel/moderation/handleUndoBanUserFromPublishingChannel.ts
-./publishingChannel/moderation/handleRemoveModeratorFromPublishingChannel.ts
-./publishingChannel/moderation/handleGetPublishingChannelSubmissions.ts
-./publishingChannel/moderation/handleAddModeratorToPublishingChannel.ts
-./publishingChannel/moderation/handleResolvePublishingChannelSubmission.ts
-./publishingChannel/moderation/handleBanUserFromPublishingChannel.ts

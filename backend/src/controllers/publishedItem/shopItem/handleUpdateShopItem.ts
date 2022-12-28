@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -44,7 +44,7 @@ export async function handleUpdateShopItem({
   //////////////////////////////////////////////////
   // Inputs & Authentication
   //////////////////////////////////////////////////
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

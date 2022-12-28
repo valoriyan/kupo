@@ -7,7 +7,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 
 export interface AddModeratorToPublishingChannelRequestBody {
@@ -44,7 +44,7 @@ export async function handleAddModeratorToPublishingChannel({
 
   const now = Date.now();
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -111,6 +111,10 @@ export async function handleAddModeratorToPublishingChannel({
   if (registerPublishingChannelModeratorResponse.type === EitherType.failure) {
     return registerPublishingChannelModeratorResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

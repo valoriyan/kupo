@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { PublishingChannelController } from "./publishingChannelController";
 
 export interface UpdatePublishingChannelRequestBody {
@@ -45,7 +45,7 @@ export async function handleUpdatePublishingChannel({
   // Inputs & Authentication
   //////////////////////////////////////////////////
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -125,7 +125,7 @@ export async function handleUpdatePublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // Delete previous moderators and upload new moderators
+  // Delete Previous Moderators and Write New Moderators to DB
   //////////////////////////////////////////////////
   const removeAllPublishingChannelModeratorsFromPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.removeAllPublishingChannelModeratorsFromPublishingChannelId(
@@ -161,6 +161,10 @@ export async function handleUpdatePublishingChannel({
       return registerPublishingChannelModeratorsResponse;
     }
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

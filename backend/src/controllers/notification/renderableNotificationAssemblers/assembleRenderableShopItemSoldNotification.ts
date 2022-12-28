@@ -13,7 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { constructRenderableShopItemFromPartsById } from "../../../controllers/publishedItem/shopItem/utilities";
-import { constructRenderableUserFromPartsByUserId } from "../../../controllers/user/utilities";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableShopItemSoldNotification({
   controller,
@@ -30,13 +30,16 @@ export async function assembleRenderableShopItemSoldNotification({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItemSoldNotification>
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const {
     published_item_transaction_reference: published_item_transaction_id,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
   //////////////////////////////////////////////////
-  // GET THE PUBLISHED ITEM TRANSACTION
+  // Get the Published Item Transaction
   //////////////////////////////////////////////////
 
   const maybeGetPublishedItemTransactionByIdResponse =
@@ -66,7 +69,7 @@ export async function assembleRenderableShopItemSoldNotification({
   const publishedItemTransaction = maybePublishedItemTransaction;
 
   //////////////////////////////////////////////////
-  // GET THE SHOP ITEM
+  // Assemble the Renderable Shop Item
   //////////////////////////////////////////////////
 
   const constructRenderableShopItemFromPartsByIdResponse =
@@ -85,11 +88,11 @@ export async function assembleRenderableShopItemSoldNotification({
     constructRenderableShopItemFromPartsByIdResponse;
 
   //////////////////////////////////////////////////
-  // GET THE PURCHASING USER
+  // Assemble the Renderable Purchasing User
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: clientUserId,
       userId: publishedItemTransaction.non_creator_user_id,
@@ -103,7 +106,7 @@ export async function assembleRenderableShopItemSoldNotification({
     constructRenderableUserFromPartsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // GET THE COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -118,7 +121,7 @@ export async function assembleRenderableShopItemSoldNotification({
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({

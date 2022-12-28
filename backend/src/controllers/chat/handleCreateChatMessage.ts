@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableChatMessage } from "./models";
@@ -43,7 +43,7 @@ export async function handleCreateChatMessage({
 
   const { chatRoomId, chatMessageText } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

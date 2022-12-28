@@ -4,11 +4,11 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
   Success,
-} from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
-import { PublishedItemType, RenderablePublishedItem } from "../models";
-import { constructPublishedItemsFromParts } from "../utilities/constructPublishedItemsFromParts";
-import { PostController } from "./postController";
+} from "../../utilities/monads";
+import { checkAuthentication } from "../auth/utilities";
+import { PublishedItemType, RenderablePublishedItem } from "./models";
+import { assemblePublishedItemsFromCachedComponents } from "./utilities/constructPublishedItemsFromParts";
+import { PostController } from "./post/postController";
 
 export interface GetPublishedItemsScheduledByUserRequestBody {
   // JS Timestamp
@@ -41,13 +41,21 @@ export async function handleGetPublishedItemsScheduledByUser({
     GetPublishedItemsScheduledByUserSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
   const { rangeStartTimestamp, rangeEndTimestamp, publishedItemType } = requestBody;
+
+  //////////////////////////////////////////////////
+  // Get Published Items
+  //////////////////////////////////////////////////
 
   const getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserId(
@@ -68,19 +76,26 @@ export async function handleGetPublishedItemsScheduledByUser({
   const { success: uncompiledBasePublishedItem } =
     getPublishedItemsWithScheduledPublicationTimestampWithinRangeByCreatorUserIdResponse;
 
-  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
-    {
+  //////////////////////////////////////////////////
+  // Assemble Published Items
+  //////////////////////////////////////////////////
+
+  const constructPublishedItemsFromPartsResponse =
+    await assemblePublishedItemsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: uncompiledBasePublishedItem,
       requestorUserId: clientUserId,
-    },
-  );
+    });
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemsFromPartsResponse;
   }
   const { success: renderablePosts } = constructPublishedItemsFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishedItems: renderablePosts,

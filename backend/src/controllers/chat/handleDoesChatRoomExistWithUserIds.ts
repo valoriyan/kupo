@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
 export interface DoesChatRoomExistWithUserIdsRequestBody {
@@ -42,7 +42,7 @@ export async function handleDoesChatRoomExistWithUserIds({
   //////////////////////////////////////////////////
   const { userIds } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

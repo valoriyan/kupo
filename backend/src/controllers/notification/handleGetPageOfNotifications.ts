@@ -12,7 +12,7 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../utilities/monads/unwrapListOfResponses";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 import { Promise as BluebirdPromise } from "bluebird";
 import { assembleRenderableNewCommentOnPostNotification } from "./renderableNotificationAssemblers/assembleRenderableNewCommentOnPublishedItemNotification";
@@ -59,11 +59,14 @@ export async function handleGetPageOfNotifications({
     GetPageOfNotificationsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const now = Date.now();
 
   const { isUserReadingNotifications, cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -72,6 +75,10 @@ export async function handleGetPageOfNotifications({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Mark Notifications as Read
+  //////////////////////////////////////////////////
 
   if (isUserReadingNotifications) {
     const markAllUserNotificationsAsSeenResponse =
@@ -87,6 +94,10 @@ export async function handleGetPageOfNotifications({
     }
   }
 
+  //////////////////////////////////////////////////
+  // Read Page of Notifications from DB
+  //////////////////////////////////////////////////
+
   const selectUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectUserNotificationsByUserId(
       {
@@ -101,6 +112,10 @@ export async function handleGetPageOfNotifications({
   }
   const { success: userNotifications } = selectUserNotificationsByUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // Assemble Renderable Notifications
+  //////////////////////////////////////////////////
+
   const assembleNotifcationsResponse = await assembleNotifications({
     userNotifications,
     clientUserId,
@@ -110,6 +125,10 @@ export async function handleGetPageOfNotifications({
     return assembleNotifcationsResponse;
   }
   const { success: renderableUserNotifications } = assembleNotifcationsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     userNotifications: renderableUserNotifications,
@@ -127,6 +146,10 @@ async function assembleNotifications({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderableUserNotification[]>
 > {
+  //////////////////////////////////////////////////
+  // Call Appropriate Assembler for Each Notification by Type
+  //////////////////////////////////////////////////
+
   const assembleRenderableNotificationResponses = await BluebirdPromise.map(
     userNotifications,
     async (
@@ -252,6 +275,10 @@ async function assembleNotifications({
     return renderableUserNotificationsResponse;
   }
   const { success: renderableUserNotifications } = renderableUserNotificationsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(
     renderableUserNotifications.filter(

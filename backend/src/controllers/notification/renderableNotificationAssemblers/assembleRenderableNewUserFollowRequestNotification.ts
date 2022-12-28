@@ -1,7 +1,7 @@
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
+import { assembleRenderableUserFromCachedComponents } from "../../user/utilities/assembleRenderableUserFromCachedComponents";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewUserFollowRequestNotification } from "../models/renderableUserNotifications";
 import { Controller } from "tsoa";
@@ -30,13 +30,16 @@ export async function assembleRenderableNewUserFollowRequestNotification({
     RenderableNewUserFollowRequestNotification
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const {
     user_follow_reference: userFollowEventId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
   //////////////////////////////////////////////////
-  // GET THE USER FOLLOW REQUEST
+  // Get the User Follow Request
   //////////////////////////////////////////////////
 
   const getUserFollowEventByIdResponse =
@@ -55,7 +58,7 @@ export async function assembleRenderableNewUserFollowRequestNotification({
   } = getUserFollowEventByIdResponse;
 
   //////////////////////////////////////////////////
-  // GET THE USER DOING THE FOLLOWING
+  // Get the Unrenderable User Requesting to Follow Client
   //////////////////////////////////////////////////
 
   const selectUserByUserIdResponse =
@@ -70,22 +73,25 @@ export async function assembleRenderableNewUserFollowRequestNotification({
   }
   const { success: unrenderableUserDoingFollowing } = selectUserByUserIdResponse;
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  //////////////////////////////////////////////////
+  // Assemble the Renderable User Requesting to Follow Client
+  //////////////////////////////////////////////////
+
+  const constructRenderableUserFromPartsResponse =
+    await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUser: unrenderableUserDoingFollowing!,
       blobStorageService,
       databaseService,
-    },
-  );
+    });
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;
   }
   const { success: followRequestingUser } = constructRenderableUserFromPartsResponse;
 
   //////////////////////////////////////////////////
-  // GET THE COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -100,7 +106,7 @@ export async function assembleRenderableNewUserFollowRequestNotification({
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({

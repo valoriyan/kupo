@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -11,63 +10,46 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { RenderableRejectedPublishingChannelSubmissionNotification } from "../models/renderableUserNotifications";
-import { assembleRenderablePublishingChannelById } from "../../publishingChannel/utilities/assembleRenderablePublishingChannel";
+import { RenderableNewLikeOnPublishedItemNotification } from "../models/renderableUserNotifications";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { assembleRenderableUserById } from "../../../controllers/user/utilities/assembleRenderableUserById";
+import { RenderablePublishedItem } from "../../../controllers/publishedItem/models";
 
-export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNotification({
+export async function assembleRecordAndSendNewLikeOnPublishedItemNotification({
   controller,
-  rejectionReason,
-  publishingChannelSubmissionId,
-  publishingChannelId,
-  publishedItemId,
+  publishedItem,
+  publishedItemLikeId,
+  userIdThatLikedPublishedItem,
   recipientUserId,
   databaseService,
   blobStorageService,
   webSocketService,
 }: {
   controller: Controller;
-  rejectionReason: string;
-  publishingChannelSubmissionId: string;
-  publishingChannelId: string;
-  publishedItemId: string;
+  publishedItem: RenderablePublishedItem;
+  publishedItemLikeId: string;
+  userIdThatLikedPublishedItem: string;
   recipientUserId: string;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Assemble the Renderable Publishing Channel
+  // Assemble the User That Liked Published Item
   //////////////////////////////////////////////////
-  const assembleRenderablePublishingChannelByIdResponse =
-    await assembleRenderablePublishingChannelById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishingChannelId,
-      requestorUserId: recipientUserId,
-    });
 
-  if (assembleRenderablePublishingChannelByIdResponse.type === EitherType.failure) {
-    return assembleRenderablePublishingChannelByIdResponse;
-  }
-
-  const { success: publishingChannel } = assembleRenderablePublishingChannelByIdResponse;
-
-  //////////////////////////////////////////////////
-  // Assemble the Renderable Published Item
-  //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+  const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
     controller,
+    requestorUserId: recipientUserId,
+    userId: userIdThatLikedPublishedItem,
     blobStorageService,
     databaseService,
-    publishedItemId,
-    requestorUserId: recipientUserId,
   });
-  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsByIdResponse;
+
+  if (assembleRenderableUserByIdResponse.type === EitherType.failure) {
+    return assembleRenderableUserByIdResponse;
   }
-  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+  const { success: userThatLikedPublishedItem } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
   // Get the Count of Unread Notifications
@@ -94,8 +76,8 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
         userNotificationId: uuidv4(),
         recipientUserId,
         externalReference: {
-          type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION,
-          publishingChannelSubmissionId,
+          type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
+          publishedItemLikeId,
         },
       },
     );
@@ -107,26 +89,23 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   // Assemble Notification
   //////////////////////////////////////////////////
 
-  const renderableRejectedPublishingChannelSubmissionNotification: RenderableRejectedPublishingChannelSubmissionNotification =
+  const renderableNewLikeOnPublishedItemNotification: RenderableNewLikeOnPublishedItemNotification =
     {
       countOfUnreadNotifications,
-      type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION,
+      type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
       eventTimestamp: Date.now(),
+      userThatLikedPublishedItem,
       publishedItem,
-      publishingChannel,
-      rejectionSummary: {
-        rejectionReason,
-      },
     };
 
   //////////////////////////////////////////////////
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfRejectedPublishingChannelSubmission(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPublishedItem(
     {
       userId: recipientUserId,
-      renderableRejectedPublishingChannelSubmissionNotification,
+      renderableNewLikeOnPublishedItemNotification,
     },
   );
 

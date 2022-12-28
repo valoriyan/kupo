@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
 export interface UserSavesPublishedItemRequestBody {
@@ -34,15 +34,23 @@ export async function handleUserSavesPublishedItem({
     UserSavesPublishedItemSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
   const saveId = uuidv4();
+
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
 
   const saveItemResponse =
     await controller.databaseService.tableNameToServicesMap.savedItemsTableService.saveItem(
@@ -57,6 +65,10 @@ export async function handleUserSavesPublishedItem({
   if (saveItemResponse.type === EitherType.failure) {
     return saveItemResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -11,8 +11,8 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
-import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
+import { assembleRenderablePublishedItemCommentById } from "../../publishedItem/publishedItemComment/utilities";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 import { RenderableNewCommentOnPublishedItemNotification } from "../models/renderableUserNotifications";
 import { BlobStorageService } from "../../../services/blobStorageService";
 
@@ -34,40 +34,43 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // COMPILE INFORMATION NEEDED TO WRITE NOTIFICATION INTO DATASTORE
+  // Assemble Published Item
   //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishedItemId,
-      requestorUserId: recipientUserId,
-    });
-  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsByIdResponse;
+  const assemblePublishedItemByIdResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService,
+    databaseService,
+    publishedItemId,
+    requestorUserId: recipientUserId,
+  });
+  if (assemblePublishedItemByIdResponse.type === EitherType.failure) {
+    return assemblePublishedItemByIdResponse;
   }
-  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+  const { success: publishedItem } = assemblePublishedItemByIdResponse;
 
-  const constructRenderablePostCommentFromPartsByIdResponse =
-    await constructRenderablePublishedItemCommentFromPartsById({
+  //////////////////////////////////////////////////
+  // Assemble Comment
+  //////////////////////////////////////////////////
+
+  const assembleRenderablePublishedItemCommentByIdResponse =
+    await assembleRenderablePublishedItemCommentById({
       controller,
       clientUserId: recipientUserId,
       publishedItemCommentId: publishedItemCommentId,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
     });
-  if (constructRenderablePostCommentFromPartsByIdResponse.type === EitherType.failure) {
-    return constructRenderablePostCommentFromPartsByIdResponse;
+  if (assembleRenderablePublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return assembleRenderablePublishedItemCommentByIdResponse;
   }
-  const { success: postComment } = constructRenderablePostCommentFromPartsByIdResponse;
+  const { success: postComment } = assembleRenderablePublishedItemCommentByIdResponse;
 
   //////////////////////////////////////////////////
-  // WRITE NOTIFICATION INTO DATASTORE
+  // Assemble User That Authored Comment
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: recipientUserId,
       userId: postComment.authorUserId,
@@ -78,6 +81,10 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
     return constructRenderableUserFromPartsByUserIdResponse;
   }
   const { success: userThatCommented } = constructRenderableUserFromPartsByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Write Notification to DB
+  //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
@@ -96,7 +103,7 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   }
 
   //////////////////////////////////////////////////
-  // GET COUNT OF UNREAD NOTIFICATIONS
+  // Get Count of Unread Notificiations
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -110,7 +117,7 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  // Assemble Notification
   //////////////////////////////////////////////////
 
   const renderableNewCommentOnPostNotification: RenderableNewCommentOnPublishedItemNotification =
@@ -123,12 +130,20 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
       publishedItemComment: postComment,
     };
 
+  //////////////////////////////////////////////////
+  // Send Notification
+  //////////////////////////////////////////////////
+
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewCommentOnPost(
     {
       userId: recipientUserId,
       renderableNewCommentOnPostNotification,
     },
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

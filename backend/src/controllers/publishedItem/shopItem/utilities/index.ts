@@ -21,7 +21,7 @@ import {
 } from "../../../../utilities/monads/unwrapListOfResponses";
 import { assembleRootShopItemPreviewFromParts } from "./assembleRootShopItemPreviewFromParts";
 import { assembleRootPurchasedShopItemDetailsFromParts } from "./assembleRootPurchasedShopItemDetailsFromParts";
-import { constructPublishedItemFromPartsById } from "../../utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../utilities/constructPublishedItemsFromParts";
 
 export async function constructRenderableShopItemsFromParts({
   controller,
@@ -146,14 +146,13 @@ export async function constructRenderableShopItemFromParts({
     //     Get Published Item Being Shared
     //////////////////////////////////////////////////
 
-    const constructPublishedItemFromPartsByIdResponse =
-      await constructPublishedItemFromPartsById({
-        controller,
-        blobStorageService,
-        databaseService,
-        publishedItemId: idOfPublishedItemBeingShared,
-        requestorUserId,
-      });
+    const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+      controller,
+      blobStorageService,
+      databaseService,
+      publishedItemId: idOfPublishedItemBeingShared,
+      requestorUserId,
+    });
     if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
       return constructPublishedItemFromPartsByIdResponse;
     }

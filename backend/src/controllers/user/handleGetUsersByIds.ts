@@ -5,10 +5,10 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUsersFromPartsByUserIds } from "./utilities";
+import { assembleRenderableUsersByIds } from "./utilities/assembleRenderableUserById";
 
 export interface GetUsersByIdsRequestBody {
   userIds: string[];
@@ -36,7 +36,7 @@ export async function handleGetUsersByIds({
     GetUsersByIdsSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -45,7 +45,7 @@ export async function handleGetUsersByIds({
   const { userIds } = requestBody;
 
   const constructRenderableUsersFromPartsByUserIdsResponse =
-    await constructRenderableUsersFromPartsByUserIds({
+    await assembleRenderableUsersByIds({
       controller,
       requestorUserId: clientUserId,
       userIds,

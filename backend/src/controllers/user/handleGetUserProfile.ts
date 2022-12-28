@@ -8,7 +8,7 @@ import {
 import { getClientUserId } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
+import { assembleRenderableUserFromCachedComponents } from "./utilities/assembleRenderableUserFromCachedComponents";
 
 export interface GetUserProfileRequestBody {
   username: string;
@@ -59,15 +59,14 @@ export async function handleGetUserProfile({
     });
   }
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  const constructRenderableUserFromPartsResponse =
+    await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUser,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-    },
-  );
+    });
 
   return constructRenderableUserFromPartsResponse;
 }

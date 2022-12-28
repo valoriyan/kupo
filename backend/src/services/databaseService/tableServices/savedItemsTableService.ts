@@ -228,7 +228,7 @@ export class SavedItemsTableService extends TableService {
   // DELETE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async unSaveItem({
+  public async unsaveItem({
     controller,
     userId,
     publishedItemId,

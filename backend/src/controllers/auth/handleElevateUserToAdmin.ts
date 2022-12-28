@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { AuthController } from "./authController";
 
 export interface ElevateUserToAdminRequestBody {
@@ -41,7 +41,7 @@ export async function handleElevateUserToAdmin({
 
   const { userIdElevatedToAdmin } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

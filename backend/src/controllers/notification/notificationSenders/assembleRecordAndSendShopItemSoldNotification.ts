@@ -7,13 +7,15 @@ import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsCo
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 import { RenderableShopItemSoldNotification } from "../models/renderableUserNotifications";
 import { RenderableShopItem } from "../../../controllers/publishedItem/shopItem/models";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { GenericResponseFailedReason } from "../../../controllers/models";
 
 export async function assembleRecordAndSendShopItemSoldNotification({
   controller,
@@ -33,14 +35,45 @@ export async function assembleRecordAndSendShopItemSoldNotification({
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // GET THE USER TO BE NOTIFIED
+  // Get the Published Item Transaction
+  //////////////////////////////////////////////////
+
+  const maybeGetPublishedItemTransactionByIdResponse =
+    await databaseService.tableNameToServicesMap.publishedItemTransactionsTableService.maybeGetPublishedItemTransactionById(
+      {
+        controller,
+        publishedItemTransactionId,
+      },
+    );
+  if (maybeGetPublishedItemTransactionByIdResponse.type === EitherType.failure) {
+    return maybeGetPublishedItemTransactionByIdResponse;
+  }
+  const { success: maybePublishedItemTransaction } =
+    maybeGetPublishedItemTransactionByIdResponse;
+
+  if (!maybePublishedItemTransaction) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error:
+        "Published Item Transaction not found at at assembleRecordAndSendShopItemSoldNotification",
+      additionalErrorInformation:
+        "Published Item Transaction not found at at assembleRecordAndSendShopItemSoldNotification",
+    });
+  }
+
+  const { non_creator_user_id: purchaserUserId } = maybePublishedItemTransaction;
+
+  //////////////////////////////////////////////////
+  // Assemble the Renderable Purchasing User
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: recipientUserId,
-      userId: recipientUserId,
+      userId: purchaserUserId,
       blobStorageService,
       databaseService,
     });
@@ -51,7 +84,7 @@ export async function assembleRecordAndSendShopItemSoldNotification({
     constructRenderableUserFromPartsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // WRITE NOTIFICATION INTO DATASTORE
+  // Write Notification into DB
   //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
@@ -71,7 +104,7 @@ export async function assembleRecordAndSendShopItemSoldNotification({
   }
 
   //////////////////////////////////////////////////
-  // GET COUNT OF UNREAD NOTIFICATIONS
+  // Get Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -85,7 +118,7 @@ export async function assembleRecordAndSendShopItemSoldNotification({
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  // Assemble Notification
   //////////////////////////////////////////////////
 
   const renderableShopItemSoldNotification: RenderableShopItemSoldNotification = {
@@ -96,13 +129,17 @@ export async function assembleRecordAndSendShopItemSoldNotification({
     shopItem: renderableShopItem,
   };
 
+  //////////////////////////////////////////////////
+  // Send Notification
+  //////////////////////////////////////////////////
+
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfShopItemSold({
     userId: recipientUserId,
     renderableShopItemSoldNotification,
   });
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({});

@@ -4,18 +4,12 @@ import {
   EitherType,
   ErrorReasonTypes,
   SecuredHTTPResponse,
-  InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import {
-  unwrapListOfEitherResponses,
-  UnwrapListOfEitherResponsesFailureHandlingMethod,
-} from "../../../utilities/monads/unwrapListOfResponses";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
-import { constructRenderableUserFromPartsByUserId } from "../utilities";
+import { assembleRenderableUsersByIds } from "../utilities/assembleRenderableUserById";
 import { RenderableUser } from "../models";
-import { Promise as BluebirdPromise } from "bluebird";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 import { getNextPageCursorOfPage } from "../../publishedItem/utilities/pagination";
 
@@ -48,9 +42,13 @@ export async function handleGetFollowerRequests({
     GetFollowerRequestsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -59,6 +57,10 @@ export async function handleGetFollowerRequests({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Get User Ids Following Client
+  //////////////////////////////////////////////////
 
   const getUserIdsFollowingUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowingUserId(
@@ -75,36 +77,28 @@ export async function handleGetFollowerRequests({
   }
   const { success: unrenderableUserFollows } = getUserIdsFollowingUserIdResponse;
 
-  const constructRenderableUserFromPartsByUserIdResponses = await BluebirdPromise.map(
-    unrenderableUserFollows,
-    async (
-      unrenderableUserFollow,
-    ): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser>> => {
-      const { userIdDoingFollowing } = unrenderableUserFollow;
-
-      return await constructRenderableUserFromPartsByUserId({
-        controller,
-        requestorUserId: clientUserId,
-        userId: userIdDoingFollowing,
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-      });
-    },
+  //////////////////////////////////////////////////
+  // Assemble Renderable Users Following Client
+  //////////////////////////////////////////////////
+  const userIdsFollowingClient = unrenderableUserFollows.map(
+    ({ userIdDoingFollowing }) => userIdDoingFollowing,
   );
 
-  const mappedConstructRenderableUserFromPartsByUserIdResponses =
-    unwrapListOfEitherResponses({
-      eitherResponses: constructRenderableUserFromPartsByUserIdResponses,
-      failureHandlingMethod:
-        UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
-    });
-  if (
-    mappedConstructRenderableUserFromPartsByUserIdResponses.type === EitherType.failure
-  ) {
-    return mappedConstructRenderableUserFromPartsByUserIdResponses;
+  const assembleRenderableUsersByIdsResponse = await assembleRenderableUsersByIds({
+    controller,
+    requestorUserId: clientUserId,
+    userIds: userIdsFollowingClient,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+  });
+  if (assembleRenderableUsersByIdsResponse.type === EitherType.failure) {
+    return assembleRenderableUsersByIdsResponse;
   }
-  const { success: renderableUsers } =
-    mappedConstructRenderableUserFromPartsByUserIdResponses;
+  const { success: renderableUsers } = assembleRenderableUsersByIdsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     users: renderableUsers,

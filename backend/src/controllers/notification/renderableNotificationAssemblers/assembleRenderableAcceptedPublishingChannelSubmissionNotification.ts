@@ -10,7 +10,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { assembleRenderablePublishingChannelById } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
 import { BlobStorageService } from "../../../services/blobStorageService";
@@ -33,13 +33,16 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
     RenderableAcceptedPublishingChannelSubmissionNotification
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const {
     publishing_channel_submission_reference,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
   //////////////////////////////////////////////////
-  // GET THE PUBLISHING CHANNEL SUBMISSION
+  // Get the Publishing Channel Submission
   //////////////////////////////////////////////////
 
   const getPublishingChannelSubmissionByIdResponse =
@@ -75,7 +78,7 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
   } = maybePublishingChannelSubmission;
 
   //////////////////////////////////////////////////
-  // GET THE COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -92,14 +95,13 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
   //////////////////////////////////////////////////
   // Get Published Item
   //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishedItemId: publishedItemId,
-      requestorUserId: clientUserId,
-    });
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService,
+    databaseService,
+    publishedItemId: publishedItemId,
+    requestorUserId: clientUserId,
+  });
   if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsByIdResponse;
   }
@@ -122,7 +124,7 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
   const { success: publishingChannel } = assembleRenderablePublishingChannelByIdResponse;
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({

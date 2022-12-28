@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization, encryptPassword } from "./utilities";
+import { checkAuthentication, encryptPassword } from "./utilities";
 import { AuthController } from "./authController";
 
 export interface UpdatePasswordRequestBody {
@@ -39,7 +39,7 @@ export async function handleUpdatePassword({
   //////////////////////////////////////////////////
 
   const { clientUserId, errorResponse: errorResponseWithSetHttpStatusCode } =
-    await checkAuthorization(controller, request);
+    await checkAuthentication(controller, request);
   if (errorResponseWithSetHttpStatusCode) return errorResponseWithSetHttpStatusCode;
 
   const encryptedPassword = encryptPassword({ password: requestBody.updatedPassword });

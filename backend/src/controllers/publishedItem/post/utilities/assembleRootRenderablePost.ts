@@ -9,7 +9,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { assemblePostMediaElements } from "./assemblePostMediaElements";
+import { assemblePostMediaElementsByIds } from "./assemblePostMediaElements";
 
 export async function assembleRootRenderablePost({
   controller,
@@ -22,6 +22,10 @@ export async function assembleRootRenderablePost({
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RootRenderablePost>> {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const {
     id,
     creationTimestamp,
@@ -36,16 +40,24 @@ export async function assembleRootRenderablePost({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
-  const assemblePostMediaElementsResponse = await assemblePostMediaElements({
+  //////////////////////////////////////////////////
+  // Assemble Media Items
+  //////////////////////////////////////////////////
+
+  const assemblePostMediaElementsByIdsResponse = await assemblePostMediaElementsByIds({
     controller,
     publishedItemId: id,
     blobStorageService,
     databaseService,
   });
-  if (assemblePostMediaElementsResponse.type === EitherType.failure) {
-    return assemblePostMediaElementsResponse;
+  if (assemblePostMediaElementsByIdsResponse.type === EitherType.failure) {
+    return assemblePostMediaElementsByIdsResponse;
   }
-  const { success: mediaElements } = assemblePostMediaElementsResponse;
+  const { success: mediaElements } = assemblePostMediaElementsByIdsResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble Root Renderable Post
+  //////////////////////////////////////////////////
 
   const rootRenderablePost: RootRenderablePost = {
     type: PublishedItemType.POST,
@@ -62,6 +74,10 @@ export async function assembleRootRenderablePost({
     isLikedByClient,
     isSavedByClient,
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(rootRenderablePost);
 }

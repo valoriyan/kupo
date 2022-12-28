@@ -7,7 +7,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 
 export interface RemoveModeratorFromPublishingChannelRequestBody {
@@ -37,13 +37,21 @@ export async function handleRemoveModeratorFromPublishingChannel({
     RemoveModeratorFromPublishingChannelSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishingChannelId, moderatorUserId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Read Unrenderable Publishing Channel From DB
+  //////////////////////////////////////////////////
 
   const maybeGetPublishingChannelByPublishingChannelIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
@@ -73,6 +81,10 @@ export async function handleRemoveModeratorFromPublishingChannel({
   }
   const publishingChannel = maybePublishingChannel;
 
+  //////////////////////////////////////////////////
+  // Check Authorization
+  //////////////////////////////////////////////////
+
   if (publishingChannel.ownerUserId !== clientUserId) {
     return Failure({
       controller,
@@ -83,6 +95,10 @@ export async function handleRemoveModeratorFromPublishingChannel({
         "Illegal access at handleRemoveModeratorFromPublishingChannel",
     });
   }
+
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
 
   const removePublishingChannelModeratorResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelModeratorsTableService.removePublishingChannelModerator(
@@ -96,6 +112,10 @@ export async function handleRemoveModeratorFromPublishingChannel({
   if (removePublishingChannelModeratorResponse.type === EitherType.failure) {
     return removePublishingChannelModeratorResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

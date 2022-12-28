@@ -6,9 +6,9 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { RenderablePublishedItem } from "../publishedItem/models";
-import { constructPublishedItemsFromParts } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
@@ -45,7 +45,7 @@ export async function handleGetPageOfAllPublishedItems({
 > {
   const { cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -78,7 +78,7 @@ export async function handleGetPageOfAllPublishedItems({
     const { success: uncompiledBasePublishedItems } = GET_ALL_PUBLISHED_ITEMSResponse;
 
     const constructPublishedItemsFromPartsResponse =
-      await constructPublishedItemsFromParts({
+      await assemblePublishedItemsFromCachedComponents({
         controller,
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,

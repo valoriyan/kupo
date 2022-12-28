@@ -6,7 +6,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import { BlobStorageService } from "src/services/blobStorageService";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export async function uploadMediaFile({
   controller,

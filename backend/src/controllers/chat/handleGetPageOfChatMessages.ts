@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { RenderableChatMessage } from "./models";
 
@@ -51,7 +51,7 @@ export async function handleGetPageOfChatMessages({
 
   const endOfPageTimestamp = cursor ? +cursor : Date.now() + 1;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

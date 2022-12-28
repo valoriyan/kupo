@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
 export interface UserUnsavesPublishedItemRequestBody {
@@ -33,25 +33,37 @@ export async function handleUserUnsavesPublishedItem({
     UserUnsavesPublishedItemSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
-  const unSaveItemResponse =
-    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unSaveItem(
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
+
+  const unsaveItemResponse =
+    await controller.databaseService.tableNameToServicesMap.savedItemsTableService.unsaveItem(
       {
         controller,
         userId: clientUserId,
         publishedItemId: publishedItemId,
       },
     );
-  if (unSaveItemResponse.type === EitherType.failure) {
-    return unSaveItemResponse;
+  if (unsaveItemResponse.type === EitherType.failure) {
+    return unsaveItemResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "./models";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities/pagination";
 import { decodeTimestampCursor } from "../utilities/pagination";
@@ -10,7 +10,7 @@ import {
   Success,
 } from "../../utilities/monads";
 import { PostController } from "./post/postController";
-import { constructPublishedItemsFromParts } from "./utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsByIds } from "./utilities/constructPublishedItemsFromParts";
 
 export interface GetSavedPublishedItemsRequestBody {
   cursor?: string;
@@ -42,9 +42,13 @@ export async function handleGetSavedPublishedItems({
     GetSavedPublishedItemsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { cursor, pageSize, publishedItemType } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -53,6 +57,10 @@ export async function handleGetSavedPublishedItems({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Get Page of Saved Published Items
+  //////////////////////////////////////////////////
 
   const getSavedItemsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.savedItemsTableService.getSavedItemsByUserId(
@@ -72,32 +80,28 @@ export async function handleGetSavedPublishedItems({
     (db_saved_item) => db_saved_item.published_item_id,
   );
 
-  const getPublishedItemsByIdsResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
-      {
-        controller,
-        ids: publishedItemIds,
-        restrictedToType: publishedItemType,
-      },
-    );
-  if (getPublishedItemsByIdsResponse.type === EitherType.failure) {
-    return getPublishedItemsByIdsResponse;
-  }
-  const { success: uncompiledBasePublishedItems } = getPublishedItemsByIdsResponse;
+  //////////////////////////////////////////////////
+  // Assemble Published Items
+  //////////////////////////////////////////////////
 
-  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
-    {
-      controller,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      uncompiledBasePublishedItems,
-      requestorUserId: clientUserId,
-    },
-  );
-  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
-    return constructPublishedItemsFromPartsResponse;
+  const constructPublishedItemsFromPartsByIdResponse = await assemblePublishedItemsByIds({
+    controller,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+    publishedItemIds,
+    requestorUserId: clientUserId,
+    restrictedToType: publishedItemType,
+  });
+
+  if (constructPublishedItemsFromPartsByIdResponse.type === EitherType.failure) {
+    return constructPublishedItemsFromPartsByIdResponse;
   }
-  const { success: renderablePublishedItems } = constructPublishedItemsFromPartsResponse;
+  const { success: renderablePublishedItems } =
+    constructPublishedItemsFromPartsByIdResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishedItems: renderablePublishedItems,

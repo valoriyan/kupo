@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
 export enum MarkChatRoomAsReadFailedReason {
@@ -38,7 +38,7 @@ export async function handleMarkChatRoomAsRead({
   //////////////////////////////////////////////////
   const { chatRoomId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

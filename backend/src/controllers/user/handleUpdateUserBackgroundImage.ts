@@ -5,11 +5,11 @@ import {
   Failure,
   SecuredHTTPResponse,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { FileDescriptor, GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
+import { assembleRenderableUserFromCachedComponents } from "./utilities/assembleRenderableUserFromCachedComponents";
 
 export enum UpdateUserBackgroundImageFailedReason {
   Unknown = "Unknown",
@@ -40,7 +40,7 @@ export async function handleUpdateUserBackgroundImage({
   //////////////////////////////////////////////////
   const { backgroundImage } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -79,15 +79,14 @@ export async function handleUpdateUserBackgroundImage({
   // Get Renderable User
   //////////////////////////////////////////////////
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  const constructRenderableUserFromPartsResponse =
+    await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUser: updatedUnrenderableUser,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-    },
-  );
+    });
 
   //////////////////////////////////////////////////
   // Return

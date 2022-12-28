@@ -10,8 +10,8 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../utilities/monads/unwrapListOfResponses";
-import { checkAuthorization } from "../auth/utilities";
-import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
+import { checkAuthentication } from "../auth/utilities";
+import { assembleRenderableUsersByIds } from "../user/utilities/assembleRenderableUserById";
 import { ChatController } from "./chatController";
 import {
   RenderableChatRoomWithJoinedUsers,
@@ -58,7 +58,7 @@ export async function handleGetPageOfChatRooms({
   //////////////////////////////////////////////////
   const { pageSize, cursor, query } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -110,7 +110,7 @@ export async function handleGetPageOfChatRooms({
   //////////////////////////////////////////////////
 
   const constructRenderableUsersFromPartsByUserIdsResponse =
-    await constructRenderableUsersFromPartsByUserIds({
+    await assembleRenderableUsersByIds({
       controller,
       requestorUserId: clientUserId,
       userIds: [...setOfUserIds],

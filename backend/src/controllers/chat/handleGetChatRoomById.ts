@@ -5,8 +5,8 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
+import { checkAuthentication } from "../auth/utilities";
+import { assembleRenderableUsersByIds } from "../user/utilities/assembleRenderableUserById";
 import { ChatController } from "./chatController";
 import { RenderableChatRoomWithJoinedUsers } from "./models";
 
@@ -42,7 +42,7 @@ export async function handleGetChatRoomById({
 
   const { chatRoomId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -71,7 +71,7 @@ export async function handleGetChatRoomById({
   //////////////////////////////////////////////////
 
   const constructRenderableUsersFromPartsByUserIdsResponse =
-    await constructRenderableUsersFromPartsByUserIds({
+    await assembleRenderableUsersByIds({
       controller,
       requestorUserId: clientUserId,
       userIds: [...setOfUserIds],

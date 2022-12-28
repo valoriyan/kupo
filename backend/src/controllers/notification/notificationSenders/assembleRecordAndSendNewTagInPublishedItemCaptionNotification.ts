@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DatabaseService } from "../../../services/databaseService";
-import { constructRenderablePostFromPartsById } from "../../publishedItem/post/utilities";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableNewTagInPublishedItemCaptionNotification } from "../models/renderableUserNotifications";
 import {
@@ -14,6 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotification({
   controller,
@@ -31,27 +31,30 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // COMPILE INFORMATION NEEDED TO WRITE NOTIFICATION INTO DATASTORE
+  // Assemble Renderable Published Item Containing Tag
   //////////////////////////////////////////////////
 
-  const constructRenderablePostFromPartsByIdResponse =
-    await constructRenderablePostFromPartsById({
-      controller,
-      requestorUserId: recipientUserId,
-      publishedItemId,
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
-    });
-  if (constructRenderablePostFromPartsByIdResponse.type === EitherType.failure) {
-    return constructRenderablePostFromPartsByIdResponse;
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    requestorUserId: recipientUserId,
+    publishedItemId,
+    blobStorageService: blobStorageService,
+    databaseService: databaseService,
+  });
+  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
+    return constructPublishedItemFromPartsByIdResponse;
   }
-  const { success: post } = constructRenderablePostFromPartsByIdResponse;
+  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble the Renderable User that Authored the Published Item
+  //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: recipientUserId,
-      userId: post.authorUserId,
+      userId: publishedItem.authorUserId,
       blobStorageService,
       databaseService,
     });
@@ -61,7 +64,7 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
   const { success: userTaggingClient } = constructRenderableUserFromPartsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // WRITE NOTIFICATION INTO DATASTORE
+  // Write the Notification into DB
   //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
@@ -81,11 +84,11 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
   }
 
   //////////////////////////////////////////////////
-  // GET COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: post.authorUserId },
+      { controller, userId: publishedItem.authorUserId },
     );
   if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
     return selectCountOfUnreadUserNotificationsByUserIdResponse;
@@ -94,7 +97,7 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  // Assemble the Notification
   //////////////////////////////////////////////////
 
   const renderableNewTagInPublishedItemCaptionNotification: RenderableNewTagInPublishedItemCaptionNotification =
@@ -103,8 +106,12 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
       type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION,
       eventTimestamp: Date.now(),
       userTaggingClient,
-      publishedItem: post,
+      publishedItem,
     };
+
+  //////////////////////////////////////////////////
+  // Send the Notification
+  //////////////////////////////////////////////////
 
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewTagInPublishedItemCaption(
     {

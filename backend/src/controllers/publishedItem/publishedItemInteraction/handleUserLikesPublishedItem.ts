@@ -3,17 +3,13 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
-import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
-import { RenderableNewLikeOnPublishedItemNotification } from "../../notification/models/renderableUserNotifications";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
-import { constructPublishedItemFromParts } from "../utilities/constructPublishedItemsFromParts";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { assemblePublishedItemById } from "../utilities/constructPublishedItemsFromParts";
+import { assembleRecordAndSendNewLikeOnPublishedItemNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewLikeOnPublishedItemNotification";
 
 export interface UserLikesPublishedItemRequestBody {
   publishedItemId: string;
@@ -47,7 +43,7 @@ export async function handleUserLikesPublishedItem({
 
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -75,140 +71,36 @@ export async function handleUserLikesPublishedItem({
   }
 
   //////////////////////////////////////////////////
-  // Get the associated Published Item
+  // Assemble the Renderable Published Item
   //////////////////////////////////////////////////
 
-  const getPublishedItemByIdResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
-      { controller, id: publishedItemId },
-    );
-  if (getPublishedItemByIdResponse.type === EitherType.failure) {
-    return getPublishedItemByIdResponse;
-  }
-  const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
-
-  //////////////////////////////////////////////////
-  // Get Client User
-  //////////////////////////////////////////////////
-
-  const selectMaybeUserByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
-      {
-        controller,
-        userId: clientUserId,
-      },
-    );
-  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
-    return selectMaybeUserByUserIdResponse;
-  }
-  const { success: maybeUnrenderableClientUser } = selectMaybeUserByUserIdResponse;
-
-  if (!maybeUnrenderableClientUser) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at handleUserLikesPublishedItem",
-      additionalErrorInformation: "User not found at handleUserLikesPublishedItem",
-    });
-  }
-
-  const unrenderableClientUser = maybeUnrenderableClientUser;
-
-  //////////////////////////////////////////////////
-  // Write user notification to DB
-  //////////////////////////////////////////////////
-
-  if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
-    const createUserNotificationResponse =
-      await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
-        {
-          controller,
-          userNotificationId: uuidv4(),
-          recipientUserId: uncompiledBasePublishedItem.authorUserId,
-          externalReference: {
-            type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
-            publishedItemLikeId,
-          },
-        },
-      );
-    if (createUserNotificationResponse.type === EitherType.failure) {
-      return createUserNotificationResponse;
-    }
-  }
-
-  //////////////////////////////////////////////////
-  // Compile client user
-  //////////////////////////////////////////////////
-
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
-      controller,
-      requestorUserId: clientUserId,
-      unrenderableUser: unrenderableClientUser,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-    },
-  );
-  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsResponse;
-  }
-  const { success: clientUser } = constructRenderableUserFromPartsResponse;
-
-  //////////////////////////////////////////////////
-  // Compile published item
-  //////////////////////////////////////////////////
-
-  const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
+  const assemblePublishedItemByIdResponse = await assemblePublishedItemById({
     controller,
     blobStorageService: controller.blobStorageService,
     databaseService: controller.databaseService,
-    uncompiledBasePublishedItem: uncompiledBasePublishedItem,
+    publishedItemId,
     requestorUserId: clientUserId,
   });
-  if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsResponse;
+
+  if (assemblePublishedItemByIdResponse.type === EitherType.failure) {
+    return assemblePublishedItemByIdResponse;
   }
-  const { success: renderablePublishedItem } = constructPublishedItemFromPartsResponse;
+  const { success: publishedItem } = assemblePublishedItemByIdResponse;
 
   //////////////////////////////////////////////////
-  // Get count of unread notifications
+  // Handle Notifications
   //////////////////////////////////////////////////
 
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: uncompiledBasePublishedItem.authorUserId },
-    );
-  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
-
-  //////////////////////////////////////////////////
-  // Compile user notification
-  //////////////////////////////////////////////////
-
-  const renderableNewLikeOnPublishedItemNotification: RenderableNewLikeOnPublishedItemNotification =
-    {
-      eventTimestamp: now,
-      type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
-      countOfUnreadNotifications,
-      userThatLikedPublishedItem: clientUser,
-      publishedItem: renderablePublishedItem,
-    };
-
-  //////////////////////////////////////////////////
-  // Emit user notification
-  //////////////////////////////////////////////////
-
-  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPublishedItem(
-    {
-      renderableNewLikeOnPublishedItemNotification:
-        renderableNewLikeOnPublishedItemNotification,
-      userId: uncompiledBasePublishedItem.authorUserId,
-    },
-  );
+  await assembleRecordAndSendNewLikeOnPublishedItemNotification({
+    controller,
+    publishedItem,
+    publishedItemLikeId,
+    userIdThatLikedPublishedItem: clientUserId,
+    recipientUserId: publishedItem.authorUserId,
+    databaseService: controller.databaseService,
+    blobStorageService: controller.blobStorageService,
+    webSocketService: controller.webSocketService,
+  });
 
   //////////////////////////////////////////////////
   // Return

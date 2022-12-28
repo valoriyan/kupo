@@ -10,15 +10,15 @@ import { Controller } from "tsoa";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import {
-  constructRenderableUserFromParts,
-  constructRenderableUsersFromParts,
-} from "../../user/utilities/constructRenderableUserFromParts";
-import {
   RenderablePublishedItemComment,
   UnrenderablePublishedItemComment,
 } from "./models";
+import {
+  assembleRenderableUserById,
+  assembleRenderableUsersByIds,
+} from "../../user/utilities/assembleRenderableUserById";
 
-export async function constructRenderablePublishedItemCommentFromPartsById({
+export async function assembleRenderablePublishedItemCommentById({
   controller,
   blobStorageService,
   databaseService,
@@ -33,6 +33,10 @@ export async function constructRenderablePublishedItemCommentFromPartsById({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment>
 > {
+  //////////////////////////////////////////////////
+  // Get Unrenderable Published Item Comment
+  //////////////////////////////////////////////////
+
   const getMaybePublishedItemCommentByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getMaybePublishedItemCommentById(
       {
@@ -59,7 +63,11 @@ export async function constructRenderablePublishedItemCommentFromPartsById({
 
   const unrenderablePublishedItemComment = maybePublishedItemComment;
 
-  return await constructRenderablePublishedItemCommentFromParts({
+  //////////////////////////////////////////////////
+  // Assemble Published Item Comment & Return
+  //////////////////////////////////////////////////
+
+  return await assembleRenderablePublishedItemCommentFromCachedComponents({
     controller,
     blobStorageService,
     databaseService,
@@ -68,7 +76,7 @@ export async function constructRenderablePublishedItemCommentFromPartsById({
   });
 }
 
-export async function constructRenderablePublishedItemCommentFromParts({
+export async function assembleRenderablePublishedItemCommentFromCachedComponents({
   controller,
   blobStorageService,
   databaseService,
@@ -83,43 +91,24 @@ export async function constructRenderablePublishedItemCommentFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment>
 > {
-  const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
-      {
-        controller,
-        userId: unrenderablePublishedItemComment.authorUserId,
-      },
-    );
-
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
-  }
-  const { success: unrenderableUser } = selectUserByUserIdResponse;
-
-  if (!unrenderableUser) {
-    return Failure({
-      controller,
-      httpStatusCode: 500,
-      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at constructRenderablePublishedItemCommentFromParts",
-      additionalErrorInformation:
-        "User not found at constructRenderablePublishedItemCommentFromParts",
-    });
-  }
-
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
-      controller,
-      requestorUserId: clientUserId,
-      unrenderableUser,
-      blobStorageService,
-      databaseService,
-    },
-  );
+  //////////////////////////////////////////////////
+  // Construct Renderable User Who Authored Comment
+  //////////////////////////////////////////////////
+  const constructRenderableUserFromPartsResponse = await assembleRenderableUserById({
+    controller,
+    requestorUserId: clientUserId,
+    userId: unrenderablePublishedItemComment.authorUserId,
+    blobStorageService,
+    databaseService,
+  });
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;
   }
   const { success: renderableUser } = constructRenderableUserFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     ...unrenderablePublishedItemComment,
@@ -127,7 +116,7 @@ export async function constructRenderablePublishedItemCommentFromParts({
   });
 }
 
-export async function constructRenderablePublishedItemCommentsFromParts({
+export async function assembleRenderablePublishedItemCommentsFromCachedComponents({
   controller,
   blobStorageService,
   databaseService,
@@ -142,36 +131,38 @@ export async function constructRenderablePublishedItemCommentsFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItemComment[]>
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const userIds = unrenderablePublishedItemComments.map(
     (publishedItemComment) => publishedItemComment.authorUserId,
   );
 
-  const selectUsersByUserIdsResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
-      controller,
-      userIds,
-    });
-  if (selectUsersByUserIdsResponse.type === EitherType.failure) {
-    return selectUsersByUserIdsResponse;
-  }
-  const { success: unrenderableUsers } = selectUsersByUserIdsResponse;
+  //////////////////////////////////////////////////
+  // Assemble Renderable Users Who Wrote Comments
+  //////////////////////////////////////////////////
 
-  const constructRenderableUsersFromPartsResponse =
-    await constructRenderableUsersFromParts({
+  const constructRenderableUsersFromPartsByUserIdsResponse =
+    await assembleRenderableUsersByIds({
       controller,
       requestorUserId: clientUserId,
-      unrenderableUsers,
+      userIds,
       blobStorageService,
       databaseService,
     });
-  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUsersFromPartsResponse;
+  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
+    return constructRenderableUsersFromPartsByUserIdsResponse;
   }
-  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
+  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   const userIdToRenderableUserMap = new Map(
     renderableUsers.map((renderableUser) => [renderableUser.userId, renderableUser]),
   );
+
+  //////////////////////////////////////////////////
+  // Assemble Renderable Comments
+  //////////////////////////////////////////////////
 
   const renderablePublishedItemComments = unrenderablePublishedItemComments.map(
     (publishedItemComment): RenderablePublishedItemComment => ({
@@ -179,6 +170,10 @@ export async function constructRenderablePublishedItemCommentsFromParts({
       user: userIdToRenderableUserMap.get(publishedItemComment.authorUserId)!,
     }),
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(renderablePublishedItemComments);
 }

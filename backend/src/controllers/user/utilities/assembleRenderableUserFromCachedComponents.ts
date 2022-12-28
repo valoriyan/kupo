@@ -1,5 +1,5 @@
 import { Promise as BluebirdPromise } from "bluebird";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { GenericResponseFailedReason } from "../../models";
 import { Controller } from "tsoa";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
@@ -18,7 +18,7 @@ import { RenderableUser, UnrenderableUser } from "../models";
 import { FollowingStatus } from "../userInteraction/models";
 import { canUserIdViewUserContentFromUnrenderableUser } from "../../auth/utilities/canUserIdViewUserContentFromUnrenderableUser";
 
-export async function constructRenderableUsersFromParts({
+export async function assembleRenderableUsersFromCachedComponents({
   controller,
   requestorUserId,
   unrenderableUsers,
@@ -34,7 +34,7 @@ export async function constructRenderableUsersFromParts({
   const constructRenderableUserFromPartsResponses = await BluebirdPromise.map(
     unrenderableUsers,
     async (unrenderableUser) =>
-      await constructRenderableUserFromParts({
+      await assembleRenderableUserFromCachedComponents({
         controller,
         requestorUserId: requestorUserId,
         unrenderableUser,
@@ -50,7 +50,7 @@ export async function constructRenderableUsersFromParts({
   });
 }
 
-export async function constructRenderableUserFromParts({
+export async function assembleRenderableUserFromCachedComponents({
   controller,
   requestorUserId,
   unrenderableUser,

@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../../utilities/monads";
-import { checkAuthorization } from "../../../auth/utilities";
+import { checkAuthentication } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 
 export interface MakeCreditCardPrimaryRequestBody {
@@ -35,7 +35,7 @@ export async function handleMakeCreditCardPrimary({
 > {
   const { localCreditCardId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
 import { assembleRenderablePublishingChannelByName } from "./utilities/assembleRenderablePublishingChannel";
@@ -40,7 +40,7 @@ export async function handleGetPublishingChannelByName({
 > {
   const { publishingChannelName } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
