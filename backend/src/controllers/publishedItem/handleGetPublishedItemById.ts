@@ -6,10 +6,10 @@ import {
 } from "../../utilities/monads";
 import { PostController } from "./post/postController";
 import express from "express";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { RenderablePost } from "./post/models";
 import { RenderableShopItem } from "./shopItem/models";
-import { constructPublishedItemFromPartsById } from "./utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "./utilities/constructPublishedItemsFromParts";
 
 export enum GetPublishedItemByIdFailedReason {
   UnknownCause = "Unknown Cause",
@@ -42,7 +42,7 @@ export async function handleGetPublishedItemById({
   //////////////////////////////////////////////////
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -52,14 +52,13 @@ export async function handleGetPublishedItemById({
   // Assemble Published Item
   //////////////////////////////////////////////////
 
-  const constructPublishedItemFromPartsByIdResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      publishedItemId: publishedItemId,
-      requestorUserId: clientUserId,
-    });
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+    publishedItemId: publishedItemId,
+    requestorUserId: clientUserId,
+  });
   if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsByIdResponse;
   }

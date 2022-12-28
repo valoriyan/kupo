@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -42,16 +42,16 @@ export async function handleGetPublishingChannelNameValidity({
   >
 > {
   //////////////////////////////////////////////////
-  // Inputs
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
-  const { errorResponse: error } = await checkAuthorization(controller, request);
+  const { errorResponse: error } = await checkAuthentication(controller, request);
   if (error) return error;
 
   const { publishingChannelName } = requestBody;
 
   //////////////////////////////////////////////////
-  // Validate publishing channel name
+  // Validate Publishing Channel Name
   //////////////////////////////////////////////////
 
   const validatePublishingChannelNameResponse = await validatePublishingChannelName({

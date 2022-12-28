@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "../../notification/models/unrenderableCanceledUserNotifications";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
 
@@ -37,7 +37,7 @@ export async function handleRemoveUserLikeFromPublishedItem({
 > {
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

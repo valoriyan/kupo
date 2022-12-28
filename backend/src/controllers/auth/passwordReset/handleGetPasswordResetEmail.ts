@@ -24,23 +24,39 @@ export async function handleGetPasswordResetEmail({
     GetPasswordResetEmailSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const { email } = requestBody;
 
-  const selectUserByEmailResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByEmail(
+  //////////////////////////////////////////////////
+  // Get User By Email
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByEmail =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByEmail(
       { controller, email },
     );
-  if (selectUserByEmailResponse.type === EitherType.failure) {
-    return selectUserByEmailResponse;
+  if (selectMaybeUserByEmail.type === EitherType.failure) {
+    return selectMaybeUserByEmail;
   }
-  const { success: user } = selectUserByEmailResponse;
+  const { success: maybeUser } = selectMaybeUserByEmail;
 
-  if (!!user) {
-    controller.emailService.sendResetPasswordEmail({ user });
+  //////////////////////////////////////////////////
+  // Don't Let Requestor Know If User With Email Exists or Not
+  //////////////////////////////////////////////////
+  if (!maybeUser) {
+    return {
+      type: EitherType.success,
+      success: {},
+    };
   }
 
-  return {
-    type: EitherType.success,
-    success: {},
-  };
+  const user = maybeUser;
+
+  //////////////////////////////////////////////////
+  // Send Reset Password or Alert Requestor if Error
+  //////////////////////////////////////////////////
+
+  return await controller.emailService.sendResetPasswordEmail({ user });
 }

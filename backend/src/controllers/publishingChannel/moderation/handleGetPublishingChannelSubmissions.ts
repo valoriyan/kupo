@@ -6,9 +6,9 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePublishedItem } from "../../publishedItem/models";
-import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 import { getNextPageCursorOfPage } from "../../publishedItem/utilities/pagination";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 import { PublishingChannelController } from "../publishingChannelController";
@@ -54,7 +54,7 @@ export async function handleGetPublishingChannelSubmissions({
 
   const { cursor, pageSize, publishingChannelId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -125,7 +125,7 @@ export async function handleGetPublishingChannelSubmissions({
   const publishedSubmissionPromises = dbPublishingChannelSubmissions.map(
     async (submission) => ({
       submissionId: submission.publishing_channel_submission_id,
-      publishedItem: await constructPublishedItemFromPartsById({
+      publishedItem: await assemblePublishedItemById({
         controller,
         blobStorageService: controller.blobStorageService,
         databaseService: controller.databaseService,

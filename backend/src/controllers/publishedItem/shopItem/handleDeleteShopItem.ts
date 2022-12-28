@@ -10,8 +10,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
-import { deleteBaseRenderablePublishedItemComponents } from "../utilities/deleteBasePublishedItemComponents";
+import { checkAuthentication } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
 
 export enum DeleteShopItemFailedReason {
@@ -41,7 +40,7 @@ export async function handleDeleteShopItem({
 > {
   const { publishedItemId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -50,15 +49,16 @@ export async function handleDeleteShopItem({
   //////////////////////////////////////////////////
   // DELETE BASE PUBLISHED ITEMs
   //////////////////////////////////////////////////
-  const deleteBaseRenderablePublishedItemComponentsResponse =
-    await deleteBaseRenderablePublishedItemComponents({
-      controller,
-      databaseService: controller.databaseService,
-      publishedItemId,
-      requestingUserId: clientUserId,
-    });
-  if (deleteBaseRenderablePublishedItemComponentsResponse.type === EitherType.failure) {
-    return deleteBaseRenderablePublishedItemComponentsResponse;
+  const deletePublishedItemResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
+      {
+        controller,
+        id: publishedItemId,
+        authorUserId: clientUserId,
+      },
+    );
+  if (deletePublishedItemResponse.type === EitherType.failure) {
+    return deletePublishedItemResponse;
   }
 
   //////////////////////////////////////////////////

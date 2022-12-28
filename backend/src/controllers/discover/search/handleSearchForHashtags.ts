@@ -6,7 +6,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { DiscoverController } from "../discoverController";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 
 export interface SearchForHashtagsRequestBody {
   query: string;
@@ -40,7 +40,7 @@ export async function handleSearchForHashtags({
   //////////////////////////////////////////////////
   // Inputs & Authentication
   //////////////////////////////////////////////////
-  const { errorResponse: error } = await checkAuthorization(controller, request);
+  const { errorResponse: error } = await checkAuthentication(controller, request);
   if (error) return error;
 
   const { pageNumber, query, pageSize } = requestBody;

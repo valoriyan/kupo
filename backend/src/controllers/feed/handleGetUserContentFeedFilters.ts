@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { FeedController } from "./feedController";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "./models";
 
@@ -37,7 +37,7 @@ export async function handleGetUserContentFeedFilters({
 > {
   const now = Date.now();
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

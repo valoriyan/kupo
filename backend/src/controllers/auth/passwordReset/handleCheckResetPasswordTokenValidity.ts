@@ -25,9 +25,16 @@ export async function handleCheckResetPasswordTokenValidity({
     CheckResetPasswordTokenValiditySuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
 
   const { token } = requestBody;
+
+  //////////////////////////////////////////////////
+  // Authentication
+  //////////////////////////////////////////////////
 
   try {
     verify(token, jwtPrivateKey);
@@ -37,6 +44,10 @@ export async function handleCheckResetPasswordTokenValidity({
       error: { reason: CheckResetPasswordTokenValidityFailedReason.InvalidToken },
     };
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return {
     type: EitherType.success,

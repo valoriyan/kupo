@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { NotificationController } from "./notificationController";
 
 export interface GetCountOfUnreadNotificationsSuccess {
@@ -28,11 +28,18 @@ export async function handleGetCountOfUnreadNotifications({
     GetCountOfUnreadNotificationsSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Read the Count of Unread Notifications from DB
+  //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
@@ -43,6 +50,10 @@ export async function handleGetCountOfUnreadNotifications({
   }
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     count: countOfUnreadNotifications,

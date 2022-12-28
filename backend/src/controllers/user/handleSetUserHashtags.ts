@@ -1,6 +1,6 @@
 import express from "express";
 import { ErrorReasonTypes, SecuredHTTPResponse, Success } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { UserPageController } from "./userPageController";
 
 export interface SetUserHashtagsRequestBody {
@@ -28,7 +28,7 @@ export async function handleSetUserHashtags({
     SetUserHashtagsSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

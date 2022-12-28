@@ -6,8 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { areSetsEqual } from "../../utilities/checkSetEquality";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
 export interface DoesChatRoomExistWithUserIdsRequestBody {
@@ -38,13 +37,20 @@ export async function handleDoesChatRoomExistWithUserIds({
     DoesChatRoomExistWithUserIdsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { userIds } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Check that Request Includes Client User Id
+  //////////////////////////////////////////////////
 
   if (!userIds.includes(clientUserId)) {
     return Failure({
@@ -56,28 +62,24 @@ export async function handleDoesChatRoomExistWithUserIds({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Get Chat Rooms That Contain User Ids And Only User Ids
+  //////////////////////////////////////////////////
+
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
-      { controller, userIds },
+      { controller, userIds: new Set(userIds) },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
     return getChatRoomIdWithUserIdMembersExclusiveResponse;
   }
   const { success: chatRoomId } = getChatRoomIdWithUserIdMembersExclusiveResponse;
 
-  let doesChatRoomExist = false;
-  if (chatRoomId) {
-    const getUserIdsJoinedToChatRoomIdResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUserIdsJoinedToChatRoomId(
-        { controller, chatRoomId },
-      );
-    if (getUserIdsJoinedToChatRoomIdResponse.type === EitherType.failure) {
-      return getUserIdsJoinedToChatRoomIdResponse;
-    }
-    const { success: userIdsInChatRoom } = getUserIdsJoinedToChatRoomIdResponse;
+  const doesChatRoomExist = !!chatRoomId;
 
-    doesChatRoomExist = areSetsEqual(new Set(userIdsInChatRoom), new Set(userIds));
-  }
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     doesChatRoomExist,

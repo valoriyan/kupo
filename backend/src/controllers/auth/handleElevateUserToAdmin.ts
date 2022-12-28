@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { AuthController } from "./authController";
 
 export interface ElevateUserToAdminRequestBody {
@@ -35,24 +35,38 @@ export async function handleElevateUserToAdmin({
     ElevateUserToAdminSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { userIdElevatedToAdmin } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
-  const selectUserByUserIdResponse =
+  //////////////////////////////////////////////////
+  // Get User
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserId =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       { controller, userId: clientUserId },
     );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
+  if (selectMaybeUserByUserId.type === EitherType.failure) {
+    return selectMaybeUserByUserId;
   }
-  const { success: clientUser } = selectUserByUserIdResponse;
+  const { success: maybeUser } = selectMaybeUserByUserId;
 
-  if (!!clientUser && clientUser.isAdmin) {
+  //////////////////////////////////////////////////
+  // If Requestor User Exists and Requestor is Admin
+  //////////////////////////////////////////////////
+  if (!!maybeUser && maybeUser.isAdmin) {
+    //////////////////////////////////////////////////
+    // Elevate Target to Admin
+    //////////////////////////////////////////////////
     const elevateUserToAdminResponse =
       await controller.databaseService.tableNameToServicesMap.usersTableService.elevateUserToAdmin(
         { controller, userId: userIdElevatedToAdmin },
@@ -60,17 +74,16 @@ export async function handleElevateUserToAdmin({
     if (elevateUserToAdminResponse.type === EitherType.failure) {
       return elevateUserToAdminResponse;
     }
-  } else {
-    return Failure({
-      controller,
-      httpStatusCode: 403,
-      reason: ElevateUserToAdminFailedReason.ILLEGAL_ACCESS,
-      error:
-        "Client user does not have permission to create admins at handleElevateUserToAdmin",
-      additionalErrorInformation:
-        "Client user does not have permission to create admins at handleElevateUserToAdmin",
-    });
+    return Success({});
   }
 
-  return Success({});
+  return Failure({
+    controller,
+    httpStatusCode: 403,
+    reason: ElevateUserToAdminFailedReason.ILLEGAL_ACCESS,
+    error:
+      "Client user does not have permission to create admins at handleElevateUserToAdmin",
+    additionalErrorInformation:
+      "Client user does not have permission to create admins at handleElevateUserToAdmin",
+  });
 }

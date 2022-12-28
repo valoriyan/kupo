@@ -7,10 +7,10 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
-import { constructPublishedItemsFromPartsById } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsByIds } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { getNextPageCursorOfPage } from "../publishedItem/utilities/pagination";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { PublishingChannelController } from "./publishingChannelController";
@@ -53,7 +53,7 @@ export async function handleGetPublishedItemsInPublishingChannel({
   //////////////////////////////////////////////////
   const { publishingChannelName, cursor, pageSize, publishedItemType } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -123,14 +123,13 @@ export async function handleGetPublishedItemsInPublishingChannel({
   // Construct renderable published items
   //////////////////////////////////////////////////
 
-  const constructPublishedItemsFromPartsByIdRequest =
-    await constructPublishedItemsFromPartsById({
-      controller,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      publishedItemIds,
-      requestorUserId: clientUserId,
-    });
+  const constructPublishedItemsFromPartsByIdRequest = await assemblePublishedItemsByIds({
+    controller,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+    publishedItemIds,
+    requestorUserId: clientUserId,
+  });
   if (constructPublishedItemsFromPartsByIdRequest.type === EitherType.failure) {
     return constructPublishedItemsFromPartsByIdRequest;
   }

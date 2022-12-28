@@ -6,11 +6,11 @@ import {
   Failure,
   SecuredHTTPResponse,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { ProfilePrivacySetting, RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromParts } from "./utilities/constructRenderableUserFromParts";
+import { assembleRenderableUserFromCachedComponents } from "./utilities/assembleRenderableUserFromCachedComponents";
 
 export enum UpdateUserProfileFailedReason {
   Unknown = "Unknown",
@@ -42,7 +42,7 @@ export async function handleUpdateUserProfile({
     UpdateUserProfileSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -120,15 +120,14 @@ export async function handleUpdateUserProfile({
     });
   }
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  const constructRenderableUserFromPartsResponse =
+    await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUser: updatedUnrenderableUser,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
-    },
-  );
+    });
 
   return constructRenderableUserFromPartsResponse;
 }

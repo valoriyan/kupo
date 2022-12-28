@@ -5,8 +5,8 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
-import { constructRenderableUsersFromPartsByUserIds } from "../user/utilities";
+import { checkAuthentication } from "../auth/utilities";
+import { assembleRenderableUsersByIds } from "../user/utilities/assembleRenderableUserById";
 import { ChatController } from "./chatController";
 import { RenderableChatRoomWithJoinedUsers } from "./models";
 
@@ -36,13 +36,21 @@ export async function handleGetChatRoomById({
     GetChatRoomByIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { chatRoomId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Get Chat Rooms Joins
+  //////////////////////////////////////////////////
 
   const getChatRoomByIdResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getUnrenderableChatRoomWithJoinedUsersByChatRoomId(
@@ -58,8 +66,12 @@ export async function handleGetChatRoomById({
     setOfUserIds.add(memberUserId);
   });
 
+  //////////////////////////////////////////////////
+  // Get Renderable Users
+  //////////////////////////////////////////////////
+
   const constructRenderableUsersFromPartsByUserIdsResponse =
-    await constructRenderableUsersFromPartsByUserIds({
+    await assembleRenderableUsersByIds({
       controller,
       requestorUserId: clientUserId,
       userIds: [...setOfUserIds],
@@ -71,6 +83,10 @@ export async function handleGetChatRoomById({
   }
   const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
+  //////////////////////////////////////////////////
+  // Put Together Renderable Chat Room
+  //////////////////////////////////////////////////
+
   const mapOfUserIdsToRenderableUsers = new Map(
     renderableUsers.map((renderableUser) => {
       return [renderableUser.userId, renderableUser];
@@ -81,10 +97,14 @@ export async function handleGetChatRoomById({
     (memberUserId) => mapOfUserIdsToRenderableUsers.get(memberUserId)!,
   );
 
-  const renderableChatRoom = {
+  const renderableChatRoom: RenderableChatRoomWithJoinedUsers = {
     chatRoomId,
     members: chatRoomMembers,
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     chatRoom: renderableChatRoom,

@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { checkValidityOfMediaFile } from "./utilities/checkValidityOfMediaFile";
 import { uploadMediaFile } from "./utilities/uploadMediaFile";
 
@@ -42,7 +42,7 @@ export async function handleUploadFile({
   //////////////////////////////////////////////////
   const { mediaFile, mimeType } = requestBody;
 
-  const { errorResponse: error } = await checkAuthorization(controller, request);
+  const { errorResponse: error } = await checkAuthentication(controller, request);
   if (error) return error;
 
   //////////////////////////////////////////////////

@@ -7,7 +7,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { GenericResponseFailedReason } from "../../models";
 import { generateAndEmitAcceptedUserFollowRequestNotification } from "./utilities/generateAndEmitAcceptedUserFollowRequestNotification";
@@ -42,7 +42,7 @@ export async function handleResolveFollowRequest({
     ResolveFollowRequestSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

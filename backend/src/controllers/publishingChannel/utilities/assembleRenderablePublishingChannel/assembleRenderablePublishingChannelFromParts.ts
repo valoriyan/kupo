@@ -9,9 +9,9 @@ import {
 } from "../../../../utilities/monads";
 import { RenderablePublishingChannel, UnrenderablePublishingChannel } from "../../models";
 import {
-  constructRenderableUserFromPartsByUserId,
-  constructRenderableUsersFromPartsByUserIds,
-} from "../../../user/utilities";
+  assembleRenderableUserById,
+  assembleRenderableUsersByIds,
+} from "../../../user/utilities/assembleRenderableUserById";
 import { BlobStorageService } from "../../../../services/blobStorageService";
 import {
   unwrapListOfEitherResponses,
@@ -67,6 +67,10 @@ export async function assembleRenderablePublishingChannelFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const {
     publishingChannelId,
     ownerUserId,
@@ -118,7 +122,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   // GET RENDERABLE OWNER USER
   //////////////////////////////////////////////////
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId,
       userId: ownerUserId,
@@ -194,7 +198,7 @@ export async function assembleRenderablePublishingChannelFromParts({
     selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse;
 
   const constructRenderableUsersFromPartsByUserIdsResponse =
-    await constructRenderableUsersFromPartsByUserIds({
+    await assembleRenderableUsersByIds({
       controller,
       requestorUserId,
       userIds: moderatorUserIds,

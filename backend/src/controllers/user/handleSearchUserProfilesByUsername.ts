@@ -6,11 +6,11 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUsersFromParts } from "./utilities/constructRenderableUserFromParts";
+import { assembleRenderableUsersFromCachedComponents } from "./utilities/assembleRenderableUserFromCachedComponents";
 
 export interface SearchUserProfilesByUsernameRequestBody {
   searchString: string;
@@ -38,7 +38,7 @@ export async function handleSearchUserProfilesByUsername({
     SearchUserProfilesByUsernameSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -70,7 +70,7 @@ export async function handleSearchUserProfilesByUsername({
   }
 
   const constructRenderableUsersFromPartsResponse =
-    await constructRenderableUsersFromParts({
+    await assembleRenderableUsersFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUsers,

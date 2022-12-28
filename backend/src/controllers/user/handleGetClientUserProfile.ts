@@ -5,10 +5,10 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
-import { constructRenderableUserFromPartsByUserId } from "./utilities";
+import { assembleRenderableUserById } from "./utilities/assembleRenderableUserById";
 
 export interface ClientUserDetails {
   followingCommunities: { count: number };
@@ -37,7 +37,7 @@ export async function handleGetClientUserProfile({
   // Inputs
   //////////////////////////////////////////////////
 
-  const { clientUserId, errorResponse } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse } = await checkAuthentication(controller, request);
   if (errorResponse) return errorResponse;
 
   //////////////////////////////////////////////////
@@ -45,7 +45,7 @@ export async function handleGetClientUserProfile({
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

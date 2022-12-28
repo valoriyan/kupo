@@ -1,6 +1,6 @@
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
-import { constructRenderablePublishedItemCommentFromParts } from "../../publishedItem/publishedItemComment/utilities";
+import { assembleRenderablePublishedItemCommentFromCachedComponents } from "../../publishedItem/publishedItemComment/utilities";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
@@ -13,8 +13,8 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
-import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
-import { constructRenderableUserFromPartsByUserId } from "../../../controllers/user/utilities";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableNewTagInPublishedItemCommentNotification({
   controller,
@@ -82,8 +82,12 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   }
   const unrenderablePublishedItemComment = maybeUnrenderablePublishedItemComment;
 
+  //////////////////////////////////////////////////
+  // Assemble Renderable Published Item Comment
+  //////////////////////////////////////////////////
+
   const constructRenderablePublishedItemCommentFromPartsResponse =
-    await constructRenderablePublishedItemCommentFromParts({
+    await assembleRenderablePublishedItemCommentFromCachedComponents({
       controller,
       blobStorageService,
       databaseService,
@@ -103,7 +107,7 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: clientUserId,
       userId: unrenderablePublishedItemComment.authorUserId,
@@ -119,14 +123,13 @@ export async function assembleRenderableNewTagInPublishedItemCommentNotification
   // Get Published Item Containing Comment
   //////////////////////////////////////////////////
 
-  const constructPublishedItemFromPartsByIdResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishedItemId: publishedItemComment.publishedItemId,
-      requestorUserId: clientUserId,
-    });
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService,
+    databaseService,
+    publishedItemId: publishedItemComment.publishedItemId,
+    requestorUserId: clientUserId,
+  });
   if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsByIdResponse;
   }

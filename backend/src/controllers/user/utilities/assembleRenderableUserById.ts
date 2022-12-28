@@ -10,11 +10,11 @@ import {
 } from "../../../utilities/monads";
 import { GenericResponseFailedReason } from "../../models";
 import {
-  constructRenderableUsersFromParts,
-  constructRenderableUserFromParts,
-} from "./constructRenderableUserFromParts";
+  assembleRenderableUsersFromCachedComponents,
+  assembleRenderableUserFromCachedComponents,
+} from "./assembleRenderableUserFromCachedComponents";
 
-export async function constructRenderableUsersFromPartsByUserIds({
+export async function assembleRenderableUsersByIds({
   controller,
   requestorUserId,
   userIds,
@@ -38,7 +38,7 @@ export async function constructRenderableUsersFromPartsByUserIds({
   }
   const { success: unrenderableUsers } = unrenderableUsersResponse;
 
-  return await constructRenderableUsersFromParts({
+  return await assembleRenderableUsersFromCachedComponents({
     controller,
     requestorUserId: requestorUserId,
     unrenderableUsers,
@@ -47,7 +47,7 @@ export async function constructRenderableUsersFromPartsByUserIds({
   });
 }
 
-export async function constructRenderableUserFromPartsByUserId({
+export async function assembleRenderableUserById({
   controller,
   requestorUserId,
   userId,
@@ -75,7 +75,7 @@ export async function constructRenderableUserFromPartsByUserId({
   const { success: unrenderableUser } = unrenderableUserResponse;
 
   if (!!unrenderableUser) {
-    return await constructRenderableUserFromParts({
+    return await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: requestorUserId,
       unrenderableUser,

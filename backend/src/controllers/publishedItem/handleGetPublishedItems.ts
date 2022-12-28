@@ -11,8 +11,8 @@ import { getClientUserId } from "../auth/utilities";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities/pagination";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { PublishedItemType, RenderablePublishedItem } from "./models";
-import { constructPublishedItemsFromParts } from "./utilities/constructPublishedItemsFromParts";
-import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContent";
+import { assemblePublishedItemsFromCachedComponents } from "./utilities/constructPublishedItemsFromParts";
+import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContentByUserId";
 
 export interface GetPublishedItemsByUserIdRequestBody {
   userId: string;
@@ -141,15 +141,14 @@ export async function handleGetPublishedItemsByUserId({
   const { success: unrenderablePostsWithoutElementsOrHashtags } =
     getPublishedItemsByAuthorUserIdResponse;
 
-  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
-    {
+  const constructPublishedItemsFromPartsResponse =
+    await assemblePublishedItemsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
       requestorUserId: clientUserId,
-    },
-  );
+    });
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemsFromPartsResponse;
   }

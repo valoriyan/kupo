@@ -15,7 +15,7 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../utilities/monads/unwrapListOfResponses";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { RenderableShopItem, RenderableShopItemType } from "./models";
 import { ShopItemController } from "./shopItemController";
@@ -65,7 +65,7 @@ export async function handleCreateShopItem({
   // Inputs & Authentication
   //////////////////////////////////////////////////
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

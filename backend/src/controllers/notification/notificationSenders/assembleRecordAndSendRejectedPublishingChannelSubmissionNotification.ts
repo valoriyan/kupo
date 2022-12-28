@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -37,7 +37,7 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // GET PUBLISHING CHANNEL
+  // Assemble the Renderable Publishing Channel
   //////////////////////////////////////////////////
   const assembleRenderablePublishingChannelByIdResponse =
     await assembleRenderablePublishingChannelById({
@@ -55,23 +55,22 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   const { success: publishingChannel } = assembleRenderablePublishingChannelByIdResponse;
 
   //////////////////////////////////////////////////
-  // GET PUBLISHED ITEM
+  // Assemble the Renderable Published Item
   //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishedItemId,
-      requestorUserId: recipientUserId,
-    });
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService,
+    databaseService,
+    publishedItemId,
+    requestorUserId: recipientUserId,
+  });
   if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsByIdResponse;
   }
   const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
 
   //////////////////////////////////////////////////
-  // GET COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -85,7 +84,7 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // WRITE NOTIFICATION INTO DATASTORE
+  // Write Notification to DB
   //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
@@ -105,7 +104,7 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   }
 
   //////////////////////////////////////////////////
-  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  // Assemble Notification
   //////////////////////////////////////////////////
 
   const renderableRejectedPublishingChannelSubmissionNotification: RenderableRejectedPublishingChannelSubmissionNotification =
@@ -120,6 +119,10 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
       },
     };
 
+  //////////////////////////////////////////////////
+  // Send Notification
+  //////////////////////////////////////////////////
+
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfRejectedPublishingChannelSubmission(
     {
       userId: recipientUserId,
@@ -128,7 +131,7 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   );
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({});

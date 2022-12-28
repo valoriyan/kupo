@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
 import { deleteAndEmitCanceledAcceptedUserFollowRequestNotification } from "./utilities/deleteAndEmitCanceledAcceptedUserFollowRequestNotification";
 
@@ -36,7 +36,7 @@ export async function handleRevokeFollower({
 > {
   const { revokedUserId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

@@ -6,9 +6,9 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { DiscoverController } from "../discoverController";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { RenderableUser } from "../../user/models";
-import { constructRenderableUsersFromParts } from "../../user/utilities/constructRenderableUserFromParts";
+import { assembleRenderableUsersFromCachedComponents } from "../../user/utilities/assembleRenderableUserFromCachedComponents";
 import { mergeArraysOfUnrenderableUsers } from "../../user/utilities/mergeArraysOfUnrenderableUsers";
 
 export interface SearchForUsersRequestBody {
@@ -43,7 +43,7 @@ export async function handleSearchForUsers({
   //////////////////////////////////////////////////
   // Inputs & Authentication
   //////////////////////////////////////////////////
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -121,7 +121,7 @@ export async function handleSearchForUsers({
   //////////////////////////////////////////////////
 
   const constructRenderableUsersFromPartsResponse =
-    await constructRenderableUsersFromParts({
+    await assembleRenderableUsersFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUsers: pageOfUnrenderableUsers,

@@ -5,9 +5,9 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
-import { constructPublishedItemsFromParts } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/constructPublishedItemsFromParts";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
@@ -47,7 +47,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
 
   const { cursor, pageSize, publishedItemType } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -91,15 +91,14 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   // Assemble published items
   //////////////////////////////////////////////////
 
-  const constructPublishedItemsFromPartsResponse = await constructPublishedItemsFromParts(
-    {
+  const constructPublishedItemsFromPartsResponse =
+    await assemblePublishedItemsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems,
       requestorUserId: clientUserId,
-    },
-  );
+    });
   if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemsFromPartsResponse;
   }

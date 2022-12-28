@@ -5,7 +5,7 @@ import {
   Failure,
   SecuredHTTPResponse,
 } from "../../../../utilities/monads";
-import { checkAuthorization } from "../../../auth/utilities";
+import { checkAuthentication } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { v4 as uuidv4 } from "uuid";
 import { assembleRecordAndSendShopItemSoldNotification } from "../../../../controllers/notification/notificationSenders/assembleRecordAndSendShopItemSoldNotification";
@@ -48,7 +48,7 @@ export async function handlePurchaseShopItem({
 
   const { publishedItemId, localCreditCardId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

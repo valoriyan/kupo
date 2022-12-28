@@ -11,11 +11,11 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../utilities/monads/unwrapListOfResponses";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
 import { RenderablePublishedItemComment } from "./models";
-import { constructRenderablePublishedItemCommentFromParts } from "./utilities";
+import { assembleRenderablePublishedItemCommentFromCachedComponents } from "./utilities";
 import { DatabaseService } from "../../../services/databaseService";
 import { collectTagsFromText } from "../../utilities/collectTagsFromText";
 import { BlobStorageService } from "../../../services/blobStorageService";
@@ -57,7 +57,7 @@ export async function handleCreatePublishedItemComment({
   //////////////////////////////////////////////////
   const { publishedItemId, text } = requestBody;
 
-  const { clientUserId, errorResponse } = await checkAuthorization(controller, request);
+  const { clientUserId, errorResponse } = await checkAuthentication(controller, request);
   if (errorResponse) return errorResponse;
 
   const postCommentId: string = uuidv4();
@@ -88,7 +88,7 @@ export async function handleCreatePublishedItemComment({
   //////////////////////////////////////////////////
 
   const constructRenderablePublishedItemCommentFromPartsResponse =
-    await constructRenderablePublishedItemCommentFromParts({
+    await assembleRenderablePublishedItemCommentFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,

@@ -1,7 +1,7 @@
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { constructRenderableUserFromParts } from "../../user/utilities/constructRenderableUserFromParts";
+import { assembleRenderableUserFromCachedComponents } from "../../user/utilities/assembleRenderableUserFromCachedComponents";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableNewLikeOnPublishedItemNotification } from "../models/renderableUserNotifications";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../models";
-import { constructPublishedItemFromPartsById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRenderableNewLikeOnPublishedItemNotification({
   controller,
@@ -33,10 +33,17 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
     RenderableNewLikeOnPublishedItemNotification
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
   const {
     published_item_like_reference: publishedItemLikeId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
+
+  //////////////////////////////////////////////////
+  // Get the Published Item Like Data
+  //////////////////////////////////////////////////
 
   const getPublishedItemLikeByPublishedItemLikeIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemLikesTableService.getPublishedItemLikeByPublishedItemLikeId(
@@ -54,32 +61,40 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
     },
   } = getPublishedItemLikeByPublishedItemLikeIdResponse;
 
-  const constructPublishedItemFromPartsResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishedItemId,
-      requestorUserId: clientUserId,
-    });
+  //////////////////////////////////////////////////
+  // Assemble the Renderable Published Item
+  //////////////////////////////////////////////////
+
+  const constructPublishedItemFromPartsResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService,
+    databaseService,
+    publishedItemId,
+    requestorUserId: clientUserId,
+  });
   if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsResponse;
   }
   const { success: renderablePublishedItem } = constructPublishedItemFromPartsResponse;
 
-  const selectUserByUserIdResponse =
+  //////////////////////////////////////////////////
+  // Get the Unrenderable User That Liked the Published Item
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       {
         controller,
         userId: userLikingPublishedItemId,
       },
     );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
+  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
+    return selectMaybeUserByUserIdResponse;
   }
-  const { success: unrenderableUserThatLikedPublishedItem } = selectUserByUserIdResponse;
+  const { success: maybeUnrenderableUserThatLikedPublishedItem } =
+    selectMaybeUserByUserIdResponse;
 
-  if (!unrenderableUserThatLikedPublishedItem) {
+  if (!maybeUnrenderableUserThatLikedPublishedItem) {
     return Failure({
       controller,
       httpStatusCode: 404,
@@ -90,20 +105,30 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
     });
   }
 
-  const constructRenderableUserFromPartsResponse = await constructRenderableUserFromParts(
-    {
+  const unrenderableUserThatLikedPublishedItem =
+    maybeUnrenderableUserThatLikedPublishedItem;
+
+  //////////////////////////////////////////////////
+  // Assemble the Renderable User That Liked the Published Item
+  //////////////////////////////////////////////////
+
+  const constructRenderableUserFromPartsResponse =
+    await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
       unrenderableUser: unrenderableUserThatLikedPublishedItem,
       blobStorageService,
       databaseService,
-    },
-  );
+    });
   if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
     return constructRenderableUserFromPartsResponse;
   }
   const { success: userThatLikedPublishedItem } =
     constructRenderableUserFromPartsResponse;
+
+  //////////////////////////////////////////////////
+  // Get the Count of Unread Notifications
+  //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
@@ -114,6 +139,10 @@ export async function assembleRenderableNewLikeOnPublishedItemNotification({
   }
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     countOfUnreadNotifications,

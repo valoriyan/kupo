@@ -10,8 +10,8 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
-import { constructPublishedItemFromPartsById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
-import { constructRenderableUserFromPartsByUserId } from "../../../controllers/user/utilities";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableNewTagInPublishedItemCaptionNotification({
   controller,
@@ -56,15 +56,14 @@ export async function assembleRenderableNewTagInPublishedItemCaptionNotification
   //////////////////////////////////////////////////
   // Get Published Item
   //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse =
-    await constructPublishedItemFromPartsById({
-      controller,
-      blobStorageService,
-      databaseService,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      publishedItemId: publishedItemId!,
-      requestorUserId: clientUserId,
-    });
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    blobStorageService,
+    databaseService,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    publishedItemId: publishedItemId!,
+    requestorUserId: clientUserId,
+  });
   if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsByIdResponse;
   }
@@ -75,7 +74,7 @@ export async function assembleRenderableNewTagInPublishedItemCaptionNotification
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: clientUserId,
       userId: publishedItem.authorUserId,

@@ -7,7 +7,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishingChannelController } from "../publishingChannelController";
 import {
   validatePublishingChannelName,
@@ -72,14 +72,14 @@ export async function handleCreatePublishingChannel({
     bannedWords,
   } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // VALIDATE PUBLISHING CHANNEL NAME
+  // Validate Publishing Channel Name
   //////////////////////////////////////////////////
 
   const validatePublishingChannelNameResponse = await validatePublishingChannelName({
@@ -93,7 +93,7 @@ export async function handleCreatePublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // WRITE TO DATABASE
+  // Write to DB
   //////////////////////////////////////////////////
   const createPublishingChannelResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.createPublishingChannel(
@@ -116,7 +116,7 @@ export async function handleCreatePublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // Add moderators
+  // Write Moderators to DB
   //////////////////////////////////////////////////
 
   if (moderatorUserIds.length > 0) {
@@ -140,7 +140,7 @@ export async function handleCreatePublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // FOLLOW OWNER TO CHANNEL
+  // Follow Owner to Channel
   //////////////////////////////////////////////////
   const publishingChannelFollowEventId = uuidv4();
 
@@ -161,7 +161,7 @@ export async function handleCreatePublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({

@@ -6,9 +6,9 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePost } from "../../publishedItem/post/models";
-import { constructRenderablePostsFromParts } from "../../publishedItem/post/utilities";
+import { assembleRenderablePostsFromCachedComponents } from "../../publishedItem/post/utilities";
 import { mergeArraysOfUncompiledBasePublishedItem } from "../../publishedItem/utilities/mergeArraysOfUncompiledBasePublishedItem";
 import { DiscoverController } from "../discoverController";
 
@@ -45,7 +45,7 @@ export async function handleSearchForPosts({
   // Inputs & Authentication
   //////////////////////////////////////////////////
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -127,18 +127,19 @@ export async function handleSearchForPosts({
   // Get Renderable Published Items
   //////////////////////////////////////////////////
 
-  const constructRenderablePostsFromPartsResponse =
-    await constructRenderablePostsFromParts({
+  const assembleRenderablePostsFromCachedComponentsResponse =
+    await assembleRenderablePostsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       uncompiledBasePublishedItems: pageOfUnrenderablePosts,
       requestorUserId: clientUserId,
     });
-  if (constructRenderablePostsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostsFromPartsResponse;
+  if (assembleRenderablePostsFromCachedComponentsResponse.type === EitherType.failure) {
+    return assembleRenderablePostsFromCachedComponentsResponse;
   }
-  const { success: renderablePosts } = constructRenderablePostsFromPartsResponse;
+  const { success: renderablePosts } =
+    assembleRenderablePostsFromCachedComponentsResponse;
 
   //////////////////////////////////////////////////
   // Return

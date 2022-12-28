@@ -6,9 +6,8 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
-import { getCountOfUnreadChatRooms } from "./utilities";
 
 export enum GetCountOfUnreadChatRoomsFailedReason {
   UnknownCause = "Unknown Cause",
@@ -33,21 +32,34 @@ export async function handleGetCountOfUnreadChatRooms({
     GetCountOfUnreadChatRoomsSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
-  const getCountOfUnreadChatRoomsResponse = await getCountOfUnreadChatRooms({
-    controller,
-    databaseService: controller.databaseService,
-    userId: clientUserId,
-  });
+  //////////////////////////////////////////////////
+  // Get Count of Unread Chat Rooms
+  //////////////////////////////////////////////////
+
+  const getCountOfUnreadChatRoomsResponse =
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId(
+      {
+        controller,
+        userId: clientUserId,
+      },
+    );
   if (getCountOfUnreadChatRoomsResponse.type === EitherType.failure) {
     return getCountOfUnreadChatRoomsResponse;
   }
   const { success: count } = getCountOfUnreadChatRoomsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({ count });
 }

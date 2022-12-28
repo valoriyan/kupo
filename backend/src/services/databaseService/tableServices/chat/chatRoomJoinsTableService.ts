@@ -365,45 +365,66 @@ export class ChatRoomJoinsTableService extends TableService {
     userIds,
   }: {
     controller: Controller;
-    userIds: string[];
+    userIds: Set<string>;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string | undefined>> {
     try {
-      const parameterizedUsersList = userIds
-        .map((_, index) => `$${index + 1}`)
-        .join(", ");
+      const countOfUsers = userIds.size;
+
+      const queryValues: (string | number)[] = [countOfUsers];
+
+      const parameterizedUsersList: string[] = [];
+      [...userIds].forEach((userId) => {
+        parameterizedUsersList.push(`$${queryValues.length + 1}`);
+        queryValues.push(userId);
+      });
+      const parameterizedUsersListText = parameterizedUsersList.join(", ");
+
+      //////////////////////////////////////////////////
+      // 1) Get the list of chat room ids that contain the users (and maybe more users)
+      // 2) Get all rows for chat rooms in step 1
+      //////////////////////////////////////////////////
 
       const query = {
         text: `
           SELECT
-            *
+            chat_room_id
           FROM
             ${this.tableName}
           WHERE
-            user_id IN ( ${parameterizedUsersList} )
+            chat_room_id in (
+              SELECT
+                chat_room_id
+              FROM
+                ${this.tableName}
+              WHERE
+                user_id IN ( ${parameterizedUsersListText} )
+            )
+          GROUP BY
+            chat_room_id
+          HAVING
+            count(chat_room_id) = $1
+        
           ;
         `,
-        values: userIds,
+        values: queryValues,
       };
 
-      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
+      const response: QueryResult<{ chat_room_id: string }> =
+        await this.datastorePool.query(query);
 
-      const dbChatRoomMemberships = response.rows;
+      const matchingChatRoomIds = response.rows;
 
-      const mapOfRoomIdsToMemberUserIds: Map<string, Set<string>> = new Map();
-      dbChatRoomMemberships.forEach((dbChatRoomMembership) => {
-        const { user_id, chat_room_id } = dbChatRoomMembership;
-        const members: Set<string> = mapOfRoomIdsToMemberUserIds.has(chat_room_id)
-          ? mapOfRoomIdsToMemberUserIds.get(chat_room_id)!
-          : new Set();
-
-        members.add(user_id);
-        mapOfRoomIdsToMemberUserIds.set(chat_room_id, members);
-      });
-
-      for (const [roomId, members] of mapOfRoomIdsToMemberUserIds) {
-        if (userIds.every((userId) => members.has(userId))) {
-          return Success(roomId);
-        }
+      if (matchingChatRoomIds.length > 1) {
+        return Failure({
+          controller,
+          httpStatusCode: 500,
+          reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+          additionalErrorInformation:
+            "This should not be possible to encounter - the PSQL query must be incorrect; Error at ChatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive",
+        });
+      } else if (matchingChatRoomIds.length === 1) {
+        const matchingChatRoomId = matchingChatRoomIds[0].chat_room_id;
+        return Success(matchingChatRoomId);
       }
 
       return Success(undefined);

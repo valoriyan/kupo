@@ -68,7 +68,7 @@ export function validateTokenAndGetUserId({
  * If they are, their userId is returned
  * If they are not, a 403 error is sent to the client
  */
-export async function checkAuthorization(
+export async function checkAuthentication(
   controller: Controller,
   request: Request,
 ): Promise<{

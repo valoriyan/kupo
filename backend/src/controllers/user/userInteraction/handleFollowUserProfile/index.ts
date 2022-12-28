@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from "uuid";
 import express from "express";
 import { EitherType, Failure, SecuredHTTPResponse } from "../../../../utilities/monads";
-import { checkAuthorization } from "../../../auth/utilities";
+import { checkAuthentication } from "../../../auth/utilities";
 import { UserInteractionController } from "../userInteractionController";
 import { GenericResponseFailedReason } from "../../../models";
 import { ProfilePrivacySetting } from "../../models";
@@ -31,7 +31,7 @@ export async function handleFollowUser({
 }): Promise<SecuredHTTPResponse<FollowUserFailedReason | string, FollowUserSuccess>> {
   const { userIdBeingFollowed } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

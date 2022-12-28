@@ -5,10 +5,10 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
 import { RenderablePublishedItemComment } from "./models";
-import { constructRenderablePublishedItemCommentsFromParts } from "./utilities";
+import { assembleRenderablePublishedItemCommentsFromCachedComponents } from "./utilities";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 
 export interface ReadPageOfCommentsByPublishedItemIdRequestBody {
@@ -41,13 +41,21 @@ export async function handleReadPageOfCommentsByPublishedItemId({
     ReadPageOfCommentsByPublishedItemIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishedItemId, cursor, pageSize } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Read Page of Unrenderable Comments from DB
+  //////////////////////////////////////////////////
 
   const getPublishedItemCommentsByPublishedItemIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemCommentsTableService.getPublishedItemCommentsByPublishedItemId(
@@ -66,19 +74,30 @@ export async function handleReadPageOfCommentsByPublishedItemId({
   const { success: unrenderablePostComments } =
     getPublishedItemCommentsByPublishedItemIdResponse;
 
-  const constructRenderablePostCommentsFromPartsResponse =
-    await constructRenderablePublishedItemCommentsFromParts({
+  //////////////////////////////////////////////////
+  // Assemble Page of Renderable Comments
+  //////////////////////////////////////////////////
+
+  const assembleRenderablePublishedItemCommentsFromCachedComponentsResponse =
+    await assembleRenderablePublishedItemCommentsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
       unrenderablePublishedItemComments: unrenderablePostComments,
       clientUserId,
     });
-  if (constructRenderablePostCommentsFromPartsResponse.type === EitherType.failure) {
-    return constructRenderablePostCommentsFromPartsResponse;
+  if (
+    assembleRenderablePublishedItemCommentsFromCachedComponentsResponse.type ===
+    EitherType.failure
+  ) {
+    return assembleRenderablePublishedItemCommentsFromCachedComponentsResponse;
   }
   const { success: renderablePostComments } =
-    constructRenderablePostCommentsFromPartsResponse;
+    assembleRenderablePublishedItemCommentsFromCachedComponentsResponse;
+
+  //////////////////////////////////////////////////
+  // Update Next Page Cursor
+  //////////////////////////////////////////////////
 
   const nextPageCursor =
     renderablePostComments.length === pageSize
@@ -88,6 +107,10 @@ export async function handleReadPageOfCommentsByPublishedItemId({
               .creationTimestamp,
         })
       : undefined;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     postComments: renderablePostComments,

@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 
@@ -38,11 +38,11 @@ export async function handleCreateChatMessageInNewChatRoom({
   >
 > {
   //////////////////////////////////////////////////
-  // INPUTS & AUTH
+  // Inputs & Authentication
   //////////////////////////////////////////////////
   const { userIds, chatMessageText } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -54,7 +54,7 @@ export async function handleCreateChatMessageInNewChatRoom({
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
-      { controller, userIds },
+      { controller, userIds: new Set(userIds) },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
     return getChatRoomIdWithUserIdMembersExclusiveResponse;

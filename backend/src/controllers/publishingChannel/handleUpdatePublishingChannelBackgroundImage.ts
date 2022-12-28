@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { FileDescriptor, GenericResponseFailedReason } from "../models";
 import { RenderablePublishingChannel } from "./models";
 import { PublishingChannelController } from "./publishingChannelController";
@@ -46,14 +46,14 @@ export async function handleUpdatePublishingChannelBackgroundImage({
   //////////////////////////////////////////////////
   const { backgroundImage, publishingChannelId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // CONFIRM CLIENT IS OWNER
+  // Check Authorization
   //////////////////////////////////////////////////
 
   const isUserOwnerOfPublishingChannelResponse = await isUserOwnerOfPublishingChannel({
@@ -77,7 +77,7 @@ export async function handleUpdatePublishingChannelBackgroundImage({
   }
 
   //////////////////////////////////////////////////
-  // UPDATE PUBLISHING CHANNEL
+  // Write Update to DB
   //////////////////////////////////////////////////
   const updatePublishingChannelResponse =
     await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.updatePublishingChannel(
@@ -106,7 +106,7 @@ export async function handleUpdatePublishingChannelBackgroundImage({
   }
 
   //////////////////////////////////////////////////
-  // ASSEMBLE RENDERABLE PUBLISHING CHANNEL
+  // Assemble Renderable Publishing Channel
   //////////////////////////////////////////////////
   const assembleRenderablePublishingChannelFromPartsResponse =
     await assembleRenderablePublishingChannelFromParts({
@@ -125,7 +125,7 @@ export async function handleUpdatePublishingChannelBackgroundImage({
     assembleRenderablePublishingChannelFromPartsResponse;
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success({ publishingChannel: renderablePublishingChannel });

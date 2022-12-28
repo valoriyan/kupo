@@ -1,17 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
-import { BlobStorageService } from "../../../services/blobStorageService";
-import { DatabaseService } from "../../../services/databaseService";
-import { Controller } from "tsoa";
-import { checkAuthorization } from "../../../controllers/auth/utilities";
+import { checkAuthentication } from "../../../controllers/auth/utilities";
 import {
   EitherType,
   ErrorReasonTypes,
-  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { deleteBaseRenderablePublishedItemComponents } from "../utilities/deleteBasePublishedItemComponents";
 import { PostController } from "./postController";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -44,7 +39,7 @@ export async function handleDeletePost({
   // Inputs & Authentication
   //////////////////////////////////////////////////
 
-  const { errorResponse: error, clientUserId } = await checkAuthorization(
+  const { errorResponse: error, clientUserId } = await checkAuthentication(
     controller,
     request,
   );
@@ -53,65 +48,19 @@ export async function handleDeletePost({
   const { publishedItemId } = requestBody;
 
   //////////////////////////////////////////////////
-  // DELETE BASE PUBLISHED ITEMS
+  // Delete Published Item from DB
   //////////////////////////////////////////////////
 
-  const deleteBaseRenderablePublishedItemComponentsResponse =
-    await deleteBaseRenderablePublishedItemComponents({
-      controller,
-      databaseService: controller.databaseService,
-      publishedItemId,
-      requestingUserId: clientUserId,
-    });
-  if (deleteBaseRenderablePublishedItemComponentsResponse.type === EitherType.failure) {
-    return deleteBaseRenderablePublishedItemComponentsResponse;
-  }
-
-  //////////////////////////////////////////////////
-  // DELETE ASSOCIATED BLOB FILES
-  //////////////////////////////////////////////////
-  const deleteAssociatedBlobFilesResponse = await deleteAssociatedBlobFilesForPost({
-    controller,
-    databaseService: controller.databaseService,
-    blobStorageService: controller.blobStorageService,
-    publishedItemId: publishedItemId,
-  });
-  if (deleteAssociatedBlobFilesResponse.type === EitherType.failure) {
-    return deleteAssociatedBlobFilesResponse;
-  }
-
-  return Success({});
-}
-
-const deleteAssociatedBlobFilesForPost = async ({
-  controller,
-  databaseService,
-  blobStorageService,
-  publishedItemId,
-}: {
-  controller: Controller;
-  databaseService: DatabaseService;
-  blobStorageService: BlobStorageService;
-  publishedItemId: string;
-}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
-  const deletePostContentElementsByPublishedItemIdResponse =
-    await databaseService.tableNameToServicesMap.postContentElementsTableService.deletePostContentElementsByPublishedItemId(
+  const deletePublishedItemResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.deletePublishedItem(
       {
         controller,
-        publishedItemId,
+        id: publishedItemId,
+        authorUserId: clientUserId,
       },
     );
-  if (deletePostContentElementsByPublishedItemIdResponse.type === EitherType.failure) {
-    return deletePostContentElementsByPublishedItemIdResponse;
-  }
-  const { success: blobPointers } = deletePostContentElementsByPublishedItemIdResponse;
-
-  const deleteImagesResponse = await blobStorageService.deleteImages({
-    controller,
-    blobPointers,
-  });
-  if (deleteImagesResponse.type === EitherType.failure) {
-    return deleteImagesResponse;
+  if (deletePublishedItemResponse.type === EitherType.failure) {
+    return deletePublishedItemResponse;
   }
 
   //////////////////////////////////////////////////
@@ -119,4 +68,4 @@ const deleteAssociatedBlobFilesForPost = async ({
   //////////////////////////////////////////////////
 
   return Success({});
-};
+}

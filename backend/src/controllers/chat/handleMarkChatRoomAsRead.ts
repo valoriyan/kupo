@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthorization } from "../auth/utilities";
+import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 
 export enum MarkChatRoomAsReadFailedReason {
@@ -33,15 +33,22 @@ export async function handleMarkChatRoomAsRead({
     MarkChatRoomAsReadSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { chatRoomId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
   const timestamp = Date.now();
+
+  //////////////////////////////////////////////////
+  // Write to DB
+  //////////////////////////////////////////////////
 
   const recordChatRoomAsReadByUserIdAtTimestampResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomReadRecordsTableService.recordChatRoomAsReadByUserIdAtTimestamp(
@@ -55,6 +62,10 @@ export async function handleMarkChatRoomAsRead({
   if (recordChatRoomAsReadByUserIdAtTimestampResponse.type === EitherType.failure) {
     return recordChatRoomAsReadByUserIdAtTimestampResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

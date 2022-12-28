@@ -1,19 +1,20 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import express from "express";
-import { GenericResponseFailedReason } from "../../../controllers/models";
-import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
+import { GenericResponseFailedReason } from "../../models";
 import {
   EitherType,
   ErrorReasonTypes,
   Failure,
+  InternalServiceResponse,
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
-import {
-  UnrenderableCanceledCommentOnPublishedItemNotification,
-  UnrenderableCanceledNewTagInPublishedItemCommentNotification,
-} from "../../notification/models/unrenderableCanceledUserNotifications";
+import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemCommentController } from "./publishedItemCommentController";
+import { assembleRecordAndSendCancelledNewCommentOnPublishedItemNotification } from "../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCancelledNewCommentOnPublishedItemNotification";
+import { assembleRecordAndSendCancelledNewTagInPublishedItemCommentNotification } from "../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCancelledNewTagInPublishedItemCommentNotification";
+import { collectTagsFromText } from "../../../controllers/utilities/collectTagsFromText";
+import { Promise as BluebirdPromise } from "bluebird";
 
 export interface DeletePublishedItemCommentRequestBody {
   publishedItemCommentId: string;
@@ -41,19 +42,19 @@ export async function handleDeletePublishedItemComment({
   >
 > {
   //////////////////////////////////////////////////
-  // PARSE INPUTS
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
   const { publishedItemCommentId } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // GET COMMENT
+  // Get Unrenderable Comment
   //////////////////////////////////////////////////
 
   const getMaybePublishedItemCommentByIdResponse =
@@ -75,10 +76,10 @@ export async function handleDeletePublishedItemComment({
       additionalErrorInformation: `Published item with publishedItemCommentId "${publishedItemCommentId}" not found at handleDeletePublishedItemComment`,
     });
   }
-  const { publishedItemId } = maybeUnrenderablePublishedItemComment;
+  const { publishedItemId, text: commentText } = maybeUnrenderablePublishedItemComment;
 
   //////////////////////////////////////////////////
-  // UPDATE PUBLISHED ITEM
+  // Get Published Item
   //////////////////////////////////////////////////
 
   const getPublishedItemByIdResponse =
@@ -93,7 +94,7 @@ export async function handleDeletePublishedItemComment({
   } = getPublishedItemByIdResponse;
 
   //////////////////////////////////////////////////
-  // DELETE COMMENT IN DB
+  // Delete Comment from DB
   //////////////////////////////////////////////////
 
   const deletePostCommentResponse =
@@ -109,84 +110,64 @@ export async function handleDeletePublishedItemComment({
   }
 
   //////////////////////////////////////////////////
-  // DELETE USER NOTIFICATION
+  // Cancel New Comment Notification
   //////////////////////////////////////////////////
+  const handleDeletePublishedItemCommentNotificationsResponse =
+    await assembleRecordAndSendCancelledNewCommentOnPublishedItemNotification({
+      controller,
+      databaseService: controller.databaseService,
+      webSocketService: controller.webSocketService,
+      publishedItemCommentId,
+      recipientUserId: postAuthorUserId,
+    });
 
-  const firstDeleteUserNotificationForUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
-      {
-        controller,
-        externalReference: {
-          type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
-          publishedItemCommentId: publishedItemCommentId,
-        },
-        recipientUserId: postAuthorUserId,
-      },
-    );
-  if (firstDeleteUserNotificationForUserIdResponse.type === EitherType.failure) {
-    return firstDeleteUserNotificationForUserIdResponse;
+  if (handleDeletePublishedItemCommentNotificationsResponse.type === EitherType.failure) {
+    return handleDeletePublishedItemCommentNotificationsResponse;
   }
 
-  const secondDeleteUserNotificationForUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
+  //////////////////////////////////////////////////
+  // Collect Unrenderable Users Tagged in Comment
+  //////////////////////////////////////////////////
+  const taggedUsernames = collectTagsFromText({ text: commentText });
+
+  const unrenderableUsersResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
       {
         controller,
-        externalReference: {
-          type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+        usernames: taggedUsernames,
+      },
+    );
+
+  if (unrenderableUsersResponse.type === EitherType.failure) {
+    return unrenderableUsersResponse;
+  }
+  const { success: unrenderableUsers } = unrenderableUsersResponse;
+
+  const userIdsTaggedInDeletedComment = unrenderableUsers.map(({ userId }) => userId);
+
+  //////////////////////////////////////////////////
+  // Cancel New Tag in Comment Notifications
+  //////////////////////////////////////////////////
+  await BluebirdPromise.map(
+    userIdsTaggedInDeletedComment,
+    async (
+      userIdTaggedInDeletedComment,
+    ): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> => {
+      return await assembleRecordAndSendCancelledNewTagInPublishedItemCommentNotification(
+        {
+          controller,
+          databaseService: controller.databaseService,
+          webSocketService: controller.webSocketService,
           publishedItemCommentId,
+          recipientUserId: userIdTaggedInDeletedComment,
         },
-        recipientUserId: postAuthorUserId,
-      },
-    );
-  if (secondDeleteUserNotificationForUserIdResponse.type === EitherType.failure) {
-    return secondDeleteUserNotificationForUserIdResponse;
-  }
-
-  //////////////////////////////////////////////////
-  // GET COUNT OF UNREAD NOTIFICATIONS
-  //////////////////////////////////////////////////
-
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: postAuthorUserId },
-    );
-  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
-
-  //////////////////////////////////////////////////
-  // CANCEL NOTIFICATIONS
-  //////////////////////////////////////////////////
-
-  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification =
-    {
-      type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_PUBLISHED_ITEM,
-      countOfUnreadNotifications,
-      publishedItemCommentId: publishedItemCommentId,
-    };
-
-  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost(
-    {
-      userId: postAuthorUserId,
-      unrenderableCanceledCommentOnPostNotification,
+      );
     },
   );
 
-  const unrenderableCanceledNewTagInPublishedItemCommentNotification: UnrenderableCanceledNewTagInPublishedItemCommentNotification =
-    {
-      type: NOTIFICATION_EVENTS.CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
-      countOfUnreadNotifications,
-      publishedItemCommentId: publishedItemCommentId,
-    };
-
-  await controller.webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewTagInPublishedItemComment(
-    {
-      userId: postAuthorUserId,
-      unrenderableCanceledNewTagInPublishedItemCommentNotification,
-    },
-  );
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

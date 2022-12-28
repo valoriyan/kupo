@@ -14,7 +14,7 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../../utilities/monads/unwrapListOfResponses";
 
-export async function assemblePostMediaElements({
+export async function assemblePostMediaElementsByIds({
   controller,
   publishedItemId,
   blobStorageService,
@@ -25,6 +25,10 @@ export async function assemblePostMediaElements({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
+  //////////////////////////////////////////////////
+  // Get Post Media Item Pointers
+  //////////////////////////////////////////////////
+
   const getPostContentElementsByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.postContentElementsTableService.getPostContentElementsByPublishedItemId(
       {
@@ -37,6 +41,10 @@ export async function assemblePostMediaElements({
   }
   const { success: filedPostMediaElements } =
     getPostContentElementsByPublishedItemIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get Media Item Temporary Urls From Pointers
+  //////////////////////////////////////////////////
 
   const getTemporaryImageUrlResponses = await BluebirdPromise.map(
     filedPostMediaElements,
@@ -70,6 +78,10 @@ export async function assemblePostMediaElements({
     return mappedGetTemporaryImageUrlResponses;
   }
   const { success: mediaElements } = mappedGetTemporaryImageUrlResponses;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(mediaElements);
 }

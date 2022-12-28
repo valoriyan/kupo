@@ -6,7 +6,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { PostController } from "./postController";
 
 export enum UpdatePostFailedReason {
@@ -39,7 +39,11 @@ export async function handleUpdatePost({
     UpdatePostSuccess
   >
 > {
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -47,6 +51,10 @@ export async function handleUpdatePost({
 
   const { publishedItemId, caption, scheduledPublicationTimestamp, expirationTimestamp } =
     requestBody;
+
+  //////////////////////////////////////////////////
+  // Get Unrenderable Published Item
+  //////////////////////////////////////////////////
 
   const getPublishedItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
@@ -61,6 +69,10 @@ export async function handleUpdatePost({
   const { success: unrenderablePostWithoutElementsOrHashtags } =
     getPublishedItemByIdResponse;
 
+  //////////////////////////////////////////////////
+  // Check Authorization of User to Update Post
+  //////////////////////////////////////////////////
+
   if (unrenderablePostWithoutElementsOrHashtags.authorUserId !== clientUserId) {
     return Failure({
       controller,
@@ -70,6 +82,10 @@ export async function handleUpdatePost({
       additionalErrorInformation: "Illegal Access at handleUpdatePost",
     });
   }
+
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
 
   const updateContentItemByIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.updateContentItemById(
@@ -85,6 +101,10 @@ export async function handleUpdatePost({
   if (updateContentItemByIdResponse.type === EitherType.failure) {
     return updateContentItemByIdResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

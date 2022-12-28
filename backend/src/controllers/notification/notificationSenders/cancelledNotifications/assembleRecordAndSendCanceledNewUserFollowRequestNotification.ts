@@ -10,7 +10,7 @@ import { Controller } from "tsoa";
 import { DatabaseService } from "../../../../services/databaseService";
 import { WebSocketService } from "../../../../services/webSocketService";
 
-export async function deleteAndEmitCanceledNewUserFollowRequestNotification({
+export async function assembleRecordAndSendCanceledNewUserFollowRequestNotification({
   controller,
   databaseService,
   webSocketService,
@@ -26,7 +26,7 @@ export async function deleteAndEmitCanceledNewUserFollowRequestNotification({
   userFollowEventId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // DELETE THE NOTIFICATION
+  // Delete Notification from DB
   //////////////////////////////////////////////////
 
   const deleteUserNotificationForUserIdResponse =
@@ -45,7 +45,7 @@ export async function deleteAndEmitCanceledNewUserFollowRequestNotification({
   }
 
   //////////////////////////////////////////////////
-  // GET THE COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
@@ -59,11 +59,19 @@ export async function deleteAndEmitCanceledNewUserFollowRequestNotification({
   const { success: countOfUnreadNotifications } =
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // Assemble Notification
+  //////////////////////////////////////////////////
+
   const unrenderableCanceledNewUserFollowRequestNotification = {
     countOfUnreadNotifications,
     userIdWithdrawingFollowRequest,
     type: NOTIFICATION_EVENTS.CANCELED_NEW_USER_FOLLOW_REQUEST,
   };
+
+  //////////////////////////////////////////////////
+  // Send Notification
+  //////////////////////////////////////////////////
 
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewUserFollowRequest(
     {
@@ -71,6 +79,10 @@ export async function deleteAndEmitCanceledNewUserFollowRequestNotification({
       unrenderableCanceledNewUserFollowRequestNotification,
     },
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

@@ -2,7 +2,7 @@
 import express from "express";
 import { PublishingChannelController } from "../publishingChannelController";
 import { EitherType, SecuredHTTPResponse } from "../../../utilities/monads";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import {
   decodeTimestampCursor,
   encodeTimestampCursor,
@@ -42,7 +42,7 @@ export async function handleGetPublishingChannelsFollowedByUserId({
 > {
   const { cursor, pageSize, areFollowsPending } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );

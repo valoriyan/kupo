@@ -7,10 +7,10 @@ import {
 } from "../../../utilities/monads";
 import { PostController } from "./postController";
 import express from "express";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePost, RootRenderablePost } from "./models";
 import { PublishedItemType } from "../models";
-import { constructPublishedItemFromParts } from "../utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemFromCachedComponents } from "../utilities/constructPublishedItemsFromParts";
 
 export enum SharePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -41,6 +41,10 @@ export async function handleSharePost({
 }): Promise<
   SecuredHTTPResponse<ErrorReasonTypes<string | SharePostFailedReason>, SharePostSuccess>
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const {
     sharedPublishedItemId,
     caption,
@@ -51,7 +55,7 @@ export async function handleSharePost({
 
   const publishedItemId: string = uuidv4();
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -62,7 +66,7 @@ export async function handleSharePost({
   const creationTimestamp = now;
 
   //////////////////////////////////////////////////
-  // GET SHARED ITEM ///////////////////////////////
+  // Get Shared Published Item
   //////////////////////////////////////////////////
 
   const getPublishedItemByIdResponse =
@@ -73,6 +77,11 @@ export async function handleSharePost({
     return getPublishedItemByIdResponse;
   }
   let uncompiledBasePublishedItemBeingShared = getPublishedItemByIdResponse.success;
+
+  //////////////////////////////////////////////////
+  // If the Shared Published Item is Itself Sharing a Published Item
+  // Move Pointer to What Is Actually Being Shared
+  //////////////////////////////////////////////////
 
   if (!!uncompiledBasePublishedItemBeingShared.idOfPublishedItemBeingShared) {
     const getPublishedItemByIdResponse =
@@ -88,13 +97,18 @@ export async function handleSharePost({
     uncompiledBasePublishedItemBeingShared = getPublishedItemByIdResponse.success;
   }
 
-  const constructPublishedItemFromPartsResponse = await constructPublishedItemFromParts({
-    controller,
-    blobStorageService: controller.blobStorageService,
-    databaseService: controller.databaseService,
-    uncompiledBasePublishedItem: uncompiledBasePublishedItemBeingShared,
-    requestorUserId: clientUserId,
-  });
+  //////////////////////////////////////////////////
+  // Construct the Renderable Item Being Shared
+  //////////////////////////////////////////////////
+
+  const constructPublishedItemFromPartsResponse =
+    await assemblePublishedItemFromCachedComponents({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItem: uncompiledBasePublishedItemBeingShared,
+      requestorUserId: clientUserId,
+    });
   if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
     return constructPublishedItemFromPartsResponse;
   }
@@ -102,7 +116,7 @@ export async function handleSharePost({
     constructPublishedItemFromPartsResponse;
 
   //////////////////////////////////////////////////
-  // END OF | GET SHARED ITEM //////////////////////
+  // Write to DB
   //////////////////////////////////////////////////
 
   const lowercaseCaption = caption.toLowerCase();
@@ -125,6 +139,10 @@ export async function handleSharePost({
     return createPublishedItemResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Write Hashtags to DB
+  //////////////////////////////////////////////////
+
   const lowercaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
 
   const addHashtagsToPublishedItemResponse =
@@ -139,26 +157,36 @@ export async function handleSharePost({
     return addHashtagsToPublishedItemResponse;
   }
 
-  return Success({
-    renderablePost: {
-      id: publishedItemId,
-      type: PublishedItemType.POST,
-      creationTimestamp,
-      mediaElements: [],
-      authorUserId: clientUserId,
-      caption: lowercaseCaption,
-      scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
-      hashtags: lowercaseHashtags,
-      expirationTimestamp,
-      likes: {
-        count: 0,
-      },
-      comments: {
-        count: 0,
-      },
-      isLikedByClient: false,
-      isSavedByClient: false,
-      sharedItem: sharedRenderablePublishedItem as RootRenderablePost,
+  //////////////////////////////////////////////////
+  // Assemble Renderable Post
+  //////////////////////////////////////////////////
+
+  const renderablePost: RenderablePost = {
+    id: publishedItemId,
+    type: PublishedItemType.POST,
+    creationTimestamp,
+    mediaElements: [],
+    authorUserId: clientUserId,
+    caption: lowercaseCaption,
+    scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,
+    hashtags: lowercaseHashtags,
+    expirationTimestamp,
+    likes: {
+      count: 0,
     },
+    comments: {
+      count: 0,
+    },
+    isLikedByClient: false,
+    isSavedByClient: false,
+    sharedItem: sharedRenderablePublishedItem as RootRenderablePost,
+  };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
+  return Success({
+    renderablePost,
   });
 }

@@ -4,10 +4,10 @@ import {
   ErrorReasonTypes,
   SecuredHTTPResponse,
 } from "../../../../utilities/monads";
-import { checkAuthorization } from "../../../auth/utilities";
+import { checkAuthentication } from "../../../auth/utilities";
 import { UserInteractionController } from "../userInteractionController";
 import { deleteAndEmitCanceledNewFollowerNotification } from "./deleteAndEmitCanceledNewFollowerNotification";
-import { deleteAndEmitCanceledNewUserFollowRequestNotification } from "./deleteAndEmitCanceledNewUserFollowRequestNotification";
+import { assembleRecordAndSendCanceledNewUserFollowRequestNotification } from "../../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledNewUserFollowRequestNotification";
 
 export interface UnfollowUserRequestBody {
   userIdBeingUnfollowed: string;
@@ -36,7 +36,7 @@ export async function handleUnfollowUser({
 > {
   const { userIdBeingUnfollowed } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -69,7 +69,7 @@ export async function handleUnfollowUser({
 
   if (is_pending) {
     const emitCanceledNewUserFollowRequestNotificationResponse =
-      await deleteAndEmitCanceledNewUserFollowRequestNotification({
+      await assembleRecordAndSendCanceledNewUserFollowRequestNotification({
         controller,
         databaseService: controller.databaseService,
         webSocketService: controller.webSocketService,

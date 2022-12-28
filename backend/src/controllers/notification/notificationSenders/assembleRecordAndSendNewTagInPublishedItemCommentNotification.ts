@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DatabaseService } from "../../../services/databaseService";
-import { constructRenderablePostFromPartsById } from "../../publishedItem/post/utilities";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { constructRenderableUserFromPartsByUserId } from "../../user/utilities";
-import { constructRenderablePublishedItemCommentFromPartsById } from "../../publishedItem/publishedItemComment/utilities";
+import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
+import { assembleRenderablePublishedItemCommentById } from "../../publishedItem/publishedItemComment/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableNewTagInPublishedItemCommentNotification } from "../models/renderableUserNotifications";
 import {
@@ -15,6 +14,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
 
 export async function assembleRecordAndSendNewTagInPublishedItemCommentNotification({
   controller,
@@ -34,40 +34,48 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // COMPILE INFORMATION NEEDED TO WRITE NOTIFICATION INTO DATASTORE
+  // Assemble Renderable Published Item
   //////////////////////////////////////////////////
 
-  const constructRenderablePostFromPartsByIdResponse =
-    await constructRenderablePostFromPartsById({
-      controller,
-      requestorUserId: recipientUserId,
-      publishedItemId,
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
-    });
-  if (constructRenderablePostFromPartsByIdResponse.type === EitherType.failure) {
-    return constructRenderablePostFromPartsByIdResponse;
+  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+    controller,
+    requestorUserId: recipientUserId,
+    publishedItemId,
+    blobStorageService: blobStorageService,
+    databaseService: databaseService,
+  });
+  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
+    return constructPublishedItemFromPartsByIdResponse;
   }
-  const { success: post } = constructRenderablePostFromPartsByIdResponse;
+  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
 
-  const constructRenderablePostCommentFromPartsByIdResponse =
-    await constructRenderablePublishedItemCommentFromPartsById({
+  //////////////////////////////////////////////////
+  // Assemble Renderable Published Item Comment
+  //////////////////////////////////////////////////
+
+  const assembleRenderablePublishedItemCommentByIdResponse =
+    await assembleRenderablePublishedItemCommentById({
       controller,
       clientUserId: recipientUserId,
       publishedItemCommentId: publishedItemCommentId,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
     });
-  if (constructRenderablePostCommentFromPartsByIdResponse.type === EitherType.failure) {
-    return constructRenderablePostCommentFromPartsByIdResponse;
+  if (assembleRenderablePublishedItemCommentByIdResponse.type === EitherType.failure) {
+    return assembleRenderablePublishedItemCommentByIdResponse;
   }
-  const { success: postComment } = constructRenderablePostCommentFromPartsByIdResponse;
+  const { success: publishedItemComment } =
+    assembleRenderablePublishedItemCommentByIdResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble Renderable User That Authored Comment
+  //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsByUserIdResponse =
-    await constructRenderableUserFromPartsByUserId({
+    await assembleRenderableUserById({
       controller,
       requestorUserId: recipientUserId,
-      userId: postComment.authorUserId,
+      userId: publishedItemComment.authorUserId,
       blobStorageService,
       databaseService,
     });
@@ -77,7 +85,7 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   const { success: userTaggingClient } = constructRenderableUserFromPartsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // WRITE NOTIFICATION INTO DATASTORE
+  // Write Notification to DB
   //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
@@ -97,11 +105,11 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   }
 
   //////////////////////////////////////////////////
-  // GET COUNT OF UNREAD NOTIFICATIONS
+  // Get Count of Unread Notifications
   //////////////////////////////////////////////////
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: post.authorUserId },
+      { controller, userId: publishedItem.authorUserId },
     );
   if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
     return selectCountOfUnreadUserNotificationsByUserIdResponse;
@@ -110,7 +118,7 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // COMPILE AND SEND NOTIFICATION TO CLIENT
+  // Assemble Notification
   //////////////////////////////////////////////////
 
   const renderableNewTagInPublishedItemCommentNotification: RenderableNewTagInPublishedItemCommentNotification =
@@ -119,9 +127,13 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
       type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
       eventTimestamp: Date.now(),
       userTaggingClient,
-      publishedItem: post,
-      publishedItemComment: postComment,
+      publishedItem,
+      publishedItemComment,
     };
+
+  //////////////////////////////////////////////////
+  // Send Notification
+  //////////////////////////////////////////////////
 
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewTagInPublishedItemComment(
     {
@@ -129,5 +141,10 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
       renderableNewTagInPublishedItemCommentNotification,
     },
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return Success({});
 }

@@ -14,7 +14,7 @@ import {
 import { PostController } from "./postController";
 import express from "express";
 import { Promise as BluebirdPromise } from "bluebird";
-import { checkAuthorization } from "../../auth/utilities";
+import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePost } from "./models";
 import { FileDescriptor, GenericResponseFailedReason, MediaElement } from "../../models";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
@@ -68,7 +68,7 @@ export async function handleCreatePost({
     expirationTimestamp,
   } = requestBody;
 
-  const { clientUserId, errorResponse: error } = await checkAuthorization(
+  const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
@@ -80,7 +80,7 @@ export async function handleCreatePost({
   const creationTimestamp = now;
 
   //////////////////////////////////////////////////
-  // Write to db
+  // Write to DB
   //////////////////////////////////////////////////
 
   const createPublishedItemResponse =
@@ -101,7 +101,7 @@ export async function handleCreatePost({
   }
 
   //////////////////////////////////////////////////
-  // Write media items to db
+  // Write Media Items to DB
   //////////////////////////////////////////////////
 
   if (contentElementFiles.length > 0) {
@@ -121,7 +121,7 @@ export async function handleCreatePost({
   }
 
   //////////////////////////////////////////////////
-  // Get media file temporary urls
+  // Get Media File Temporary Urls
   //////////////////////////////////////////////////
 
   const getTemporaryImageUrlResponses = await BluebirdPromise.map(
@@ -153,7 +153,7 @@ export async function handleCreatePost({
   );
 
   //////////////////////////////////////////////////
-  // Add hashtags
+  // Add Hashtags
   //////////////////////////////////////////////////
 
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
@@ -219,7 +219,7 @@ export async function handleCreatePost({
   };
 
   //////////////////////////////////////////////////
-  // Send out relevant notifications
+  // Send Out Relevant Notifications
   //////////////////////////////////////////////////
 
   const considerAndExecuteNotificationsResponse = await considerAndExecuteNotifications({
@@ -264,14 +264,14 @@ async function considerAndExecuteNotifications({
   // eslint-disable-next-line @typescript-eslint/ban-types
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Get usernames tagged in caption
+  // Get Usernames Tagged in Caption
   //////////////////////////////////////////////////
   const { caption, authorUserId } = renderablePublishedItem;
 
   const tags = collectTagsFromText({ text: caption });
 
   //////////////////////////////////////////////////
-  // Get user ids associated with tagged usernames
+  // Get User Ids Associated with Tagged Usernames
   //////////////////////////////////////////////////
 
   const selectUsersByUsernamesResponse =
@@ -288,7 +288,7 @@ async function considerAndExecuteNotifications({
     .filter((userId) => userId !== authorUserId);
 
   //////////////////////////////////////////////////
-  // Send tagged caption notifications to everyone tagged
+  // Send Tagged Caption Notifications to Everyone Tagged
   //////////////////////////////////////////////////
   const assembleRecordAndSendNewTagInPublishedItemCaptionNotificationResponses =
     await BluebirdPromise.map(
