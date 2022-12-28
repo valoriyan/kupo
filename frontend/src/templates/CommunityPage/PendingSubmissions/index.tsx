@@ -10,6 +10,7 @@ import { Post } from "#/components/Post";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Tooltip } from "#/components/Tooltip";
 import { goToPostPage } from "#/templates/SinglePost";
+import { openRejectionModal } from "./RejectionModal";
 
 export interface PendingSubmissionsProps {
   publishingChannelId: string;
@@ -76,19 +77,17 @@ export const PendingSubmissions = ({
                 size="lg"
                 variant="danger"
                 outlined
-                disabled={isResolvingSubmission || !publishingChannelRules.length}
+                disabled={!publishingChannelRules.length}
                 onClick={() =>
-                  resolvePendingSubmission({
-                    publishingChannelSubmissionId: submission.submissionId,
-                    decision: PublishingChannelSubmissionDecision.Reject,
-                    reasonString: "",
+                  openRejectionModal({
+                    publishingChannelName,
+                    publishingChannelRules,
+                    submission,
                   })
                 }
                 css={{ width: "100%" }}
               >
-                <TextOrSpinner size="lg" isLoading={isResolvingSubmission}>
-                  Reject
-                </TextOrSpinner>
+                Reject
               </Button>
             </Tooltip>
             <Button
