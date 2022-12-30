@@ -16,7 +16,7 @@ export const ChatRoomMessage = ({ message, isClientMessage }: ChatRoomMessagePro
 
   return (
     <Wrapper css={{ bg: isClientMessage ? "$primaryTranslucent" : "$background3" }}>
-      <Body as="pre" css={{ m: 0 }}>
+      <Body as="pre" css={{ m: 0, whiteSpace: "pre-wrap" }}>
         {message.text}
       </Body>
       <Subtext
