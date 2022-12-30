@@ -33,6 +33,10 @@ export async function handleMakeCreditCardPrimary({
     MakeCreditCardPrimarySuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { localCreditCardId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -40,6 +44,10 @@ export async function handleMakeCreditCardPrimary({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
 
   const makeCreditCardPrimaryResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.makeCreditCardPrimary(
@@ -53,6 +61,10 @@ export async function handleMakeCreditCardPrimary({
   if (makeCreditCardPrimaryResponse.type === EitherType.failure) {
     return makeCreditCardPrimaryResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

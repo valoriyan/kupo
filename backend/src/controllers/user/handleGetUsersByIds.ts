@@ -36,6 +36,9 @@ export async function handleGetUsersByIds({
     GetUsersByIdsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -44,19 +47,26 @@ export async function handleGetUsersByIds({
 
   const { userIds } = requestBody;
 
-  const constructRenderableUsersFromPartsByUserIdsResponse =
-    await assembleRenderableUsersByIds({
-      controller,
-      requestorUserId: clientUserId,
-      userIds,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-    });
+  //////////////////////////////////////////////////
+  // Assemble Users
+  //////////////////////////////////////////////////
 
-  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
-    return constructRenderableUsersFromPartsByUserIdsResponse;
+  const assembleRenderableUsersByIdsResponse = await assembleRenderableUsersByIds({
+    controller,
+    requestorUserId: clientUserId,
+    userIds,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+  });
+
+  if (assembleRenderableUsersByIdsResponse.type === EitherType.failure) {
+    return assembleRenderableUsersByIdsResponse;
   }
-  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
+  const { success: renderableUsers } = assembleRenderableUsersByIdsResponse;
+
+  //////////////////////////////////////////////////
+  // Map Users to Order of Inputs
+  //////////////////////////////////////////////////
 
   const foundUsers = userIds.map((userId) => {
     const foundUser = renderableUsers.find(
@@ -64,6 +74,10 @@ export async function handleGetUsersByIds({
     );
     return !!foundUser ? foundUser : null;
   });
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     users: foundUsers,

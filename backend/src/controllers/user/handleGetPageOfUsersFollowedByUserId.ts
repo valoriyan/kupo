@@ -40,6 +40,9 @@ export async function handleGetPageOfUsersFollowedByUserId({
     GetPageOfUsersFollowedByUserIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -47,6 +50,10 @@ export async function handleGetPageOfUsersFollowedByUserId({
   if (error) return error;
 
   const { cursor, userIdDoingFollowing, pageSize } = requestBody;
+
+  //////////////////////////////////////////////////
+  // Read User Ids Followed By Target User From DB
+  //////////////////////////////////////////////////
 
   const getUserIdsFollowedByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
@@ -65,18 +72,25 @@ export async function handleGetPageOfUsersFollowedByUserId({
     });
   }
 
-  const constructRenderableUsersFromPartsByUserIdsResponse =
-    await assembleRenderableUsersByIds({
-      controller,
-      requestorUserId: clientUserId,
-      userIds: userIdsBeingFollowed,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-    });
-  if (constructRenderableUsersFromPartsByUserIdsResponse.type === EitherType.failure) {
-    return constructRenderableUsersFromPartsByUserIdsResponse;
+  //////////////////////////////////////////////////
+  // Assemble RenderableUsers
+  //////////////////////////////////////////////////
+
+  const assembleRenderableUsersByIdsResponse = await assembleRenderableUsersByIds({
+    controller,
+    requestorUserId: clientUserId,
+    userIds: userIdsBeingFollowed,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+  });
+  if (assembleRenderableUsersByIdsResponse.type === EitherType.failure) {
+    return assembleRenderableUsersByIdsResponse;
   }
-  const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
+  const { success: renderableUsers } = assembleRenderableUsersByIdsResponse;
+
+  //////////////////////////////////////////////////
+  // Generate Page of Results
+  //////////////////////////////////////////////////
 
   const pageNumber = parseInt(cursor || "0") || 0;
   const startIndexForPage = pageSize * pageNumber;
@@ -86,6 +100,10 @@ export async function handleGetPageOfUsersFollowedByUserId({
 
   const nextPageCursor =
     pageOfRenderableUsers.length === pageSize ? (pageNumber + 1).toString() : undefined;
+
+  //////////////////////////////////////////////////
+  // Results
+  //////////////////////////////////////////////////
 
   return Success({
     users: pageOfRenderableUsers,

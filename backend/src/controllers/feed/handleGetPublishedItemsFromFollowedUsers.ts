@@ -7,7 +7,7 @@ import {
 } from "../../utilities/monads";
 import { checkAuthentication } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
-import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/assemblePublishedItems";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 

@@ -12,7 +12,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { GenericResponseFailedReason } from "../../../controllers/models";
-import { constructRenderableShopItemFromPartsById } from "../../../controllers/publishedItem/shopItem/utilities";
+import { assembleRenderableShopItemFromPartsById } from "../../../controllers/publishedItem/shopItem/utilities";
 import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableShopItemSoldNotification({
@@ -73,7 +73,7 @@ export async function assembleRenderableShopItemSoldNotification({
   //////////////////////////////////////////////////
 
   const constructRenderableShopItemFromPartsByIdResponse =
-    await constructRenderableShopItemFromPartsById({
+    await assembleRenderableShopItemFromPartsById({
       controller,
       blobStorageService,
       databaseService,

@@ -11,7 +11,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { assembleRenderablePublishingChannelById } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 

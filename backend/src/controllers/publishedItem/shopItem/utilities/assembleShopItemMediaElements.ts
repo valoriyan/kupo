@@ -28,6 +28,9 @@ export async function assembleShopItemMediaElements({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, MediaElement[]>> {
+  //////////////////////////////////////////////////
+  // Get Pointers From DB
+  //////////////////////////////////////////////////
   const getShopItemMediaElementsByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.getShopItemMediaElementsByPublishedItemId(
       { controller, publishedItemId, shopItemType },
@@ -37,6 +40,10 @@ export async function assembleShopItemMediaElements({
   }
   const { success: filedShopItemMediaElements } =
     getShopItemMediaElementsByPublishedItemIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get Temporary URLs
+  //////////////////////////////////////////////////
 
   const getTemporaryImageUrlResponses = await BluebirdPromise.map(
     filedShopItemMediaElements,
@@ -63,6 +70,10 @@ export async function assembleShopItemMediaElements({
       });
     },
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return unwrapListOfEitherResponses({
     eitherResponses: getTemporaryImageUrlResponses,

@@ -10,7 +10,7 @@ import express from "express";
 import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePost, RootRenderablePost } from "./models";
 import { PublishedItemType } from "../models";
-import { assemblePublishedItemFromCachedComponents } from "../utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemFromCachedComponents } from "../utilities/assemblePublishedItems";
 
 export enum SharePostFailedReason {
   UnknownCause = "Unknown Cause",

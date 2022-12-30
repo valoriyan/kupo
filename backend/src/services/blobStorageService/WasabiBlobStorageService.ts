@@ -4,7 +4,12 @@ import { getEnvironmentVariable } from "../../utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { BlobStorageServiceInterface, BlobItemPointer } from "./models";
 import { Endpoint, S3 } from "aws-sdk";
-import { PutObjectRequest, ManagedUpload, DeleteObjectRequest } from "aws-sdk/clients/s3";
+import {
+  PutObjectRequest,
+  ManagedUpload,
+  DeleteObjectRequest,
+  ObjectList,
+} from "aws-sdk/clients/s3";
 import {
   ErrorReasonTypes,
   Failure,
@@ -14,6 +19,11 @@ import {
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { Controller } from "tsoa";
 
+//////////////////////////////////////////////////
+// Documentation
+// https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_s3_code_examples.html
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/index.html
+//////////////////////////////////////////////////
 export class WasabiBlobStorageService extends BlobStorageServiceInterface {
   static connection: S3;
   static bucket: string = getEnvironmentVariable("WASABI_BUCKET");
@@ -147,5 +157,36 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
         additionalErrorInformation: "Error at deleteImages",
       });
     }
+  }
+
+  async listAllBlobsKeys(): Promise<string[]> {
+    const requestParams = {
+      Bucket: WasabiBlobStorageService.bucket /* required */,
+    };
+
+    const request = WasabiBlobStorageService.connection.listObjects(requestParams);
+
+    const blobs: ObjectList = await new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let collectedContents: ObjectList = [];
+
+      request.eachPage((err, data) => {
+        if (err) {
+          reject(err);
+          return false;
+        }
+
+        if (!data) {
+          resolve(collectedContents);
+          return true;
+        }
+        const contents: ObjectList = data.Contents!;
+        collectedContents = collectedContents.concat(contents);
+        return true;
+      });
+    });
+
+    const keys = blobs.map((blob) => blob.Key);
+    return keys as string[];
   }
 }

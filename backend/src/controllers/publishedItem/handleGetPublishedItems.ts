@@ -11,7 +11,7 @@ import { getClientUserId } from "../auth/utilities";
 import { getEncodedCursorOfNextPageOfSequentialItems } from "./utilities/pagination";
 import { decodeTimestampCursor } from "../utilities/pagination";
 import { PublishedItemType, RenderablePublishedItem } from "./models";
-import { assemblePublishedItemsFromCachedComponents } from "./utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "./utilities/assemblePublishedItems";
 import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContentByUserId";
 
 export interface GetPublishedItemsByUserIdRequestBody {
@@ -54,17 +54,26 @@ export async function handleGetPublishedItemsByUsername({
     GetPublishedItemsByUsernameSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const { username, ...restRequestBody } = requestBody;
-  const selectUserIdByUsernameResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserIdByUsername(
+
+  //////////////////////////////////////////////////
+  // Read User Id of Target From DB
+  //////////////////////////////////////////////////
+
+  const getMaybeUserIdByUsername =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.getMaybeUserIdByUsername(
       { controller, username },
     );
-  if (selectUserIdByUsernameResponse.type === EitherType.failure) {
-    return selectUserIdByUsernameResponse;
+  if (getMaybeUserIdByUsername.type === EitherType.failure) {
+    return getMaybeUserIdByUsername;
   }
-  const { success: userId } = selectUserIdByUsernameResponse;
+  const { success: maybeUserId } = getMaybeUserIdByUsername;
 
-  if (!userId) {
+  if (!maybeUserId) {
     return Failure({
       controller,
       httpStatusCode: 404,
@@ -73,6 +82,11 @@ export async function handleGetPublishedItemsByUsername({
       additionalErrorInformation: "User not found at handleGetPostsByUsername",
     });
   }
+  const userId = maybeUserId;
+
+  //////////////////////////////////////////////////
+  // Continue Request with User Id
+  //////////////////////////////////////////////////
 
   return handleGetPublishedItemsByUserId({
     controller,
@@ -95,6 +109,10 @@ export async function handleGetPublishedItemsByUserId({
     GetPublishedItemsByUsernameSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const { userId, pageSize, cursor, publishedItemType } = requestBody;
 
   const clientUserId = await getClientUserId(request);
@@ -102,6 +120,10 @@ export async function handleGetPublishedItemsByUserId({
   const pageTimestamp = cursor
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
+
+  //////////////////////////////////////////////////
+  // Check Authorization
+  //////////////////////////////////////////////////
 
   const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
     controller,
@@ -124,6 +146,10 @@ export async function handleGetPublishedItemsByUserId({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Read UnassembledBasePublishedItems from DB
+  //////////////////////////////////////////////////
+
   const getPublishedItemsByAuthorUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByAuthorUserId(
       {
@@ -141,7 +167,11 @@ export async function handleGetPublishedItemsByUserId({
   const { success: unrenderablePostsWithoutElementsOrHashtags } =
     getPublishedItemsByAuthorUserIdResponse;
 
-  const constructPublishedItemsFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Assemble RenderablePublishedItems
+  //////////////////////////////////////////////////
+
+  const assemblePublishedItemsFromCachedComponentsResponse =
     await assemblePublishedItemsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
@@ -149,10 +179,14 @@ export async function handleGetPublishedItemsByUserId({
       uncompiledBasePublishedItems: unrenderablePostsWithoutElementsOrHashtags,
       requestorUserId: clientUserId,
     });
-  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
-    return constructPublishedItemsFromPartsResponse;
+  if (assemblePublishedItemsFromCachedComponentsResponse.type === EitherType.failure) {
+    return assemblePublishedItemsFromCachedComponentsResponse;
   }
-  const { success: publishedItems } = constructPublishedItemsFromPartsResponse;
+  const { success: publishedItems } = assemblePublishedItemsFromCachedComponentsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishedItems,

@@ -34,6 +34,10 @@ export async function handleRemoveCreditCard({
     RemoveCreditCardSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { localCreditCardId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -42,19 +46,40 @@ export async function handleRemoveCreditCard({
   );
   if (error) return error;
 
-  const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+  //////////////////////////////////////////////////
+  // Select User With Payment Info
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
       { controller, userId: clientUserId },
     );
 
   if (
-    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+    selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
     EitherType.failure
   ) {
-    return selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+    return selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
   }
-  const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
-    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+  const { success: maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+    selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+
+  if (!maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
+      error: "User not found at handleRemoveCreditCard",
+      additionalErrorInformation: "User not found at handleRemoveCreditCard",
+    });
+  }
+
+  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+    maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
+
+  //////////////////////////////////////////////////
+  // Get Credit Cards Stored By Client
+  //////////////////////////////////////////////////
 
   const getCreditCardsStoredByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
@@ -65,6 +90,10 @@ export async function handleRemoveCreditCard({
     return getCreditCardsStoredByUserIdResponse;
   }
   const { success: creditCardsStoredByUserId } = getCreditCardsStoredByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Get Credit Card Being Deleted
+  //////////////////////////////////////////////////
 
   const dBStoredCreditCardDatum = creditCardsStoredByUserId.find(
     (card) => card.local_credit_card_id === localCreditCardId,
@@ -78,13 +107,26 @@ export async function handleRemoveCreditCard({
       additionalErrorInformation: "Failed to find credit card to remove",
     });
 
+  //////////////////////////////////////////////////
+  // Get Credit Cards Remaining
+  //////////////////////////////////////////////////
+
   const remainingCards = creditCardsStoredByUserId.filter(
     (card) => card.local_credit_card_id !== localCreditCardId,
   );
+
+  //////////////////////////////////////////////////
+  // Select New Primary Credit Card
+  //////////////////////////////////////////////////
+
   const cardIdToMakePrimary = remainingCards.reduce((acc, cur) => {
     if (cur.is_primary_card) return undefined;
     return acc;
   }, remainingCards[remainingCards.length - 1]?.local_credit_card_id as string | undefined);
+
+  //////////////////////////////////////////////////
+  // Update Primary Credit Card Selection in DB
+  //////////////////////////////////////////////////
 
   if (cardIdToMakePrimary) {
     const makeCreditCardPrimaryResponse =
@@ -97,34 +139,36 @@ export async function handleRemoveCreditCard({
     }
   }
 
-  if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-    const unstoreCreditCardResponse =
-      await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.unstoreCreditCard(
-        { controller, userId: clientUserId, localCreditCardId },
-      );
-    if (unstoreCreditCardResponse.type === EitherType.failure) {
-      return unstoreCreditCardResponse;
-    }
+  //////////////////////////////////////////////////
+  // Delete Credit Card from DB
+  //////////////////////////////////////////////////
 
-    const removeCustomerCreditCardResponse =
-      await controller.paymentProcessingService.removeCustomerCreditCard({
-        controller,
-        paymentProcessorCardId: dBStoredCreditCardDatum.payment_processor_card_id,
-        paymentProcessorCustomerId:
-          unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
-      });
-    if (removeCustomerCreditCardResponse.type === EitherType.failure) {
-      return removeCustomerCreditCardResponse;
-    }
-
-    return Success({});
+  const unstoreCreditCardResponse =
+    await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.unstoreCreditCard(
+      { controller, userId: clientUserId, localCreditCardId },
+    );
+  if (unstoreCreditCardResponse.type === EitherType.failure) {
+    return unstoreCreditCardResponse;
   }
 
-  return Failure({
-    controller,
-    httpStatusCode: 404,
-    reason: RemoveCreditCardFailedReason.UNKNOWN_REASON,
-    error: "User not found at handleRemoveCreditCard",
-    additionalErrorInformation: "User not found at handleRemoveCreditCard",
-  });
+  //////////////////////////////////////////////////
+  // Delete Credit Card from Payment Processor
+  //////////////////////////////////////////////////
+
+  const removeCustomerCreditCardResponse =
+    await controller.paymentProcessingService.removeCustomerCreditCard({
+      controller,
+      paymentProcessorCardId: dBStoredCreditCardDatum.payment_processor_card_id,
+      paymentProcessorCustomerId:
+        unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID.paymentProcessorCustomerId,
+    });
+  if (removeCustomerCreditCardResponse.type === EitherType.failure) {
+    return removeCustomerCreditCardResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
+  return Success({});
 }

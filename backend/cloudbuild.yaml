@@ -1,0 +1,18 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '--build-arg', 'DATADOG_API_KEY=$$DATADOG_API_KEY',
+    '-t', 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-backend:latest',
+    '.'
+  ]
+  secretEnv: [
+    'DATADOG_API_KEY'
+  ]
+images:
+- 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-backend:latest'
+
+availableSecrets:
+  secretManager:
+  - versionName: 'projects/1074381951883/secrets/datadog-api-key/versions/latest'
+    env: 'DATADOG_API_KEY'    

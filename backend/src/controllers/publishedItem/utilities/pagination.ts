@@ -1,5 +1,5 @@
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
-import { UncompiledBasePublishedItem } from "../models";
+import { UnassembledBasePublishedItem } from "../models";
 
 export function getNextPageCursorOfPage<T>({
   items,
@@ -8,6 +8,10 @@ export function getNextPageCursorOfPage<T>({
   items: T[];
   getTimestampFromItem: (item: T) => string;
 }): string | undefined {
+  //////////////////////////////////////////////////
+  // Send Back the Timestamp of the Last Item
+  //////////////////////////////////////////////////
+
   if (items.length > 0) {
     return getTimestampFromItem(items[items.length - 1]);
   }
@@ -18,6 +22,10 @@ export function getNextPageCursorOfPage<T>({
 export function getEncodedCursorOfNextPageOfSequentialItems<
   T extends { scheduledPublicationTimestamp: number },
 >({ sequentialFeedItems }: { sequentialFeedItems: T[] }): string | undefined {
+  //////////////////////////////////////////////////
+  // Send Back the Encoded Timestamp of the Last Item
+  //////////////////////////////////////////////////
+
   if (sequentialFeedItems.length > 0) {
     const timestamp =
       sequentialFeedItems[sequentialFeedItems.length - 1].scheduledPublicationTimestamp;
@@ -32,10 +40,15 @@ export function getPageOfPublishedItemsFromAllPublishedItems({
   encodedCursor,
   pageSize,
 }: {
-  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
+  uncompiledBasePublishedItems: UnassembledBasePublishedItem[];
   encodedCursor?: string;
   pageSize: number;
-}): UncompiledBasePublishedItem[] {
+}): UnassembledBasePublishedItem[] {
+  //////////////////////////////////////////////////
+  // If Provided a Cursor
+  //     Get the Published Items Before Timestamp
+  //////////////////////////////////////////////////
+
   if (!!encodedCursor) {
     const timestamp = decodeTimestampCursor({ encodedCursor });
 
@@ -48,6 +61,11 @@ export function getPageOfPublishedItemsFromAllPublishedItems({
 
     return filteredUncompiledBasePublishedItems;
   }
+
+  //////////////////////////////////////////////////
+  // Else
+  //     Take the first page of items
+  //////////////////////////////////////////////////
 
   const pageOfUncompiledBasePublishedItems = uncompiledBasePublishedItems.slice(
     -pageSize,

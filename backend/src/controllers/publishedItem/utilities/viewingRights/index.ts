@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DatabaseService } from "../../../../services/databaseService";
-import { UncompiledBasePublishedItem } from "../../models";
+import { UnassembledBasePublishedItem } from "../../models";
 import { Controller } from "tsoa";
 import {
   EitherType,
@@ -20,7 +20,7 @@ export async function assertViewingRightsOnPublishedItem({
 }: {
   controller: Controller;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
+  uncompiledBasePublishedItem: UnassembledBasePublishedItem;
   requestorUserId?: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
@@ -30,11 +30,15 @@ export async function assertViewingRightsOnPublishedItem({
   const { authorUserId } = uncompiledBasePublishedItem;
 
   //////////////////////////////////////////////////
-  // User has viewing rights to their own items
+  // User Has Viewing Rights to Their Own Items
   //////////////////////////////////////////////////
   if (authorUserId === requestorUserId) {
     return Success({});
   }
+
+  //////////////////////////////////////////////////
+  // Continue Authorization Process
+  //////////////////////////////////////////////////
 
   const canUserViewUserContentByUserIdResponse = await canUserViewUserContentByUserId({
     controller,
@@ -48,9 +52,17 @@ export async function assertViewingRightsOnPublishedItem({
   }
   const { success: requestorHasViewingRights } = canUserViewUserContentByUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // Return on Authorization Success
+  //////////////////////////////////////////////////
+
   if (!!requestorHasViewingRights) {
     return Success({});
   }
+
+  //////////////////////////////////////////////////
+  // Throw if Authorization Failed
+  //////////////////////////////////////////////////
 
   return Failure({
     controller,

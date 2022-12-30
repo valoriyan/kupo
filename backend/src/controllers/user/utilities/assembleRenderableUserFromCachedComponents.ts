@@ -31,6 +31,10 @@ export async function assembleRenderableUsersFromCachedComponents({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser[]>> {
+  //////////////////////////////////////////////////
+  // Assemble Each Renderable User
+  //////////////////////////////////////////////////
+
   const constructRenderableUserFromPartsResponses = await BluebirdPromise.map(
     unrenderableUsers,
     async (unrenderableUser) =>
@@ -42,6 +46,10 @@ export async function assembleRenderableUsersFromCachedComponents({
         databaseService,
       }),
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return unwrapListOfEitherResponses({
     eitherResponses: constructRenderableUserFromPartsResponses,
@@ -63,6 +71,10 @@ export async function assembleRenderableUserFromCachedComponents({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser>> {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const {
     username,
     profilePrivacySetting,

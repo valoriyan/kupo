@@ -121,10 +121,6 @@ resource "google_cloud_run_service" "kupo_beta_backend" {
           value = "df8br9he9qkh1s"
         }
         env {
-          name  = "DATABASE_URL"
-          value = "postgres://csopmrylomgtaj:c9b76fa9ac20f73fb8f9c5a0d5a00db9c490ffcda30438f9d2581e5f9251c8f5@ec2-23-23-133-10.compute-1.amazonaws.com:5432/df8br9he9qkh1s"
-        }
-        env {
           name  = "FRONTEND_BASE_URL"
           value = "https://beta.kupo.social"
         }
@@ -194,6 +190,15 @@ resource "google_cloud_run_service" "kupo_beta_backend" {
             secret_key_ref {
               key  = "latest"
               name = "kupo_beta_backend_WASABI_ACCESS_KEY"
+            }
+          }
+        }
+        env {
+          name = "DATABASE_URL"
+          value_from {
+            secret_key_ref {
+              key  = "latest"
+              name = "kupo_beta_backend_DATABASE_URL"
             }
           }
         }

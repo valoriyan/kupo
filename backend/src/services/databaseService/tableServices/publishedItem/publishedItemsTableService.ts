@@ -10,7 +10,7 @@ import { assertIsNumber } from "../utilities/validations";
 import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import {
   PublishedItemType,
-  UncompiledBasePublishedItem,
+  UnassembledBasePublishedItem,
 } from "../../../../controllers/publishedItem/models";
 import {
   ErrorReasonTypes,
@@ -35,7 +35,7 @@ interface DBPublishedItem {
 
 function convertDBPublishedItemToUncompiledBasePublishedItem(
   dbPublishedItem: DBPublishedItem,
-): UncompiledBasePublishedItem {
+): UnassembledBasePublishedItem {
   return {
     type: dbPublishedItem.type,
     id: dbPublishedItem.id,
@@ -170,7 +170,7 @@ export class PublishedItemsTableService extends TableService {
     getPublishedItemsBeforeTimestamp?: number;
     type?: PublishedItemType;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
       const queryValues: (string | number)[] = [];
@@ -278,7 +278,7 @@ export class PublishedItemsTableService extends TableService {
     getPublishedItemsBeforeTimestamp?: number;
     type?: PublishedItemType;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
       const queryValues: (string | number)[] = [authorUserId];
@@ -384,7 +384,7 @@ export class PublishedItemsTableService extends TableService {
     rangeStartTimestamp: number;
     type?: PublishedItemType;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
       assertIsNumber(rangeEndTimestamp);
@@ -457,7 +457,7 @@ export class PublishedItemsTableService extends TableService {
     pageSize: number;
     type?: PublishedItemType;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
       if (creatorUserIds.length === 0) {
@@ -532,7 +532,7 @@ export class PublishedItemsTableService extends TableService {
     controller: Controller;
     id: string;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem>
   > {
     try {
       const query = {
@@ -584,7 +584,7 @@ export class PublishedItemsTableService extends TableService {
     getPublishedItemsBeforeTimestamp?: number;
     restrictedToType?: PublishedItemType;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
       const queryValues = ([] as string[]).concat(ids);
@@ -669,7 +669,7 @@ export class PublishedItemsTableService extends TableService {
     captionSubstring: string;
     type?: PublishedItemType;
   }): Promise<
-    InternalServiceResponse<ErrorReasonTypes<string>, UncompiledBasePublishedItem[]>
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
       const queryValues = [captionSubstring];

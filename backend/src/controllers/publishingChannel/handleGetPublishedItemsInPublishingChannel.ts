@@ -10,7 +10,7 @@ import {
 import { checkAuthentication } from "../auth/utilities";
 import { GenericResponseFailedReason } from "../models";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
-import { assemblePublishedItemsByIds } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsByIds } from "../publishedItem/utilities/assemblePublishedItems";
 import { getNextPageCursorOfPage } from "../publishedItem/utilities/pagination";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { PublishingChannelController } from "./publishingChannelController";

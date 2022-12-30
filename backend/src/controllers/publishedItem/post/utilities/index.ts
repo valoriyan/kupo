@@ -2,7 +2,7 @@ import { BlobStorageService } from "../../../../services/blobStorageService";
 import { DatabaseService } from "../../../../services/databaseService";
 import { RenderablePost, RootRenderablePost, SharedRenderablePost } from "../models";
 import { Promise as BluebirdPromise } from "bluebird";
-import { PublishedItemType, UncompiledBasePublishedItem } from "../../models";
+import { PublishedItemType, UnassembledBasePublishedItem } from "../../models";
 import { assembleBaseRenderablePublishedItem } from "../../utilities/assembleBaseRenderablePublishedItem";
 import { Controller } from "tsoa";
 import {
@@ -16,7 +16,7 @@ import {
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../../utilities/monads/unwrapListOfResponses";
 import { assembleRootRenderablePost } from "./assembleRootRenderablePost";
-import { assemblePublishedItemById } from "../../utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../utilities/assemblePublishedItems";
 
 export async function assembleRenderablePostsFromCachedComponents({
   controller,
@@ -28,7 +28,7 @@ export async function assembleRenderablePostsFromCachedComponents({
   controller: Controller;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
+  uncompiledBasePublishedItems: UnassembledBasePublishedItem[];
   requestorUserId: string | undefined;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost[]>> {
   const assembleRenderablePostFromCachedComponentsResponses = await BluebirdPromise.map(
@@ -60,7 +60,7 @@ export async function assembleRenderablePostFromCachedComponents({
   controller: Controller;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
+  uncompiledBasePublishedItem: UnassembledBasePublishedItem;
   requestorUserId?: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePost>> {
   //////////////////////////////////////////////////

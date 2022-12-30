@@ -1,6 +1,5 @@
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { assembleRenderableUserFromCachedComponents } from "../../user/utilities/assembleRenderableUserFromCachedComponents";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { RenderableAcceptedUserFollowRequestNotification } from "../models/renderableUserNotifications";
 import { Controller } from "tsoa";
@@ -11,6 +10,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { assembleRenderableUserById } from "../../../controllers/user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableAcceptedUserFollowRequestNotification({
   controller,
@@ -58,38 +58,20 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
   } = getUserFollowEventByIdResponse;
 
   //////////////////////////////////////////////////
-  // Get the Unrenderable User Doing the Following
+  // Assemble the Renderable User Doing the Following
   //////////////////////////////////////////////////
 
-  const selectUserByUserIdResponse =
-    await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
-      {
-        controller,
-        userId: userIdBeingFollowed,
-      },
-    );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
+  const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
+    controller,
+    requestorUserId: clientUserId,
+    userId: userIdBeingFollowed,
+    blobStorageService,
+    databaseService,
+  });
+  if (assembleRenderableUserByIdResponse.type === EitherType.failure) {
+    return assembleRenderableUserByIdResponse;
   }
-  const { success: unrenderableUserDoingFollowing } = selectUserByUserIdResponse;
-
-  //////////////////////////////////////////////////
-  // Assemble theRenderable User Doing the Following
-  //////////////////////////////////////////////////
-
-  const constructRenderableUserFromPartsResponse =
-    await assembleRenderableUserFromCachedComponents({
-      controller,
-      requestorUserId: clientUserId,
-      unrenderableUser: unrenderableUserDoingFollowing!,
-      blobStorageService,
-      databaseService,
-    });
-  if (constructRenderableUserFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsResponse;
-  }
-  const { success: userAcceptingFollowRequest } =
-    constructRenderableUserFromPartsResponse;
+  const { success: userAcceptingFollowRequest } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
   // Get the Count of Unread Notifications

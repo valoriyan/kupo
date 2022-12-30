@@ -34,25 +34,53 @@ export async function handleGetCreditCardsStoredByUserId({
     GetCreditCardsStoredByUserIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
   );
   if (error) return error;
 
-  const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+  //////////////////////////////////////////////////
+  // Get User Id With Payment Info
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
       { controller, userId: clientUserId },
     );
 
   if (
-    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
+    selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse.type ===
     EitherType.failure
   ) {
-    return selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+    return selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
   }
-  const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
-    selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+  const { success: maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
+    selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
+
+  if (!maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON,
+      error: "User not found at handleGetCreditCardsStoredByUserId",
+      additionalErrorInformation: "User not found at handleGetCreditCardsStoredByUserId",
+    });
+  }
+
+  const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
+    maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
+
+  const { paymentProcessorCustomerId } =
+    unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
+
+  //////////////////////////////////////////////////
+  // Get Credit Cards Pointers for User
+  //////////////////////////////////////////////////
 
   const getCreditCardsStoredByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
@@ -64,28 +92,9 @@ export async function handleGetCreditCardsStoredByUserId({
   }
   const { success: dbCreditCardData } = getCreditCardsStoredByUserIdResponse;
 
-  if (!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON,
-      error: "User not found at handleGetCreditCardsStoredByUserId",
-      additionalErrorInformation: "User not found at handleGetCreditCardsStoredByUserId",
-    });
-  }
-  if (!dbCreditCardData) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GetCreditCardsStoredByUserIdFailedReason.UNKNOWN_REASON,
-      error: "Credit card data not found for user at handleGetCreditCardsStoredByUserId",
-      additionalErrorInformation:
-        "Credit card data not found for user at handleGetCreditCardsStoredByUserId",
-    });
-  }
-
-  const { paymentProcessorCustomerId } =
-    unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
+  //////////////////////////////////////////////////
+  // Get Credit Cards for User
+  //////////////////////////////////////////////////
 
   const getCustomerCreditCardSummaryResponses = await Promise.all(
     dbCreditCardData.map((dbCreditCardDatum) =>
@@ -106,6 +115,10 @@ export async function handleGetCreditCardsStoredByUserId({
     return mappedGetCustomerCreditCardSummaryResponses;
   }
   const { success: creditCardSummaries } = mappedGetCustomerCreditCardSummaryResponses;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({ cards: creditCardSummaries });
 }

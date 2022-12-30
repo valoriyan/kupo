@@ -10,14 +10,14 @@ import {
   FollowUserRequestBody,
   FollowUserSuccess,
   handleFollowUser,
-} from "./handleFollowUserProfile";
+} from "./handleFollowUser";
 
 import {
   handleUnfollowUser,
   UnfollowUserSuccess,
   UnfollowUserRequestBody,
   UnfollowUserFailedReason,
-} from "./handleUnfollowUserProfile";
+} from "./handleUnfollowUser";
 import {
   GetFollowerRequestsFailedReason,
   GetFollowerRequestsRequestBody,

@@ -1,11 +1,15 @@
-import { UncompiledBasePublishedItem } from "../models";
+import { UnassembledBasePublishedItem } from "../models";
 
 export function mergeArraysOfUncompiledBasePublishedItem({
   arrays,
 }: {
-  arrays: UncompiledBasePublishedItem[][];
+  arrays: UnassembledBasePublishedItem[][];
 }) {
-  const mergedArray: UncompiledBasePublishedItem[] = [];
+  //////////////////////////////////////////////////
+  // Handle Merge
+  //////////////////////////////////////////////////
+
+  const mergedArray: UnassembledBasePublishedItem[] = [];
   const setOfIncludedPublishedItemIds = new Set();
 
   arrays.forEach((array) => {
@@ -17,6 +21,10 @@ export function mergeArraysOfUncompiledBasePublishedItem({
       }
     });
   });
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return mergedArray;
 }

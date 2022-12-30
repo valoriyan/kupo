@@ -1,5 +1,5 @@
 import { DatabaseService } from "../../../services/databaseService";
-import { BaseRenderablePublishedItem, UncompiledBasePublishedItem } from "../models";
+import { BaseRenderablePublishedItem, UnassembledBasePublishedItem } from "../models";
 import { Controller } from "tsoa";
 import {
   EitherType,
@@ -17,11 +17,15 @@ export async function assembleBaseRenderablePublishedItem({
 }: {
   controller: Controller;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
+  uncompiledBasePublishedItem: UnassembledBasePublishedItem;
   requestorUserId?: string;
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, BaseRenderablePublishedItem>
 > {
+  //////////////////////////////////////////////////
+  // Check Authorization
+  //////////////////////////////////////////////////
+
   const assertViewingRightsOnPublishedItemResponse =
     await assertViewingRightsOnPublishedItem({
       controller,
@@ -34,6 +38,10 @@ export async function assembleBaseRenderablePublishedItem({
     return assertViewingRightsOnPublishedItemResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const {
     type,
     id,
@@ -45,6 +53,10 @@ export async function assembleBaseRenderablePublishedItem({
     idOfPublishedItemBeingShared,
   } = uncompiledBasePublishedItem;
 
+  //////////////////////////////////////////////////
+  // Get Hashtags
+  //////////////////////////////////////////////////
+
   const getHashtagsForPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getHashtagsForPublishedItemId(
       { controller, publishedItemId: id },
@@ -54,6 +66,10 @@ export async function assembleBaseRenderablePublishedItem({
     return getHashtagsForPublishedItemIdResponse;
   }
   const { success: hashtags } = getHashtagsForPublishedItemIdResponse;
+
+  //////////////////////////////////////////////////
+  // Count Likes
+  //////////////////////////////////////////////////
 
   const countLikesOnPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemLikesTableService.countLikesOnPublishedItemId(
@@ -67,6 +83,10 @@ export async function assembleBaseRenderablePublishedItem({
   }
   const { success: countOfLikesOnPost } = countLikesOnPublishedItemIdResponse;
 
+  //////////////////////////////////////////////////
+  // Count Comments
+  //////////////////////////////////////////////////
+
   const countCommentsOnPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemCommentsTableService.countCommentsOnPublishedItemId(
       {
@@ -78,6 +98,10 @@ export async function assembleBaseRenderablePublishedItem({
     return countCommentsOnPublishedItemIdResponse;
   }
   const { success: countOfCommentsOnPost } = countCommentsOnPublishedItemIdResponse;
+
+  //////////////////////////////////////////////////
+  // Determine if the Client User Liked the Published Item
+  //////////////////////////////////////////////////
 
   let isLikedByClient = false;
   if (!!requestorUserId) {
@@ -95,6 +119,10 @@ export async function assembleBaseRenderablePublishedItem({
     isLikedByClient = doesUserIdLikePublishedItemIdResponse.success;
   }
 
+  //////////////////////////////////////////////////
+  // Determine if the Client User Saved the Published Item
+  //////////////////////////////////////////////////
+
   let isSavedByClient = false;
   if (!!requestorUserId) {
     const doesUserIdSavePublishedItemIdResponse =
@@ -110,6 +138,10 @@ export async function assembleBaseRenderablePublishedItem({
     }
     isSavedByClient = doesUserIdSavePublishedItemIdResponse.success;
   }
+
+  //////////////////////////////////////////////////
+  // Assemble the Base Renderable Published Item
+  //////////////////////////////////////////////////
 
   const baseRenderablePublishedItem: BaseRenderablePublishedItem = {
     type,
@@ -130,6 +162,10 @@ export async function assembleBaseRenderablePublishedItem({
     isSavedByClient,
     idOfPublishedItemBeingShared,
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(baseRenderablePublishedItem);
 }

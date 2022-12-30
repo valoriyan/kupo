@@ -12,7 +12,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 

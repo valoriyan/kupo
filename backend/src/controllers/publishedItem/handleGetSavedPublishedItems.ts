@@ -10,7 +10,7 @@ import {
   Success,
 } from "../../utilities/monads";
 import { PostController } from "./post/postController";
-import { assemblePublishedItemsByIds } from "./utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsByIds } from "./utilities/assemblePublishedItems";
 
 export interface GetSavedPublishedItemsRequestBody {
   cursor?: string;

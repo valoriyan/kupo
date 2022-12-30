@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -11,61 +10,59 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { RenderableAcceptedPublishingChannelSubmissionNotification } from "../models/renderableUserNotifications";
-import { assembleRenderablePublishingChannelById } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
+import { RenderableAcceptedUserFollowRequestNotification } from "../models/renderableUserNotifications";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { assembleRenderableUserById } from "src/controllers/user/utilities/assembleRenderableUserById";
 
-export async function assembleRecordAndSendAcceptedPublishingChannelSubmissionNotification({
+export async function assembleRecordAndSendAcceptedUserFollowRequestNotification({
   controller,
-  publishingChannelSubmissionId,
-  publishingChannelId,
-  publishedItemId,
+  userFollowEventId,
   recipientUserId,
   databaseService,
   blobStorageService,
   webSocketService,
 }: {
   controller: Controller;
-  publishingChannelSubmissionId: string;
-  publishingChannelId: string;
-  publishedItemId: string;
+  userFollowEventId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Assemble the Renderable Publishing Channel
+  // Read the User Follow Request from DB
   //////////////////////////////////////////////////
-  const assembleRenderablePublishingChannelByIdResponse =
-    await assembleRenderablePublishingChannelById({
-      controller,
-      blobStorageService,
-      databaseService,
-      publishingChannelId,
-      requestorUserId: recipientUserId,
-    });
 
-  if (assembleRenderablePublishingChannelByIdResponse.type === EitherType.failure) {
-    return assembleRenderablePublishingChannelByIdResponse;
+  const getUserFollowEventByIdResponse =
+    await databaseService.tableNameToServicesMap.userFollowsTableService.getUserFollowEventById(
+      {
+        controller,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        userFollowEventId: userFollowEventId!,
+      },
+    );
+  if (getUserFollowEventByIdResponse.type === EitherType.failure) {
+    return getUserFollowEventByIdResponse;
   }
-
-  const { success: publishingChannel } = assembleRenderablePublishingChannelByIdResponse;
+  const {
+    success: { userIdBeingFollowed },
+  } = getUserFollowEventByIdResponse;
 
   //////////////////////////////////////////////////
-  // Assemble the Renderable Published Item
+  // Assemble the Renderable User Doing the Following
   //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+
+  const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
     controller,
+    requestorUserId: recipientUserId,
+    userId: userIdBeingFollowed,
     blobStorageService,
     databaseService,
-    publishedItemId,
-    requestorUserId: recipientUserId,
   });
-  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsByIdResponse;
+  if (assembleRenderableUserByIdResponse.type === EitherType.failure) {
+    return assembleRenderableUserByIdResponse;
   }
-  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+  const { success: userAcceptingFollowRequest } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
   // Get the Count of Unread Notifications
@@ -92,8 +89,8 @@ export async function assembleRecordAndSendAcceptedPublishingChannelSubmissionNo
         userNotificationId: uuidv4(),
         recipientUserId,
         externalReference: {
-          type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION,
-          publishingChannelSubmissionId,
+          type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
+          userFollowEventId,
         },
       },
     );
@@ -105,23 +102,22 @@ export async function assembleRecordAndSendAcceptedPublishingChannelSubmissionNo
   // Assemble Notification
   //////////////////////////////////////////////////
 
-  const renderableAcceptedPublishingChannelSubmissionNotification: RenderableAcceptedPublishingChannelSubmissionNotification =
+  const renderableAcceptedUserFollowRequestNotification: RenderableAcceptedUserFollowRequestNotification =
     {
       countOfUnreadNotifications,
-      type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION,
+      type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
       eventTimestamp: Date.now(),
-      publishedItem,
-      publishingChannel,
+      userAcceptingFollowRequest,
     };
 
   //////////////////////////////////////////////////
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfAcceptedPublishingChannelSubmission(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfAcceptedUserFollowRequest(
     {
       userId: recipientUserId,
-      renderableAcceptedPublishingChannelSubmissionNotification,
+      renderableAcceptedUserFollowRequestNotification,
     },
   );
 

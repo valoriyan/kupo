@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -103,12 +103,12 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   }
 
   //////////////////////////////////////////////////
-  // Get Count of Unread Notificiations
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: publishedItem.authorUserId },
+      { controller, userId: recipientUserId },
     );
   if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
     return selectCountOfUnreadUserNotificationsByUserIdResponse;

@@ -59,7 +59,7 @@ export async function handleUpdateUserProfile({
 
   if (!!userEmail) {
     const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
         {
           controller,
           userId: clientUserId,

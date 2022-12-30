@@ -1,58 +1,58 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { DatabaseService } from "../../../../services/databaseService";
+import { NOTIFICATION_EVENTS } from "../../../../services/webSocketService/eventsConfig";
+import { Controller } from "tsoa";
+import { WebSocketService } from "../../../../services/webSocketService";
 import {
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { NOTIFICATION_EVENTS } from "../../../../services/webSocketService/eventsConfig";
-import { Controller } from "tsoa";
-import { DatabaseService } from "../../../../services/databaseService";
-import { WebSocketService } from "../../../../services/webSocketService";
+import { UnrenderableCanceledNewFollowerNotification } from "../../models/unrenderableCanceledUserNotifications";
 
-export async function deleteAndEmitCanceledAcceptedUserFollowRequestNotification({
+export async function assembleRecordAndSendCanceledNewFollowerNotification({
   controller,
+  userIdDoingUnfollowing,
+  userFollowEventId,
+  recipientUserId,
   databaseService,
   webSocketService,
-  recipientUserId,
-  userIdUnacceptingFollowRequest,
-  userFollowEventId,
 }: {
   controller: Controller;
+  userIdDoingUnfollowing: string;
+  userFollowEventId: string;
+  recipientUserId: string;
   databaseService: DatabaseService;
   webSocketService: WebSocketService;
-  recipientUserId: string;
-  userIdUnacceptingFollowRequest: string;
-  userFollowEventId: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // DELETE THE NOTIFICATION
+  // Delete Notification from DB
   //////////////////////////////////////////////////
 
   const deleteUserNotificationForUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
+        recipientUserId,
         externalReference: {
-          type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
+          type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
           userFollowEventId,
         },
-        recipientUserId: recipientUserId,
       },
     );
-  if (deleteUserNotificationForUserIdResponse.type == EitherType.failure) {
+  if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
     return deleteUserNotificationForUserIdResponse;
   }
 
   //////////////////////////////////////////////////
-  // GET THE COUNT OF UNREAD NOTIFICATIONS
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
       { controller, userId: recipientUserId },
     );
-
   if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
     return selectCountOfUnreadUserNotificationsByUserIdResponse;
   }
@@ -60,25 +60,30 @@ export async function deleteAndEmitCanceledAcceptedUserFollowRequestNotification
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // ASSEMBLE NOTIFICATION
+  // Assemble Notification
   //////////////////////////////////////////////////
 
-  const unrenderableCanceledAcceptedUserFollowRequestNotification = {
-    countOfUnreadNotifications,
-    userIdUnacceptingFollowRequest,
-    type: NOTIFICATION_EVENTS.CANCELED_ACCEPTED_USER_FOLLOW_REQUEST,
-  };
+  const unrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification =
+    {
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_FOLLOWER,
+      countOfUnreadNotifications,
+      userIdDoingUnfollowing,
+    };
 
   //////////////////////////////////////////////////
-  // EMIT NOTIFICATION
+  // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledAcceptedUserFollowRequest(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewFollower(
     {
       userId: recipientUserId,
-      unrenderableCanceledAcceptedUserFollowRequestNotification,
+      unrenderableCanceledNewFollowerNotification,
     },
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

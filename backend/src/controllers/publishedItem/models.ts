@@ -6,7 +6,7 @@ export enum PublishedItemType {
   SHOP_ITEM = "SHOP_ITEM",
 }
 
-export interface UncompiledBasePublishedItem {
+export interface UnassembledBasePublishedItem {
   type: PublishedItemType;
   id: string;
   authorUserId: string;
@@ -17,7 +17,7 @@ export interface UncompiledBasePublishedItem {
   idOfPublishedItemBeingShared?: string;
 }
 
-export interface BaseRenderablePublishedItem extends UncompiledBasePublishedItem {
+export interface BaseRenderablePublishedItem extends UnassembledBasePublishedItem {
   hashtags: string[];
   likes: {
     count: number;

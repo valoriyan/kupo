@@ -12,7 +12,7 @@ import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
 import { RenderableShopItemType, RootShopItemPreview } from "../models";
 import { assembleShopItemMediaElements } from "./assembleShopItemMediaElements";
 
-export async function assembleRootShopItemPreviewFromParts({
+export async function assembleRootShopItemPreviewFromCachedComponents({
   controller,
   blobStorageService,
   databaseService,
@@ -23,6 +23,10 @@ export async function assembleRootShopItemPreviewFromParts({
   databaseService: DatabaseService;
   baseRenderablePublishedItem: BaseRenderablePublishedItem;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RootShopItemPreview>> {
+  //////////////////////////////////////////////////
+  // Inputs
+  //////////////////////////////////////////////////
+
   const {
     id,
     creationTimestamp,
@@ -37,6 +41,10 @@ export async function assembleRootShopItemPreviewFromParts({
     isSavedByClient,
   } = baseRenderablePublishedItem;
 
+  //////////////////////////////////////////////////
+  // Read Shop Item From DB
+  //////////////////////////////////////////////////
+
   const getShopItemByPublishedItemIdResponse =
     await databaseService.tableNameToServicesMap.shopItemsTableService.getShopItemByPublishedItemId(
       {
@@ -48,6 +56,10 @@ export async function assembleRootShopItemPreviewFromParts({
     return getShopItemByPublishedItemIdResponse;
   }
   const { success: dbShopItem } = getShopItemByPublishedItemIdResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble Shop Item
+  //////////////////////////////////////////////////
 
   const assembleShopItemPreviewMediaElementsResponse =
     await assembleShopItemMediaElements({
@@ -62,6 +74,10 @@ export async function assembleRootShopItemPreviewFromParts({
   }
   const { success: previewMediaElements } = assembleShopItemPreviewMediaElementsResponse;
 
+  //////////////////////////////////////////////////
+  // Get Count of Shop Item Purchased Media Elements
+  //////////////////////////////////////////////////
+
   const getShopItemPurchasedMediaElementsMetadataResponse =
     await databaseService.tableNameToServicesMap.shopItemMediaElementsTableService.getShopItemPurchasedMediaElementsMetadata(
       { controller, publishedItemId: id },
@@ -71,6 +87,10 @@ export async function assembleRootShopItemPreviewFromParts({
   }
   const { success: purchasedMediaElementsMetadata } =
     getShopItemPurchasedMediaElementsMetadataResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble RootShopItemPreview
+  //////////////////////////////////////////////////
 
   const rootShopItemPreview: RootShopItemPreview = {
     renderableShopItemType: RenderableShopItemType.SHOP_ITEM_PREVIEW,
@@ -91,6 +111,10 @@ export async function assembleRootShopItemPreviewFromParts({
     mediaElements: previewMediaElements,
     purchasedMediaElementsMetadata,
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(rootShopItemPreview);
 }

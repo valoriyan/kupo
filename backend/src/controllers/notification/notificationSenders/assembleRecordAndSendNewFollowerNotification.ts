@@ -4,7 +4,7 @@ import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 import { v4 as uuidv4 } from "uuid";
-import { RenderableNewTagInPublishedItemCaptionNotification } from "../models/renderableUserNotifications";
+import { RenderableNewFollowerNotification } from "../models/renderableUserNotifications";
 import {
   EitherType,
   ErrorReasonTypes,
@@ -13,58 +13,42 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { BlobStorageService } from "../../../services/blobStorageService";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 
-export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotification({
+export async function assembleRecordAndSendNewFollowerNotification({
   controller,
-  publishedItemId,
+  userFollowEventId,
+  userIdDoingFollowing,
   recipientUserId,
   databaseService,
   blobStorageService,
   webSocketService,
 }: {
   controller: Controller;
-  publishedItemId: string;
+  userFollowEventId: string;
+  userIdDoingFollowing: string;
   recipientUserId: string;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageService;
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Assemble Renderable Published Item Containing Tag
+  // Assemble Renderable User That Authored Comment
   //////////////////////////////////////////////////
 
-  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+  const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
     controller,
     requestorUserId: recipientUserId,
-    publishedItemId,
-    blobStorageService: blobStorageService,
-    databaseService: databaseService,
+    userId: userIdDoingFollowing,
+    blobStorageService,
+    databaseService,
   });
-  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsByIdResponse;
+  if (assembleRenderableUserByIdResponse.type === EitherType.failure) {
+    return assembleRenderableUserByIdResponse;
   }
-  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+  const { success: userDoingFollowing } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
-  // Assemble the Renderable User that Authored the Published Item
-  //////////////////////////////////////////////////
-
-  const constructRenderableUserFromPartsByUserIdResponse =
-    await assembleRenderableUserById({
-      controller,
-      requestorUserId: recipientUserId,
-      userId: publishedItem.authorUserId,
-      blobStorageService,
-      databaseService,
-    });
-  if (constructRenderableUserFromPartsByUserIdResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsByUserIdResponse;
-  }
-  const { success: userTaggingClient } = constructRenderableUserFromPartsByUserIdResponse;
-
-  //////////////////////////////////////////////////
-  // Write the Notification into DB
+  // Write Notification to DB
   //////////////////////////////////////////////////
 
   const createUserNotificationResponse =
@@ -74,8 +58,8 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
         userNotificationId: uuidv4(),
         recipientUserId,
         externalReference: {
-          type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION,
-          publishedItemId,
+          type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+          userFollowEventId,
         },
       },
     );
@@ -97,28 +81,24 @@ export async function assembleRecordAndSendNewTagInPublishedItemCaptionNotificat
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // Assemble the Notification
+  // Assemble Notification
   //////////////////////////////////////////////////
 
-  const renderableNewTagInPublishedItemCaptionNotification: RenderableNewTagInPublishedItemCaptionNotification =
-    {
-      countOfUnreadNotifications,
-      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION,
-      eventTimestamp: Date.now(),
-      userTaggingClient,
-      publishedItem,
-    };
+  const renderableNewFollowerNotification: RenderableNewFollowerNotification = {
+    countOfUnreadNotifications,
+    type: NOTIFICATION_EVENTS.NEW_FOLLOWER,
+    eventTimestamp: Date.now(),
+    userDoingFollowing,
+  };
 
   //////////////////////////////////////////////////
-  // Send the Notification
+  // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewTagInPublishedItemCaption(
-    {
-      userId: recipientUserId,
-      renderableNewTagInPublishedItemCaptionNotification,
-    },
-  );
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewFollower({
+    userId: recipientUserId,
+    renderableNewFollowerNotification,
+  });
 
   //////////////////////////////////////////////////
   // Return

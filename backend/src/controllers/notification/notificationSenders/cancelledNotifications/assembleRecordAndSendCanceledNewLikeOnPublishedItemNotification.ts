@@ -9,17 +9,21 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { UnrenderableCanceledNewTagInPublishedItemCommentNotification } from "../../models/unrenderableCanceledUserNotifications";
+import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "../../models/unrenderableCanceledUserNotifications";
 
-export async function assembleRecordAndSendCancelledNewTagInPublishedItemCommentNotification({
+export async function assembleRecordAndSendCanceledNewLikeOnPublishedItemNotification({
   controller,
-  publishedItemCommentId,
+  userIdUnlikingPost,
+  publishedItemId,
+  publishedItemLikeId,
   recipientUserId,
   databaseService,
   webSocketService,
 }: {
   controller: Controller;
-  publishedItemCommentId: string;
+  userIdUnlikingPost: string;
+  publishedItemId: string;
+  publishedItemLikeId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
   webSocketService: WebSocketService;
@@ -32,11 +36,11 @@ export async function assembleRecordAndSendCancelledNewTagInPublishedItemComment
     await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        externalReference: {
-          type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
-          publishedItemCommentId,
-        },
         recipientUserId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM,
+          publishedItemLikeId,
+        },
       },
     );
   if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
@@ -61,21 +65,22 @@ export async function assembleRecordAndSendCancelledNewTagInPublishedItemComment
   // Assemble Notification
   //////////////////////////////////////////////////
 
-  const unrenderableCanceledNewTagInPublishedItemCommentNotification: UnrenderableCanceledNewTagInPublishedItemCommentNotification =
+  const unrenderableCanceledNewLikeOnPostNotification: UnrenderableCanceledNewLikeOnPublishedItemNotification =
     {
-      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_PUBLISHED_ITEM,
       countOfUnreadNotifications,
-      publishedItemCommentId: publishedItemCommentId,
+      userIdUnlikingPost,
+      publishedItemId,
     };
 
   //////////////////////////////////////////////////
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewTagInPublishedItemComment(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewLikeOnPost(
     {
       userId: recipientUserId,
-      unrenderableCanceledNewTagInPublishedItemCommentNotification,
+      unrenderableCanceledNewLikeOnPostNotification,
     },
   );
 

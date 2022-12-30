@@ -8,7 +8,7 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthentication } from "../../auth/utilities";
 import { PublishedItemInteractionController } from "./publishedItemInteractionController";
-import { assemblePublishedItemById } from "../utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../utilities/assemblePublishedItems";
 import { assembleRecordAndSendNewLikeOnPublishedItemNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewLikeOnPublishedItemNotification";
 
 export interface UserLikesPublishedItemRequestBody {
