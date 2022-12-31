@@ -27,6 +27,10 @@ export async function assembleRenderableUsersByIds({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser[]>> {
+  //////////////////////////////////////////////////
+  // Read UnrenderableUsers from DB
+  //////////////////////////////////////////////////
+
   const unrenderableUsersResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUserIds({
       controller,
@@ -37,6 +41,10 @@ export async function assembleRenderableUsersByIds({
     return unrenderableUsersResponse;
   }
   const { success: unrenderableUsers } = unrenderableUsersResponse;
+
+  //////////////////////////////////////////////////
+  // Continue Request
+  //////////////////////////////////////////////////
 
   return await assembleRenderableUsersFromCachedComponents({
     controller,
@@ -60,7 +68,11 @@ export async function assembleRenderableUserById({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser>> {
-  const unrenderableUserResponse =
+  //////////////////////////////////////////////////
+  // Read UnrenderableUsers from DB
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserIdResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       {
         controller,
@@ -68,27 +80,33 @@ export async function assembleRenderableUserById({
       },
     );
 
-  if (unrenderableUserResponse.type === EitherType.failure) {
-    return unrenderableUserResponse;
+  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
+    return selectMaybeUserByUserIdResponse;
   }
 
-  const { success: unrenderableUser } = unrenderableUserResponse;
+  const { success: maybeUnrenderableUser } = selectMaybeUserByUserIdResponse;
 
-  if (!!unrenderableUser) {
-    return await assembleRenderableUserFromCachedComponents({
-      controller,
-      requestorUserId: requestorUserId,
-      unrenderableUser,
-      blobStorageService: blobStorageService,
-      databaseService: databaseService,
-    });
-  } else {
+  if (!maybeUnrenderableUser) {
     return Failure({
       controller,
       httpStatusCode: 404,
       reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: "User not found at constructRenderableUserFromPartsByUserId",
-      additionalErrorInformation: "Error at constructRenderableUserFromPartsByUserId",
+      error: "User not found at assembleRenderableUserById",
+      additionalErrorInformation: "Error at assembleRenderableUserById",
     });
   }
+
+  const unrenderableUser = maybeUnrenderableUser;
+
+  //////////////////////////////////////////////////
+  // Continue Request
+  //////////////////////////////////////////////////
+
+  return await assembleRenderableUserFromCachedComponents({
+    controller,
+    requestorUserId: requestorUserId,
+    unrenderableUser,
+    blobStorageService: blobStorageService,
+    databaseService: databaseService,
+  });
 }

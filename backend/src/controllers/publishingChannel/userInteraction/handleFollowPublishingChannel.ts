@@ -47,7 +47,7 @@ export async function handleFollowPublishingChannel({
   const isPending = false;
 
   //////////////////////////////////////////////////
-  // WRITE FOLLOW
+  // Write Follow to DB
   //////////////////////////////////////////////////
 
   const createPublishingChannelFollowResponse =

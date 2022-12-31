@@ -46,7 +46,7 @@ export async function handleUpdateUserProfilePicture({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // UPDATE DATABASE ENTRY
+  // Update User By Id
   //////////////////////////////////////////////////
   const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
@@ -73,7 +73,7 @@ export async function handleUpdateUserProfilePicture({
   }
 
   //////////////////////////////////////////////////
-  // RECOMPILE USER
+  // Assemble User
   //////////////////////////////////////////////////
 
   const constructRenderableUserFromPartsResponse =
@@ -90,7 +90,7 @@ export async function handleUpdateUserProfilePicture({
   }
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return constructRenderableUserFromPartsResponse;

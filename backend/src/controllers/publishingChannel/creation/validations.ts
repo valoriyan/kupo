@@ -25,6 +25,10 @@ export async function validatePublishingChannelName({
   // eslint-disable-next-line @typescript-eslint/ban-types
   InternalServiceResponse<ErrorReasonTypes<string>, {}>
 > {
+  //////////////////////////////////////////////////
+  // Check that Name is Unique
+  //////////////////////////////////////////////////
+
   const validatePublishingChannelUniqueNameResponse =
     await validatePublishingChannelUniqueName({
       controller,
@@ -36,6 +40,10 @@ export async function validatePublishingChannelName({
     return validatePublishingChannelUniqueNameResponse;
   }
 
+  //////////////////////////////////////////////////
+  // Check that Characters are Valid
+  //////////////////////////////////////////////////
+
   if (!/^[0-9a-z._-]+$/.test(publishingChannelName)) {
     return Failure({
       controller,
@@ -43,6 +51,10 @@ export async function validatePublishingChannelName({
       reason: ValidatePublishingChannelNameFailedReason.IllegalCharacters,
     });
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }
@@ -59,6 +71,10 @@ export async function validatePublishingChannelUniqueName({
   // eslint-disable-next-line @typescript-eslint/ban-types
   InternalServiceResponse<ErrorReasonTypes<string>, {}>
 > {
+  //////////////////////////////////////////////////
+  // Read UnrenderablePublishingChannel from DB
+  //////////////////////////////////////////////////
+
   const maybeGetPublishingChannelByNameResponse =
     await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
       {
@@ -72,6 +88,10 @@ export async function validatePublishingChannelUniqueName({
   }
 
   const { success: maybePublishingChannel } = maybeGetPublishingChannelByNameResponse;
+
+  //////////////////////////////////////////////////
+  // Return According to Result
+  //////////////////////////////////////////////////
 
   if (maybePublishingChannel) {
     return Failure({

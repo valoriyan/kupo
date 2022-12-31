@@ -36,6 +36,10 @@ export async function handleSetUserContentFeedFilters({
     SetUserContentFeedFiltersSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { requestedContentFeedFilters } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -43,6 +47,10 @@ export async function handleSetUserContentFeedFilters({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // ???
+  //////////////////////////////////////////////////
 
   const userContentFeedFilters: UserContentFeedFilter[] = [
     ...requestedContentFeedFilters.map((requestedContentFeedFilter) => {
@@ -56,6 +64,10 @@ export async function handleSetUserContentFeedFilters({
     }),
   ];
 
+  //////////////////////////////////////////////////
+  // Determine if Content Feed Filters Already Exist
+  //////////////////////////////////////////////////
+
   const getUserContentFeedFiltersByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.getUserContentFeedFiltersByUserId(
       { controller, userId: clientUserId },
@@ -65,6 +77,10 @@ export async function handleSetUserContentFeedFilters({
   }
   const { success: existingUserContentFeedFilters } =
     getUserContentFeedFiltersByUserIdResponse;
+
+  //////////////////////////////////////////////////
+  // Delete Existing Content Feed Filters
+  //////////////////////////////////////////////////
 
   if (existingUserContentFeedFilters.length > 0) {
     const deleteUserContentFeedFiltersByUserIdResponse =
@@ -76,6 +92,10 @@ export async function handleSetUserContentFeedFilters({
     }
   }
 
+  //////////////////////////////////////////////////
+  // Write Replacement Content Feed Filters to DB
+  //////////////////////////////////////////////////
+
   const createUserContentFeedFiltersResponse =
     await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.createUserContentFeedFilters(
       { controller, userContentFeedFilters },
@@ -83,6 +103,10 @@ export async function handleSetUserContentFeedFilters({
   if (createUserContentFeedFiltersResponse.type === EitherType.failure) {
     return createUserContentFeedFiltersResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     userContentFeedFilters,

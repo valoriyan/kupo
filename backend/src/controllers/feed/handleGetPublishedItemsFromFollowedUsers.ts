@@ -54,7 +54,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // Get users ids followed by client
+  // Get Users Ids Followed by Client
   //////////////////////////////////////////////////
   const getUserIdsFollowedByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
@@ -66,7 +66,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
   const { success: userIdsBeingFollowed } = getUserIdsFollowedByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // Get published items by followed user ids
+  // Get Published Items by Followed User Ids
   //////////////////////////////////////////////////
 
   const getPublishedItemsByCreatorUserIdsResponse =
@@ -88,7 +88,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
     getPublishedItemsByCreatorUserIdsResponse;
 
   //////////////////////////////////////////////////
-  // Assemble published items
+  // Assemble Published Items
   //////////////////////////////////////////////////
 
   const constructPublishedItemsFromPartsResponse =

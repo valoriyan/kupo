@@ -40,6 +40,9 @@ export async function handleGetPublishingChannelsFollowedByUserId({
     GetPublishingChannelsFollowedByUserIdSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { cursor, pageSize, areFollowsPending } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -49,7 +52,7 @@ export async function handleGetPublishingChannelsFollowedByUserId({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // GET Publishing Channels Ids
+  // Read Publishing Channels Follows from DB
   //////////////////////////////////////////////////
 
   const getPublishingChannelFollowsByUserIdResponse =
@@ -72,13 +75,13 @@ export async function handleGetPublishingChannelsFollowedByUserId({
   const { success: publishingChannelFollows } =
     getPublishingChannelFollowsByUserIdResponse;
 
-  //////////////////////////////////////////////////
-  // GET Publishing Channels
-  //////////////////////////////////////////////////
-
   const publishingChannelIds = publishingChannelFollows.map(
     ({ publishing_channel_id_being_followed }) => publishing_channel_id_being_followed,
   );
+
+  //////////////////////////////////////////////////
+  // Assemble Publishing Channels
+  //////////////////////////////////////////////////
 
   const assembleRenderablePublishingChannelsByIdsResponse =
     await assembleRenderablePublishingChannelsByIds({
@@ -97,7 +100,7 @@ export async function handleGetPublishingChannelsFollowedByUserId({
     assembleRenderablePublishingChannelsByIdsResponse;
 
   //////////////////////////////////////////////////
-  // GET nextPageCursor
+  // Get Next-Page Cursor
   //////////////////////////////////////////////////
 
   let nextPageCursor;
@@ -116,6 +119,10 @@ export async function handleGetPublishingChannelsFollowedByUserId({
       timestamp: parseInt(lastPageItemFollow.timestamp),
     });
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return {
     type: EitherType.success,

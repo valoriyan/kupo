@@ -90,8 +90,8 @@ export async function assembleRenderableUserFromCachedComponents({
   } = unrenderableUser;
 
   //////////////////////////////////////////////////
-  // Check User If Requestor Is Blocked
-  //      If requestor is logged in
+  // Check If Requestor Is Blocked
+  //      If Requestor is Logged in
   //////////////////////////////////////////////////
 
   if (!!requestorUserId) {
@@ -113,14 +113,15 @@ export async function assembleRenderableUserFromCachedComponents({
         controller,
         httpStatusCode: 404,
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        error: "User not found at constructRenderableUserFromParts",
-        additionalErrorInformation: "User not found at constructRenderableUserFromParts",
+        error: "User not found at assembleRenderableUserFromCachedComponents",
+        additionalErrorInformation:
+          "User not found at assembleRenderableUserFromCachedComponents",
       });
     }
   }
 
   //////////////////////////////////////////////////
-  // GET BACKGROUND IMAGE
+  // Get Background Image Temporary Url
   //////////////////////////////////////////////////
   let backgroundImageTemporaryUrl = undefined;
   if (!!backgroundImageBlobFileKey) {
@@ -137,7 +138,7 @@ export async function assembleRenderableUserFromCachedComponents({
   }
 
   //////////////////////////////////////////////////
-  // GET PROFILE PICTURE
+  // Get Profile Picture Temporary Url
   //////////////////////////////////////////////////
   let profilePictureTemporaryUrl = undefined;
   if (!!profilePictureBlobFileKey) {
@@ -154,7 +155,7 @@ export async function assembleRenderableUserFromCachedComponents({
   }
 
   //////////////////////////////////////////////////
-  // CHECK IF CLIENT CAN VIEW ITEMS PUBLISHED BY USER
+  // Check Authorization
   //////////////////////////////////////////////////
   const canUserViewUserContentResponse =
     await canUserIdViewUserContentFromUnrenderableUser({
@@ -169,7 +170,7 @@ export async function assembleRenderableUserFromCachedComponents({
   const { success: clientCanViewContent } = canUserViewUserContentResponse;
 
   //////////////////////////////////////////////////
-  // GET FOLLOWER COUNT
+  // Read Target User Follower Count From DB
   //////////////////////////////////////////////////
   const countFollowersOfUserIdResponse =
     await databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
@@ -185,9 +186,9 @@ export async function assembleRenderableUserFromCachedComponents({
   const { success: numberOfFollowersOfUserId } = countFollowersOfUserIdResponse;
 
   //////////////////////////////////////////////////
-  // HOW MANY ACCOUNTS IS THIS USER FOLLOWING
+  // Read Target User Following Count From DB
   //////////////////////////////////////////////////
-  const countFollowsOfUserIdResponse =
+  const countUserFollowsOfUserIdResponse =
     await databaseService.tableNameToServicesMap.userFollowsTableService.countUserFollowsOfUserId(
       {
         controller,
@@ -195,13 +196,13 @@ export async function assembleRenderableUserFromCachedComponents({
         areFollowsPending: false,
       },
     );
-  if (countFollowsOfUserIdResponse.type === EitherType.failure) {
-    return countFollowsOfUserIdResponse;
+  if (countUserFollowsOfUserIdResponse.type === EitherType.failure) {
+    return countUserFollowsOfUserIdResponse;
   }
-  const { success: numberOfFollowsByUserId } = countFollowsOfUserIdResponse;
+  const { success: numberOfFollowsByUserId } = countUserFollowsOfUserIdResponse;
 
   //////////////////////////////////////////////////
-  // GET USER HASHTAGS
+  // Read Target Users Hashtags from DB
   //////////////////////////////////////////////////
   const getHashtagsForUserIdResponse =
     await databaseService.tableNameToServicesMap.userHashtagsTableService.getHashtagsForUserId(
@@ -215,7 +216,7 @@ export async function assembleRenderableUserFromCachedComponents({
   const { success: userHashtags } = getHashtagsForUserIdResponse;
 
   //////////////////////////////////////////////////
-  // IS CLIENT FOLLOWING USER
+  // Determine If Client Is Following the Target User
   //////////////////////////////////////////////////
   let followingStatusOfClientToUser = FollowingStatus.not_following;
   if (!!requestorUserId) {
@@ -234,7 +235,7 @@ export async function assembleRenderableUserFromCachedComponents({
   }
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
   return Success({
     backgroundImageTemporaryUrl,

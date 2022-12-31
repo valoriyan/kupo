@@ -33,6 +33,10 @@ export async function assembleRenderablePublishingChannelsFromParts({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel[]>
 > {
+  //////////////////////////////////////////////////
+  // Assemble Publishing Channels
+  //////////////////////////////////////////////////
+
   const assembleRenderablePublishingChannelFromPartsResponses = await BluebirdPromise.map(
     unrenderablePublishingChannels,
     async (unrenderablePublishingChannel) =>
@@ -44,6 +48,10 @@ export async function assembleRenderablePublishingChannelsFromParts({
         databaseService,
       }),
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return unwrapListOfEitherResponses({
     eitherResponses: assembleRenderablePublishingChannelFromPartsResponses,
@@ -68,7 +76,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
   //////////////////////////////////////////////////
-  // Inputs & Authentication
+  // Inputs
   //////////////////////////////////////////////////
 
   const {
@@ -84,7 +92,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   } = unrenderablePublishingChannel;
 
   //////////////////////////////////////////////////
-  // GET BACKGROUND IMAGE
+  // Get Temporary Url for Background Image
   //////////////////////////////////////////////////
   let backgroundImageTemporaryUrl = undefined;
   if (!!backgroundImageBlobFileKey) {
@@ -101,7 +109,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   }
 
   //////////////////////////////////////////////////
-  // GET PROFILE PICTURE
+  // Get Temporary Url for Profile Picture
   //////////////////////////////////////////////////
 
   let profilePictureTemporaryUrl = undefined;
@@ -119,7 +127,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   }
 
   //////////////////////////////////////////////////
-  // GET RENDERABLE OWNER USER
+  // Get Renderable Owner User
   //////////////////////////////////////////////////
   const constructRenderableUserFromPartsByUserIdResponse =
     await assembleRenderableUserById({
@@ -136,7 +144,7 @@ export async function assembleRenderablePublishingChannelFromParts({
     constructRenderableUserFromPartsByUserIdResponse;
 
   //////////////////////////////////////////////////
-  // GET COUNT OF USERS FOLLOWING PUBLISHING CHANNEL
+  // Get Count of Users Following Publishing Channel
   //////////////////////////////////////////////////
   const countFollowersOfPublishingChannelIdResponse =
     await databaseService.tableNameToServicesMap.publishingChannelFollowsTableService.countFollowersOfPublishingChannelId(
@@ -154,7 +162,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   const { success: countOfUserFollowers } = countFollowersOfPublishingChannelIdResponse;
 
   //////////////////////////////////////////////////
-  // GET FOLLOWING STATUS OF USER TO PUBLISHING CHANNEL
+  // Get Following Status of Client User to Publishing Channel
   //////////////////////////////////////////////////
 
   const getFollowingStatusOfUserIdToPublishingChannelIdResponse =
@@ -176,7 +184,7 @@ export async function assembleRenderablePublishingChannelFromParts({
     getFollowingStatusOfUserIdToPublishingChannelIdResponse;
 
   //////////////////////////////////////////////////
-  // GET MODERATORS
+  // Read Moderator User Ids from DB
   //////////////////////////////////////////////////
 
   const selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse =
@@ -197,6 +205,10 @@ export async function assembleRenderablePublishingChannelFromParts({
   const { success: moderatorUserIds } =
     selectPublishingChannelModeratorUserIdsByPublishingChannelIdResponse;
 
+  //////////////////////////////////////////////////
+  // Assemble Renderable Moderator Users
+  //////////////////////////////////////////////////
+
   const constructRenderableUsersFromPartsByUserIdsResponse =
     await assembleRenderableUsersByIds({
       controller,
@@ -213,7 +225,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   const { success: moderators } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   //////////////////////////////////////////////////
-  // COMPILE
+  // Assemble RenderablePublishingChannel
   //////////////////////////////////////////////////
 
   const renderablePublishingChannel: RenderablePublishingChannel = {
@@ -241,7 +253,7 @@ export async function assembleRenderablePublishingChannelFromParts({
   };
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return Success(renderablePublishingChannel);

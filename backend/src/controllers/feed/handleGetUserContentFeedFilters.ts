@@ -2,12 +2,14 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
+  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
 import { checkAuthentication } from "../auth/utilities";
 import { FeedController } from "./feedController";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "./models";
+import { GenericResponseFailedReason } from "../models";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GetUserContentFeedFiltersRequestBody {}
@@ -35,6 +37,10 @@ export async function handleGetUserContentFeedFilters({
     GetUserContentFeedFiltersSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const now = Date.now();
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -42,6 +48,10 @@ export async function handleGetUserContentFeedFilters({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Read Content Feed Filters from DB
+  //////////////////////////////////////////////////
 
   const getUserContentFeedFiltersByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userContentFeedFiltersTableService.getUserContentFeedFiltersByUserId(
@@ -52,19 +62,39 @@ export async function handleGetUserContentFeedFilters({
   }
   const { success: userContentFeedFilters } = getUserContentFeedFiltersByUserIdResponse;
 
-  const selectUserByUserIdResponse =
+  //////////////////////////////////////////////////
+  // Read Client UnrenderableUser from DB
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       { controller, userId: clientUserId },
     );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
+  if (selectMaybeUserByUserIdResponse.type === EitherType.failure) {
+    return selectMaybeUserByUserIdResponse;
   }
-  const { success: unrenderableUser } = selectUserByUserIdResponse;
+  const { success: maybeUnrenderableUser } = selectMaybeUserByUserIdResponse;
+
+  if (!maybeUnrenderableUser) {
+    return Failure({
+      controller,
+      httpStatusCode: 404,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handleGetUserContentFeedFilters",
+      additionalErrorInformation: "Error at handleGetUserContentFeedFilters",
+    });
+  }
+
+  const unrenderableUser = maybeUnrenderableUser;
+
+  //////////////////////////////////////////////////
+  // Add "All Posts" Content Feed Filter if User is Admin
+  //////////////////////////////////////////////////
 
   const defaultFilters: UserContentFeedFilter[] = [];
 
   // ADD ALL_POSTS_FOR_ADMINS FILTER FOR ADMINS
-  if (!!unrenderableUser?.isAdmin) {
+  if (!!unrenderableUser.isAdmin) {
     defaultFilters.push({
       contentFeedFilterId: "All Posts",
       userId: clientUserId,
@@ -73,6 +103,10 @@ export async function handleGetUserContentFeedFilters({
       creationTimestamp: now,
     });
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     userContentFeedFilters: [...defaultFilters, ...userContentFeedFilters],

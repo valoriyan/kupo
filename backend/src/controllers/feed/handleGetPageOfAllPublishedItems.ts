@@ -11,6 +11,7 @@ import { RenderablePublishedItem } from "../publishedItem/models";
 import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/assemblePublishedItems";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
+import { GenericResponseFailedReason } from "../models";
 
 export interface GetPageOfAllPublishedItemsRequestBody {
   cursor?: string;
@@ -43,6 +44,10 @@ export async function handleGetPageOfAllPublishedItems({
     GetPageOfAllPublishedItemsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { cursor, pageSize } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -51,61 +56,36 @@ export async function handleGetPageOfAllPublishedItems({
   );
   if (error) return error;
 
-  const selectUserByUserIdResponse =
+  //////////////////////////////////////////////////
+  // Read Unrenderable Client User From DB
+  //////////////////////////////////////////////////
+
+  const selectMaybeUserByUserIdesponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId(
       { controller, userId: clientUserId },
     );
-  if (selectUserByUserIdResponse.type === EitherType.failure) {
-    return selectUserByUserIdResponse;
+  if (selectMaybeUserByUserIdesponse.type === EitherType.failure) {
+    return selectMaybeUserByUserIdesponse;
   }
-  const { success: unrenderableUser } = selectUserByUserIdResponse;
+  const { success: maybeUnrenderableUser } = selectMaybeUserByUserIdesponse;
 
-  if (!!unrenderableUser && !!unrenderableUser.isAdmin) {
-    const GET_ALL_PUBLISHED_ITEMSResponse =
-      await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.GET_ALL_PUBLISHED_ITEMS(
-        {
-          controller,
-          filterOutExpiredAndUnscheduledPublishedItems: true,
-          limit: pageSize,
-          getPublishedItemsBeforeTimestamp: cursor
-            ? decodeTimestampCursor({ encodedCursor: cursor })
-            : undefined,
-        },
-      );
-    if (GET_ALL_PUBLISHED_ITEMSResponse.type === EitherType.failure) {
-      return GET_ALL_PUBLISHED_ITEMSResponse;
-    }
-    const { success: uncompiledBasePublishedItems } = GET_ALL_PUBLISHED_ITEMSResponse;
-
-    const constructPublishedItemsFromPartsResponse =
-      await assemblePublishedItemsFromCachedComponents({
-        controller,
-        blobStorageService: controller.blobStorageService,
-        databaseService: controller.databaseService,
-        uncompiledBasePublishedItems,
-        requestorUserId: clientUserId,
-      });
-    if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
-      return constructPublishedItemsFromPartsResponse;
-    }
-    const { success: renderablePublishedItems } =
-      constructPublishedItemsFromPartsResponse;
-
-    const nextPageCursor =
-      renderablePublishedItems.length > 0
-        ? encodeTimestampCursor({
-            timestamp:
-              renderablePublishedItems[renderablePublishedItems.length - 1]
-                .scheduledPublicationTimestamp,
-          })
-        : undefined;
-
-    return Success({
-      renderablePublishedItems,
-      previousPageCursor: cursor,
-      nextPageCursor,
+  if (!maybeUnrenderableUser) {
+    return Failure({
+      controller,
+      httpStatusCode: 403,
+      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+      error: "User not found at handleGetPageOfAllPublishedItems",
+      additionalErrorInformation: "User not found at handleGetPageOfAllPublishedItems",
     });
-  } else {
+  }
+
+  const unrenderableUser = maybeUnrenderableUser;
+
+  //////////////////////////////////////////////////
+  // Check Authorization
+  //////////////////////////////////////////////////
+
+  if (!unrenderableUser.isAdmin) {
     return Failure({
       controller,
       httpStatusCode: 403,
@@ -114,4 +94,65 @@ export async function handleGetPageOfAllPublishedItems({
       additionalErrorInformation: "Illegal access at handleGetPageOfAllPublishedItems",
     });
   }
+
+  //////////////////////////////////////////////////
+  // Read Page of All Published Items from DB
+  //////////////////////////////////////////////////
+
+  const GET_ALL_PUBLISHED_ITEMSResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.GET_ALL_PUBLISHED_ITEMS(
+      {
+        controller,
+        filterOutExpiredAndUnscheduledPublishedItems: true,
+        limit: pageSize,
+        getPublishedItemsBeforeTimestamp: cursor
+          ? decodeTimestampCursor({ encodedCursor: cursor })
+          : undefined,
+      },
+    );
+  if (GET_ALL_PUBLISHED_ITEMSResponse.type === EitherType.failure) {
+    return GET_ALL_PUBLISHED_ITEMSResponse;
+  }
+  const { success: uncompiledBasePublishedItems } = GET_ALL_PUBLISHED_ITEMSResponse;
+
+  //////////////////////////////////////////////////
+  // Assemble Published Items
+  //////////////////////////////////////////////////
+
+  const assemblePublishedItemsFromCachedComponentsResponse =
+    await assemblePublishedItemsFromCachedComponents({
+      controller,
+      blobStorageService: controller.blobStorageService,
+      databaseService: controller.databaseService,
+      uncompiledBasePublishedItems,
+      requestorUserId: clientUserId,
+    });
+  if (assemblePublishedItemsFromCachedComponentsResponse.type === EitherType.failure) {
+    return assemblePublishedItemsFromCachedComponentsResponse;
+  }
+  const { success: renderablePublishedItems } =
+    assemblePublishedItemsFromCachedComponentsResponse;
+
+  //////////////////////////////////////////////////
+  // Get Next Page Cursor
+  //////////////////////////////////////////////////
+
+  const nextPageCursor =
+    renderablePublishedItems.length > 0
+      ? encodeTimestampCursor({
+          timestamp:
+            renderablePublishedItems[renderablePublishedItems.length - 1]
+              .scheduledPublicationTimestamp,
+        })
+      : undefined;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
+  return Success({
+    renderablePublishedItems,
+    previousPageCursor: cursor,
+    nextPageCursor,
+  });
 }

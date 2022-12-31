@@ -38,7 +38,7 @@ export async function handleSubmitPublishedItemToPublishingChannel({
   >
 > {
   //////////////////////////////////////////////////
-  // Inputs
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
   const { publishingChannelId, publishedItemId } = requestBody;
@@ -54,7 +54,7 @@ export async function handleSubmitPublishedItemToPublishingChannel({
   const timestampOfSubmission = Date.now();
 
   //////////////////////////////////////////////////
-  // See if user already has moderation privileges
+  // Determine if Client User Already has Moderation Privileges
   //////////////////////////////////////////////////
 
   const doesUserIdHaveRightsToModeratePublishingChannelResponse =
@@ -75,7 +75,7 @@ export async function handleSubmitPublishedItemToPublishingChannel({
     doesUserIdHaveRightsToModeratePublishingChannelResponse;
 
   //////////////////////////////////////////////////
-  // Write submission to DB
+  // Write Submission to DB
   //////////////////////////////////////////////////
 
   const submitPublishedItemToPublishingChannelResponse =
