@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { RenderableChatMessage } from "#/api";
 import { ReverseInfiniteList } from "#/components/InfiniteList";
 import { Flex, Stack } from "#/components/Layout";
@@ -20,14 +20,14 @@ export const ChatMessagesList = ({
   isFetchingPreviousPage,
   fetchPreviousPage,
 }: ChatMessagesListProps) => {
-  const listRef = useRef<HTMLDivElement>(null);
+  const [listRef, setListRef] = useState<HTMLDivElement | null>(null);
 
   return (
-    <ScrollArea ref={listRef}>
-      {listRef.current && (
+    <ScrollArea ref={setListRef}>
+      {listRef && (
         <Stack css={{ p: "$4", pb: 0 }}>
           <ReverseInfiniteList
-            scrollParent={listRef.current}
+            scrollParent={listRef}
             hasNextPage={hasPreviousPage ?? false}
             isNextPageLoading={isFetchingPreviousPage}
             loadNextPage={fetchPreviousPage}

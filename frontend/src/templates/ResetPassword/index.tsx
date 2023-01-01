@@ -39,8 +39,6 @@ const ResetPasswordInner = ({ resetPasswordToken }: { resetPasswordToken: string
     checkResetPasswordTokenValidity();
   }, [checkResetPasswordTokenValidity, isError, isTokenValid, resetPasswordToken]);
 
-  console.log(`isTokenValid: ${isTokenValid}`);
-
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     resetPassword({ password, token: resetPasswordToken });

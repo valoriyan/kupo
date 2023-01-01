@@ -35,15 +35,15 @@ export const ShareMenu = ({ hide, post, currentMediaElement }: ShareMenuProps) =
 
   const saveMedia = async () => {
     if (!currentMediaElement) return;
+    const { temporaryUrl, mimeType } = currentMediaElement;
     setIsLoading(true);
-    const blob = await (
-      await fetch(currentMediaElement.temporaryUrl, { mode: "no-cors" })
-    ).blob();
+    const blob = await (await fetch(temporaryUrl, { mode: "no-cors" })).blob();
     const blobUrl = URL.createObjectURL(blob);
     const dlAnchor = document.createElement("a");
     dlAnchor.style.display = "none";
-    // TODO: support different file types and move to util function
-    dlAnchor.download = "kupo-media.jpg";
+    const fileName = temporaryUrl.split("/").pop();
+    const extension = mimeType.split("/").pop();
+    dlAnchor.download = `${fileName}.${extension}`;
     dlAnchor.href = blobUrl;
     document.body.appendChild(dlAnchor);
     dlAnchor.click();

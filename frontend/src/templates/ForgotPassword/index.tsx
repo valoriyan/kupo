@@ -23,20 +23,20 @@ export const ForgotPassword = () => {
   return (
     <AuthFormLayout title="Forgot Password" onSubmit={onSubmit}>
       <Stack css={{ gap: "$5" }}>
-        <Input size="lg" placeholder="email" onChange={onChangeEmail} />
-        <Button size="lg" variant="secondary">
+        <Input size="lg" label="Email" onChange={onChangeEmail} />
+        <Button size="lg" variant="primary">
           Reset Password
         </Button>
       </Stack>
       <Stack css={{ gap: "$5", pt: "$10" }}>
-        <Link href="/sign-up" passHref>
-          <Button as="a" size="lg" variant="primary">
-            Sign Up
-          </Button>
-        </Link>
         <Link href="/login" passHref>
           <Button size="lg" variant="secondary">
             Return to Log In
+          </Button>
+        </Link>
+        <Link href="/sign-up" passHref>
+          <Button as="a" size="lg" variant="secondary" outlined>
+            Sign Up
           </Button>
         </Link>
       </Stack>

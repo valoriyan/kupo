@@ -19,8 +19,8 @@ export const logInTestUser = ({
   cy.visit("/");
   cy.contains("log in").click();
 
-  cy.get("input[placeholder=email]").type(userData.email);
-  cy.get("input[placeholder=password]").type(userData.password);
+  cy.get("input[type=email]").type(userData.email);
+  cy.get("input[type=password]").type(userData.password);
 
   cy.contains("button", "log in", { matchCase: false })
     .click()

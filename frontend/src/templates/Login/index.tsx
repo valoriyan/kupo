@@ -20,14 +20,13 @@ export const Login = () => {
   };
 
   return (
-    <AuthFormLayout title="Log into existing account" onSubmit={onSubmit}>
+    <AuthFormLayout title="Log into an existing account" onSubmit={onSubmit}>
       <Stack css={{ gap: "$5" }}>
         <Input
           size="lg"
           required
           type="email"
-          placeholder="email"
-          name="email"
+          label="Email"
           value={email}
           onChange={(e) => setEmail(e.currentTarget.value.toLocaleLowerCase())}
         />
@@ -35,13 +34,12 @@ export const Login = () => {
           size="lg"
           required
           type="password"
-          placeholder="password"
-          name="password"
+          label="Password"
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
         />
         <Link href="/forgot-password" passHref>
-          <StyledLink css={{ ml: "$5" }}>forgot password</StyledLink>
+          <StyledLink css={{ ml: "$4" }}>forgot password</StyledLink>
         </Link>
       </Stack>
       <Stack css={{ gap: "$5", pt: "$10" }}>

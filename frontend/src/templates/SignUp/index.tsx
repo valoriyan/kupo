@@ -31,8 +31,7 @@ export const SignUp = () => {
         <Input
           size="lg"
           required
-          placeholder="username"
-          name="username"
+          label="Username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value.toLocaleLowerCase())}
         />
@@ -40,8 +39,7 @@ export const SignUp = () => {
           size="lg"
           required
           type="email"
-          placeholder="email"
-          name="email"
+          label="Email"
           value={email}
           onChange={(e) => setEmail(e.currentTarget.value)}
         />
@@ -49,8 +47,7 @@ export const SignUp = () => {
           size="lg"
           required
           type="password"
-          placeholder="password"
-          name="password"
+          label="Password"
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value)}
         />
@@ -58,8 +55,7 @@ export const SignUp = () => {
           size="lg"
           required
           type="password"
-          placeholder="confirm password"
-          name="confirm_password"
+          label="Confirm Password"
           value={confirmedPassword}
           onChange={(e) => setConfirmedPassword(e.currentTarget.value)}
         />

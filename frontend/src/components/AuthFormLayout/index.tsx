@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { FormEventHandler, ReactNode } from "react";
+import { FormEventHandler, ReactNode } from "react";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { styled } from "#/styling";
 import { BrandWithSlogan } from "../BrandWithSlogan";
@@ -30,12 +30,14 @@ export const AuthFormLayout = (props: AuthFormLayoutProps) => {
         <BrandWithSlogan />
         <MainTitle css={{ alignSelf: "flex-start", mt: "$9" }}>{props.title}</MainTitle>
         <Box css={{ mt: "$6", mb: "$10", width: "100%" }}>{props.children}</Box>
-        <Link href="/help-center" passHref>
-          <StyledLink>Help Center</StyledLink>
-        </Link>
-        <Link href="/faq" passHref>
-          <StyledLink css={{ mt: "$5" }}>FAQ</StyledLink>
-        </Link>
+        <Flex css={{ gap: "$6", pb: "$6", alignSelf: "flex-start" }}>
+          <Link href="/faq" passHref>
+            <StyledLink>FAQ</StyledLink>
+          </Link>
+          <Link href="/support" passHref>
+            <StyledLink>Support</StyledLink>
+          </Link>
+        </Flex>
       </Stack>
     </Flex>
   );
