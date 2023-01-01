@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { DateTime } from "luxon";
+import { Fragment, useState } from "react";
 import { RenderableChatMessage } from "#/api";
 import { ReverseInfiniteList } from "#/components/InfiniteList";
 import { Flex, Stack } from "#/components/Layout";
 import { ScrollArea } from "#/components/ScrollArea";
+import { Subtext } from "#/components/Typography";
 import { ChatRoomMessage } from "./ChatRoomMessage";
 
 export interface ChatMessagesListProps {
@@ -25,7 +27,7 @@ export const ChatMessagesList = ({
   return (
     <ScrollArea ref={setListRef}>
       {listRef && (
-        <Stack css={{ p: "$4", pb: 0 }}>
+        <Stack css={{ px: "$4", pt: "$2", pb: 0 }}>
           <ReverseInfiniteList
             scrollParent={listRef}
             hasNextPage={hasPreviousPage ?? false}
@@ -34,17 +36,34 @@ export const ChatMessagesList = ({
             data={chatMessages}
             renderItem={(index, message) => {
               const isClientMessage = message.authorUserId === clientUserId;
+              const previousMessage = chatMessages[Number.MAX_SAFE_INTEGER - index - 1];
+
+              const isDateTransition =
+                previousMessage &&
+                getCalendarDate(previousMessage.creationTimestamp) !==
+                  getCalendarDate(message.creationTimestamp);
 
               return (
-                <Flex
-                  key={message.chatMessageId}
-                  css={{
-                    pb: "$4",
-                    justifyContent: isClientMessage ? "flex-end" : "flex-start",
-                  }}
-                >
-                  <ChatRoomMessage message={message} isClientMessage={isClientMessage} />
-                </Flex>
+                <Fragment key={message.chatMessageId}>
+                  {isDateTransition && (
+                    <Flex css={{ pt: "$5", pb: "$4", justifyContent: "center" }}>
+                      <Subtext css={{ color: "$secondaryText" }}>
+                        {getCalendarDate(message.creationTimestamp)}
+                      </Subtext>
+                    </Flex>
+                  )}
+                  <Flex
+                    css={{
+                      pb: "$4",
+                      justifyContent: isClientMessage ? "flex-end" : "flex-start",
+                    }}
+                  >
+                    <ChatRoomMessage
+                      message={message}
+                      isClientMessage={isClientMessage}
+                    />
+                  </Flex>
+                </Fragment>
               );
             }}
           />
@@ -53,3 +72,6 @@ export const ChatMessagesList = ({
     </ScrollArea>
   );
 };
+
+const getCalendarDate = (timestamp: number) =>
+  DateTime.fromMillis(timestamp).toLocaleString();
