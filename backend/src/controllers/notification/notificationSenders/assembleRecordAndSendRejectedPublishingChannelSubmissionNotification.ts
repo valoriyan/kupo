@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
 import { v4 as uuidv4 } from "uuid";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { DatabaseService } from "../../../services/databaseService";
 import { WebSocketService } from "../../../services/webSocketService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
@@ -70,20 +70,6 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
 
   //////////////////////////////////////////////////
-  // Get the Count of Unread Notifications
-  //////////////////////////////////////////////////
-
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: recipientUserId },
-    );
-  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
-
-  //////////////////////////////////////////////////
   // Write Notification to DB
   //////////////////////////////////////////////////
 
@@ -102,6 +88,20 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   if (createUserNotificationResponse.type === EitherType.failure) {
     return createUserNotificationResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Get the Count of Unread Notifications
+  //////////////////////////////////////////////////
+
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { controller, userId: recipientUserId },
+    );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
   // Assemble Notification

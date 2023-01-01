@@ -31,6 +31,10 @@ export async function assembleRenderablePublishingChannelsByNames({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel[]>
 > {
+  //////////////////////////////////////////////////
+  // Assemble Publishing Channels
+  //////////////////////////////////////////////////
+
   const assembleRenderablePublishingChannelByNameResponses = await BluebirdPromise.map(
     names,
     async (name) =>
@@ -42,6 +46,10 @@ export async function assembleRenderablePublishingChannelsByNames({
         databaseService,
       }),
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return unwrapListOfEitherResponses({
     eitherResponses: assembleRenderablePublishingChannelByNameResponses,
@@ -65,6 +73,10 @@ export async function assembleRenderablePublishingChannelsByIds({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel[]>
 > {
+  //////////////////////////////////////////////////
+  // Assemble Publishing Channels
+  //////////////////////////////////////////////////
+
   const assembleRenderablePublishingChannelByIdResponses = await BluebirdPromise.map(
     publishingChannelIds,
     async (publishingChannelId) =>
@@ -76,6 +88,10 @@ export async function assembleRenderablePublishingChannelsByIds({
         databaseService,
       }),
   );
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return unwrapListOfEitherResponses({
     eitherResponses: assembleRenderablePublishingChannelByIdResponses,
@@ -99,6 +115,10 @@ export async function assembleRenderablePublishingChannelByName({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
+  //////////////////////////////////////////////////
+  // Read UnrenderablePublishingChannel From DB
+  //////////////////////////////////////////////////
+
   const maybeGetPublishingChannelByNameResponse =
     await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
       {
@@ -125,6 +145,10 @@ export async function assembleRenderablePublishingChannelByName({
   }
   const unrenderablePublishingChannel = maybePublishingChannel;
 
+  //////////////////////////////////////////////////
+  // Assemble RenderablePublishingChannel
+  //////////////////////////////////////////////////
+
   const assembleRenderablePublishingChannelFromPartsResponse =
     await assembleRenderablePublishingChannelFromParts({
       controller,
@@ -133,6 +157,10 @@ export async function assembleRenderablePublishingChannelByName({
       unrenderablePublishingChannel,
       requestorUserId,
     });
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return assembleRenderablePublishingChannelFromPartsResponse;
 }
@@ -152,6 +180,10 @@ export async function assembleRenderablePublishingChannelById({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishingChannel>
 > {
+  //////////////////////////////////////////////////
+  // Read UnrenderablePublishingChannel From DB
+  //////////////////////////////////////////////////
+
   const getPublishingChannelByIdResponse =
     await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelById(
       {
@@ -178,6 +210,10 @@ export async function assembleRenderablePublishingChannelById({
   }
   const unrenderablePublishingChannel = maybePublishingChannel;
 
+  //////////////////////////////////////////////////
+  // Assemble Renderable Publishing Channel
+  //////////////////////////////////////////////////
+
   const assembleRenderablePublishingChannelFromPartsResponse =
     await assembleRenderablePublishingChannelFromParts({
       controller,
@@ -186,6 +222,10 @@ export async function assembleRenderablePublishingChannelById({
       unrenderablePublishingChannel,
       requestorUserId,
     });
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return assembleRenderablePublishingChannelFromPartsResponse;
 }

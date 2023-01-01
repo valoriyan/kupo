@@ -7,7 +7,7 @@ import {
 } from "../../utilities/monads";
 import { checkAuthentication } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "./models";
-import { assemblePublishedItemsFromCachedComponents } from "./utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "./utilities/assemblePublishedItems";
 import { PostController } from "./post/postController";
 
 export interface GetPublishedItemsScheduledByUserRequestBody {

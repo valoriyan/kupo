@@ -13,7 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../controllers/models";
-import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { assembleRenderableUserById } from "../../user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableNewTagInPublishedItemCommentNotification({

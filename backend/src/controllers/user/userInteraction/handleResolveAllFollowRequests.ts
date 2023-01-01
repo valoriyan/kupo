@@ -40,6 +40,9 @@ export async function handleResolveAllFollowRequests({
     ResolveAllFollowRequestsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -49,6 +52,10 @@ export async function handleResolveAllFollowRequests({
   const { decision } = requestBody;
 
   if (decision === FollowAllRequestsDecision.accept) {
+    //////////////////////////////////////////////////
+    // Write Accepted Follow Decisions to DB
+    //////////////////////////////////////////////////
+
     const approvePendingFollowResponse =
       await controller.databaseService.tableNameToServicesMap.userFollowsTableService.approveAllPendingFollows(
         {
@@ -59,8 +66,11 @@ export async function handleResolveAllFollowRequests({
     if (approvePendingFollowResponse.type === EitherType.failure) {
       return approvePendingFollowResponse;
     }
-    return Success({});
   } else if (decision === FollowAllRequestsDecision.reject) {
+    //////////////////////////////////////////////////
+    // Write Rejected Follow Decisions to DB
+    //////////////////////////////////////////////////
+
     const deleteUserFollowResponse =
       await controller.databaseService.tableNameToServicesMap.userFollowsTableService.deleteAllPendingUserFollows(
         {
@@ -71,14 +81,24 @@ export async function handleResolveAllFollowRequests({
     if (deleteUserFollowResponse.type === EitherType.failure) {
       return deleteUserFollowResponse;
     }
-    return Success({});
+  } else {
+    //////////////////////////////////////////////////
+    // Handle Unknown Decision Type
+    //////////////////////////////////////////////////
+
+    return Failure({
+      controller,
+      httpStatusCode: 500,
+      reason: GenericResponseFailedReason.BAD_REQUEST,
+      error: "Unknown decision type at handleResolveAllFollowRequests",
+      additionalErrorInformation:
+        "Unknown decision type at handleResolveAllFollowRequests",
+    });
   }
 
-  return Failure({
-    controller,
-    httpStatusCode: 500,
-    reason: GenericResponseFailedReason.BAD_REQUEST,
-    error: "Unknown decision type at handleResolveAllFollowRequests",
-    additionalErrorInformation: "Unknown decision type at handleResolveAllFollowRequests",
-  });
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
+  return Success({});
 }

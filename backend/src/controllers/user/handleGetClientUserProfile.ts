@@ -34,7 +34,7 @@ export async function handleGetClientUserProfile({
   >
 > {
   //////////////////////////////////////////////////
-  // Inputs
+  // Inputs & Authentication
   //////////////////////////////////////////////////
 
   const { clientUserId, errorResponse } = await checkAuthentication(controller, request);
@@ -44,21 +44,20 @@ export async function handleGetClientUserProfile({
   // Get Renderable User
   //////////////////////////////////////////////////
 
-  const constructRenderableUserFromPartsByUserIdResponse =
-    await assembleRenderableUserById({
-      controller,
-      blobStorageService: controller.blobStorageService,
-      databaseService: controller.databaseService,
-      requestorUserId: clientUserId,
-      userId: clientUserId,
-    });
-  if (constructRenderableUserFromPartsByUserIdResponse.type === EitherType.failure) {
-    return constructRenderableUserFromPartsByUserIdResponse;
+  const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
+    controller,
+    blobStorageService: controller.blobStorageService,
+    databaseService: controller.databaseService,
+    requestorUserId: clientUserId,
+    userId: clientUserId,
+  });
+  if (assembleRenderableUserByIdResponse.type === EitherType.failure) {
+    return assembleRenderableUserByIdResponse;
   }
-  const { success: renderableUser } = constructRenderableUserFromPartsByUserIdResponse;
+  const { success: renderableUser } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
-  // Get Client User Details
+  // Read Count of Publishing Channel Follows of Target UserId from DB
   //////////////////////////////////////////////////
 
   const countPublishingChannelFollowsOfUserIdResponse =
@@ -75,6 +74,10 @@ export async function handleGetClientUserProfile({
   const { success: numberOfFollowingCommunities } =
     countPublishingChannelFollowsOfUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // Count User Followers of Target User from DB
+  //////////////////////////////////////////////////
+
   const countFollowersOfUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userFollowsTableService.countFollowersOfUserId(
       {
@@ -88,10 +91,18 @@ export async function handleGetClientUserProfile({
   }
   const { success: numberOfPendingFollows } = countFollowersOfUserIdResponse;
 
+  //////////////////////////////////////////////////
+  // Assemble Client User Details
+  //////////////////////////////////////////////////
+
   const clientUserDetails: ClientUserDetails = {
     followingCommunities: { count: numberOfFollowingCommunities },
     followerRequests: { count: numberOfPendingFollows },
   };
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     ...renderableUser,

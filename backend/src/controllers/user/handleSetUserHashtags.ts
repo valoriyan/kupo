@@ -1,5 +1,10 @@
 import express from "express";
-import { ErrorReasonTypes, SecuredHTTPResponse, Success } from "../../utilities/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  SecuredHTTPResponse,
+  Success,
+} from "../../utilities/monads";
 import { checkAuthentication } from "../auth/utilities";
 import { UserPageController } from "./userPageController";
 
@@ -28,6 +33,10 @@ export async function handleSetUserHashtags({
     SetUserHashtagsSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -36,17 +45,30 @@ export async function handleSetUserHashtags({
 
   const [hashtag1, hashtag2, hashtag3, hashtag4, hashtag5] = requestBody.hashtags;
 
-  await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.upsertHashtagsForUser(
-    {
-      controller,
-      userId: clientUserId,
-      hashtag1: hashtag1?.toLowerCase() ?? "",
-      hashtag2: hashtag2?.toLowerCase() ?? "",
-      hashtag3: hashtag3?.toLowerCase() ?? "",
-      hashtag4: hashtag4?.toLowerCase() ?? "",
-      hashtag5: hashtag5?.toLowerCase() ?? "",
-    },
-  );
+  //////////////////////////////////////////////////
+  // Set Hashtags for User
+  //////////////////////////////////////////////////
+
+  const upsertHashtagsForUserResponse =
+    await controller.databaseService.tableNameToServicesMap.userHashtagsTableService.upsertHashtagsForUser(
+      {
+        controller,
+        userId: clientUserId,
+        hashtag1: hashtag1?.toLowerCase() ?? "",
+        hashtag2: hashtag2?.toLowerCase() ?? "",
+        hashtag3: hashtag3?.toLowerCase() ?? "",
+        hashtag4: hashtag4?.toLowerCase() ?? "",
+        hashtag5: hashtag5?.toLowerCase() ?? "",
+      },
+    );
+
+  if (upsertHashtagsForUserResponse.type === EitherType.failure) {
+    return upsertHashtagsForUserResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

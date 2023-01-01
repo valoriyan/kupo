@@ -43,7 +43,7 @@ export async function handleUnfollowPublishingChannel({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // CHECK THAT CLIENT IS NOT OWNER OR MODERATOR OF THE CHANNEL
+  // The Owner or Moderator of the Channel Cannot Unfollow the Channel
   //////////////////////////////////////////////////
 
   const doesUserIdHaveRightsToModeratePublishingChannelResponse =
@@ -74,7 +74,7 @@ export async function handleUnfollowPublishingChannel({
   }
 
   //////////////////////////////////////////////////
-  // DELETE FOLLOW
+  // Delete Follow from DB
   //////////////////////////////////////////////////
 
   const deletePublishingChannelFollowResponse =
@@ -89,6 +89,10 @@ export async function handleUnfollowPublishingChannel({
   if (deletePublishingChannelFollowResponse.type === EitherType.failure) {
     return deletePublishingChannelFollowResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return {
     type: EitherType.success,

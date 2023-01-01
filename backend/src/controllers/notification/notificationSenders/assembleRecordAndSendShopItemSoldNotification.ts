@@ -104,7 +104,7 @@ export async function assembleRecordAndSendShopItemSoldNotification({
   }
 
   //////////////////////////////////////////////////
-  // Get Count of Unread Notifications
+  // Get the Count of Unread Notifications
   //////////////////////////////////////////////////
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =

@@ -6,7 +6,7 @@ import {
   RootPurchasedShopItemDetails,
   RootShopItemPreview,
 } from "../models";
-import { PublishedItemType, UncompiledBasePublishedItem } from "../../models";
+import { PublishedItemType, UnassembledBasePublishedItem } from "../../models";
 import { assembleBaseRenderablePublishedItem } from "../../utilities/assembleBaseRenderablePublishedItem";
 import { Controller } from "tsoa";
 import {
@@ -19,11 +19,11 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../../utilities/monads/unwrapListOfResponses";
-import { assembleRootShopItemPreviewFromParts } from "./assembleRootShopItemPreviewFromParts";
-import { assembleRootPurchasedShopItemDetailsFromParts } from "./assembleRootPurchasedShopItemDetailsFromParts";
-import { assemblePublishedItemById } from "../../utilities/constructPublishedItemsFromParts";
+import { assembleRootShopItemPreviewFromCachedComponents } from "./assembleRootShopItemPreviewFromParts";
+import { assembleRootPurchasedShopItemDetailsFromCachedComponents } from "./assembleRootPurchasedShopItemDetails";
+import { assemblePublishedItemById } from "../../utilities/assemblePublishedItems";
 
-export async function constructRenderableShopItemsFromParts({
+export async function assembleRenderableShopItemsFromCachedComponents({
   controller,
   blobStorageService,
   databaseService,
@@ -33,29 +33,30 @@ export async function constructRenderableShopItemsFromParts({
   controller: Controller;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
+  uncompiledBasePublishedItems: UnassembledBasePublishedItem[];
   requestorUserId: string | undefined;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItem[]>> {
-  const constructRenderableShopItemFromPartsResponses = await BluebirdPromise.map(
-    uncompiledBasePublishedItems,
-    async (uncompiledBasePublishedItem) =>
-      await constructRenderableShopItemFromParts({
-        controller,
-        blobStorageService,
-        databaseService,
-        uncompiledBasePublishedItem,
-        requestorUserId: requestorUserId,
-      }),
-  );
+  const assembleRenderableShopItemFromCachedComponentsResponses =
+    await BluebirdPromise.map(
+      uncompiledBasePublishedItems,
+      async (uncompiledBasePublishedItem) =>
+        await assembleRenderableShopItemFromCachedComponents({
+          controller,
+          blobStorageService,
+          databaseService,
+          uncompiledBasePublishedItem,
+          requestorUserId: requestorUserId,
+        }),
+    );
 
   return unwrapListOfEitherResponses({
-    eitherResponses: constructRenderableShopItemFromPartsResponses,
+    eitherResponses: assembleRenderableShopItemFromCachedComponentsResponses,
     failureHandlingMethod:
       UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
 }
 
-export async function constructRenderableShopItemFromPartsById({
+export async function assembleRenderableShopItemFromPartsById({
   controller,
   blobStorageService,
   databaseService,
@@ -68,6 +69,10 @@ export async function constructRenderableShopItemFromPartsById({
   publishedItemId: string;
   requestorUserId: string | undefined;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItem>> {
+  //////////////////////////////////////////////////
+  // Read Unassembled Base Publishing Item From DB
+  //////////////////////////////////////////////////
+
   const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { controller, id: publishedItemId },
@@ -78,23 +83,29 @@ export async function constructRenderableShopItemFromPartsById({
   }
   const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
-  const constructRenderableShopItemFromPartsResponse =
-    await constructRenderableShopItemFromParts({
+  //////////////////////////////////////////////////
+  // Assemble From Cache
+  //////////////////////////////////////////////////
+
+  const assembleRenderableShopItemFromCachedComponentsResponse =
+    await assembleRenderableShopItemFromCachedComponents({
       controller,
       blobStorageService: blobStorageService,
       databaseService: databaseService,
       uncompiledBasePublishedItem,
       requestorUserId,
     });
-  if (constructRenderableShopItemFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableShopItemFromPartsResponse;
+  if (
+    assembleRenderableShopItemFromCachedComponentsResponse.type === EitherType.failure
+  ) {
+    return assembleRenderableShopItemFromCachedComponentsResponse;
   }
-  const { success: shopItem } = constructRenderableShopItemFromPartsResponse;
+  const { success: shopItem } = assembleRenderableShopItemFromCachedComponentsResponse;
 
   return Success(shopItem);
 }
 
-export async function constructRenderableShopItemFromParts({
+export async function assembleRenderableShopItemFromCachedComponents({
   controller,
   blobStorageService,
   databaseService,
@@ -104,11 +115,11 @@ export async function constructRenderableShopItemFromParts({
   controller: Controller;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
+  uncompiledBasePublishedItem: UnassembledBasePublishedItem;
   requestorUserId: string | undefined;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableShopItem>> {
   //////////////////////////////////////////////////
-  // Get Published Item
+  // Read BaseRenderablePublishedItem From DB
   //////////////////////////////////////////////////
 
   const assembleBaseRenderablePublishedItemResponse =
@@ -208,20 +219,21 @@ export async function constructRenderableShopItemFromParts({
       //     assemble the PURCHASED shop item
       //////////////////////////////////////////////////
 
-      const assembleRootPurchasedShopItemDetailsFromPartsResponse =
-        await assembleRootPurchasedShopItemDetailsFromParts({
+      const assembleRootPurchasedShopItemDetailsFromCachedComponentsResponse =
+        await assembleRootPurchasedShopItemDetailsFromCachedComponents({
           controller,
           blobStorageService,
           databaseService,
           baseRenderablePublishedItem,
         });
       if (
-        assembleRootPurchasedShopItemDetailsFromPartsResponse.type === EitherType.failure
+        assembleRootPurchasedShopItemDetailsFromCachedComponentsResponse.type ===
+        EitherType.failure
       ) {
-        return assembleRootPurchasedShopItemDetailsFromPartsResponse;
+        return assembleRootPurchasedShopItemDetailsFromCachedComponentsResponse;
       }
       const { success: rootPurchasedShopItemDetails } =
-        assembleRootPurchasedShopItemDetailsFromPartsResponse;
+        assembleRootPurchasedShopItemDetailsFromCachedComponentsResponse;
 
       //////////////////////////////////////////////////
       // Return
@@ -236,7 +248,7 @@ export async function constructRenderableShopItemFromParts({
       //////////////////////////////////////////////////
 
       const assembleRootShopItemPreviewFromPartsResponse =
-        await assembleRootShopItemPreviewFromParts({
+        await assembleRootShopItemPreviewFromCachedComponents({
           controller,
           blobStorageService,
           databaseService,

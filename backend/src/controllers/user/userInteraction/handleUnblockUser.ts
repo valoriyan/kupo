@@ -33,6 +33,10 @@ export async function handleUnblockUser({
     UnblockUserSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { blockedUserId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -40,6 +44,10 @@ export async function handleUnblockUser({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Delete Block from DB
+  //////////////////////////////////////////////////
 
   const removeBlockOfUserIdAgainstUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userBlocksTableService.removeBlockOfUserIdAgainstUserId(
@@ -53,6 +61,10 @@ export async function handleUnblockUser({
   if (removeBlockOfUserIdAgainstUserIdResponse.type === EitherType.failure) {
     return removeBlockOfUserIdAgainstUserIdResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

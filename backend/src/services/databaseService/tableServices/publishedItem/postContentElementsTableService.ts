@@ -162,6 +162,60 @@ export class PostContentElementsTableService extends TableService {
     }
   }
 
+  public async determineWhichBlobFileKeysExist({
+    controller,
+    blobFileKeys,
+  }: {
+    controller: Controller;
+    blobFileKeys: string[];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const values: (string | number)[] = [];
+
+      let blobFileKeysCondition = "";
+      blobFileKeysCondition += `AND blob_file_key IN  ( `;
+
+      const executorIdParameterStrings: string[] = [];
+      blobFileKeys.forEach((blobFileKey) => {
+        executorIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(blobFileKey);
+      });
+      blobFileKeysCondition += executorIdParameterStrings.join(", ");
+      blobFileKeysCondition += ` )`;
+
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            TRUE
+            ${blobFileKeysCondition}
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBPostContentElement> = await this.datastorePool.query(
+        queryString,
+      );
+
+      const existingBlobFileKeys = response.rows.map((row) => row.blob_file_key);
+
+      return Success(existingBlobFileKeys);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at postContentElementsTableService.determineWhichBlobFileKeysExist",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////

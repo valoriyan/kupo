@@ -265,7 +265,7 @@ export class UsersTableService extends TableService {
     }
   }
 
-  public async selectUserIdByUsername({
+  public async getMaybeUserIdByUsername({
     controller,
     username,
   }: {
@@ -511,7 +511,7 @@ export class UsersTableService extends TableService {
     }
   }
 
-  public async selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID({
+  public async selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID({
     controller,
     userId,
   }: {
@@ -648,6 +648,80 @@ export class UsersTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation: "Error at usersTableService.selectUserByEmail",
+      });
+    }
+  }
+
+  public async determineWhichBlobFileKeysExist({
+    controller,
+    blobFileKeys,
+  }: {
+    controller: Controller;
+    blobFileKeys: string[];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const values: (string | number)[] = [];
+
+      let backgroundBlobFileKeysCondition = "";
+      backgroundBlobFileKeysCondition += `OR background_image_blob_file_key IN  ( `;
+
+      const backgroundExecutorIdParameterStrings: string[] = [];
+      blobFileKeys.forEach((blobFileKey) => {
+        backgroundExecutorIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(blobFileKey);
+      });
+      backgroundBlobFileKeysCondition += backgroundExecutorIdParameterStrings.join(", ");
+      backgroundBlobFileKeysCondition += ` )`;
+
+      let profilePictureBlobFileKeysCondition = "";
+      profilePictureBlobFileKeysCondition += `OR profile_picture_blob_file_key IN  ( `;
+
+      const profilePictureExecutorIdParameterStrings: string[] = [];
+      blobFileKeys.forEach((blobFileKey) => {
+        profilePictureExecutorIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(blobFileKey);
+      });
+      profilePictureBlobFileKeysCondition +=
+        profilePictureExecutorIdParameterStrings.join(", ");
+      profilePictureBlobFileKeysCondition += ` )`;
+
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            FALSE
+            ${backgroundBlobFileKeysCondition}
+            ${profilePictureBlobFileKeysCondition}
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+      const existingBackgroundBlobFileKeys = response.rows.map(
+        (row) => row.background_image_blob_file_key,
+      );
+      const existingProfilePictureBlobFileKeys = response.rows.map(
+        (row) => row.profile_picture_blob_file_key,
+      );
+
+      const existingBlobFileKeys = Array.from(
+        existingBackgroundBlobFileKeys.concat(existingProfilePictureBlobFileKeys),
+      ).filter((maybeBlobFileKey) => !!maybeBlobFileKey) as string[];
+
+      return Success(existingBlobFileKeys);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.determineWhichBlobFileKeysExist",
       });
     }
   }

@@ -13,7 +13,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../models";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 
 export async function assembleRenderableNewLikeOnPublishedItemNotification({
   controller,

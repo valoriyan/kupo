@@ -7,7 +7,7 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthentication } from "../../auth/utilities";
 import { UserInteractionController } from "./userInteractionController";
-import { deleteAndEmitCanceledAcceptedUserFollowRequestNotification } from "./utilities/deleteAndEmitCanceledAcceptedUserFollowRequestNotification";
+import { assembleRecordAndSendCanceledAcceptedUserFollowRequestNotification } from "../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledAcceptedUserFollowRequestNotification";
 
 export interface RevokeFollowerRequestBody {
   revokedUserId: string;
@@ -34,6 +34,9 @@ export async function handleRevokeFollower({
     RevokeFollowerSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { revokedUserId } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -43,7 +46,7 @@ export async function handleRevokeFollower({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // DELETE THE USER FOLLOW
+  // Delete the User Follow From DB
   //////////////////////////////////////////////////
 
   const deleteUserFollowResponse =
@@ -63,49 +66,27 @@ export async function handleRevokeFollower({
   } = deleteUserFollowResponse;
 
   //////////////////////////////////////////////////
-  // DETERMINE IF ACCEPTED FOLLOW REQUEST NOTIFCATION EXISTS
+  // Handle Notifications
   //////////////////////////////////////////////////
-
-  const maybeGetUserNotificationByUserFollowReferenceResponse =
-    await controller.databaseService.tableNameToServicesMap.userNotificationsTableService.maybeGetUserNotificationByUserFollowReference(
-      {
-        controller,
-        userId: revokedUserId,
-        userFollowReference: user_follow_event_id,
-      },
-    );
-  if (maybeGetUserNotificationByUserFollowReferenceResponse.type === EitherType.failure) {
-    return maybeGetUserNotificationByUserFollowReferenceResponse;
+  const assembleRecordAndSendCanceledAcceptedUserFollowRequestNotificationResponse =
+    await assembleRecordAndSendCanceledAcceptedUserFollowRequestNotification({
+      controller,
+      userIdUnacceptingFollowRequest: clientUserId,
+      userFollowEventId: user_follow_event_id,
+      databaseService: controller.databaseService,
+      webSocketService: controller.webSocketService,
+      recipientUserId: revokedUserId,
+    });
+  if (
+    assembleRecordAndSendCanceledAcceptedUserFollowRequestNotificationResponse.type ===
+    EitherType.failure
+  ) {
+    return assembleRecordAndSendCanceledAcceptedUserFollowRequestNotificationResponse;
   }
-  const { success: maybeUserNotification } =
-    maybeGetUserNotificationByUserFollowReferenceResponse;
 
   //////////////////////////////////////////////////
-  // IF EXISTS
-  //     DELETE THE NOTIFICATION
-  //     AND INFORM USER UI OF CANCELED REQUEST ACCEPTANCE
+  // Return
   //////////////////////////////////////////////////
-
-  if (!!maybeUserNotification) {
-    const { user_follow_reference: userFollowEventId } = maybeUserNotification;
-
-    const deleteAndEmitCanceledAcceptedUserFollowRequestNotificationResponse =
-      await deleteAndEmitCanceledAcceptedUserFollowRequestNotification({
-        controller,
-        databaseService: controller.databaseService,
-        webSocketService: controller.webSocketService,
-        recipientUserId: revokedUserId,
-        userIdUnacceptingFollowRequest: clientUserId,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        userFollowEventId: userFollowEventId!,
-      });
-    if (
-      deleteAndEmitCanceledAcceptedUserFollowRequestNotificationResponse.type ===
-      EitherType.failure
-    ) {
-      return deleteAndEmitCanceledAcceptedUserFollowRequestNotificationResponse;
-    }
-  }
 
   return Success({});
 }

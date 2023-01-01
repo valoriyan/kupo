@@ -25,7 +25,7 @@ export async function assembleRecordAndSendCancelledNewCommentOnPublishedItemNot
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Delete New Comment Notification from DB
+  // Delete Notification from DB
   //////////////////////////////////////////////////
 
   const deleteUserNotificationForUserIdResponse =

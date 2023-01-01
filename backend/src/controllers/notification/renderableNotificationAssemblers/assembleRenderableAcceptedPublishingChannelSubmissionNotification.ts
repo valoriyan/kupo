@@ -10,7 +10,7 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { GenericResponseFailedReason } from "../../../controllers/models";
 import { assembleRenderablePublishingChannelById } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
 import { BlobStorageService } from "../../../services/blobStorageService";

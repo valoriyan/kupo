@@ -74,7 +74,7 @@ export async function handleUpdateShopItem({
   const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
   //////////////////////////////////////////////////
-  // Check that published item author is client
+  // Check that Published Item Author is Client
   //////////////////////////////////////////////////
 
   if (uncompiledBasePublishedItem.authorUserId !== clientUserId) {
@@ -88,7 +88,7 @@ export async function handleUpdateShopItem({
   }
 
   //////////////////////////////////////////////////
-  // Write update to DB
+  // Write Update to DB
   //////////////////////////////////////////////////
 
   const updateShopItemByPublishedItemIdResponse =

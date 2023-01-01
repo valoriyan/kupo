@@ -372,6 +372,82 @@ export class PublishingChannelsTableService extends TableService {
     }
   }
 
+  public async determineWhichBlobFileKeysExist({
+    controller,
+    blobFileKeys,
+  }: {
+    controller: Controller;
+    blobFileKeys: string[];
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      const values: (string | number)[] = [];
+
+      let backgroundBlobFileKeysCondition = "";
+      backgroundBlobFileKeysCondition += `OR background_image_blob_file_key IN  ( `;
+
+      const backgroundExecutorIdParameterStrings: string[] = [];
+      blobFileKeys.forEach((blobFileKey) => {
+        backgroundExecutorIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(blobFileKey);
+      });
+      backgroundBlobFileKeysCondition += backgroundExecutorIdParameterStrings.join(", ");
+      backgroundBlobFileKeysCondition += ` )`;
+
+      let profilePictureBlobFileKeysCondition = "";
+      profilePictureBlobFileKeysCondition += `OR profile_picture_blob_file_key IN  ( `;
+
+      const profilePictureExecutorIdParameterStrings: string[] = [];
+      blobFileKeys.forEach((blobFileKey) => {
+        profilePictureExecutorIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(blobFileKey);
+      });
+      profilePictureBlobFileKeysCondition +=
+        profilePictureExecutorIdParameterStrings.join(", ");
+      profilePictureBlobFileKeysCondition += ` )`;
+
+      const queryString = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            FALSE
+            ${backgroundBlobFileKeysCondition}
+            ${profilePictureBlobFileKeysCondition}
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBPublishingChannel> = await this.datastorePool.query(
+        queryString,
+      );
+
+      const existingBackgroundBlobFileKeys = response.rows.map(
+        (row) => row.background_image_blob_file_key,
+      );
+      const existingProfilePictureBlobFileKeys = response.rows.map(
+        (row) => row.profile_picture_blob_file_key,
+      );
+
+      const existingBlobFileKeys = Array.from(
+        existingBackgroundBlobFileKeys.concat(existingProfilePictureBlobFileKeys),
+      ).filter((maybeBlobFileKey) => !!maybeBlobFileKey) as string[];
+
+      return Success(existingBlobFileKeys);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at DBPublishingChannel.determineWhichBlobFileKeysExist",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////

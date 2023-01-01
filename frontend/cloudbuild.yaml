@@ -1,6 +1,11 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '--build-arg', 'API_BASE_URL=https://beta-api.kupo.social', '-t', 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-frontend:latest', '.' ]
+  args: [
+    'build',
+    '--build-arg', 'API_BASE_URL=$$API_BASE_URL',
+    '-t', 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-frontend:latest',
+    '.'
+  ]
   env:
   - 'API_BASE_URL=https://beta-api.kupo.social'
 images:

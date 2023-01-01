@@ -3,11 +3,11 @@ import {
   EitherType,
   ErrorReasonTypes,
   SecuredHTTPResponse,
-} from "../../../../utilities/monads";
-import { checkAuthentication } from "../../../auth/utilities";
-import { UserInteractionController } from "../userInteractionController";
-import { deleteAndEmitCanceledNewFollowerNotification } from "./deleteAndEmitCanceledNewFollowerNotification";
-import { assembleRecordAndSendCanceledNewUserFollowRequestNotification } from "../../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledNewUserFollowRequestNotification";
+} from "../../../utilities/monads";
+import { checkAuthentication } from "../../auth/utilities";
+import { UserInteractionController } from "./userInteractionController";
+import { assembleRecordAndSendCanceledNewUserFollowRequestNotification } from "../../notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledNewUserFollowRequestNotification";
+import { assembleRecordAndSendCanceledNewFollowerNotification } from "../../notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledNewFollowerNotification";
 
 export interface UnfollowUserRequestBody {
   userIdBeingUnfollowed: string;
@@ -34,6 +34,9 @@ export async function handleUnfollowUser({
     UnfollowUserSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { userIdBeingUnfollowed } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -43,7 +46,7 @@ export async function handleUnfollowUser({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // DELETE THE USER FOLLOW
+  // Delete the User Follow From DB
   //////////////////////////////////////////////////
 
   const deleteUserFollowResponse =
@@ -62,12 +65,11 @@ export async function handleUnfollowUser({
     success: { user_follow_event_id: userFollowEventId, is_pending },
   } = deleteUserFollowResponse;
 
-  //////////////////////////////////////////////////
-  // DELETE THE NOTIFICATION
-  // AND INFORM USER UI OF CANCELED REQUEST
-  //////////////////////////////////////////////////
-
   if (is_pending) {
+    //////////////////////////////////////////////////
+    // Handle Follow Request Notification
+    //////////////////////////////////////////////////
+
     const emitCanceledNewUserFollowRequestNotificationResponse =
       await assembleRecordAndSendCanceledNewUserFollowRequestNotification({
         controller,
@@ -81,8 +83,11 @@ export async function handleUnfollowUser({
       return emitCanceledNewUserFollowRequestNotificationResponse;
     }
   } else {
-    const emitCanceledNewFollowerNotificationResponse =
-      await deleteAndEmitCanceledNewFollowerNotification({
+    //////////////////////////////////////////////////
+    // Handle New Follower Notification
+    //////////////////////////////////////////////////
+    const assembleRecordAndSendCanceledNewFollowerNotificationResponse =
+      await assembleRecordAndSendCanceledNewFollowerNotification({
         controller,
         databaseService: controller.databaseService,
         webSocketService: controller.webSocketService,
@@ -90,13 +95,16 @@ export async function handleUnfollowUser({
         userIdDoingUnfollowing: clientUserId,
         userFollowEventId,
       });
-    if (emitCanceledNewFollowerNotificationResponse.type == EitherType.failure) {
-      return emitCanceledNewFollowerNotificationResponse;
+    if (
+      assembleRecordAndSendCanceledNewFollowerNotificationResponse.type ==
+      EitherType.failure
+    ) {
+      return assembleRecordAndSendCanceledNewFollowerNotificationResponse;
     }
   }
 
   //////////////////////////////////////////////////
-  // RETURN
+  // Return
   //////////////////////////////////////////////////
 
   return {

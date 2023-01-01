@@ -87,7 +87,7 @@ export async function handleCreateShopItem({
   const now = Date.now();
 
   //////////////////////////////////////////////////
-  // Handle idempotentcy token
+  // Handle Idempotentcy Token
   //////////////////////////////////////////////////
   const assertThatIdempotentcyTokenDoesNotExistResponse =
     await controller.fastCacheService.assertThatIdempotentcyTokenDoesNotExist({
@@ -108,7 +108,7 @@ export async function handleCreateShopItem({
   }
 
   //////////////////////////////////////////////////
-  // Write to db
+  // Write to DB
   //////////////////////////////////////////////////
 
   const createPublishedItemResponse =
@@ -142,7 +142,7 @@ export async function handleCreateShopItem({
   }
 
   //////////////////////////////////////////////////
-  // Add hashtags
+  // Add Hashtags
   //////////////////////////////////////////////////
 
   const lowerCaseHashtags = hashtags.map((hashtag) => hashtag.toLowerCase());
@@ -160,7 +160,7 @@ export async function handleCreateShopItem({
   }
 
   //////////////////////////////////////////////////
-  // Write media items to db
+  // Write Preview Media Items to DB
   //////////////////////////////////////////////////
 
   if (mediaFiles.length > 0) {
@@ -181,6 +181,10 @@ export async function handleCreateShopItem({
       return createShopItemMediaElementsResponse;
     }
   }
+
+  //////////////////////////////////////////////////
+  // Write Purchased Media Items to DB
+  //////////////////////////////////////////////////
 
   if (purchasedMediaFiles.length > 0) {
     const createShopItemMediaElementsResponse =
@@ -204,7 +208,7 @@ export async function handleCreateShopItem({
   }
 
   //////////////////////////////////////////////////
-  // Get media file temporary urls
+  // Get Preview Media File Temporary Urls
   //////////////////////////////////////////////////
   const getTemporaryImageUrlResponsesForMediaFiles = await BluebirdPromise.map(
     mediaFiles,
@@ -236,6 +240,10 @@ export async function handleCreateShopItem({
       mimeType: mediaFiles[index].mimeType,
     }),
   );
+
+  //////////////////////////////////////////////////
+  // Get Purchased Media File Temporary Urls
+  //////////////////////////////////////////////////
 
   const getTemporaryImageUrlResponsesForPurchasedMediaFiles = await BluebirdPromise.map(
     purchasedMediaFiles,
@@ -271,7 +279,7 @@ export async function handleCreateShopItem({
   );
 
   //////////////////////////////////////////////////
-  // Compile Shop Item
+  // Assemble Shop Item
   //////////////////////////////////////////////////
 
   const renderableShopItem: RenderableShopItem = {
@@ -302,7 +310,7 @@ export async function handleCreateShopItem({
   };
 
   //////////////////////////////////////////////////
-  // Send out relevant notifications
+  // Send Out Relevant Notifications
   //////////////////////////////////////////////////
 
   const considerAndExecuteNotificationsResponse = await considerAndExecuteNotifications({
@@ -337,14 +345,14 @@ async function considerAndExecuteNotifications({
   webSocketService: WebSocketService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Get usernames tagged in caption
+  // Get Usernames Tagged in Caption
   //////////////////////////////////////////////////
   const { caption, authorUserId } = renderablePublishedItem;
 
   const tags = collectTagsFromText({ text: caption });
 
   //////////////////////////////////////////////////
-  // Get user ids associated with tagged usernames
+  // Get User Ids Associated with Tagged Usernames
   //////////////////////////////////////////////////
 
   const selectUsersByUsernamesResponse =
@@ -361,7 +369,7 @@ async function considerAndExecuteNotifications({
     .filter((userId) => userId !== authorUserId);
 
   //////////////////////////////////////////////////
-  // Send tagged caption notifications to everyone tagged
+  // Send Tagged Caption Notifications to Everyone Tagged
   //////////////////////////////////////////////////
   const assembleRecordAndSendNewTagInPublishedItemCaptionNotificationResponses =
     await BluebirdPromise.map(

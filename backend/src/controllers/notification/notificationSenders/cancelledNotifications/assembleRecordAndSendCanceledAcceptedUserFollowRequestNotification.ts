@@ -9,17 +9,19 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { UnrenderableCanceledNewTagInPublishedItemCommentNotification } from "../../models/unrenderableCanceledUserNotifications";
+import { UnrenderableCanceledAcceptedUserFollowRequestNotification } from "../../models/unrenderableCanceledUserNotifications";
 
-export async function assembleRecordAndSendCancelledNewTagInPublishedItemCommentNotification({
+export async function assembleRecordAndSendCanceledAcceptedUserFollowRequestNotification({
   controller,
-  publishedItemCommentId,
+  userIdUnacceptingFollowRequest,
+  userFollowEventId,
   recipientUserId,
   databaseService,
   webSocketService,
 }: {
   controller: Controller;
-  publishedItemCommentId: string;
+  userIdUnacceptingFollowRequest: string;
+  userFollowEventId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
   webSocketService: WebSocketService;
@@ -32,11 +34,11 @@ export async function assembleRecordAndSendCancelledNewTagInPublishedItemComment
     await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        externalReference: {
-          type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
-          publishedItemCommentId,
-        },
         recipientUserId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
+          userFollowEventId,
+        },
       },
     );
   if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
@@ -61,21 +63,21 @@ export async function assembleRecordAndSendCancelledNewTagInPublishedItemComment
   // Assemble Notification
   //////////////////////////////////////////////////
 
-  const unrenderableCanceledNewTagInPublishedItemCommentNotification: UnrenderableCanceledNewTagInPublishedItemCommentNotification =
+  const unrenderableCanceledAcceptedUserFollowRequestNotification: UnrenderableCanceledAcceptedUserFollowRequestNotification =
     {
-      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT,
+      type: NOTIFICATION_EVENTS.CANCELED_ACCEPTED_USER_FOLLOW_REQUEST,
       countOfUnreadNotifications,
-      publishedItemCommentId: publishedItemCommentId,
+      userIdUnacceptingFollowRequest,
     };
 
   //////////////////////////////////////////////////
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewTagInPublishedItemComment(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledAcceptedUserFollowRequest(
     {
       userId: recipientUserId,
-      unrenderableCanceledNewTagInPublishedItemCommentNotification,
+      unrenderableCanceledAcceptedUserFollowRequestNotification,
     },
   );
 

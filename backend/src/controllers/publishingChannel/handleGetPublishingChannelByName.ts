@@ -38,6 +38,10 @@ export async function handleGetPublishingChannelByName({
     GetPublishingChannelByNameSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { publishingChannelName } = requestBody;
 
   const { clientUserId, errorResponse: error } = await checkAuthentication(
@@ -45,6 +49,10 @@ export async function handleGetPublishingChannelByName({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Assemble Publishing Channel
+  //////////////////////////////////////////////////
 
   const assembleRenderablePublishingChannelByNameResponse =
     await assembleRenderablePublishingChannelByName({
@@ -61,6 +69,10 @@ export async function handleGetPublishingChannelByName({
 
   const { success: renderablePublishingChannel } =
     assembleRenderablePublishingChannelByNameResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishingChannel: renderablePublishingChannel,

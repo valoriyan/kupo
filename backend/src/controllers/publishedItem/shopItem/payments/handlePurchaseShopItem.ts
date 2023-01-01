@@ -9,7 +9,7 @@ import { checkAuthentication } from "../../../auth/utilities";
 import { ShopItemController } from "../shopItemController";
 import { v4 as uuidv4 } from "uuid";
 import { assembleRecordAndSendShopItemSoldNotification } from "../../../../controllers/notification/notificationSenders/assembleRecordAndSendShopItemSoldNotification";
-import { constructRenderableShopItemFromPartsById } from "../utilities";
+import { assembleRenderableShopItemFromPartsById } from "../utilities";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { RootPurchasedShopItemDetails } from "../models";
 
@@ -55,11 +55,11 @@ export async function handlePurchaseShopItem({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // Get user with purchasing info
+  // Get User With Purchasing Info
   //////////////////////////////////////////////////
 
   const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
       { controller, userId: clientUserId },
     );
 
@@ -85,6 +85,10 @@ export async function handlePurchaseShopItem({
   const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID =
     maybeUnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID;
 
+  //////////////////////////////////////////////////
+  // Get Shop Item
+  //////////////////////////////////////////////////
+
   const getShopItemByPublishedItemIdResponse =
     await controller.databaseService.tableNameToServicesMap.shopItemsTableService.getShopItemByPublishedItemId(
       { controller, publishedItemId },
@@ -95,7 +99,7 @@ export async function handlePurchaseShopItem({
   const { success: unrenderableShopItemPreview } = getShopItemByPublishedItemIdResponse;
 
   //////////////////////////////////////////////////
-  // Charge User
+  // Get Stored Credit Card for User
   //////////////////////////////////////////////////
 
   const getStoredCreditCardByLocalIdResponse =
@@ -109,6 +113,10 @@ export async function handlePurchaseShopItem({
     return getStoredCreditCardByLocalIdResponse;
   }
   const { success: storedCreditCard } = getStoredCreditCardByLocalIdResponse;
+
+  //////////////////////////////////////////////////
+  // Charge Purchaser
+  //////////////////////////////////////////////////
 
   const chargeAmountMajorCurrencyUnits = parseInt(unrenderableShopItemPreview.price); // i.e. charge amount in US Dollars
   const chargeAmountMinorCurrencyUnits = chargeAmountMajorCurrencyUnits * 100; // i.e. charge amount in US Cents
@@ -152,7 +160,7 @@ export async function handlePurchaseShopItem({
   //////////////////////////////////////////////////
 
   const constructRenderableShopItemFromPartsByIdResponse =
-    await constructRenderableShopItemFromPartsById({
+    await assembleRenderableShopItemFromPartsById({
       controller,
       blobStorageService: controller.blobStorageService,
       databaseService: controller.databaseService,
@@ -167,7 +175,7 @@ export async function handlePurchaseShopItem({
     constructRenderableShopItemFromPartsByIdResponse;
 
   //////////////////////////////////////////////////
-  // Send confirmation email to purchaser
+  // Get Client User
   //////////////////////////////////////////////////
 
   const selectMaybeUserByUserIdResponse =
@@ -192,6 +200,10 @@ export async function handlePurchaseShopItem({
     });
   }
   const unrenderableClientUser = maybeUnrenderableClientUser;
+
+  //////////////////////////////////////////////////
+  // Send confirmation email to purchaser
+  //////////////////////////////////////////////////
 
   const sendOrderReceiptEmailResponse =
     await controller.emailService.sendOrderReceiptEmail({

@@ -36,6 +36,10 @@ export async function handleGetUsersByUsernames({
     GetUsersByUsernamesSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -45,6 +49,10 @@ export async function handleGetUsersByUsernames({
   const { usernames } = requestBody;
 
   const lowercaseUsernames = usernames.map((username) => username.toLowerCase());
+
+  //////////////////////////////////////////////////
+  // Read Users From DB
+  //////////////////////////////////////////////////
 
   const selectUsersByUsernamesResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
@@ -56,7 +64,11 @@ export async function handleGetUsersByUsernames({
   }
   const { success: unrenderableUsers } = selectUsersByUsernamesResponse;
 
-  const constructRenderableUsersFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Assemble Users
+  //////////////////////////////////////////////////
+
+  const assembleRenderableUsersFromCachedComponentsResponse =
     await assembleRenderableUsersFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
@@ -65,10 +77,15 @@ export async function handleGetUsersByUsernames({
       databaseService: controller.databaseService,
     });
 
-  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUsersFromPartsResponse;
+  if (assembleRenderableUsersFromCachedComponentsResponse.type === EitherType.failure) {
+    return assembleRenderableUsersFromCachedComponentsResponse;
   }
-  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
+  const { success: renderableUsers } =
+    assembleRenderableUsersFromCachedComponentsResponse;
+
+  //////////////////////////////////////////////////
+  // Map Results to Input Order
+  //////////////////////////////////////////////////
 
   const usernameToUserMap = new Map(
     renderableUsers.map((renderableUser) => [renderableUser.username, renderableUser]),
@@ -80,6 +97,10 @@ export async function handleGetUsersByUsernames({
     }
     return null;
   });
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     users: foundUsers,

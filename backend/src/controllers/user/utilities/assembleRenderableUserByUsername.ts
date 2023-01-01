@@ -22,7 +22,11 @@ export async function assembleRenderableUsersByUsernames({
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderableUser[]>> {
-  const unrenderableUsersResponse =
+  //////////////////////////////////////////////////
+  // Read Unrenderable Users from DB
+  //////////////////////////////////////////////////
+
+  const selectUsersByUsernamesResponse =
     await databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernames(
       {
         controller,
@@ -30,10 +34,14 @@ export async function assembleRenderableUsersByUsernames({
       },
     );
 
-  if (unrenderableUsersResponse.type === EitherType.failure) {
-    return unrenderableUsersResponse;
+  if (selectUsersByUsernamesResponse.type === EitherType.failure) {
+    return selectUsersByUsernamesResponse;
   }
-  const { success: unrenderableUsers } = unrenderableUsersResponse;
+  const { success: unrenderableUsers } = selectUsersByUsernamesResponse;
+
+  //////////////////////////////////////////////////
+  // Continue Request
+  //////////////////////////////////////////////////
 
   return await assembleRenderableUsersFromCachedComponents({
     controller,

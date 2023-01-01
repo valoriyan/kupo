@@ -12,7 +12,7 @@ import { BaseRenderablePublishedItem, PublishedItemType } from "../../models";
 import { RenderableShopItemType, RootPurchasedShopItemDetails } from "../models";
 import { assembleShopItemMediaElements } from "./assembleShopItemMediaElements";
 
-export async function assembleRootPurchasedShopItemDetailsFromParts({
+export async function assembleRootPurchasedShopItemDetailsFromCachedComponents({
   controller,
   blobStorageService,
   databaseService,
@@ -26,7 +26,7 @@ export async function assembleRootPurchasedShopItemDetailsFromParts({
   InternalServiceResponse<ErrorReasonTypes<string>, RootPurchasedShopItemDetails>
 > {
   //////////////////////////////////////////////////
-  // Parse Inputs
+  // Inputs
   //////////////////////////////////////////////////
 
   const {

@@ -8,7 +8,7 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePublishedItem } from "../../publishedItem/models";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
 import { getNextPageCursorOfPage } from "../../publishedItem/utilities/pagination";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../../utilities/pagination";
 import { PublishingChannelController } from "../publishingChannelController";

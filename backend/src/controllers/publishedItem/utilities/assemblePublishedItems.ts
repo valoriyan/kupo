@@ -4,10 +4,10 @@ import { DatabaseService } from "../../../services/databaseService";
 import {
   PublishedItemType,
   RenderablePublishedItem,
-  UncompiledBasePublishedItem,
+  UnassembledBasePublishedItem,
 } from "../models";
 import { assembleRenderablePostFromCachedComponents } from "../post/utilities";
-import { constructRenderableShopItemFromParts } from "../shopItem/utilities";
+import { assembleRenderableShopItemFromCachedComponents } from "../shopItem/utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { Controller } from "tsoa";
 import {
@@ -31,12 +31,16 @@ export async function assemblePublishedItemsFromCachedComponents({
   controller: Controller;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItems: UncompiledBasePublishedItem[];
+  uncompiledBasePublishedItems: UnassembledBasePublishedItem[];
   requestorUserId: string | undefined;
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem[]>
 > {
-  const constructPublishedItemFromPartsResponses = await BluebirdPromise.map(
+  //////////////////////////////////////////////////
+  // Assemble Each Published Item
+  //////////////////////////////////////////////////
+
+  const assemblePublishedItemFromCachedComponentsResponses = await BluebirdPromise.map(
     uncompiledBasePublishedItems,
     async (uncompiledBasePublishedItem) =>
       await assemblePublishedItemFromCachedComponents({
@@ -48,8 +52,12 @@ export async function assemblePublishedItemsFromCachedComponents({
       }),
   );
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return unwrapListOfEitherResponses({
-    eitherResponses: constructPublishedItemFromPartsResponses,
+    eitherResponses: assemblePublishedItemFromCachedComponentsResponses,
     failureHandlingMethod:
       UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
@@ -72,6 +80,11 @@ export async function assemblePublishedItemsByIds({
 }): Promise<
   InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem[]>
 > {
+  //////////////////////////////////////////////////
+  // Get Uncompiled Each Published Item
+  //     But Limit to PublishedItemType
+  //////////////////////////////////////////////////
+
   const getPublishedItemsByIdsResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
       {
@@ -85,7 +98,11 @@ export async function assemblePublishedItemsByIds({
   }
   const { success: uncompiledBasePublishedItems } = getPublishedItemsByIdsResponse;
 
-  const constructPublishedItemFromPartsResponses = await BluebirdPromise.map(
+  //////////////////////////////////////////////////
+  // Assemble Each Each Published Item
+  //////////////////////////////////////////////////
+
+  const assemblePublishedItemFromCachedComponentsResponses = await BluebirdPromise.map(
     uncompiledBasePublishedItems,
     async (uncompiledBasePublishedItem) =>
       await assemblePublishedItemFromCachedComponents({
@@ -97,8 +114,12 @@ export async function assemblePublishedItemsByIds({
       }),
   );
 
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
+
   return unwrapListOfEitherResponses({
-    eitherResponses: constructPublishedItemFromPartsResponses,
+    eitherResponses: assemblePublishedItemFromCachedComponentsResponses,
     failureHandlingMethod:
       UnwrapListOfEitherResponsesFailureHandlingMethod.SUCCEED_WITH_ANY_SUCCESSES_ELSE_RETURN_FIRST_FAILURE,
   });
@@ -117,6 +138,10 @@ export async function assemblePublishedItemById({
   publishedItemId: string;
   requestorUserId: string | undefined;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>> {
+  //////////////////////////////////////////////////
+  // Get Unassembled Published Item
+  //////////////////////////////////////////////////
+
   const getPublishedItemByIdResponse =
     await databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
       { controller, id: publishedItemId },
@@ -127,7 +152,11 @@ export async function assemblePublishedItemById({
   }
   const { success: uncompiledBasePublishedItem } = getPublishedItemByIdResponse;
 
-  const constructPublishedItemFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Assemble Published Item
+  //////////////////////////////////////////////////
+
+  const assemblePublishedItemFromCachedComponentsResponse =
     await assemblePublishedItemFromCachedComponents({
       controller,
       blobStorageService: blobStorageService,
@@ -135,12 +164,12 @@ export async function assemblePublishedItemById({
       uncompiledBasePublishedItem,
       requestorUserId,
     });
-  if (constructPublishedItemFromPartsResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsResponse;
+  if (assemblePublishedItemFromCachedComponentsResponse.type === EitherType.failure) {
+    return assemblePublishedItemFromCachedComponentsResponse;
   }
-  const { success: post } = constructPublishedItemFromPartsResponse;
+  const { success: publishedItem } = assemblePublishedItemFromCachedComponentsResponse;
 
-  return Success(post);
+  return Success(publishedItem);
 }
 
 export async function assemblePublishedItemFromCachedComponents({
@@ -153,9 +182,14 @@ export async function assemblePublishedItemFromCachedComponents({
   controller: Controller;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
-  uncompiledBasePublishedItem: UncompiledBasePublishedItem;
+  uncompiledBasePublishedItem: UnassembledBasePublishedItem;
   requestorUserId?: string;
 }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, RenderablePublishedItem>> {
+  //////////////////////////////////////////////////
+  // Assemble Published Item
+  //     According to Type
+  //////////////////////////////////////////////////
+
   if (uncompiledBasePublishedItem.type === PublishedItemType.POST) {
     return await assembleRenderablePostFromCachedComponents({
       controller,
@@ -165,7 +199,7 @@ export async function assemblePublishedItemFromCachedComponents({
       requestorUserId,
     });
   } else {
-    return await constructRenderableShopItemFromParts({
+    return await assembleRenderableShopItemFromCachedComponents({
       controller,
       blobStorageService,
       databaseService,

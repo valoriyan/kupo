@@ -42,6 +42,10 @@ export async function handleUpdateUserProfile({
     UpdateUserProfileSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -57,9 +61,17 @@ export async function handleUpdateUserProfile({
     preferredPagePrimaryColor,
   } = requestBody;
 
+  //////////////////////////////////////////////////
+  // Update Email with Payment Processor
+  //////////////////////////////////////////////////
+
   if (!!userEmail) {
+    //////////////////////////////////////////////////
+    // Get User with Payment Processing Details
+    //////////////////////////////////////////////////
+
     const unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
-      await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+      await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
         {
           controller,
           userId: clientUserId,
@@ -76,6 +88,9 @@ export async function handleUpdateUserProfile({
     const { success: unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID } =
       unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse;
 
+    //////////////////////////////////////////////////
+    // Update Customer Email with Payment Processor
+    //////////////////////////////////////////////////
     if (!!unrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID) {
       const updateCustomerEmailResponse =
         await controller.paymentProcessingService.updateCustomerEmail({
@@ -90,6 +105,9 @@ export async function handleUpdateUserProfile({
     }
   }
 
+  //////////////////////////////////////////////////
+  // Write Update to DB
+  //////////////////////////////////////////////////
   const updateUserByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.updateUserByUserId(
       {
@@ -120,7 +138,11 @@ export async function handleUpdateUserProfile({
     });
   }
 
-  const constructRenderableUserFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Assemble Renderable User
+  //////////////////////////////////////////////////
+
+  const assembleRenderableUserFromCachedComponentsResponse =
     await assembleRenderableUserFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
@@ -129,5 +151,5 @@ export async function handleUpdateUserProfile({
       databaseService: controller.databaseService,
     });
 
-  return constructRenderableUserFromPartsResponse;
+  return assembleRenderableUserFromCachedComponentsResponse;
 }

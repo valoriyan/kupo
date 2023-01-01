@@ -38,6 +38,9 @@ export async function handleSearchUserProfilesByUsername({
     SearchUserProfilesByUsernameSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -45,6 +48,10 @@ export async function handleSearchUserProfilesByUsername({
   if (error) return error;
 
   const { searchString } = requestBody;
+
+  //////////////////////////////////////////////////
+  // Read UnrenderableUsers from DB
+  //////////////////////////////////////////////////
 
   const selectUsersByUsernameMatchingSubstringResponse =
     await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
@@ -69,7 +76,11 @@ export async function handleSearchUserProfilesByUsername({
     });
   }
 
-  const constructRenderableUsersFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Assemble RenderableUsers
+  //////////////////////////////////////////////////
+
+  const assembleRenderableUsersFromCachedComponentsResponse =
     await assembleRenderableUsersFromCachedComponents({
       controller,
       requestorUserId: clientUserId,
@@ -78,10 +89,15 @@ export async function handleSearchUserProfilesByUsername({
       databaseService: controller.databaseService,
     });
 
-  if (constructRenderableUsersFromPartsResponse.type === EitherType.failure) {
-    return constructRenderableUsersFromPartsResponse;
+  if (assembleRenderableUsersFromCachedComponentsResponse.type === EitherType.failure) {
+    return assembleRenderableUsersFromCachedComponentsResponse;
   }
-  const { success: renderableUsers } = constructRenderableUsersFromPartsResponse;
+  const { success: renderableUsers } =
+    assembleRenderableUsersFromCachedComponentsResponse;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({ results: renderableUsers });
 }

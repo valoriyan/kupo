@@ -30,6 +30,10 @@ export async function handleBlockUser({
 }): Promise<
   SecuredHTTPResponse<ErrorReasonTypes<string | BlockUserFailedReason>, BlockUserSuccess>
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { blockedUserId } = requestBody;
 
   const now = Date.now();
@@ -39,6 +43,10 @@ export async function handleBlockUser({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Write Block to DB
+  //////////////////////////////////////////////////
 
   const executeBlockOfUserIdByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.userBlocksTableService.executeBlockOfUserIdByUserId(
@@ -53,6 +61,10 @@ export async function handleBlockUser({
   if (executeBlockOfUserIdByUserIdResponse.type === EitherType.failure) {
     return executeBlockOfUserIdByUserIdResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({});
 }

@@ -1,45 +1,36 @@
-import { DatabaseService } from "../../../services/databaseService";
-import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
-import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { RenderableAcceptedUserFollowRequestNotification } from "../models/renderableUserNotifications";
+/* eslint-disable @typescript-eslint/ban-types */
 import { Controller } from "tsoa";
+import { v4 as uuidv4 } from "uuid";
+import { DatabaseService } from "../../../services/databaseService";
+import { WebSocketService } from "../../../services/webSocketService";
+import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
 import {
   EitherType,
   ErrorReasonTypes,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
+import { RenderableAcceptedUserFollowRequestNotification } from "../models/renderableUserNotifications";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { assembleRenderableUserById } from "../../../controllers/user/utilities/assembleRenderableUserById";
 
-export async function assembleRenderableAcceptedUserFollowRequestNotification({
+export async function assembleRecordAndSendAcceptedUserFollowRequestNotification({
   controller,
-  userNotification,
-  blobStorageService,
+  userFollowEventId,
+  recipientUserId,
   databaseService,
-  clientUserId,
+  blobStorageService,
+  webSocketService,
 }: {
   controller: Controller;
-  userNotification: DBUserNotification;
-  blobStorageService: BlobStorageService;
+  userFollowEventId: string;
+  recipientUserId: string;
   databaseService: DatabaseService;
-  clientUserId: string;
-}): Promise<
-  InternalServiceResponse<
-    ErrorReasonTypes<string>,
-    RenderableAcceptedUserFollowRequestNotification
-  >
-> {
+  blobStorageService: BlobStorageService;
+  webSocketService: WebSocketService;
+}): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
   //////////////////////////////////////////////////
-  // Inputs
-  //////////////////////////////////////////////////
-  const {
-    user_follow_reference: userFollowEventId,
-    timestamp_seen_by_user: timestampSeenByUser,
-  } = userNotification;
-
-  //////////////////////////////////////////////////
-  // Get the User Follow Request
+  // Read the User Follow Request from DB
   //////////////////////////////////////////////////
 
   const getUserFollowEventByIdResponse =
@@ -54,7 +45,7 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
     return getUserFollowEventByIdResponse;
   }
   const {
-    success: { userIdBeingFollowed, timestamp: eventTimestamp },
+    success: { userIdBeingFollowed },
   } = getUserFollowEventByIdResponse;
 
   //////////////////////////////////////////////////
@@ -63,7 +54,7 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
 
   const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
     controller,
-    requestorUserId: clientUserId,
+    requestorUserId: recipientUserId,
     userId: userIdBeingFollowed,
     blobStorageService,
     databaseService,
@@ -79,9 +70,8 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
 
   const selectCountOfUnreadUserNotificationsByUserIdResponse =
     await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: clientUserId },
+      { controller, userId: recipientUserId },
     );
-
   if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
     return selectCountOfUnreadUserNotificationsByUserIdResponse;
   }
@@ -89,14 +79,51 @@ export async function assembleRenderableAcceptedUserFollowRequestNotification({
     selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
+  // Write Notification to DB
+  //////////////////////////////////////////////////
+
+  const createUserNotificationResponse =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.createUserNotification(
+      {
+        controller,
+        userNotificationId: uuidv4(),
+        recipientUserId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
+          userFollowEventId,
+        },
+      },
+    );
+  if (createUserNotificationResponse.type === EitherType.failure) {
+    return createUserNotificationResponse;
+  }
+
+  //////////////////////////////////////////////////
+  // Assemble Notification
+  //////////////////////////////////////////////////
+
+  const renderableAcceptedUserFollowRequestNotification: RenderableAcceptedUserFollowRequestNotification =
+    {
+      countOfUnreadNotifications,
+      type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
+      eventTimestamp: Date.now(),
+      userAcceptingFollowRequest,
+    };
+
+  //////////////////////////////////////////////////
+  // Send Notification
+  //////////////////////////////////////////////////
+
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfAcceptedUserFollowRequest(
+    {
+      userId: recipientUserId,
+      renderableAcceptedUserFollowRequestNotification,
+    },
+  );
+
+  //////////////////////////////////////////////////
   // Return
   //////////////////////////////////////////////////
 
-  return Success({
-    eventTimestamp,
-    timestampSeenByUser,
-    type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST,
-    countOfUnreadNotifications,
-    userAcceptingFollowRequest,
-  });
+  return Success({});
 }

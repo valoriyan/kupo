@@ -8,7 +8,7 @@ import {
 import { checkAuthentication } from "../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/models";
 import { getPageOfPublishedItemsFromAllPublishedItems } from "../publishedItem/utilities/pagination";
-import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/constructPublishedItemsFromParts";
+import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/assemblePublishedItems";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
 
@@ -43,6 +43,10 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     GetPublishedItemsFromFollowedHashtagSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const { clientUserId, errorResponse: error } = await checkAuthentication(
     controller,
     request,
@@ -55,6 +59,10 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     ? decodeTimestampCursor({ encodedCursor: cursor })
     : 999999999999999;
 
+  //////////////////////////////////////////////////
+  // Read Matching Published Items Ids from DB
+  //////////////////////////////////////////////////
+
   const getPublishedItemsWithHashtagResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemHashtagsTableService.getPublishedItemsWithHashtag(
       { controller, hashtag: hashtag },
@@ -63,6 +71,10 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
     return getPublishedItemsWithHashtagResponse;
   }
   const { success: publishedItemIdsWithHashtag } = getPublishedItemsWithHashtagResponse;
+
+  //////////////////////////////////////////////////
+  // Read Published Item Ids from DB
+  //////////////////////////////////////////////////
 
   const getPublishedItemsByIdsResponse =
     await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByIds(
@@ -79,13 +91,21 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
   }
   const { success: uncompiledBasePublishedItem } = getPublishedItemsByIdsResponse;
 
+  //////////////////////////////////////////////////
+  // Generate Page of Published Items
+  //////////////////////////////////////////////////
+
   const pageOfUncompiledBasePublishedItem = getPageOfPublishedItemsFromAllPublishedItems({
     uncompiledBasePublishedItems: uncompiledBasePublishedItem,
     encodedCursor: cursor,
     pageSize: pageSize,
   });
 
-  const constructPublishedItemsFromPartsResponse =
+  //////////////////////////////////////////////////
+  // Assemble Published Items
+  //////////////////////////////////////////////////
+
+  const assemblePublishedItemsFromCachedComponentsResponse =
     await assemblePublishedItemsFromCachedComponents({
       controller,
       blobStorageService: controller.blobStorageService,
@@ -93,10 +113,15 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
       uncompiledBasePublishedItems: pageOfUncompiledBasePublishedItem,
       requestorUserId: clientUserId,
     });
-  if (constructPublishedItemsFromPartsResponse.type === EitherType.failure) {
-    return constructPublishedItemsFromPartsResponse;
+  if (assemblePublishedItemsFromCachedComponentsResponse.type === EitherType.failure) {
+    return assemblePublishedItemsFromCachedComponentsResponse;
   }
-  const { success: renderablePublishedItems } = constructPublishedItemsFromPartsResponse;
+  const { success: renderablePublishedItems } =
+    assemblePublishedItemsFromCachedComponentsResponse;
+
+  //////////////////////////////////////////////////
+  // Generate Next-Page Cursor
+  //////////////////////////////////////////////////
 
   const nextPageCursor =
     renderablePublishedItems.length > 0
@@ -106,6 +131,10 @@ export async function handleGetPublishedItemsFromFollowedHashtag({
               .scheduledPublicationTimestamp,
         })
       : undefined;
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success({
     publishedItems: renderablePublishedItems,

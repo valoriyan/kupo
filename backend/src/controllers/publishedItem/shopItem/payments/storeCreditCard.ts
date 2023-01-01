@@ -41,6 +41,10 @@ export async function handleStoreCreditCard({
     StoreCreditCardSuccess
   >
 > {
+  //////////////////////////////////////////////////
+  // Inputs & Authentication
+  //////////////////////////////////////////////////
+
   const now = Date.now();
 
   const ipAddressOfRequestor = (request.headers["x-real-ip"] ||
@@ -54,8 +58,12 @@ export async function handleStoreCreditCard({
   );
   if (error) return error;
 
+  //////////////////////////////////////////////////
+  // Get User With Payment Data
+  //////////////////////////////////////////////////
+
   const selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_IDResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUserId_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID(
       { controller, userId: clientUserId },
     );
   if (
@@ -77,6 +85,10 @@ export async function handleStoreCreditCard({
     });
   }
 
+  //////////////////////////////////////////////////
+  // Store Credit Card
+  //////////////////////////////////////////////////
+
   const storeCustomerCreditCardResponse =
     await controller.paymentProcessingService.storeCustomerCreditCard({
       controller,
@@ -90,6 +102,10 @@ export async function handleStoreCreditCard({
   }
   const { success: paymentProcessorCardId } = storeCustomerCreditCardResponse;
 
+  //////////////////////////////////////////////////
+  // Get Credit Cards Stored By Client
+  //////////////////////////////////////////////////
+
   const getCreditCardsStoredByUserIdResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.getCreditCardsStoredByUserId(
       { controller, userId: clientUserId },
@@ -102,6 +118,10 @@ export async function handleStoreCreditCard({
 
   const currentCreditCardsCount = creditCardsStoredByUserId.length;
 
+  //////////////////////////////////////////////////
+  // Assemble New Credit Card
+  //////////////////////////////////////////////////
+
   const cardToStore: StoreCreditCardSuccess = {
     userId: clientUserId,
     localCreditCardId: uuidv4(),
@@ -110,6 +130,10 @@ export async function handleStoreCreditCard({
     isPrimaryCard: !currentCreditCardsCount,
   };
 
+  //////////////////////////////////////////////////
+  // Write New Credit Card to DB
+  //////////////////////////////////////////////////
+
   const storeUserCreditCardDataResponse =
     await controller.databaseService.tableNameToServicesMap.storedCreditCardDataTableService.storeUserCreditCardData(
       { controller, ...cardToStore },
@@ -117,6 +141,10 @@ export async function handleStoreCreditCard({
   if (storeUserCreditCardDataResponse.type === EitherType.failure) {
     return storeUserCreditCardDataResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Return
+  //////////////////////////////////////////////////
 
   return Success(cardToStore);
 }
