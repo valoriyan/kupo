@@ -1,6 +1,9 @@
 import { KeyboardEvent } from "react";
 import { Button } from "#/components/Button";
 import { styled } from "#/styling";
+import { Subtext } from "#/components/Typography";
+
+const MESSAGE_CHAR_LIMIT = 5000;
 
 export interface MessageComposerProps {
   newChatMessage: string;
@@ -17,7 +20,7 @@ export const MessageComposer = ({
 }: MessageComposerProps) => {
   function onUpdateNewChatMessage(event: React.ChangeEvent<HTMLTextAreaElement>) {
     event.preventDefault();
-    setNewChatMessage(event.currentTarget.value);
+    setNewChatMessage(event.currentTarget.value.slice(0, MESSAGE_CHAR_LIMIT));
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -37,6 +40,9 @@ export const MessageComposer = ({
         data-cy="chat-room-message-input"
       />
       <ActionBar>
+        <Subtext css={{ color: "$secondaryText" }}>
+          {newChatMessage.length} / {MESSAGE_CHAR_LIMIT}
+        </Subtext>
         <Button
           round
           size="sm"
@@ -80,6 +86,6 @@ const ActionBar = styled("div", {
   px: "$4",
   py: "$3",
   alignItems: "center",
-  justifyContent: "flex-end",
+  justifyContent: "space-between",
   bg: "$background2",
 });
