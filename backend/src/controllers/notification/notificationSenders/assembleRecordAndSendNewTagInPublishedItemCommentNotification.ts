@@ -135,10 +135,10 @@ export async function assembleRecordAndSendNewTagInPublishedItemCommentNotificat
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewTagInPublishedItemComment(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      renderableNewTagInPublishedItemCommentNotification,
+      notification: renderableNewTagInPublishedItemCommentNotification,
     },
   );
 

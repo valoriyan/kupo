@@ -114,10 +114,10 @@ export async function assembleRecordAndSendAcceptedUserFollowRequestNotification
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfAcceptedUserFollowRequest(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      renderableAcceptedUserFollowRequestNotification,
+      notification: renderableAcceptedUserFollowRequestNotification,
     },
   );
 

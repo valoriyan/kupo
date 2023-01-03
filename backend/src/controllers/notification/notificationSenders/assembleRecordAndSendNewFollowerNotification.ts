@@ -95,10 +95,12 @@ export async function assembleRecordAndSendNewFollowerNotification({
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewFollower({
-    userId: recipientUserId,
-    renderableNewFollowerNotification,
-  });
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
+    {
+      userId: recipientUserId,
+      notification: renderableNewFollowerNotification,
+    },
+  );
 
   //////////////////////////////////////////////////
   // Return

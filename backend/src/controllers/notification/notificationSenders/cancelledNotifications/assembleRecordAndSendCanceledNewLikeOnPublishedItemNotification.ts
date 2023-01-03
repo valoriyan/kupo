@@ -77,10 +77,10 @@ export async function assembleRecordAndSendCanceledNewLikeOnPublishedItemNotific
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewLikeOnPost(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      unrenderableCanceledNewLikeOnPostNotification,
+      notification: unrenderableCanceledNewLikeOnPostNotification,
     },
   );
 

@@ -123,10 +123,10 @@ export async function assembleRecordAndSendRejectedPublishingChannelSubmissionNo
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfRejectedPublishingChannelSubmission(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      renderableRejectedPublishingChannelSubmissionNotification,
+      notification: renderableRejectedPublishingChannelSubmissionNotification,
     },
   );
 

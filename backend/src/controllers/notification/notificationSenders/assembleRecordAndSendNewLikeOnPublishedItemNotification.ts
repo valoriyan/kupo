@@ -102,10 +102,10 @@ export async function assembleRecordAndSendNewLikeOnPublishedItemNotification({
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewLikeOnPublishedItem(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      renderableNewLikeOnPublishedItemNotification,
+      notification: renderableNewLikeOnPublishedItemNotification,
     },
   );
 

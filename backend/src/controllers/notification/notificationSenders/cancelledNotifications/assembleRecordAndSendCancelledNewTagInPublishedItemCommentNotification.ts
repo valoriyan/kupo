@@ -72,10 +72,10 @@ export async function assembleRecordAndSendCancelledNewTagInPublishedItemComment
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewTagInPublishedItemComment(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      unrenderableCanceledNewTagInPublishedItemCommentNotification,
+      notification: unrenderableCanceledNewTagInPublishedItemCommentNotification,
     },
   );
 

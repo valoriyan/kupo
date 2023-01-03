@@ -72,10 +72,10 @@ export async function assembleRecordAndSendCancelledNewCommentOnPublishedItemNot
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledNewCommentOnPost(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      unrenderableCanceledCommentOnPostNotification,
+      notification: unrenderableCanceledCommentOnPostNotification,
     },
   );
 

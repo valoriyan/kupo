@@ -48,13 +48,16 @@ export async function handleCreateChatMessageInNewChatRoom({
   );
   if (error) return error;
 
+  const setOfUserIds = new Set(userIds);
+  setOfUserIds.add(clientUserId);
+
   //////////////////////////////////////////////////
   // Determine if Chat Room Already Exists
   //////////////////////////////////////////////////
 
   const getChatRoomIdWithUserIdMembersExclusiveResponse =
     await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomIdWithJoinedUserIdMembersExclusive(
-      { controller, userIds: new Set(userIds) },
+      { controller, userIds: setOfUserIds },
     );
   if (getChatRoomIdWithUserIdMembersExclusiveResponse.type === EitherType.failure) {
     return getChatRoomIdWithUserIdMembersExclusiveResponse;
@@ -80,7 +83,7 @@ export async function handleCreateChatMessageInNewChatRoom({
       await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.joinUsersWithChatRoom(
         {
           controller,
-          userIds,
+          userIds: [...setOfUserIds],
           joinTimestamp: Date.now(),
           chatRoomId,
         },

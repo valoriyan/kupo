@@ -118,10 +118,10 @@ export async function assembleRecordAndSendAcceptedPublishingChannelSubmissionNo
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfAcceptedPublishingChannelSubmission(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      renderableAcceptedPublishingChannelSubmissionNotification,
+      notification: renderableAcceptedPublishingChannelSubmissionNotification,
     },
   );
 

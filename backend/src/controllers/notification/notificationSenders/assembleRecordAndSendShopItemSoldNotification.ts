@@ -133,10 +133,12 @@ export async function assembleRecordAndSendShopItemSoldNotification({
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfShopItemSold({
-    userId: recipientUserId,
-    renderableShopItemSoldNotification,
-  });
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
+    {
+      userId: recipientUserId,
+      notification: renderableShopItemSoldNotification,
+    },
+  );
 
   //////////////////////////////////////////////////
   // Return

@@ -134,10 +134,10 @@ export async function assembleRecordAndSendNewCommentOnPublishedItemNotification
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfNewCommentOnPost(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      renderableNewCommentOnPostNotification,
+      notification: renderableNewCommentOnPostNotification,
     },
   );
 

@@ -74,10 +74,10 @@ export async function assembleRecordAndSendCanceledAcceptedUserFollowRequestNoti
   // Send Notification
   //////////////////////////////////////////////////
 
-  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfCanceledAcceptedUserFollowRequest(
+  await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      unrenderableCanceledAcceptedUserFollowRequestNotification,
+      notification: unrenderableCanceledAcceptedUserFollowRequestNotification,
     },
   );
 
