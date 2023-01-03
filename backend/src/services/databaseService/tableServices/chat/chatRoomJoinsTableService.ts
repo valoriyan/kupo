@@ -156,6 +156,54 @@ export class ChatRoomJoinsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
+  public async getChatRoomJoinsByChatRoomIds({
+    controller,
+    chatRoomIds,
+  }: {
+    controller: Controller;
+    chatRoomIds: string[];
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      UnrenderableChatRoomWithJoinedUsers[]
+    >
+  > {
+    try {
+      const chatRoomIdsQueryString = `( ${chatRoomIds
+        .map((_, index) => `$${index + 1}`)
+        .join(", ")} )`;
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+          chat_room_id IN ${chatRoomIdsQueryString}
+          ;
+        `,
+        values: chatRoomIds,
+      };
+
+      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
+
+      const unrenderableChatRoomPreviews =
+        convertDBChatRoomJoinsToUnrenderableChatRoomWithJoinedUsers(response.rows);
+
+      return Success(unrenderableChatRoomPreviews);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at ChatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId",
+      });
+    }
+  }
+
   public async getCountOfUnreadChatRoomsByUserId({
     controller,
     userId,
@@ -298,23 +346,18 @@ export class ChatRoomJoinsTableService extends TableService {
     }
   }
 
-  public async getChatRoomsJoinedByUserIds({
+  public async getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessage({
     controller,
     userIds,
   }: {
     controller: Controller;
     userIds: string[];
-  }): Promise<
-    InternalServiceResponse<
-      ErrorReasonTypes<string>,
-      UnrenderableChatRoomWithJoinedUsers[]
-    >
-  > {
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
     try {
       const whereConditionText = userIds
         .map((_, index) => {
           return `
-        chat_room_id IN (
+          ${ChatRoomJoinsTableService.tableName}.chat_room_id IN (
           SELECT 
             chat_room_id
           FROM
@@ -328,26 +371,33 @@ export class ChatRoomJoinsTableService extends TableService {
 
       const query = {
         text: `
-        SELECT
-          *
-        FROM
-          ${this.tableName}
-        WHERE
-          ${whereConditionText}
-        ;
-      `,
+          SELECT
+            DISTINCT ${ChatRoomJoinsTableService.tableName}.chat_room_id,
+            MAX(${ChatMessagesTableService.tableName}.creation_timestamp) as timestamp_of_latest_chat_message
+          FROM
+            ${ChatRoomJoinsTableService.tableName}
+          INNER JOIN
+            ${ChatMessagesTableService.tableName}
+              ON
+              ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatMessagesTableService.tableName}.chat_room_id	
+          WHERE
+            ${whereConditionText}
+          GROUP BY
+            ${ChatRoomJoinsTableService.tableName}.chat_room_id
+          ORDER BY
+            MAX(${ChatMessagesTableService.tableName}.creation_timestamp)
+            DESC
+          ;
+        `,
         values: userIds,
       };
 
-      const response: QueryResult<DBChatRoomJoin> = await this.datastorePool.query(query);
+      const response: QueryResult<{ chat_room_id: string }> =
+        await this.datastorePool.query(query);
 
       const dbChatRoomMemberships = response.rows;
 
-      return Success(
-        convertDBChatRoomJoinsToUnrenderableChatRoomWithJoinedUsers(
-          dbChatRoomMemberships,
-        ),
-      );
+      return Success(dbChatRoomMemberships.map(({ chat_room_id }) => chat_room_id));
     } catch (error) {
       return Failure({
         controller,
@@ -355,7 +405,7 @@ export class ChatRoomJoinsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at ChatRoomJoinsTableService.getChatRoomsJoinedByUserIds",
+          "Error at ChatRoomJoinsTableService.getChatRoomsJoinedByUserIdsOrderedByLatestChatMessage",
       });
     }
   }

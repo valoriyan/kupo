@@ -62,7 +62,7 @@ export async function handleCreateChatMessageInNewChatRoom({
   const { success: existingChatRoomId } = getChatRoomIdWithUserIdMembersExclusiveResponse;
 
   //////////////////////////////////////////////////
-  // If the chat room already exists,w we have its ID
+  // If the chat room already exists, we have its ID
   //////////////////////////////////////////////////
 
   let chatRoomId: string;

@@ -242,4 +242,18 @@ export class PaymentProcessingService {
       });
     }
   }
+
+  //////////////////////////////////////////////////
+  // Payouts ///////////////////////////////////////
+  //////////////////////////////////////////////////
+
+  // async payoutToCustomer({
+  //   controller,
+  // }: {
+  //   controller: Controller;
+  // }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string>> {
+  //   await PaymentProcessingService.securionPayApi.
+
+  //   return Success({});
+  // }
 }

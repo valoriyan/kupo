@@ -84,14 +84,45 @@ export async function handleGetPageOfChatRooms({
     }
     unrenderableChatRooms = getUnrenderableChatRoomsMatchingQueryResponse.success;
   } else {
-    const getChatRoomsJoinedByUserIdsResponse =
-      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
+    //////////////////////////////////////////////////
+    // Get the List of Chat Rooms
+    //    Ordered by the Last Chat Message Created
+    //////////////////////////////////////////////////
+
+    const getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse =
+      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessage(
         { controller, userIds: [clientUserId] },
       );
-    if (getChatRoomsJoinedByUserIdsResponse.type === EitherType.failure) {
-      return getChatRoomsJoinedByUserIdsResponse;
+    if (
+      getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse.type ===
+      EitherType.failure
+    ) {
+      return getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse;
     }
-    unrenderableChatRooms = getChatRoomsJoinedByUserIdsResponse.success;
+    const { success: orderedChatRoomIds } =
+      getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse;
+
+    //////////////////////////////////////////////////
+    // Get the Users in Each Chat Rooms
+    //////////////////////////////////////////////////
+
+    const getChatRoomJoinsByChatRoomIdsResponse =
+      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomJoinsByChatRoomIds(
+        { controller, chatRoomIds: orderedChatRoomIds },
+      );
+    if (getChatRoomJoinsByChatRoomIdsResponse.type === EitherType.failure) {
+      return getChatRoomJoinsByChatRoomIdsResponse;
+    }
+
+    const { success: chatRoomJoins } = getChatRoomJoinsByChatRoomIdsResponse;
+    const chatRoomIdToChatRoomJoinsMap = new Map();
+    chatRoomJoins.forEach((chatRoomJoin) => {
+      chatRoomIdToChatRoomJoinsMap.set(chatRoomJoin.chatRoomId, chatRoomJoin);
+    });
+
+    unrenderableChatRooms = orderedChatRoomIds.map((chatRoomId) =>
+      chatRoomIdToChatRoomJoinsMap.get(chatRoomId),
+    );
   }
 
   //////////////////////////////////////////////////
@@ -215,17 +246,48 @@ async function getUnrenderableChatRoomsMatchingQuery({
   const matchedUserIds = matchedUsers.map(({ userId }) => userId);
 
   //////////////////////////////////////////////////
-  // Get Chat Rooms Joined By Users Matching Query
+  // Get the List of Chat Rooms
+  //    Ordered by the Last Chat Message Created
   //////////////////////////////////////////////////
 
-  const getChatRoomsJoinedByUserIdsResponse =
-    await databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsJoinedByUserIds(
+  const getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse =
+    await databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessage(
       { controller, userIds: [requestorUserId, ...matchedUserIds] },
     );
+  if (
+    getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse.type ===
+    EitherType.failure
+  ) {
+    return getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse;
+  }
+  const { success: orderedChatRoomIds } =
+    getChatRoomsIdsJoinedByUserIdsOrderedByLatestChatMessageResponse;
+
+  //////////////////////////////////////////////////
+  // Get the Users in Each Chat Rooms
+  //////////////////////////////////////////////////
+
+  const getChatRoomJoinsByChatRoomIdsResponse =
+    await databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getChatRoomJoinsByChatRoomIds(
+      { controller, chatRoomIds: orderedChatRoomIds },
+    );
+  if (getChatRoomJoinsByChatRoomIdsResponse.type === EitherType.failure) {
+    return getChatRoomJoinsByChatRoomIdsResponse;
+  }
+
+  const { success: chatRoomJoins } = getChatRoomJoinsByChatRoomIdsResponse;
+  const chatRoomIdToChatRoomJoinsMap = new Map();
+  chatRoomJoins.forEach((chatRoomJoin) => {
+    chatRoomIdToChatRoomJoinsMap.set(chatRoomJoin.chatRoomId, chatRoomJoin);
+  });
+
+  const getChatRoomsJoinedByUserIdsResponse = orderedChatRoomIds.map((chatRoomId) =>
+    chatRoomIdToChatRoomJoinsMap.get(chatRoomId),
+  );
 
   //////////////////////////////////////////////////
   // Return
   //////////////////////////////////////////////////
 
-  return getChatRoomsJoinedByUserIdsResponse;
+  return Success(getChatRoomsJoinedByUserIdsResponse);
 }
