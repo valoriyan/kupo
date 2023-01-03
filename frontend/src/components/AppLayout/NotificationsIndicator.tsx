@@ -14,8 +14,12 @@ export const NotificationsIndicator = () => {
   const displayedCountOfUnreadNotifications =
     countOfUnreadNotifications > 99 ? "99+" : countOfUnreadNotifications;
 
-  return !countOfUnreadNotifications ? null : (
-    <NotificationBadge>{displayedCountOfUnreadNotifications}</NotificationBadge>
+  return (
+    <NotificationBadge
+      css={{ visibility: countOfUnreadNotifications ? "visible" : "hidden" }}
+    >
+      {displayedCountOfUnreadNotifications}
+    </NotificationBadge>
   );
 };
 

@@ -30,7 +30,7 @@ export const ChatRoom = ({ chatRoomId }: ChatRoomProps) => {
 const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
   const {
     subscribeToChatRoomId,
-    mapOfSubscribedChatChannelsToReceivedChatMessages,
+    receivedChatMessagesByChatRoomId,
     unsubscribeFromChatRoomId,
   } = useWebsocketState();
 
@@ -38,13 +38,13 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
 
   useEffect(() => {
     if (!!chatRoomId) {
-      markChatRoomAsRead({ chatRoomId });
+      markChatRoomAsRead(chatRoomId);
     }
 
-    subscribeToChatRoomId({ chatRoomId });
+    subscribeToChatRoomId(chatRoomId);
 
     return function cleanup() {
-      unsubscribeFromChatRoomId({ chatRoomId });
+      unsubscribeFromChatRoomId(chatRoomId);
     };
   }, [chatRoomId, subscribeToChatRoomId, unsubscribeFromChatRoomId, markChatRoomAsRead]);
 
@@ -105,21 +105,15 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     setNewChatMessage("");
   }
 
-  const receivedChatMessages =
-    mapOfSubscribedChatChannelsToReceivedChatMessages.get(chatRoomId) || [];
+  const receivedChatMessages = receivedChatMessagesByChatRoomId.get(chatRoomId) || [];
 
   const chatMessages = chatMessagesQuery.data.pages
     .flatMap((page) => page.chatMessages)
     .concat(receivedChatMessages);
 
-  const encounteredChatMessageIds = new Set();
-  const deduplicatedChatMessages: RenderableChatMessage[] = [];
-  chatMessages.forEach((chatMessage) => {
-    if (!encounteredChatMessageIds.has(chatMessage.chatMessageId)) {
-      deduplicatedChatMessages.push(chatMessage);
-      encounteredChatMessageIds.add(chatMessage.chatMessageId);
-    }
-  });
+  const uniqueChatMessages = new Map<string, RenderableChatMessage>(
+    chatMessages.map((message) => [message.chatMessageId, message]),
+  );
 
   return (
     <Grid>
@@ -129,7 +123,7 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
       />
       <ChatMessagesList
         clientUserId={clientUserData.userId}
-        chatMessages={deduplicatedChatMessages}
+        chatMessages={Array.from(uniqueChatMessages.values())}
         hasPreviousPage={chatMessagesQuery.hasPreviousPage}
         isFetchingPreviousPage={chatMessagesQuery.isFetchingPreviousPage}
         fetchPreviousPage={chatMessagesQuery.fetchPreviousPage}

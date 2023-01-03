@@ -1,21 +1,35 @@
 import Link from "next/link";
+import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { Avatar } from "#/components/Avatar";
 import { BrandWithSlogan } from "#/components/BrandWithSlogan";
 import { Button } from "#/components/Button";
-import { Stack } from "#/components/Layout";
-import { openLogOutModal } from "#/components/LogOutModal";
+import { Flex, Stack } from "#/components/Layout";
 import { Body, Heading, MainTitle, Subtext } from "#/components/Typography";
 import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { useIsAuthenticated } from "#/contexts/auth";
 
 export const Home = () => {
-  const isAuthenticated = useIsAuthenticated();
+  const isAuthenticatedState = useIsAuthenticated();
+  const isAuthenticated = isAuthenticatedState === "unset" ? false : isAuthenticatedState;
+  const { data: user } = useGetClientUserProfile(isAuthenticated);
+
+  if (isAuthenticatedState === "unset") return null;
 
   return (
     <Stack css={{ alignItems: "center", minHeight: "100vh" }}>
       <Stack css={{ p: "$6", width: "100%", maxWidth: MAX_APP_CONTENT_WIDTH, gap: "$9" }}>
         <Heading css={{ alignSelf: "flex-end", button: { color: "$link" } }}>
           {isAuthenticated ? (
-            <button onClick={() => openLogOutModal()}>log out</button>
+            <Flex as="button" css={{ gap: "$3", alignItems: "center", height: "$6" }}>
+              {user && (
+                <Avatar
+                  src={user.profilePictureTemporaryUrl}
+                  alt="Your profile picture"
+                  size="$6"
+                />
+              )}
+              <Body>log out</Body>
+            </Flex>
           ) : (
             <Link href="/login">log in</Link>
           )}
