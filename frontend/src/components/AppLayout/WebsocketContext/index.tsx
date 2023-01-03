@@ -1,20 +1,26 @@
+import getConfig from "next/config";
 import { PropsWithChildren } from "react";
 import { io, Socket } from "socket.io-client";
-import create, { GetState, SetState } from "zustand";
+import create from "zustand";
 import createContext from "zustand/context";
-import getConfig from "next/config";
 import {
   NOTIFICATIONEVENTS,
   RenderableChatMessage,
   RenderableUserNotification,
 } from "#/api";
-import { generateRenderableNewCommentOnPublishedItemNotificationHandler } from "./renderableNewCommentOnPublishedItemNotificationHandler";
-import { generateRenderableNewLikeOnPublishedItemNotificationHandler } from "./renderableNewLikeOnPublishedItemNotificationHandler";
-import { generateRenderableNewFollowerNotificationHandler } from "./renderableNewFollowerNotificationHandler";
-import { generateUnrenderableCanceledCommentOnPublishedItemNotificationHandler } from "./unrenderableCanceledCommentOnPublishedItemNotificationHandler";
-import { generateUnrenderableCanceledNewFollowerNotificationHandler } from "./unrenderableCanceledNewFollowerNotificationHandler";
-import { generateUnrenderableCanceledNewLikeOnPublishedItemNotificationHandler } from "./unrenderableCanceledNewLikeOnPublishedItemNotificationHandler";
-import { generateNewChatMessageNotificationHandler } from "./newChatMessageNotificationHandler";
+import { getNewChatMessageNotificationHandler } from "./chatMessageNotificationHandlers";
+import {
+  getCanceledCommentOnPublishedItemNotificationHandler,
+  getNewCommentOnPublishedItemNotificationHandler,
+} from "./newCommentOnPublishedItemNotificationHandlers";
+import {
+  getCanceledNewFollowerNotificationHandler,
+  getNewFollowerNotificationHandler,
+} from "./newFollowerNotificationHandlers";
+import {
+  getCanceledNewLikeOnPublishedItemNotificationHandler,
+  getNewLikeOnPublishedItemNotificationHandler,
+} from "./newLikeOnPublishedItemNotificationHandlers";
 
 export interface WebsocketState {
   socket: Socket | undefined;
@@ -31,79 +37,67 @@ export interface WebsocketState {
   // CHAT
   //////////////////////////////////////////////////
   updatedCountOfUnreadChatRooms: number | undefined;
-  mapOfSubscribedChatChannelsToReceivedChatMessages: Map<string, RenderableChatMessage[]>;
-  subscribeToChatRoomId: ({ chatRoomId }: { chatRoomId: string }) => void;
-  unsubscribeFromChatRoomId: ({ chatRoomId }: { chatRoomId: string }) => void;
+  receivedChatMessagesByChatRoomId: Map<string, RenderableChatMessage[]>;
+  subscribeToChatRoomId: (chatRoomId: string) => void;
+  unsubscribeFromChatRoomId: (chatRoomId: string) => void;
 }
 
-const generateSocket = ({
-  accessToken,
-  set,
-  get,
-}: {
-  accessToken: string;
-  set: SetState<WebsocketState>;
-  get: GetState<WebsocketState>;
-}) => {
-  const { publicRuntimeConfig } = getConfig();
-  const websocketUrl = publicRuntimeConfig.API_BASE_URL;
-
-  const newSocket = io(websocketUrl, { auth: { accessToken }, secure: true });
-
-  newSocket.on("connect", () => {
-    console.log("CONNECTED TO WEBSOCKET!");
-  });
-
-  newSocket.on(
-    NOTIFICATIONEVENTS.NewCommentOnPublishedItem,
-    generateRenderableNewCommentOnPublishedItemNotificationHandler({ set, get }),
-  );
-
-  newSocket.on(
-    NOTIFICATIONEVENTS.NewLikeOnPublishedItem,
-    generateRenderableNewLikeOnPublishedItemNotificationHandler({ set, get }),
-  );
-
-  newSocket.on(
-    NOTIFICATIONEVENTS.NewFollower,
-    generateRenderableNewFollowerNotificationHandler({ set, get }),
-  );
-
-  newSocket.on(
-    NOTIFICATIONEVENTS.CanceledNewCommentOnPublishedItem,
-    generateUnrenderableCanceledCommentOnPublishedItemNotificationHandler({ set, get }),
-  );
-  newSocket.on(
-    NOTIFICATIONEVENTS.CanceledNewFollower,
-    generateUnrenderableCanceledNewFollowerNotificationHandler({ set, get }),
-  );
-  newSocket.on(
-    NOTIFICATIONEVENTS.CanceledNewLikeOnPublishedItem,
-    generateUnrenderableCanceledNewLikeOnPublishedItemNotificationHandler({ set, get }),
-  );
-  newSocket.on(
-    NOTIFICATIONEVENTS.NewTagInPublishedItemComment,
-    generateUnrenderableCanceledNewLikeOnPublishedItemNotificationHandler({ set, get }),
-  );
-
-  newSocket.on(
-    NOTIFICATIONEVENTS.NewChatMessage,
-    generateNewChatMessageNotificationHandler({ set, get }),
-  );
-
-  return newSocket;
-};
-
-const createFormStateStore = () =>
+const createWebsocketStateStore = () =>
   create<WebsocketState>((set, get) => ({
     socket: undefined,
     generateSocket: ({ accessToken }: { accessToken: string }) => {
       const existingSocket = get().socket;
-      if (!existingSocket) {
-        const socket = generateSocket({ accessToken, get, set });
-        set({ socket });
-      }
+      if (existingSocket) return;
+
+      const { publicRuntimeConfig } = getConfig();
+      const websocketUrl = publicRuntimeConfig.API_BASE_URL;
+
+      const newSocket = io(websocketUrl, { auth: { accessToken }, secure: true });
+
+      newSocket.on("connect", () => {
+        console.log("CONNECTED TO WEBSOCKET");
+      });
+
+      newSocket.on(
+        NOTIFICATIONEVENTS.NewFollower,
+        getNewFollowerNotificationHandler({ set, get }),
+      );
+      newSocket.on(
+        NOTIFICATIONEVENTS.CanceledNewFollower,
+        getCanceledNewFollowerNotificationHandler({ set, get }),
+      );
+
+      newSocket.on(
+        NOTIFICATIONEVENTS.NewCommentOnPublishedItem,
+        getNewCommentOnPublishedItemNotificationHandler({ set, get }),
+      );
+      newSocket.on(
+        NOTIFICATIONEVENTS.CanceledNewCommentOnPublishedItem,
+        getCanceledCommentOnPublishedItemNotificationHandler({ set, get }),
+      );
+
+      newSocket.on(
+        NOTIFICATIONEVENTS.NewLikeOnPublishedItem,
+        getNewLikeOnPublishedItemNotificationHandler({ set, get }),
+      );
+      newSocket.on(
+        NOTIFICATIONEVENTS.CanceledNewLikeOnPublishedItem,
+        getCanceledNewLikeOnPublishedItemNotificationHandler({ set, get }),
+      );
+
+      newSocket.on(
+        NOTIFICATIONEVENTS.NewTagInPublishedItemComment,
+        getCanceledNewLikeOnPublishedItemNotificationHandler({ set, get }),
+      );
+
+      newSocket.on(
+        NOTIFICATIONEVENTS.NewChatMessage,
+        getNewChatMessageNotificationHandler({ set, get }),
+      );
+
+      set({ socket: newSocket });
     },
+
     //////////////////////////////////////////////////
     // USER NOTIFICATIONS
     //////////////////////////////////////////////////
@@ -112,41 +106,41 @@ const createFormStateStore = () =>
     markAllNotificationsAsSeen: () => {
       set({ updatedCountOfUnreadNotifications: 0 });
     },
+
     //////////////////////////////////////////////////
     // CHAT
     //////////////////////////////////////////////////
     updatedCountOfUnreadChatRooms: undefined,
-    mapOfSubscribedChatChannelsToReceivedChatMessages: new Map(),
-    subscribeToChatRoomId: ({ chatRoomId }: { chatRoomId: string }) => {
-      console.log(`SUBSCRIBED TO CHANNEL ${chatRoomId}`);
+    receivedChatMessagesByChatRoomId: new Map(),
+    subscribeToChatRoomId: (chatRoomId) => {
+      console.log(`SUBSCRIBED TO CHAT ROOM ${chatRoomId}`);
+
       if (!!chatRoomId) {
-        const { mapOfSubscribedChatChannelsToReceivedChatMessages } = get();
-        const updatedMapOfSubscribedChatChannelsToReceivedChatMessages = new Map(
-          mapOfSubscribedChatChannelsToReceivedChatMessages,
+        const { receivedChatMessagesByChatRoomId } = get();
+        const updatedReceivedChatMessagesByChatRoomId = new Map(
+          receivedChatMessagesByChatRoomId,
         );
-        if (!updatedMapOfSubscribedChatChannelsToReceivedChatMessages.has(chatRoomId)) {
-          updatedMapOfSubscribedChatChannelsToReceivedChatMessages.set(chatRoomId, []);
+        if (!updatedReceivedChatMessagesByChatRoomId.has(chatRoomId)) {
+          updatedReceivedChatMessagesByChatRoomId.set(chatRoomId, []);
         }
         set({
-          mapOfSubscribedChatChannelsToReceivedChatMessages:
-            updatedMapOfSubscribedChatChannelsToReceivedChatMessages,
+          receivedChatMessagesByChatRoomId: updatedReceivedChatMessagesByChatRoomId,
         });
       }
     },
-    unsubscribeFromChatRoomId: ({ chatRoomId }: { chatRoomId: string }) => {
-      console.log(`UNSUBSCRIBED TO CHANNEL ${chatRoomId}`);
+    unsubscribeFromChatRoomId: (chatRoomId) => {
+      console.log(`UNSUBSCRIBED TO CHAT ROOM ${chatRoomId}`);
 
       if (!!chatRoomId) {
-        const { mapOfSubscribedChatChannelsToReceivedChatMessages } = get();
-        const updatedMapOfSubscribedChatChannelsToReceivedChatMessages = new Map(
-          mapOfSubscribedChatChannelsToReceivedChatMessages,
+        const { receivedChatMessagesByChatRoomId } = get();
+        const updatedReceivedChatMessagesByChatRoomId = new Map(
+          receivedChatMessagesByChatRoomId,
         );
-        if (updatedMapOfSubscribedChatChannelsToReceivedChatMessages.has(chatRoomId)) {
-          updatedMapOfSubscribedChatChannelsToReceivedChatMessages.delete(chatRoomId);
+        if (updatedReceivedChatMessagesByChatRoomId.has(chatRoomId)) {
+          updatedReceivedChatMessagesByChatRoomId.delete(chatRoomId);
         }
         set({
-          mapOfSubscribedChatChannelsToReceivedChatMessages:
-            updatedMapOfSubscribedChatChannelsToReceivedChatMessages,
+          receivedChatMessagesByChatRoomId: updatedReceivedChatMessagesByChatRoomId,
         });
       }
     },
@@ -155,7 +149,7 @@ const createFormStateStore = () =>
 const { Provider, useStore } = createContext<WebsocketState>();
 
 export const WebsocketStateProvider = ({ children }: PropsWithChildren<unknown>) => {
-  return <Provider createStore={createFormStateStore}>{children}</Provider>;
+  return <Provider createStore={createWebsocketStateStore}>{children}</Provider>;
 };
 
 export const useWebsocketState = useStore;

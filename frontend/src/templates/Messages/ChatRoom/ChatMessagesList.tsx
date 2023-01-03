@@ -36,10 +36,14 @@ export const ChatMessagesList = ({
             data={chatMessages}
             renderItem={(index, message) => {
               const isClientMessage = message.authorUserId === clientUserId;
-              const previousMessage = chatMessages[Number.MAX_SAFE_INTEGER - index - 1];
+              const previousIndex =
+                // ReverseInfiniteList starts counting back from Number.MAX_SAFE_INTEGER
+                // since we don't know the total number of list items
+                chatMessages.length - (Number.MAX_SAFE_INTEGER - index) - 1;
+              const previousMessage = chatMessages[previousIndex];
 
               const isDateTransition =
-                previousMessage &&
+                !previousMessage ||
                 getCalendarDate(previousMessage.creationTimestamp) !==
                   getCalendarDate(message.creationTimestamp);
 

@@ -3,28 +3,26 @@ import { GetState, SetState } from "zustand";
 import { Api, NewChatMessageNotification } from "#/api";
 import { WebsocketState } from ".";
 
-export const generateNewChatMessageNotificationHandler =
+export const getNewChatMessageNotificationHandler =
   ({ set, get }: { set: SetState<WebsocketState>; get: GetState<WebsocketState> }) =>
   (newChatMessageNotification: NewChatMessageNotification) => {
+    console.log(newChatMessageNotification);
+
     const { countOfUnreadChatRooms, chatMessage } = newChatMessageNotification;
     const { chatRoomId } = chatMessage;
 
-    const { mapOfSubscribedChatChannelsToReceivedChatMessages } = get();
+    const { receivedChatMessagesByChatRoomId } = get();
 
-    const updatedMapOfSubscribedChatChannelsToReceivedChatMessages = new Map(
-      mapOfSubscribedChatChannelsToReceivedChatMessages,
+    const updatedReceivedChatMessagesByChatRoomId = new Map(
+      receivedChatMessagesByChatRoomId,
     );
 
-    if (updatedMapOfSubscribedChatChannelsToReceivedChatMessages.has(chatRoomId)) {
+    if (updatedReceivedChatMessagesByChatRoomId.has(chatRoomId)) {
       const oldChatMessages =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        updatedMapOfSubscribedChatChannelsToReceivedChatMessages.get(chatRoomId)!;
+        updatedReceivedChatMessagesByChatRoomId.get(chatRoomId) ?? [];
       const newChatMessages = [...oldChatMessages, chatMessage];
 
-      updatedMapOfSubscribedChatChannelsToReceivedChatMessages.set(
-        chatRoomId,
-        newChatMessages,
-      );
+      updatedReceivedChatMessagesByChatRoomId.set(chatRoomId, newChatMessages);
     }
 
     try {
@@ -40,7 +38,6 @@ export const generateNewChatMessageNotificationHandler =
 
     set({
       updatedCountOfUnreadChatRooms: countOfUnreadChatRooms,
-      mapOfSubscribedChatChannelsToReceivedChatMessages:
-        updatedMapOfSubscribedChatChannelsToReceivedChatMessages,
+      receivedChatMessagesByChatRoomId: updatedReceivedChatMessagesByChatRoomId,
     });
   };
