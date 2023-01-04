@@ -71,19 +71,17 @@ export class WebSocketService {
       .emit(NOTIFICATION_EVENTS.NEW_PUBLISHED_ITEM, message);
   }
 
-  public async notifyUserIdsOfNewChatMessage({
+  public async notifyUserIdOfNewChatMessage({
     newChatMessageNotification,
-    userIds,
+    userId,
   }: {
     newChatMessageNotification: NewChatMessageNotification;
-    userIds: string[];
+    userId: string;
   }) {
-    await BluebirdPromise.map(userIds, async (userId) => {
-      await notifyUserIdsOfNewChatMessage({
-        io: WebSocketService.io,
-        newChatMessageNotification: newChatMessageNotification,
-        userId,
-      });
+    await notifyUserIdsOfNewChatMessage({
+      io: WebSocketService.io,
+      newChatMessageNotification: newChatMessageNotification,
+      userId,
     });
   }
 

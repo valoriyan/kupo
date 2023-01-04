@@ -9,6 +9,7 @@ import { checkAuthentication } from "../auth/utilities";
 import { ChatController } from "./chatController";
 import { v4 as uuidv4 } from "uuid";
 import { RenderableChatMessage } from "./models";
+import { Promise as BluebirdPromise } from "bluebird";
 
 export enum CreateChatMessageFailedReason {
   UnknownCause = "Unknown Cause",
@@ -84,21 +85,6 @@ export async function handleCreateChatMessage({
   const { success: allUserIdsInChatRoom } = getUserIdsJoinedToChatRoomIdResponse;
 
   //////////////////////////////////////////////////
-  // Get Count Of Chat Rooms With Unread Messages
-  //////////////////////////////////////////////////
-  const getCountOfUnreadChatRoomsResponse =
-    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId(
-      {
-        controller,
-        userId: clientUserId,
-      },
-    );
-  if (getCountOfUnreadChatRoomsResponse.type === EitherType.failure) {
-    return getCountOfUnreadChatRoomsResponse;
-  }
-  const { success: countOfUnreadChatRooms } = getCountOfUnreadChatRoomsResponse;
-
-  //////////////////////////////////////////////////
   // Compile Chat Message
   //////////////////////////////////////////////////
   const chatMessage: RenderableChatMessage = {
@@ -109,16 +95,33 @@ export async function handleCreateChatMessage({
     creationTimestamp,
   };
 
-  //////////////////////////////////////////////////
-  // Send Chat Message to Target Users
-  //////////////////////////////////////////////////
+  await BluebirdPromise.map(allUserIdsInChatRoom, async (userId) => {
+    //////////////////////////////////////////////////
+    // Get Count Of Chat Rooms With Unread Messages For Target User
+    //////////////////////////////////////////////////
+    const getCountOfUnreadChatRoomsResponse =
+      await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId(
+        {
+          controller,
+          userId,
+        },
+      );
+    if (getCountOfUnreadChatRoomsResponse.type === EitherType.failure) {
+      return getCountOfUnreadChatRoomsResponse;
+    }
+    const { success: countOfUnreadChatRooms } = getCountOfUnreadChatRoomsResponse;
 
-  await controller.webSocketService.notifyUserIdsOfNewChatMessage({
-    userIds: allUserIdsInChatRoom,
-    newChatMessageNotification: {
-      countOfUnreadChatRooms,
-      chatMessage,
-    },
+    //////////////////////////////////////////////////
+    // Send Chat Message to Target User
+    //////////////////////////////////////////////////
+
+    return await controller.webSocketService.notifyUserIdOfNewChatMessage({
+      newChatMessageNotification: {
+        countOfUnreadChatRooms,
+        chatMessage,
+      },
+      userId,
+    });
   });
 
   //////////////////////////////////////////////////
