@@ -15,7 +15,7 @@ const ChatRoomPage = ProtectedPage(() => {
       <Head>
         <title>Chat Room / Kupo</title>
       </Head>
-      <ChatRoom chatRoomId={chatRoomId} />
+      {chatRoomId ? <ChatRoom chatRoomId={chatRoomId} /> : null}
     </>
   );
 });

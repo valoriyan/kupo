@@ -57,10 +57,6 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     isLoading: isLoadingClientUserData,
   } = useGetClientUserProfile();
 
-  const chatMessagesQuery = useGetPageOfChatMessagesFromChatRoomId({
-    chatRoomId,
-  });
-
   const { data: chatRoomData } = useGetChatRoomById({ chatRoomId });
   const chatRoomUserIds = !!chatRoomData
     ? chatRoomData.members.map((member) => member.userId)
@@ -71,6 +67,8 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     isError: isErrorAcquiringChatRoomMembersData,
     isLoading: isLoadingChatRoomMembersData,
   } = useGetUsersByUserIds({ userIds: chatRoomUserIds });
+
+  const chatMessagesQuery = useGetPageOfChatMessagesFromChatRoomId({ chatRoomId });
 
   if (
     (chatMessagesQuery.isError && !chatMessagesQuery.isLoading) ||

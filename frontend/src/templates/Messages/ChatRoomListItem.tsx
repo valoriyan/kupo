@@ -7,16 +7,11 @@ import { Flex } from "#/components/Layout";
 
 export interface ChatRoomListProps {
   chatRoom: RenderableChatRoomWithJoinedUsers;
-  hasUnreadMessages: boolean;
   clientUserId: string;
 }
 
-export const ChatRoomListItem = ({
-  chatRoom,
-  clientUserId,
-  hasUnreadMessages,
-}: ChatRoomListProps) => {
-  const { chatRoomId, members } = chatRoom;
+export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) => {
+  const { chatRoomId, hasUnreadMessages, members } = chatRoom;
 
   const nonClientMembers = members.filter((member) => member.userId !== clientUserId);
 
