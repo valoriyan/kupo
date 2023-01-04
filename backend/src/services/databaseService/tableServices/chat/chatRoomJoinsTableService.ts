@@ -567,7 +567,7 @@ export class ChatRoomJoinsTableService extends TableService {
           ON
             ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatMessagesTableService.tableName}.chat_room_id
           WHERE
-              ${ChatRoomJoinsTableService.tableName}.user_id = 'b8502807-232b-4b04-b169-90063a9406b6'
+              ${ChatRoomJoinsTableService.tableName}.user_id = $1
             AND
               ${ChatRoomJoinsTableService.tableName}.chat_room_id IN ${chatRoomIdsCondition}
             AND
