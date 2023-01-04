@@ -65,20 +65,6 @@ export async function assembleRecordAndSendAcceptedUserFollowRequestNotification
   const { success: userAcceptingFollowRequest } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
-  // Get the Count of Unread Notifications
-  //////////////////////////////////////////////////
-
-  const selectCountOfUnreadUserNotificationsByUserIdResponse =
-    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
-      { controller, userId: recipientUserId },
-    );
-  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
-    return selectCountOfUnreadUserNotificationsByUserIdResponse;
-  }
-  const { success: countOfUnreadNotifications } =
-    selectCountOfUnreadUserNotificationsByUserIdResponse;
-
-  //////////////////////////////////////////////////
   // Write Notification to DB
   //////////////////////////////////////////////////
 
@@ -97,6 +83,20 @@ export async function assembleRecordAndSendAcceptedUserFollowRequestNotification
   if (createUserNotificationResponse.type === EitherType.failure) {
     return createUserNotificationResponse;
   }
+
+  //////////////////////////////////////////////////
+  // Get the Count of Unread Notifications
+  //////////////////////////////////////////////////
+
+  const selectCountOfUnreadUserNotificationsByUserIdResponse =
+    await databaseService.tableNameToServicesMap.userNotificationsTableService.selectCountOfUnreadUserNotificationsByUserId(
+      { controller, userId: recipientUserId },
+    );
+  if (selectCountOfUnreadUserNotificationsByUserIdResponse.type === EitherType.failure) {
+    return selectCountOfUnreadUserNotificationsByUserIdResponse;
+  }
+  const { success: countOfUnreadNotifications } =
+    selectCountOfUnreadUserNotificationsByUserIdResponse;
 
   //////////////////////////////////////////////////
   // Assemble Notification

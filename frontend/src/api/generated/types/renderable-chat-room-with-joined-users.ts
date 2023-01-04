@@ -32,4 +32,10 @@ export interface RenderableChatRoomWithJoinedUsers {
    * @memberof RenderableChatRoomWithJoinedUsers
    */
   members: Array<RenderableUser>;
+  /**
+   *
+   * @type {boolean}
+   * @memberof RenderableChatRoomWithJoinedUsers
+   */
+  hasUnreadMessages: boolean;
 }

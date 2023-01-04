@@ -24,6 +24,7 @@ export interface UnrenderableChatRoomWithJoinedUsers {
 export interface RenderableChatRoomWithJoinedUsers {
   chatRoomId: string;
   members: RenderableUser[];
+  hasUnreadMessages: boolean;
 }
 
 export interface NewChatMessageNotification {

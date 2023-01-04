@@ -84,6 +84,29 @@ export async function handleGetChatRoomById({
   const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   //////////////////////////////////////////////////
+  // Determine if Chat Room Has Unread Notifications
+  //////////////////////////////////////////////////
+
+  const filterChatRoomIdsToThoseWithUnreadChatMessagesResponse =
+    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.filterChatRoomIdsToThoseWithUnreadChatMessages(
+      {
+        controller,
+        chatRoomIds: [chatRoomId],
+        userId: clientUserId,
+      },
+    );
+  if (
+    filterChatRoomIdsToThoseWithUnreadChatMessagesResponse.type === EitherType.failure
+  ) {
+    return filterChatRoomIdsToThoseWithUnreadChatMessagesResponse;
+  }
+
+  const { success: chatRoomIdsWithUnreadChatMessages } =
+    filterChatRoomIdsToThoseWithUnreadChatMessagesResponse;
+  const chatRoomHasUnreadMessages =
+    chatRoomIdsWithUnreadChatMessages.includes(chatRoomId);
+
+  //////////////////////////////////////////////////
   // Put Together Renderable Chat Room
   //////////////////////////////////////////////////
 
@@ -100,6 +123,7 @@ export async function handleGetChatRoomById({
   const renderableChatRoom: RenderableChatRoomWithJoinedUsers = {
     chatRoomId,
     members: chatRoomMembers,
+    hasUnreadMessages: chatRoomHasUnreadMessages,
   };
 
   //////////////////////////////////////////////////

@@ -18,6 +18,7 @@ import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenera
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "../users/usersTableService";
+import { ChatRoomReadRecordsTableService } from "./chatRoomReadRecordsTableService";
 
 interface DBChatMessage {
   chat_message_id: string;
@@ -153,6 +154,7 @@ export class ChatMessagesTableService extends TableService {
           excludedUserIdParameterStrings.push(`$${values.length + 1}`);
           values.push(excludedUserId);
         });
+        excludedUserIdsCondition += excludedUserIdParameterStrings.join(", ");
         excludedUserIdsCondition += ` )`;
       }
 
@@ -188,63 +190,63 @@ export class ChatMessagesTableService extends TableService {
     }
   }
 
-  public async filterChatRoomIdsToThoseWithNewMessagesAfterTimestamps({
+  public async filterChatRoomIdsToThoseWithUnreadChatMessages({
     controller,
-    chatRoomsIdsWithTimestamps,
+    chatRoomIds,
+    userId,
   }: {
     controller: Controller;
-    chatRoomsIdsWithTimestamps: {
-      chatRoomId: string;
-      timestamp: number;
-    }[];
+    chatRoomIds: string[];
+    userId: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
     try {
-      if (chatRoomsIdsWithTimestamps.length === 0) {
+      if (chatRoomIds.length === 0) {
         return Success([]);
       }
 
-      const values: (string | number)[] = [];
+      const values: (string | number)[] = [userId];
 
-      const conditionalStrings: string[] = [];
-      chatRoomsIdsWithTimestamps.map(({ chatRoomId, timestamp }) => {
-        const chatRoomIdParameterIndex = values.length + 1;
-        const chatRoomIdTimestampIndex = values.length + 2;
-
-        conditionalStrings.push(`
-        (
-            chat_room_id = $${chatRoomIdParameterIndex}
-          AND
-            creation_timestamp > $${chatRoomIdTimestampIndex}
-        )
-        `);
+      let chatRoomIdsCondition = "( ";
+      const chatRoomIdParameterStrings: string[] = [];
+      chatRoomIds.forEach((chatRoomId) => {
+        chatRoomIdParameterStrings.push(`$${values.length + 1}`);
         values.push(chatRoomId);
-        values.push(timestamp);
       });
-
-      const conditionalString = conditionalStrings.join(`
-        OR
-      `);
+      chatRoomIdsCondition += chatRoomIdParameterStrings.join(", ");
+      chatRoomIdsCondition += ` )`;
 
       const query = {
         text: `
           SELECT
-            *
+            ${ChatMessagesTableService.tableName}.chat_room_id
           FROM
-            ${this.tableName}
+            ${ChatMessagesTableService.tableName}
+          JOIN
+            ${ChatRoomReadRecordsTableService.tableName}
+              ON
+                ${ChatMessagesTableService.tableName}.chat_room_id = ${ChatRoomReadRecordsTableService.tableName}.chat_room_id
           WHERE
-            ${conditionalString}
+                ${ChatMessagesTableService.tableName}.chat_room_id IN ${chatRoomIdsCondition}
+              AND
+                ${ChatMessagesTableService.tableName}.author_user_id != $1
+              AND
+                ${ChatRoomReadRecordsTableService.tableName}.user_id = $1
+              AND (
+                  ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user IS NULL
+                OR
+                  ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user < ${ChatMessagesTableService.tableName}.creation_timestamp
+              )
+          GROUP BY
+            ${ChatMessagesTableService.tableName}.chat_room_id
           ;
         `,
         values,
       };
 
-      const response: QueryResult<DBChatMessage> = await this.datastorePool.query(query);
+      const response: QueryResult<{ chat_room_id: string }> =
+        await this.datastorePool.query(query);
 
-      const chatRoomIds = Array.from(
-        new Set(response.rows.map((dBChatMessage) => dBChatMessage.chat_room_id)),
-      );
-
-      return Success(chatRoomIds);
+      return Success(response.rows.map(({ chat_room_id }) => chat_room_id));
     } catch (error) {
       return Failure({
         controller,
@@ -252,7 +254,7 @@ export class ChatMessagesTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at chatMessagesTableService.filterChatRoomIdsToThoseWithNewMessagesAfterTimestamp",
+          "Error at chatMessagesTableService.filterChatRoomIdsToThoseWithUnreadChatMessages",
       });
     }
   }

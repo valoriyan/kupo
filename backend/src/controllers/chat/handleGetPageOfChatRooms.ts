@@ -154,6 +154,27 @@ export async function handleGetPageOfChatRooms({
   const { success: renderableUsers } = constructRenderableUsersFromPartsByUserIdsResponse;
 
   //////////////////////////////////////////////////
+  // Determine which Chat Rooms Have Unread Notifications
+  //////////////////////////////////////////////////
+
+  const filterChatRoomIdsToThoseWithUnreadChatMessagesResponse =
+    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.filterChatRoomIdsToThoseWithUnreadChatMessages(
+      {
+        controller,
+        chatRoomIds: unrenderableChatRooms.map(({ chatRoomId }) => chatRoomId),
+        userId: clientUserId,
+      },
+    );
+  if (
+    filterChatRoomIdsToThoseWithUnreadChatMessagesResponse.type === EitherType.failure
+  ) {
+    return filterChatRoomIdsToThoseWithUnreadChatMessagesResponse;
+  }
+
+  const { success: chatRoomIdsWithUnreadChatMessages } =
+    filterChatRoomIdsToThoseWithUnreadChatMessagesResponse;
+
+  //////////////////////////////////////////////////
   // Generate Renderable Chat Rooms
   //////////////////////////////////////////////////
   const mapOfUserIdsToRenderableUsers = new Map(
@@ -169,6 +190,7 @@ export async function handleGetPageOfChatRooms({
       );
 
       return {
+        hasUnreadMessages: chatRoomIdsWithUnreadChatMessages.includes(chatRoomId),
         chatRoomId,
         members,
       };

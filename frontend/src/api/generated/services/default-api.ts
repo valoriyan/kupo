@@ -63,6 +63,8 @@ import { DeletePostRequestBody } from "../types";
 // @ts-ignore
 import { DeletePublishedItemCommentRequestBody } from "../types";
 // @ts-ignore
+import { DeletePublishingChannelRequestBody } from "../types";
+// @ts-ignore
 import { DeleteShopItemRequestBody } from "../types";
 // @ts-ignore
 import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
@@ -96,6 +98,8 @@ import { EitherErrorReasonTypesStringOrDeleteChatMessageFailedReasonDeleteChatMe
 import { EitherErrorReasonTypesStringOrDeletePostFailedReasonDeletePostSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrDeletePublishedItemCommentFailedReasonDeletePublishedItemCommentSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrDeletePublishingChannelFailedReasonDeletePublishingChannelSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrDeleteShopItemFailedReasonDeleteShopItemSuccess } from "../types";
 // @ts-ignore
@@ -1000,6 +1004,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         deletePublishedItemCommentRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {DeletePublishingChannelRequestBody} deletePublishingChannelRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deletePublishingChannel: async (
+      deletePublishingChannelRequestBody: DeletePublishingChannelRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'deletePublishingChannelRequestBody' is not null or undefined
+      assertParamExists(
+        "deletePublishingChannel",
+        "deletePublishingChannelRequestBody",
+        deletePublishingChannelRequestBody,
+      );
+      const localVarPath = `/publishing_channel/deletePublishingChannel`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        deletePublishingChannelRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -5076,6 +5129,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {DeletePublishingChannelRequestBody} deletePublishingChannelRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deletePublishingChannel(
+      deletePublishingChannelRequestBody: DeletePublishingChannelRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrDeletePublishingChannelFailedReasonDeletePublishingChannelSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deletePublishingChannel(
+        deletePublishingChannelRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {DeleteShopItemRequestBody} deleteShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7304,6 +7383,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {DeletePublishingChannelRequestBody} deletePublishingChannelRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deletePublishingChannel(
+      deletePublishingChannelRequestBody: DeletePublishingChannelRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrDeletePublishingChannelFailedReasonDeletePublishingChannelSuccess> {
+      return localVarFp
+        .deletePublishingChannel(deletePublishingChannelRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {DeleteShopItemRequestBody} deleteShopItemRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8637,6 +8730,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .deletePublishedItemComment(deletePublishedItemCommentRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {DeletePublishingChannelRequestBody} deletePublishingChannelRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public deletePublishingChannel(
+    deletePublishingChannelRequestBody: DeletePublishingChannelRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .deletePublishingChannel(deletePublishingChannelRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

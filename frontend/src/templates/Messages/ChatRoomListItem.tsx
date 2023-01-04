@@ -3,13 +3,19 @@ import { StackedAvatars } from "#/components/Avatar/StackedAvatars";
 import { bodyStyles } from "#/components/Typography";
 import { styled } from "#/styling";
 import { RenderableChatRoomWithJoinedUsers } from "#/api";
+import { Flex } from "#/components/Layout";
 
 export interface ChatRoomListProps {
   chatRoom: RenderableChatRoomWithJoinedUsers;
+  hasUnreadMessages: boolean;
   clientUserId: string;
 }
 
-export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) => {
+export const ChatRoomListItem = ({
+  chatRoom,
+  clientUserId,
+  hasUnreadMessages,
+}: ChatRoomListProps) => {
   const { chatRoomId, members } = chatRoom;
 
   const nonClientMembers = members.filter((member) => member.userId !== clientUserId);
@@ -24,14 +30,17 @@ export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) 
   return (
     <Link href={`/messages/${chatRoomId}`} passHref>
       <Wrapper>
-        <StackedAvatars
-          size="$8"
-          images={nonClientMembers.map((member) => ({
-            alt: `${member.username}'s profile picture`,
-            src: member.profilePictureTemporaryUrl,
-          }))}
-        />
-        <div>{chatRoomMembersDisplay}</div>
+        <Flex css={{ alignItems: "center", gap: "$4" }}>
+          <StackedAvatars
+            size="$8"
+            images={nonClientMembers.map((member) => ({
+              alt: `${member.username}'s profile picture`,
+              src: member.profilePictureTemporaryUrl,
+            }))}
+          />
+          <div>{chatRoomMembersDisplay}</div>
+        </Flex>
+        {hasUnreadMessages && <NotificationDot />}
       </Wrapper>
     </Link>
   );
@@ -42,10 +51,17 @@ const Wrapper = styled("a", {
   p: "$5",
   gap: "$4",
   alignItems: "center",
+  justifyContent: "space-between",
   borderBottom: "solid $borderWidths$1 $border",
 });
 
 const Username = styled("span", bodyStyles, {
   color: "$primary",
   fontWeight: "$bold",
+});
+
+const NotificationDot = styled("div", {
+  size: "$4",
+  borderRadius: "$round",
+  bg: "$failure",
 });
