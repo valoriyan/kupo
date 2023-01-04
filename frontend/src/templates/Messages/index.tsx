@@ -37,7 +37,6 @@ export const Messages = () => {
             renderItem={(index, chatRoom) => (
               <ChatRoomListItem
                 key={chatRoom.chatRoomId}
-                hasUnreadMessages={chatRoom.hasUnreadMessages}
                 chatRoom={chatRoom}
                 clientUserId={clientUserId}
               />

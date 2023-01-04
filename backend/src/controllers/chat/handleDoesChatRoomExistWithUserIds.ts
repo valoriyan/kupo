@@ -48,9 +48,6 @@ export async function handleDoesChatRoomExistWithUserIds({
   );
   if (error) return error;
 
-  console.log("userIds");
-  console.log(userIds);
-
   //////////////////////////////////////////////////
   // Check that Request Includes Client User Id
   //////////////////////////////////////////////////
@@ -83,8 +80,6 @@ export async function handleDoesChatRoomExistWithUserIds({
   //////////////////////////////////////////////////
   // Return
   //////////////////////////////////////////////////
-
-  console.log("doesChatRoomExist", doesChatRoomExist);
 
   return Success({
     doesChatRoomExist,

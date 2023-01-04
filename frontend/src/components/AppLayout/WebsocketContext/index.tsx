@@ -30,6 +30,7 @@ export interface WebsocketState {
   // USER NOTIFICATIONS
   //////////////////////////////////////////////////
   updatedCountOfUnreadNotifications: number | undefined;
+  updateCountOfUnreadChatRooms: (updatedCountOfUnreadNotifications: number) => void;
   notificationsReceived: RenderableUserNotification[];
   markAllNotificationsAsSeen: () => void;
 
@@ -111,6 +112,9 @@ const createWebsocketStateStore = () =>
     // CHAT
     //////////////////////////////////////////////////
     updatedCountOfUnreadChatRooms: undefined,
+    updateCountOfUnreadChatRooms: (updatedCountOfUnreadChatRooms) => {
+      set({ updatedCountOfUnreadChatRooms });
+    },
     receivedChatMessagesByChatRoomId: new Map(),
     subscribeToChatRoomId: (chatRoomId) => {
       console.log(`SUBSCRIBED TO CHAT ROOM ${chatRoomId}`);
