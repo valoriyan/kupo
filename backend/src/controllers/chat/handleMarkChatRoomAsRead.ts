@@ -13,7 +13,9 @@ export enum MarkChatRoomAsReadFailedReason {
   UnknownCause = "Unknown Cause",
 }
 
-export interface MarkChatRoomAsReadSuccess {}
+export interface MarkChatRoomAsReadSuccess {
+  countOfUnreadChatRooms: number;
+}
 
 export interface MarkChatRoomAsReadRequestBody {
   chatRoomId: string;
@@ -64,8 +66,24 @@ export async function handleMarkChatRoomAsRead({
   }
 
   //////////////////////////////////////////////////
+  // Get Count of Unread Chat Rooms
+  //////////////////////////////////////////////////
+
+  const getCountOfUnreadChatRoomsResponse =
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId(
+      {
+        controller,
+        userId: clientUserId,
+      },
+    );
+  if (getCountOfUnreadChatRoomsResponse.type === EitherType.failure) {
+    return getCountOfUnreadChatRoomsResponse;
+  }
+  const { success: countOfUnreadChatRooms } = getCountOfUnreadChatRoomsResponse;
+
+  //////////////////////////////////////////////////
   // Return
   //////////////////////////////////////////////////
 
-  return Success({});
+  return Success({ countOfUnreadChatRooms });
 }

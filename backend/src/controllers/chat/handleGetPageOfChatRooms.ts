@@ -158,7 +158,7 @@ export async function handleGetPageOfChatRooms({
   //////////////////////////////////////////////////
 
   const filterChatRoomIdsToThoseWithUnreadChatMessagesResponse =
-    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.filterChatRoomIdsToThoseWithUnreadChatMessages(
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.filterChatRoomIdsToThoseWithUnreadChatMessages(
       {
         controller,
         chatRoomIds: unrenderableChatRooms.map(({ chatRoomId }) => chatRoomId),

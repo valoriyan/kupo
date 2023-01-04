@@ -169,6 +169,10 @@ export class ChatRoomJoinsTableService extends TableService {
     >
   > {
     try {
+      if (chatRoomIds.length === 0) {
+        return Success([]);
+      }
+
       const chatRoomIdsQueryString = `( ${chatRoomIds
         .map((_, index) => `$${index + 1}`)
         .join(", ")} )`;
@@ -199,7 +203,7 @@ export class ChatRoomJoinsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at ChatRoomJoinsTableService.getCountOfUnreadChatRoomsByUserId",
+          "Error at ChatRoomJoinsTableService.getChatRoomJoinsByChatRoomIds",
       });
     }
   }
@@ -441,19 +445,11 @@ export class ChatRoomJoinsTableService extends TableService {
           FROM
             ${this.tableName}
           WHERE
-            chat_room_id in (
-              SELECT
-                chat_room_id
-              FROM
-                ${this.tableName}
-              WHERE
-                user_id IN ( ${parameterizedUsersListText} )
-            )
+            user_id IN ( ${parameterizedUsersListText} )
           GROUP BY
             chat_room_id
           HAVING
             count(chat_room_id) = $1
-        
           ;
         `,
         values: queryValues,
@@ -523,6 +519,90 @@ export class ChatRoomJoinsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at ChatRoomJoinsTableService.getCountOfChatRoomsJoinedByUserId",
+      });
+    }
+  }
+
+  public async filterChatRoomIdsToThoseWithUnreadChatMessages({
+    controller,
+    chatRoomIds,
+    userId,
+  }: {
+    controller: Controller;
+    chatRoomIds: string[];
+    userId: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, string[]>> {
+    try {
+      if (chatRoomIds.length === 0) {
+        return Success([]);
+      }
+
+      const values: (string | number)[] = [userId];
+
+      let chatRoomIdsCondition = "( ";
+      const chatRoomIdParameterStrings: string[] = [];
+      chatRoomIds.forEach((chatRoomId) => {
+        chatRoomIdParameterStrings.push(`$${values.length + 1}`);
+        values.push(chatRoomId);
+      });
+      chatRoomIdsCondition += chatRoomIdParameterStrings.join(", ");
+      chatRoomIdsCondition += ` )`;
+
+      const query = {
+        text: `
+
+          SELECT 
+            *
+          FROM
+            ${ChatRoomJoinsTableService.tableName}
+          LEFT JOIN
+            ${ChatRoomReadRecordsTableService.tableName}
+            ON (
+                ${ChatRoomJoinsTableService.tableName}.user_id = ${ChatRoomReadRecordsTableService.tableName}.user_id
+              AND
+                ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatRoomReadRecordsTableService.tableName}.chat_room_id
+            )
+          JOIN
+            ${ChatMessagesTableService.tableName}
+          ON
+            ${ChatRoomJoinsTableService.tableName}.chat_room_id = ${ChatMessagesTableService.tableName}.chat_room_id
+          WHERE
+              ${ChatRoomJoinsTableService.tableName}.user_id = 'b8502807-232b-4b04-b169-90063a9406b6'
+            AND
+              ${ChatRoomJoinsTableService.tableName}.chat_room_id IN ${chatRoomIdsCondition}
+            AND
+              ${ChatMessagesTableService.tableName}.author_user_id != $1
+            AND
+              (
+                  (
+                      ${ChatRoomReadRecordsTableService.tableName}.user_id = $1
+                    AND
+                      ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user < ${ChatMessagesTableService.tableName}.creation_timestamp
+                  )
+                OR
+                  (
+                      ${ChatRoomReadRecordsTableService.tableName}.user_id is NULL
+                    AND
+                      ${ChatRoomReadRecordsTableService.tableName}.timestamp_last_read_by_user IS NULL
+                  )
+              )
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<{ chat_room_id: string }> =
+        await this.datastorePool.query(query);
+
+      return Success(response.rows.map(({ chat_room_id }) => chat_room_id));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at ChatRoomJoinsTableService.filterChatRoomIdsToThoseWithUnreadChatMessages",
       });
     }
   }

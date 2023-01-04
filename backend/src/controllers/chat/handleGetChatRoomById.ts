@@ -88,7 +88,7 @@ export async function handleGetChatRoomById({
   //////////////////////////////////////////////////
 
   const filterChatRoomIdsToThoseWithUnreadChatMessagesResponse =
-    await controller.databaseService.tableNameToServicesMap.chatMessagesTableService.filterChatRoomIdsToThoseWithUnreadChatMessages(
+    await controller.databaseService.tableNameToServicesMap.chatRoomJoinsTableService.filterChatRoomIdsToThoseWithUnreadChatMessages(
       {
         controller,
         chatRoomIds: [chatRoomId],

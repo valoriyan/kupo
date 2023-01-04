@@ -28,8 +28,12 @@ export const NewChatRoom = () => {
       ? resolvedUsers.map((user) => user.userId).concat([clientUser.userId])
       : [];
 
+  const userIdsInChannel = !!clientUser
+    ? [...new Set([...userIds, clientUser.userId])]
+    : userIds;
+
   const { data: existingChatRoom, isLoading: isExistingChatRoomLoading } =
-    useGetChatRoomIdWithUserIds({ userIds });
+    useGetChatRoomIdWithUserIds({ userIds: userIdsInChannel });
   const { mutateAsync: createNewChatMessageInNewChatRoom } =
     useCreateNewChatMessageInNewChatRoom();
 
@@ -40,7 +44,7 @@ export const NewChatRoom = () => {
     if (isLoading) return;
 
     const newChatRoomId = await createNewChatMessageInNewChatRoom({
-      userIds,
+      userIds: userIdsInChannel,
       chatMessageText: newChatMessage,
     });
 

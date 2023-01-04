@@ -13,6 +13,7 @@
  */
 
 import { EitherTypeSuccess } from "./either-type-success";
+import { MarkChatRoomAsReadSuccess } from "./mark-chat-room-as-read-success";
 
 /**
  *
@@ -28,8 +29,8 @@ export interface SuccessResponseMarkChatRoomAsReadSuccess {
   type: EitherTypeSuccess;
   /**
    *
-   * @type {object}
+   * @type {MarkChatRoomAsReadSuccess}
    * @memberof SuccessResponseMarkChatRoomAsReadSuccess
    */
-  success: object;
+  success: MarkChatRoomAsReadSuccess;
 }

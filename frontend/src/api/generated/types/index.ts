@@ -494,6 +494,7 @@ export * from "./make-credit-card-primary-failed-reason";
 export * from "./make-credit-card-primary-request-body";
 export * from "./mark-chat-room-as-read-failed-reason";
 export * from "./mark-chat-room-as-read-request-body";
+export * from "./mark-chat-room-as-read-success";
 export * from "./media-element";
 export * from "./notificationevents";
 export * from "./notificationeventsacceptedpublishingchannelsubmission";

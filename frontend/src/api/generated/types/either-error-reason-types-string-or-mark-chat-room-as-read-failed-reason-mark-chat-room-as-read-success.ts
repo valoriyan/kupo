@@ -15,6 +15,7 @@
 import { EitherTypeSuccess } from "./either-type-success";
 import { FailureResponseErrorReasonTypesStringOrMarkChatRoomAsReadFailedReason } from "./failure-response-error-reason-types-string-or-mark-chat-room-as-read-failed-reason";
 import { FailureResponseErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonError } from "./failure-response-error-reason-types-string-or-mark-chat-room-as-read-failed-reason-error";
+import { MarkChatRoomAsReadSuccess } from "./mark-chat-room-as-read-success";
 import { SuccessResponseMarkChatRoomAsReadSuccess } from "./success-response-mark-chat-room-as-read-success";
 
 /**
@@ -37,8 +38,8 @@ export interface EitherErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonMar
   error: FailureResponseErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonError;
   /**
    *
-   * @type {object}
+   * @type {MarkChatRoomAsReadSuccess}
    * @memberof EitherErrorReasonTypesStringOrMarkChatRoomAsReadFailedReasonMarkChatRoomAsReadSuccess
    */
-  success: object;
+  success: MarkChatRoomAsReadSuccess;
 }
