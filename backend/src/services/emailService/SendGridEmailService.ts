@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { getEnvironmentVariable } from "../../utilities";
 import { EmailServiceInterface } from "./models";
-import { generateResetPasswordToken, generateResetPasswordURL } from "./utilities";
+import {
+  generateResetPasswordToken,
+  generateResetPasswordURL,
+  generateVerifyUserEmailToken,
+  generateVerifyUserEmailURL,
+} from "./utilities";
 import SendgridMailer from "@sendgrid/mail";
 import { UnrenderableUser } from "../../controllers/user/models";
 import { generateForgotPasswordEmailHtml } from "./templates/generateForgotPasswordEmailHtml";
@@ -16,6 +21,7 @@ import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 import { generateShopItemOrderReceiptEmailHtml } from "./templates/generateShopItemOrderReceiptEmailHtml";
+import { generateVerifyUserEmailHtml } from "./templates/generateVerifyUserEmailHtml";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
@@ -173,6 +179,57 @@ export class SendGridEmailService extends EmailServiceInterface {
         reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
         error,
         additionalErrorInformation: "Error at sendWelcomeEmail",
+      });
+    }
+  }
+
+  async sendVerifyUserEmailEmail({
+    controller,
+    user,
+  }: {
+    controller: Controller;
+    user: UnrenderableUser;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const { userId, email } = user;
+
+      const verifyUserEmailToken = generateVerifyUserEmailToken({
+        userId,
+        email,
+        jwtPrivateKey: SendGridEmailService.JWT_PRIVATE_KEY,
+      });
+
+      const verifyUserEmailUrlWithToken = generateVerifyUserEmailURL({
+        frontendBaseUrl: SendGridEmailService.FRONTEND_BASE_URL,
+        verifyUserEmailToken,
+      });
+
+      const message = {
+        to: email,
+        from: {
+          name: "Kupo.social",
+          email: "noreply@kupo.social",
+        },
+        subject: "Verify Email",
+        html: generateVerifyUserEmailHtml({ verifyUserEmailUrlWithToken }),
+      };
+
+      await SendgridMailer.send(message)
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendConfirmUserEmailEmail",
       });
     }
   }

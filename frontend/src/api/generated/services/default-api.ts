@@ -165,6 +165,8 @@ import { EitherErrorReasonTypesStringOrGetUsersByIdsFailedReasonGetUsersByIdsSuc
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersByUsernamesSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrGetVerifyUserEmailFailedReasonGetVerifyUserEmailSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonIsPublishingChannelNameValidSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess } from "../types";
@@ -246,6 +248,8 @@ import { EitherErrorReasonTypesStringOrUserLikesPublishedItemFailedReasonUserLik
 import { EitherErrorReasonTypesStringOrUserSavesPublishedItemFailedReasonUserSavesPublishedItemSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrUserUnsavesPublishedItemFailedReasonUserUnsavesPublishedItemSuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringOrVerifyUserEmailFailedReasonVerifyUserEmailSuccess } from "../types";
 // @ts-ignore
 import { ElevateUserToAdminRequestBody } from "../types";
 // @ts-ignore
@@ -382,6 +386,8 @@ import { UpdateUserProfileRequestBody } from "../types";
 import { UserLikesPublishedItemRequestBody } from "../types";
 // @ts-ignore
 import { UserSavesPublishedItemRequestBody } from "../types";
+// @ts-ignore
+import { VerifyUserEmailRequestBody } from "../types";
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -2667,6 +2673,38 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getVerifyUserEmail: async (options: any = {}): Promise<RequestArgs> => {
+      const localVarPath = `/auth/getVerifyUserEmail`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4773,6 +4811,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @param {VerifyUserEmailRequestBody} verifyUserEmailRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verifyUserEmail: async (
+      verifyUserEmailRequestBody: VerifyUserEmailRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'verifyUserEmailRequestBody' is not null or undefined
+      assertParamExists(
+        "verifyUserEmail",
+        "verifyUserEmailRequestBody",
+        verifyUserEmailRequestBody,
+      );
+      const localVarPath = `/auth/verifyUserEmail`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        verifyUserEmailRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -6040,6 +6127,29 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getVerifyUserEmail(
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetVerifyUserEmailFailedReasonGetVerifyUserEmailSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getVerifyUserEmail(
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7179,6 +7289,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         configuration,
       );
     },
+    /**
+     *
+     * @param {VerifyUserEmailRequestBody} verifyUserEmailRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async verifyUserEmail(
+      verifyUserEmailRequestBody: VerifyUserEmailRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrVerifyUserEmailFailedReasonVerifyUserEmailSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.verifyUserEmail(
+        verifyUserEmailRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
   };
 };
 
@@ -7888,6 +8024,18 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getVerifyUserEmail(
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetVerifyUserEmailFailedReasonGetVerifyUserEmailSuccess> {
+      return localVarFp
+        .getVerifyUserEmail(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8516,6 +8664,20 @@ export const DefaultApiFactory = function (
     ): AxiosPromise<EitherErrorReasonTypesStringOrUserUnsavesPublishedItemFailedReasonUserUnsavesPublishedItemSuccess> {
       return localVarFp
         .userUnsavesPublishedItem(removeUserLikeFromPublishedItemRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {VerifyUserEmailRequestBody} verifyUserEmailRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verifyUserEmail(
+      verifyUserEmailRequestBody: VerifyUserEmailRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrVerifyUserEmailFailedReasonVerifyUserEmailSuccess> {
+      return localVarFp
+        .verifyUserEmail(verifyUserEmailRequestBody, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -9289,6 +9451,18 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getVerifyUserEmail(options?: any) {
+    return DefaultApiFp(this.configuration)
+      .getVerifyUserEmail(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {LoginUserRequestBody} loginUserRequestBody
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -9981,6 +10155,22 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .userUnsavesPublishedItem(removeUserLikeFromPublishedItemRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {VerifyUserEmailRequestBody} verifyUserEmailRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public verifyUserEmail(
+    verifyUserEmailRequestBody: VerifyUserEmailRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .verifyUserEmail(verifyUserEmailRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

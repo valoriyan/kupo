@@ -44,6 +44,8 @@ interface DBUser {
 
   is_admin: boolean;
 
+  has_verified_email: boolean;
+
   creation_timestamp: string;
 }
 
@@ -78,6 +80,7 @@ function convertDBUserToUnrenderableUser(dbUser: DBUser): UnrenderableUser {
     preferredPagePrimaryColor,
     creationTimestamp: parseInt(dbUser.creation_timestamp),
     isAdmin: dbUser.is_admin,
+    hasVerifiedEmail: dbUser.has_verified_email,
   };
 }
 
@@ -134,6 +137,8 @@ export class UsersTableService extends TableService {
         payment_processor_customer_id VARCHAR(64) UNIQUE NOT NULL,
 
         is_admin boolean NOT NULL,
+
+        has_verified_email boolean NOT NULL,
 
         creation_timestamp BIGINT NOT NULL,
 
@@ -195,6 +200,7 @@ export class UsersTableService extends TableService {
             { field: "creation_timestamp", value: creationTimestamp },
 
             { field: "is_admin", value: is_admin_value },
+            { field: "has_verified_email", value: "false" },
           ],
         ],
         tableName: this.tableName,
@@ -902,6 +908,56 @@ export class UsersTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation: "Error at usersTableService.elevateUserToAdmin",
+      });
+    }
+  }
+
+  public async verifyUserEmail({
+    controller,
+    userId,
+    email,
+  }: {
+    controller: Controller;
+    userId: string;
+    email: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser>> {
+    try {
+      const query = generatePSQLGenericUpdateRowQueryString<string | number>({
+        updatedFields: [{ field: "has_verified_email", value: "true" }],
+        fieldsUsedToIdentifyUpdatedRows: [
+          {
+            field: "user_id",
+            value: userId,
+          },
+          {
+            field: "email",
+            value: email,
+          },
+        ],
+        tableName: this.tableName,
+      });
+
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      if (rows.length === 1) {
+        return Success(convertDBUserToUnrenderableUser(rows[0]));
+      }
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error: "User not found.",
+        additionalErrorInformation: "Error at usersTableService.verifyUserEmail",
+      });
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.verifyUserEmail",
       });
     }
   }

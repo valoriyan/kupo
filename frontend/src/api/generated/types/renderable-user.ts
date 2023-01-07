@@ -85,6 +85,12 @@ export interface RenderableUser {
   isAdmin: boolean;
   /**
    *
+   * @type {boolean}
+   * @memberof RenderableUser
+   */
+  hasVerifiedEmail: boolean;
+  /**
+   *
    * @type {string}
    * @memberof RenderableUser
    */

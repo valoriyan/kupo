@@ -28,10 +28,23 @@ export abstract class EmailServiceInterface {
     user: UnrenderableUser;
     renderableShopItemPurchaseSummary: RenderableShopItemPurchaseSummary;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>>;
+
+  abstract sendVerifyUserEmailEmail({
+    user,
+  }: {
+    user: UnrenderableUser;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>>;
 }
 
 export interface ResetPasswordJWTData {
   resetPasswordData: {
     userId: string;
+  };
+}
+
+export interface VerifyUserEmailJWTData {
+  verifyUserEmailData: {
+    userId: string;
+    email: string;
   };
 }

@@ -8,7 +8,12 @@ import {
 import { UnrenderableUser } from "../../controllers/user/models";
 import { getEnvironmentVariable } from "../../utilities";
 import { EmailServiceInterface } from "./models";
-import { generateResetPasswordToken, generateResetPasswordURL } from "./utilities";
+import {
+  generateResetPasswordToken,
+  generateResetPasswordURL,
+  generateVerifyUserEmailToken,
+  generateVerifyUserEmailURL,
+} from "./utilities";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
@@ -111,6 +116,42 @@ export class LocalEmailService extends EmailServiceInterface {
         reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
         error,
         additionalErrorInformation: "Error at sendWelcomeEmail",
+      });
+    }
+  }
+
+  async sendVerifyUserEmailEmail({
+    controller,
+    user,
+  }: {
+    controller: Controller;
+    user: UnrenderableUser;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const { userId, email } = user;
+      const verifyUserEmailToken = generateVerifyUserEmailToken({
+        userId,
+        email,
+        jwtPrivateKey: LocalEmailService.JWT_PRIVATE_KEY,
+      });
+
+      const verifyUserEmailUrlWithToken = generateVerifyUserEmailURL({
+        frontendBaseUrl: LocalEmailService.FRONTEND_BASE_URL,
+        verifyUserEmailToken,
+      });
+
+      console.log(`
+        To verify your email, go to ${verifyUserEmailUrlWithToken}
+      `);
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendConfirmUserEmailEmail",
       });
     }
   }

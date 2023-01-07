@@ -6,7 +6,7 @@ export enum ProfilePrivacySetting {
   Private = "Private",
 }
 
-export interface BaseUnrenderableUser {
+export interface UnrenderableUser {
   userId: string;
   email: string;
   username: string;
@@ -20,8 +20,8 @@ export interface BaseUnrenderableUser {
   creationTimestamp: number;
 
   isAdmin: boolean;
-}
-export interface UnrenderableUser extends BaseUnrenderableUser {
+  hasVerifiedEmail: boolean;
+
   backgroundImageBlobFileKey?: string;
   profilePictureBlobFileKey?: string;
 }
@@ -35,7 +35,11 @@ export interface UnrenderableUser_WITH_PAYMENT_PROCESSOR_CUSTOMER_ID
   paymentProcessorCustomerId: string;
 }
 
-export interface RenderableUser extends BaseUnrenderableUser {
+export interface RenderableUser
+  extends Omit<
+    UnrenderableUser,
+    "has_verified_email" | "backgroundImageBlobFileKey" | "profilePictureBlobFileKey"
+  > {
   backgroundImageTemporaryUrl?: string;
   profilePictureTemporaryUrl?: string;
   followers: {

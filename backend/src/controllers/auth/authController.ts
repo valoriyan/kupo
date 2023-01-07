@@ -48,6 +48,17 @@ import {
   ResetPasswordSuccess,
 } from "./passwordReset/handleResetPassword";
 import { PaymentProcessingService } from "../../services/paymentProcessingService";
+import {
+  VerifyUserEmailFailedReason,
+  VerifyUserEmailRequestBody,
+  VerifyUserEmailSuccess,
+  handleVerifyUserEmail,
+} from "./verifyUserEmail/handleVerifyUserEmail";
+import {
+  GetVerifyUserEmailFailedReason,
+  GetVerifyUserEmailSuccess,
+  handleGetVerifyUserEmail,
+} from "./verifyUserEmail/handleGetVerifyUserEmail";
 
 @injectable()
 @Route("auth")
@@ -110,6 +121,21 @@ export class AuthController extends Controller {
     return await handleGetPasswordResetEmail({
       controller: this,
       requestBody,
+    });
+  }
+
+  @Post("getVerifyUserEmail")
+  public async getVerifyUserEmail(
+    @Request() request: express.Request,
+  ): Promise<
+    HTTPResponse<
+      ErrorReasonTypes<string | GetVerifyUserEmailFailedReason>,
+      GetVerifyUserEmailSuccess
+    >
+  > {
+    return await handleGetVerifyUserEmail({
+      controller: this,
+      request,
     });
   }
 
@@ -183,6 +209,22 @@ export class AuthController extends Controller {
     return await handleElevateUserToAdmin({
       controller: this,
       request,
+      requestBody,
+    });
+  }
+
+  @Post("verifyUserEmail")
+  public async verifyUserEmail(
+    @Request() request: express.Request,
+    @Body() requestBody: VerifyUserEmailRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | VerifyUserEmailFailedReason>,
+      VerifyUserEmailSuccess
+    >
+  > {
+    return await handleVerifyUserEmail({
+      controller: this,
       requestBody,
     });
   }

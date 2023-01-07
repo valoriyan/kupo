@@ -87,6 +87,7 @@ export async function assembleRenderableUserFromCachedComponents({
     preferredPagePrimaryColor,
     creationTimestamp,
     isAdmin,
+    hasVerifiedEmail,
   } = unrenderableUser;
 
   //////////////////////////////////////////////////
@@ -257,6 +258,7 @@ export async function assembleRenderableUserFromCachedComponents({
     preferredPagePrimaryColor,
     followingStatusOfClientToUser,
     creationTimestamp,
+    hasVerifiedEmail,
     isAdmin,
   });
 }

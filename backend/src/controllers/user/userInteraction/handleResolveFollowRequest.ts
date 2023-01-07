@@ -15,8 +15,8 @@ import { GenericResponseFailedReason } from "../../models";
 import { assembleRecordAndSendAcceptedUserFollowRequestNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendAcceptedUserFollowRequestNotification";
 import { Controller } from "tsoa";
 import { DatabaseService } from "../../../services/databaseService";
-import { WebSocketService } from "src/services/webSocketService";
-import { BlobStorageService } from "src/services/blobStorageService";
+import { WebSocketService } from "../../../services/webSocketService";
+import { BlobStorageService } from "../../../services/blobStorageService";
 
 export enum FollowRequestDecision {
   accept = "accept",
