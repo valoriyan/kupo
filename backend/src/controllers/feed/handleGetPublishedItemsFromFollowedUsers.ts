@@ -10,6 +10,7 @@ import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/mod
 import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/assemblePublishedItems";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
+import { PublishedItemHostSelector } from "../../services/databaseService/tableServices/publishedItem/publishedItemsTableService";
 
 export interface GetPublishedItemsFromFollowedUsersRequestBody {
   cursor?: string;
@@ -79,6 +80,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
           : undefined,
         pageSize,
         type: publishedItemType,
+        publishedItemHost: PublishedItemHostSelector.user,
       },
     );
   if (getPublishedItemsByCreatorUserIdsResponse.type === EitherType.failure) {

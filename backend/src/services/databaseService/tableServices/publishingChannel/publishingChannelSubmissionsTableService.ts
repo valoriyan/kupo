@@ -306,6 +306,57 @@ export class PublishingChannelSubmissionsTableService extends TableService {
     }
   }
 
+  public async getPublishingChannelsAssociatedWithPublishedItemId({
+    controller,
+    publishedItemId,
+  }: {
+    controller: Controller;
+    publishedItemId: string;
+  }): Promise<
+    InternalServiceResponse<
+      ErrorReasonTypes<string>,
+      { publishing_channel_id: string; name: string }[]
+    >
+  > {
+    try {
+      const values: (string | number)[] = [publishedItemId];
+
+      const query = {
+        text: `
+          SELECT
+            ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id as publishing_channel_id,
+            ${PublishingChannelsTableService.tableName}.name as name
+          FROM
+            ${PublishingChannelSubmissionsTableService.tableName}
+          INNER JOIN
+            ${PublishingChannelsTableService.tableName}
+            ON
+              ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id = ${PublishingChannelsTableService.tableName}.publishing_channel_id
+          WHERE
+            published_item_id = $1
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<{ publishing_channel_id: string; name: string }> =
+        await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      return Success(rows);
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at PublishingChannelSubmissionsTableService.getPublishingChannelsAssociatedWithPublishedItemId",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////

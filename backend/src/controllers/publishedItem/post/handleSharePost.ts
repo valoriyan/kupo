@@ -162,6 +162,7 @@ export async function handleSharePost({
   //////////////////////////////////////////////////
 
   const renderablePost: RenderablePost = {
+    host: "user-self-hosted",
     id: publishedItemId,
     type: PublishedItemType.POST,
     creationTimestamp,

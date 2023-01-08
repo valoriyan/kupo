@@ -48,7 +48,7 @@ import {
   handleGetPublishedItemsByUserId,
   handleGetPublishedItemsByUsername,
   GetPublishedItemsByUsernameSuccess,
-} from "../handleGetPublishedItems";
+} from "../handleGetPublishedItemsByUser";
 import {
   CreatePostFailedReason,
   CreatePostRequestBody,

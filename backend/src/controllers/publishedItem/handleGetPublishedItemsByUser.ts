@@ -13,6 +13,7 @@ import { decodeTimestampCursor } from "../utilities/pagination";
 import { PublishedItemType, RenderablePublishedItem } from "./models";
 import { assemblePublishedItemsFromCachedComponents } from "./utilities/assemblePublishedItems";
 import { canUserViewUserContentByUserId } from "../auth/utilities/canUserViewUserContentByUserId";
+import { PublishedItemHostSelector } from "../../services/databaseService/tableServices/publishedItem/publishedItemsTableService";
 
 export interface GetPublishedItemsByUserIdRequestBody {
   userId: string;
@@ -159,6 +160,7 @@ export async function handleGetPublishedItemsByUserId({
         limit: pageSize,
         getPublishedItemsBeforeTimestamp: pageTimestamp,
         type: publishedItemType,
+        publishedItemHost: PublishedItemHostSelector.user,
       },
     );
   if (getPublishedItemsByAuthorUserIdResponse.type === EitherType.failure) {

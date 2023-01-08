@@ -283,6 +283,7 @@ export async function handleCreateShopItem({
   //////////////////////////////////////////////////
 
   const renderableShopItem: RenderableShopItem = {
+    host: "user-self-hosted",
     type: PublishedItemType.SHOP_ITEM,
     renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
     id: publishedItemId,

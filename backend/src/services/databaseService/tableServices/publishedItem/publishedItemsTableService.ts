@@ -21,6 +21,12 @@ import {
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "../users/usersTableService";
+import { PublishingChannelSubmissionsTableService } from "../publishingChannel/publishingChannelSubmissionsTableService";
+
+export enum PublishedItemHostSelector {
+  user = "user",
+  publishingChannel = "publishingChannel",
+}
 
 interface DBPublishedItem {
   type: PublishedItemType;
@@ -269,6 +275,7 @@ export class PublishedItemsTableService extends TableService {
     filterOutExpiredAndUnscheduledPublishedItems,
     limit,
     getPublishedItemsBeforeTimestamp,
+    publishedItemHost,
     type,
   }: {
     controller: Controller;
@@ -276,6 +283,7 @@ export class PublishedItemsTableService extends TableService {
     filterOutExpiredAndUnscheduledPublishedItems: boolean;
     limit?: number;
     getPublishedItemsBeforeTimestamp?: number;
+    publishedItemHost: PublishedItemHostSelector;
     type?: PublishedItemType;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
@@ -288,7 +296,7 @@ export class PublishedItemsTableService extends TableService {
       if (!!type) {
         typeConstraintClause = `
           AND
-            type = $${queryValues.length + 1}
+            ${PublishedItemsTableService.tableName}.type = $${queryValues.length + 1}
         `;
         queryValues.push(type);
       }
@@ -298,15 +306,21 @@ export class PublishedItemsTableService extends TableService {
         filteringWhereClause = `
           AND
             (
-              scheduled_publication_timestamp IS NULL
-                OR
-              scheduled_publication_timestamp < $${queryValues.length + 1}
+                ${
+                  PublishedItemsTableService.tableName
+                }.scheduled_publication_timestamp IS NULL
+              OR
+                ${
+                  PublishedItemsTableService.tableName
+                }.scheduled_publication_timestamp < $${queryValues.length + 1}
             ) 
           AND
             (
-                expiration_timestamp IS NULL
+                ${PublishedItemsTableService.tableName}.expiration_timestamp IS NULL
               OR
-                expiration_timestamp > $${queryValues.length + 2}
+                ${PublishedItemsTableService.tableName}.expiration_timestamp > $${
+          queryValues.length + 2
+        }
             )
         `;
 
@@ -327,10 +341,25 @@ export class PublishedItemsTableService extends TableService {
       if (!!getPublishedItemsBeforeTimestamp) {
         getPublishedItemsBeforeTimestampClause = `
           AND
-            scheduled_publication_timestamp < $${queryValues.length + 1}
+            ${PublishedItemsTableService.tableName}.scheduled_publication_timestamp < $${
+          queryValues.length + 1
+        }
         `;
 
         queryValues.push(getPublishedItemsBeforeTimestamp);
+      }
+
+      let publishedItemHostClause = "";
+      if (publishedItemHost == PublishedItemHostSelector.user) {
+        publishedItemHostClause = `
+          AND
+            ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_submission_id IS NULL            
+        `;
+      } else if (publishedItemHostClause == PublishedItemHostSelector.publishingChannel) {
+        publishedItemHostClause = `
+          AND
+            ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_submission_id IS NOT NULL            
+        `;
       }
 
       const query = {
@@ -338,12 +367,17 @@ export class PublishedItemsTableService extends TableService {
           SELECT
             *
           FROM
-            ${this.tableName}
+            ${PublishedItemsTableService.tableName}
+          LEFT JOIN
+            ${PublishingChannelSubmissionsTableService.tableName}
+            ON
+              ${PublishedItemsTableService.tableName}.id = ${PublishingChannelSubmissionsTableService.tableName}.published_item_id
           WHERE
-            author_user_id = $1
+            ${PublishedItemsTableService.tableName}.author_user_id = $1
             ${typeConstraintClause}
             ${filteringWhereClause}
             ${getPublishedItemsBeforeTimestampClause}
+            ${publishedItemHostClause}
           ORDER BY
             scheduled_publication_timestamp DESC
           ${limitClause}
@@ -449,12 +483,14 @@ export class PublishedItemsTableService extends TableService {
     creatorUserIds,
     beforeTimestamp,
     pageSize,
+    publishedItemHost,
     type,
   }: {
     controller: Controller;
     creatorUserIds: string[];
     beforeTimestamp?: number;
     pageSize: number;
+    publishedItemHost: PublishedItemHostSelector;
     type?: PublishedItemType;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
@@ -470,14 +506,16 @@ export class PublishedItemsTableService extends TableService {
       if (!!type) {
         typeConstraintClause = `
           AND
-            type = $${queryValues.length + 1}
+            ${PublishedItemsTableService.tableName}.type = $${queryValues.length + 1}
         `;
         queryValues.push(type);
       }
 
       let beforeTimestampCondition = "";
       if (!!beforeTimestamp) {
-        beforeTimestampCondition = `AND scheduled_publication_timestamp < $${
+        beforeTimestampCondition = `
+          AND
+            ${PublishedItemsTableService.tableName}.scheduled_publication_timestamp < $${
           queryValues.length + 1
         }`;
         queryValues.push(beforeTimestamp);
@@ -487,16 +525,38 @@ export class PublishedItemsTableService extends TableService {
         .map((_, index) => `$${index + 1}`)
         .join(", ");
 
+      let publishedItemHostClause = "";
+      if (publishedItemHost == PublishedItemHostSelector.user) {
+        publishedItemHostClause = `
+          AND
+            ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_submission_id IS NULL            
+        `;
+      } else if (publishedItemHostClause == PublishedItemHostSelector.publishingChannel) {
+        publishedItemHostClause = `
+          AND
+            ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_submission_id IS NOT NULL            
+        `;
+      }
+
       const query = {
         text: `
           SELECT
             *
           FROM
-            ${this.tableName}
+            ${PublishedItemsTableService.tableName}
+          LEFT JOIN
+            ${PublishingChannelSubmissionsTableService.tableName}
+            ON
+              ${PublishedItemsTableService.tableName}.id = ${
+          PublishingChannelSubmissionsTableService.tableName
+        }.published_item_id
           WHERE
-            author_user_id IN (${creatorUserIdsQueryString})
+            ${
+              PublishedItemsTableService.tableName
+            }.author_user_id IN (${creatorUserIdsQueryString})
             ${typeConstraintClause}
             ${beforeTimestampCondition}
+            ${publishedItemHostClause}
           ORDER BY
             scheduled_publication_timestamp DESC
           LIMIT

@@ -137,6 +137,7 @@ export async function assembleRenderableShopItemFromCachedComponents({
 
   const {
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,
@@ -176,6 +177,7 @@ export async function assembleRenderableShopItemFromCachedComponents({
     return Success({
       type: PublishedItemType.SHOP_ITEM,
       id,
+      host,
       creationTimestamp,
       authorUserId,
       caption,

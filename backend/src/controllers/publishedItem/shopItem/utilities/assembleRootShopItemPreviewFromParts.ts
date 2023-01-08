@@ -29,6 +29,7 @@ export async function assembleRootShopItemPreviewFromCachedComponents({
 
   const {
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,
@@ -96,6 +97,7 @@ export async function assembleRootShopItemPreviewFromCachedComponents({
     renderableShopItemType: RenderableShopItemType.SHOP_ITEM_PREVIEW,
     type: PublishedItemType.SHOP_ITEM,
     id,
+    host,
     authorUserId,
     caption,
     creationTimestamp,

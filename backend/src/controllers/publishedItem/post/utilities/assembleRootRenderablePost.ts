@@ -28,6 +28,7 @@ export async function assembleRootRenderablePost({
 
   const {
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,
@@ -62,6 +63,7 @@ export async function assembleRootRenderablePost({
   const rootRenderablePost: RootRenderablePost = {
     type: PublishedItemType.POST,
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,

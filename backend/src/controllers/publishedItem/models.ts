@@ -6,6 +6,13 @@ export enum PublishedItemType {
   SHOP_ITEM = "SHOP_ITEM",
 }
 
+export interface PublishedItemPublishingChannelHost {
+  publishingChannelId: string;
+  name: string;
+}
+
+export type PublishedItemHost = PublishedItemPublishingChannelHost | "user-self-hosted";
+
 export interface UnassembledBasePublishedItem {
   type: PublishedItemType;
   id: string;
@@ -18,6 +25,7 @@ export interface UnassembledBasePublishedItem {
 }
 
 export interface BaseRenderablePublishedItem extends UnassembledBasePublishedItem {
+  host: PublishedItemHost;
   hashtags: string[];
   likes: {
     count: number;

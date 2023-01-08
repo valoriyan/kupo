@@ -85,6 +85,7 @@ export async function assembleRenderablePostFromCachedComponents({
 
   const {
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,
@@ -147,6 +148,7 @@ export async function assembleRenderablePostFromCachedComponents({
     const sharedRenderablePost: SharedRenderablePost = {
       type: PublishedItemType.POST,
       id,
+      host,
       authorUserId,
       caption,
       creationTimestamp,

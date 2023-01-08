@@ -1,5 +1,10 @@
 import { DatabaseService } from "../../../services/databaseService";
-import { BaseRenderablePublishedItem, UnassembledBasePublishedItem } from "../models";
+import {
+  BaseRenderablePublishedItem,
+  PublishedItemHost,
+  PublishedItemPublishingChannelHost,
+  UnassembledBasePublishedItem,
+} from "../models";
 import { Controller } from "tsoa";
 import {
   EitherType,
@@ -140,12 +145,40 @@ export async function assembleBaseRenderablePublishedItem({
   }
 
   //////////////////////////////////////////////////
+  // Determine Host of Published Item
+  //////////////////////////////////////////////////
+  const getPublishingChannelsAssociatedWithPublishedItemIdResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelsAssociatedWithPublishedItemId(
+      { controller, publishedItemId: id },
+    );
+  if (
+    getPublishingChannelsAssociatedWithPublishedItemIdResponse.type === EitherType.failure
+  ) {
+    return getPublishingChannelsAssociatedWithPublishedItemIdResponse;
+  }
+  const { success: publishingChannelsHostingPublishedItem } =
+    getPublishingChannelsAssociatedWithPublishedItemIdResponse;
+
+  let host: PublishedItemHost;
+  if (publishingChannelsHostingPublishedItem.length === 0) {
+    host = "user-self-hosted";
+  } else {
+    const publishedItemPublishingChannelHost: PublishedItemPublishingChannelHost = {
+      publishingChannelId:
+        publishingChannelsHostingPublishedItem[0].publishing_channel_id,
+      name: publishingChannelsHostingPublishedItem[0].name,
+    };
+    host = publishedItemPublishingChannelHost;
+  }
+
+  //////////////////////////////////////////////////
   // Assemble the Base Renderable Published Item
   //////////////////////////////////////////////////
 
   const baseRenderablePublishedItem: BaseRenderablePublishedItem = {
     type,
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,

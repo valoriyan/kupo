@@ -31,6 +31,7 @@ export async function assembleRootPurchasedShopItemDetailsFromCachedComponents({
 
   const {
     id,
+    host,
     creationTimestamp,
     authorUserId,
     caption,
@@ -102,6 +103,7 @@ export async function assembleRootPurchasedShopItemDetailsFromCachedComponents({
     renderableShopItemType: RenderableShopItemType.PURCHASED_SHOP_ITEM_DETAILS,
     type: PublishedItemType.SHOP_ITEM,
     id,
+    host,
     authorUserId,
     caption,
     creationTimestamp,
