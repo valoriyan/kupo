@@ -12,6 +12,7 @@ import {
 } from "../../utilities/monads";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
+import { generateBlobFileKeyForMimeType } from "./utilities";
 
 export class LocalBlobStorageService extends BlobStorageServiceInterface {
   static localBlobStorageDirectory: string = getEnvironmentVariable(
@@ -22,15 +23,17 @@ export class LocalBlobStorageService extends BlobStorageServiceInterface {
     super();
   }
 
-  async saveImage({
+  async saveFile({
     controller,
     image,
+    mimeType,
   }: {
     controller: Controller;
     image: Buffer;
+    mimeType: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>> {
     try {
-      const fileKey = uuidv4();
+      const fileKey = generateBlobFileKeyForMimeType({ mimeType });
       const fileWritePath =
         LocalBlobStorageService.localBlobStorageDirectory + "/" + fileKey;
       console.log(`Writing file to ${fileWritePath}`);

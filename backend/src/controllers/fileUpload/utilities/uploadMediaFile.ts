@@ -60,9 +60,10 @@ export async function uploadMediaFile({
   // Upload File
   //////////////////////////////////////////////////
 
-  const saveImageResponse = await blobStorageService.saveImage({
+  const saveImageResponse = await blobStorageService.saveFile({
     controller,
     image: buffer,
+    mimeType,
   });
   if (saveImageResponse.type === EitherType.failure) {
     return saveImageResponse;

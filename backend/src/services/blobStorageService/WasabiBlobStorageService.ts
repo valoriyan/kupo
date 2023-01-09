@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { v4 as uuidv4 } from "uuid";
 import { getEnvironmentVariable } from "../../utilities";
 import { Promise as BluebirdPromise } from "bluebird";
 import { BlobStorageServiceInterface, BlobItemPointer } from "./models";
@@ -18,6 +17,7 @@ import {
 } from "../../utilities/monads";
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { Controller } from "tsoa";
+import { generateBlobFileKeyForMimeType } from "./utilities";
 
 //////////////////////////////////////////////////
 // Documentation
@@ -47,15 +47,17 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
     return this.connection;
   }
 
-  async saveImage({
+  async saveFile({
     controller,
     image,
+    mimeType,
   }: {
     image: Buffer;
     controller: Controller;
+    mimeType: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>> {
     try {
-      const fileKey = uuidv4();
+      const fileKey = generateBlobFileKeyForMimeType({ mimeType });
 
       const putObjectRequest: PutObjectRequest = {
         Bucket: WasabiBlobStorageService.bucket,

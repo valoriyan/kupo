@@ -12,12 +12,14 @@ export enum BlobStorageServiceType {
 }
 
 export abstract class BlobStorageServiceInterface {
-  abstract saveImage({
+  abstract saveFile({
     controller,
     image,
+    mimeType,
   }: {
     controller: Controller;
     image: Buffer;
+    mimeType: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>>;
 
   abstract getTemporaryImageUrl({

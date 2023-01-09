@@ -2,6 +2,7 @@ import Image from "next/image";
 import { MediaElement } from "#/api";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { styled } from "#/styling";
+import { VideoContentViewer } from "./VideoContentViewer";
 
 export interface ContentProps {
   mediaElement: MediaElement;
@@ -33,7 +34,7 @@ export const Content = ({ mediaElement }: ContentProps) => {
   if (mediaElement.mimeType.includes("video")) {
     return (
       <ImageWrapper>
-        <Video src={mediaElement.temporaryUrl} controls />
+        <VideoContentViewer mediaElement={mediaElement} />
       </ImageWrapper>
     );
   }
@@ -55,10 +56,4 @@ const ImageWrapper = styled("div", {
 const BlurredImage = styled(Image, {
   filter: "blur(20px)",
   opacity: 0.9,
-});
-
-const Video = styled("video", {
-  position: "absolute",
-  size: "100%",
-  objectFit: "contain",
 });

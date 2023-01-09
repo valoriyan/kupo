@@ -13,7 +13,7 @@ export class BlobStorageService extends BlobStorageServiceInterface {
     super();
   }
 
-  saveImage = BlobStorageService.implementation.saveImage;
+  saveFile = BlobStorageService.implementation.saveFile;
   getTemporaryImageUrl = BlobStorageService.implementation.getTemporaryImageUrl;
   deleteImages = BlobStorageService.implementation.deleteImages;
 

@@ -4,6 +4,7 @@ steps:
     'build',
     '--build-arg', 'API_BASE_URL=https://api.kupo.social',
     '-t', 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-prod-frontend:latest',
+    '--cache-from', 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-prod-frontend:latest',
     '.'
   ]
 images:
