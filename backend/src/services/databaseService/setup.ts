@@ -127,9 +127,14 @@ async function setupTables({
 
 export async function setupDatabaseService({
   tableNameToServicesMap,
+  databaseAlreadyExists,
 }: {
   tableNameToServicesMap: { [key: string]: TableService };
+  databaseAlreadyExists?: boolean;
 }): Promise<void> {
-  await setupDatabase();
+  if (!databaseAlreadyExists) {
+    await setupDatabase();
+  }
+
   await setupTables({ tableNameToServicesMap });
 }

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import ResetPassword from "./reset-password";
+import { VerifyUserEmail } from "#/templates/VerifyUserEmail";
 
 const VerifyUserEmailPage = () => {
   return (
@@ -7,7 +7,7 @@ const VerifyUserEmailPage = () => {
       <Head>
         <title>Reset Password / Kupo</title>
       </Head>
-      <ResetPassword />
+      <VerifyUserEmail />
     </>
   );
 };

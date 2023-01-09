@@ -105,9 +105,14 @@ export class DatabaseService {
     DatabaseService.get();
   }
 
-  public async setupDatabaseService(): Promise<void> {
+  public async setupDatabaseService({
+    databaseAlreadyExists,
+  }: {
+    databaseAlreadyExists?: boolean;
+  }): Promise<void> {
     await setupDatabaseService({
       tableNameToServicesMap: this.tableNameToServicesMap,
+      databaseAlreadyExists,
     });
   }
 

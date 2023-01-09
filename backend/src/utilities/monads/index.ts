@@ -74,14 +74,13 @@ export const Failure = <ErrorReason>({
 
   if (productionEnvironment === "prod") {
     // TODO: log error
-
-    return {
-      type: EitherType.failure,
-      error: {
-        reason,
-        errorMessage: "Internal Server Error",
-      },
-    };
+    // return {
+    //   type: EitherType.failure,
+    //   error: {
+    //     reason,
+    //     errorMessage: "Internal Server Error",
+    //   },
+    // };
   }
 
   return {

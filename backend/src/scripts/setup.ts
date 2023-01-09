@@ -7,7 +7,7 @@ import { DatabaseService } from "../services/databaseService";
 async function setupScript(): Promise<void> {
   const databaseService = new DatabaseService();
 
-  await databaseService.setupDatabaseService();
+  await databaseService.setupDatabaseService({ databaseAlreadyExists: false });
 }
 
 setupScript();
