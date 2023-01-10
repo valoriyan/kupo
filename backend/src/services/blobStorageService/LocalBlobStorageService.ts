@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { v4 as uuidv4 } from "uuid";
 import { writeFileSync, unlinkSync, mkdirSync } from "fs";
 import { getEnvironmentVariable } from "../../utilities";
 import { Promise as BluebirdPromise } from "bluebird";

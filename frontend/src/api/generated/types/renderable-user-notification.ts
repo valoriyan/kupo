@@ -18,6 +18,7 @@ import { RenderableAcceptedUserFollowRequestNotification } from "./renderable-ac
 import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
 import { RenderableNewLikeOnPublishedItemNotification } from "./renderable-new-like-on-published-item-notification";
+import { RenderableNewShareOfPublishedItemNotification } from "./renderable-new-share-of-published-item-notification";
 import { RenderableNewTagInPublishedItemCaptionNotification } from "./renderable-new-tag-in-published-item-caption-notification";
 import { RenderableNewTagInPublishedItemCommentNotification } from "./renderable-new-tag-in-published-item-comment-notification";
 import { RenderableNewUserFollowRequestNotification } from "./renderable-new-user-follow-request-notification";
@@ -65,7 +66,19 @@ export interface RenderableUserNotification {
    * @type {RenderableUser}
    * @memberof RenderableUserNotification
    */
+  userAcceptingFollowRequest: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
   userDoingFollowing: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
+  followRequestingUser: RenderableUser;
   /**
    *
    * @type {RenderableUser}
@@ -95,19 +108,13 @@ export interface RenderableUserNotification {
    * @type {RenderableUser}
    * @memberof RenderableUserNotification
    */
+  userSharingPublishedItem: RenderableUser;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
   userTaggingClient: RenderableUser;
-  /**
-   *
-   * @type {RenderableUser}
-   * @memberof RenderableUserNotification
-   */
-  userAcceptingFollowRequest: RenderableUser;
-  /**
-   *
-   * @type {RenderableUser}
-   * @memberof RenderableUserNotification
-   */
-  followRequestingUser: RenderableUser;
   /**
    *
    * @type {RenderablePublishingChannel}

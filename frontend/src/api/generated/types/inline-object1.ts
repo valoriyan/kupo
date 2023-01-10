@@ -13,7 +13,7 @@
  */
 
 import { NewChatMessageNotification } from "./new-chat-message-notification";
-import { UnrenderableCanceledCommentOnPublishedItemNotification } from "./unrenderable-canceled-comment-on-published-item-notification";
+import { UnrenderableCanceledNewCommentOnPublishedItemNotification } from "./unrenderable-canceled-new-comment-on-published-item-notification";
 import { UnrenderableCanceledNewFollowerNotification } from "./unrenderable-canceled-new-follower-notification";
 import { UnrenderableCanceledNewLikeOnPublishedItemNotification } from "./unrenderable-canceled-new-like-on-published-item-notification";
 
@@ -43,8 +43,8 @@ export interface InlineObject1 {
   UnrenderableCanceledNewFollowerNotification: UnrenderableCanceledNewFollowerNotification;
   /**
    *
-   * @type {UnrenderableCanceledCommentOnPublishedItemNotification}
+   * @type {UnrenderableCanceledNewCommentOnPublishedItemNotification}
    * @memberof InlineObject1
    */
-  UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledCommentOnPublishedItemNotification;
+  UnrenderableCanceledCommentOnPostNotification: UnrenderableCanceledNewCommentOnPublishedItemNotification;
 }

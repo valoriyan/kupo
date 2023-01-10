@@ -1,8 +1,13 @@
+import { UserId } from "aws-sdk/clients/appstream";
 import { BaseUserNotification } from ".";
 
-export interface UnrenderableCanceledCommentOnPublishedItemNotification
+//////////////////////////////////////////////////
+// Followers
+//////////////////////////////////////////////////
+
+export interface UnrenderableCanceledAcceptedUserFollowRequestNotification
   extends BaseUserNotification {
-  publishedItemCommentId: string;
+  userIdUnacceptingFollowRequest: string;
 }
 
 export interface UnrenderableCanceledNewFollowerNotification
@@ -10,20 +15,29 @@ export interface UnrenderableCanceledNewFollowerNotification
   userIdDoingUnfollowing: string;
 }
 
+export interface UnrenderableCanceledNewUserFollowRequestNotification
+  extends BaseUserNotification {
+  userIdWithdrawingFollowRequest: string;
+}
+
+//////////////////////////////////////////////////
+// Published Items
+//////////////////////////////////////////////////
+export interface UnrenderableCanceledNewCommentOnPublishedItemNotification
+  extends BaseUserNotification {
+  publishedItemCommentId: string;
+}
+
 export interface UnrenderableCanceledNewLikeOnPublishedItemNotification
   extends BaseUserNotification {
-  userIdUnlikingPost: string;
+  userIdUnlikingPublishedItem: string;
   publishedItemId: string;
 }
 
-export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification
+export interface UnrenderableCanceledNewShareOfPublishedItemNotification
   extends BaseUserNotification {
-  publishedItemCommentId: string;
-}
-
-export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification
-  extends BaseUserNotification {
-  publishedItemCommentId: string;
+  userIdNoLongerSharingPublishedItem: UserId;
+  publishedItemId: string;
 }
 
 export interface UnrenderableCanceledNewTagInPublishedItemCaptionNotification
@@ -31,12 +45,15 @@ export interface UnrenderableCanceledNewTagInPublishedItemCaptionNotification
   publishedItemId: string;
 }
 
-export interface UnrenderableCanceledAcceptedUserFollowRequestNotification
+export interface UnrenderableCanceledNewTagInPublishedItemCommentNotification
   extends BaseUserNotification {
-  userIdUnacceptingFollowRequest: string;
+  publishedItemCommentId: string;
 }
 
-export interface UnrenderableCanceledNewUserFollowRequestNotification
-  extends BaseUserNotification {
-  userIdWithdrawingFollowRequest: string;
-}
+//////////////////////////////////////////////////
+// Publishing Channels
+//////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+// Transactions
+//////////////////////////////////////////////////

@@ -3,7 +3,7 @@ import {
   NOTIFICATIONEVENTS,
   RenderableNewCommentOnPublishedItemNotification,
   RenderableUserNotification,
-  UnrenderableCanceledCommentOnPublishedItemNotification,
+  UnrenderableCanceledNewCommentOnPublishedItemNotification,
 } from "#/api";
 import { WebsocketState } from ".";
 
@@ -27,7 +27,7 @@ export const getNewCommentOnPublishedItemNotificationHandler =
 export const getCanceledCommentOnPublishedItemNotificationHandler =
   ({ set, get }: { set: SetState<WebsocketState>; get: GetState<WebsocketState> }) =>
   (
-    unrenderableCanceledCommentOnPublishedItemNotification: UnrenderableCanceledCommentOnPublishedItemNotification,
+    unrenderableCanceledCommentOnPublishedItemNotification: UnrenderableCanceledNewCommentOnPublishedItemNotification,
   ) => {
     const { countOfUnreadNotifications, publishedItemCommentId } =
       unrenderableCanceledCommentOnPublishedItemNotification;

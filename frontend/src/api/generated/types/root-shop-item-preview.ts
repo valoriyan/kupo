@@ -13,6 +13,7 @@
  */
 
 import { MediaElement } from "./media-element";
+import { PublishedItemHost } from "./published-item-host";
 import { PublishedItemType } from "./published-item-type";
 import { RenderableShopItemTypeSHOPITEMPREVIEW } from "./renderable-shop-item-type-shopitempreview";
 import { RenderableUserFollowers } from "./renderable-user-followers";
@@ -71,6 +72,12 @@ export interface RootShopItemPreview {
    * @memberof RootShopItemPreview
    */
   idOfPublishedItemBeingShared?: string;
+  /**
+   *
+   * @type {PublishedItemHost}
+   * @memberof RootShopItemPreview
+   */
+  host: PublishedItemHost;
   /**
    *
    * @type {Array<string>}

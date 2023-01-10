@@ -13,6 +13,7 @@
  */
 
 import { MediaElement } from "./media-element";
+import { PublishedItemHost } from "./published-item-host";
 import { PublishedItemTypePOST } from "./published-item-type-post";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 import { RootRenderablePost } from "./root-renderable-post";
@@ -72,6 +73,12 @@ export interface RenderablePost {
    * @memberof RenderablePost
    */
   idOfPublishedItemBeingShared?: string;
+  /**
+   *
+   * @type {PublishedItemHost}
+   * @memberof RenderablePost
+   */
+  host: PublishedItemHost;
   /**
    *
    * @type {Array<string>}

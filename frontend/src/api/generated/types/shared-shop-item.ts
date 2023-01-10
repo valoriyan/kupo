@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { PublishedItemHost } from "./published-item-host";
 import { PublishedItemTypeSHOPITEM } from "./published-item-type-shopitem";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 import { RootPurchasedShopItemDetails } from "./root-purchased-shop-item-details";
@@ -71,6 +72,12 @@ export interface SharedShopItem {
    * @memberof SharedShopItem
    */
   idOfPublishedItemBeingShared?: string;
+  /**
+   *
+   * @type {PublishedItemHost}
+   * @memberof SharedShopItem
+   */
+  host: PublishedItemHost;
   /**
    *
    * @type {Array<string>}

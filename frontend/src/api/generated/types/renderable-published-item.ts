@@ -13,6 +13,7 @@
  */
 
 import { MediaElement } from "./media-element";
+import { PublishedItemHost } from "./published-item-host";
 import { PublishedItemTypeSHOPITEM } from "./published-item-type-shopitem";
 import { RenderablePost } from "./renderable-post";
 import { RenderableShopItem } from "./renderable-shop-item";
@@ -75,6 +76,12 @@ export interface RenderablePublishedItem {
    * @memberof RenderablePublishedItem
    */
   idOfPublishedItemBeingShared?: string;
+  /**
+   *
+   * @type {PublishedItemHost}
+   * @memberof RenderablePublishedItem
+   */
+  host: PublishedItemHost;
   /**
    *
    * @type {Array<string>}

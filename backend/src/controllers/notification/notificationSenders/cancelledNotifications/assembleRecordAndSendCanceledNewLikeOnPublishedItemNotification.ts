@@ -69,7 +69,7 @@ export async function assembleRecordAndSendCanceledNewLikeOnPublishedItemNotific
     {
       type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_PUBLISHED_ITEM,
       countOfUnreadNotifications,
-      userIdUnlikingPost,
+      userIdUnlikingPublishedItem: userIdUnlikingPost,
       publishedItemId,
     };
 

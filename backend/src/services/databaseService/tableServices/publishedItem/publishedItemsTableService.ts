@@ -87,9 +87,12 @@ export class PublishedItemsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (author_user_id)
           REFERENCES ${UsersTableService.tableName} (user_id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_shared_fkey
+          FOREIGN KEY (id_of_published_item_being_shared)
+          REFERENCES ${PublishedItemsTableService.tableName} (id)
           ON DELETE CASCADE
-
-
       )
       ;
     `;

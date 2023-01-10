@@ -11,6 +11,7 @@ import { checkAuthentication } from "../../auth/utilities";
 import { RenderablePost, RootRenderablePost } from "./models";
 import { PublishedItemType } from "../models";
 import { assemblePublishedItemFromCachedComponents } from "../utilities/assemblePublishedItems";
+import { assembleRecordAndSendNewShareOfPublishedItemNotification } from "../../../controllers/notification/notificationSenders/assembleRecordAndSendNewShareOfPublishedItemNotification";
 
 export enum SharePostFailedReason {
   UnknownCause = "Unknown Cause",
@@ -182,6 +183,21 @@ export async function handleSharePost({
     isSavedByClient: false,
     sharedItem: sharedRenderablePublishedItem as RootRenderablePost,
   };
+
+  //////////////////////////////////////////////////
+  // Handle Notifications
+  //////////////////////////////////////////////////
+
+  assembleRecordAndSendNewShareOfPublishedItemNotification({
+    controller,
+    sourcePublishedItemId: sharedPublishedItemId,
+    newPublishedItemId: publishedItemId,
+    userIdSharingPublishedItem: clientUserId,
+    recipientUserId: uncompiledBasePublishedItemBeingShared.authorUserId,
+    databaseService: controller.databaseService,
+    blobStorageService: controller.blobStorageService,
+    webSocketService: controller.webSocketService,
+  });
 
   //////////////////////////////////////////////////
   // Return

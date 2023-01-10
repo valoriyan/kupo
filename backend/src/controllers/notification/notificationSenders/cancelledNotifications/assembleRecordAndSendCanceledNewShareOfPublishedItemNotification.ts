@@ -9,17 +9,19 @@ import {
   InternalServiceResponse,
   Success,
 } from "../../../../utilities/monads";
-import { UnrenderableCanceledNewCommentOnPublishedItemNotification } from "../../models/unrenderableCanceledUserNotifications";
+import { UnrenderableCanceledNewShareOfPublishedItemNotification } from "../../models/unrenderableCanceledUserNotifications";
 
-export async function assembleRecordAndSendCancelledNewCommentOnPublishedItemNotification({
+export async function assembleRecordAndSendCanceledNewShareOfPublishedItemNotification({
   controller,
-  publishedItemCommentId,
+  userIdNoLongerSharingPublishedItem,
+  deletedPublishedItemId,
   recipientUserId,
   databaseService,
   webSocketService,
 }: {
   controller: Controller;
-  publishedItemCommentId: string;
+  userIdNoLongerSharingPublishedItem: string;
+  deletedPublishedItemId: string;
   recipientUserId: string;
   databaseService: DatabaseService;
   webSocketService: WebSocketService;
@@ -32,11 +34,11 @@ export async function assembleRecordAndSendCancelledNewCommentOnPublishedItemNot
     await databaseService.tableNameToServicesMap.userNotificationsTableService.deleteUserNotificationForUserId(
       {
         controller,
-        externalReference: {
-          type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM,
-          publishedItemCommentId: publishedItemCommentId,
-        },
         recipientUserId,
+        externalReference: {
+          type: NOTIFICATION_EVENTS.NEW_SHARE_OF_PUBLISHED_ITEM,
+          publishedItemId: deletedPublishedItemId,
+        },
       },
     );
   if (deleteUserNotificationForUserIdResponse.type === EitherType.failure) {
@@ -61,11 +63,12 @@ export async function assembleRecordAndSendCancelledNewCommentOnPublishedItemNot
   // Assemble Notification
   //////////////////////////////////////////////////
 
-  const unrenderableCanceledCommentOnPostNotification: UnrenderableCanceledNewCommentOnPublishedItemNotification =
+  const unrenderableCanceledNewShareOfPublishedItemNotification: UnrenderableCanceledNewShareOfPublishedItemNotification =
     {
-      type: NOTIFICATION_EVENTS.CANCELED_NEW_COMMENT_ON_PUBLISHED_ITEM,
+      type: NOTIFICATION_EVENTS.CANCELED_NEW_LIKE_ON_PUBLISHED_ITEM,
       countOfUnreadNotifications,
-      publishedItemCommentId: publishedItemCommentId,
+      userIdNoLongerSharingPublishedItem: userIdNoLongerSharingPublishedItem,
+      publishedItemId: deletedPublishedItemId,
     };
 
   //////////////////////////////////////////////////
@@ -75,7 +78,7 @@ export async function assembleRecordAndSendCancelledNewCommentOnPublishedItemNot
   await webSocketService.userNotificationsWebsocketService.notifyUserIdOfUserNotification(
     {
       userId: recipientUserId,
-      notification: unrenderableCanceledCommentOnPostNotification,
+      notification: unrenderableCanceledNewShareOfPublishedItemNotification,
     },
   );
 

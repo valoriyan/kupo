@@ -11,12 +11,14 @@ export interface BaseRenderableUserNotification extends BaseUserNotification {
   timestampSeenByUser?: number;
 }
 
-export interface RenderableNewCommentOnPublishedItemNotification
+//////////////////////////////////////////////////
+// Followers
+//////////////////////////////////////////////////
+
+export interface RenderableAcceptedUserFollowRequestNotification
   extends BaseRenderableUserNotification {
-  type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM;
-  userThatCommented: RenderableUser;
-  publishedItem: RenderablePublishedItem;
-  publishedItemComment: RenderablePublishedItemComment;
+  type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;
+  userAcceptingFollowRequest: RenderableUser;
 }
 
 export interface RenderableNewFollowerNotification
@@ -25,10 +27,43 @@ export interface RenderableNewFollowerNotification
   userDoingFollowing: RenderableUser;
 }
 
+export interface RenderableNewUserFollowRequestNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST;
+  followRequestingUser: RenderableUser;
+}
+
+//////////////////////////////////////////////////
+// Published Items
+//////////////////////////////////////////////////
+
+export interface RenderableNewCommentOnPublishedItemNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM;
+  userThatCommented: RenderableUser;
+  publishedItem: RenderablePublishedItem;
+  publishedItemComment: RenderablePublishedItemComment;
+}
+
 export interface RenderableNewLikeOnPublishedItemNotification
   extends BaseRenderableUserNotification {
   type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
   userThatLikedPublishedItem: RenderableUser;
+  publishedItem: RenderablePublishedItem;
+}
+
+export interface RenderableNewShareOfPublishedItemNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.NEW_SHARE_OF_PUBLISHED_ITEM;
+  userSharingPublishedItem: RenderableUser;
+  sourcePublishedItem: RenderablePublishedItem;
+  newPublishedItemId: string;
+}
+
+export interface RenderableNewTagInPublishedItemCaptionNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION;
+  userTaggingClient: RenderableUser;
   publishedItem: RenderablePublishedItem;
 }
 
@@ -40,24 +75,9 @@ export interface RenderableNewTagInPublishedItemCommentNotification
   publishedItemComment: RenderablePublishedItemComment;
 }
 
-export interface RenderableNewTagInPublishedItemCaptionNotification
-  extends BaseRenderableUserNotification {
-  type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION;
-  userTaggingClient: RenderableUser;
-  publishedItem: RenderablePublishedItem;
-}
-
-export interface RenderableAcceptedUserFollowRequestNotification
-  extends BaseRenderableUserNotification {
-  type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;
-  userAcceptingFollowRequest: RenderableUser;
-}
-
-export interface RenderableNewUserFollowRequestNotification
-  extends BaseRenderableUserNotification {
-  type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST;
-  followRequestingUser: RenderableUser;
-}
+//////////////////////////////////////////////////
+// Publishing Channels
+//////////////////////////////////////////////////
 
 export interface RenderableAcceptedPublishingChannelSubmissionNotification
   extends BaseRenderableUserNotification {
@@ -77,6 +97,10 @@ export interface RenderableRejectedPublishingChannelSubmissionNotification
   };
 }
 
+//////////////////////////////////////////////////
+// Transactions
+//////////////////////////////////////////////////
+
 export interface RenderableShopItemSoldNotification
   extends BaseRenderableUserNotification {
   type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
@@ -84,14 +108,26 @@ export interface RenderableShopItemSoldNotification
   shopItem: RenderableShopItem;
 }
 
+//////////////////////////////////////////////////
+// Union Type
+//////////////////////////////////////////////////
+
 export type RenderableUserNotification =
+  // Followers
+  | RenderableAcceptedUserFollowRequestNotification
   | RenderableNewFollowerNotification
+  | RenderableNewUserFollowRequestNotification
+
+  // Published Items
   | RenderableNewCommentOnPublishedItemNotification
   | RenderableNewLikeOnPublishedItemNotification
-  | RenderableNewTagInPublishedItemCommentNotification
+  | RenderableNewShareOfPublishedItemNotification
   | RenderableNewTagInPublishedItemCaptionNotification
-  | RenderableAcceptedUserFollowRequestNotification
-  | RenderableNewUserFollowRequestNotification
+  | RenderableNewTagInPublishedItemCommentNotification
+
+  // Publishing Channels
   | RenderableAcceptedPublishingChannelSubmissionNotification
   | RenderableRejectedPublishingChannelSubmissionNotification
+
+  // Transactions
   | RenderableShopItemSoldNotification;

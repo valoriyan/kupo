@@ -17,31 +17,25 @@ import { NOTIFICATIONEVENTS } from "./notificationevents";
 /**
  *
  * @export
- * @interface UnrenderableCanceledNewLikeOnPublishedItemNotification
+ * @interface UnrenderableCanceledNewCommentOnPublishedItemNotification
  */
-export interface UnrenderableCanceledNewLikeOnPublishedItemNotification {
+export interface UnrenderableCanceledNewCommentOnPublishedItemNotification {
   /**
    *
    * @type {NOTIFICATIONEVENTS}
-   * @memberof UnrenderableCanceledNewLikeOnPublishedItemNotification
+   * @memberof UnrenderableCanceledNewCommentOnPublishedItemNotification
    */
   type: NOTIFICATIONEVENTS;
   /**
    *
    * @type {number}
-   * @memberof UnrenderableCanceledNewLikeOnPublishedItemNotification
+   * @memberof UnrenderableCanceledNewCommentOnPublishedItemNotification
    */
   countOfUnreadNotifications: number;
   /**
    *
    * @type {string}
-   * @memberof UnrenderableCanceledNewLikeOnPublishedItemNotification
+   * @memberof UnrenderableCanceledNewCommentOnPublishedItemNotification
    */
-  userIdUnlikingPublishedItem: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UnrenderableCanceledNewLikeOnPublishedItemNotification
-   */
-  publishedItemId: string;
+  publishedItemCommentId: string;
 }

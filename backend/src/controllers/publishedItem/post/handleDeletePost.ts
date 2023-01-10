@@ -8,6 +8,7 @@ import {
   Success,
 } from "../../../utilities/monads";
 import { PostController } from "./postController";
+import { assembleRecordAndSendCanceledNewShareOfPublishedItemNotification } from "../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledNewShareOfPublishedItemNotification";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export enum DeletePostFailedReason {
@@ -47,6 +48,42 @@ export async function handleDeletePost({
 
   const { publishedItemId } = requestBody;
 
+  //////////////////////////////////////////////////
+  // Handle Notifications
+  //////////////////////////////////////////////////
+  const getPublishedItemByIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { controller, id: publishedItemId },
+    );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: unrenderablePublishedItemBeingDeleted } = getPublishedItemByIdResponse;
+
+  if (!!unrenderablePublishedItemBeingDeleted.idOfPublishedItemBeingShared) {
+    const getPublishedItemByIdSecondResponse =
+      await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+        {
+          controller,
+          id: unrenderablePublishedItemBeingDeleted.idOfPublishedItemBeingShared,
+        },
+      );
+
+    if (getPublishedItemByIdSecondResponse.type === EitherType.failure) {
+      return getPublishedItemByIdSecondResponse;
+    }
+    const { success: unrenderablePublishedItemThatWasShared } =
+      getPublishedItemByIdSecondResponse;
+
+    assembleRecordAndSendCanceledNewShareOfPublishedItemNotification({
+      controller,
+      userIdNoLongerSharingPublishedItem: clientUserId,
+      deletedPublishedItemId: unrenderablePublishedItemBeingDeleted.id,
+      recipientUserId: unrenderablePublishedItemThatWasShared.authorUserId,
+      databaseService: controller.databaseService,
+      webSocketService: controller.webSocketService,
+    });
+  }
   //////////////////////////////////////////////////
   // Delete Published Item from DB
   //////////////////////////////////////////////////

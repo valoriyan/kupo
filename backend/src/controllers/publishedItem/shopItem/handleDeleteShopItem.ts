@@ -8,6 +8,7 @@ import {
 } from "../../../utilities/monads";
 import { checkAuthentication } from "../../auth/utilities";
 import { ShopItemController } from "./shopItemController";
+import { assembleRecordAndSendCanceledNewShareOfPublishedItemNotification } from "../../../controllers/notification/notificationSenders/cancelledNotifications/assembleRecordAndSendCanceledNewShareOfPublishedItemNotification";
 
 export enum DeleteShopItemFailedReason {
   UnknownCause = "Unknown Cause",
@@ -45,6 +46,43 @@ export async function handleDeleteShopItem({
     request,
   );
   if (error) return error;
+
+  //////////////////////////////////////////////////
+  // Handle Notifications
+  //////////////////////////////////////////////////
+  const getPublishedItemByIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+      { controller, id: publishedItemId },
+    );
+  if (getPublishedItemByIdResponse.type === EitherType.failure) {
+    return getPublishedItemByIdResponse;
+  }
+  const { success: unrenderablePublishedItemBeingDeleted } = getPublishedItemByIdResponse;
+
+  if (!!unrenderablePublishedItemBeingDeleted.idOfPublishedItemBeingShared) {
+    const getPublishedItemByIdSecondResponse =
+      await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemById(
+        {
+          controller,
+          id: unrenderablePublishedItemBeingDeleted.idOfPublishedItemBeingShared,
+        },
+      );
+
+    if (getPublishedItemByIdSecondResponse.type === EitherType.failure) {
+      return getPublishedItemByIdSecondResponse;
+    }
+    const { success: unrenderablePublishedItemThatWasShared } =
+      getPublishedItemByIdSecondResponse;
+
+    assembleRecordAndSendCanceledNewShareOfPublishedItemNotification({
+      controller,
+      userIdNoLongerSharingPublishedItem: clientUserId,
+      deletedPublishedItemId: unrenderablePublishedItemBeingDeleted.id,
+      recipientUserId: unrenderablePublishedItemThatWasShared.authorUserId,
+      databaseService: controller.databaseService,
+      webSocketService: controller.webSocketService,
+    });
+  }
 
   //////////////////////////////////////////////////
   // Delete From DB

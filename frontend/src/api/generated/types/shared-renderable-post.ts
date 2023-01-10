@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { PublishedItemHost } from "./published-item-host";
 import { PublishedItemTypePOST } from "./published-item-type-post";
 import { RenderableUserFollowers } from "./renderable-user-followers";
 import { RootRenderablePost } from "./root-renderable-post";
@@ -70,6 +71,12 @@ export interface SharedRenderablePost {
    * @memberof SharedRenderablePost
    */
   idOfPublishedItemBeingShared?: string;
+  /**
+   *
+   * @type {PublishedItemHost}
+   * @memberof SharedRenderablePost
+   */
+  host: PublishedItemHost;
   /**
    *
    * @type {Array<string>}

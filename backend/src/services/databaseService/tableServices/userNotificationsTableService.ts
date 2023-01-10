@@ -23,48 +23,6 @@ import { PublishedItemLikesTableService } from "./publishedItem/publishedItemLik
 import { PublishedItemTransactionsTableService } from "./publishedItem/publishedItemTransactionsTableService";
 import { PublishingChannelSubmissionsTableService } from "./publishingChannel/publishingChannelSubmissionsTableService";
 
-export type UserNotificationDbReference =
-  | {
-      type: NOTIFICATION_EVENTS.NEW_FOLLOWER;
-      userFollowEventId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST;
-      userFollowEventId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;
-      userFollowEventId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM;
-      publishedItemCommentId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT;
-      publishedItemCommentId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION;
-      publishedItemId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
-      publishedItemLikeId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION;
-      publishingChannelSubmissionId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION;
-      publishingChannelSubmissionId: string;
-    }
-  | {
-      type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
-      publishedItemTransactionId: string;
-    };
-
 export interface DBUserNotification {
   user_notification_id: string;
 
@@ -83,6 +41,66 @@ export interface DBUserNotification {
   publishing_channel_submission_reference?: string;
 }
 
+export type UserNotificationDbReference =
+  //////////////////////////////////////////////////
+  // Followers
+  //////////////////////////////////////////////////
+  | {
+      type: NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST;
+      userFollowEventId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_FOLLOWER;
+      userFollowEventId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_USER_FOLLOW_REQUEST;
+      userFollowEventId: string;
+    }
+  //////////////////////////////////////////////////
+  // Published Items
+  //////////////////////////////////////////////////
+  | {
+      type: NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM;
+      publishedItemCommentId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM;
+      publishedItemLikeId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_SHARE_OF_PUBLISHED_ITEM;
+      publishedItemId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION;
+      publishedItemId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT;
+      publishedItemCommentId: string;
+    }
+
+  //////////////////////////////////////////////////
+  // Publishing Channels
+  //////////////////////////////////////////////////
+  | {
+      type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION;
+      publishingChannelSubmissionId: string;
+    }
+  | {
+      type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION;
+      publishingChannelSubmissionId: string;
+    }
+
+  //////////////////////////////////////////////////
+  // Transactions
+  //////////////////////////////////////////////////
+  | {
+      type: NOTIFICATION_EVENTS.SHOP_ITEM_SOLD;
+      publishedItemTransactionId: string;
+    };
+
 function generateReferenceTableRow({
   userNotificationDbReference,
 }: {
@@ -90,7 +108,17 @@ function generateReferenceTableRow({
 }) {
   const notificationType = userNotificationDbReference.type;
 
-  if (notificationType === NOTIFICATION_EVENTS.NEW_FOLLOWER) {
+  if (false) {
+  }
+  //////////////////////////////////////////////////
+  // Followers
+  //////////////////////////////////////////////////
+  else if (notificationType === NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST) {
+    return {
+      field: "user_follow_reference",
+      value: userNotificationDbReference.userFollowEventId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_FOLLOWER) {
     return {
       field: "user_follow_reference",
       value: userNotificationDbReference.userFollowEventId,
@@ -100,37 +128,40 @@ function generateReferenceTableRow({
       field: "user_follow_reference",
       value: userNotificationDbReference.userFollowEventId,
     };
-  } else if (notificationType === NOTIFICATION_EVENTS.ACCEPTED_USER_FOLLOW_REQUEST) {
-    return {
-      field: "user_follow_reference",
-      value: userNotificationDbReference.userFollowEventId,
-    };
-  } else if (notificationType === NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM) {
-    return {
-      field: "published_item_comment_reference",
-      value: userNotificationDbReference.publishedItemCommentId,
-    };
-  } else if (notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT) {
+  }
+  //////////////////////////////////////////////////
+  // Published Items
+  //////////////////////////////////////////////////
+  else if (notificationType === NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM) {
     return {
       field: "published_item_comment_reference",
       value: userNotificationDbReference.publishedItemCommentId,
-    };
-  } else if (notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION) {
-    return {
-      field: "published_item_reference",
-      value: userNotificationDbReference.publishedItemId,
     };
   } else if (notificationType === NOTIFICATION_EVENTS.NEW_LIKE_ON_PUBLISHED_ITEM) {
     return {
       field: "published_item_like_reference",
       value: userNotificationDbReference.publishedItemLikeId,
     };
-  } else if (notificationType === NOTIFICATION_EVENTS.SHOP_ITEM_SOLD) {
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_SHARE_OF_PUBLISHED_ITEM) {
     return {
-      field: "published_item_transaction_reference",
-      value: userNotificationDbReference.publishedItemTransactionId,
+      field: "published_item_reference",
+      value: userNotificationDbReference.publishedItemId,
     };
-  } else if (
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION) {
+    return {
+      field: "published_item_reference",
+      value: userNotificationDbReference.publishedItemId,
+    };
+  } else if (notificationType === NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT) {
+    return {
+      field: "published_item_comment_reference",
+      value: userNotificationDbReference.publishedItemCommentId,
+    };
+  }
+  //////////////////////////////////////////////////
+  // Publishing Channels
+  //////////////////////////////////////////////////
+  else if (
     notificationType === NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION
   ) {
     return {
@@ -144,7 +175,20 @@ function generateReferenceTableRow({
       field: "publishing_channel_submission_reference",
       value: userNotificationDbReference.publishingChannelSubmissionId,
     };
-  } else {
+  }
+  //////////////////////////////////////////////////
+  // Transactions
+  //////////////////////////////////////////////////
+  else if (notificationType === NOTIFICATION_EVENTS.SHOP_ITEM_SOLD) {
+    return {
+      field: "published_item_transaction_reference",
+      value: userNotificationDbReference.publishedItemTransactionId,
+    };
+  }
+  //////////////////////////////////////////////////
+  // Missing Types
+  //////////////////////////////////////////////////
+  else {
     throw new Error(
       `Unhandled notification type "${notificationType}" @ generateReferenceTableRow`,
     );
@@ -257,9 +301,9 @@ export class UserNotificationsTableService extends TableService {
           CHECK (
               (
                   (
-                      notification_type != '${NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM}'
+                      notification_type = '${NOTIFICATION_EVENTS.NEW_COMMENT_ON_PUBLISHED_ITEM}'
                     OR
-                      notification_type != '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT}'
+                      notification_type = '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_COMMENT}'
                   )
                 AND
                   (published_item_comment_reference IS NOT NULL)
@@ -294,13 +338,21 @@ export class UserNotificationsTableService extends TableService {
           CONSTRAINT published_item_reference_null_constraint 
             CHECK (
                 (
-                    (notification_type = '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION}')
+                    (
+                        notification_type = '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION}'
+                      OR
+                        notification_type = '${NOTIFICATION_EVENTS.NEW_SHARE_OF_PUBLISHED_ITEM}'
+                    )
                   AND
                     (published_item_reference IS NOT NULL)
                 )
               OR
                 (
-                    (notification_type != '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION}')
+                    (
+                        notification_type != '${NOTIFICATION_EVENTS.NEW_TAG_IN_PUBLISHED_ITEM_CAPTION}'
+                      OR
+                        notification_type != '${NOTIFICATION_EVENTS.NEW_SHARE_OF_PUBLISHED_ITEM}'
+                    )
                   AND
                     (published_item_reference IS NULL)
                 )
@@ -325,9 +377,9 @@ export class UserNotificationsTableService extends TableService {
             CHECK (
                 (
                     (
-                        notification_type != '${NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION}'
+                        notification_type = '${NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION}'
                       OR
-                        notification_type != '${NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION}'
+                        notification_type = '${NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION}'
                     )
                   AND
                     (publishing_channel_submission_reference IS NOT NULL)
