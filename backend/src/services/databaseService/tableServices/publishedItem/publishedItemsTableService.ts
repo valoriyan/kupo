@@ -487,6 +487,7 @@ export class PublishedItemsTableService extends TableService {
     beforeTimestamp,
     pageSize,
     publishedItemHost,
+    filterOutExpiredAndUnscheduledPublishedItems,
     type,
   }: {
     controller: Controller;
@@ -494,6 +495,7 @@ export class PublishedItemsTableService extends TableService {
     beforeTimestamp?: number;
     pageSize: number;
     publishedItemHost: PublishedItemHostSelector;
+    filterOutExpiredAndUnscheduledPublishedItems: boolean;
     type?: PublishedItemType;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
@@ -502,6 +504,7 @@ export class PublishedItemsTableService extends TableService {
       if (creatorUserIds.length === 0) {
         return Success([]);
       }
+      const currentTimestamp = Date.now();
 
       const queryValues: Array<string | number> = [...creatorUserIds, pageSize];
 
@@ -541,6 +544,27 @@ export class PublishedItemsTableService extends TableService {
         `;
       }
 
+      let filteringWhereClause = "";
+      if (!!filterOutExpiredAndUnscheduledPublishedItems) {
+        filteringWhereClause = `
+          AND
+            (
+              scheduled_publication_timestamp IS NULL
+                OR
+              scheduled_publication_timestamp < $${queryValues.length + 1}
+            ) 
+          AND
+            (
+                expiration_timestamp IS NULL
+              OR
+                expiration_timestamp > $${queryValues.length + 2}
+            )
+        `;
+
+        queryValues.push(currentTimestamp);
+        queryValues.push(currentTimestamp);
+      }
+
       const query = {
         text: `
           SELECT
@@ -560,6 +584,7 @@ export class PublishedItemsTableService extends TableService {
             ${typeConstraintClause}
             ${beforeTimestampCondition}
             ${publishedItemHostClause}
+            ${filteringWhereClause}
           ORDER BY
             scheduled_publication_timestamp DESC
           LIMIT
@@ -726,16 +751,19 @@ export class PublishedItemsTableService extends TableService {
   public async getPublishedItemsByCaptionMatchingSubstring({
     controller,
     captionSubstring,
+    filterOutExpiredAndUnscheduledPublishedItems,
     type,
   }: {
     controller: Controller;
     captionSubstring: string;
+    filterOutExpiredAndUnscheduledPublishedItems: boolean;
     type?: PublishedItemType;
   }): Promise<
     InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
   > {
     try {
-      const queryValues = [captionSubstring];
+      const queryValues: (string | number)[] = [captionSubstring];
+      const currentTimestamp = Date.now();
 
       let typeConstraintClause = "";
       if (!!type) {
@@ -744,6 +772,27 @@ export class PublishedItemsTableService extends TableService {
             type = $${queryValues.length + 1}
         `;
         queryValues.push(type);
+      }
+
+      let filteringWhereClause = "";
+      if (!!filterOutExpiredAndUnscheduledPublishedItems) {
+        filteringWhereClause = `
+          AND
+            (
+              scheduled_publication_timestamp IS NULL
+                OR
+              scheduled_publication_timestamp < $${queryValues.length + 1}
+            ) 
+          AND
+            (
+                expiration_timestamp IS NULL
+              OR
+                expiration_timestamp > $${queryValues.length + 2}
+            )
+        `;
+
+        queryValues.push(currentTimestamp);
+        queryValues.push(currentTimestamp);
       }
 
       const query: QueryConfig = {
@@ -755,6 +804,7 @@ export class PublishedItemsTableService extends TableService {
           WHERE
             caption LIKE CONCAT('%', $1::text, '%' )
             ${typeConstraintClause}
+            ${filteringWhereClause}
           ;
         `,
         values: queryValues,

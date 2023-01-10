@@ -90,6 +90,7 @@ export async function handleSearchForPosts({
         controller,
         captionSubstring: lowercaseTrimmedQuery,
         type: PublishedItemType.POST,
+        filterOutExpiredAndUnscheduledPublishedItems: true,
       },
     );
   if (getPublishedItemsByCaptionMatchingSubstringResponse.type === EitherType.failure) {

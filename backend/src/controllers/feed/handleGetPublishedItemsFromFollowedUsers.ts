@@ -81,6 +81,7 @@ export async function handleGetPublishedItemsFromFollowedUsers({
         pageSize,
         type: publishedItemType,
         publishedItemHost: PublishedItemHostSelector.user,
+        filterOutExpiredAndUnscheduledPublishedItems: true,
       },
     );
   if (getPublishedItemsByCreatorUserIdsResponse.type === EitherType.failure) {
