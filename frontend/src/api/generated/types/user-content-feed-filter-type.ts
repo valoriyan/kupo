@@ -20,7 +20,7 @@
 export enum UserContentFeedFilterType {
   Hashtag = "HASHTAG",
   Username = "USERNAME",
-  Community = "COMMUNITY",
+  PublishingChannel = "PUBLISHING_CHANNEL",
   FollowingUsers = "FOLLOWING_USERS",
   AllPostsForAdmins = "ALL_POSTS_FOR_ADMINS",
 }

@@ -57,5 +57,11 @@ export interface RenderableNewShareOfPublishedItemNotification {
    * @type {RenderablePublishedItem}
    * @memberof RenderableNewShareOfPublishedItemNotification
    */
-  publishedItem: RenderablePublishedItem;
+  sourcePublishedItem: RenderablePublishedItem;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderableNewShareOfPublishedItemNotification
+   */
+  newPublishedItemId: string;
 }

@@ -120,7 +120,7 @@ export async function assembleRenderablePublishingChannelByName({
   //////////////////////////////////////////////////
 
   const maybeGetPublishingChannelByNameResponse =
-    await databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
+    await databaseService.tableNameToServicesMap.publishingChannelsTableService.getMaybePublishingChannelByName(
       {
         controller,
         name,

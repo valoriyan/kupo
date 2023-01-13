@@ -11,7 +11,7 @@ export function generateContentFeedFilterDisplayName({
     return `@${userContentFeedFilter.value}`;
   } else if (userContentFeedFilter.type === UserContentFeedFilterType.Hashtag) {
     return `#${userContentFeedFilter.value}`;
-  } else if (userContentFeedFilter.type === UserContentFeedFilterType.Community) {
+  } else if (userContentFeedFilter.type === UserContentFeedFilterType.PublishingChannel) {
     return `+${userContentFeedFilter.value}`;
   } else {
     throw new Error(`Unknown content feed filter type: ${userContentFeedFilter.type}`);

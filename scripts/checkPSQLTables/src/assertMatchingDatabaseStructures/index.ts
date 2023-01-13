@@ -3,10 +3,11 @@ import { assertMatchingTableStructures } from "./assertMatchingTableStructures";
 
 export function assertMatchingDatabaseStructures(
   localDatabaseStructure: DatabaseStructure,
-  betaDatabaseStructure: DatabaseStructure
+  remoteDatabaseStructure: DatabaseStructure,
+  devEnvironmentBeingReviewed: string
 ) {
   const localTableNames = Object.keys(localDatabaseStructure);
-  const betaTableNames = Object.keys(betaDatabaseStructure);
+  const betaTableNames = Object.keys(remoteDatabaseStructure);
 
   localTableNames.forEach((tableName) => {
     if (!betaTableNames.includes(tableName)) {
@@ -22,8 +23,9 @@ export function assertMatchingDatabaseStructures(
   localTableNames.forEach((tableName) => {
     assertMatchingTableStructures({
       localTableStructure: localDatabaseStructure[tableName],
-      betaTableStructure: betaDatabaseStructure[tableName],
+      betaTableStructure: remoteDatabaseStructure[tableName],
       tableName,
+      devEnvironmentBeingReviewed,
     });
   });
 }

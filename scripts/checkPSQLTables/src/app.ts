@@ -32,13 +32,37 @@ async function run() {
 
   assertMatchingDatabaseStructures(
     localDatabaseStructure,
-    betaDatabaseStructure
+    betaDatabaseStructure,
+    "Beta"
   );
 
   assertThatDatabaseFollowsConstraints({
     databaseConfig: betaDatabaseConfig,
     databaseStructure: betaDatabaseStructure,
   });
+
+  if (!!process.env.PROD_DATABASE_URL) {
+    const prodDatabaseConfig: DatabaseConfig = {
+      databaseName: "valoriyan-prod",
+      implementedDatabaseServiceType: "REMOTE_POSTGRES",
+      databaseUrl: process.env.PROD_DATABASE_URL,
+    };
+
+    const prodDatabaseStructure: DatabaseStructure = await getDatabaseStructure(
+      prodDatabaseConfig
+    );
+
+    assertMatchingDatabaseStructures(
+      localDatabaseStructure,
+      prodDatabaseStructure,
+      "Prod"
+    );
+
+    assertThatDatabaseFollowsConstraints({
+      databaseConfig: prodDatabaseConfig,
+      databaseStructure: prodDatabaseStructure,
+    });
+  }
 }
 
 run();

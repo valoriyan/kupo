@@ -12,7 +12,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
-import { assembleRenderableUserById } from "src/controllers/user/utilities/assembleRenderableUserById";
+import { assembleRenderableUserById } from "../../../controllers/user/utilities/assembleRenderableUserById";
 
 export async function assembleRenderableNewShareOfPublishedItemNotification({
   controller,

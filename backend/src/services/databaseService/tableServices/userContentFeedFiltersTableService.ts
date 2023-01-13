@@ -34,8 +34,8 @@ function convertDBUserContentFeedFilterToUserContentFeedFilter(
     type = UserContentFeedFilterType.HASHTAG;
   } else if (dbUserContentFeedFilter.type === "USERNAME") {
     type = UserContentFeedFilterType.USERNAME;
-  } else if (dbUserContentFeedFilter.type === "COMMUNITY") {
-    type = UserContentFeedFilterType.COMMUNITY;
+  } else if (dbUserContentFeedFilter.type === "PUBLISHING_CHANNEL") {
+    type = UserContentFeedFilterType.PUBLISHING_CHANNEL;
   } else {
     throw new Error("Invalid UserContentFeedFilterType");
   }
@@ -190,7 +190,9 @@ export class UserContentFeedFiltersTableService extends TableService {
   }: {
     controller: Controller;
     userId: string;
-  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UserContentFeedFilter>> {
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UserContentFeedFilter[]>
+  > {
     try {
       const query = generatePSQLGenericDeleteRowsQueryString({
         fieldsUsedToIdentifyRowsToDelete: [{ field: "user_id", value: userId }],
@@ -202,19 +204,7 @@ export class UserContentFeedFiltersTableService extends TableService {
 
       const rows = response.rows;
 
-      if (!!rows.length) {
-        const row = response.rows[0];
-        return Success(convertDBUserContentFeedFilterToUserContentFeedFilter(row));
-      }
-
-      return Failure({
-        controller,
-        httpStatusCode: 500,
-        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-        error: "No userContentFeedFilter row to delete.",
-        additionalErrorInformation:
-          "Error at userContentFeedFiltersTableService.deleteUserContentFeedFiltersByUserId",
-      });
+      return Success(rows.map(convertDBUserContentFeedFilterToUserContentFeedFilter));
     } catch (error) {
       return Failure({
         controller,

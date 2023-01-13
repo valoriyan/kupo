@@ -111,6 +111,18 @@ export interface RenderableUserNotification {
   userSharingPublishedItem: RenderableUser;
   /**
    *
+   * @type {RenderablePublishedItem}
+   * @memberof RenderableUserNotification
+   */
+  sourcePublishedItem: RenderablePublishedItem;
+  /**
+   *
+   * @type {string}
+   * @memberof RenderableUserNotification
+   */
+  newPublishedItemId: string;
+  /**
+   *
    * @type {RenderableUser}
    * @memberof RenderableUserNotification
    */

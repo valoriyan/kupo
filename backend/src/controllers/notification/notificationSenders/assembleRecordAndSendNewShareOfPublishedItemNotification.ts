@@ -13,7 +13,7 @@ import {
 import { RenderableNewShareOfPublishedItemNotification } from "../models/renderableUserNotifications";
 import { BlobStorageService } from "../../../services/blobStorageService";
 import { assembleRenderableUserById } from "../../../controllers/user/utilities/assembleRenderableUserById";
-import { assemblePublishedItemById } from "src/controllers/publishedItem/utilities/assemblePublishedItems";
+import { assemblePublishedItemById } from "../../../controllers/publishedItem/utilities/assemblePublishedItems";
 
 export async function assembleRecordAndSendNewShareOfPublishedItemNotification({
   controller,

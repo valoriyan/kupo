@@ -6,10 +6,12 @@ export function assertMatchingTableStructures({
   localTableStructure,
   betaTableStructure,
   tableName,
+  devEnvironmentBeingReviewed,
 }: {
   localTableStructure: TableStructure;
   betaTableStructure: TableStructure;
   tableName: string;
+  devEnvironmentBeingReviewed: string;
 }) {
   assertMatchingColumnStructures({
     localTableStructure,
@@ -21,5 +23,6 @@ export function assertMatchingTableStructures({
     localTableConstraints: localTableStructure.constraints,
     betaTableConstraints: betaTableStructure.constraints,
     tableName,
+    devEnvironmentBeingReviewed,
   });
 }

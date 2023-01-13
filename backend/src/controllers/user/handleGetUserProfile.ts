@@ -41,7 +41,7 @@ export async function handleGetUserProfile({
   const lowercaseUsername = username.toLowerCase();
 
   const selectUserByUsernameResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUserByUsername(
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectMaybeUserByUsername(
       { controller, username: lowercaseUsername },
     );
   if (selectUserByUsernameResponse.type === EitherType.failure) {

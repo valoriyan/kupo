@@ -309,7 +309,7 @@ export class UsersTableService extends TableService {
     }
   }
 
-  public async selectUserByUsername({
+  public async selectMaybeUserByUsername({
     controller,
     username,
   }: {

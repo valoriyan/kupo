@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.assertMatchingDatabaseStructures = void 0;
 const assertMatchingTableStructures_1 = require("./assertMatchingTableStructures");
-function assertMatchingDatabaseStructures(localDatabaseStructure, betaDatabaseStructure) {
+function assertMatchingDatabaseStructures(localDatabaseStructure, remoteDatabaseStructure, devEnvironmentBeingReviewed) {
     const localTableNames = Object.keys(localDatabaseStructure);
-    const betaTableNames = Object.keys(betaDatabaseStructure);
+    const betaTableNames = Object.keys(remoteDatabaseStructure);
     localTableNames.forEach((tableName) => {
         if (!betaTableNames.includes(tableName)) {
             throw new Error(`table '${tableName}' MISSING FROM BETA`);
@@ -18,8 +18,9 @@ function assertMatchingDatabaseStructures(localDatabaseStructure, betaDatabaseSt
     localTableNames.forEach((tableName) => {
         (0, assertMatchingTableStructures_1.assertMatchingTableStructures)({
             localTableStructure: localDatabaseStructure[tableName],
-            betaTableStructure: betaDatabaseStructure[tableName],
+            betaTableStructure: remoteDatabaseStructure[tableName],
             tableName,
+            devEnvironmentBeingReviewed,
         });
     });
 }

@@ -28,11 +28,24 @@ function run() {
         };
         const localDatabaseStructure = yield (0, getDatabaseStructure_1.getDatabaseStructure)(localDatabaseConfig);
         const betaDatabaseStructure = yield (0, getDatabaseStructure_1.getDatabaseStructure)(betaDatabaseConfig);
-        (0, assertMatchingDatabaseStructures_1.assertMatchingDatabaseStructures)(localDatabaseStructure, betaDatabaseStructure);
+        (0, assertMatchingDatabaseStructures_1.assertMatchingDatabaseStructures)(localDatabaseStructure, betaDatabaseStructure, "Beta");
         (0, assertThatDatabaseFollowsConstraints_1.assertThatDatabaseFollowsConstraints)({
             databaseConfig: betaDatabaseConfig,
             databaseStructure: betaDatabaseStructure,
         });
+        if (!!process.env.PROD_DATABASE_URL) {
+            const prodDatabaseConfig = {
+                databaseName: "valoriyan-prod",
+                implementedDatabaseServiceType: "REMOTE_POSTGRES",
+                databaseUrl: process.env.PROD_DATABASE_URL,
+            };
+            const prodDatabaseStructure = yield (0, getDatabaseStructure_1.getDatabaseStructure)(prodDatabaseConfig);
+            (0, assertMatchingDatabaseStructures_1.assertMatchingDatabaseStructures)(localDatabaseStructure, prodDatabaseStructure, "Prod");
+            (0, assertThatDatabaseFollowsConstraints_1.assertThatDatabaseFollowsConstraints)({
+                databaseConfig: prodDatabaseConfig,
+                databaseStructure: prodDatabaseStructure,
+            });
+        }
     });
 }
 run();

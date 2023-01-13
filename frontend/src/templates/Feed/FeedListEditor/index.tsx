@@ -52,13 +52,13 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
 
     const isHashTag = newFilterText.startsWith("#");
     const isUser = newFilterText.startsWith("@");
-    const isCommunity = newFilterText.startsWith("+");
+    const isPublishingChannel = newFilterText.startsWith("+");
 
     const value = newFilterText.slice(1);
     let type: UserContentFeedFilterType | null = null;
     if (isHashTag) type = UserContentFeedFilterType.Hashtag;
     if (isUser) type = UserContentFeedFilterType.Username;
-    if (isCommunity) type = UserContentFeedFilterType.Community;
+    if (isPublishingChannel) type = UserContentFeedFilterType.PublishingChannel;
     if (type === null) return;
 
     const contentFeedFilterId = type + value;

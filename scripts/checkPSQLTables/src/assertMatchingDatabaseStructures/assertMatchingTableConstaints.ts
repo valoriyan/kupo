@@ -7,10 +7,12 @@ export function assertMatchingTableConstaints({
   localTableConstraints,
   betaTableConstraints,
   tableName,
+  devEnvironmentBeingReviewed,
 }: {
   localTableConstraints: TableConstraints;
   betaTableConstraints: TableConstraints;
   tableName: string;
+  devEnvironmentBeingReviewed: string;
 }) {
   [
     "foreignKeyConstraints",
@@ -22,6 +24,7 @@ export function assertMatchingTableConstaints({
       betaTableConstraints,
       tableName,
       constraintType,
+      devEnvironmentBeingReviewed,
     });
   });
 }
@@ -32,12 +35,14 @@ function assertMatchingConstraintValues({
   tableName,
   constraintType,
   constraintName,
+  devEnvironmentBeingReviewed,
 }: {
   localConstraint: Constraint;
   betaConstraint: Constraint;
   tableName: string;
   constraintType: string;
   constraintName: string;
+  devEnvironmentBeingReviewed: string;
 }) {
   const localConstraintDefinition: string =
     localConstraint.constraint_definition;
@@ -45,7 +50,7 @@ function assertMatchingConstraintValues({
 
   if (localConstraintDefinition !== betaConstraintDefinition) {
     throw new Error(
-      `Non matching definitions for constraint '${tableName}->${constraintName}->${constraintType}' |  local:'${localConstraintDefinition}' | beta:'${betaConstraintDefinition}'`
+      `Non matching definitions for constraint '${tableName}->${constraintName}->${constraintType}' |  local:'${localConstraintDefinition}' | ${devEnvironmentBeingReviewed}:'${betaConstraintDefinition}'`
     );
   }
 }
@@ -55,11 +60,13 @@ function assertMatchingConstraintsByType({
   betaTableConstraints,
   tableName,
   constraintType,
+  devEnvironmentBeingReviewed,
 }: {
   localTableConstraints: TableConstraints;
   betaTableConstraints: TableConstraints;
   tableName: string;
   constraintType: string;
+  devEnvironmentBeingReviewed: string;
 }) {
   const localConstraintNames: string[] = Object.keys(
     localTableConstraints[constraintType]
@@ -73,6 +80,7 @@ function assertMatchingConstraintsByType({
     betaConstraintNames,
     tableName,
     constraintType,
+    devEnvironmentBeingReviewed,
   });
 
   localConstraintNames.forEach((constraintName) => {
@@ -82,6 +90,7 @@ function assertMatchingConstraintsByType({
       tableName,
       constraintType,
       constraintName,
+      devEnvironmentBeingReviewed,
     });
   });
 }
@@ -91,23 +100,25 @@ function assertMatchingConstraintNames({
   betaConstraintNames,
   tableName,
   constraintType,
+  devEnvironmentBeingReviewed,
 }: {
   localConstraintNames: string[];
   betaConstraintNames: string[];
   tableName: string;
   constraintType: string;
+  devEnvironmentBeingReviewed: string;
 }) {
   localConstraintNames.forEach((constraintName) => {
     if (!betaConstraintNames.includes(constraintName)) {
       throw new Error(
-        `constraint '${constraintName}' | '${constraintType}' missing from BETA table '${tableName}'`
+        `constraint '${constraintName}' | '${constraintType}' missing from ${devEnvironmentBeingReviewed} table '${tableName}'`
       );
     }
   });
   betaConstraintNames.forEach((constraintName) => {
     if (!localConstraintNames.includes(constraintName)) {
       throw new Error(
-        `constraint '${constraintName}' | '${constraintType}' of table '${tableName}' IS IN BETA BUT NOT LOCAL`
+        `constraint '${constraintName}' | '${constraintType}' of table '${tableName}' IS IN ${devEnvironmentBeingReviewed} BUT NOT LOCAL`
       );
     }
   });

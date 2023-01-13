@@ -68,7 +68,7 @@ export async function handleGetPublishedItemsInPublishingChannel({
   //////////////////////////////////////////////////
 
   const maybeGetPublishingChannelByNameResponse =
-    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getPublishingChannelByName(
+    await controller.databaseService.tableNameToServicesMap.publishingChannelsTableService.getMaybePublishingChannelByName(
       {
         controller,
         name: publishingChannelName,

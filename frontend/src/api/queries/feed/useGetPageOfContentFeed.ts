@@ -29,8 +29,8 @@ export const useGetPageOfContentFeed = ({
           pageParam,
           hashtag: filterValue,
         });
-      } else if (filterType === UserContentFeedFilterType.Community) {
-        return fetchPageOfContentFromFromCommunity({
+      } else if (filterType === UserContentFeedFilterType.PublishingChannel) {
+        return fetchPageOfContentFromFromPublishingChannel({
           pageParam,
           publishingChannelName: filterValue,
         });
@@ -95,7 +95,7 @@ async function fetchPageOfContentFromFromFollowedHashtag({
   };
 }
 
-async function fetchPageOfContentFromFromCommunity({
+async function fetchPageOfContentFromFromPublishingChannel({
   pageParam = undefined,
   publishingChannelName,
 }: {

@@ -219,7 +219,7 @@ export class PublishingChannelsTableService extends TableService {
   // READ //////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  public async getPublishingChannelByName({
+  public async getMaybePublishingChannelByName({
     controller,
     name,
   }: {
