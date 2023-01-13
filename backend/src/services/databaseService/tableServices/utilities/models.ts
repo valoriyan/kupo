@@ -5,7 +5,7 @@ export interface PSQLFieldAndValue<T> {
 
 export interface PSQLUpdateFieldAndValue<T> extends PSQLFieldAndValue<T> {
   settings?: {
-    includeIfEmpty?: boolean;
+    includeWheneverNotUndefined?: boolean;
   };
 }
 

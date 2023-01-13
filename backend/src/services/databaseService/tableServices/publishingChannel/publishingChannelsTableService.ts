@@ -487,32 +487,32 @@ export class PublishingChannelsTableService extends TableService {
         {
           field: "external_url_1",
           value: externalUrl1,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "external_url_2",
           value: externalUrl2,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "external_url_3",
           value: externalUrl3,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "external_url_4",
           value: externalUrl4,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "external_url_5",
           value: externalUrl5,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "comma_separated_banned_words",
           value: updatedCommaSeparatedBannedWords,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
       ];
     } else {
@@ -533,27 +533,27 @@ export class PublishingChannelsTableService extends TableService {
         {
           field: "publishing_channel_rule_1",
           value: publishingChannelRule1,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "publishing_channel_rule_2",
           value: publishingChannelRule2,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "publishing_channel_rule_3",
           value: publishingChannelRule3,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "publishing_channel_rule_4",
           value: publishingChannelRule4,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
         {
           field: "publishing_channel_rule_5",
           value: publishingChannelRule5,
-          settings: { includeIfEmpty: true },
+          settings: { includeWheneverNotUndefined: true },
         },
       ];
     } else {
@@ -567,7 +567,7 @@ export class PublishingChannelsTableService extends TableService {
           {
             field: "description",
             value: description,
-            settings: { includeIfEmpty: true },
+            settings: { includeWheneverNotUndefined: true },
           },
           { field: "background_image_blob_file_key", value: backgroundImageBlobFileKey },
           { field: "profile_picture_blob_file_key", value: profilePictureBlobFileKey },

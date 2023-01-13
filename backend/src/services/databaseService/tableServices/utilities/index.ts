@@ -35,6 +35,9 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
   tableName: string;
 }): QueryConfig {
   const filteredUpdatedFields = updatedFields
+    //////////////////////////////////////////////////
+    // Database cannot be given number inputs
+    //////////////////////////////////////////////////
     .map((updatedField) => {
       if (typeof updatedField.value === "number") {
         return {
@@ -45,8 +48,9 @@ export function generatePSQLGenericUpdateRowQueryString<T>({
       return updatedField;
     })
     .filter(({ value, settings }) => {
-      const includeIfEmpty = !!settings && !!settings.includeIfEmpty;
-      return includeIfEmpty || !!value;
+      const includeWheneverNotUndefined =
+        !!settings && !!settings.includeWheneverNotUndefined && value !== undefined;
+      return includeWheneverNotUndefined || !!value;
     });
 
   if (filteredUpdatedFields.length === 0) {

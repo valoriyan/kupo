@@ -206,7 +206,11 @@ export class StoredCreditCardDataTableService extends TableService {
         string | number | boolean
       >({
         updatedFields: [
-          { field: "is_primary_card", value: false, settings: { includeIfEmpty: true } },
+          {
+            field: "is_primary_card",
+            value: false,
+            settings: { includeWheneverNotUndefined: true },
+          },
         ],
         fieldsUsedToIdentifyUpdatedRows: [
           {
