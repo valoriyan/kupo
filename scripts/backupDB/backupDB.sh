@@ -1,0 +1,1 @@
+pg_dump $DATABASE_URL > $OUTPUT_FILEPATH
