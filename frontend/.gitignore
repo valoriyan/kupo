@@ -39,3 +39,6 @@ storybook-static
 # cypress videos
 cypress/videos
 cypress/screenshots
+
+# TypeScript cache
+*.tsbuildinfo

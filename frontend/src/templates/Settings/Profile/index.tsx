@@ -12,6 +12,7 @@ import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { CacheKeys } from "#/contexts/queryClient";
 import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
 import { useFormField } from "#/utils/useFormField";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 import { goToUserProfilePage } from "../../UserProfile";
 import { DiscoverSettings } from "./DiscoverSettings";
 import { PrivacySettings } from "./PrivacySettings";
@@ -70,6 +71,8 @@ export const Profile = ({ user }: ProfileProps) => {
   const { mutateAsync: setOwnHashtags } = useSetOwnHashtags();
 
   const [isProfileUpdating, setIsProfileUpdating] = useState(false);
+
+  useWarnUnsavedChanges(isAnyTouched || isProfileUpdating);
 
   const saveProfileSettings = async () => {
     setIsProfileUpdating(true);

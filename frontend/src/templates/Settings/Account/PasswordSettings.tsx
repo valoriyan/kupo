@@ -6,11 +6,14 @@ import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 export const PasswordSettings = () => {
   const { mutateAsync: updatePassword, isLoading } = useUpdatePassword();
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
+
+  useWarnUnsavedChanges(Boolean(password || confirmedPassword || isLoading));
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();

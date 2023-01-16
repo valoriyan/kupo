@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { FileDescriptor, RenderableUser } from "#/api";
+import { useUploadFile } from "#/api/mutations/fileUpload/uploadFile";
 import { Avatar } from "#/components/Avatar";
 import { Button } from "#/components/Button";
 import { HiddenInput } from "#/components/HiddenInput";
@@ -14,12 +15,12 @@ import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { LimitedTextArea } from "#/components/LimitedTextArea";
 import { ListCreator } from "#/components/ListCreator";
 import { ScrollArea } from "#/components/ScrollArea";
+import { Spinner } from "#/components/Spinner";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
 import { css, styled } from "#/styling";
 import { UsersInput } from "#/templates/Messages/CreateChatRoom/UsersInput";
-import { useUploadFile } from "#/api/mutations/fileUpload/uploadFile";
-import { Spinner } from "#/components/Spinner";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 export interface NewCommunityFormProps {
   name: string;
@@ -71,6 +72,10 @@ export const NewCommunityForm = ({
   const { mutateAsync: uploadFile } = useUploadFile();
   const [isUploadingPfp, setIsUploadingPfp] = useState(false);
   const [isUploadingBackgroundImg, setIsUploadingBackgroundImg] = useState(false);
+
+  const isLoading = isSubmitting || isUploadingPfp || isUploadingBackgroundImg;
+
+  useWarnUnsavedChanges(!isSubmitDisabled || isLoading);
 
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>, type: "pfp" | "bg") => {
     const { files } = e.currentTarget;
@@ -206,12 +211,7 @@ export const NewCommunityForm = ({
           <Button
             size="lg"
             variant="secondary"
-            disabled={
-              isSubmitDisabled ||
-              isSubmitting ||
-              isUploadingPfp ||
-              isUploadingBackgroundImg
-            }
+            disabled={isSubmitDisabled || isLoading}
             onClick={onSubmit}
           >
             <TextOrSpinner isLoading={isSubmitting}>{submitLabel}</TextOrSpinner>

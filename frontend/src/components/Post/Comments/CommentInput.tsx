@@ -6,6 +6,7 @@ import { Flex, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 const COMMENT_CHAR_LIMIT = 300;
 
@@ -16,6 +17,8 @@ export interface CommentInputProps {
 export const CommentInput = ({ postId }: CommentInputProps) => {
   const { mutateAsync: commentOnPost, isLoading } = useCommentOnPublishedItem();
   const [text, setText] = useState("");
+
+  useWarnUnsavedChanges(!!text);
 
   const onSubmitComment: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();

@@ -9,6 +9,7 @@ import { ScrollArea } from "#/components/ScrollArea";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 import { AdditionalScreen } from "..";
 import { useFormState } from "../FormContext";
 
@@ -34,6 +35,8 @@ export const NewPost = (props: NewPostProps) => {
 
   const canSubmit =
     !!caption || (!!mediaFiles.length && mediaFiles.every((file) => !file.isLoading));
+
+  useWarnUnsavedChanges(canSubmit || isLoading);
 
   return (
     <ScrollArea>

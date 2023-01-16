@@ -5,6 +5,7 @@ import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 export interface ContactInfoSettingsProps {
   currentEmail: string | undefined;
@@ -13,6 +14,8 @@ export interface ContactInfoSettingsProps {
 export const ContactInfoSettings = ({ currentEmail }: ContactInfoSettingsProps) => {
   const { mutateAsync: updateProfile, isLoading } = useUpdateOwnProfile();
   const [newEmail, setNewEmail] = useState<string>("");
+
+  useWarnUnsavedChanges((newEmail && currentEmail !== newEmail) || isLoading);
 
   useEffect(() => {
     if (currentEmail) {

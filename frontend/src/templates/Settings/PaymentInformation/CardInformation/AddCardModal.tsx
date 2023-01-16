@@ -7,6 +7,7 @@ import { ComponentGroup, useSecurion } from "#/contexts/securion";
 import { styled } from "#/styling";
 import { useStoreCreditCard } from "#/api/mutations/payment/storeCreditCard";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 export const openAddCardModal = (args?: Omit<AddCardModalProps, "hide">) => {
   openModal({
@@ -32,6 +33,8 @@ export const AddCardModal = (props: AddCardModalProps) => {
       setFormComponents(securion.createComponentGroup().automount("#payment-form"));
     }
   }, [securion, formComponents]);
+
+  useWarnUnsavedChanges(!!cardholderName || isLoading);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

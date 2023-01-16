@@ -16,6 +16,7 @@ import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 import { UsersInput } from "#/templates/Messages/CreateChatRoom/UsersInput";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 import { AdditionalScreen } from "..";
 import { useFormState } from "../FormContext";
 
@@ -67,6 +68,8 @@ export const NewShopItem = (props: NewShopItemProps) => {
 
   const canSubmit =
     !!title && !!mediaFiles.length && !!purchasedMediaFiles.length && !!price;
+
+  useWarnUnsavedChanges(canSubmit || isLoading);
 
   return (
     <ScrollArea>

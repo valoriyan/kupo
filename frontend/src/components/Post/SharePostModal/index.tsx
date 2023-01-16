@@ -19,6 +19,7 @@ import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { styled } from "#/styling";
 import { CloseButton, Header } from "#/templates/AddContent";
 import { SectionWrapper } from "#/templates/AddContent/NewPost";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 import { SharedPost } from "../SharedPost";
 
 export const openSharePostModal = (props: SharePostModalProps) =>
@@ -40,6 +41,8 @@ export const SharePostModal = ({
   const [expirationDate, setExpirationDate] = useState<Date>();
 
   const { mutateAsync: sharePost, isLoading } = useSharePost();
+
+  useWarnUnsavedChanges(!!caption || isLoading);
 
   const postNow = async () => {
     await sharePost({

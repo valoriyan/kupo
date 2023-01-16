@@ -29,6 +29,14 @@ export const ListCreator = ({ list, onChange, tooltipText, limit }: ListCreatorP
     onChange(list.filter((_, i) => i !== index));
   };
 
+  const onBlur = () => {
+    if (limit && list.length >= limit) {
+      setNewItem("");
+      return;
+    }
+    addNewItemToList();
+  };
+
   return (
     <Stack css={{ gap: "$4" }}>
       {!!list.length && (
@@ -73,6 +81,7 @@ export const ListCreator = ({ list, onChange, tooltipText, limit }: ListCreatorP
           onKeyDown={(e) => {
             if (e.key === "Enter") addNewItemToList();
           }}
+          onBlur={onBlur}
         />
         <IconButton disabled={disabled || !newItem} onClick={addNewItemToList}>
           <MathPlusIcon />

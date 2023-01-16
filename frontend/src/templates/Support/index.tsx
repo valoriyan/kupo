@@ -4,8 +4,9 @@ import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 import { TextArea } from "#/components/TextArea";
 import { Body, MainTitle } from "#/components/Typography";
-import { styled } from "#/styling";
 import { useCurrentUserId } from "#/contexts/auth";
+import { styled } from "#/styling";
+import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 const SUPPORT_EMAIL = "support@kupo.social";
 
@@ -14,6 +15,8 @@ export const Support = () => {
 
   const [userSubject, setUserSubject] = useState("");
   const [userDescription, setUserDescription] = useState("");
+
+  useWarnUnsavedChanges(Boolean(userSubject || userDescription));
 
   const subject = `[KUPO SUPPORT] ${userSubject}`;
   const description = `${userDescription}\n\n-- Additional Information --\nUser ID: ${
