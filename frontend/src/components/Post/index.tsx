@@ -35,6 +35,7 @@ export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProp
     likes,
     comments,
     sharedItem,
+    host,
   } = post;
 
   const { handleLikeButton, handleSaveButton, menuActions, user } = usePostActions(post);
@@ -66,6 +67,7 @@ export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProp
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
         sharedItem={sharedItem}
+        host={host}
         menuActions={menuActions}
       />
       {!!hashtags.length && (

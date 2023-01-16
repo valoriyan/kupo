@@ -22,7 +22,7 @@ export const SharedPost = ({
   setCurrentMediaElement,
   contentHeight,
 }: SharedPostProps) => {
-  const { authorUserId, caption, mediaElements } = post;
+  const { authorUserId, caption, mediaElements, host } = post;
   const { data: user } = useGetUserByUserId({ userId: authorUserId });
   const relativeTimestamp = getRelativeTimestamp(post.creationTimestamp);
 
@@ -46,6 +46,7 @@ export const SharedPost = ({
         }
         mediaElements={mediaElements}
         setCurrentMediaElement={setCurrentMediaElement}
+        host={host}
         onPostClick={() => goToPostPage(post.id)}
         contentHeight={contentHeight}
       />

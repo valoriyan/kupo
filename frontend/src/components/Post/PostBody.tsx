@@ -1,5 +1,6 @@
 import {
   MediaElement,
+  PublishedItemHost,
   PublishedItemType,
   RootPurchasedShopItemDetails,
   RootRenderablePost,
@@ -9,6 +10,7 @@ import { styled } from "#/styling";
 import { goToUserProfilePage } from "#/templates/UserProfile";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
+import { CommunityName } from "../CommunityName";
 import { ImageIcon } from "../Icons";
 import { Flex, Stack } from "../Layout";
 import { Body, Subtext } from "../Typography";
@@ -31,6 +33,7 @@ export interface PostBodyProps {
   mediaElements: MediaElement[];
   setCurrentMediaElement?: (elem: MediaElement | undefined) => void;
   sharedItem?: RootRenderablePost | RootShopItemPreview | RootPurchasedShopItemDetails;
+  host: PublishedItemHost;
   menuActions?: MenuAction[];
   onPostClick?: () => void;
   contentHeight?: string;
@@ -49,22 +52,31 @@ export const PostBody = (props: PostBodyProps) => {
           pb: "$3",
           gap: "$3",
           alignItems: "center",
+          justifyContent: "space-between",
           cursor: props.onPostClick ? "pointer" : "default",
         }}
         onClick={props.onPostClick}
       >
-        <Avatar
-          alt={`@${props.authorUserName ?? "User"}'s profile picture`}
-          src={props.authorUserAvatar}
-          size="$7"
-          onClick={(e) => {
-            if (!props.authorUserName) return;
-            e.stopPropagation();
-            goToUserProfilePage(props.authorUserName);
-          }}
-        />
-        <UserName username={props.authorUserName} />
-        <Flex css={{ marginLeft: "auto", gap: "$5", alignItems: "center" }}>
+        <Flex css={{ gap: "$3", alignItems: "center" }}>
+          <Avatar
+            alt={`@${props.authorUserName ?? "User"}'s profile picture`}
+            src={props.authorUserAvatar}
+            size="$7"
+            onClick={(e) => {
+              if (!props.authorUserName) return;
+              e.stopPropagation();
+              goToUserProfilePage(props.authorUserName);
+            }}
+          />
+          <UserName username={props.authorUserName} />
+          {typeof props.host !== "string" && (
+            <>
+              <Subtext css={{ color: "$secondaryText" }}>in</Subtext>
+              <CommunityName name={props.host.name} />
+            </>
+          )}
+        </Flex>
+        <Flex css={{ gap: "$5", alignItems: "center" }}>
           <Timestamp>{props.relativeTimestamp}</Timestamp>
           {props.menuActions && <ActionMenu actions={props.menuActions} />}
         </Flex>
