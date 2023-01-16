@@ -75,7 +75,7 @@ export const NewCommunityForm = ({
 
   const isLoading = isSubmitting || isUploadingPfp || isUploadingBackgroundImg;
 
-  useWarnUnsavedChanges(!isSubmitDisabled || isLoading);
+  const clearWarning = useWarnUnsavedChanges(!isSubmitDisabled);
 
   const onFileChange = async (e: ChangeEvent<HTMLInputElement>, type: "pfp" | "bg") => {
     const { files } = e.currentTarget;
@@ -212,7 +212,10 @@ export const NewCommunityForm = ({
             size="lg"
             variant="secondary"
             disabled={isSubmitDisabled || isLoading}
-            onClick={onSubmit}
+            onClick={() => {
+              clearWarning();
+              onSubmit();
+            }}
           >
             <TextOrSpinner isLoading={isSubmitting}>{submitLabel}</TextOrSpinner>
           </Button>

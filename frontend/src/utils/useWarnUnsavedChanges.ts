@@ -1,20 +1,20 @@
 import Router from "next/router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { isServer } from "./isServer";
 
+const WARNING_TEXT =
+  "You have unsaved changes - are you sure you wish to leave this page?";
+
 export const useWarnUnsavedChanges = (hasUnsavedChanges: boolean) => {
+  const handleBrowseAway = useCallback(() => {
+    if (!hasUnsavedChanges) return;
+    if (window.confirm(WARNING_TEXT)) return;
+    Router.events.emit("routeChangeError");
+    throw "routeChange aborted.";
+  }, [hasUnsavedChanges]);
+
   useEffect(() => {
     if (isServer()) return;
-
-    const warningText =
-      "You have unsaved changes - are you sure you wish to leave this page?";
-
-    const handleBrowseAway = () => {
-      if (!hasUnsavedChanges) return;
-      if (window.confirm(warningText)) return;
-      Router.events.emit("routeChangeError");
-      throw "routeChange aborted.";
-    };
 
     if (hasUnsavedChanges) {
       window.onbeforeunload = () => true;
@@ -24,5 +24,12 @@ export const useWarnUnsavedChanges = (hasUnsavedChanges: boolean) => {
       window.onbeforeunload = null;
       Router.events.off("routeChangeStart", handleBrowseAway);
     };
-  }, [hasUnsavedChanges]);
+  }, [handleBrowseAway, hasUnsavedChanges]);
+
+  const clearWarning = () => {
+    window.onbeforeunload = null;
+    Router.events.off("routeChangeStart", handleBrowseAway);
+  };
+
+  return clearWarning;
 };

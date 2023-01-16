@@ -42,9 +42,10 @@ export const SharePostModal = ({
 
   const { mutateAsync: sharePost, isLoading } = useSharePost();
 
-  useWarnUnsavedChanges(!!caption || isLoading);
+  const clearWarning = useWarnUnsavedChanges(!!caption);
 
   const postNow = async () => {
+    clearWarning();
     await sharePost({
       sharedPublishedItemId: post.id,
       caption,

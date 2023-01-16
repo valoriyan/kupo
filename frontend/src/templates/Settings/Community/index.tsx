@@ -155,7 +155,7 @@ export const Community = ({ community }: CommunityProps) => {
       setModeratorNames={setModeratorNames}
       resolvedModerators={resolvedModerators}
       submitLabel="Save Settings"
-      isSubmitDisabled={!isAnyTouched || isLoading}
+      isSubmitDisabled={!isAnyTouched}
       onSubmit={saveCommunitySettings}
       isSubmitting={isLoading}
     />

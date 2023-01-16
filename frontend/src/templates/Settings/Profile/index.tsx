@@ -72,9 +72,10 @@ export const Profile = ({ user }: ProfileProps) => {
 
   const [isProfileUpdating, setIsProfileUpdating] = useState(false);
 
-  useWarnUnsavedChanges(isAnyTouched || isProfileUpdating);
+  const clearWarning = useWarnUnsavedChanges(isAnyTouched || isProfileUpdating);
 
   const saveProfileSettings = async () => {
+    clearWarning();
     setIsProfileUpdating(true);
     const promises = [];
 

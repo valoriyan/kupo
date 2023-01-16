@@ -1,4 +1,4 @@
-import { KeyboardEvent } from "react";
+import { FormEvent, KeyboardEvent } from "react";
 import { Button } from "#/components/Button";
 import { styled } from "#/styling";
 import { Subtext } from "#/components/Typography";
@@ -19,7 +19,12 @@ export const MessageComposer = ({
   onSubmitNewChatMessage,
   disabled,
 }: MessageComposerProps) => {
-  useWarnUnsavedChanges(!!newChatMessage);
+  const clearWarning = useWarnUnsavedChanges(!!newChatMessage);
+
+  function onSubmit(event: FormEvent<Element>) {
+    clearWarning();
+    onSubmitNewChatMessage(event);
+  }
 
   function onUpdateNewChatMessage(event: React.ChangeEvent<HTMLTextAreaElement>) {
     event.preventDefault();
@@ -28,12 +33,12 @@ export const MessageComposer = ({
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && event.shiftKey === false) {
-      onSubmitNewChatMessage(event);
+      onSubmit(event);
     }
   }
 
   return (
-    <Wrapper onSubmit={onSubmitNewChatMessage}>
+    <Wrapper onSubmit={onSubmit}>
       <MessageInput
         rows={3}
         onKeyDown={onKeyDown}

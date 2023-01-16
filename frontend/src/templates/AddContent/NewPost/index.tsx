@@ -36,7 +36,7 @@ export const NewPost = (props: NewPostProps) => {
   const canSubmit =
     !!caption || (!!mediaFiles.length && mediaFiles.every((file) => !file.isLoading));
 
-  useWarnUnsavedChanges(canSubmit || isLoading);
+  const clearWarning = useWarnUnsavedChanges(canSubmit);
 
   return (
     <ScrollArea>
@@ -85,7 +85,10 @@ export const NewPost = (props: NewPostProps) => {
             size="lg"
             variant="secondary"
             disabled={!canSubmit || isLoading}
-            onClick={() => createPost()}
+            onClick={() => {
+              clearWarning();
+              createPost();
+            }}
             data-cy="create-content-item-button"
           >
             <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>

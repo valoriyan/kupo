@@ -69,7 +69,7 @@ export const NewShopItem = (props: NewShopItemProps) => {
   const canSubmit =
     !!title && !!mediaFiles.length && !!purchasedMediaFiles.length && !!price;
 
-  useWarnUnsavedChanges(canSubmit || isLoading);
+  const clearWarning = useWarnUnsavedChanges(canSubmit);
 
   return (
     <ScrollArea>
@@ -152,7 +152,10 @@ export const NewShopItem = (props: NewShopItemProps) => {
             size="lg"
             variant="secondary"
             disabled={!canSubmit || isLoading}
-            onClick={() => createShopItem(uuid())}
+            onClick={() => {
+              clearWarning();
+              createShopItem(uuid());
+            }}
           >
             <TextOrSpinner isLoading={isLoading}>Post Now</TextOrSpinner>
           </Button>

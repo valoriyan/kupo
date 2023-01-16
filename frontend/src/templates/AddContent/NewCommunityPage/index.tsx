@@ -50,7 +50,7 @@ export const NewCommunityPage = () => {
       resolvedModerators={resolvedModerators}
       setLinksList={setLinksList}
       submitLabel="Create Now"
-      isSubmitDisabled={!canSubmit || isLoading}
+      isSubmitDisabled={!canSubmit}
       onSubmit={() =>
         createCommunityPage({
           publishingChannelName: name,

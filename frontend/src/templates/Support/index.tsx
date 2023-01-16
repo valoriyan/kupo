@@ -16,7 +16,7 @@ export const Support = () => {
   const [userSubject, setUserSubject] = useState("");
   const [userDescription, setUserDescription] = useState("");
 
-  useWarnUnsavedChanges(Boolean(userSubject || userDescription));
+  const clearWarning = useWarnUnsavedChanges(Boolean(userSubject || userDescription));
 
   const subject = `[KUPO SUPPORT] ${userSubject}`;
   const description = `${userDescription}\n\n-- Additional Information --\nUser ID: ${
@@ -41,6 +41,7 @@ export const Support = () => {
         <Form
           onSubmit={(e) => {
             e.preventDefault();
+            clearWarning();
             window.open(mailTo);
           }}
         >
