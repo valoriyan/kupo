@@ -11,6 +11,7 @@ import { NewCommunityForm } from "#/templates/AddContent/NewCommunityPage/NewCom
 import { goToCommunityPage } from "#/templates/CommunityPage";
 import { isSuccessfulStatus } from "#/utils/isSuccessfulStatus";
 import { useFormField } from "#/utils/useFormField";
+import { DeleteCommunityButton } from "./DeleteCommunity";
 
 export interface CommunityProps {
   community: RenderablePublishingChannel;
@@ -158,6 +159,12 @@ export const Community = ({ community }: CommunityProps) => {
       isSubmitDisabled={!isAnyTouched}
       onSubmit={saveCommunitySettings}
       isSubmitting={isLoading}
+      secondaryAction={
+        <DeleteCommunityButton
+          publishingChannelId={community.publishingChannelId}
+          communityName={community.name}
+        />
+      }
     />
   );
 };

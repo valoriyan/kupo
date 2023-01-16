@@ -7,11 +7,10 @@ import { useResolvePendingCommunitySubmission } from "#/api/mutations/community/
 import { Button, IconButton } from "#/components/Button";
 import { CloseIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
-import { openModal } from "#/components/Modal";
+import { openModal, StandardModalWrapper } from "#/components/Modal";
 import { RadioGroup } from "#/components/RadioGroup";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Heading, MainTitle } from "#/components/Typography";
-import { styled } from "#/styling";
 
 export const openRejectionModal = (props: Omit<RejectionModalProps, "hide">) =>
   openModal({
@@ -52,7 +51,7 @@ export const RejectionModal = ({
   };
 
   return (
-    <Wrapper>
+    <StandardModalWrapper>
       <Flex css={{ justifyContent: "space-between", alignItems: "center", gap: "$3" }}>
         <MainTitle>Reject Post?</MainTitle>
         <IconButton onClick={hide}>
@@ -76,18 +75,6 @@ export const RejectionModal = ({
           <TextOrSpinner isLoading={isResolvingSubmission}>Reject Post</TextOrSpinner>
         </Button>
       </Flex>
-    </Wrapper>
+    </StandardModalWrapper>
   );
 };
-
-const Wrapper = styled(Stack, {
-  gap: "$7",
-  px: "$7",
-  py: "$6",
-  bg: "$modalBackground",
-  borderRadius: "$2",
-  boxShadow: "$3",
-  maxWidth: "500px", // Magic Number
-  maxHeight: "calc(100vh - 64px)", // Full height minus some vertical padding
-  overflow: "auto",
-});

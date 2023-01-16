@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button } from "#/components/Button";
-import { Flex, Stack } from "#/components/Layout";
-import { openModal } from "#/components/Modal";
-import { Body, MainTitle } from "#/components/Typography";
+import { Flex } from "#/components/Layout";
+import { openModal, StandardModalWrapper } from "#/components/Modal";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
+import { Body, MainTitle } from "#/components/Typography";
 
 export const openRemoveCardModal = (args: Omit<RemoveCardModalProps, "hide">) => {
   openModal({
@@ -21,16 +21,7 @@ export const RemoveCardModal = ({ removeCreditCard, hide }: RemoveCardModalProps
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <Stack
-      css={{
-        gap: "$6",
-        px: "$7",
-        py: "$6",
-        bg: "$modalBackground",
-        borderRadius: "$2",
-        boxShadow: "$3",
-      }}
-    >
+    <StandardModalWrapper>
       <MainTitle>Remove Card?</MainTitle>
       <Body>Are you sure you would like to remove this card?</Body>
       <Flex css={{ justifyContent: "flex-end", gap: "$3" }}>
@@ -55,6 +46,6 @@ export const RemoveCardModal = ({ removeCreditCard, hide }: RemoveCardModalProps
           <TextOrSpinner isLoading={isLoading}>Remove Card</TextOrSpinner>
         </Button>
       </Flex>
-    </Stack>
+    </StandardModalWrapper>
   );
 };

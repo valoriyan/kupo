@@ -1,7 +1,7 @@
 import { logout } from "#/contexts/auth";
 import { Button } from "../Button";
-import { Flex, Stack } from "../Layout";
-import { openModal } from "../Modal";
+import { Flex } from "../Layout";
+import { openModal, StandardModalWrapper } from "../Modal";
 import { Body, MainTitle } from "../Typography";
 
 export const openLogOutModal = (args?: Omit<LogOutModalProps, "hide">) => {
@@ -18,16 +18,7 @@ export interface LogOutModalProps {
 
 export const LogOutModal = ({ onLogout, hide }: LogOutModalProps) => {
   return (
-    <Stack
-      css={{
-        gap: "$6",
-        px: "$7",
-        py: "$6",
-        bg: "$modalBackground",
-        borderRadius: "$2",
-        boxShadow: "$3",
-      }}
-    >
+    <StandardModalWrapper>
       <MainTitle>Log Out</MainTitle>
       <Body>Are you sure you would like to log out?</Body>
       <Flex css={{ justifyContent: "flex-end", gap: "$3" }}>
@@ -47,6 +38,6 @@ export const LogOutModal = ({ onLogout, hide }: LogOutModalProps) => {
           Log Out
         </Button>
       </Flex>
-    </Stack>
+    </StandardModalWrapper>
   );
 };

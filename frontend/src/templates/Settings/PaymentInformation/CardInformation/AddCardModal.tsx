@@ -1,12 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
+import { useStoreCreditCard } from "#/api/mutations/payment/storeCreditCard";
 import { Button } from "#/components/Button";
 import { Flex, Grid, Stack } from "#/components/Layout";
-import { openModal } from "#/components/Modal";
+import { openModal, StandardModalWrapper } from "#/components/Modal";
+import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle, subtextStyles } from "#/components/Typography";
 import { ComponentGroup, useSecurion } from "#/contexts/securion";
 import { styled } from "#/styling";
-import { useStoreCreditCard } from "#/api/mutations/payment/storeCreditCard";
-import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 export const openAddCardModal = (args?: Omit<AddCardModalProps, "hide">) => {
@@ -62,17 +62,7 @@ export const AddCardModal = (props: AddCardModalProps) => {
   };
 
   return (
-    <Stack
-      css={{
-        gap: "$5",
-        px: "$7",
-        py: "$6",
-        bg: "$modalBackground",
-        borderRadius: "$2",
-        boxShadow: "$3",
-        maxWidth: "400px", // Magic Number
-      }}
-    >
+    <StandardModalWrapper css={{ gap: "$5" }}>
       <MainTitle>Add a new card</MainTitle>
       <Body css={{ color: "$secondaryText", mb: "$3" }}>
         Your card information will be securely handled <br />
@@ -135,7 +125,7 @@ export const AddCardModal = (props: AddCardModalProps) => {
           </Flex>
         </Stack>
       </form>
-    </Stack>
+    </StandardModalWrapper>
   );
 };
 

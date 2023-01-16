@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   Dispatch,
   PropsWithChildren,
+  ReactNode,
   SetStateAction,
   useState,
 } from "react";
@@ -44,6 +45,7 @@ export interface NewCommunityFormProps {
   isSubmitDisabled: boolean;
   onSubmit: () => void;
   isSubmitting: boolean;
+  secondaryAction?: ReactNode;
 }
 
 export const NewCommunityForm = ({
@@ -68,6 +70,7 @@ export const NewCommunityForm = ({
   isSubmitDisabled,
   onSubmit,
   isSubmitting,
+  secondaryAction,
 }: NewCommunityFormProps) => {
   const { mutateAsync: uploadFile } = useUploadFile();
   const [isUploadingPfp, setIsUploadingPfp] = useState(false);
@@ -207,7 +210,7 @@ export const NewCommunityForm = ({
             />
           </SectionWrapper>
         </Stack>
-        <Stack css={{ gap: "$3", px: "$5", pb: "$6" }}>
+        <Stack css={{ gap: "$5", px: "$5", pb: "$6" }}>
           <Button
             size="lg"
             variant="secondary"
@@ -219,6 +222,7 @@ export const NewCommunityForm = ({
           >
             <TextOrSpinner isLoading={isSubmitting}>{submitLabel}</TextOrSpinner>
           </Button>
+          {secondaryAction}
         </Stack>
       </Wrapper>
     </ScrollArea>
