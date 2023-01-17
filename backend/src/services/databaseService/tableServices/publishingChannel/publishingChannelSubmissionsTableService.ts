@@ -68,12 +68,14 @@ export class PublishingChannelSubmissionsTableService extends TableService {
 
         CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
           FOREIGN KEY (publishing_channel_id)
-          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id),
+          REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id)
+          ON DELETE CASCADE,
 
 
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (user_id_submitting_published_item)
-          REFERENCES ${UsersTableService.tableName} (user_id),
+          REFERENCES ${UsersTableService.tableName} (user_id)
+          ON DELETE CASCADE,
 
         CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_fkey
           FOREIGN KEY (published_item_id)

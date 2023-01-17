@@ -53,6 +53,7 @@ export class PublishingChannelModeratorsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (user_id)
           REFERENCES ${UsersTableService.tableName} (user_id)
+          ON DELETE CASCADE
           
       )
       ;

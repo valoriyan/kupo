@@ -11,7 +11,7 @@ import {
   RegisterUserFailedReason,
   handleRegisterUser,
   RegisterUserRequestBody,
-} from "./handleRegisterUser";
+} from "../user/handleRegisterUser";
 import {
   UpdatePasswordFailedReason,
   handleUpdatePassword,

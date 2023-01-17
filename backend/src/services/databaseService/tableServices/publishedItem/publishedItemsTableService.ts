@@ -613,6 +613,113 @@ export class PublishedItemsTableService extends TableService {
     }
   }
 
+  public async getPublishedItemsFromAllFollowings({
+    controller,
+    beforeTimestamp,
+    pageSize,
+    filterOutExpiredAndUnscheduledPublishedItems,
+    type,
+  }: {
+    controller: Controller;
+    beforeTimestamp?: number;
+    pageSize: number;
+    filterOutExpiredAndUnscheduledPublishedItems: boolean;
+    type?: PublishedItemType;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
+  > {
+    try {
+      const currentTimestamp = Date.now();
+
+      const queryValues: Array<string | number> = [];
+
+      const limitClause = `
+        LIMIT
+          $${queryValues.length + 1}
+      `;
+      queryValues.push(pageSize);
+
+      let typeConstraintClause = "";
+      if (!!type) {
+        typeConstraintClause = `
+          AND
+            ${PublishedItemsTableService.tableName}.type = $${queryValues.length + 1}
+        `;
+        queryValues.push(type);
+      }
+
+      let beforeTimestampCondition = "";
+      if (!!beforeTimestamp) {
+        beforeTimestampCondition = `
+          AND
+            ${PublishedItemsTableService.tableName}.scheduled_publication_timestamp < $${
+          queryValues.length + 1
+        }`;
+        queryValues.push(beforeTimestamp);
+      }
+
+      let filteringWhereClause = "";
+      if (!!filterOutExpiredAndUnscheduledPublishedItems) {
+        filteringWhereClause = `
+          AND
+            (
+              scheduled_publication_timestamp IS NULL
+                OR
+              scheduled_publication_timestamp < $${queryValues.length + 1}
+            ) 
+          AND
+            (
+                expiration_timestamp IS NULL
+              OR
+                expiration_timestamp > $${queryValues.length + 2}
+            )
+        `;
+
+        queryValues.push(currentTimestamp);
+        queryValues.push(currentTimestamp);
+      }
+
+      const query = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${PublishedItemsTableService.tableName}
+          LEFT JOIN
+            ${PublishingChannelSubmissionsTableService.tableName}
+            ON
+              ${PublishedItemsTableService.tableName}.id = ${PublishingChannelSubmissionsTableService.tableName}.published_item_id
+          WHERE
+            ${typeConstraintClause}
+            ${beforeTimestampCondition}
+            ${filteringWhereClause}
+          ORDER BY
+            scheduled_publication_timestamp DESC
+          ${limitClause}
+          ;
+        `,
+        values: queryValues,
+      };
+
+      const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(
+        query,
+      );
+
+      return Success(
+        response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemsTableService.getPublishedItemsByCreatorUserIds",
+      });
+    }
+  }
+
   public async getPublishedItemById({
     controller,
     id,

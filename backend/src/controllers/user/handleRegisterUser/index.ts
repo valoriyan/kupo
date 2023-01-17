@@ -1,9 +1,9 @@
 import { EitherType, ErrorReasonTypes, HTTPResponse } from "../../../utilities/monads";
 import { v4 as uuidv4 } from "uuid";
-import { encryptPassword } from "../utilities";
-import { AuthController } from "../authController";
-import { grantNewAccessToken } from "../utilities/grantNewAccessToken";
-import { AuthSuccess } from "../models";
+import { encryptPassword } from "../../auth/utilities";
+import { AuthController } from "../../auth/authController";
+import { grantNewAccessToken } from "../../auth/utilities/grantNewAccessToken";
+import { AuthSuccess } from "../../auth/models";
 import { getEnvironmentVariable } from "../../../utilities";
 import { validateUsername } from "./validateUsername";
 

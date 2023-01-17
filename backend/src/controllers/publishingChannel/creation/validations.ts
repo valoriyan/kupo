@@ -44,7 +44,7 @@ export async function validatePublishingChannelName({
   // Check that Characters are Valid
   //////////////////////////////////////////////////
 
-  if (!/^[0-9a-z._-]+$/.test(publishingChannelName)) {
+  if (!/^[0-9a-zåäö._-]+$/.test(publishingChannelName)) {
     return Failure({
       controller,
       httpStatusCode: 400,

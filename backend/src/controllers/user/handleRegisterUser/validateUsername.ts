@@ -19,7 +19,7 @@ export function validateUsername({
   // Username can only have digits or lowercase letters
   //////////////////////////////////////////////////
 
-  if (!/^[0-9a-z]+$/.test(username)) {
+  if (!/^[0-9a-zåäö]+$/.test(username)) {
     const usernameErrorReason = RegisterUserFailedReason.ValidationError;
     return Failure({
       controller,

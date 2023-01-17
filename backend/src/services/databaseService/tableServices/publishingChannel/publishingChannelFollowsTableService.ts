@@ -54,11 +54,13 @@ export class PublishingChannelFollowsTableService extends TableService {
 
         CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_fkey
           FOREIGN KEY (user_id_doing_following)
-          REFERENCES ${UsersTableService.tableName} (user_id),
+          REFERENCES ${UsersTableService.tableName} (user_id)
+          ON DELETE CASCADE,
 
         CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
           FOREIGN KEY (publishing_channel_id_being_followed)
           REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id)
+          ON DELETE CASCADE
 
       )
       ;
