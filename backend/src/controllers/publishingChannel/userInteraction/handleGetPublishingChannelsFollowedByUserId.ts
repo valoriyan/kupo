@@ -98,14 +98,13 @@ export async function handleGetPublishingChannelsFollowedByUserId({
 
   const { success: publishingChannels } =
     assembleRenderablePublishingChannelsByIdsResponse;
-
   //////////////////////////////////////////////////
   // Get Next-Page Cursor
   //////////////////////////////////////////////////
 
   const lastPublishingChannelFollow = [...publishingChannelFollows].sort(
     (a, b) => parseFloat(b.timestamp) - parseFloat(a.timestamp),
-  )[pageSize];
+  )[pageSize - 1];
 
   const nextPageCursor = lastPublishingChannelFollow
     ? encodeTimestampCursor({
