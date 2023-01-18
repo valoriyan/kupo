@@ -63,7 +63,7 @@ export async function handleGetPublishingChannelsFollowedByUserId({
         areFollowsPending,
         limit: pageSize,
         createdBeforeTimestamp: cursor
-          ? decodeTimestampCursor({ encodedCursor: cursor })
+          ? decodeTimestampCursor({ encodedCursor: cursor }) - 1
           : undefined,
       },
     );
@@ -103,22 +103,15 @@ export async function handleGetPublishingChannelsFollowedByUserId({
   // Get Next-Page Cursor
   //////////////////////////////////////////////////
 
-  let nextPageCursor;
+  const lastPublishingChannelFollow = [...publishingChannelFollows].sort(
+    (a, b) => parseFloat(b.timestamp) - parseFloat(a.timestamp),
+  )[pageSize];
 
-  if (publishingChannels.length > 0) {
-    const lastPageItem = publishingChannels[publishingChannels.length - 1];
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const lastPageItemFollow = publishingChannelFollows.find(
-      (publishingChannelFollow) =>
-        publishingChannelFollow.publishing_channel_id_being_followed ===
-        lastPageItem.publishingChannelId,
-    )!;
-
-    nextPageCursor = encodeTimestampCursor({
-      timestamp: parseInt(lastPageItemFollow.timestamp),
-    });
-  }
+  const nextPageCursor = lastPublishingChannelFollow
+    ? encodeTimestampCursor({
+        timestamp: parseInt(lastPublishingChannelFollow.timestamp),
+      })
+    : undefined;
 
   //////////////////////////////////////////////////
   // Return

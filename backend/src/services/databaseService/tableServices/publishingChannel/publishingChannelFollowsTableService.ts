@@ -300,6 +300,8 @@ export class PublishingChannelFollowsTableService extends TableService {
             user_id_doing_following = $1
             ${pendingConstraintClause}
             ${beforeTimestampClause}
+          ORDER BY
+            timestamp DESC
           ${limitClause}
           ;
         `,
