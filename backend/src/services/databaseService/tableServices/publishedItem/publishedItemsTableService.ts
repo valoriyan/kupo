@@ -735,7 +735,13 @@ export class PublishedItemsTableService extends TableService {
                   -- Published Items From Requestor
                   -------------------------------------------------------
                   (
-                    ${PublishedItemsTableService.tableName}.author_user_id = $1
+                      ${PublishedItemsTableService.tableName}.author_user_id = $1
+                    AND
+                      (
+                          publishing_channel_submissions.publishing_channel_id IS NULL
+                        OR 
+                          publishing_channel_submissions.is_pending = FALSE
+                      )
                   )
               )
           ORDER BY
