@@ -61,7 +61,7 @@ async function fetchPageOfContentFromFromFollowedUsers({
 }: {
   pageParam: string | undefined;
 }) {
-  const res = await Api.getPublishedItemsFromFollowedUsers({
+  const res = await Api.getPublishedItemsFromAllFollowings({
     cursor: pageParam,
     pageSize: 5,
   });

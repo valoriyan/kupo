@@ -141,6 +141,8 @@ import { EitherErrorReasonTypesStringOrGetPublishedItemByIdFailedReasonGetPublis
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemsByUsernameFailedReasonGetPublishedItemsByUsernameSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrGetPublishedItemsFromAllFollowingsFailedReasonGetPublishedItemsFromAllFollowingsSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedHashtagFailedReasonGetPublishedItemsFromFollowedHashtagSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetPublishedItemsFromFollowedUsersFailedReasonGetPublishedItemsFromFollowedUsersSuccess } from "../types";
@@ -280,6 +282,8 @@ import { GetPublishedItemByIdRequestBody } from "../types";
 import { GetPublishedItemsByUserIdRequestBody } from "../types";
 // @ts-ignore
 import { GetPublishedItemsByUsernameRequestBody } from "../types";
+// @ts-ignore
+import { GetPublishedItemsFromAllFollowingsRequestBody } from "../types";
 // @ts-ignore
 import { GetPublishedItemsFromFollowedHashtagRequestBody } from "../types";
 // @ts-ignore
@@ -2078,6 +2082,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         getPublishedItemsByUsernameRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {GetPublishedItemsFromAllFollowingsRequestBody} getPublishedItemsFromAllFollowingsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsFromAllFollowings: async (
+      getPublishedItemsFromAllFollowingsRequestBody: GetPublishedItemsFromAllFollowingsRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'getPublishedItemsFromAllFollowingsRequestBody' is not null or undefined
+      assertParamExists(
+        "getPublishedItemsFromAllFollowings",
+        "getPublishedItemsFromAllFollowingsRequestBody",
+        getPublishedItemsFromAllFollowingsRequestBody,
+      );
+      const localVarPath = `/feed/getPublishedItemsFromAllFollowings`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        getPublishedItemsFromAllFollowingsRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -5808,6 +5861,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {GetPublishedItemsFromAllFollowingsRequestBody} getPublishedItemsFromAllFollowingsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getPublishedItemsFromAllFollowings(
+      getPublishedItemsFromAllFollowingsRequestBody: GetPublishedItemsFromAllFollowingsRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsFromAllFollowingsFailedReasonGetPublishedItemsFromAllFollowingsSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getPublishedItemsFromAllFollowings(
+          getPublishedItemsFromAllFollowingsRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {GetPublishedItemsFromFollowedHashtagRequestBody} getPublishedItemsFromFollowedHashtagRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7838,6 +7918,23 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {GetPublishedItemsFromAllFollowingsRequestBody} getPublishedItemsFromAllFollowingsRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getPublishedItemsFromAllFollowings(
+      getPublishedItemsFromAllFollowingsRequestBody: GetPublishedItemsFromAllFollowingsRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrGetPublishedItemsFromAllFollowingsFailedReasonGetPublishedItemsFromAllFollowingsSuccess> {
+      return localVarFp
+        .getPublishedItemsFromAllFollowings(
+          getPublishedItemsFromAllFollowingsRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {GetPublishedItemsFromFollowedHashtagRequestBody} getPublishedItemsFromFollowedHashtagRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9242,6 +9339,25 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .getPublishedItemsByUsername(getPublishedItemsByUsernameRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {GetPublishedItemsFromAllFollowingsRequestBody} getPublishedItemsFromAllFollowingsRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public getPublishedItemsFromAllFollowings(
+    getPublishedItemsFromAllFollowingsRequestBody: GetPublishedItemsFromAllFollowingsRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .getPublishedItemsFromAllFollowings(
+        getPublishedItemsFromAllFollowingsRequestBody,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 

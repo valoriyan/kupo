@@ -10,7 +10,6 @@ import { PublishedItemType, RenderablePublishedItem } from "../publishedItem/mod
 import { assemblePublishedItemsFromCachedComponents } from "../publishedItem/utilities/assemblePublishedItems";
 import { decodeTimestampCursor, encodeTimestampCursor } from "../utilities/pagination";
 import { FeedController } from "./feedController";
-import { PublishedItemHostSelector } from "../../services/databaseService/tableServices/publishedItem/publishedItemsTableService";
 
 export interface GetPublishedItemsFromAllFollowingsRequestBody {
   cursor?: string;
@@ -55,40 +54,27 @@ export async function handleGetPublishedItemsFromAllFollowings({
   if (error) return error;
 
   //////////////////////////////////////////////////
-  // Get Users Ids Followed by Client
-  //////////////////////////////////////////////////
-  const getUserIdsFollowedByUserIdResponse =
-    await controller.databaseService.tableNameToServicesMap.userFollowsTableService.getUserIdsFollowedByUserId(
-      { controller, userIdDoingFollowing: clientUserId, areFollowsPending: false },
-    );
-  if (getUserIdsFollowedByUserIdResponse.type === EitherType.failure) {
-    return getUserIdsFollowedByUserIdResponse;
-  }
-  const { success: userIdsBeingFollowed } = getUserIdsFollowedByUserIdResponse;
-
-  //////////////////////////////////////////////////
   // Get Published Items by Followed User Ids
   //////////////////////////////////////////////////
 
-  const getPublishedItemsByCreatorUserIdsResponse =
-    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsByCreatorUserIds(
+  const getPublishedItemsFromAllFollowingsResponse =
+    await controller.databaseService.tableNameToServicesMap.publishedItemsTableService.getPublishedItemsFromAllFollowings(
       {
         controller,
-        creatorUserIds: [...userIdsBeingFollowed, clientUserId],
+        requestingUserId: clientUserId,
         beforeTimestamp: cursor
           ? decodeTimestampCursor({ encodedCursor: cursor })
           : undefined,
         pageSize,
         type: publishedItemType,
-        publishedItemHost: PublishedItemHostSelector.user,
         filterOutExpiredAndUnscheduledPublishedItems: true,
       },
     );
-  if (getPublishedItemsByCreatorUserIdsResponse.type === EitherType.failure) {
-    return getPublishedItemsByCreatorUserIdsResponse;
+  if (getPublishedItemsFromAllFollowingsResponse.type === EitherType.failure) {
+    return getPublishedItemsFromAllFollowingsResponse;
   }
   const { success: uncompiledBasePublishedItems } =
-    getPublishedItemsByCreatorUserIdsResponse;
+    getPublishedItemsFromAllFollowingsResponse;
 
   //////////////////////////////////////////////////
   // Assemble Published Items

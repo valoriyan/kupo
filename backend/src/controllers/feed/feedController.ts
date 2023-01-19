@@ -34,6 +34,12 @@ import {
   GetPublishedItemsFromFollowedHashtagSuccess,
   handleGetPublishedItemsFromFollowedHashtag,
 } from "./handleGetPublishedItemsFromFollowedHashtag";
+import {
+  GetPublishedItemsFromAllFollowingsFailedReason,
+  GetPublishedItemsFromAllFollowingsRequestBody,
+  GetPublishedItemsFromAllFollowingsSuccess,
+  handleGetPublishedItemsFromAllFollowings,
+} from "./handleGetPublishedItemsFromAllFollowings";
 
 @injectable()
 @Route("feed")
@@ -81,6 +87,23 @@ export class FeedController extends Controller {
     >
   > {
     return await handleGetPublishedItemsFromFollowedUsers({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getPublishedItemsFromAllFollowings")
+  public async getPublishedItemsFromAllFollowings(
+    @Request() request: express.Request,
+    @Body() requestBody: GetPublishedItemsFromAllFollowingsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetPublishedItemsFromAllFollowingsFailedReason>,
+      GetPublishedItemsFromAllFollowingsSuccess
+    >
+  > {
+    return await handleGetPublishedItemsFromAllFollowings({
       controller: this,
       request,
       requestBody,

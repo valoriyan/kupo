@@ -22,6 +22,8 @@ import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "../users/usersTableService";
 import { PublishingChannelSubmissionsTableService } from "../publishingChannel/publishingChannelSubmissionsTableService";
+import { PublishingChannelFollowsTableService } from "../publishingChannel/publishingChannelFollowsTableService";
+import { UserFollowsTableService } from "../users/userFollowsTableService";
 
 export enum PublishedItemHostSelector {
   user = "user",
@@ -615,12 +617,14 @@ export class PublishedItemsTableService extends TableService {
 
   public async getPublishedItemsFromAllFollowings({
     controller,
+    requestingUserId,
     beforeTimestamp,
     pageSize,
     filterOutExpiredAndUnscheduledPublishedItems,
     type,
   }: {
     controller: Controller;
+    requestingUserId: string;
     beforeTimestamp?: number;
     pageSize: number;
     filterOutExpiredAndUnscheduledPublishedItems: boolean;
@@ -632,6 +636,7 @@ export class PublishedItemsTableService extends TableService {
       const currentTimestamp = Date.now();
 
       const queryValues: Array<string | number> = [];
+      queryValues.push(requestingUserId);
 
       const limitClause = `
         LIMIT
@@ -682,17 +687,57 @@ export class PublishedItemsTableService extends TableService {
       const query = {
         text: `
           SELECT
-            *
+            DISTINCT ${PublishedItemsTableService.tableName}.*
           FROM
             ${PublishedItemsTableService.tableName}
-          LEFT JOIN
-            ${PublishingChannelSubmissionsTableService.tableName}
+          LEFT OUTER JOIN
+              ${PublishingChannelSubmissionsTableService.tableName}
             ON
               ${PublishedItemsTableService.tableName}.id = ${PublishingChannelSubmissionsTableService.tableName}.published_item_id
+          LEFT OUTER JOIN
+              ${PublishingChannelFollowsTableService.tableName}
+            ON
+              ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id = ${PublishingChannelFollowsTableService.tableName}.publishing_channel_id_being_followed
+          LEFT OUTER JOIN
+              ${UserFollowsTableService.tableName}
+            ON
+              ${PublishedItemsTableService.tableName}.author_user_id = ${UserFollowsTableService.tableName}.user_id_being_followed
           WHERE
-            ${typeConstraintClause}
-            ${beforeTimestampCondition}
-            ${filteringWhereClause}
+              TRUE
+              ${typeConstraintClause}
+              ${beforeTimestampCondition}
+              ${filteringWhereClause}
+            AND
+              (
+                  -------------------------------------------------------
+                  -- Published Items From Followed Publishing Channels
+                  -------------------------------------------------------
+                  (
+                      ${PublishingChannelFollowsTableService.tableName}.user_id_doing_following = $1
+                    AND 
+                      ${PublishingChannelSubmissionsTableService.tableName}.is_pending = FALSE
+                    AND 
+                      ${PublishingChannelFollowsTableService.tableName}.is_pending = FALSE      
+                  )
+                OR
+                  -------------------------------------------------------
+                  -- Published Items From Followed Users
+                  -------------------------------------------------------
+                  (
+                      ${UserFollowsTableService.tableName}.user_id_doing_following = $1
+                    AND
+                      ${UserFollowsTableService.tableName}.is_pending = FALSE
+                    AND
+                      ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id IS NULL
+                  )
+                OR
+                  -------------------------------------------------------
+                  -- Published Items From Requestor
+                  -------------------------------------------------------
+                  (
+                    ${PublishedItemsTableService.tableName}.author_user_id = $1
+                  )
+              )
           ORDER BY
             scheduled_publication_timestamp DESC
           ${limitClause}
@@ -715,7 +760,7 @@ export class PublishedItemsTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at publishedItemsTableService.getPublishedItemsByCreatorUserIds",
+          "Error at publishedItemsTableService.getPublishedItemsFromAllFollowings",
       });
     }
   }
