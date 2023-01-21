@@ -434,22 +434,34 @@ export class ChatRoomJoinsTableService extends TableService {
       const parameterizedUsersListText = parameterizedUsersList.join(", ");
 
       //////////////////////////////////////////////////
-      // 1) Get the list of chat room ids that contain the users (and maybe more users)
-      // 2) Get all rows for chat rooms in step 1
+      // 1) Get the list of chat room ids that contain the users
+      // 2) Get all rows for chat rooms in step 1 and check member count
       //////////////////////////////////////////////////
 
       const query = {
         text: `
           SELECT
-            chat_room_id
+            chat_room_id,
+            count(user_id)
           FROM
             ${this.tableName}
           WHERE
-            user_id IN ( ${parameterizedUsersListText} )
+            chat_room_id IN (
+              SELECT
+                chat_room_id
+              FROM
+                ${this.tableName}
+              WHERE
+                user_id IN (${parameterizedUsersListText})
+              GROUP BY
+                chat_room_id
+              HAVING
+                count(chat_room_id) = $1
+            )
           GROUP BY
             chat_room_id
           HAVING
-            count(chat_room_id) = $1
+            count(user_id) = $1
           ;
         `,
         values: queryValues,

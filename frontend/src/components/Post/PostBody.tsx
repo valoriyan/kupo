@@ -68,13 +68,15 @@ export const PostBody = (props: PostBodyProps) => {
               goToUserProfilePage(props.authorUserName);
             }}
           />
-          <UserName username={props.authorUserName} />
-          {typeof props.host !== "string" && (
-            <>
-              <Subtext css={{ color: "$secondaryText" }}>in</Subtext>
-              <CommunityName name={props.host.name} />
-            </>
-          )}
+          <Flex css={{ gap: "$2", alignItems: "baseline", flexWrap: "wrap" }}>
+            <UserName username={props.authorUserName} />
+            {typeof props.host !== "string" && (
+              <>
+                <Subtext css={{ color: "$secondaryText" }}>in</Subtext>
+                <CommunityName name={props.host.name} />
+              </>
+            )}
+          </Flex>
         </Flex>
         <Flex css={{ gap: "$5", alignItems: "center" }}>
           <Timestamp>{props.relativeTimestamp}</Timestamp>

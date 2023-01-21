@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { StackedAvatars } from "#/components/Avatar/StackedAvatars";
+import { StackedAvatars } from "#/components/Avatar";
 import { bodyStyles } from "#/components/Typography";
 import { styled } from "#/styling";
 import { RenderableChatRoomWithJoinedUsers } from "#/api";
@@ -13,9 +13,12 @@ export interface ChatRoomListProps {
 export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) => {
   const { chatRoomId, hasUnreadMessages, members } = chatRoom;
 
-  const nonClientMembers = members.filter((member) => member.userId !== clientUserId);
+  const isSelfChat = members.length === 1 && members[0].userId === clientUserId;
+  const membersToDisplay = isSelfChat
+    ? members
+    : members.filter((member) => member.userId !== clientUserId);
 
-  const chatRoomMembersDisplay = nonClientMembers.map((member, index, list) => (
+  const chatRoomMembersDisplay = membersToDisplay.map((member, index, list) => (
     <Username key={index}>
       @{member.username}
       {index < list.length - 1 ? ", " : null}
@@ -28,7 +31,7 @@ export const ChatRoomListItem = ({ chatRoom, clientUserId }: ChatRoomListProps) 
         <Flex css={{ alignItems: "center", gap: "$4" }}>
           <StackedAvatars
             size="$8"
-            images={nonClientMembers.map((member) => ({
+            images={membersToDisplay.map((member) => ({
               alt: `${member.username}'s profile picture`,
               src: member.profilePictureTemporaryUrl,
             }))}

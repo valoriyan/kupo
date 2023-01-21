@@ -2,6 +2,8 @@ import { MouseEventHandler } from "react";
 import { styled, css, ThemeScale } from "#/styling";
 import { UserIcon } from "../Icons";
 
+export * from "./StackedAvatars";
+
 export interface AvatarProps {
   alt: string;
   src?: string;
