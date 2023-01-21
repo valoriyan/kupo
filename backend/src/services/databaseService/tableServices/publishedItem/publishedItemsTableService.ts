@@ -24,6 +24,8 @@ import { UsersTableService } from "../users/usersTableService";
 import { PublishingChannelSubmissionsTableService } from "../publishingChannel/publishingChannelSubmissionsTableService";
 import { PublishingChannelFollowsTableService } from "../publishingChannel/publishingChannelFollowsTableService";
 import { UserFollowsTableService } from "../users/userFollowsTableService";
+import { PublishedItemLikesTableService } from "./publishedItemLikesTableService";
+import { PublishingChannelsTableService } from "../publishingChannel/publishingChannelsTableService";
 
 export enum PublishedItemHostSelector {
   user = "user",
@@ -983,6 +985,163 @@ export class PublishedItemsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at publishedItemsTableService.getPublishedItemsByCaptionMatchingSubstring",
+      });
+    }
+  }
+
+  public async getMostPopularPublishedItemsUnlikedByTargetUser({
+    controller,
+    targetUserId,
+    pageSize,
+    offset,
+    type,
+  }: {
+    controller: Controller;
+    targetUserId: string;
+    pageSize: number;
+    offset?: number;
+    type?: PublishedItemType;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnassembledBasePublishedItem[]>
+  > {
+    try {
+      const queryValues: Array<string | number> = [];
+
+      // $1
+      queryValues.push(targetUserId);
+
+      // $2
+      const currentTimestamp = Date.now();
+      queryValues.push(currentTimestamp);
+
+      // Optional Type Constraint
+      let typeConstraintClause = "";
+      if (!!type) {
+        typeConstraintClause = `
+          AND
+            ${PublishedItemsTableService.tableName}.type = $${queryValues.length + 1}
+        `;
+        queryValues.push(type);
+      }
+
+      const limitClause = `
+        LIMIT
+          $${queryValues.length + 1}
+      `;
+      queryValues.push(pageSize);
+
+      let offsetClause = ``;
+      if (!!offset) {
+        offsetClause = `
+          OFFSET
+            $${queryValues.length + 1}
+        `;
+        queryValues.push(offset);
+      }
+
+      const query = {
+        text: `
+          SELECT
+            ${PublishedItemsTableService.tableName}.*
+          FROM
+            ${PublishedItemsTableService.tableName}
+          WHERE
+            ${PublishedItemsTableService.tableName}.id IN(
+              SELECT
+                ${PublishedItemsTableService.tableName}.id
+              FROM
+                ${PublishedItemsTableService.tableName}
+              LEFT JOIN
+                  ${PublishedItemLikesTableService.tableName}
+                ON
+                  ${PublishedItemsTableService.tableName}.id = ${PublishedItemLikesTableService.tableName}.published_item_id
+              LEFT JOIN
+                  ${PublishingChannelSubmissionsTableService.tableName}
+                ON
+                  ${PublishedItemsTableService.tableName}.id = ${PublishingChannelSubmissionsTableService.tableName}.published_item_id
+              LEFT JOIN
+                  ${PublishingChannelFollowsTableService.tableName}
+                ON
+                  ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id = ${PublishingChannelFollowsTableService.tableName}.publishing_channel_id_being_followed
+              LEFT JOIN
+                  ${PublishingChannelsTableService.tableName}
+                ON
+                  ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id = ${PublishingChannelsTableService.tableName}.publishing_channel_id
+              WHERE
+                  ${PublishedItemsTableService.tableName}.author_user_id != $1
+                AND
+                  ${PublishedItemsTableService.tableName}.id NOT IN (
+                    --------------------------------------------------
+                    -- Published Items Already Liked By Target User
+                    --------------------------------------------------
+                    SELECT
+                      ${PublishedItemLikesTableService.tableName}.published_item_id
+                    FROM
+                      ${PublishedItemLikesTableService.tableName}
+                    WHERE
+                      ${PublishedItemLikesTableService.tableName}.user_id = $1
+                  )
+                AND
+                  --------------------------------------------------
+                  -- Filter Out Not Yet Published Items
+                  --------------------------------------------------
+                    (
+                        ${PublishedItemsTableService.tableName}.scheduled_publication_timestamp IS NULL
+                      OR
+                        ${PublishedItemsTableService.tableName}.scheduled_publication_timestamp < $2
+                    )
+                AND
+                  --------------------------------------------------
+                  -- Filter Out Expired Published Items
+                  --------------------------------------------------
+                  (
+                      ${PublishedItemsTableService.tableName}.expiration_timestamp IS NULL
+                    OR
+                      ${PublishedItemsTableService.tableName}.expiration_timestamp > $2
+                  )
+                ${typeConstraintClause}
+                AND
+                  (
+                      ${PublishingChannelSubmissionsTableService.tableName}.publishing_channel_id IS NULL
+                    OR
+                      --------------------------------------------------
+                      -- Filter Pending Publishing Channel Submissions
+                      --------------------------------------------------	
+                      (
+                          ${PublishingChannelSubmissionsTableService.tableName}.is_pending = FALSE
+                          --------------------------------------------------
+                          -- TODO: ADD CHECK FOR PRIVATE PUBLISHING CHANNELS
+                          --------------------------------------------------
+                      )
+                  )
+              GROUP BY
+                ${PublishedItemsTableService.tableName}.id
+              ORDER BY
+                COUNT(${PublishedItemLikesTableService.tableName}.published_item_id)
+                DESC
+              ${limitClause}
+              ${offsetClause}
+            )
+          ;
+        `,
+        values: queryValues,
+      };
+
+      const response: QueryResult<DBPublishedItem> = await this.datastorePool.query(
+        query,
+      );
+
+      return Success(
+        response.rows.map(convertDBPublishedItemToUncompiledBasePublishedItem),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at publishedItemsTableService.getMostPopularPublishedItemsUnlikedByTargetUser",
       });
     }
   }

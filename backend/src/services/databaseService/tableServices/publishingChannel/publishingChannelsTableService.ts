@@ -18,6 +18,8 @@ import {
 } from "../utilities";
 import { UnrenderablePublishingChannel } from "../../../../controllers/publishingChannel/models";
 import { PSQLUpdateFieldAndValue } from "../utilities/models";
+import { PublishingChannelFollowsTableService } from "./publishingChannelFollowsTableService";
+import { PublishingChannelUserBansTableService } from "./moderation/publishingChannelUserBansTableService";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface DBPublishingChannel {
@@ -444,6 +446,113 @@ export class PublishingChannelsTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at DBPublishingChannel.determineWhichBlobFileKeysExist",
+      });
+    }
+  }
+
+  public async getMostPopularPublishingChannelsUnfollowedByTargetUser({
+    controller,
+    targetUserId,
+    pageSize,
+    offset,
+  }: {
+    controller: Controller;
+    targetUserId: string;
+    pageSize: number;
+    offset?: number;
+  }): Promise<
+    InternalServiceResponse<ErrorReasonTypes<string>, UnrenderablePublishingChannel[]>
+  > {
+    try {
+      const queryValues: Array<string | number> = [];
+
+      // $1
+      queryValues.push(targetUserId);
+
+      const limitClause = `
+        LIMIT
+          $${queryValues.length + 1}
+      `;
+      queryValues.push(pageSize);
+
+      let offsetClause = ``;
+      if (!!offset) {
+        offsetClause = `
+          OFFSET
+            $${queryValues.length + 1}
+        `;
+        queryValues.push(offset);
+      }
+
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            ${PublishingChannelsTableService.tableName}.*
+          FROM
+            ${PublishingChannelsTableService.tableName}
+            WHERE
+            ${PublishingChannelsTableService.tableName}.publishing_channel_id IN (
+              SELECT
+                ${PublishingChannelsTableService.tableName}.publishing_channel_id
+              FROM
+                ${PublishingChannelsTableService.tableName}
+              LEFT JOIN
+                  ${PublishingChannelFollowsTableService.tableName}
+                ON
+                  ${PublishingChannelsTableService.tableName}.publishing_channel_id = ${PublishingChannelFollowsTableService.tableName}.publishing_channel_id_being_followed
+              WHERE
+                  ${PublishingChannelsTableService.tableName}.owner_user_id != $1
+                AND
+                  ${PublishingChannelsTableService.tableName}.publishing_channel_id NOT IN (
+                        --------------------------------------------------
+                        -- Filter Publishing Channels Already Followed By Target User
+                        --------------------------------------------------
+                    SELECT
+                      ${PublishingChannelFollowsTableService.tableName}.publishing_channel_id_being_followed
+                    FROM
+                      ${PublishingChannelFollowsTableService.tableName}
+                    WHERE
+                      ${PublishingChannelFollowsTableService.tableName}.user_id_doing_following = $1
+                  )
+                AND ${PublishingChannelsTableService.tableName}.publishing_channel_id NOT IN (
+                        --------------------------------------------------
+                        -- Filter Publishing Channels Banning Target User
+                        --------------------------------------------------
+                    SELECT
+                      ${PublishingChannelUserBansTableService.tableName}.publishing_channel_id
+                    FROM
+                      ${PublishingChannelUserBansTableService.tableName}
+                    WHERE
+                      ${PublishingChannelUserBansTableService.tableName}.banned_user_id = $1	
+                )
+              GROUP BY
+                ${PublishingChannelsTableService.tableName}.publishing_channel_id
+              ORDER BY
+                COUNT(${PublishingChannelFollowsTableService.tableName}.publishing_channel_id_being_followed)
+                DESC
+              ${limitClause}
+              ${offsetClause}
+            )
+          ;
+        `,
+        values: queryValues,
+      };
+
+      const response: QueryResult<DBPublishingChannel> = await this.datastorePool.query(
+        query,
+      );
+
+      return Success(
+        response.rows.map(convertDBPublishingChannelToUnrenderablePublishingChannel),
+      );
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at DBPublishingChannel.getMostPopularPublishingChannelsUnfollowedByTargetUser",
       });
     }
   }

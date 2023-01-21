@@ -28,6 +28,24 @@ import {
   SearchForUsersRequestBody,
   SearchForUsersSuccess,
 } from "./search/handleSearchForUsers";
+import {
+  GetRecommendedUsersToFollowFailedReason,
+  GetRecommendedUsersToFollowRequestBody,
+  GetRecommendedUsersToFollowSuccess,
+  handleGetRecommendedUsersToFollow,
+} from "./recommendations/handleGetRecommendedUsersToFollow";
+import {
+  GetRecommendedPublishedItemsFailedReason,
+  GetRecommendedPublishedItemsRequestBody,
+  GetRecommendedPublishedItemsSuccess,
+  handleGetRecommendedPublishedItems,
+} from "./recommendations/handleGetRecommendedPublishedItems";
+import {
+  GetRecommendedPublishingChannelsFailedReason,
+  GetRecommendedPublishingChannelsRequestBody,
+  GetRecommendedPublishingChannelsSuccess,
+  handleGetRecommendedPublishingChannels,
+} from "./recommendations/handleGetRecommendedPublishingChannels";
 
 @injectable()
 @Route("discover")
@@ -109,6 +127,57 @@ export class DiscoverController extends Controller {
     >
   > {
     return await handleSearchForPublishingChannels({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getRecommendedUsersToFollow")
+  public async getRecommendedUsersToFollow(
+    @Request() request: express.Request,
+    @Body() requestBody: GetRecommendedUsersToFollowRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetRecommendedUsersToFollowFailedReason>,
+      GetRecommendedUsersToFollowSuccess
+    >
+  > {
+    return await handleGetRecommendedUsersToFollow({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getRecommendedPublishedItems")
+  public async getRecommendedPublishedItems(
+    @Request() request: express.Request,
+    @Body() requestBody: GetRecommendedPublishedItemsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetRecommendedPublishedItemsFailedReason>,
+      GetRecommendedPublishedItemsSuccess
+    >
+  > {
+    return await handleGetRecommendedPublishedItems({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("getRecommendedPublishingChannels")
+  public async getRecommendedPublishingChannels(
+    @Request() request: express.Request,
+    @Body() requestBody: GetRecommendedPublishingChannelsRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | GetRecommendedPublishingChannelsFailedReason>,
+      GetRecommendedPublishingChannelsSuccess
+    >
+  > {
+    return await handleGetRecommendedPublishingChannels({
       controller: this,
       request,
       requestBody,

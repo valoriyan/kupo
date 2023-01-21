@@ -21,6 +21,8 @@ import {
 } from "../../../../utilities/monads";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { Controller } from "tsoa";
+import { UserFollowsTableService } from "./userFollowsTableService";
+import { UserBlocksTableService } from "./userBlocksTable";
 
 interface DBUser {
   user_id: string;
@@ -728,6 +730,111 @@ export class UsersTableService extends TableService {
         error,
         additionalErrorInformation:
           "Error at usersTableService.determineWhichBlobFileKeysExist",
+      });
+    }
+  }
+
+  public async getMostFollowedUsersNotFollowedByTargetUser({
+    controller,
+    targetUserId,
+    limit,
+  }: {
+    controller: Controller;
+    targetUserId: string;
+    limit: number;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    try {
+      const values: (string | number)[] = [];
+      values.push(targetUserId);
+
+      //////////////////////////////////////////////////
+      // Limit Clause
+      //////////////////////////////////////////////////
+      const limitClause = `
+        LIMIT $${values.length + 1}
+      `;
+      values.push(limit);
+
+      const queryString = {
+        text: `
+          SELECT
+            ${UsersTableService.tableName}.*
+          FROM
+            ${UsersTableService.tableName}
+          WHERE
+              ${UsersTableService.tableName}.user_id IN (
+                --------------------------------------------------
+                -- Users Ranked By Following Count
+                --------------------------------------------------	
+                SELECT
+                  ${UsersTableService.tableName}.user_id
+                FROM
+                  ${UserFollowsTableService.tableName}
+                RIGHT JOIN
+                    ${UsersTableService.tableName}
+                  ON
+                    ${UserFollowsTableService.tableName}.user_id_being_followed = ${UsersTableService.tableName}.user_id
+                WHERE
+                    ${UsersTableService.tableName}.user_id != $1
+                  AND
+                    ${UsersTableService.tableName}.user_id NOT IN (
+                      --------------------------------------------------
+                      -- User Ids Being Followed By Target
+                      --------------------------------------------------
+                      SELECT
+                        ${UserFollowsTableService.tableName}.user_id_being_followed
+                      FROM
+                        ${UserFollowsTableService.tableName}
+                      WHERE
+                        ${UserFollowsTableService.tableName}.user_id_doing_following = $1
+                    )
+                GROUP BY
+                  ${UsersTableService.tableName}.user_id
+                ORDER BY
+                  COUNT(${UserFollowsTableService.tableName}.user_id_being_followed)
+                  DESC
+              )
+            AND
+              ${UsersTableService.tableName}.user_id NOT IN (
+                --------------------------------------------------
+                -- Users Blocked By Target
+                --------------------------------------------------	
+                SELECT
+                  ${UserBlocksTableService.tableName}.executor_user_id as user_id
+                FROM
+                  ${UserBlocksTableService.tableName}
+                WHERE
+                    ${UserBlocksTableService.tableName}.blocked_user_id = $1	
+              )
+            AND
+              ${UsersTableService.tableName}.user_id NOT IN (
+                --------------------------------------------------
+                -- Users Being Blocked By Target
+                --------------------------------------------------	
+                SELECT
+                  ${UserBlocksTableService.tableName}.blocked_user_id as user_id
+                FROM
+                  ${UserBlocksTableService.tableName}
+                WHERE
+                    ${UserBlocksTableService.tableName}.executor_user_id = $1
+              )
+          ${limitClause}
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<DBUser> = await this.datastorePool.query(queryString);
+
+      return Success(response.rows.map(convertDBUserToUnrenderableUser));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.getMostFollowedUsersNotFollowedByTargetUser",
       });
     }
   }

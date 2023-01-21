@@ -86,6 +86,9 @@ export * from "./either-error-reason-types-string-or-get-published-items-schedul
 export * from "./either-error-reason-types-string-or-get-publishing-channel-by-name-failed-reason-get-publishing-channel-by-name-success";
 export * from "./either-error-reason-types-string-or-get-publishing-channel-submissions-failed-reason-get-publishing-channel-submissions-success";
 export * from "./either-error-reason-types-string-or-get-publishing-channels-followed-by-user-id-failed-reason-get-publishing-channels-followed-by-user-id-success";
+export * from "./either-error-reason-types-string-or-get-recommended-published-items-failed-reason-get-recommended-published-items-success";
+export * from "./either-error-reason-types-string-or-get-recommended-publishing-channels-failed-reason-get-recommended-publishing-channels-success";
+export * from "./either-error-reason-types-string-or-get-recommended-users-to-follow-failed-reason-get-recommended-users-to-follow-success";
 export * from "./either-error-reason-types-string-or-get-saved-published-items-failed-reason-get-saved-published-items-success";
 export * from "./either-error-reason-types-string-or-get-user-content-feed-filters-failed-reason-get-user-content-feed-filters-success";
 export * from "./either-error-reason-types-string-or-get-user-profile-failed-reason-get-user-profile-success";
@@ -180,6 +183,9 @@ export * from "./error-reason-types-string-or-get-published-items-scheduled-by-u
 export * from "./error-reason-types-string-or-get-publishing-channel-by-name-failed-reason";
 export * from "./error-reason-types-string-or-get-publishing-channel-submissions-failed-reason";
 export * from "./error-reason-types-string-or-get-publishing-channels-followed-by-user-id-failed-reason";
+export * from "./error-reason-types-string-or-get-recommended-published-items-failed-reason";
+export * from "./error-reason-types-string-or-get-recommended-publishing-channels-failed-reason";
+export * from "./error-reason-types-string-or-get-recommended-users-to-follow-failed-reason";
 export * from "./error-reason-types-string-or-get-saved-published-items-failed-reason";
 export * from "./error-reason-types-string-or-get-user-content-feed-filters-failed-reason";
 export * from "./error-reason-types-string-or-get-user-profile-failed-reason";
@@ -316,6 +322,12 @@ export * from "./failure-response-error-reason-types-string-or-get-publishing-ch
 export * from "./failure-response-error-reason-types-string-or-get-publishing-channel-submissions-failed-reason-error";
 export * from "./failure-response-error-reason-types-string-or-get-publishing-channels-followed-by-user-id-failed-reason";
 export * from "./failure-response-error-reason-types-string-or-get-publishing-channels-followed-by-user-id-failed-reason-error";
+export * from "./failure-response-error-reason-types-string-or-get-recommended-published-items-failed-reason";
+export * from "./failure-response-error-reason-types-string-or-get-recommended-published-items-failed-reason-error";
+export * from "./failure-response-error-reason-types-string-or-get-recommended-publishing-channels-failed-reason";
+export * from "./failure-response-error-reason-types-string-or-get-recommended-publishing-channels-failed-reason-error";
+export * from "./failure-response-error-reason-types-string-or-get-recommended-users-to-follow-failed-reason";
+export * from "./failure-response-error-reason-types-string-or-get-recommended-users-to-follow-failed-reason-error";
 export * from "./failure-response-error-reason-types-string-or-get-saved-published-items-failed-reason";
 export * from "./failure-response-error-reason-types-string-or-get-saved-published-items-failed-reason-error";
 export * from "./failure-response-error-reason-types-string-or-get-user-content-feed-filters-failed-reason";
@@ -487,6 +499,12 @@ export * from "./get-publishing-channel-submissions-success-published-submission
 export * from "./get-publishing-channels-followed-by-user-id-failed-reason";
 export * from "./get-publishing-channels-followed-by-user-id-request-body";
 export * from "./get-publishing-channels-followed-by-user-id-success";
+export * from "./get-recommended-published-items-failed-reason";
+export * from "./get-recommended-published-items-success";
+export * from "./get-recommended-publishing-channels-failed-reason";
+export * from "./get-recommended-publishing-channels-success";
+export * from "./get-recommended-users-to-follow-failed-reason";
+export * from "./get-recommended-users-to-follow-success";
 export * from "./get-saved-published-items-failed-reason";
 export * from "./get-saved-published-items-request-body";
 export * from "./get-saved-published-items-success";
@@ -658,6 +676,9 @@ export * from "./success-response-get-published-items-scheduled-by-user-success"
 export * from "./success-response-get-publishing-channel-by-name-success";
 export * from "./success-response-get-publishing-channel-submissions-success";
 export * from "./success-response-get-publishing-channels-followed-by-user-id-success";
+export * from "./success-response-get-recommended-published-items-success";
+export * from "./success-response-get-recommended-publishing-channels-success";
+export * from "./success-response-get-recommended-users-to-follow-success";
 export * from "./success-response-get-saved-published-items-success";
 export * from "./success-response-get-user-content-feed-filters-success";
 export * from "./success-response-get-user-profile-success";

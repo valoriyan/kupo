@@ -117,7 +117,7 @@ export async function handleSearchForUsers({
   );
 
   //////////////////////////////////////////////////
-  // Get Renderable Users
+  // Assemble Renderable Users
   //////////////////////////////////////////////////
 
   const constructRenderableUsersFromPartsResponse =

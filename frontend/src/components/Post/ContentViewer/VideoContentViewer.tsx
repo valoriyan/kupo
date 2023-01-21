@@ -16,7 +16,7 @@ export const VideoContentViewer = ({ mediaElement }: ContentProps) => {
   });
 
   return (
-    <Video src={mediaElement.temporaryUrl} autoPlay={false} playsInline>
+    <Video src={mediaElement.temporaryUrl} autoPlay={false} playsInline controls={true}>
       <source
         ref={videoRef as any}
         src={mediaElement.temporaryUrl}
