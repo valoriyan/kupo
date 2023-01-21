@@ -33,7 +33,7 @@ export const NewChatRoom = () => {
     : userIds;
 
   const { data: existingChatRoom, isLoading: isExistingChatRoomLoading } =
-    useGetChatRoomIdWithUserIds({ userIds: userIdsInChannel });
+    useGetChatRoomIdWithUserIds({ userIds: usernames.length ? userIdsInChannel : [] });
   const { mutateAsync: createNewChatMessageInNewChatRoom } =
     useCreateNewChatMessageInNewChatRoom();
 
