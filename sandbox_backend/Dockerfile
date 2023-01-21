@@ -14,7 +14,12 @@ RUN echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://
 RUN apt-get update
 RUN apt-get install redis -y
 
-
+##################################################
+# New Relic 
+##################################################
+ENV NEW_RELIC_NO_CONFIG_FILE=true
+ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true \
+NEW_RELIC_LOG=stdout
 ##################################################
 # Setup App
 ##################################################
