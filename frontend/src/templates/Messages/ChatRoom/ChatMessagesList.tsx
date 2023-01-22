@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { Fragment, useState } from "react";
-import { RenderableChatMessage } from "#/api";
+import { RenderableChatMessage, RenderableUser } from "#/api";
 import { ReverseInfiniteList } from "#/components/InfiniteList";
 import { Flex, Stack } from "#/components/Layout";
 import { ScrollArea } from "#/components/ScrollArea";
@@ -13,6 +13,8 @@ export interface ChatMessagesListProps {
   hasPreviousPage: boolean | undefined;
   isFetchingPreviousPage: boolean;
   fetchPreviousPage: () => void;
+  isGroupChat: boolean;
+  memberMap: Record<string, RenderableUser>;
 }
 
 export const ChatMessagesList = ({
@@ -21,6 +23,8 @@ export const ChatMessagesList = ({
   hasPreviousPage,
   isFetchingPreviousPage,
   fetchPreviousPage,
+  isGroupChat,
+  memberMap,
 }: ChatMessagesListProps) => {
   const [listRef, setListRef] = useState<HTMLDivElement | null>(null);
 
@@ -47,6 +51,9 @@ export const ChatMessagesList = ({
                 getCalendarDate(previousMessage.creationTimestamp) !==
                   getCalendarDate(message.creationTimestamp);
 
+              const isUserTransition =
+                !previousMessage || previousMessage.authorUserId !== message.authorUserId;
+
               return (
                 <Fragment key={message.chatMessageId}>
                   {isDateTransition && (
@@ -65,6 +72,8 @@ export const ChatMessagesList = ({
                     <ChatRoomMessage
                       message={message}
                       isClientMessage={isClientMessage}
+                      isUserTransition={isGroupChat ? isUserTransition : undefined}
+                      author={memberMap[message.authorUserId]}
                     />
                   </Flex>
                 </Fragment>

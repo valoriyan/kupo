@@ -5,28 +5,19 @@ import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
 
 export interface ChatRoomMembersDisplayProps {
-  chatRoomMembers: Array<RenderableUser | null>;
-  clientUser: RenderableUser;
+  chatRoomMembers: RenderableUser[];
 }
 
 export const ChatRoomMembersDisplay = ({
   chatRoomMembers,
-  clientUser,
 }: ChatRoomMembersDisplayProps) => {
-  const members = chatRoomMembers.filter(memberHasData);
-  const isSelfChat = members.length === 1 && members[0].userId === clientUser.userId;
-
-  const membersToDisplay = isSelfChat
-    ? members
-    : members.filter((member) => member.userId !== clientUser.userId);
-
-  const chatRoomMemberUsernames = membersToDisplay.flatMap((chatRoomMember, index) => {
+  const chatRoomMemberUsernames = chatRoomMembers.flatMap((chatRoomMember, index) => {
     if (!chatRoomMember) return [];
     const { username, userId } = chatRoomMember;
     return [
       <Box as="span" key={userId} css={{ color: "$link" }}>
         <UserName username={username} />
-        {index < membersToDisplay.length - 1 ? ", " : null}
+        {index < chatRoomMembers.length - 1 ? ", " : null}
       </Box>,
     ];
   });
@@ -35,7 +26,7 @@ export const ChatRoomMembersDisplay = ({
     <Wrapper>
       <StackedAvatars
         size="$7"
-        images={membersToDisplay.map((member) => ({
+        images={chatRoomMembers.map((member) => ({
           alt: `${member.username}'s profile picture`,
           src: member.profilePictureTemporaryUrl,
         }))}
@@ -52,6 +43,3 @@ const Wrapper = styled("div", {
   p: "$4",
   borderBottom: "solid $borderWidths$1 $border",
 });
-
-const memberHasData = (member: RenderableUser | null): member is RenderableUser =>
-  !!member;

@@ -1,21 +1,34 @@
 import { DateTime } from "luxon";
-import { RenderableChatMessage } from "#/api";
-import { Stack } from "#/components/Layout";
+import { RenderableChatMessage, RenderableUser } from "#/api";
+import { Avatar } from "#/components/Avatar";
+import { Flex, Stack } from "#/components/Layout";
 import { Body, Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
 
 export interface ChatRoomMessageProps {
   message: RenderableChatMessage;
   isClientMessage: boolean;
+  isUserTransition: boolean | undefined;
+  author: RenderableUser;
 }
 
-export const ChatRoomMessage = ({ message, isClientMessage }: ChatRoomMessageProps) => {
+export const ChatRoomMessage = ({
+  message,
+  isClientMessage,
+  isUserTransition,
+  author,
+}: ChatRoomMessageProps) => {
   const formattedTimestamp = DateTime.fromMillis(
     message.creationTimestamp,
   ).toLocaleString(DateTime.TIME_SIMPLE);
 
-  return (
-    <Wrapper css={{ bg: isClientMessage ? "$primaryTranslucent" : "$background3" }}>
+  const messageBubble = (
+    <Wrapper
+      css={{
+        bg: isClientMessage ? "$primaryTranslucent" : "$background3",
+        ml: isUserTransition === false && !isClientMessage ? "$8" : 0,
+      }}
+    >
       <Body as="pre" css={{ m: 0, whiteSpace: "pre-wrap" }}>
         {message.text}
       </Body>
@@ -30,12 +43,35 @@ export const ChatRoomMessage = ({ message, isClientMessage }: ChatRoomMessagePro
       </Subtext>
     </Wrapper>
   );
+
+  if (!isUserTransition || isClientMessage) return messageBubble;
+
+  return (
+    <UserTransitionMessage>
+      <Avatar
+        size="$7"
+        src={author.profilePictureTemporaryUrl}
+        alt={`${author.username}'s profile picture`}
+      />
+      <Stack css={{ gap: "$2", flex: 1 }}>
+        <Subtext css={{ color: "$secondaryText", ml: "$4" }}>{author.username}</Subtext>
+        {messageBubble}
+      </Stack>
+    </UserTransitionMessage>
+  );
 };
 
 const Wrapper = styled(Stack, {
+  width: "fit-content",
   maxWidth: "70%",
   color: "$text",
   borderRadius: "$4",
   p: "$4",
   gap: "$3",
+});
+
+const UserTransitionMessage = styled(Flex, {
+  gap: "$3",
+  flex: 1,
+  ">:first-child": { mt: "$6" },
 });

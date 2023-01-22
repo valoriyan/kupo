@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { RenderableChatMessage } from "#/api";
+import { RenderableChatMessage, RenderableUser } from "#/api";
 import { useCreateNewChatMessage } from "#/api/mutations/chat/createNewChatMessage";
 import { useMarkChatRoomAsRead } from "#/api/mutations/chat/markChatRoomAsRead";
 import { useGetChatRoomById } from "#/api/queries/chat/useGetChatRoomById";
@@ -93,6 +93,18 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     return <LoadingArea size="lg" />;
   }
 
+  const members = chatRoomMembersData.filter(memberHasData);
+  const isSelfChat = members.length === 1 && members[0].userId === clientUserData.userId;
+
+  const membersToDisplay = isSelfChat
+    ? members
+    : members.filter((member) => member.userId !== clientUserData.userId);
+
+  const memberMap = membersToDisplay.reduce((acc, cur) => {
+    acc[cur.userId] = cur;
+    return acc;
+  }, {} as Record<string, RenderableUser>);
+
   async function onSubmitNewChatMessage(event: React.FormEvent) {
     event.preventDefault();
     createNewChatMessage({
@@ -115,16 +127,15 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
 
   return (
     <Grid>
-      <ChatRoomMembersDisplay
-        chatRoomMembers={chatRoomMembersData}
-        clientUser={clientUserData}
-      />
+      <ChatRoomMembersDisplay chatRoomMembers={membersToDisplay} />
       <ChatMessagesList
         clientUserId={clientUserData.userId}
         chatMessages={Array.from(uniqueChatMessages.values())}
         hasPreviousPage={chatMessagesQuery.hasPreviousPage}
         isFetchingPreviousPage={chatMessagesQuery.isFetchingPreviousPage}
         fetchPreviousPage={chatMessagesQuery.fetchPreviousPage}
+        isGroupChat={membersToDisplay.length > 1}
+        memberMap={memberMap}
       />
       <MessageComposer
         newChatMessage={newChatMessage}
@@ -134,6 +145,9 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     </Grid>
   );
 };
+
+const memberHasData = (member: RenderableUser | null): member is RenderableUser =>
+  !!member;
 
 const Grid = styled("div", {
   height: "100%",
