@@ -10,7 +10,7 @@ export default {
 };
 
 export const Template: Story = () => {
-  const [selectedItem, selectItem] = useState<typeof MONTHS[number]>(MONTHS[0]);
+  const [selectedItem, selectItem] = useState<(typeof MONTHS)[number]>(MONTHS[0]);
 
   return (
     <Box css={{ p: "$5" }}>

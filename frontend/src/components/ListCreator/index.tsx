@@ -82,6 +82,7 @@ export const ListCreator = ({ list, onChange, tooltipText, limit }: ListCreatorP
             if (e.key === "Enter") addNewItemToList();
           }}
           onBlur={onBlur}
+          autoComplete="off"
         />
         <IconButton disabled={disabled || !newItem} onClick={addNewItemToList}>
           <MathPlusIcon />
