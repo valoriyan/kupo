@@ -4,6 +4,7 @@ import { Avatar } from "#/components/Avatar";
 import { Flex, Stack } from "#/components/Layout";
 import { Body, Subtext } from "#/components/Typography";
 import { styled } from "#/styling";
+import { WithTags } from "#/components/WithTags";
 
 export interface ChatRoomMessageProps {
   message: RenderableChatMessage;
@@ -30,7 +31,7 @@ export const ChatRoomMessage = ({
       }}
     >
       <Body as="pre" css={{ m: 0, whiteSpace: "pre-wrap" }}>
-        {message.text}
+        <WithTags text={message.text} />
       </Body>
       <Subtext
         css={{

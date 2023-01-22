@@ -52,7 +52,9 @@ export const ChatMessagesList = ({
                   getCalendarDate(message.creationTimestamp);
 
               const isUserTransition =
-                !previousMessage || previousMessage.authorUserId !== message.authorUserId;
+                !previousMessage ||
+                isDateTransition ||
+                previousMessage.authorUserId !== message.authorUserId;
 
               return (
                 <Fragment key={message.chatMessageId}>
