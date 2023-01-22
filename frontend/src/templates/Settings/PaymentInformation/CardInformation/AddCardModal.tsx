@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useStoreCreditCard } from "#/api/mutations/payment/storeCreditCard";
 import { Button } from "#/components/Button";
 import { Flex, Grid, Stack } from "#/components/Layout";
-import { openModal, StandardModalWrapper } from "#/components/Modal";
+import { ModalFooter, openModal, StandardModalWrapper } from "#/components/Modal";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle, subtextStyles } from "#/components/Typography";
 import { ComponentGroup, useSecurion } from "#/contexts/securion";
@@ -110,7 +110,7 @@ export const AddCardModal = (props: AddCardModalProps) => {
             </div>
           </Grid>
 
-          <Flex css={{ justifyContent: "flex-end", gap: "$3", mt: "$3" }}>
+          <ModalFooter>
             <Button type="button" variant="secondary" onClick={props.hide}>
               Cancel
             </Button>
@@ -122,7 +122,7 @@ export const AddCardModal = (props: AddCardModalProps) => {
             >
               <TextOrSpinner isLoading={isLoading}>Save Card</TextOrSpinner>
             </Button>
-          </Flex>
+          </ModalFooter>
         </Stack>
       </form>
     </StandardModalWrapper>

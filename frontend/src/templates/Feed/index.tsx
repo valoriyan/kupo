@@ -5,6 +5,7 @@ import { useGetContentFilters } from "#/api/queries/feed/useGetContentFilters";
 import { ChevronDownIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
 import { Tabs } from "#/components/Tabs";
+import { useVerifyEmailReminder } from "#/components/VerifyEmailModal";
 import { VerticalSlideDialog } from "#/components/VerticalSlideDialog";
 import { useCurrentUserId } from "#/contexts/auth";
 import { ContentFeed } from "./ContentFeed";
@@ -18,6 +19,8 @@ export const Feed = () => {
   });
   const { mutateAsync: updateContentFilters } = useUpdateContentFilters();
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useVerifyEmailReminder();
 
   return (
     <Flex ref={containerRef} css={{ position: "relative" }}>

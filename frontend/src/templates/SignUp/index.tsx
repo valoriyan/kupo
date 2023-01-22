@@ -34,6 +34,7 @@ export const SignUp = () => {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value.toLocaleLowerCase())}
+          autoComplete="off"
         />
         <Input
           size="lg"

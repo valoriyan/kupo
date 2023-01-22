@@ -1,22 +1,23 @@
-import Link from "next/link";
 import { styled } from "#/styling";
-import { setPreviousLocationForAddContent } from "#/templates/AddContent";
 import { Stack } from "../Layout";
 import { ScrollArea } from "../ScrollArea";
+import { VerifyEmailState } from "../VerifyEmailModal";
 import { NavigationItems } from "./NavigationItems";
-import { SidePanelWrapper, UploadLink } from "./shared";
+import { SidePanelWrapper, UploadButton } from "./shared";
 import { UserInfo } from "./UserInfo";
 
-export const SidePanel = () => {
+export interface SidePanelProps {
+  verifyEmailState: VerifyEmailState;
+}
+
+export const SidePanel = ({ verifyEmailState }: SidePanelProps) => {
   return (
     <SidePanelWrapper>
       <Stack css={{ gap: "$5", px: "$8" }}>
         <UserInfoWrapper>
           <UserInfo />
         </UserInfoWrapper>
-        <Link href="/add-content" passHref>
-          <UploadLink onClick={setPreviousLocationForAddContent}>Create</UploadLink>
-        </Link>
+        <UploadButton verifyEmailState={verifyEmailState}>Create</UploadButton>
       </Stack>
       <ScrollArea>
         <Stack css={{ gap: "$9", px: "$8", height: "100%" }}>

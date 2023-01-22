@@ -3,8 +3,7 @@ import {
   useDeleteCommunityPage,
 } from "#/api/mutations/community/deleteCommunityPage";
 import { Button } from "#/components/Button";
-import { Flex } from "#/components/Layout";
-import { openModal, StandardModalWrapper } from "#/components/Modal";
+import { ModalFooter, openModal, StandardModalWrapper } from "#/components/Modal";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
 
@@ -32,10 +31,10 @@ const DeleteCommunityModal = ({
   return (
     <StandardModalWrapper>
       <MainTitle>Are you sure?</MainTitle>
-      <Body>
+      <Body css={{ color: "$secondaryText" }}>
         Once <strong>+{props.communityName}</strong> is deleted, it cannot be recovered.
       </Body>
-      <Flex css={{ justifyContent: "flex-end", gap: "$3" }}>
+      <ModalFooter>
         <Button variant="secondary" onClick={hide}>
           Cancel
         </Button>
@@ -50,7 +49,7 @@ const DeleteCommunityModal = ({
         >
           <TextOrSpinner isLoading={isLoading}>Delete Community</TextOrSpinner>
         </Button>
-      </Flex>
+      </ModalFooter>
     </StandardModalWrapper>
   );
 };

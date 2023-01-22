@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { PropsWithChildren, ReactNode } from "react";
 import { styled, ThemeScale } from "#/styling";
+import { setPreviousLocationForAddContent } from "#/templates/AddContent";
 import { Grid } from "../Layout";
 import { headingStyles, mainTitleStyles } from "../Typography";
+import { openVerifyEmailModal, VerifyEmailState } from "../VerifyEmailModal";
 
 export interface NavLinkProps {
   href: string;
@@ -51,6 +53,26 @@ export const SidePanelWrapper = ({ children }: PropsWithChildren<unknown>) => {
         {children}
       </Grid>
     </Grid>
+  );
+};
+
+export interface UploadButtonProps {
+  verifyEmailState: VerifyEmailState;
+  children: ReactNode;
+}
+
+export const UploadButton = ({ verifyEmailState, children }: UploadButtonProps) => {
+  const { emailAddress, hasNotVerifiedEmail } = verifyEmailState;
+  const disableUploads = emailAddress && hasNotVerifiedEmail;
+
+  return disableUploads ? (
+    <UploadLink as="button" onClick={() => openVerifyEmailModal({ emailAddress })}>
+      {children}
+    </UploadLink>
+  ) : (
+    <Link href="/add-content" passHref>
+      <UploadLink onClick={setPreviousLocationForAddContent}>{children}</UploadLink>
+    </Link>
   );
 };
 

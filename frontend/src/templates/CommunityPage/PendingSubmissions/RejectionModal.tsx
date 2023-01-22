@@ -7,7 +7,7 @@ import { useResolvePendingCommunitySubmission } from "#/api/mutations/community/
 import { Button, IconButton } from "#/components/Button";
 import { CloseIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
-import { openModal, StandardModalWrapper } from "#/components/Modal";
+import { ModalFooter, openModal, StandardModalWrapper } from "#/components/Modal";
 import { RadioGroup } from "#/components/RadioGroup";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Heading, MainTitle } from "#/components/Typography";
@@ -59,7 +59,9 @@ export const RejectionModal = ({
         </IconButton>
       </Flex>
       <Stack css={{ gap: "$6" }}>
-        <Heading>Select the community rule that this post violates:</Heading>
+        <Heading css={{ color: "$secondaryText" }}>
+          Select the community rule that this post violates:
+        </Heading>
         <RadioGroup
           ariaLabel="Community Rules"
           value={selectedRule}
@@ -67,14 +69,14 @@ export const RejectionModal = ({
           options={publishingChannelRules.map((r) => ({ value: r, label: r }))}
         />
       </Stack>
-      <Flex css={{ justifyContent: "flex-end", gap: "$3" }}>
+      <ModalFooter>
         <Button variant="secondary" onClick={hide}>
           Cancel
         </Button>
         <Button variant="danger" onClick={rejectPost} disabled={isResolvingSubmission}>
           <TextOrSpinner isLoading={isResolvingSubmission}>Reject Post</TextOrSpinner>
         </Button>
-      </Flex>
+      </ModalFooter>
     </StandardModalWrapper>
   );
 };

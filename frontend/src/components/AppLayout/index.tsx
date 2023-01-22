@@ -6,6 +6,7 @@ import { getAccessToken, useIsAuthenticated } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { useScrollPosition } from "#/utils/useScrollPosition";
 import { ScrollArea } from "../ScrollArea";
+import { useVerifyEmailState } from "../VerifyEmailModal";
 import { Footer } from "./Footer";
 import { NoAuthFooter } from "./NoAuthFooter";
 import { NoAuthSidePanel } from "./NoAuthSidePanel";
@@ -43,6 +44,7 @@ const AppLayoutInner = ({
   trackContentScroll,
 }: PropsWithChildren<AppLayoutProps>) => {
   const isAuthenticated = useIsAuthenticated();
+  const verifyEmailState = useVerifyEmailState();
   const generateSocket = useWebsocketState((state) => state.generateSocket);
   const hasAccessToken = isAuthenticated === true;
   const setScrollPosition = useAppLayoutState((store) => store.setScrollPosition);
@@ -66,7 +68,7 @@ const AppLayoutInner = ({
     <Wrapper>
       <SidePanelWrapper>
         {isAuthenticated === "unset" ? null : isAuthenticated ? (
-          <SidePanel />
+          <SidePanel verifyEmailState={verifyEmailState} />
         ) : (
           <NoAuthSidePanel />
         )}
@@ -74,7 +76,7 @@ const AppLayoutInner = ({
       <Content ref={ref}>{children}</Content>
       <Box css={{ zIndex: 1, "@md": { display: "none" } }}>
         {isAuthenticated === "unset" ? null : isAuthenticated ? (
-          <Footer />
+          <Footer verifyEmailState={verifyEmailState} />
         ) : (
           <NoAuthFooter />
         )}
