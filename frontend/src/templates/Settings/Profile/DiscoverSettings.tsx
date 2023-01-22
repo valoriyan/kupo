@@ -2,7 +2,7 @@ import { SetStateAction } from "react";
 import { useId } from "@radix-ui/react-id";
 import { HashTags } from "#/components/HashTags";
 import { Stack } from "#/components/Layout";
-import { MainTitle } from "#/components/Typography";
+import { Body, MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 
 export interface DiscoverSettingsProps {
@@ -16,8 +16,10 @@ export const DiscoverSettings = (props: DiscoverSettingsProps) => {
   return (
     <Stack css={{ gap: "$6", p: "$6" }}>
       <MainTitle as="h2">Discover</MainTitle>
-      <Stack css={{ gap: "$5" }}>
-        <label htmlFor={hashTagsId}>Profile Hashtags (Limit 5)</label>
+      <Stack css={{ gap: "$4" }}>
+        <Label as="label" htmlFor={hashTagsId}>
+          Profile Hashtags (Limit 5)
+        </Label>
         <HashTagsWrapper>
           <HashTags
             id={hashTagsId}
@@ -30,6 +32,8 @@ export const DiscoverSettings = (props: DiscoverSettingsProps) => {
     </Stack>
   );
 };
+
+const Label = styled(Body, { color: "$secondaryText" });
 
 const HashTagsWrapper = styled("div", {
   borderRadius: "$4",

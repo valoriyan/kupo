@@ -31,7 +31,7 @@ export const ChatMessagesList = ({
   return (
     <ScrollArea ref={setListRef}>
       {listRef && (
-        <Stack css={{ px: "$4", pt: "$2", pb: 0 }}>
+        <Stack css={{ px: "$4", py: "$2" }}>
           <ReverseInfiniteList
             scrollParent={listRef}
             hasNextPage={hasPreviousPage ?? false}

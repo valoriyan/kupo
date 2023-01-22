@@ -57,7 +57,7 @@ export const PostBody = (props: PostBodyProps) => {
         }}
         onClick={props.onPostClick}
       >
-        <Flex css={{ gap: "$3", alignItems: "center" }}>
+        <Flex css={{ gap: "$3", alignItems: "center", flex: 1 }}>
           <Avatar
             alt={`@${props.authorUserName ?? "User"}'s profile picture`}
             src={props.authorUserAvatar}
@@ -129,6 +129,7 @@ export const PostBody = (props: PostBodyProps) => {
 
 const Timestamp = styled("div", {
   color: "$secondaryText",
+  textAlign: "right",
 });
 
 const ShopItemDetailsWrapper = styled(Stack, {

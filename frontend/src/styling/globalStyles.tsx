@@ -58,7 +58,7 @@ export const globalStyles = globalCss({
       filter: "brightness(0.8)",
     },
   },
-  input: { padding: 0, borderRadius: 0 },
+  "input, textarea": { padding: 0, borderRadius: 0 },
   a: {
     color: "$link",
     textDecoration: "none",

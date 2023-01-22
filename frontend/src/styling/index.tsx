@@ -8,7 +8,7 @@ import { NoInfer } from "#/types/noInfer";
 export * from "./utils";
 
 export type ThemeScale<TScale extends keyof typeof theme> =
-  | `$${Exclude<keyof (typeof theme)[TScale], bigint | symbol>}`
+  | `$${Exclude<keyof typeof theme[TScale], bigint | symbol>}`
   | NoInfer<string>;
 
 const themedStitches = createStitches({
@@ -48,7 +48,8 @@ const themedStitches = createStitches({
 
       link: "hsla(250, 90%, 64%, 1)", // Link color
 
-      border: "#cacaca", // For borders around elements
+      border: "hsl(0, 0%, 78%)", // For borders around elements
+      borderSubdued: "hsl(0, 0%, 85%)", // For secondary borders around elements
 
       success: "#5FEF5D", // For success messages
       warning: "#EFED5D", // For warning messages
@@ -293,7 +294,8 @@ export const darkTheme = themedStitches.createTheme("dark", {
 
     link: "hsla(250, 90%, 70%, 1)",
 
-    border: "#858585",
+    border: "hsl(0, 0%, 52%)",
+    borderSubdued: "hsl(0, 0%, 35%)",
 
     success: "#5FEF5D",
     warning: "#EFED5D",

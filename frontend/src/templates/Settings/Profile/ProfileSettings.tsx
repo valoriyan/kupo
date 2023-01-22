@@ -9,8 +9,9 @@ import { Input } from "#/components/Input";
 import { Box, Grid, Stack } from "#/components/Layout";
 import { Spinner } from "#/components/Spinner";
 import { TextArea } from "#/components/TextArea";
-import { Body, MainTitle } from "#/components/Typography";
+import { MainTitle } from "#/components/Typography";
 import { css, styled } from "#/styling";
+import { Label, SectionWrapper } from "./shared";
 
 export interface ProfileSettingsProps {
   profilePictureUrl: string | undefined;
@@ -79,7 +80,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
   );
 
   return (
-    <Stack css={{ gap: "$6", p: "$6" }}>
+    <SectionWrapper>
       <MainTitle as="h2">Your Profile</MainTitle>
       <Grid
         css={{
@@ -88,7 +89,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
         }}
       >
         <Stack css={{ alignItems: "center", gap: "$4" }}>
-          <Body>Profile Picture</Body>
+          <Label>Profile Picture</Label>
           <EditMedia>
             <Box css={{ filter: `brightness(${isUploadingPfp ? 0.4 : 0.8})` }}>
               <Avatar
@@ -102,7 +103,7 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
           </EditMedia>
         </Stack>
         <Stack css={{ alignItems: "center", gap: "$3" }}>
-          <Body css={{ alignSelf: "start" }}>Background Image</Body>
+          <Label css={{ alignSelf: "start" }}>Background Image</Label>
           <EditMedia>
             <Box
               css={{
@@ -125,27 +126,33 @@ export const ProfileSettings = (props: ProfileSettingsProps) => {
           rowGap: "$5",
         }}
       >
-        <label htmlFor={usernameId}>Username</label>
+        <Label as="label" htmlFor={usernameId}>
+          Username
+        </Label>
         <Input
           id={usernameId}
           value={props.username}
           onChange={(e) => props.setUsername(e.currentTarget.value.toLocaleLowerCase())}
         />
-        <label htmlFor={bioId}>Profile Bio</label>
+        <Label as="label" htmlFor={bioId}>
+          Profile Bio
+        </Label>
         <TextArea
           id={bioId}
           rows={3}
           value={props.bio || ""}
           onChange={(e) => props.setBio(e.currentTarget.value)}
         />
-        <label htmlFor={websiteId}>Website</label>
+        <Label as="label" htmlFor={websiteId}>
+          Website
+        </Label>
         <Input
           id={websiteId}
           value={props.website || ""}
           onChange={(e) => props.setWebsite(e.currentTarget.value)}
         />
       </Grid>
-    </Stack>
+    </SectionWrapper>
   );
 };
 

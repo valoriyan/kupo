@@ -134,7 +134,7 @@ export const NewCommunityForm = ({
             }}
           >
             <Stack css={{ alignItems: "center", gap: "$4" }}>
-              <Body>Profile Picture</Body>
+              <Body css={{ color: "$secondaryText" }}>Profile Picture</Body>
               <EditMedia>
                 <Box css={{ filter: `brightness(${isUploadingPfp ? 0.4 : 0.8})` }}>
                   <Avatar src={pfpUrl} alt="Current Profile Picture" size="$11" />
@@ -144,7 +144,9 @@ export const NewCommunityForm = ({
               </EditMedia>
             </Stack>
             <Stack css={{ alignItems: "center", gap: "$3" }}>
-              <Body css={{ alignSelf: "start" }}>Background Image</Body>
+              <Body css={{ alignSelf: "start", color: "$secondaryText" }}>
+                Background Image
+              </Body>
               <EditMedia>
                 <Box
                   css={{

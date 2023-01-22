@@ -1,8 +1,9 @@
 import { useId } from "@radix-ui/react-id";
 import { ProfilePrivacySetting } from "#/api";
-import { Grid, Stack } from "#/components/Layout";
+import { Grid } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
 import { Toggle } from "#/components/Toggle";
+import { Label, SectionWrapper } from "./shared";
 
 export interface PrivacySettingsProps {
   privacySetting: ProfilePrivacySetting;
@@ -13,7 +14,7 @@ export const PrivacySettings = (props: PrivacySettingsProps) => {
   const privacySettingId = useId();
 
   return (
-    <Stack css={{ gap: "$6", p: "$6" }}>
+    <SectionWrapper>
       <MainTitle as="h2">Privacy</MainTitle>
       <Grid
         css={{
@@ -25,7 +26,9 @@ export const PrivacySettings = (props: PrivacySettingsProps) => {
           "> input": { justifySelf: "end" },
         }}
       >
-        <label htmlFor={privacySettingId}>Public Profile</label>
+        <Label as="label" htmlFor={privacySettingId}>
+          Public Profile
+        </Label>
         <Toggle
           id={privacySettingId}
           toggled={props.privacySetting === ProfilePrivacySetting.Public}
@@ -37,6 +40,6 @@ export const PrivacySettings = (props: PrivacySettingsProps) => {
           data-cy="profile-privacy-toggle"
         />
       </Grid>
-    </Stack>
+    </SectionWrapper>
   );
 };

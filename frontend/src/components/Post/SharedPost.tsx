@@ -55,9 +55,9 @@ export const SharedPost = ({
 };
 
 const Wrapper = styled("div", {
-  m: "$3",
+  m: "$4",
   mb: "0",
   overflow: "hidden",
   borderRadius: "$3",
-  border: "solid $borderWidths$1 $border",
+  border: "solid $borderWidths$1 $borderSubdued",
 });
