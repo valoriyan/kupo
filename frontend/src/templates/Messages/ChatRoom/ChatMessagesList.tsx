@@ -65,7 +65,7 @@ export const ChatMessagesList = ({
                   )}
                   <Flex
                     css={{
-                      pb: "$4",
+                      pb: "$3",
                       justifyContent: isClientMessage ? "flex-end" : "flex-start",
                     }}
                   >

@@ -72,6 +72,7 @@ const Wrapper = styled(Stack, {
 
 const UserTransitionMessage = styled(Flex, {
   gap: "$3",
+  paddingTop: "$2",
   flex: 1,
   ">:first-child": { mt: "$6" },
 });

@@ -55,8 +55,8 @@ const themedStitches = createStitches({
       failure: "#EF5D5F", // For error messages
       disabled: "#b0b0b0", // For disabled elements
 
-      scrollBar: "rgb(194, 194, 194)",
-      scrollBarTrack: "rgb(250, 250, 250)",
+      scrollBar: "rgba(194, 194, 194)",
+      scrollBarTrack: "rgba(250, 250, 250, 0.3)",
 
       transparent: "rgba(0,0,0,0)",
     },
@@ -300,8 +300,8 @@ export const darkTheme = themedStitches.createTheme("dark", {
     failure: "#EF5D5F",
     disabled: "#a0a0a0",
 
-    scrollBar: "rgba(117, 117, 117)",
-    scrollBarTrack: "rgb(46, 46, 46)",
+    scrollBar: "rgba(127, 127, 127)",
+    scrollBarTrack: "rgba(46, 46, 46, 0.3)",
 
     transparent: "rgba(0,0,0,0)",
   },

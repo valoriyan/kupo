@@ -65,6 +65,7 @@ export const NewChatRoom = () => {
         <ExistingChatMessages
           clientUserId={clientUser?.userId}
           chatRoomId={existingChatRoom.chatRoomId}
+          members={resolvedUsers}
         />
       ) : (
         <div />
