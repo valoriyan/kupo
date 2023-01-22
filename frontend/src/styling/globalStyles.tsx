@@ -48,7 +48,7 @@ export const globalStyles = globalCss({
   button: {
     background: "none",
     border: "none",
-    padding: "0",
+    padding: 0,
     cursor: "pointer",
     color: "$text",
     "&:hover": {
@@ -58,7 +58,7 @@ export const globalStyles = globalCss({
       filter: "brightness(0.8)",
     },
   },
-  input: { padding: "0" },
+  input: { padding: 0, borderRadius: 0 },
   a: {
     color: "$link",
     textDecoration: "none",
