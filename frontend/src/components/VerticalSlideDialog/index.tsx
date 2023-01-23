@@ -70,20 +70,20 @@ const DialogContent = styled(Dialog.Content, {
       fromTop: {
         [prefersMotionSelector]: {
           "&[data-state='open']": {
-            animation: `${slideInFromTop} $2 ease`,
+            animation: `${slideInFromTop} $3 ease`,
           },
           "&[data-state='closed']": {
-            animation: `${slideOutToTop} $2 ease`,
+            animation: `${slideOutToTop} $3 ease`,
           },
         },
       },
       fromBottom: {
         [prefersMotionSelector]: {
           "&[data-state='open']": {
-            animation: `${slideInFromBottom} $2 ease`,
+            animation: `${slideInFromBottom} $3 ease`,
           },
           "&[data-state='closed']": {
-            animation: `${slideOutToBottom} $2 ease`,
+            animation: `${slideOutToBottom} $3 ease`,
           },
         },
       },
@@ -107,10 +107,10 @@ const DialogOverlay = styled(Dialog.Overlay, {
   inset: 0,
   [prefersMotionSelector]: {
     "&[data-state='open']": {
-      animation: `${fadeIn} $2 ease`,
+      animation: `${fadeIn} $3 ease`,
     },
     "&[data-state='closed']": {
-      animation: `${fadeOut} $2 ease`,
+      animation: `${fadeOut} $3 ease`,
     },
   },
 });

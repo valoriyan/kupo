@@ -40,10 +40,10 @@ const Content = styled(RadixTooltip.Content, {
   zIndex: "$dropdown",
   [prefersMotionSelector]: {
     "&[data-state='delayed-open']": {
-      animation: `${fadeIn} $2 ease`,
+      animation: `${fadeIn} $3 ease`,
     },
     "&[data-state='closed']": {
-      animation: `${fadeOut} $2 ease`,
+      animation: `${fadeOut} $3 ease`,
     },
   },
 });

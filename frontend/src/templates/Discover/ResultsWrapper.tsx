@@ -1,10 +1,12 @@
-import { motion } from "framer-motion";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Collapsible } from "#/components/Animations/Collapsible";
+import { FadeInOut } from "#/components/Animations/FadeInOut";
 import { ChevronUpIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Paginator } from "#/components/Paginator";
 import { Body, Heading, Subtext } from "#/components/Typography";
+import { styled } from "#/styling";
 
 export interface Pagination {
   totalCount: number;
@@ -47,17 +49,7 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
           </Subtext>
         )}
       </Flex>
-      <motion.div
-        transition={{ duration: 0.3 }}
-        custom={isCollapsed}
-        animate="state"
-        variants={{
-          state: (collapsed: boolean) => ({
-            height: collapsed ? "0" : "auto",
-            overflow: "hidden",
-          }),
-        }}
-      >
+      <Collapsible isCollapsed={isCollapsed}>
         <Box css={{ px: "$4", py: "$5" }}>
           {props.errorMessage && !props.isLoading ? (
             <Body css={{ textAlign: "center", color: "$secondaryText" }}>
@@ -66,7 +58,7 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
           ) : props.isLoading || !props.children ? (
             <LoadingArea size="md" />
           ) : (
-            <Stack css={{ gap: "$5", alignItems: "center" }}>
+            <ListWrapper>
               {props.children}
               {!!pagination?.totalCount &&
                 Math.ceil(pagination.totalCount / pagination.pageSize) > 1 && (
@@ -76,10 +68,17 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
                     totalPages={Math.ceil(pagination.totalCount / pagination.pageSize)}
                   />
                 )}
-            </Stack>
+            </ListWrapper>
           )}
         </Box>
-      </motion.div>
+      </Collapsible>
     </Stack>
   );
 };
+
+const ListWrapper = styled(FadeInOut, {
+  display: "flex",
+  flexDirection: "column",
+  gap: "$5",
+  alignItems: "center",
+});

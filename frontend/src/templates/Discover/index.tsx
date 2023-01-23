@@ -1,5 +1,4 @@
 import create from "zustand";
-import { FadeInOut } from "#/components/Animations/FadeInOut";
 import { SearchIcon } from "#/components/Icons";
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
@@ -42,9 +41,7 @@ export const Discover = () => {
             data-cy="discover-search-input"
           />
         </SearchBar>
-        <FadeInOut key={searchText ? "search" : "suggested"}>
-          {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
-        </FadeInOut>
+        {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
       </Stack>
     </Grid>
   );

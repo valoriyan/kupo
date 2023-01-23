@@ -80,5 +80,5 @@ const HashTagBackground = styled("div", {
   size: "100%",
   borderRadius: "$round",
   bg: "$primarySubdued",
-  animation: `${growFromCorner} $2 ease`,
+  animation: `${growFromCorner} $3 ease`,
 });

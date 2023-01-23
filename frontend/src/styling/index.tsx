@@ -8,7 +8,7 @@ import { NoInfer } from "#/types/noInfer";
 export * from "./utils";
 
 export type ThemeScale<TScale extends keyof typeof theme> =
-  | `$${Exclude<keyof (typeof theme)[TScale], bigint | symbol>}`
+  | `$${Exclude<keyof typeof theme[TScale], bigint | symbol>}`
   | NoInfer<string>;
 
 const themedStitches = createStitches({
@@ -157,13 +157,14 @@ const themedStitches = createStitches({
     transitions: {
       0: "0s",
       1: "0.2s",
-      2: "0.4s",
-      3: "0.6s",
-      4: "0.8s",
-      5: "1.2s",
-      6: "1.6s",
-      7: "2s",
-      8: "2.4s",
+      2: "0.3s",
+      3: "0.4s",
+      4: "0.6s",
+      5: "0.8s",
+      6: "1.2s",
+      7: "1.6s",
+      8: "2s",
+      9: "2.4s",
     },
   },
   media: {
