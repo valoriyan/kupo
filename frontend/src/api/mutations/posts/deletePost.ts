@@ -13,9 +13,7 @@ export const useDeletePost = ({
 
   return useMutation(
     async () => {
-      return await Api.deletePost({
-        publishedItemId,
-      });
+      return await Api.deletePost({ publishedItemId });
     },
     {
       onSuccess: () => {
