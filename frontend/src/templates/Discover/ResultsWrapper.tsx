@@ -6,19 +6,25 @@ import { LoadingArea } from "#/components/LoadingArea";
 import { Paginator } from "#/components/Paginator";
 import { Body, Heading, Subtext } from "#/components/Typography";
 
+export interface Pagination {
+  totalCount: number;
+  pageSize: number;
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+}
+
 export interface ResultsWrapperProps {
   heading: string;
   isLoading: boolean;
   errorMessage?: string;
-  totalCount: number | undefined;
-  pageSize: number;
-  page: number;
-  setPage: Dispatch<SetStateAction<number>>;
   children: ReactNode;
+  pagination?: Pagination;
 }
 
 export const ResultsWrapper = (props: ResultsWrapperProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const { pagination } = props;
 
   return (
     <Stack>
@@ -35,9 +41,9 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
         >
           <ChevronUpIcon />
         </Flex>
-        {!!props.totalCount && (
+        {!!pagination?.totalCount && (
           <Subtext css={{ ml: "$3", color: "$secondaryText" }}>
-            {props.totalCount} Result{props.totalCount > 1 ? "s" : ""}
+            {pagination.totalCount} Result{pagination.totalCount > 1 ? "s" : ""}
           </Subtext>
         )}
       </Flex>
@@ -62,13 +68,14 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
           ) : (
             <Stack css={{ gap: "$5", alignItems: "center" }}>
               {props.children}
-              {!!props.totalCount && Math.ceil(props.totalCount / props.pageSize) > 1 && (
-                <Paginator
-                  currentPage={props.page}
-                  setCurrentPage={props.setPage}
-                  totalPages={Math.ceil(props.totalCount / props.pageSize)}
-                />
-              )}
+              {!!pagination?.totalCount &&
+                Math.ceil(pagination.totalCount / pagination.pageSize) > 1 && (
+                  <Paginator
+                    currentPage={pagination.page}
+                    setCurrentPage={pagination.setPage}
+                    totalPages={Math.ceil(pagination.totalCount / pagination.pageSize)}
+                  />
+                )}
             </Stack>
           )}
         </Box>

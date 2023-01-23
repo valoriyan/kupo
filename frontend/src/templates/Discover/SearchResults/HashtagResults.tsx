@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchForHashtags } from "#/api/queries/discover/useSearchForHashtags";
 import { HashTag } from "#/components/HashTags";
 import { Flex } from "#/components/Layout";
-import { ResultsWrapper } from "./ResultsWrapper";
+import { ResultsWrapper } from "../ResultsWrapper";
 
 export interface HashtagResultsProps {
   query: string;
@@ -22,6 +22,11 @@ export const HashtagResults = ({ query }: HashtagResultsProps) => {
     setPage(0);
   }, [query]);
 
+  const pagination = useMemo(() => {
+    if (!data) return undefined;
+    return { totalCount: data.totalCount, pageSize, page, setPage };
+  }, [data, page]);
+
   return (
     <ResultsWrapper
       heading="Hashtags"
@@ -33,10 +38,7 @@ export const HashtagResults = ({ query }: HashtagResultsProps) => {
           ? "No Results Found"
           : undefined
       }
-      totalCount={data?.totalCount}
-      pageSize={pageSize}
-      page={page}
-      setPage={setPage}
+      pagination={pagination}
     >
       {!data ? null : (
         <Flex css={{ gap: "$3", flexWrap: "wrap", alignSelf: "flex-start" }}>

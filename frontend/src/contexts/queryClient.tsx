@@ -29,6 +29,8 @@ export enum CacheKeys {
   SearchForPostCaptions = "SearchForPostCaptions",
   SearchForUsers = "SearchForUsers",
   SearchForPublishingChannels = "SearchForPublishingChannels",
+  RecommendedUsers = "RecommendedUsers",
+  RecommendedPublishingChannels = "RecommendedPublishingChannels",
   FollowingCommunities = "FollowingCommunities",
   FollowingUsers = "FollowingUsers",
   FollowerUsers = "FollowerUsers",

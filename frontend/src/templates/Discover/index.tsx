@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
 import create from "zustand";
+import { FadeInOut } from "#/components/Animations/FadeInOut";
 import { SearchIcon } from "#/components/Icons";
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
@@ -42,17 +42,9 @@ export const Discover = () => {
             data-cy="discover-search-input"
           />
         </SearchBar>
-        <AnimatePresence>
-          <motion.div
-            key={searchText ? "search" : "suggested"}
-            transition={{ duration: 0.2 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
-          </motion.div>
-        </AnimatePresence>
+        <FadeInOut key={searchText ? "search" : "suggested"}>
+          {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
+        </FadeInOut>
       </Stack>
     </Grid>
   );
@@ -66,7 +58,7 @@ const SearchBar = styled("label", {
   gap: "$2",
   pl: "$3",
   py: "$3",
-  mx: "$3",
+  mx: "$4",
   transition: "border-color $1 ease",
   svg: { color: "$border", transition: "color $1 ease" },
 

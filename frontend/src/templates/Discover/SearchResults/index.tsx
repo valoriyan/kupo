@@ -21,9 +21,9 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
       {divider}
       <UserResults query={strippedQuery} />
       {divider}
-      <PostResults query={strippedQuery} />
-      {divider}
       <CommunityResults query={strippedQuery} />
+      {divider}
+      <PostResults query={strippedQuery} />
     </Stack>
   );
 };
