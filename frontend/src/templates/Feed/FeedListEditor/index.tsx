@@ -2,25 +2,34 @@ import { motion } from "framer-motion";
 import { FormEventHandler, useState } from "react";
 import { UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
 import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
+import { APP_FOOTER_HEIGHT } from "#/components/AppLayout/Footer";
 import { IconButton } from "#/components/Button";
 import { ChevronUpIcon, MathPlusIcon } from "#/components/Icons";
-import { Flex, Grid, Stack } from "#/components/Layout";
+import { ScrollArea } from "#/components/ScrollArea";
 import { bodyStyles, MainTitle } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
-import { FilterRow } from "./FilterRow";
+import { ActionEvent, FilterRow } from "./FilterRow";
 
 export interface FeedListEditorProps {
   hide: () => void;
   contentFilters: UserContentFeedFilter[];
   updateContentFilters: ReturnType<typeof useUpdateContentFilters>["mutateAsync"];
+  selectedFilter: UserContentFeedFilter;
+  setSelectedFilter: (filter: UserContentFeedFilter) => void;
 }
 
 export const FeedListEditor = (props: FeedListEditorProps) => {
   const [newFilterText, setNewFilterText] = useState("");
   const clientUserId = useCurrentUserId();
 
-  const onMoveUp = (contentFeedFilterId: string) => () => {
+  const setSelectedFilter = (filter: UserContentFeedFilter) => {
+    props.setSelectedFilter(filter);
+    props.hide();
+  };
+
+  const onMoveUp = (contentFeedFilterId: string) => (e: ActionEvent) => {
+    e.stopPropagation();
     const newFilters = props.contentFilters.filter((filter) => filter.value);
     const index = newFilters.findIndex(
       (filter) => filter.contentFeedFilterId === contentFeedFilterId,
@@ -29,7 +38,8 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
     props.updateContentFilters(newFilters);
   };
 
-  const onMoveDown = (contentFeedFilterId: string) => () => {
+  const onMoveDown = (contentFeedFilterId: string) => (e: ActionEvent) => {
+    e.stopPropagation();
     const newFilters = props.contentFilters.filter((filter) => filter.value);
     const index = newFilters.findIndex(
       (filter) => filter.contentFeedFilterId === contentFeedFilterId,
@@ -38,7 +48,8 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
     props.updateContentFilters(newFilters);
   };
 
-  const onDelete = (contentFeedFilterId: string) => () => {
+  const onDelete = (contentFeedFilterId: string) => (e: ActionEvent) => {
+    e.stopPropagation();
     props.updateContentFilters(
       props.contentFilters
         .filter((filter) => filter.value)
@@ -101,53 +112,14 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
   };
 
   return (
-    <Stack
-      as={motion.div}
-      layout
-      transition={{ duration: 0.2 }}
-      css={{ bg: "$background1", boxShadow: "$1" }}
-    >
-      <Flex
-        as={motion.div}
-        layout
-        css={{
-          gap: "$2",
-          p: "$3",
-          pl: "$5",
-          justifyContent: "space-between",
-          borderBottom: "solid $borderWidths$1 $background1",
-        }}
-      >
+    <Wrapper layout transition={{ duration: 0.2 }}>
+      <Header layout>
         <MainTitle>Feeds</MainTitle>
-        <IconButton onClick={props.hide}>
+        <IconButton onClick={props.hide} css={{ p: "$3" }}>
           <ChevronUpIcon />
         </IconButton>
-      </Flex>
-      {props.contentFilters.map((filter, i, filters) => (
-        <FilterRow
-          key={filter.contentFeedFilterId}
-          filter={filter}
-          actions={
-            !filter.value
-              ? undefined
-              : {
-                  moveUp: !filters[i - 1]?.value
-                    ? undefined
-                    : onMoveUp(filter.contentFeedFilterId),
-                  moveDown:
-                    i === props.contentFilters.length - 1
-                      ? undefined
-                      : onMoveDown(filter.contentFeedFilterId),
-                  delete: onDelete(filter.contentFeedFilterId),
-                }
-          }
-        />
-      ))}
-      <Grid
-        as="form"
-        onSubmit={addFilter}
-        css={{ gridTemplateColumns: "minmax(0, 1fr) auto" }}
-      >
+      </Header>
+      <InputWrapper onSubmit={addFilter} layout>
         <FilterInput
           type="text"
           autoComplete="off"
@@ -159,17 +131,76 @@ export const FeedListEditor = (props: FeedListEditorProps) => {
         <AddButton type="submit" disabled={!isFilterValid(newFilterText)}>
           <MathPlusIcon />
         </AddButton>
-      </Grid>
-    </Stack>
+      </InputWrapper>
+      <ScrollArea>
+        {props.contentFilters.map((filter, i, filters) => (
+          <FilterRow
+            key={filter.contentFeedFilterId}
+            filter={filter}
+            isActive={
+              filter.contentFeedFilterId === props.selectedFilter.contentFeedFilterId
+            }
+            makeActive={() => setSelectedFilter(filter)}
+            actions={
+              !filter.value
+                ? undefined
+                : {
+                    moveUp: !filters[i - 1]?.value
+                      ? undefined
+                      : onMoveUp(filter.contentFeedFilterId),
+                    moveDown:
+                      i === props.contentFilters.length - 1
+                        ? undefined
+                        : onMoveDown(filter.contentFeedFilterId),
+                    delete: onDelete(filter.contentFeedFilterId),
+                  }
+            }
+          />
+        ))}
+      </ScrollArea>
+    </Wrapper>
   );
 };
 
+const Wrapper = styled(motion.div, {
+  display: "grid",
+  gridTemplateRows: "auto auto minmax(0, 1fr)",
+  bg: "$background1",
+  boxShadow: "$1",
+  maxHeight: `calc(100vh - ${APP_FOOTER_HEIGHT})`,
+  "@md": { maxHeight: "100vh" },
+});
+
+const Header = styled(motion.div, {
+  display: "flex",
+  gap: "$2",
+  py: "$3",
+  pl: "$5",
+  pr: "$3",
+  justifyContent: "space-between",
+  alignItems: "center",
+});
+
+const InputWrapper = styled(motion.form, {
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr) auto",
+});
+
 const FilterInput = styled("input", bodyStyles, {
-  background: "none",
+  background: "$background1",
   border: "none",
   p: "$5",
   borderTop: "solid $borderWidths$1 $border",
-  marginTop: "-1px",
+  borderBottom: "solid $borderWidths$1 $border",
+
+  "&:focus": {
+    outline: "none",
+    borderColor: "$primary",
+  },
+
+  "&::placeholder": {
+    color: "$secondaryText",
+  },
 });
 
 const AddButton = styled("button", {
@@ -178,7 +209,7 @@ const AddButton = styled("button", {
   alignItems: "center",
   bg: "$primary",
   color: "$accentText",
-  px: "$4",
+  px: "$5",
   cursor: "pointer",
   transition: "background-color $1 ease",
 

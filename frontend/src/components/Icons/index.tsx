@@ -17,6 +17,7 @@ export * from "./generated/CommunityIcon";
 export * from "./generated/CreditCardIcon";
 export * from "./generated/DuplicateIcon";
 export * from "./generated/EyeIcon";
+export * from "./generated/FeedIcon";
 export * from "./generated/FileDocumentIcon";
 export * from "./generated/HeartIcon";
 export * from "./generated/HomeIcon";

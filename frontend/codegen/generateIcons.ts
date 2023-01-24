@@ -24,6 +24,7 @@ const ICONS_TO_GENERATE = [
   "credit-card",
   "duplicate",
   "eye",
+  "feed",
   "file-document",
   "heart",
   "home",

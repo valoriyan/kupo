@@ -70,20 +70,20 @@ const DialogContent = styled(Dialog.Content, {
       fromTop: {
         [prefersMotionSelector]: {
           "&[data-state='open']": {
-            animation: `${slideInFromTop} $3 ease`,
+            animation: `${slideInFromTop} $2 ease`,
           },
           "&[data-state='closed']": {
-            animation: `${slideOutToTop} $3 ease`,
+            animation: `${slideOutToTop} $2 ease`,
           },
         },
       },
       fromBottom: {
         [prefersMotionSelector]: {
           "&[data-state='open']": {
-            animation: `${slideInFromBottom} $3 ease`,
+            animation: `${slideInFromBottom} $2 ease`,
           },
           "&[data-state='closed']": {
-            animation: `${slideOutToBottom} $3 ease`,
+            animation: `${slideOutToBottom} $2 ease`,
           },
         },
       },

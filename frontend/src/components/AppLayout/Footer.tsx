@@ -9,6 +9,8 @@ import { VerifyEmailState } from "../VerifyEmailModal";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadButton } from "./shared";
 
+export const APP_FOOTER_HEIGHT = "57px";
+
 export interface FooterProps {
   verifyEmailState: VerifyEmailState;
 }
@@ -36,7 +38,7 @@ export const Footer = ({ verifyEmailState }: FooterProps) => {
             size="$7"
           />
         }
-        position={{ top: "0", bottom: "57px" /* Top of Footer */ }}
+        position={{ top: "0", bottom: APP_FOOTER_HEIGHT }}
       >
         {({ hide }) => <NavigationDrawer hide={hide} />}
       </Drawer>
