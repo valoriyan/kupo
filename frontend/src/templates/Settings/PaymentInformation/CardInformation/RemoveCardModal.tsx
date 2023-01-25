@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "#/components/Button";
-import { Flex } from "#/components/Layout";
-import { openModal, StandardModalWrapper } from "#/components/Modal";
+import { ModalFooter, openModal, StandardModalWrapper } from "#/components/Modal";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
 
@@ -23,8 +22,10 @@ export const RemoveCardModal = ({ removeCreditCard, hide }: RemoveCardModalProps
   return (
     <StandardModalWrapper>
       <MainTitle>Remove Card?</MainTitle>
-      <Body>Are you sure you would like to remove this card?</Body>
-      <Flex css={{ justifyContent: "flex-end", gap: "$3" }}>
+      <Body css={{ color: "$secondaryText" }}>
+        Are you sure you would like to remove this card?
+      </Body>
+      <ModalFooter>
         <Button variant="secondary" onClick={hide}>
           Cancel
         </Button>
@@ -45,7 +46,7 @@ export const RemoveCardModal = ({ removeCreditCard, hide }: RemoveCardModalProps
         >
           <TextOrSpinner isLoading={isLoading}>Remove Card</TextOrSpinner>
         </Button>
-      </Flex>
+      </ModalFooter>
     </StandardModalWrapper>
   );
 };

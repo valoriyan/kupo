@@ -1,52 +1,57 @@
 import { motion } from "framer-motion";
-import { UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
-import { IconButton } from "#/components/Button";
+import { UserContentFeedFilter } from "#/api";
 import { ChevronDownOIcon, ChevronUpOIcon, TrashIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
-import { Body } from "#/components/Typography";
+import { Body, truncateByWidth } from "#/components/Typography";
 import { styled } from "#/styling";
+import { getContentFeedFilterDisplayName } from "../utilities";
+
+export type ActionEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
 export interface FilterRowProps {
   filter: UserContentFeedFilter;
+  isActive: boolean;
+  makeActive: () => void;
   actions?: {
-    moveUp?: () => void;
-    moveDown?: () => void;
-    delete?: () => void;
+    moveUp?: (e: ActionEvent) => void;
+    moveDown?: (e: ActionEvent) => void;
+    delete?: (e: ActionEvent) => void;
   };
 }
 
-export const FilterRow = ({ filter, actions }: FilterRowProps) => {
-  let filterDisplayName;
-
-  if (!filter.value) {
-    filterDisplayName = filter.contentFeedFilterId;
-  } else if (filter.type === UserContentFeedFilterType.Username) {
-    filterDisplayName = `@${filter.value}`;
-  } else if (filter.type === UserContentFeedFilterType.Hashtag) {
-    filterDisplayName = `#${filter.value}`;
-  } else if (filter.type === UserContentFeedFilterType.PublishingChannel) {
-    filterDisplayName = `+${filter.value}`;
-  }
+export const FilterRow = ({ filter, isActive, makeActive, actions }: FilterRowProps) => {
+  const filterDisplayName = getContentFeedFilterDisplayName(filter);
 
   return (
-    <FilterRowWrapper layout transition={{ duration: 0.2 }}>
-      <Body>{filterDisplayName}</Body>
+    <FilterRowWrapper layout transition={{ duration: 0.2 }} onClick={makeActive}>
+      <DisplayName css={{ color: isActive ? "$primary" : "$secondaryText" }}>
+        {filterDisplayName}
+      </DisplayName>
       {actions && (
-        <Flex css={{ gap: "$3" }}>
+        <Flex>
           {actions.moveUp && (
-            <IconButton onClick={actions.moveUp}>
+            <Flex
+              onClick={actions.moveUp}
+              css={{ color: "$secondaryText", px: "$2", py: "$3" }}
+            >
               <ChevronUpOIcon />
-            </IconButton>
+            </Flex>
           )}
           {actions.moveDown && (
-            <IconButton onClick={actions.moveDown}>
+            <Flex
+              onClick={actions.moveDown}
+              css={{ color: "$secondaryText", px: "$2", py: "$3" }}
+            >
               <ChevronDownOIcon />
-            </IconButton>
+            </Flex>
           )}
           {actions.delete && (
-            <IconButton onClick={actions.delete} css={{ color: "$failure" }}>
+            <Flex
+              onClick={actions.delete}
+              css={{ color: "$failure", px: "$2", py: "$3", ml: "$3" }}
+            >
               <TrashIcon />
-            </IconButton>
+            </Flex>
           )}
         </Flex>
       )}
@@ -54,13 +59,18 @@ export const FilterRow = ({ filter, actions }: FilterRowProps) => {
   );
 };
 
-const FilterRowWrapper = styled(motion.div, {
-  display: "flex",
+const FilterRowWrapper = styled(motion.button, {
+  display: "grid",
   alignItems: "center",
-  justifyContent: "space-between",
-  borderTop: "solid $borderWidths$1 $border",
+  gridTemplateColumns: "minmax(0, 1fr) auto",
+  bg: "$background2",
   borderBottom: "solid $borderWidths$1 $border",
+  width: "100%",
+  pr: "$3",
+});
+
+const DisplayName = styled(Body, truncateByWidth("100%"), {
+  fontWeight: "$bold",
   p: "$5",
-  bg: "$background1",
-  marginTop: "-1px",
+  textAlign: "left",
 });

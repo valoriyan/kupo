@@ -45,10 +45,10 @@ const DialogContent = styled(Dialog.Content, {
   zIndex: "$dialog",
   [prefersMotionSelector]: {
     "&[data-state='open']": {
-      animation: `${slideInFromRight} $2 ease`,
+      animation: `${slideInFromRight} $3 ease`,
     },
     "&[data-state='closed']": {
-      animation: `${slideOutToRight} $2 ease`,
+      animation: `${slideOutToRight} $3 ease`,
     },
   },
 });
@@ -68,10 +68,10 @@ const DialogOverlay = styled(Dialog.Overlay, {
   inset: 0,
   [prefersMotionSelector]: {
     "&[data-state='open']": {
-      animation: `${fadeIn} $2 ease`,
+      animation: `${fadeIn} $3 ease`,
     },
     "&[data-state='closed']": {
-      animation: `${fadeOut} $2 ease`,
+      animation: `${fadeOut} $3 ease`,
     },
   },
 });

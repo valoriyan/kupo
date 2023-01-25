@@ -1,13 +1,8 @@
-import { useEffect, useState } from "react";
-import { RenderablePublishingChannel } from "#/api";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchForPublishingChannels } from "#/api/queries/discover/useSearchForCommunities";
-import { Avatar } from "#/components/Avatar";
-import { CommunityName } from "#/components/CommunityName";
-import { Flex, Grid, Stack } from "#/components/Layout";
-import { Body } from "#/components/Typography";
-import { styled } from "#/styling";
-import { goToCommunityPage } from "#/templates/CommunityPage";
-import { ResultsWrapper } from "./ResultsWrapper";
+import { Grid } from "#/components/Layout";
+import { CommunityPreview } from "../Previews/CommunityPreview";
+import { ResultsWrapper } from "../ResultsWrapper";
 
 export interface CommunityResultsProps {
   query: string;
@@ -27,6 +22,11 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
     setPage(0);
   }, [query]);
 
+  const pagination = useMemo(() => {
+    if (!data) return undefined;
+    return { totalCount: data.totalCount, pageSize, page, setPage };
+  }, [data, page]);
+
   return (
     <ResultsWrapper
       heading="Communities"
@@ -38,10 +38,7 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
           ? "No Results Found"
           : undefined
       }
-      totalCount={data?.totalCount}
-      pageSize={pageSize}
-      page={page}
-      setPage={setPage}
+      pagination={pagination}
     >
       {!data ? null : (
         <Grid
@@ -60,29 +57,3 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
     </ResultsWrapper>
   );
 };
-
-const CommunityPreview = ({ community }: { community: RenderablePublishingChannel }) => {
-  return (
-    <CommunityWrapper>
-      <Flex css={{ alignItems: "center", gap: "$4" }}>
-        <Avatar
-          src={community.profilePictureTemporaryUrl}
-          alt={`${community.name}'s profile picture`}
-          size="$8"
-          onClick={() => goToCommunityPage(community.name)}
-        />
-        <CommunityName name={community.name} />
-      </Flex>
-      <Body>{community.description}</Body>
-    </CommunityWrapper>
-  );
-};
-
-const CommunityWrapper = styled(Stack, {
-  gap: "$4",
-  borderRadius: "$3",
-  px: "$5",
-  py: "$4",
-  bg: "$background2",
-  boxShadow: "$1",
-});

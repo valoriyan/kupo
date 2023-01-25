@@ -35,6 +35,7 @@ const themedStitches = createStitches({
       background1: "hsla(242, 16%, 99%, 1)",
       background2: "hsla(242, 16%, 98%, 1)", // Backgrounds that sit on top of background1
       background3: "hsla(242, 16%, 94%, 1)", // Backgrounds that sit on top of background2
+      background1Translucent: "hsla(242, 16%, 99%, 0.7)",
       overlay: "rgba(0,0,0,0.5)",
       heavyOverlay: "rgba(255,255,255,0.6)",
       mediaOverlay: "rgba(115, 115, 115, 0.5)",
@@ -157,13 +158,14 @@ const themedStitches = createStitches({
     transitions: {
       0: "0s",
       1: "0.2s",
-      2: "0.4s",
-      3: "0.6s",
-      4: "0.8s",
-      5: "1.2s",
-      6: "1.6s",
-      7: "2s",
-      8: "2.4s",
+      2: "0.3s",
+      3: "0.4s",
+      4: "0.6s",
+      5: "0.8s",
+      6: "1.2s",
+      7: "1.6s",
+      8: "2s",
+      9: "2.4s",
     },
   },
   media: {
@@ -281,6 +283,7 @@ export const darkTheme = themedStitches.createTheme("dark", {
     background1: "hsla(242, 10%, 7%, 1)",
     background2: "hsla(242, 10%, 9%, 1)",
     background3: "hsla(242, 10%, 12%, 1)",
+    background1Translucent: "hsla(242, 10%, 6%, 0.7)",
     overlay: "rgba(0,0,0,0.5)",
     heavyOverlay: "rgba(0,0,0,0.6)",
     mediaOverlay: "rgba(115, 115, 115, 0.7)",

@@ -1,4 +1,4 @@
-import { RenderablePost, UserContentFeedFilter } from "#/api";
+import { RenderablePost, UserContentFeedFilter, UserContentFeedFilterType } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { DEFAULT_EOL_MESSAGE, InfiniteList } from "#/components/InfiniteList";
@@ -6,6 +6,7 @@ import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
 import { goToPostPage } from "#/templates/SinglePost";
+import { WelcomeMessage } from "./WelcomeMessage";
 
 export interface ContentFeedProps {
   selectedContentFilter: UserContentFeedFilter;
@@ -33,7 +34,11 @@ export const ContentFeed = ({ selectedContentFilter }: ContentFeedProps) => {
   const posts = data.pages.flatMap((page) => page.publishedItems);
 
   return posts.length === 0 ? (
-    <ErrorMessage>No Posts Found</ErrorMessage>
+    selectedContentFilter.type === UserContentFeedFilterType.FollowingUsers ? (
+      <WelcomeMessage />
+    ) : (
+      <ErrorMessage>No Posts Found</ErrorMessage>
+    )
   ) : (
     <InfiniteList
       data={posts as unknown as RenderablePost[]}

@@ -46,7 +46,7 @@ const spin = keyframes({
 });
 
 const SpinningSVG = styled("svg", {
-  animation: `${spin} $4 linear infinite`,
+  animation: `${spin} $5 linear infinite`,
 });
 
 const spinnerProperties: Record<

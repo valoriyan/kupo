@@ -1,24 +1,32 @@
-import { motion } from "framer-motion";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Collapsible } from "#/components/Animations/Collapsible";
+import { FadeInOut } from "#/components/Animations/FadeInOut";
 import { ChevronUpIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Paginator } from "#/components/Paginator";
 import { Body, Heading, Subtext } from "#/components/Typography";
+import { styled } from "#/styling";
+
+export interface Pagination {
+  totalCount: number;
+  pageSize: number;
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+}
 
 export interface ResultsWrapperProps {
   heading: string;
   isLoading: boolean;
   errorMessage?: string;
-  totalCount: number | undefined;
-  pageSize: number;
-  page: number;
-  setPage: Dispatch<SetStateAction<number>>;
   children: ReactNode;
+  pagination?: Pagination;
 }
 
 export const ResultsWrapper = (props: ResultsWrapperProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const { pagination } = props;
 
   return (
     <Stack>
@@ -35,23 +43,13 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
         >
           <ChevronUpIcon />
         </Flex>
-        {!!props.totalCount && (
+        {!!pagination?.totalCount && (
           <Subtext css={{ ml: "$3", color: "$secondaryText" }}>
-            {props.totalCount} Result{props.totalCount > 1 ? "s" : ""}
+            {pagination.totalCount} Result{pagination.totalCount > 1 ? "s" : ""}
           </Subtext>
         )}
       </Flex>
-      <motion.div
-        transition={{ duration: 0.3 }}
-        custom={isCollapsed}
-        animate="state"
-        variants={{
-          state: (collapsed: boolean) => ({
-            height: collapsed ? "0" : "auto",
-            overflow: "hidden",
-          }),
-        }}
-      >
+      <Collapsible isCollapsed={isCollapsed}>
         <Box css={{ px: "$4", py: "$5" }}>
           {props.errorMessage && !props.isLoading ? (
             <Body css={{ textAlign: "center", color: "$secondaryText" }}>
@@ -60,19 +58,27 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
           ) : props.isLoading || !props.children ? (
             <LoadingArea size="md" />
           ) : (
-            <Stack css={{ gap: "$5", alignItems: "center" }}>
+            <ListWrapper>
               {props.children}
-              {!!props.totalCount && Math.ceil(props.totalCount / props.pageSize) > 1 && (
-                <Paginator
-                  currentPage={props.page}
-                  setCurrentPage={props.setPage}
-                  totalPages={Math.ceil(props.totalCount / props.pageSize)}
-                />
-              )}
-            </Stack>
+              {!!pagination?.totalCount &&
+                Math.ceil(pagination.totalCount / pagination.pageSize) > 1 && (
+                  <Paginator
+                    currentPage={pagination.page}
+                    setCurrentPage={pagination.setPage}
+                    totalPages={Math.ceil(pagination.totalCount / pagination.pageSize)}
+                  />
+                )}
+            </ListWrapper>
           )}
         </Box>
-      </motion.div>
+      </Collapsible>
     </Stack>
   );
 };
+
+const ListWrapper = styled(FadeInOut, {
+  display: "flex",
+  flexDirection: "column",
+  gap: "$5",
+  alignItems: "center",
+});

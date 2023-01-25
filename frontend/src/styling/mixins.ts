@@ -1,6 +1,6 @@
 import { css } from ".";
 
 export const translucentBg = css({
-  bg: "$heavyOverlay",
+  bg: "$background1Translucent",
   backdropFilter: "blur($sizes$4)",
 });

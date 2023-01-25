@@ -1,5 +1,4 @@
 import { RenderablePost, RenderableShopItem } from "#/api";
-import { useDeletePost } from "#/api/mutations/posts/deletePost";
 import { useLikePublishedItem } from "#/api/mutations/posts/likePublishedItem";
 import { useSavePublishedItem } from "#/api/mutations/posts/savePublishedItem";
 import { useUnlikePublishedItem } from "#/api/mutations/publishedItems/unlikePublishedItem";
@@ -7,6 +6,7 @@ import { useUnsavePublishedItem } from "#/api/mutations/publishedItems/unsavePub
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { useCurrentUserId } from "#/contexts/auth";
 import { InfoIcon, TrashIcon } from "../Icons";
+import { openDeletePostModal } from "./DeletePost";
 
 export const usePostActions = (post: RenderablePost | RenderableShopItem) => {
   const { id, authorUserId, isLikedByClient, isSavedByClient } = post;
@@ -30,10 +30,6 @@ export const usePostActions = (post: RenderablePost | RenderableShopItem) => {
     publishedItemId: id,
     authorUserId,
   });
-  const { mutateAsync: deletePost } = useDeletePost({
-    publishedItemId: id,
-    authorUserId,
-  });
 
   async function handleLikeButton() {
     if (isLikedByClient) unlikePost();
@@ -53,7 +49,7 @@ export const usePostActions = (post: RenderablePost | RenderableShopItem) => {
       iconColor: "$failure",
       label: "Delete Post",
       onClick: () => {
-        deletePost();
+        openDeletePostModal({ publishedItemId: id, authorUserId });
       },
     });
   }

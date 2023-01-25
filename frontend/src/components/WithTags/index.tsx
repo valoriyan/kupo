@@ -6,6 +6,8 @@ import {
   getPostsByHashtagUrl,
   getProfilePageUrl,
 } from "#/utils/generateLinkUrls";
+import { setPreviousLocationForUserProfilePage } from "#/templates/UserProfile";
+import { setPreviousLocationForCommunityPage } from "#/templates/CommunityPage";
 
 export interface WithTagsProps {
   text: string;
@@ -19,11 +21,17 @@ export const WithTags = ({ text }: WithTagsProps) => {
         <Fragment key={i}>
           {chunk.match(/\B@\w+/)?.length ? (
             <Link href={getProfilePageUrl({ username: chunk.split("@")[1] })} passHref>
-              <a>{chunk}</a>
+              <a
+                onClick={() => setPreviousLocationForUserProfilePage(chunk.split("@")[1])}
+              >
+                {chunk}
+              </a>
             </Link>
           ) : chunk.match(/\B\+\w+/)?.length ? (
             <Link href={getCommunityPageUrl({ name: chunk.split("+")[1] })} passHref>
-              <a>{chunk}</a>
+              <a onClick={() => setPreviousLocationForCommunityPage(chunk.split("+")[1])}>
+                {chunk}
+              </a>
             </Link>
           ) : chunk.match(/\B#\w+/)?.length ? (
             <Link href={getPostsByHashtagUrl(chunk.split("#")[1])} passHref>

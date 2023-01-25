@@ -55,7 +55,7 @@ export const NewChatRoom = () => {
   };
 
   return (
-    <Grid css={{ height: "100%", gridTemplateRows: "auto 1fr auto" }}>
+    <Grid css={{ height: "100%", gridTemplateRows: "auto minmax(0, 1fr) auto" }}>
       <UsersInput
         usernames={usernames}
         setUsernames={setUsernames}

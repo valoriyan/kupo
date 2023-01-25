@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
-import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { styled } from "#/styling";
-import { setPreviousLocationForAddContent } from "#/templates/AddContent";
 import { Avatar } from "../Avatar";
 import { Drawer } from "../Drawer";
 import { BellIcon, HomeIcon, MailIcon, MathPlusIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
+import { VerifyEmailState } from "../VerifyEmailModal";
 import { NavigationDrawer } from "./NavigationDrawer";
-import { UploadLink } from "./shared";
+import { UploadButton } from "./shared";
 
-export const Footer = () => {
-  const { data } = useGetClientUserProfile();
+export const APP_FOOTER_HEIGHT = "57px";
 
+export interface FooterProps {
+  verifyEmailState: VerifyEmailState;
+}
+
+export const Footer = ({ verifyEmailState }: FooterProps) => {
   return (
     <Wrapper>
       <IconLink href="/feed">
@@ -21,19 +24,21 @@ export const Footer = () => {
       <IconLink href="/notifications">
         <BellIcon />
       </IconLink>
-      <Link href="/add-content" passHref>
-        <UploadLink onClick={setPreviousLocationForAddContent}>
-          <MathPlusIcon />
-        </UploadLink>
-      </Link>
+      <UploadButton verifyEmailState={verifyEmailState}>
+        <MathPlusIcon />
+      </UploadButton>
       <IconLink href="/messages">
         <MailIcon />
       </IconLink>
       <Drawer
         trigger={
-          <Avatar alt="User Avatar" src={data?.profilePictureTemporaryUrl} size="$7" />
+          <Avatar
+            alt="User Avatar"
+            src={verifyEmailState.clientUser?.profilePictureTemporaryUrl}
+            size="$7"
+          />
         }
-        position={{ top: "0", bottom: "57px" /* Top of Footer */ }}
+        position={{ top: "0", bottom: APP_FOOTER_HEIGHT }}
       >
         {({ hide }) => <NavigationDrawer hide={hide} />}
       </Drawer>

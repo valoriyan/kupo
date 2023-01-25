@@ -5,7 +5,7 @@ export const truncateByWidth = (width: string) =>
     width,
     whiteSpace: "nowrap",
     overflow: "hidden",
-    textOverlow: "ellipsis",
+    textOverflow: "ellipsis",
   });
 
 export const truncateByLines = (lines: number) =>
@@ -14,5 +14,5 @@ export const truncateByLines = (lines: number) =>
     "-webkit-line-clamp": lines,
     "-webkit-box-orient": "vertical",
     overflow: "hidden",
-    "text-overflow": "ellipsis",
+    textOverflow: "ellipsis",
   });
