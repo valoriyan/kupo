@@ -20,7 +20,14 @@ export const UserInfo = (props: UserInfoProps) => {
       <Avatar
         alt="User Avatar"
         src={data?.profilePictureTemporaryUrl}
-        onClick={data?.username ? () => goToUserProfilePage(data.username) : undefined}
+        onClick={
+          data?.username
+            ? () => {
+                goToUserProfilePage(data.username);
+                props.onUsernameClick?.();
+              }
+            : undefined
+        }
       />
       {isLoading || !data ? (
         <UserStatsPlaceholder>

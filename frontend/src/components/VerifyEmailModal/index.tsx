@@ -1,18 +1,24 @@
 import { useEffect } from "react";
+import { useResendVerificationEmail } from "#/api/mutations/profile/resendVerificationEmail";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
+import { SessionStorageItem } from "#/utils/storage";
 import { Button } from "../Button";
 import { Stack } from "../Layout";
 import { ModalFooter, openModal, StandardModalWrapper } from "../Modal";
-import { Body, MainTitle } from "../Typography";
-import { useResendVerificationEmail } from "#/api/mutations/profile/resendVerificationEmail";
 import { TextOrSpinner } from "../TextOrSpinner";
+import { Body, MainTitle } from "../Typography";
+
+const storedHasRemindedVerifyEmail = SessionStorageItem<boolean>(
+  "hasRemindedVerifyEmail",
+);
 
 export const useVerifyEmailReminder = () => {
   const { hasNotVerifiedEmail, emailAddress } = useVerifyEmailState();
 
   useEffect(() => {
-    if (hasNotVerifiedEmail && emailAddress) {
+    if (hasNotVerifiedEmail && emailAddress && !storedHasRemindedVerifyEmail.get()) {
       openVerifyEmailModal({ emailAddress });
+      storedHasRemindedVerifyEmail.set(true);
     }
   }, [hasNotVerifiedEmail, emailAddress]);
 };

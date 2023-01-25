@@ -1,5 +1,6 @@
 import { RenderablePost } from "#/api";
 import { useGetSavedPosts } from "#/api/queries/posts/useGetSavedPosts";
+import { useAppLayoutState } from "#/components/AppLayout";
 import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
@@ -8,6 +9,7 @@ import { Post } from "#/components/Post";
 import { goToPostPage } from "../SinglePost";
 
 export const SavedPosts = () => {
+  const scrollToTop = useAppLayoutState((store) => store.scrollToTop);
   const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetSavedPosts();
 
@@ -15,7 +17,7 @@ export const SavedPosts = () => {
 
   return (
     <BasicListWrapper>
-      <BasicListHeader>Saved Posts</BasicListHeader>
+      <BasicListHeader onClick={() => scrollToTop(true)}>Saved Posts</BasicListHeader>
       <div>
         {error && !isLoading ? (
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>

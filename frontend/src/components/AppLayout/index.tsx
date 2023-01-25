@@ -18,13 +18,19 @@ export interface AppLayoutScrollPositionState {
   setScrollPosition: (scrollPosition: number) => void;
   contentContainer: HTMLDivElement | undefined;
   setContentContainer: (contentContainer: HTMLDivElement | undefined) => void;
+  scrollToTop: (animate?: boolean) => void;
 }
 
-export const useAppLayoutState = create<AppLayoutScrollPositionState>((set) => ({
+export const useAppLayoutState = create<AppLayoutScrollPositionState>((set, get) => ({
   scrollPosition: 0,
   setScrollPosition: (scrollPosition) => set({ scrollPosition }),
   contentContainer: undefined,
   setContentContainer: (contentContainer) => set({ contentContainer }),
+  scrollToTop: (animate) => {
+    const { contentContainer } = get();
+    if (!contentContainer) return;
+    contentContainer.scrollTo({ top: 0, behavior: animate ? "smooth" : undefined });
+  },
 }));
 
 export interface AppLayoutProps {
