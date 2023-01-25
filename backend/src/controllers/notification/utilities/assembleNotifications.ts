@@ -26,6 +26,7 @@ import { assembleRenderableRejectedPublishingChannelSubmissionNotification } fro
 import { assembleRenderableNewShareOfPublishedItemNotification } from "../renderableNotificationAssemblers/assembleRenderableNewShareOfPublishedItemNotification";
 import { assembleRenderableNewTagInPublishedItemCaptionNotification } from "../renderableNotificationAssemblers/assembleRenderableNewTagInPublishedItemCaptionNotification";
 import { assembleRenderableShopItemSoldNotification } from "../renderableNotificationAssemblers/assembleRenderableShopItemSoldNotification";
+import { assembleRenderableInvitedToFollowPublishingChannelNotification } from "../renderableNotificationAssemblers/assembleRenderableInvitedToFollowPublishingChannelNotification";
 
 export async function assembleNotifications({
   userNotifications,
@@ -166,6 +167,17 @@ export async function assembleNotifications({
           NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION
         ) {
           return await assembleRenderableRejectedPublishingChannelSubmissionNotification({
+            controller,
+            userNotification,
+            blobStorageService: controller.blobStorageService,
+            databaseService: controller.databaseService,
+            clientUserId,
+          });
+        } else if (
+          userNotification.notification_type ===
+          NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL
+        ) {
+          return await assembleRenderableInvitedToFollowPublishingChannelNotification({
             controller,
             userNotification,
             blobStorageService: controller.blobStorageService,

@@ -97,6 +97,13 @@ export interface RenderableRejectedPublishingChannelSubmissionNotification
   };
 }
 
+export interface RenderableInvitedToFollowPublishingChannelNotification
+  extends BaseRenderableUserNotification {
+  type: NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL;
+  userSendingInvitation: RenderableUser;
+  publishingChannel: RenderablePublishingChannel;
+}
+
 //////////////////////////////////////////////////
 // Transactions
 //////////////////////////////////////////////////
@@ -128,6 +135,7 @@ export type RenderableUserNotification =
   // Publishing Channels
   | RenderableAcceptedPublishingChannelSubmissionNotification
   | RenderableRejectedPublishingChannelSubmissionNotification
+  | RenderableInvitedToFollowPublishingChannelNotification
 
   // Transactions
   | RenderableShopItemSoldNotification;

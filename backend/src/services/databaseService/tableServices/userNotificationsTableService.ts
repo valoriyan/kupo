@@ -22,6 +22,7 @@ import { PublishedItemCommentsTableService } from "./publishedItem/publishedItem
 import { PublishedItemLikesTableService } from "./publishedItem/publishedItemLikesTableService";
 import { PublishedItemTransactionsTableService } from "./publishedItem/publishedItemTransactionsTableService";
 import { PublishingChannelSubmissionsTableService } from "./publishingChannel/publishingChannelSubmissionsTableService";
+import { PublishingChannelInvitationsTableService } from "./publishingChannel/publishingChannelInvitationsTableService";
 
 export interface DBUserNotification {
   user_notification_id: string;
@@ -39,6 +40,7 @@ export interface DBUserNotification {
   published_item_like_reference?: string;
   published_item_transaction_reference?: string;
   publishing_channel_submission_reference?: string;
+  publishing_channel_invitation_reference?: string;
 }
 
 export type UserNotificationDbReference =
@@ -91,6 +93,14 @@ export type UserNotificationDbReference =
   | {
       type: NOTIFICATION_EVENTS.REJECTED_PUBLISHING_CHANNEL_SUBMISSION;
       publishingChannelSubmissionId: string;
+    }
+
+  //////////////////////////////////////////////////
+  // Publishing Channel Invitations
+  //////////////////////////////////////////////////
+  | {
+      type: NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL;
+      publishingChannelInvitationId: string;
     }
 
   //////////////////////////////////////////////////
@@ -175,6 +185,13 @@ function generateReferenceTableRow({
       field: "publishing_channel_submission_reference",
       value: userNotificationDbReference.publishingChannelSubmissionId,
     };
+  } else if (
+    notificationType === NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL
+  ) {
+    return {
+      field: "publishing_channel_invitation_reference",
+      value: userNotificationDbReference.publishingChannelInvitationId,
+    };
   }
   //////////////////////////////////////////////////
   // Transactions
@@ -210,6 +227,7 @@ export class UserNotificationsTableService extends TableService {
     PublishedItemCommentsTableService.tableName,
     PublishedItemLikesTableService.tableName,
     PublishedItemTransactionsTableService.tableName,
+    PublishingChannelInvitationsTableService.tableName,
   ];
 
   public async setup(): Promise<void> {
@@ -229,6 +247,7 @@ export class UserNotificationsTableService extends TableService {
         published_item_like_reference VARCHAR(64),
         published_item_transaction_reference VARCHAR(64),
         publishing_channel_submission_reference VARCHAR(64),
+        publishing_channel_invitation_reference VARCHAR(64),
       
 
         CONSTRAINT ${this.tableName}_pkey
@@ -267,6 +286,11 @@ export class UserNotificationsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${PublishingChannelSubmissionsTableService.tableName}_reference_fkey
           FOREIGN KEY (publishing_channel_submission_reference)
           REFERENCES ${PublishingChannelSubmissionsTableService.tableName} (publishing_channel_submission_id)
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${PublishingChannelInvitationsTableService.tableName}_reference_fkey
+          FOREIGN KEY (publishing_channel_invitation_reference)
+          REFERENCES ${PublishingChannelInvitationsTableService.tableName} (publishing_channel_invitation_id)
           ON DELETE CASCADE,
 
 
@@ -358,6 +382,22 @@ export class UserNotificationsTableService extends TableService {
                 )
             ),
             
+          CONSTRAINT publishing_channel_invitation_reference_null_constraint 
+            CHECK (
+                (
+                    (notification_type = '${NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL}')
+                  AND
+                    (publishing_channel_invitation_reference IS NOT NULL)
+                )
+              OR
+                (
+                    (notification_type != '${NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL}')
+                  AND
+                    (publishing_channel_invitation_reference IS NULL)
+                )
+            ),
+
+
           CONSTRAINT published_item_transaction_reference_null_constraint 
             CHECK (
                 (
@@ -394,8 +434,7 @@ export class UserNotificationsTableService extends TableService {
                   AND
                     (publishing_channel_submission_reference IS NULL)
                 )
-            )       
-
+            )
       )
       ;
     `;

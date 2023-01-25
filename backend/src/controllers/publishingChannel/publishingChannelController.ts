@@ -114,6 +114,12 @@ import {
   DeletePublishingChannelSuccess,
   handleDeletePublishingChannel,
 } from "./handleDeletePublishingChannelById";
+import {
+  InviteUserToFollowPublishingChannelFailedReason,
+  InviteUserToFollowPublishingChannelRequestBody,
+  InviteUserToFollowPublishingChannelSuccess,
+  handleInviteUserToFollowPublishingChannel,
+} from "./userInteraction/handleInviteUserToFollowPublishingChannel";
 
 @injectable()
 @Route("publishing_channel")
@@ -209,6 +215,23 @@ export class PublishingChannelController extends Controller {
     >
   > {
     return await handleAddModeratorToPublishingChannel({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("inviteUserToFollowPublishingChannel")
+  public async inviteUserToFollowPublishingChannel(
+    @Request() request: express.Request,
+    @Body() requestBody: InviteUserToFollowPublishingChannelRequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | InviteUserToFollowPublishingChannelFailedReason>,
+      InviteUserToFollowPublishingChannelSuccess
+    >
+  > {
+    return await handleInviteUserToFollowPublishingChannel({
       controller: this,
       request,
       requestBody,

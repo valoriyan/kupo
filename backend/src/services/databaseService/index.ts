@@ -31,6 +31,7 @@ import { PublishingChannelModeratorsTableService } from "./tableServices/publish
 import { UserBlocksTableService } from "./tableServices/users/userBlocksTable";
 import { PublishingChannelFollowsTableService } from "./tableServices/publishingChannel/publishingChannelFollowsTableService";
 import { NetworkPortalsTableService } from "./tableServices/network/networkPortalsTableService";
+import { PublishingChannelInvitationsTableService } from "./tableServices/publishingChannel/publishingChannelInvitationsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -103,6 +104,8 @@ export class DatabaseService {
     networkPortalsTableService: new NetworkPortalsTableService(
       DatabaseService.datastorePool,
     ),
+    publishingChannelInvitationsTableService:
+      new PublishingChannelInvitationsTableService(DatabaseService.datastorePool),
   };
 
   static async start(): Promise<void> {

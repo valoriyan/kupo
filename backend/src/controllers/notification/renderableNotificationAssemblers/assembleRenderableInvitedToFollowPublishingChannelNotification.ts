@@ -1,21 +1,19 @@
+import { BlobStorageService } from "../../../services/blobStorageService";
 import { DatabaseService } from "../../../services/databaseService";
 import { DBUserNotification } from "../../../services/databaseService/tableServices/userNotificationsTableService";
 import { NOTIFICATION_EVENTS } from "../../../services/webSocketService/eventsConfig";
-import { RenderableAcceptedPublishingChannelSubmissionNotification } from "../models/renderableUserNotifications";
+import { RenderableInvitedToFollowPublishingChannelNotification } from "../models/renderableUserNotifications";
 import { Controller } from "tsoa";
 import {
   EitherType,
   ErrorReasonTypes,
-  Failure,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
-import { assemblePublishedItemById } from "../../publishedItem/utilities/assemblePublishedItems";
-import { GenericResponseFailedReason } from "../../../controllers/models";
+import { assembleRenderableUserById } from "../../../controllers/user/utilities/assembleRenderableUserById";
 import { assembleRenderablePublishingChannelById } from "../../../controllers/publishingChannel/utilities/assembleRenderablePublishingChannel";
-import { BlobStorageService } from "../../../services/blobStorageService";
 
-export async function assembleRenderableAcceptedPublishingChannelSubmissionNotification({
+export async function assembleRenderableInvitedToFollowPublishingChannelNotification({
   controller,
   userNotification,
   blobStorageService,
@@ -30,67 +28,55 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
 }): Promise<
   InternalServiceResponse<
     ErrorReasonTypes<string>,
-    RenderableAcceptedPublishingChannelSubmissionNotification
+    RenderableInvitedToFollowPublishingChannelNotification
   >
 > {
   //////////////////////////////////////////////////
   // Inputs
   //////////////////////////////////////////////////
   const {
-    publishing_channel_submission_reference,
+    publishing_channel_invitation_reference: publishingChannelInvitationId,
     timestamp_seen_by_user: timestampSeenByUser,
   } = userNotification;
 
   //////////////////////////////////////////////////
-  // Get the Publishing Channel Submission
+  // Get the User Follow Request
   //////////////////////////////////////////////////
 
-  const getPublishingChannelSubmissionByIdResponse =
-    await databaseService.tableNameToServicesMap.publishingChannelSubmissionsTableService.getPublishingChannelSubmissionById(
+  const getUserFollowEventByIdResponse =
+    await databaseService.tableNameToServicesMap.publishingChannelInvitationsTableService.getPublishingChannelInvitationById(
       {
         controller,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        publishingChannelSubmissionId: publishing_channel_submission_reference!,
+        publishingChannelInvitationId: publishingChannelInvitationId!,
       },
     );
-  if (getPublishingChannelSubmissionByIdResponse.type === EitherType.failure) {
-    return getPublishingChannelSubmissionByIdResponse;
+  if (getUserFollowEventByIdResponse.type === EitherType.failure) {
+    return getUserFollowEventByIdResponse;
   }
-  const { success: maybePublishingChannelSubmission } =
-    getPublishingChannelSubmissionByIdResponse;
-
-  if (!maybePublishingChannelSubmission) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error:
-        "Publishing Channel Submission not found at assembleRenderableAcceptedPublishingChannelSubmissionNotification",
-      additionalErrorInformation:
-        "Error at assembleRenderableAcceptedPublishingChannelSubmissionNotification",
-    });
-  }
-
   const {
-    published_item_id: publishedItemId,
-    publishing_channel_id: publishingChannelId,
-    timestamp_of_resolution_decision: timestampOfResolutionDecision,
-  } = maybePublishingChannelSubmission;
+    success: {
+      user_id_sending_invitation,
+      publishing_channel_id,
+      creation_timestamp: eventTimestamp,
+    },
+  } = getUserFollowEventByIdResponse;
 
   //////////////////////////////////////////////////
-  // Get Published Item
+  // Assemble the Renderable User Requesting to Follow Client
   //////////////////////////////////////////////////
-  const constructPublishedItemFromPartsByIdResponse = await assemblePublishedItemById({
+
+  const assembleRenderableUserByIdResponse = await assembleRenderableUserById({
     controller,
+    requestorUserId: clientUserId,
+    userId: user_id_sending_invitation,
     blobStorageService,
     databaseService,
-    publishedItemId: publishedItemId,
-    requestorUserId: clientUserId,
   });
-  if (constructPublishedItemFromPartsByIdResponse.type === EitherType.failure) {
-    return constructPublishedItemFromPartsByIdResponse;
+  if (assembleRenderableUserByIdResponse.type === EitherType.failure) {
+    return assembleRenderableUserByIdResponse;
   }
-  const { success: publishedItem } = constructPublishedItemFromPartsByIdResponse;
+  const { success: userSendingInvitation } = assembleRenderableUserByIdResponse;
 
   //////////////////////////////////////////////////
   // Get Publishing Channel
@@ -100,7 +86,7 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
       controller,
       blobStorageService,
       databaseService,
-      publishingChannelId,
+      publishingChannelId: publishing_channel_id,
       requestorUserId: clientUserId,
     });
   if (assembleRenderablePublishingChannelByIdResponse.type === EitherType.failure) {
@@ -128,12 +114,11 @@ export async function assembleRenderableAcceptedPublishingChannelSubmissionNotif
   //////////////////////////////////////////////////
 
   return Success({
-    eventTimestamp: parseInt(timestampOfResolutionDecision),
+    eventTimestamp: parseInt(eventTimestamp),
     timestampSeenByUser,
-    type: NOTIFICATION_EVENTS.ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION,
+    type: NOTIFICATION_EVENTS.INVITED_TO_FOLLOW_PUBLISHING_CHANNEL,
     countOfUnreadNotifications,
-
-    publishedItem,
+    userSendingInvitation,
     publishingChannel,
   });
 }
