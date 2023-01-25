@@ -68,5 +68,8 @@ export async function handleGetVerifyUserEmail({
   // Send 'Verify User Email' Email
   //////////////////////////////////////////////////
 
-  return await controller.emailService.sendVerifyUserEmailEmail({ user: clientUser });
+  return await controller.emailService.sendVerifyUserEmailEmail({
+    controller,
+    user: clientUser,
+  });
 }

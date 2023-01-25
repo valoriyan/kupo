@@ -26,6 +26,7 @@ import { PublishingChannelFollowsTableService } from "../publishingChannel/publi
 import { UserFollowsTableService } from "../users/userFollowsTableService";
 import { PublishedItemLikesTableService } from "./publishedItemLikesTableService";
 import { PublishingChannelsTableService } from "../publishingChannel/publishingChannelsTableService";
+import { NetworkPortalsTableService } from "../network/networkPortalsTableService";
 
 export enum PublishedItemHostSelector {
   user = "user",
@@ -70,7 +71,10 @@ export class PublishedItemsTableService extends TableService {
     super();
   }
 
-  public dependencies = [UsersTableService.tableName];
+  public dependencies = [
+    UsersTableService.tableName,
+    NetworkPortalsTableService.tableName,
+  ];
 
   public async setup(): Promise<void> {
     const queryString = `
@@ -85,6 +89,8 @@ export class PublishedItemsTableService extends TableService {
         expiration_timestamp BIGINT,
         id_of_published_item_being_shared VARCHAR(64),
 
+        network_portal_id_of_origin VARCHAR(64),
+
         CONSTRAINT ${this.tableName}_pkey
           PRIMARY KEY (id),
 
@@ -96,7 +102,11 @@ export class PublishedItemsTableService extends TableService {
         CONSTRAINT ${this.tableName}_${PublishedItemsTableService.tableName}_shared_fkey
           FOREIGN KEY (id_of_published_item_being_shared)
           REFERENCES ${PublishedItemsTableService.tableName} (id)
-          ON DELETE CASCADE
+          ON DELETE CASCADE,
+
+        CONSTRAINT ${this.tableName}_${NetworkPortalsTableService.tableName}_shared_fkey
+          FOREIGN KEY (network_portal_id_of_origin)
+          REFERENCES ${NetworkPortalsTableService.tableName} (network_portal_id)
       )
       ;
     `;

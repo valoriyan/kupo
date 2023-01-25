@@ -839,6 +839,51 @@ export class UsersTableService extends TableService {
     }
   }
 
+  public async countNewUsersInTimerange({
+    controller,
+    startTimestamp,
+    endTimestamp,
+  }: {
+    controller: Controller;
+    startTimestamp: number;
+    endTimestamp: number;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, number>> {
+    try {
+      const values: (string | number)[] = [];
+      values.push(startTimestamp);
+      values.push(endTimestamp);
+
+      const queryString = {
+        text: `
+          SELECT
+            COUNT(*)
+          FROM
+            users
+          WHERE
+            users.creation_timestamp > $1
+          AND
+            users.creation_timestamp < $2
+          ;
+        `,
+        values,
+      };
+
+      const response: QueryResult<{ count: string }> = await this.datastorePool.query(
+        queryString,
+      );
+
+      return Success(parseInt(response.rows[0].count));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation: "Error at usersTableService.countNewUsersInTimerange",
+      });
+    }
+  }
+
   //////////////////////////////////////////////////
   // UPDATE ////////////////////////////////////////
   //////////////////////////////////////////////////

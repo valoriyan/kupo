@@ -3,6 +3,7 @@ steps:
   args: [
     'build',
     '--build-arg', 'API_BASE_URL=https://beta-api.kupo.social',
+    '--build-arg', 'NETWORK_PORTAL_ID=40e10e2e-e2b6-448e-9395-6f6ec20ed994',
     '-t', 'us-docker.pkg.dev/valoriyan/kupo-docker-repo/kupo-beta-frontend:latest',
     '.'
   ]

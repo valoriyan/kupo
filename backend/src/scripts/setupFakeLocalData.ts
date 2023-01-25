@@ -16,6 +16,14 @@ async function run() {
 
     const databaseService = new DatabaseService();
 
+    await databaseService.tableNameToServicesMap.networkPortalsTableService.registerNetworkPortal(
+      {
+        controller: fakeController,
+        networkPortalId: "1",
+        networkPortalName: "kupo-local",
+      },
+    );
+
     await databaseService.tableNameToServicesMap.usersTableService.createUser({
       controller: fakeController,
       userId: "1001",

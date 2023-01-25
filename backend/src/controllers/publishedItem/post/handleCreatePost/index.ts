@@ -5,23 +5,13 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../../../utilities/monads";
-import {
-  unwrapListOfEitherResponses,
-  UnwrapListOfEitherResponsesFailureHandlingMethod,
-} from "../../../../utilities/monads/unwrapListOfResponses";
 import { PostController } from "../postController";
 import express from "express";
 import { checkAuthentication } from "../../../auth/utilities";
 import { RenderablePost } from "../models";
-import {
-  FileDescriptor,
-  GenericResponseFailedReason,
-  MediaElement,
-} from "../../../models";
-import { PublishedItemType } from "../../models";
+import { FileDescriptor, GenericResponseFailedReason } from "../../../models";
 import { handleCreatePostNotifications } from "./handleCreatePostNotifications";
 import { createPost } from "./createPost";
-import { create } from "domain";
 import { getPreviewTemporaryUrlFromRenderablePost } from "../utilities/getPreviewTemporaryUrlFromRenderablePost";
 
 export enum CreatePostFailedReason {

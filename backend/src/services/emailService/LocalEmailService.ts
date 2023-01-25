@@ -155,4 +155,33 @@ export class LocalEmailService extends EmailServiceInterface {
       });
     }
   }
+
+  async sendKupoTeamUpdate({
+    controller,
+    name,
+    email,
+    countOfNewUsersInPastDay,
+    countOfNewUsersInPastWeek,
+  }: {
+    controller: Controller;
+    name: string;
+    email: string;
+    countOfNewUsersInPastDay: number;
+    countOfNewUsersInPastWeek: number;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      console.log(
+        `Team Update time ${name} ${email} | countOfNewUsersInPastWeek : ${countOfNewUsersInPastWeek} | countOfNewUsersInPastDay: ${countOfNewUsersInPastDay}`,
+      );
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendConfirmUserEmailEmail",
+      });
+    }
+  }
 }

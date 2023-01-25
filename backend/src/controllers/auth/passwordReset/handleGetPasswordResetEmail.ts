@@ -58,5 +58,5 @@ export async function handleGetPasswordResetEmail({
   // Send Reset Password or Alert Requestor if Error
   //////////////////////////////////////////////////
 
-  return await controller.emailService.sendResetPasswordEmail({ user });
+  return await controller.emailService.sendResetPasswordEmail({ controller, user });
 }

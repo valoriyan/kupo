@@ -30,6 +30,7 @@ import { PublishingChannelUserBansTableService } from "./tableServices/publishin
 import { PublishingChannelModeratorsTableService } from "./tableServices/publishingChannel/moderation/publishingChannelModeratorsTableService";
 import { UserBlocksTableService } from "./tableServices/users/userBlocksTable";
 import { PublishingChannelFollowsTableService } from "./tableServices/publishingChannel/publishingChannelFollowsTableService";
+import { NetworkPortalsTableService } from "./tableServices/network/networkPortalsTableService";
 
 @singleton()
 export class DatabaseService {
@@ -97,6 +98,9 @@ export class DatabaseService {
     ),
     userBlocksTableService: new UserBlocksTableService(DatabaseService.datastorePool),
     publishingChannelFollowsTableService: new PublishingChannelFollowsTableService(
+      DatabaseService.datastorePool,
+    ),
+    networkPortalsTableService: new NetworkPortalsTableService(
       DatabaseService.datastorePool,
     ),
   };

@@ -121,7 +121,7 @@ export async function handleRegisterUser({
 
   if (!!maybeUser) {
     const user = maybeUser;
-    await controller.emailService.sendWelcomeEmail({ user });
+    await controller.emailService.sendWelcomeEmail({ controller, user });
   }
 
   //////////////////////////////////////////////////
@@ -130,7 +130,7 @@ export async function handleRegisterUser({
 
   if (!!maybeUser) {
     const user = maybeUser;
-    await controller.emailService.sendVerifyUserEmailEmail({ user });
+    await controller.emailService.sendVerifyUserEmailEmail({ controller, user });
   }
 
   //////////////////////////////////////////////////

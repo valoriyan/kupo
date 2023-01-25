@@ -207,6 +207,7 @@ export async function handlePurchaseShopItem({
 
   const sendOrderReceiptEmailResponse =
     await controller.emailService.sendOrderReceiptEmail({
+      controller,
       user: unrenderableClientUser,
       renderableShopItemPurchaseSummary: {
         transactionId,

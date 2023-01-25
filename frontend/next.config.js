@@ -9,6 +9,7 @@ module.exports = {
   reactStrictMode: true,
   publicRuntimeConfig: {
     API_BASE_URL: process.env.API_BASE_URL,
+    NETWORK_PORTAL_ID: process.env.NETWORK_PORTAL_ID,
   },
   images: {
     domains: [
