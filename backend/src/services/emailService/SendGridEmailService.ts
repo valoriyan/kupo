@@ -256,7 +256,7 @@ export class SendGridEmailService extends EmailServiceInterface {
           email: "noreply@kupo.social",
         },
         subject: "Kupo Team Update",
-        html: generateKupoTeamUpdateEmailHtml({
+        html: await generateKupoTeamUpdateEmailHtml({
           name,
           countOfNewUsersInPastDay,
           countOfNewUsersInPastWeek,

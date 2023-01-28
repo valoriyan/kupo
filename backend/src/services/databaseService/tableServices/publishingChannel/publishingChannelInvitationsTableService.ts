@@ -8,11 +8,11 @@ import {
 } from "../../../../utilities/monads";
 import { TableService } from "../models";
 import { generatePSQLGenericDeleteRowsQueryString } from "../utilities";
-import { generatePSQLGenericCreateRowsQuery } from "../utilities/crudQueryGenerators/generatePSQLGenericCreateRowsQuery";
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../../../controllers/models";
 import { UsersTableService } from "../users/usersTableService";
 import { PublishingChannelsTableService } from "./publishingChannelsTableService";
+import { PublishingChannelFollowsTableService } from "./publishingChannelFollowsTableService";
 
 interface DBPublishingChannelInvitation {
   publishing_channel_invitation_id: string;
@@ -85,30 +85,62 @@ export class PublishingChannelInvitationsTableService extends TableService {
     creationTimestamp: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
-      const query = generatePSQLGenericCreateRowsQuery<string | number>({
-        rowsOfFieldsAndValues: [
-          [
-            {
-              field: "publishing_channel_invitation_id",
-              value: publishingChannelInvitationId,
-            },
-            {
-              field: "user_id_being_invited",
-              value: userIdBeingInvited,
-            },
-            {
-              field: "user_id_sending_invitation",
-              value: userIdSendingInvitation,
-            },
-            {
-              field: "publishing_channel_id",
-              value: publishingChannelId,
-            },
-            { field: "creation_timestamp", value: creationTimestamp },
-          ],
-        ],
-        tableName: this.tableName,
-      });
+      const queryValues: (number | string | undefined)[] = [
+        userIdBeingInvited,
+        publishingChannelId,
+        publishingChannelInvitationId,
+        userIdSendingInvitation,
+        creationTimestamp,
+      ];
+
+      const queryText = `
+        DO $$
+        BEGIN
+
+
+          SELECT
+            *
+          FROM
+            ${PublishingChannelFollowsTableService.tableName}
+          INTO TEMPORARY
+            query_output
+          WHERE
+              user_id_doing_following = $1
+            AND
+              publishing_channel_id_being_followed = $2
+          ;
+
+          IF FOUND THEN
+
+            INSERT INTO ${PublishingChannelInvitationsTableService.tableName} (
+              publishing_channel_invitation_id,
+              user_id_being_invited,
+              user_id_sending_invitation,
+              publishing_channel_id,
+              creation_timestamp
+            )
+            VALUES (
+              $3,
+              $1,
+              $4,
+              $2,
+              $5,
+
+            )
+            RETURNING *
+            ;
+  
+
+          END IF;
+
+        END $$
+
+      `;
+
+      const query = {
+        text: queryText,
+        values: queryValues,
+      };
 
       await this.datastorePool.query(query);
       return Success({});

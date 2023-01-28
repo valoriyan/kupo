@@ -67,6 +67,26 @@ export async function handleFollowPublishingChannel({
   }
 
   //////////////////////////////////////////////////
+  // Remove Publishing Channel Invitations
+  //////////////////////////////////////////////////
+
+  const deletePublishingChannelInvitationsByUserIdAndPublishingChannelIdResponse =
+    await controller.databaseService.tableNameToServicesMap.publishingChannelInvitationsTableService.deletePublishingChannelInvitationsByUserIdAndPublishingChannelId(
+      {
+        controller,
+        userIdBeingInvited: clientUserId,
+        publishingChannelId: publishingChannelIdBeingFollowed,
+      },
+    );
+
+  if (
+    deletePublishingChannelInvitationsByUserIdAndPublishingChannelIdResponse.type ===
+    EitherType.failure
+  ) {
+    return deletePublishingChannelInvitationsByUserIdAndPublishingChannelIdResponse;
+  }
+
+  //////////////////////////////////////////////////
   // Return
   //////////////////////////////////////////////////
 

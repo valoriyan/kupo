@@ -49,8 +49,8 @@ export function generatePSQLGenericCreateRowsQuery<T>({
     VALUES
       ${parameterizedValues}
     RETURNING *
-  ;
-`;
+    ;
+  `;
 
   return {
     text: queryText,
