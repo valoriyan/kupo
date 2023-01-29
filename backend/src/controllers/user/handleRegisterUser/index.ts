@@ -15,7 +15,7 @@ export interface RegisterUserRequestBody {
 
 export enum RegisterUserFailedReason {
   UnknownCause = "Unknown Cause",
-  ValidationError = "All Username Characters Must Be Lowercase English Letters Or Digits",
+  ValidationError = "Usernames may only include lowercase English letters, digits, hyphens, and underscores",
 }
 
 export async function handleRegisterUser({

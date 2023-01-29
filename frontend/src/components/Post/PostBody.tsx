@@ -83,7 +83,7 @@ export const PostBody = (props: PostBodyProps) => {
           {props.menuActions && <ActionMenu actions={props.menuActions} />}
         </Flex>
       </Flex>
-      <Body css={{ px: "$4", py: "$2", mb: "$3" }}>
+      <Body css={{ px: "$4", py: "$2", mb: "$3", whiteSpace: "pre-wrap" }}>
         <WithTags text={props.caption} />
       </Body>
       {props.sharedItem ? (
