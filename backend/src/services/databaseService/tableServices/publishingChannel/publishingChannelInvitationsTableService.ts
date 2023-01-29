@@ -54,6 +54,11 @@ export class PublishingChannelInvitationsTableService extends TableService {
           REFERENCES ${UsersTableService.tableName} (user_id)
           ON DELETE CASCADE,
 
+        CONSTRAINT ${this.tableName}_${UsersTableService.tableName}_sender_fkey
+          FOREIGN KEY (user_id_sending_invitation)
+          REFERENCES ${UsersTableService.tableName} (user_id)
+          ON DELETE CASCADE,
+
         CONSTRAINT ${this.tableName}_${PublishingChannelsTableService.tableName}_fkey
           FOREIGN KEY (publishing_channel_id)
           REFERENCES ${PublishingChannelsTableService.tableName} (publishing_channel_id)
