@@ -9,8 +9,8 @@ import {
 } from "./utilities";
 import SendgridMailer from "@sendgrid/mail";
 import { UnrenderableUser } from "../../controllers/user/models";
-import { generateForgotPasswordEmailHtml } from "./templates/generateForgotPasswordEmailHtml";
-import { generateWelcomeEmailHtml } from "./templates/generateWelcomeEmailHtml";
+import { generateForgotPasswordEmailHtml } from "./templates/auth/generateForgotPasswordEmailHtml";
+import { generateWelcomeEmailHtml } from "./templates/auth/generateWelcomeEmailHtml";
 import {
   ErrorReasonTypes,
   Failure,
@@ -21,8 +21,11 @@ import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 import { generateShopItemOrderReceiptEmailHtml } from "./templates/generateShopItemOrderReceiptEmailHtml";
-import { generateVerifyUserEmailHtml } from "./templates/generateVerifyUserEmailHtml";
-import { generateKupoTeamUpdateEmailHtml } from "./templates/generateKupoTeamUpdateEmailHtml";
+import { generateVerifyUserEmailHtml } from "./templates/auth/generateVerifyUserEmailHtml";
+import {
+  KupoTeamUpdateMetrics,
+  generateKupoTeamUpdateEmailHtml,
+} from "./templates/generateKupoTeamUpdateEmailHtml";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
@@ -239,14 +242,12 @@ export class SendGridEmailService extends EmailServiceInterface {
     controller,
     name,
     email,
-    countOfNewUsersInPastDay,
-    countOfNewUsersInPastWeek,
+    kupoTeamUpdateMetrics,
   }: {
     controller: Controller;
     name: string;
     email: string;
-    countOfNewUsersInPastDay: number;
-    countOfNewUsersInPastWeek: number;
+    kupoTeamUpdateMetrics: KupoTeamUpdateMetrics;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
       const message = {
@@ -258,8 +259,7 @@ export class SendGridEmailService extends EmailServiceInterface {
         subject: "Kupo Team Update",
         html: await generateKupoTeamUpdateEmailHtml({
           name,
-          countOfNewUsersInPastDay,
-          countOfNewUsersInPastWeek,
+          kupoTeamUpdateMetrics,
         }),
       };
 

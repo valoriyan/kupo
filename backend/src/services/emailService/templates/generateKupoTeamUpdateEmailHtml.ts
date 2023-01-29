@@ -1,11 +1,26 @@
-export async function generateKupoTeamUpdateEmailHtml({
-  name,
-  countOfNewUsersInPastDay,
-  countOfNewUsersInPastWeek,
-}: {
-  name: string;
+export interface KupoTeamUpdateMetrics {
   countOfNewUsersInPastDay: number;
   countOfNewUsersInPastWeek: number;
+  percentChangeInNewUserSignupsDayOverDay: number;
+  percentChangeInNewUserSignupsWeekOverWeek: number;
+}
+
+function formatPercentChange(percentChange: number) {
+  if (percentChange < 0) {
+    return `<span class="bad" style="color: red">↓ ${percentChange}%</span>`;
+  } else if (percentChange > 25) {
+    return `<span class="good" style="color: green">↑ ${percentChange}%</span>`;
+  } else {
+    return `<span class="okay" style="color: black">↑ ${percentChange}%</span>`;
+  }
+}
+
+export async function generateKupoTeamUpdateEmailHtml({
+  name,
+  kupoTeamUpdateMetrics,
+}: {
+  name: string;
+  kupoTeamUpdateMetrics: KupoTeamUpdateMetrics;
 }): Promise<string> {
   // const otterImageUrls = [
   //   "https://i0.wp.com/multiplier.org/wp-content/uploads/2017/09/Depositphotos_37611461_xl-2015.jpg?w=3000&ssl=1",
@@ -52,23 +67,39 @@ export async function generateKupoTeamUpdateEmailHtml({
   return `
     <!doctype html>
     <html>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <style>
-      #myImage {
-        background-image: url(https://home.adelphi.edu/~ap21473/Cute%20otter.jpg);
-        width: 100;
-        height: 100;
-      }
-  
-    </style>
+      <title>Team Update Email</title>
+      <style>
+        .good {
+          color: green;
+        }
+
+        .bad {
+          color: red;
+        }
+
+        .okay {
+          color: black;
+        }
+      </style>
 
 
       <br/>
       Hello ${name}. Kupo Otter here.
       <br/>
       <br/>
-      <b>${countOfNewUsersInPastDay}</b> users signed up in the past day.
-      <b>${countOfNewUsersInPastWeek}</b> users signed up in the past week.      
+      <b>${
+        kupoTeamUpdateMetrics.countOfNewUsersInPastDay
+      }</b> users (${formatPercentChange(
+    kupoTeamUpdateMetrics.percentChangeInNewUserSignupsDayOverDay,
+  )}) signed up in the past day.
+      <b>${
+        kupoTeamUpdateMetrics.countOfNewUsersInPastWeek
+      }</b> users  (${formatPercentChange(
+    kupoTeamUpdateMetrics.percentChangeInNewUserSignupsWeekOverWeek,
+  )}) signed up in the past week.      
 
     </html>
   `;

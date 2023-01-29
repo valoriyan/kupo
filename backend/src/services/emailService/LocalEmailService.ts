@@ -17,6 +17,7 @@ import {
 import { Controller } from "tsoa";
 import { GenericResponseFailedReason } from "../../controllers/models";
 import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
+import { KupoTeamUpdateMetrics } from "./templates/generateKupoTeamUpdateEmailHtml";
 
 export class LocalEmailService extends EmailServiceInterface {
   private static JWT_PRIVATE_KEY: string = getEnvironmentVariable("JWT_PRIVATE_KEY");
@@ -160,18 +161,16 @@ export class LocalEmailService extends EmailServiceInterface {
     controller,
     name,
     email,
-    countOfNewUsersInPastDay,
-    countOfNewUsersInPastWeek,
+    kupoTeamUpdateMetrics,
   }: {
     controller: Controller;
     name: string;
     email: string;
-    countOfNewUsersInPastDay: number;
-    countOfNewUsersInPastWeek: number;
+    kupoTeamUpdateMetrics: KupoTeamUpdateMetrics;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
     try {
       console.log(
-        `Team Update time ${name} ${email} | countOfNewUsersInPastWeek : ${countOfNewUsersInPastWeek} | countOfNewUsersInPastDay: ${countOfNewUsersInPastDay}`,
+        `Team Update time ${name} ${email} | countOfNewUsersInPastWeek : ${kupoTeamUpdateMetrics.countOfNewUsersInPastWeek} | countOfNewUsersInPastDay: ${kupoTeamUpdateMetrics.countOfNewUsersInPastDay}`,
       );
       return Success({});
     } catch (error) {

@@ -9,6 +9,10 @@ import { DateTime } from "luxon";
 import { EitherType } from "../utilities/monads";
 import { EmailService } from "../services/emailService";
 
+function calculateMetricsChange(startValue: number, endValue: number) {
+  return (endValue - startValue) / startValue;
+}
+
 async function emailKupoTeamUpdate(): Promise<void> {
   const databaseService = new DatabaseService();
   const emailService = new EmailService();
@@ -22,7 +26,7 @@ async function emailKupoTeamUpdate(): Promise<void> {
   // Count New User Registrations in the Past Week
   //////////////////////////////////////////////////
 
-  const countNewUsersInTimerangeResponse =
+  const countNewUsersInTimerangeInPastWeekResponse =
     await databaseService.tableNameToServicesMap.usersTableService.countNewUsersInTimerange(
       {
         controller: fakeController,
@@ -31,13 +35,33 @@ async function emailKupoTeamUpdate(): Promise<void> {
       },
     );
 
-  if (countNewUsersInTimerangeResponse.type === EitherType.failure) {
-    throw new Error(countNewUsersInTimerangeResponse.error.errorMessage);
+  if (countNewUsersInTimerangeInPastWeekResponse.type === EitherType.failure) {
+    throw new Error(countNewUsersInTimerangeInPastWeekResponse.error.errorMessage);
   }
-  const { success: countOfNewUsersInPastWeek } = countNewUsersInTimerangeResponse;
+  const { success: countOfNewUsersInPastWeek } =
+    countNewUsersInTimerangeInPastWeekResponse;
 
   //////////////////////////////////////////////////
-  // Count New User Registrations in the Past Week
+  // Count New User Registrations in the Previous Week
+  //////////////////////////////////////////////////
+
+  const countNewUsersInTimerangeInPreviousWeekResponse =
+    await databaseService.tableNameToServicesMap.usersTableService.countNewUsersInTimerange(
+      {
+        controller: fakeController,
+        startTimestamp: DateTime.now().minus({ weeks: 2 }).toMillis(),
+        endTimestamp: DateTime.now().minus({ weeks: 1 }).toMillis(),
+      },
+    );
+
+  if (countNewUsersInTimerangeInPreviousWeekResponse.type === EitherType.failure) {
+    throw new Error(countNewUsersInTimerangeInPreviousWeekResponse.error.errorMessage);
+  }
+  const { success: countOfNewUsersInPreviousWeek } =
+    countNewUsersInTimerangeInPreviousWeekResponse;
+
+  //////////////////////////////////////////////////
+  // Count New User Registrations in the Past Day
   //////////////////////////////////////////////////
 
   const countOfNewUsersInPastDayResponse =
@@ -55,6 +79,24 @@ async function emailKupoTeamUpdate(): Promise<void> {
   const { success: countOfNewUsersInPastDay } = countOfNewUsersInPastDayResponse;
 
   //////////////////////////////////////////////////
+  // Count New User Registrations in the Previous Day
+  //////////////////////////////////////////////////
+
+  const countOfNewUsersInPreviousDayResponse =
+    await databaseService.tableNameToServicesMap.usersTableService.countNewUsersInTimerange(
+      {
+        controller: fakeController,
+        startTimestamp: DateTime.now().minus({ days: 2 }).toMillis(),
+        endTimestamp: DateTime.now().minus({ days: 1 }).toMillis(),
+      },
+    );
+
+  if (countOfNewUsersInPreviousDayResponse.type === EitherType.failure) {
+    throw new Error(countOfNewUsersInPreviousDayResponse.error.errorMessage);
+  }
+  const { success: countOfNewUsersInPreviousDay } = countOfNewUsersInPreviousDayResponse;
+
+  //////////////////////////////////////////////////
   // Send Emails
   //////////////////////////////////////////////////
 
@@ -63,8 +105,18 @@ async function emailKupoTeamUpdate(): Promise<void> {
       controller: fakeController,
       name,
       email,
-      countOfNewUsersInPastDay,
-      countOfNewUsersInPastWeek,
+      kupoTeamUpdateMetrics: {
+        countOfNewUsersInPastDay,
+        countOfNewUsersInPastWeek,
+        percentChangeInNewUserSignupsDayOverDay: calculateMetricsChange(
+          countOfNewUsersInPreviousDay,
+          countOfNewUsersInPastDay,
+        ),
+        percentChangeInNewUserSignupsWeekOverWeek: calculateMetricsChange(
+          countOfNewUsersInPreviousWeek,
+          countOfNewUsersInPastWeek,
+        ),
+      },
     });
   });
 }

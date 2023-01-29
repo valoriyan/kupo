@@ -3,6 +3,7 @@ import { ErrorReasonTypes, InternalServiceResponse } from "../../utilities/monad
 import { UnrenderableUser } from "../../controllers/user/models";
 import { RenderableShopItemPurchaseSummary } from "../../controllers/publishedItem/shopItem/payments/models";
 import { Controller } from "tsoa";
+import { KupoTeamUpdateMetrics } from "./templates/generateKupoTeamUpdateEmailHtml";
 
 export enum EmailServiceType {
   SEND_GRID = "SEND_GRID",
@@ -48,14 +49,12 @@ export abstract class EmailServiceInterface {
     controller,
     name,
     email,
-    countOfNewUsersInPastDay,
-    countOfNewUsersInPastWeek,
+    kupoTeamUpdateMetrics,
   }: {
     controller: Controller;
     name: string;
     email: string;
-    countOfNewUsersInPastDay: number;
-    countOfNewUsersInPastWeek: number;
+    kupoTeamUpdateMetrics: KupoTeamUpdateMetrics;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>>;
 }
 
