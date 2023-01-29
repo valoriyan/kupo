@@ -15,6 +15,7 @@
 import { NOTIFICATIONEVENTSSHOPITEMSOLD } from "./notificationeventsshopitemsold";
 import { RenderableAcceptedPublishingChannelSubmissionNotification } from "./renderable-accepted-publishing-channel-submission-notification";
 import { RenderableAcceptedUserFollowRequestNotification } from "./renderable-accepted-user-follow-request-notification";
+import { RenderableInvitedToFollowPublishingChannelNotification } from "./renderable-invited-to-follow-publishing-channel-notification";
 import { RenderableNewCommentOnPublishedItemNotification } from "./renderable-new-comment-on-published-item-notification";
 import { RenderableNewFollowerNotification } from "./renderable-new-follower-notification";
 import { RenderableNewLikeOnPublishedItemNotification } from "./renderable-new-like-on-published-item-notification";
@@ -139,6 +140,12 @@ export interface RenderableUserNotification {
    * @memberof RenderableUserNotification
    */
   rejectionSummary: RenderableRejectedPublishingChannelSubmissionNotificationRejectionSummary;
+  /**
+   *
+   * @type {RenderableUser}
+   * @memberof RenderableUserNotification
+   */
+  userSendingInvitation: RenderableUser;
   /**
    *
    * @type {RenderableUser}

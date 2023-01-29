@@ -38,6 +38,7 @@ export enum NOTIFICATIONEVENTS {
   CanceledNewTagInPublishedItemComment = "CANCELED_NEW_TAG_IN_PUBLISHED_ITEM_COMMENT",
   AcceptedPublishingChannelSubmission = "ACCEPTED_PUBLISHING_CHANNEL_SUBMISSION",
   RejectedPublishingChannelSubmission = "REJECTED_PUBLISHING_CHANNEL_SUBMISSION",
+  InvitedToFollowPublishingChannel = "INVITED_TO_FOLLOW_PUBLISHING_CHANNEL",
   ShopItemSold = "SHOP_ITEM_SOLD",
   NewPublishedItem = "NEW_PUBLISHED_ITEM",
 }

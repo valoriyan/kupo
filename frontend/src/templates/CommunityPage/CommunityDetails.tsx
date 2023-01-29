@@ -4,6 +4,7 @@ import { Flex, Grid, Stack } from "#/components/Layout";
 import { UserName } from "#/components/UserName";
 import { styled } from "#/styling";
 import { ErrorMessage } from "#/components/ErrorArea";
+import { getExternalLink } from "#/utils/getExternalLink";
 
 export interface CommunityDetailsProps {
   community: RenderablePublishingChannel;
@@ -28,7 +29,12 @@ export const CommunityDetails = ({ community }: CommunityDetailsProps) => {
       </Section>
       <Section heading="Links">
         {externalUrls.map((url) => (
-          <a key={url} href={url} target="_blank" rel="noopener noreferrer">
+          <a
+            key={url}
+            href={getExternalLink(url)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {url}
           </a>
         ))}

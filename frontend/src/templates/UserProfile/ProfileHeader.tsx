@@ -13,6 +13,7 @@ import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
+import { getExternalLink } from "#/utils/getExternalLink";
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean | undefined;
@@ -112,7 +113,11 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
       <Stack css={{ mt: "107px", py: "$4", px: "$6", gap: "$4" }}>
         {!!shortBio && <Body>{shortBio}</Body>}
         {!!userWebsite && (
-          <ExternalLink target="_blank" rel="noopener noreferrer" href={userWebsite}>
+          <ExternalLink
+            target="_blank"
+            rel="noopener noreferrer"
+            href={getExternalLink(userWebsite)}
+          >
             {userWebsite}
           </ExternalLink>
         )}
@@ -141,4 +146,4 @@ const AvatarAndName = styled(Stack, {
   px: "$6",
 });
 
-const ExternalLink = styled("a", subtextStyles, { cursor: "pointer" });
+const ExternalLink = styled("a", subtextStyles);

@@ -9,8 +9,8 @@ import {
 } from "../../../utilities/monads";
 
 export enum ValidatePublishingChannelNameFailedReason {
-  NameAlreadyTaken = "NameAlreadyTaken",
-  IllegalCharacters = "All Username Characters Must Be Lowercase English Letters, Digits, periods, dashes, or underscores",
+  NameAlreadyTaken = "Name already taken",
+  IllegalCharacters = "Name may only include lowercase English letters, digits, hyphens, and underscores",
 }
 
 export async function validatePublishingChannelName({
@@ -44,7 +44,7 @@ export async function validatePublishingChannelName({
   // Check that Characters are Valid
   //////////////////////////////////////////////////
 
-  if (!/^[0-9a-zåäö._-]+$/.test(publishingChannelName)) {
+  if (!/^[0-9a-zåäö_-]+$/.test(publishingChannelName)) {
     return Failure({
       controller,
       httpStatusCode: 400,

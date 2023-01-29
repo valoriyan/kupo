@@ -175,6 +175,8 @@ import { EitherErrorReasonTypesStringOrGetUsersByUsernamesFailedReasonGetUsersBy
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrGetVerifyUserEmailFailedReasonGetVerifyUserEmailSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrInviteUserToFollowPublishingChannelFailedReasonInviteUserToFollowPublishingChannelSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrIsPublishingChannelNameValidFailedReasonIsPublishingChannelNameValidSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrMakeCreditCardPrimaryFailedReasonMakeCreditCardPrimarySuccess } from "../types";
@@ -316,6 +318,8 @@ import { GetUsersByUsernamesRequestBody } from "../types";
 import { InlineObject1 } from "../types";
 // @ts-ignore
 import { InlineResponse200 } from "../types";
+// @ts-ignore
+import { InviteUserToFollowPublishingChannelRequestBody } from "../types";
 // @ts-ignore
 import { IsPublishingChannelNameValidRequestBody } from "../types";
 // @ts-ignore
@@ -2891,6 +2895,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {InviteUserToFollowPublishingChannelRequestBody} inviteUserToFollowPublishingChannelRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    inviteUserToFollowPublishingChannel: async (
+      inviteUserToFollowPublishingChannelRequestBody: InviteUserToFollowPublishingChannelRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'inviteUserToFollowPublishingChannelRequestBody' is not null or undefined
+      assertParamExists(
+        "inviteUserToFollowPublishingChannel",
+        "inviteUserToFollowPublishingChannelRequestBody",
+        inviteUserToFollowPublishingChannelRequestBody,
+      );
+      const localVarPath = `/publishing_channel/inviteUserToFollowPublishingChannel`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        inviteUserToFollowPublishingChannelRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -6443,6 +6496,33 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {InviteUserToFollowPublishingChannelRequestBody} inviteUserToFollowPublishingChannelRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async inviteUserToFollowPublishingChannel(
+      inviteUserToFollowPublishingChannelRequestBody: InviteUserToFollowPublishingChannelRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrInviteUserToFollowPublishingChannelFailedReasonInviteUserToFollowPublishingChannelSuccess>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.inviteUserToFollowPublishingChannel(
+          inviteUserToFollowPublishingChannelRequestBody,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8388,6 +8468,23 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {InviteUserToFollowPublishingChannelRequestBody} inviteUserToFollowPublishingChannelRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    inviteUserToFollowPublishingChannel(
+      inviteUserToFollowPublishingChannelRequestBody: InviteUserToFollowPublishingChannelRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrInviteUserToFollowPublishingChannelFailedReasonInviteUserToFollowPublishingChannelSuccess> {
+      return localVarFp
+        .inviteUserToFollowPublishingChannel(
+          inviteUserToFollowPublishingChannelRequestBody,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {LoginUserRequestBody} loginUserRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9868,6 +9965,25 @@ export class DefaultApi extends BaseAPI {
   public getVerifyUserEmail(options?: any) {
     return DefaultApiFp(this.configuration)
       .getVerifyUserEmail(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {InviteUserToFollowPublishingChannelRequestBody} inviteUserToFollowPublishingChannelRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public inviteUserToFollowPublishingChannel(
+    inviteUserToFollowPublishingChannelRequestBody: InviteUserToFollowPublishingChannelRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .inviteUserToFollowPublishingChannel(
+        inviteUserToFollowPublishingChannelRequestBody,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
