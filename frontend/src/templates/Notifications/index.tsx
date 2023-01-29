@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
+import { useAppLayoutState } from "#/components/AppLayout";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
 import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
@@ -8,6 +9,7 @@ import { LoadingArea } from "#/components/LoadingArea";
 import { Notification } from "./Notification";
 
 export const Notifications = () => {
+  const scrollToTop = useAppLayoutState((store) => store.scrollToTop);
   const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetPageOfOldNotifications();
   const { markAllNotificationsAsSeen } = useWebsocketState();
@@ -22,7 +24,7 @@ export const Notifications = () => {
 
   return (
     <BasicListWrapper>
-      <BasicListHeader>Notifications</BasicListHeader>
+      <BasicListHeader onClick={() => scrollToTop(true)}>Notifications</BasicListHeader>
       <div>
         {error && !isLoading ? (
           <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
