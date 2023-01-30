@@ -41,6 +41,8 @@ export const Text = styled("textarea", {
   border: "none",
   fontSize: "$3",
 
+  "&:focus": { outline: "none" },
+
   "&::placeholder": {
     color: "$secondaryText",
   },

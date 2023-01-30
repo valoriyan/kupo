@@ -126,6 +126,10 @@ const Input = styled("input", {
   border: "none",
   fontSize: "$3",
 
+  "&:focus": {
+    outline: "none",
+  },
+
   "&::placeholder": {
     color: "$secondaryText",
   },

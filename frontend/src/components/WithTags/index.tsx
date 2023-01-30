@@ -11,7 +11,7 @@ import {
 import { getExternalLink } from "#/utils/getExternalLink";
 
 const MATCH_URL =
-  /((?:(?:https?):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?)/g;
+  /((?:https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))/g;
 const MATCH_ANY_TAGS = /(\B(?:@|\+|#)\w+)/g;
 const MATCH_USER = /\B@\w+/;
 const MATCH_COMMUNITY = /\B\+\w+/;

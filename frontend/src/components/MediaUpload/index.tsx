@@ -158,4 +158,6 @@ const AddMedia = styled("label", {
   size: "100%",
   bg: "$background3",
   color: "$text",
+
+  "&:focus-within": { outline: "solid $borderWidths$1 $primary" },
 });
