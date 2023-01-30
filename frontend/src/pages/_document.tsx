@@ -12,7 +12,7 @@ export default class KupoDocument extends Document {
             content="A social media platform made for creators by creators."
           />
           <meta property="og:type" content="website" />
-          <meta property="og:image" content="/logo.png" />
+          <meta property="og:image" content="/banner.png" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link
