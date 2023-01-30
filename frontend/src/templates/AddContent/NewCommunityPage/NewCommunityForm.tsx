@@ -263,6 +263,8 @@ const Input = styled("input", {
   fontSize: "$3",
   textAlign: "right",
 
+  "&:focus": { outline: "none" },
+
   "&::placeholder": {
     color: "$secondaryText",
   },
@@ -296,6 +298,10 @@ const EditMedia = styled("label", {
   size: "100%",
   color: "$accentText",
   cursor: "pointer",
+
+  "&:focus-within": {
+    "> div > *:first-child": { outline: "solid $borderWidths$2 $primary" },
+  },
 });
 
 const centered = css({

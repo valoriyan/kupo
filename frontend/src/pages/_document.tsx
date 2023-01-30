@@ -6,6 +6,15 @@ export default class KupoDocument extends Document {
     return (
       <Html lang="en" className={darkTheme.className}>
         <Head>
+          <meta property="og:title" content="Kupo" />
+          <meta
+            property="og:description"
+            content="A social media platform made for creators by creators."
+          />
+          <meta property="og:type" content="website" />
+          <meta property="og:image" content="/banner.png" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content="/banner.png" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link
