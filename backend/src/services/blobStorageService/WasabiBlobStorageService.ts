@@ -49,10 +49,10 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
 
   async saveFile({
     controller,
-    image,
+    fileBuffer,
     mimeType,
   }: {
-    image: Buffer;
+    fileBuffer: Buffer;
     controller: Controller;
     mimeType: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>> {
@@ -62,7 +62,7 @@ export class WasabiBlobStorageService extends BlobStorageServiceInterface {
       const putObjectRequest: PutObjectRequest = {
         Bucket: WasabiBlobStorageService.bucket,
         Key: fileKey,
-        Body: image,
+        Body: fileBuffer,
         ACL: "public-read",
       };
 

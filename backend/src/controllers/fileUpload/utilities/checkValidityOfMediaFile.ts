@@ -34,7 +34,7 @@ export async function checkValidityOfMediaFile({
 
   const permittedImageTypes = ["image/jpeg", "image/png", "image/gif"];
 
-  const permittedVideoTypes = ["video/mp4"];
+  const permittedVideoTypes = ["video/mp4", "video/quicktime"];
 
   const permittedMimeTypes = [...permittedImageTypes, ...permittedVideoTypes];
 

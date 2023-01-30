@@ -122,6 +122,7 @@ export class PublishedItemsTableService extends TableService {
     controller,
     type,
     publishedItemId,
+    networkPortalIdOfOrigin,
     creationTimestamp,
     authorUserId,
     caption,
@@ -132,6 +133,7 @@ export class PublishedItemsTableService extends TableService {
     controller: Controller;
     type: PublishedItemType;
     publishedItemId: string;
+    networkPortalIdOfOrigin: string;
     creationTimestamp: number;
     authorUserId: string;
     caption: string;
@@ -156,6 +158,10 @@ export class PublishedItemsTableService extends TableService {
             {
               field: "id_of_published_item_being_shared",
               value: idOfPublishedItemBeingShared,
+            },
+            {
+              field: "network_portal_id_of_origin",
+              value: networkPortalIdOfOrigin,
             },
           ],
         ],

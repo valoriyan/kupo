@@ -14,11 +14,11 @@ export enum BlobStorageServiceType {
 export abstract class BlobStorageServiceInterface {
   abstract saveFile({
     controller,
-    image,
+    fileBuffer,
     mimeType,
   }: {
     controller: Controller;
-    image: Buffer;
+    fileBuffer: Buffer;
     mimeType: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>>;
 

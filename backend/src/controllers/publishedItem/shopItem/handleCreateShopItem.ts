@@ -15,7 +15,7 @@ import {
   unwrapListOfEitherResponses,
   UnwrapListOfEitherResponsesFailureHandlingMethod,
 } from "../../../utilities/monads/unwrapListOfResponses";
-import { checkAuthentication } from "../../auth/utilities";
+import { checkAuthentication, readNetworkPortalId } from "../../auth/utilities";
 import { PublishedItemType, RenderablePublishedItem } from "../models";
 import { RenderableShopItem, RenderableShopItemType } from "./models";
 import { ShopItemController } from "./shopItemController";
@@ -86,6 +86,12 @@ export async function handleCreateShopItem({
   const publishedItemId = uuidv4();
   const now = Date.now();
 
+  const readNetworkPortalIdResponse = readNetworkPortalId(controller, request);
+  if (readNetworkPortalIdResponse.type === EitherType.failure) {
+    return readNetworkPortalIdResponse;
+  }
+  const { success: networkPortalId } = readNetworkPortalIdResponse;
+
   //////////////////////////////////////////////////
   // Handle Idempotentcy Token
   //////////////////////////////////////////////////
@@ -118,6 +124,7 @@ export async function handleCreateShopItem({
         type: PublishedItemType.SHOP_ITEM,
         publishedItemId,
         creationTimestamp: now,
+        networkPortalIdOfOrigin: networkPortalId,
         authorUserId: clientUserId,
         caption,
         scheduledPublicationTimestamp: scheduledPublicationTimestamp ?? now,

@@ -7,7 +7,7 @@ import {
 } from "../../../utilities/monads";
 import { PostController } from "./postController";
 import express from "express";
-import { checkAuthentication } from "../../auth/utilities";
+import { checkAuthentication, readNetworkPortalId } from "../../auth/utilities";
 import { RenderablePost, RootRenderablePost } from "./models";
 import { PublishedItemType } from "../models";
 import { assemblePublishedItemFromCachedComponents } from "../utilities/assemblePublishedItems";
@@ -65,6 +65,12 @@ export async function handleSharePost({
   const now = Date.now();
 
   const creationTimestamp = now;
+
+  const readNetworkPortalIdResponse = readNetworkPortalId(controller, request);
+  if (readNetworkPortalIdResponse.type === EitherType.failure) {
+    return readNetworkPortalIdResponse;
+  }
+  const { success: networkPortalId } = readNetworkPortalIdResponse;
 
   //////////////////////////////////////////////////
   // Get Shared Published Item
@@ -127,6 +133,7 @@ export async function handleSharePost({
       {
         controller,
         publishedItemId: publishedItemId,
+        networkPortalIdOfOrigin: networkPortalId,
         type: PublishedItemType.POST,
         creationTimestamp,
         authorUserId: clientUserId,

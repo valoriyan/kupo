@@ -7,7 +7,7 @@ import {
 } from "../../../../utilities/monads";
 import { PostController } from "../postController";
 import express from "express";
-import { checkAuthentication } from "../../../auth/utilities";
+import { checkAuthentication, readNetworkPortalId } from "../../../auth/utilities";
 import { RenderablePost } from "../models";
 import { FileDescriptor, GenericResponseFailedReason } from "../../../models";
 import { handleCreatePostNotifications } from "./handleCreatePostNotifications";
@@ -63,6 +63,12 @@ export async function handleCreatePost({
   );
   if (error) return error;
 
+  const readNetworkPortalIdResponse = readNetworkPortalId(controller, request);
+  if (readNetworkPortalIdResponse.type === EitherType.failure) {
+    return readNetworkPortalIdResponse;
+  }
+  const { success: networkPortalId } = readNetworkPortalIdResponse;
+
   //////////////////////////////////////////////////
   // Create Post
   //////////////////////////////////////////////////
@@ -71,6 +77,7 @@ export async function handleCreatePost({
     controller,
     databaseService: controller.databaseService,
     blobStorageService: controller.blobStorageService,
+    networkPortalId,
     authorUserId: clientUserId,
     host: "user-self-hosted",
     caption,

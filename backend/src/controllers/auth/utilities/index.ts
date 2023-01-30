@@ -4,7 +4,13 @@ import { Controller } from "tsoa";
 import { MD5 } from "crypto-js";
 import { AuthFailedReason, AuthFailed } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
-import { EitherType } from "../../../utilities/monads";
+import {
+  EitherType,
+  ErrorReasonTypes,
+  Failure,
+  InternalServiceResponse,
+  Success,
+} from "../../../utilities/monads";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
@@ -115,5 +121,21 @@ export async function getClientUserId(request: Request): Promise<string | undefi
     return validateTokenAndGetUserId({ token, jwtPrivateKey });
   } catch {
     return undefined;
+  }
+}
+
+export function readNetworkPortalId(
+  controller: Controller,
+  request: Request,
+): InternalServiceResponse<ErrorReasonTypes<string>, string> {
+  const networkPortalId = request.headers["x-valoriyan-network-portal-id"];
+  if (!networkPortalId) {
+    return Failure({
+      controller,
+      httpStatusCode: 400,
+      reason: "Missing Network Portal Id",
+    });
+  } else {
+    return Success(networkPortalId as string);
   }
 }

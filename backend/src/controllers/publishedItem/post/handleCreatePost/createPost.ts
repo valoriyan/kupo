@@ -22,6 +22,7 @@ export async function createPost({
   controller,
   databaseService,
   blobStorageService,
+  networkPortalId,
   authorUserId,
   host,
   caption,
@@ -33,6 +34,7 @@ export async function createPost({
   controller: Controller;
   databaseService: DatabaseService;
   blobStorageService: BlobStorageService;
+  networkPortalId: string;
   authorUserId: string;
   host: PublishedItemHost;
   caption: string;
@@ -58,6 +60,7 @@ export async function createPost({
       {
         controller,
         publishedItemId,
+        networkPortalIdOfOrigin: networkPortalId,
         type: PublishedItemType.POST,
         creationTimestamp,
         authorUserId,

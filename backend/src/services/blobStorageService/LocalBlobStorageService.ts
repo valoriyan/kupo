@@ -24,11 +24,11 @@ export class LocalBlobStorageService extends BlobStorageServiceInterface {
 
   async saveFile({
     controller,
-    image,
+    fileBuffer,
     mimeType,
   }: {
     controller: Controller;
-    image: Buffer;
+    fileBuffer: Buffer;
     mimeType: string;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, BlobItemPointer>> {
     try {
@@ -41,7 +41,7 @@ export class LocalBlobStorageService extends BlobStorageServiceInterface {
         recursive: true,
       });
 
-      await writeFileSync(fileWritePath, image, "base64");
+      await writeFileSync(fileWritePath, fileBuffer, "base64");
 
       return Success({
         fileKey,

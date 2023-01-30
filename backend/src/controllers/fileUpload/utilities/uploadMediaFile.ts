@@ -7,6 +7,7 @@ import {
 } from "../../../utilities/monads";
 import { Controller } from "tsoa";
 import { BlobStorageService } from "../../../services/blobStorageService";
+import { convertMovToMp4 } from "./convertMovToMp4";
 
 export async function uploadMediaFile({
   controller,
@@ -24,6 +25,8 @@ export async function uploadMediaFile({
     { blobFileKey: string; fileTemporaryUrl: string }
   >
 > {
+  let writeMimeType = mimeType;
+
   //////////////////////////////////////////////////
   // Inputs
   //////////////////////////////////////////////////
@@ -57,13 +60,22 @@ export async function uploadMediaFile({
   buffer = newBufferSizeInKB < ogBufferSizeInKB ? buffer : file.buffer;
 
   //////////////////////////////////////////////////
+  // Handle .mov videos
+  //////////////////////////////////////////////////
+
+  if (mimeType === "video/quicktime") {
+    writeMimeType = "video/mp4";
+    buffer = await convertMovToMp4(buffer);
+  }
+
+  //////////////////////////////////////////////////
   // Upload File
   //////////////////////////////////////////////////
 
   const saveImageResponse = await blobStorageService.saveFile({
     controller,
-    image: buffer,
-    mimeType,
+    fileBuffer: buffer,
+    mimeType: writeMimeType,
   });
   if (saveImageResponse.type === EitherType.failure) {
     return saveImageResponse;

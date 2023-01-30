@@ -20,6 +20,9 @@ export const client: AxiosInstance = axios.create({
   },
 });
 client.interceptors.request.use(async (request) => {
+  request.headers["x-valoriyan-network-portal-id"] =
+    publicRuntimeConfig.NETWORK_PORTAL_ID;
+
   const authStrat = request.authStrat || "requireToken";
   if (authStrat === "noToken") return request;
 

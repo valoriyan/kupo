@@ -14,11 +14,12 @@ RUN echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://
 RUN apt-get update
 RUN apt-get install redis -y
 
-
 ##################################################
 # Setup App
 ##################################################
 WORKDIR /app
+
+RUN apt-get install ffmpeg -y
 
 COPY package.json package.json
 COPY yarn.lock yarn.lock
