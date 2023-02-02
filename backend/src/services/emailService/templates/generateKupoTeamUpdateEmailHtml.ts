@@ -7,11 +7,15 @@ export interface KupoTeamUpdateMetrics {
 
 function formatPercentChange(percentChange: number) {
   if (percentChange < 0) {
-    return `<span class="bad" style="color: red">↓ ${percentChange}%</span>`;
+    return `<span class="bad" style="color: red">↓ ${percentChange.toFixed(2)}%</span>`;
   } else if (percentChange > 25) {
-    return `<span class="good" style="color: green">↑ ${percentChange}%</span>`;
+    return `<span class="good" style="color: green">↑ ${percentChange.toFixed(
+      2,
+    )}%</span>`;
   } else {
-    return `<span class="okay" style="color: black">↑ ${percentChange}%</span>`;
+    return `<span class="okay" style="color: black">↑ ${percentChange.toFixed(
+      2,
+    )}%</span>`;
   }
 }
 

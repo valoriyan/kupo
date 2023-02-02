@@ -77,11 +77,13 @@ export class AuthController extends Controller {
 
   @Post("register")
   public async registerUser(
+    @Request() request: express.Request,
     @Body() requestBody: RegisterUserRequestBody,
   ): Promise<
     HTTPResponse<ErrorReasonTypes<string | RegisterUserFailedReason>, AuthSuccess>
   > {
     return await handleRegisterUser({
+      request,
       controller: this,
       requestBody,
     });

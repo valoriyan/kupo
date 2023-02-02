@@ -1,11 +1,13 @@
+import express from "express";
 import { EitherType, ErrorReasonTypes, HTTPResponse } from "../../../utilities/monads";
 import { v4 as uuidv4 } from "uuid";
-import { encryptPassword } from "../../auth/utilities";
+import { encryptPassword, readNetworkPortalId } from "../../auth/utilities";
 import { AuthController } from "../../auth/authController";
 import { grantNewAccessToken } from "../../auth/utilities/grantNewAccessToken";
 import { AuthSuccess } from "../../auth/models";
 import { getEnvironmentVariable } from "../../../utilities";
 import { validateUsername } from "./validateUsername";
+import { userRegistrationPortalHook } from "../../../portalHooks/userRegistrationPortalHook";
 
 export interface RegisterUserRequestBody {
   email: string;
@@ -19,9 +21,11 @@ export enum RegisterUserFailedReason {
 }
 
 export async function handleRegisterUser({
+  request,
   requestBody,
   controller,
 }: {
+  request: express.Request;
   requestBody: RegisterUserRequestBody;
   controller: AuthController;
 }): Promise<
@@ -46,6 +50,12 @@ export async function handleRegisterUser({
   const isAdmin = INSANELY_HARDCODED_ADMIN_EMAILS.includes(email);
 
   const lowerCaseUsername = username.toLowerCase();
+
+  const readNetworkPortalIdResponse = readNetworkPortalId(controller, request);
+  if (readNetworkPortalIdResponse.type === EitherType.failure) {
+    return readNetworkPortalIdResponse;
+  }
+  const { success: networkPortalId } = readNetworkPortalIdResponse;
 
   //////////////////////////////////////////////////
   // Validate Username
@@ -131,6 +141,17 @@ export async function handleRegisterUser({
   if (!!maybeUser) {
     const user = maybeUser;
     await controller.emailService.sendVerifyUserEmailEmail({ controller, user });
+  }
+
+  //////////////////////////////////////////////////
+  // Send Email Verification Email to User
+  //////////////////////////////////////////////////
+  if (!!maybeUser) {
+    userRegistrationPortalHook({
+      controller,
+      networkPortalId,
+      unrenderableUser: maybeUser,
+    });
   }
 
   //////////////////////////////////////////////////

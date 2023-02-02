@@ -9,7 +9,7 @@ const { publicRuntimeConfig } = getConfig();
 
 export const client: AxiosInstance = axios.create({
   baseURL: publicRuntimeConfig.API_BASE_URL,
-  timeout: 10 * 1000,
+  timeout: 60 * 1000,
   withCredentials: true,
   transformResponse: (res) => {
     try {
