@@ -68,7 +68,7 @@ export const UserAutoComplete = ({
       </RadixPopover.Anchor>
       <AnimatePresence initial={false}>
         {open ? (
-          <RadixPopover.Content
+          <Content
             align="start"
             side={side}
             forceMount
@@ -110,19 +110,22 @@ export const UserAutoComplete = ({
                 ))
               )}
             </ContentBody>
-          </RadixPopover.Content>
+          </Content>
         ) : null}
       </AnimatePresence>
     </RadixPopover.Root>
   );
 };
 
+const Content = styled(RadixPopover.Content, {
+  zIndex: "$dropdown",
+});
+
 const ContentBody = styled(motion.div, bodyStyles, {
   bg: "$background1",
   border: "solid $borderWidths$1 $border",
   borderRadius: "$1",
   py: "$2",
-  zIndex: "$dropdown",
   transformOrigin: "var(--radix-popover-content-transform-origin)",
 });
 
