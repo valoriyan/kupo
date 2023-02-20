@@ -105,8 +105,7 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
     return acc;
   }, {} as Record<string, RenderableUser>);
 
-  async function onSubmitNewChatMessage(event: React.FormEvent) {
-    event.preventDefault();
+  async function onSubmitNewChatMessage() {
     createNewChatMessage({
       chatRoomId,
       chatMessageText: newChatMessage,

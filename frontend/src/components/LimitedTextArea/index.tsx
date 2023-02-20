@@ -1,6 +1,7 @@
 import { styled } from "#/styling";
 import { Stack } from "../Layout";
 import { Subtext } from "../Typography";
+import { UserAutoComplete } from "../UserAutoComplete";
 
 export interface LimitedTextAreaProps {
   text: string;
@@ -19,12 +20,15 @@ export const LimitedTextArea = ({
 }: LimitedTextAreaProps) => {
   return (
     <Stack css={{ flex: 1 }}>
-      <Text
-        placeholder={placeholder}
-        value={text}
-        onChange={(e) => setText(e.currentTarget.value.slice(0, charLimit))}
-        data-cy={dataCy}
-      />
+      <UserAutoComplete text={text} setText={setText}>
+        <Text
+          placeholder={placeholder}
+          value={text}
+          maxLength={charLimit}
+          onChange={(e) => setText(e.currentTarget.value)}
+          data-cy={dataCy}
+        />
+      </UserAutoComplete>
       <Subtext css={{ color: "$secondaryText", p: "$2", pb: 0, alignSelf: "flex-end" }}>
         {text.length} / {charLimit}
       </Subtext>

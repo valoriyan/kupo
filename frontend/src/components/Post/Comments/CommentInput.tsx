@@ -5,6 +5,7 @@ import { CommentIcon } from "#/components/Icons";
 import { Flex, Stack } from "#/components/Layout";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Subtext } from "#/components/Typography";
+import { UserAutoComplete } from "#/components/UserAutoComplete";
 import { styled } from "#/styling";
 import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
@@ -34,15 +35,22 @@ export const CommentInput = ({ postId }: CommentInputProps) => {
     <Flex
       as="form"
       onSubmit={onSubmitComment}
-      css={{ borderBottom: "solid $borderWidths$1 $border" }}
+      css={{
+        borderBottom: "solid $borderWidths$1 $border",
+        "&:focus-within": { borderColor: "$primary" },
+      }}
     >
       <Stack css={{ flex: 1 }}>
-        <TextArea
-          rows={3}
-          placeholder="leave a comment..."
-          value={text}
-          onChange={(e) => setText(e.currentTarget.value.slice(0, COMMENT_CHAR_LIMIT))}
-        />
+        <UserAutoComplete text={text} setText={setText}>
+          <TextArea
+            rows={3}
+            placeholder="leave a comment..."
+            maxLength={COMMENT_CHAR_LIMIT}
+            value={text}
+            onChange={(e) => setText(e.currentTarget.value)}
+            css={{ outline: "none" }}
+          />
+        </UserAutoComplete>
         <Subtext
           css={{
             bg: "$background1",

@@ -32,6 +32,11 @@ export const NewChatRoom = () => {
     ? [...new Set([...userIds, clientUser.userId])]
     : userIds;
 
+  const hasSelectedUsers =
+    clientUser?.username && usernames.includes(clientUser.username)
+      ? userIdsInChannel.length > 0
+      : userIdsInChannel.length > 1;
+
   const { data: existingChatRoom, isLoading: isExistingChatRoomLoading } =
     useGetChatRoomIdWithUserIds({ userIds: usernames.length ? userIdsInChannel : [] });
   const { mutateAsync: createNewChatMessageInNewChatRoom } =
@@ -81,7 +86,7 @@ export const NewChatRoom = () => {
           newChatMessage={newChatMessage}
           setNewChatMessage={setNewChatMessage}
           onSubmitNewChatMessage={onSubmitNewChatMessage}
-          disabled={isLoading}
+          disabled={isLoading || !hasSelectedUsers}
         />
       )}
     </Grid>

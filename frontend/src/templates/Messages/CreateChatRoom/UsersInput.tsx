@@ -1,14 +1,9 @@
-import {
-  ChangeEventHandler,
-  Dispatch,
-  KeyboardEventHandler,
-  SetStateAction,
-  useState,
-} from "react";
+import { Dispatch, KeyboardEventHandler, SetStateAction, useState } from "react";
 import { RenderableUser } from "#/api";
 import { Avatar } from "#/components/Avatar";
 import { Chip } from "#/components/Chip";
 import { Flex } from "#/components/Layout";
+import { UserAutoComplete } from "#/components/UserAutoComplete";
 import { styled } from "#/styling";
 
 const USERNAME_REGEX = /^@?.*\s$/g;
@@ -23,17 +18,21 @@ export interface UsersInputProps {
 export const UsersInput = (props: UsersInputProps) => {
   const [text, setText] = useState("");
 
-  const handleBackspace: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key !== "Backspace" || text) return;
-    props.setUsernames((prev) => {
-      const copy = [...prev];
-      // Remove last username if user hits backspace with no current text
-      copy.pop();
-      return copy;
-    });
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (text && e.key === "Enter") {
+      addUsername();
+    }
+    if (!text && e.key === "Backspace") {
+      props.setUsernames((prev) => {
+        const copy = [...prev];
+        // Remove last username if user hits backspace with no current text
+        copy.pop();
+        return copy;
+      });
+    }
   };
 
-  const onBlur = () => {
+  const addUsername = () => {
     const textToMatch = text + " ";
 
     // Find entered usernames
@@ -48,8 +47,7 @@ export const UsersInput = (props: UsersInputProps) => {
     props.setUsernames((prev) => prev.concat(matchedUsernames));
   };
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const newText = e.currentTarget.value.toLocaleLowerCase();
+  const onChange = (newText: string) => {
     if (!newText) {
       setText(newText);
       return;
@@ -89,15 +87,16 @@ export const UsersInput = (props: UsersInputProps) => {
           </Chip>
         );
       })}
-      <Input
-        placeholder={props.usernames.length ? undefined : "add users..."}
-        css={{ minWidth: `${text.length}ch` }}
-        onBlur={onBlur}
-        onKeyDown={handleBackspace}
-        onChange={onChange}
-        value={text}
-        data-cy="new-chat-room-users-input"
-      />
+      <UserAutoComplete text={text} setText={onChange} requirePrefix={false}>
+        <Input
+          placeholder={props.usernames.length ? undefined : "add users..."}
+          css={{ minWidth: `${text.length}ch` }}
+          onKeyDown={handleKeyDown}
+          onChange={(e) => onChange(e.currentTarget.value.toLocaleLowerCase())}
+          value={text}
+          data-cy="new-chat-room-users-input"
+        />
+      </UserAutoComplete>
     </Wrapper>
   );
 };
@@ -118,7 +117,6 @@ const Wrapper = styled(Flex, {
           outline: "none",
           borderColor: "$primary",
         },
-        "> input": { "&:focus": { outline: "none" } },
       },
     },
   },
@@ -131,6 +129,7 @@ const Input = styled("input", {
   border: "none",
   fontSize: "$3",
   lineHeight: 1.5,
+  outline: "none",
 
   "&::placeholder": { color: "$secondaryText" },
 });

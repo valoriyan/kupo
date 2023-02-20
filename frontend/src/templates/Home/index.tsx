@@ -7,6 +7,7 @@ import { Flex, Stack } from "#/components/Layout";
 import { Body, Heading, MainTitle, Subtext } from "#/components/Typography";
 import { MAX_APP_CONTENT_WIDTH } from "#/constants";
 import { useIsAuthenticated } from "#/contexts/auth";
+import { openLogOutModal } from "#/components/LogOutModal";
 
 export const Home = () => {
   const isAuthenticatedState = useIsAuthenticated();
@@ -20,7 +21,11 @@ export const Home = () => {
       <Stack css={{ p: "$6", width: "100%", maxWidth: MAX_APP_CONTENT_WIDTH, gap: "$9" }}>
         <Heading css={{ alignSelf: "flex-end", button: { color: "$link" } }}>
           {isAuthenticated ? (
-            <Flex as="button" css={{ gap: "$3", alignItems: "center", height: "$6" }}>
+            <Flex
+              as="button"
+              onClick={() => openLogOutModal()}
+              css={{ gap: "$3", alignItems: "center", height: "$6" }}
+            >
               {user && (
                 <Avatar
                   src={user.profilePictureTemporaryUrl}

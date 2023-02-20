@@ -10,12 +10,12 @@ import {
 } from "#/utils/generateLinkUrls";
 import { getExternalLink } from "#/utils/getExternalLink";
 
-const MATCH_URL =
+export const MATCH_URL =
   /((?:https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*))/g;
-const MATCH_ANY_TAGS = /(\B(?:@|\+|#)\w+)/g;
-const MATCH_USER = /\B@\w+/;
-const MATCH_COMMUNITY = /\B\+\w+/;
-const MATCH_HASHTAG = /\B#\w+/;
+export const MATCH_ANY_TAGS = /(\B(?:@|\+|#)\w+)/g;
+export const MATCH_USER = /\B@\w+/;
+export const MATCH_COMMUNITY = /\B\+\w+/;
+export const MATCH_HASHTAG = /\B#\w+/;
 
 export interface WithTagsProps {
   text: string;

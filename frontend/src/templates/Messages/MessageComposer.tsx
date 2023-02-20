@@ -1,7 +1,8 @@
 import { FormEvent, KeyboardEvent } from "react";
 import { Button } from "#/components/Button";
-import { styled } from "#/styling";
 import { Subtext } from "#/components/Typography";
+import { UserAutoComplete } from "#/components/UserAutoComplete";
+import { styled } from "#/styling";
 import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
 const MESSAGE_CHAR_LIMIT = 5000;
@@ -22,13 +23,9 @@ export const MessageComposer = ({
   const clearWarning = useWarnUnsavedChanges(!!newChatMessage);
 
   function onSubmit(event: FormEvent<Element>) {
+    event.preventDefault();
     clearWarning();
     onSubmitNewChatMessage(event);
-  }
-
-  function onUpdateNewChatMessage(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    event.preventDefault();
-    setNewChatMessage(event.currentTarget.value.slice(0, MESSAGE_CHAR_LIMIT));
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -39,14 +36,17 @@ export const MessageComposer = ({
 
   return (
     <Wrapper onSubmit={onSubmit}>
-      <MessageInput
-        rows={3}
-        onKeyDown={onKeyDown}
-        placeholder="type a message..."
-        value={newChatMessage}
-        onChange={onUpdateNewChatMessage}
-        data-cy="chat-room-message-input"
-      />
+      <UserAutoComplete text={newChatMessage} setText={setNewChatMessage} side="top">
+        <MessageInput
+          rows={3}
+          onKeyDown={onKeyDown}
+          placeholder="type a message..."
+          value={newChatMessage}
+          onChange={(e) => setNewChatMessage(e.currentTarget.value)}
+          maxLength={MESSAGE_CHAR_LIMIT}
+          data-cy="chat-room-message-input"
+        />
+      </UserAutoComplete>
       <ActionBar>
         <Subtext css={{ color: "$secondaryText" }}>
           {newChatMessage.length} / {MESSAGE_CHAR_LIMIT}

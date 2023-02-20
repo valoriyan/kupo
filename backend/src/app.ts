@@ -49,6 +49,10 @@ app.use((err: any, req: express.Request, res: express.Response) => {
   }
 });
 
+if (getEnvironmentVariable("IMPLEMENTED_BLOB_STORAGE_SERVICE_TYPE") === "LOCAL") {
+  app.use("/tmp", express.static("tmp"));
+}
+
 app.get("/", (_, res) => {
   res.send("Hello World!");
 });
