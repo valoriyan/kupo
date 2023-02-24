@@ -12,8 +12,12 @@ import { MessageComposer } from "../MessageComposer";
 import { UsersInput } from "./UsersInput";
 import { ExistingChatMessages } from "./ExistingChatMessages";
 
-export const NewChatRoom = () => {
-  const [usernames, setUsernames] = useState<string[]>([]);
+export interface NewChatRoomProps {
+  initialUsernames: string[];
+}
+
+export const NewChatRoom = ({ initialUsernames }: NewChatRoomProps) => {
+  const [usernames, setUsernames] = useState(initialUsernames);
   const [newChatMessage, setNewChatMessage] = useState("");
 
   const { data: clientUser, isLoading: isClientUserLoading } = useGetClientUserProfile();

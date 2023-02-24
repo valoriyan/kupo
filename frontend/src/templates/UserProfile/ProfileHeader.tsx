@@ -5,7 +5,7 @@ import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
 import { FollowUserButton } from "#/components/FollowButton";
 import { HashTag } from "#/components/HashTags";
-import { ShareIcon } from "#/components/Icons";
+import { MailIcon, ShareIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { Body, MainTitle, Subtext, subtextStyles } from "#/components/Typography";
 import { setPreviousLocationForSettings } from "#/pages/settings";
@@ -14,6 +14,7 @@ import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getExternalLink } from "#/utils/getExternalLink";
+import { setPreviousLocationForMessages } from "#/pages/messages";
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean | undefined;
@@ -43,15 +44,7 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
             src={backgroundImageTemporaryUrl}
             alt="User Background Image"
           />
-          <Flex
-            css={{
-              gap: "$3",
-              position: "absolute",
-              bottom: "-$9",
-              right: "$4",
-              zIndex: 1,
-            }}
-          >
+          <ActionsWrapper>
             {isOwnProfile ? (
               <Link href="/settings/profile" passHref>
                 <Button
@@ -74,6 +67,16 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 followingStatus={followingStatusOfClientToUser}
               />
             )}
+            <Link href={{ pathname: "/messages/new", query: { username } }} passHref>
+              <Button
+                as="a"
+                size="sm"
+                variant="primary"
+                onClick={setPreviousLocationForMessages}
+              >
+                <MailIcon />
+              </Button>
+            </Link>
             <Button
               size="sm"
               variant="primary"
@@ -84,7 +87,7 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
             >
               <ShareIcon />
             </Button>
-          </Flex>
+          </ActionsWrapper>
         </Flex>
         <AvatarAndName>
           <Box
@@ -144,6 +147,14 @@ const AvatarAndName = styled(Stack, {
   alignItems: "flex-start",
   gap: "$5",
   px: "$6",
+});
+
+const ActionsWrapper = styled(Flex, {
+  gap: "$3",
+  position: "absolute",
+  bottom: "-$9",
+  right: "$4",
+  zIndex: 1,
 });
 
 const ExternalLink = styled("a", subtextStyles);

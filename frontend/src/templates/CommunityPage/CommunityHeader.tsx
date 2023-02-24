@@ -4,9 +4,10 @@ import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
 import { FollowCommunityButton } from "#/components/FollowButton";
-import { ShareIcon } from "#/components/Icons";
+import { MailIcon, ShareIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { Body, MainTitle, Subtext } from "#/components/Typography";
+import { setPreviousLocationForMessages } from "#/pages/messages";
 import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
@@ -62,6 +63,27 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
                 followingStatus={followingStatusOfClientToPublishingChannel}
               />
             )}
+            <Link
+              href={{
+                pathname: "/messages/new",
+                query: {
+                  username: [
+                    community.owner.username,
+                    ...community.moderators.map((m) => m.username),
+                  ],
+                },
+              }}
+              passHref
+            >
+              <Button
+                as="a"
+                size="sm"
+                variant="primary"
+                onClick={setPreviousLocationForMessages}
+              >
+                <MailIcon />
+              </Button>
+            </Link>
             <Button
               size="sm"
               variant="primary"
