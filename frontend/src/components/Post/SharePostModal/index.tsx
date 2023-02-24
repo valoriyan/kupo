@@ -102,7 +102,7 @@ export const SharePostModal = ({
             <Button
               size="lg"
               variant="secondary"
-              disabled={!caption || isLoading}
+              disabled={isLoading}
               onClick={postNow}
               aria-label="Post Now"
             >
