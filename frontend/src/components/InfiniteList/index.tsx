@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { styled } from "#/styling";
-import { useAppLayoutState } from "../AppLayout";
 import { Body } from "../Typography";
 
 export const DEFAULT_EOL_MESSAGE = "Amazing! You've seen it all 😎";
@@ -23,11 +22,10 @@ type ListContext = Pick<
 >;
 
 export const InfiniteList = <T,>(props: InfiniteListProps<T>) => {
-  const contentContainer = useAppLayoutState((store) => store.contentContainer);
-
   return (
     <Virtuoso
-      customScrollParent={props.scrollParent ?? contentContainer}
+      useWindowScroll={!props.scrollParent}
+      customScrollParent={props.scrollParent}
       overscan={OVERSCAN_PIXELS}
       data={props.data}
       itemContent={props.renderItem}
@@ -42,11 +40,10 @@ export const InfiniteList = <T,>(props: InfiniteListProps<T>) => {
 };
 
 export const ReverseInfiniteList = <T,>(props: InfiniteListProps<T>) => {
-  const contentContainer = useAppLayoutState((store) => store.contentContainer);
-
   return (
     <Virtuoso
-      customScrollParent={props.scrollParent ?? contentContainer}
+      useWindowScroll={!props.scrollParent}
+      customScrollParent={props.scrollParent}
       overscan={OVERSCAN_PIXELS}
       firstItemIndex={Number.MAX_SAFE_INTEGER - props.data.length}
       initialTopMostItemIndex={props.data.length - 1}

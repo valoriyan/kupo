@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode } from "react";
+import { MAX_APP_CONTENT_WIDTH, SIDE_PANEL_WIDTH } from "#/constants";
 import { styled } from "#/styling";
+import { translucentBg } from "#/styling/mixins";
 import { ChevronLeftIcon, CloseIcon } from "../Icons";
 import { Flex, Stack } from "../Layout";
-import { TransitionArea } from "../TransitionArea";
 import { MainTitle } from "../Typography";
+
+const NESTED_PAGE_LAYOUT_HEADER_HEIGHT = "82px";
 
 export interface NestedPageLayoutProps {
   children: ReactNode;
@@ -16,19 +18,8 @@ export interface NestedPageLayoutProps {
 }
 
 export const NestedPageLayout = (props: NestedPageLayoutProps) => {
-  const router = useRouter();
-  const currentRoute = router.asPath;
-  const lastRoute = useRef<string>(currentRoute);
-
-  useEffect(() => {
-    lastRoute.current = currentRoute;
-  }, [currentRoute]);
-
-  const isGoingBack =
-    currentRoute.split("/").length - lastRoute.current.split("/").length < 0;
-
   return (
-    <Wrapper>
+    <>
       <Header>
         <Link href={props.closeHref} passHref>
           <NavButton>
@@ -46,39 +37,26 @@ export const NestedPageLayout = (props: NestedPageLayoutProps) => {
           <MainTitle as="h1">{props.heading}</MainTitle>
         </Flex>
       </Header>
-      <TransitionArea
-        transitionKey={currentRoute}
-        handleScroll={props.handleScroll}
-        custom={isGoingBack}
-        animation={{
-          initial: (isGoingBack: boolean) => ({
-            translateX: isGoingBack ? "-100%" : "100%",
-          }),
-          animate: { translateX: 0 },
-          exit: (isGoingBack: boolean) => ({
-            translateX: isGoingBack ? "100%" : "-100%",
-          }),
-        }}
-      >
-        {props.children}
-      </TransitionArea>
-    </Wrapper>
+      <Stack css={{ pt: NESTED_PAGE_LAYOUT_HEADER_HEIGHT }}>{props.children}</Stack>
+    </>
   );
 };
 
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  height: "100%",
-});
-
-const Header = styled(Stack, {
+const Header = styled(Stack, translucentBg, {
+  position: "fixed",
+  top: 0,
+  zIndex: 2,
   px: "$6",
   py: "$5",
   gap: "$1",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
   borderBottomColor: "$border",
+  width: "100%",
+  "@md": {
+    width: `calc(100vw - ${SIDE_PANEL_WIDTH})`,
+    maxWidth: MAX_APP_CONTENT_WIDTH,
+  },
 });
 
 const NavButton = styled("a", {

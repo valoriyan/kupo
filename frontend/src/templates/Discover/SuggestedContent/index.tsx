@@ -8,7 +8,7 @@ export const SuggestedContent = () => {
   );
 
   return (
-    <Stack css={{ pt: "$6" }}>
+    <Stack>
       <UserSuggestions />
       {divider}
       <CommunitySuggestions />

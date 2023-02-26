@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { RenderablePublishingChannel } from "#/api";
-import { useAppLayoutState } from "#/components/AppLayout";
 import { Avatar } from "#/components/Avatar";
 import { FollowCommunityButton } from "#/components/FollowButton";
 import { ArrowLeftIcon } from "#/components/Icons";
@@ -22,8 +21,6 @@ export const CommunityBanner = ({
   backRoute,
   community,
 }: CommunityBannerProps) => {
-  const scrollToTop = useAppLayoutState((store) => store.scrollToTop);
-
   return (
     <Wrapper>
       <Flex css={{ gap: "$3", alignItems: "center" }}>
@@ -39,7 +36,9 @@ export const CommunityBanner = ({
           src={community.profilePictureTemporaryUrl}
           size="$7"
         />
-        <CommunityName onClick={() => scrollToTop(true)}>+{community.name}</CommunityName>
+        <CommunityName onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          +{community.name}
+        </CommunityName>
       </Flex>
       <AnimatePresence>
         {scrollPosition > 0 && !isOwnCommunity && (

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
+import { APP_FOOTER_HEIGHT } from "#/constants";
 import { styled } from "#/styling";
 import { Avatar } from "../Avatar";
 import { Drawer } from "../Drawer";
@@ -8,8 +9,6 @@ import { Box, Flex } from "../Layout";
 import { VerifyEmailState } from "../VerifyEmailModal";
 import { NavigationDrawer } from "./NavigationDrawer";
 import { UploadButton } from "./shared";
-
-export const APP_FOOTER_HEIGHT = "57px";
 
 export interface FooterProps {
   verifyEmailState: VerifyEmailState;
@@ -48,7 +47,7 @@ export const Footer = ({ verifyEmailState }: FooterProps) => {
 
 const Wrapper = styled(Flex, {
   bg: "$background1",
-  px: "$8",
+  px: "$6",
   py: "$3",
   justifyContent: "space-between",
   alignItems: "center",

@@ -1,15 +1,13 @@
 import { useEffect } from "react";
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
-import { useAppLayoutState } from "#/components/AppLayout";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
-import { BasicListHeader, BasicListWrapper } from "#/components/BasicList";
+import { DetailLayout } from "#/components/DetailLayout";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Notification } from "./Notification";
 
 export const Notifications = () => {
-  const scrollToTop = useAppLayoutState((store) => store.scrollToTop);
   const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetPageOfOldNotifications();
   const { markAllNotificationsAsSeen } = useWebsocketState();
@@ -23,27 +21,24 @@ export const Notifications = () => {
   const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
 
   return (
-    <BasicListWrapper>
-      <BasicListHeader onClick={() => scrollToTop(true)}>Notifications</BasicListHeader>
-      <div>
-        {error && !isLoading ? (
-          <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
-        ) : isLoading || !oldNotifications ? (
-          <LoadingArea size="lg" />
-        ) : !oldNotifications.length ? (
-          <ErrorMessage>You&apos;re all caught up!</ErrorMessage>
-        ) : (
-          <InfiniteList
-            hasNextPage={hasNextPage ?? false}
-            isNextPageLoading={isFetchingNextPage}
-            loadNextPage={fetchNextPage}
-            data={oldNotifications}
-            renderItem={(index, notification) => (
-              <Notification key={index} notification={notification} />
-            )}
-          />
-        )}
-      </div>
-    </BasicListWrapper>
+    <DetailLayout heading="Notifications">
+      {error && !isLoading ? (
+        <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
+      ) : isLoading || !oldNotifications ? (
+        <LoadingArea size="lg" />
+      ) : !oldNotifications.length ? (
+        <ErrorMessage>You&apos;re all caught up!</ErrorMessage>
+      ) : (
+        <InfiniteList
+          hasNextPage={hasNextPage ?? false}
+          isNextPageLoading={isFetchingNextPage}
+          loadNextPage={fetchNextPage}
+          data={oldNotifications}
+          renderItem={(index, notification) => (
+            <Notification key={index} notification={notification} />
+          )}
+        />
+      )}
+    </DetailLayout>
   );
 };

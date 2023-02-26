@@ -4,6 +4,8 @@ import { Button } from "../Button";
 import { Flex, Stack } from "../Layout";
 import { MainTitle } from "../Typography";
 
+export const NO_AUTH_FOOTER_HEIGHT = "111px";
+
 export const NoAuthFooter = () => {
   return (
     <Wrapper>
@@ -26,7 +28,7 @@ export const NoAuthFooter = () => {
 
 const Wrapper = styled(Stack, {
   bg: "$background1",
-  px: "$7",
+  px: "$6",
   py: "$5",
   gap: "$5",
   alignItems: "center",

@@ -9,7 +9,6 @@ import { useGetUsersByUserIds } from "#/api/queries/users/useGetUsersByIds";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
-import { styled } from "#/styling";
 import { MessageComposer } from "../MessageComposer";
 import { ChatMessagesList } from "./ChatMessagesList";
 import { ChatRoomFormStateProvider, useChatRoomFormState } from "./ChatRoomFormContext";
@@ -125,7 +124,7 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
   );
 
   return (
-    <Grid>
+    <>
       <ChatRoomMembersDisplay chatRoomMembers={membersToDisplay} />
       <ChatMessagesList
         clientUserId={clientUserData.userId}
@@ -141,15 +140,9 @@ const ChatRoomInner = ({ chatRoomId }: ChatRoomProps) => {
         setNewChatMessage={setNewChatMessage}
         onSubmitNewChatMessage={onSubmitNewChatMessage}
       />
-    </Grid>
+    </>
   );
 };
 
 const memberHasData = (member: RenderableUser | null): member is RenderableUser =>
   !!member;
-
-const Grid = styled("div", {
-  height: "100%",
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr) auto",
-});

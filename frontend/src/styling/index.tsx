@@ -30,7 +30,7 @@ const themedStitches = createStitches({
        * The app content backgrounds are appended with numbers that increase in the order
        * that the colors should be layered on top of each other.
        */
-      pageBackground: "linear-gradient(hsla(242, 40%, 99%, 1), hsla(242, 16%, 99%, 1))",
+      pageBackground: "hsla(242, 30%, 99%, 1)",
       modalBackground: "hsla(242, 16%, 99%, 1)",
       background1: "hsla(242, 16%, 99%, 1)",
       background2: "hsla(242, 16%, 98%, 1)", // Backgrounds that sit on top of background1
@@ -278,7 +278,7 @@ export const darkTheme = themedStitches.createTheme("dark", {
 
     secondary: "#EF5DA8",
 
-    pageBackground: "linear-gradient(hsla(242, 25%, 6%, 1), hsla(242, 10%, 7%, 1))",
+    pageBackground: "hsla(242, 15%, 6%, 1)",
     modalBackground: "hsla(242, 10%, 12%, 1)",
     background1: "hsla(242, 10%, 7%, 1)",
     background2: "hsla(242, 10%, 9%, 1)",

@@ -3,9 +3,14 @@ import Router from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { CloseIcon } from "#/components/Icons";
 import { Stack } from "#/components/Layout";
-import { TransitionArea } from "#/components/TransitionArea";
 import { MainTitle } from "#/components/Typography";
+import {
+  MAX_APP_CONTENT_WIDTH,
+  NESTED_PAGE_LAYOUT_HEADER_HEIGHT,
+  SIDE_PANEL_WIDTH,
+} from "#/constants";
 import { styled } from "#/styling";
+import { translucentBg } from "#/styling/mixins";
 import { assertUnreachable } from "#/utils/assertUnreachable";
 import { SessionStorageItem } from "#/utils/storage";
 import { FormStateProvider } from "./FormContext";
@@ -111,52 +116,42 @@ export const AddContent = ({ publishingChannelId }: AddContentProps) => {
 
   return (
     <FormStateProvider>
-      <Wrapper>
-        <Header>
-          {additionalScreen ? (
-            <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
-          ) : (
-            <Link href={previousLocation.get() ?? "/feed"} passHref>
-              <CloseButton as="a">
-                <CloseIcon />
-              </CloseButton>
-            </Link>
-          )}
-          <MainTitle as="h1">
-            {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
-          </MainTitle>
-        </Header>
-        <TransitionArea
-          transitionKey={additionalScreen ? "additionalScreen" : currentScreen}
-          animation={
-            additionalScreen
-              ? rightToRight
-              : lastScreen.current === "additionalScreen"
-              ? leftToLeft
-              : rightToLeft
-          }
-        >
-          {additionalScreen?.node || bodyNode}
-        </TransitionArea>
-      </Wrapper>
+      <Header>
+        {additionalScreen ? (
+          <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
+        ) : (
+          <Link href={previousLocation.get() ?? "/feed"} passHref>
+            <CloseButton as="a">
+              <CloseIcon />
+            </CloseButton>
+          </Link>
+        )}
+        <MainTitle as="h1">
+          {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
+        </MainTitle>
+      </Header>
+      <Stack css={{ pt: NESTED_PAGE_LAYOUT_HEADER_HEIGHT }}>
+        {additionalScreen?.node || bodyNode}
+      </Stack>
     </FormStateProvider>
   );
 };
 
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  height: "100%",
-  bg: "$pageBackground",
-});
-
-export const Header = styled(Stack, {
+export const Header = styled(Stack, translucentBg, {
+  position: "fixed",
+  top: 0,
+  zIndex: 2,
   px: "$6",
   py: "$5",
   gap: "$1",
   borderBottomStyle: "solid",
   borderBottomWidth: "$1",
-  borderBottomColor: "$text",
+  borderBottomColor: "$border",
+  width: "100%",
+  "@md": {
+    width: `calc(100vw - ${SIDE_PANEL_WIDTH})`,
+    maxWidth: MAX_APP_CONTENT_WIDTH,
+  },
 });
 
 export const CloseButton = styled("button", {
@@ -169,21 +164,3 @@ export const CloseButton = styled("button", {
   justifyContent: "center",
   alignItems: "center",
 });
-
-const rightToRight = {
-  initial: { translateX: "100%" },
-  animate: { translateX: 0 },
-  exit: { translateX: "100%" },
-};
-
-const leftToLeft = {
-  initial: { translateX: "-100%" },
-  animate: { translateX: 0 },
-  exit: { translateX: "-100%" },
-};
-
-const rightToLeft = {
-  initial: { translateX: "100%" },
-  animate: { translateX: 0 },
-  exit: { translateX: "-100%" },
-};

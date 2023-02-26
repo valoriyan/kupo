@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Router from "next/router";
 import { useGetCommunityByName } from "#/api/queries/community/useGetCommunityByName";
-import { useAppLayoutState } from "#/components/AppLayout";
 import { Button } from "#/components/Button";
 import { ErrorArea } from "#/components/ErrorArea";
 import { ClipboardIcon, MenuBoxedIcon } from "#/components/Icons";
@@ -12,6 +11,7 @@ import { Tabs } from "#/components/Tabs";
 import { useCurrentUserId } from "#/contexts/auth";
 import { getCommunityPageUrl } from "#/utils/generateLinkUrls";
 import { SessionStorage } from "#/utils/storage";
+import { useScrollPosition } from "#/utils/useScrollPosition";
 import { setPreviousLocationForAddContent } from "../AddContent";
 import { CommunityBanner } from "./CommunityBanner";
 import { CommunityDetails } from "./CommunityDetails";
@@ -37,7 +37,7 @@ export interface CommunityPageProps {
 export const CommunityPage = ({ name }: CommunityPageProps) => {
   const { data, isLoading, error } = useGetCommunityByName({ name });
   const clientUserId = useCurrentUserId();
-  const scrollPosition = useAppLayoutState((store) => store.scrollPosition);
+  const scrollPosition = useScrollPosition();
 
   const isOwnCommunity = data && clientUserId === data.ownerUserId;
   const isModerator =

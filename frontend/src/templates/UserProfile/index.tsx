@@ -1,6 +1,5 @@
 import Router from "next/router";
 import { useGetUserByUsername } from "#/api/queries/users/useGetUserByUsername";
-import { useAppLayoutState } from "#/components/AppLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { MenuBoxedIcon } from "#/components/Icons/generated/MenuBoxedIcon";
 import { Stack } from "#/components/Layout";
@@ -9,6 +8,7 @@ import { Tabs } from "#/components/Tabs";
 import { useCurrentUserId } from "#/contexts/auth";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { SessionStorage } from "#/utils/storage";
+import { useScrollPosition } from "#/utils/useScrollPosition";
 import { ProfileBanner } from "./ProfileBanner";
 import { ProfileHeader } from "./ProfileHeader";
 import { UserPosts } from "./UserPosts";
@@ -27,7 +27,7 @@ export const goToUserProfilePage = (username: string) => {
 export const UserProfile = ({ username }: { username: string }) => {
   const { data, isLoading, error } = useGetUserByUsername({ username });
   const clientUserId = useCurrentUserId();
-  const scrollPosition = useAppLayoutState((store) => store.scrollPosition);
+  const scrollPosition = useScrollPosition();
 
   const isOwnProfile = data && clientUserId === data.userId;
 

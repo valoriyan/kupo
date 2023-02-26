@@ -31,7 +31,7 @@ export const UserInfo = (props: UserInfoProps) => {
       />
       {isLoading || !data ? (
         <UserStatsPlaceholder>
-          <LoadingArea size="md" />
+          <LoadingArea size="md" css={{ p: 0 }} />
         </UserStatsPlaceholder>
       ) : (
         <Flex css={{ gap: "$3", flexDirection: "column" }}>

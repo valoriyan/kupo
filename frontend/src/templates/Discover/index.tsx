@@ -1,7 +1,6 @@
 import create from "zustand";
+import { DetailLayout } from "#/components/DetailLayout";
 import { SearchIcon } from "#/components/Icons";
-import { Flex, Grid, Stack } from "#/components/Layout";
-import { MainTitle } from "#/components/Typography";
 import { styled } from "#/styling";
 import { SearchResults } from "./SearchResults";
 import { SuggestedContent } from "./SuggestedContent";
@@ -18,32 +17,21 @@ export const Discover = () => {
   const { searchText, setSearchText } = useSearchText();
 
   return (
-    <Grid
-      css={{
-        gridTemplateRows: "auto minmax(0, 1fr)",
-        position: "relative",
-        height: "100%",
-      }}
-    >
-      <Stack>
-        <Flex css={{ gap: "$4", p: "$5" }}>
-          <MainTitle>Discover</MainTitle>
-        </Flex>
-        <SearchBar>
-          <SearchIcon />
-          <SearchInput
-            type="text"
-            autoComplete="off"
-            name="search"
-            placeholder="Search @user, #tag, +community, or caption"
-            value={searchText}
-            onChange={(e) => setSearchText(e.currentTarget.value)}
-            data-cy="discover-search-input"
-          />
-        </SearchBar>
-        {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
-      </Stack>
-    </Grid>
+    <DetailLayout heading="Discover">
+      <SearchBar>
+        <SearchIcon />
+        <SearchInput
+          type="text"
+          autoComplete="off"
+          name="search"
+          placeholder="Search Kupo"
+          value={searchText}
+          onChange={(e) => setSearchText(e.currentTarget.value)}
+          data-cy="discover-search-input"
+        />
+      </SearchBar>
+      {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
+    </DetailLayout>
   );
 };
 
@@ -56,6 +44,7 @@ const SearchBar = styled("label", {
   pl: "$3",
   py: "$3",
   mx: "$4",
+  my: "$6",
   transition: "border-color $1 ease",
   svg: { color: "$border", transition: "color $1 ease" },
 

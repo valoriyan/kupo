@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { ProfilePrivacySetting, RenderableUser } from "#/api";
-import { useAppLayoutState } from "#/components/AppLayout";
 import { Avatar } from "#/components/Avatar";
 import { FollowUserButton } from "#/components/FollowButton";
 import { ArrowLeftIcon } from "#/components/Icons";
@@ -22,8 +21,6 @@ export const ProfileBanner = ({
   backRoute,
   user,
 }: ProfileBannerProps) => {
-  const scrollToTop = useAppLayoutState((store) => store.scrollToTop);
-
   return (
     <Wrapper>
       <Flex css={{ gap: "$3", alignItems: "center" }}>
@@ -39,7 +36,9 @@ export const ProfileBanner = ({
           src={user.profilePictureTemporaryUrl}
           size="$7"
         />
-        <Username onClick={() => scrollToTop(true)}>@{user.username}</Username>
+        <Username onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          @{user.username}
+        </Username>
       </Flex>
       <AnimatePresence>
         {scrollPosition > 0 && !isOwnProfile && (

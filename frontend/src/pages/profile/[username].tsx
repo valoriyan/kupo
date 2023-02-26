@@ -18,8 +18,6 @@ const ProfilePage = () => {
   );
 };
 
-ProfilePage.getLayout = (page: ReactElement) => (
-  <AppLayout trackContentScroll>{page}</AppLayout>
-);
+ProfilePage.getLayout = (page: ReactElement) => <AppLayout>{page}</AppLayout>;
 
 export default ProfilePage;

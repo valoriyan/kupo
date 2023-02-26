@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "#/components/Button";
+import { DetailLayout } from "#/components/DetailLayout";
 import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 import { TextArea } from "#/components/TextArea";
-import { Body, MainTitle } from "#/components/Typography";
+import { Body } from "#/components/Typography";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
@@ -28,10 +29,7 @@ export const Support = () => {
   )}&body=${encodeURIComponent(description)}`;
 
   return (
-    <Wrapper>
-      <Header>
-        <MainTitle as="h1">Support</MainTitle>
-      </Header>
+    <DetailLayout heading="Support">
       <Stack css={{ p: "$6", gap: "$7" }}>
         <Body>
           Hello! If you&apos;re experiencing any issues with Kupo, please describe the
@@ -66,24 +64,9 @@ export const Support = () => {
           <Button type="submit">Send Email</Button>
         </Form>
       </Stack>
-    </Wrapper>
+    </DetailLayout>
   );
 };
-
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "auto minmax(0, 1fr)",
-  height: "100%",
-});
-
-const Header = styled(Stack, {
-  px: "$6",
-  py: "$5",
-  gap: "$1",
-  borderBottomStyle: "solid",
-  borderBottomWidth: "$1",
-  borderBottomColor: "$border",
-});
 
 const Form = styled("form", {
   display: "flex",

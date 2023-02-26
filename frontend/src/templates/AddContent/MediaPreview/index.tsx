@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Stack } from "#/components/Layout";
-import { PreviewImage } from "./PreviewImage";
-import { Button } from "#/components/Button";
-import { DuplicateIcon } from "#/components/Icons";
+import { NESTED_PAGE_LAYOUT_HEADER_HEIGHT } from "#/constants";
 import { useFormState } from "../FormContext";
+import { PreviewImage } from "./PreviewImage";
 
 export * from "./PreviewImage";
 
@@ -13,28 +12,30 @@ export interface MediaPreviewProps {
 
 export const MediaPreview = (props: MediaPreviewProps) => {
   const { mediaFiles, getMediaActions } = useFormState();
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!props.initialId) return;
     const initialElement = document.querySelector(`#${srcToId(props.initialId)}`);
-    if (ref.current && initialElement) {
-      ref.current.scrollTop =
-        initialElement.getBoundingClientRect().y - ref.current.getBoundingClientRect().y;
+
+    if (initialElement) {
+      window.scrollTo({
+        top:
+          initialElement.getBoundingClientRect().y -
+          window.scrollY -
+          +NESTED_PAGE_LAYOUT_HEADER_HEIGHT.slice(0, -2),
+      });
     }
   }, [props.initialId]);
 
   return (
-    <Stack ref={ref} css={{ gap: "$3", height: "100%", overflow: "auto" }}>
-      <Button size="lg" variant="secondary" css={{ gap: "$3", m: "$5" }}>
-        <DuplicateIcon /> Add Media
-      </Button>
+    <Stack css={{ gap: "$3" }}>
       {mediaFiles.map((media) => (
         <PreviewImage
           key={media.src}
           id={srcToId(media.src)}
           media={media}
           actions={getMediaActions(media)}
+          unBoundHeight
         />
       ))}
     </Stack>

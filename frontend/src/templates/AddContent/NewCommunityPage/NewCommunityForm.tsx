@@ -15,7 +15,6 @@ import { PenIcon } from "#/components/Icons";
 import { Box, Flex, Grid, Stack } from "#/components/Layout";
 import { LimitedTextArea } from "#/components/LimitedTextArea";
 import { ListCreator } from "#/components/ListCreator";
-import { ScrollArea } from "#/components/ScrollArea";
 import { Spinner } from "#/components/Spinner";
 import { TextOrSpinner } from "#/components/TextOrSpinner";
 import { Body, MainTitle } from "#/components/Typography";
@@ -122,112 +121,110 @@ export const NewCommunityForm = ({
   );
 
   return (
-    <ScrollArea>
-      <Wrapper>
-        <Stack>
-          <Grid
-            css={{
-              gridTemplateColumns: "auto minmax(0, 1fr)",
-              columnGap: "$6",
-              p: "$5",
-              borderBottom: "solid $borderWidths$1 $border",
-            }}
-          >
-            <Stack css={{ alignItems: "center", gap: "$4" }}>
-              <Body css={{ color: "$secondaryText" }}>Profile Picture</Body>
-              <EditMedia>
-                <Box css={{ filter: `brightness(${isUploadingPfp ? 0.4 : 0.8})` }}>
-                  <Avatar src={pfpUrl} alt="Current Profile Picture" size="$11" />
-                </Box>
-                {isUploadingPfp ? <LoadingSpinner size="md" /> : <EditIcon />}
-                {fileInput("pfp")}
-              </EditMedia>
-            </Stack>
-            <Stack css={{ alignItems: "center", gap: "$3" }}>
-              <Body css={{ alignSelf: "start", color: "$secondaryText" }}>
-                Background Image
-              </Body>
-              <EditMedia>
-                <Box
-                  css={{
-                    size: "100%",
-                    filter: `brightness(${isUploadingBackgroundImg ? 0.4 : 0.8})`,
-                  }}
-                >
-                  <BackgroundImage src={backgroundImgUrl} />
-                </Box>
-                {isUploadingBackgroundImg ? <LoadingSpinner size="md" /> : <EditIcon />}
-                {fileInput("bg")}
-              </EditMedia>
-            </Stack>
-          </Grid>
-          <LabeledInputSection label="Name">
-            <Input
-              placeholder="name your community..."
-              value={name}
-              onChange={(e) => setName(e.currentTarget.value)}
-            />
-          </LabeledInputSection>
-          <SectionWrapper>
-            <LimitedTextArea
-              text={description}
-              setText={setDescription}
-              placeholder="add a description..."
-              dataCy="description-input"
-            />
-          </SectionWrapper>
-          <SectionWrapper>
-            <MainTitle>Rules</MainTitle>
-            <ListCreator
-              list={rulesList}
-              onChange={setRulesList}
-              tooltipText={
-                <>
-                  You may add up to 5 rules.
-                  <br />
-                  <br />
-                  You may not reject posts until
-                  <br />
-                  your community has rules.
-                </>
-              }
-              limit={5}
-            />
-          </SectionWrapper>
-          <SectionWrapper>
-            <MainTitle>Links</MainTitle>
-            <ListCreator
-              list={linksList}
-              onChange={setLinksList}
-              tooltipText="You may add up to 5 links."
-              limit={5}
-            />
-          </SectionWrapper>
-          <SectionWrapper>
-            <MainTitle>Moderators</MainTitle>
-            <UsersInput
-              usernames={moderatorNames}
-              setUsernames={setModeratorNames}
-              resolvedUsers={resolvedModerators}
-            />
-          </SectionWrapper>
-        </Stack>
-        <Stack css={{ gap: "$5", px: "$5", pb: "$6" }}>
-          <Button
-            size="lg"
-            variant="secondary"
-            disabled={isSubmitDisabled || isLoading}
-            onClick={() => {
-              clearWarning();
-              onSubmit();
-            }}
-          >
-            <TextOrSpinner isLoading={isSubmitting}>{submitLabel}</TextOrSpinner>
-          </Button>
-          {secondaryAction}
-        </Stack>
-      </Wrapper>
-    </ScrollArea>
+    <>
+      <Stack>
+        <Grid
+          css={{
+            gridTemplateColumns: "auto minmax(0, 1fr)",
+            columnGap: "$6",
+            p: "$5",
+            borderBottom: "solid $borderWidths$1 $border",
+          }}
+        >
+          <Stack css={{ alignItems: "center", gap: "$4" }}>
+            <Body css={{ color: "$secondaryText" }}>Profile Picture</Body>
+            <EditMedia>
+              <Box css={{ filter: `brightness(${isUploadingPfp ? 0.4 : 0.8})` }}>
+                <Avatar src={pfpUrl} alt="Current Profile Picture" size="$11" />
+              </Box>
+              {isUploadingPfp ? <LoadingSpinner size="md" /> : <EditIcon />}
+              {fileInput("pfp")}
+            </EditMedia>
+          </Stack>
+          <Stack css={{ alignItems: "center", gap: "$3" }}>
+            <Body css={{ alignSelf: "start", color: "$secondaryText" }}>
+              Background Image
+            </Body>
+            <EditMedia>
+              <Box
+                css={{
+                  size: "100%",
+                  filter: `brightness(${isUploadingBackgroundImg ? 0.4 : 0.8})`,
+                }}
+              >
+                <BackgroundImage src={backgroundImgUrl} />
+              </Box>
+              {isUploadingBackgroundImg ? <LoadingSpinner size="md" /> : <EditIcon />}
+              {fileInput("bg")}
+            </EditMedia>
+          </Stack>
+        </Grid>
+        <LabeledInputSection label="Name">
+          <Input
+            placeholder="name your community..."
+            value={name}
+            onChange={(e) => setName(e.currentTarget.value)}
+          />
+        </LabeledInputSection>
+        <SectionWrapper>
+          <LimitedTextArea
+            text={description}
+            setText={setDescription}
+            placeholder="add a description..."
+            dataCy="description-input"
+          />
+        </SectionWrapper>
+        <SectionWrapper>
+          <MainTitle>Rules</MainTitle>
+          <ListCreator
+            list={rulesList}
+            onChange={setRulesList}
+            tooltipText={
+              <>
+                You may add up to 5 rules.
+                <br />
+                <br />
+                You may not reject posts until
+                <br />
+                your community has rules.
+              </>
+            }
+            limit={5}
+          />
+        </SectionWrapper>
+        <SectionWrapper>
+          <MainTitle>Links</MainTitle>
+          <ListCreator
+            list={linksList}
+            onChange={setLinksList}
+            tooltipText="You may add up to 5 links."
+            limit={5}
+          />
+        </SectionWrapper>
+        <SectionWrapper>
+          <MainTitle>Moderators</MainTitle>
+          <UsersInput
+            usernames={moderatorNames}
+            setUsernames={setModeratorNames}
+            resolvedUsers={resolvedModerators}
+          />
+        </SectionWrapper>
+      </Stack>
+      <Stack css={{ gap: "$4", px: "$5", py: "$6" }}>
+        <Button
+          size="lg"
+          variant="secondary"
+          disabled={isSubmitDisabled || isLoading}
+          onClick={() => {
+            clearWarning();
+            onSubmit();
+          }}
+        >
+          <TextOrSpinner isLoading={isSubmitting}>{submitLabel}</TextOrSpinner>
+        </Button>
+        {secondaryAction}
+      </Stack>
+    </>
   );
 };
 
@@ -242,13 +239,6 @@ const LabeledInputSection = ({
     </Flex>
   </SectionWrapper>
 );
-
-const Wrapper = styled("div", {
-  display: "grid",
-  gridTemplateRows: "minmax(0, 1fr) auto",
-  rowGap: "$5",
-  size: "100%",
-});
 
 const SectionWrapper = styled(Stack, {
   gap: "$4",

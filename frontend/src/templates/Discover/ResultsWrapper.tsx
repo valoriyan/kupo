@@ -56,7 +56,7 @@ export const ResultsWrapper = (props: ResultsWrapperProps) => {
               {props.errorMessage}
             </Body>
           ) : props.isLoading || !props.children ? (
-            <LoadingArea size="md" />
+            <LoadingArea size="md" css={{ p: 0 }} />
           ) : (
             <ListWrapper>
               {props.children}

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useGetPageOfChatRooms } from "#/api/queries/chat/useGetPageOfChatRooms";
-import { BasicListWrapper } from "#/components/BasicList";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
@@ -17,33 +16,31 @@ export const Messages = () => {
   const chatRooms = data?.pages.flatMap((page) => page.chatRooms);
 
   return (
-    <BasicListWrapper>
+    <>
       <ChatRoomsHeader query={query} setQuery={setQuery} />
-      <div>
-        {error && !isLoading ? (
-          <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
-        ) : isLoading || !chatRooms || !clientUserId ? (
-          <LoadingArea size="lg" />
-        ) : !chatRooms.length ? (
-          <ErrorMessage>
-            {query ? "No matching chats found" : "You don't have any messages yet"}
-          </ErrorMessage>
-        ) : (
-          <InfiniteList
-            hasNextPage={hasNextPage ?? false}
-            isNextPageLoading={isFetchingNextPage}
-            loadNextPage={fetchNextPage}
-            data={chatRooms}
-            renderItem={(index, chatRoom) => (
-              <ChatRoomListItem
-                key={chatRoom.chatRoomId}
-                chatRoom={chatRoom}
-                clientUserId={clientUserId}
-              />
-            )}
-          />
-        )}
-      </div>
-    </BasicListWrapper>
+      {error && !isLoading ? (
+        <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
+      ) : isLoading || !chatRooms || !clientUserId ? (
+        <LoadingArea size="lg" />
+      ) : !chatRooms.length ? (
+        <ErrorMessage>
+          {query ? "No matching chats found" : "You don't have any messages yet"}
+        </ErrorMessage>
+      ) : (
+        <InfiniteList
+          hasNextPage={hasNextPage ?? false}
+          isNextPageLoading={isFetchingNextPage}
+          loadNextPage={fetchNextPage}
+          data={chatRooms}
+          renderItem={(index, chatRoom) => (
+            <ChatRoomListItem
+              key={chatRoom.chatRoomId}
+              chatRoom={chatRoom}
+              clientUserId={clientUserId}
+            />
+          )}
+        />
+      )}
+    </>
   );
 };

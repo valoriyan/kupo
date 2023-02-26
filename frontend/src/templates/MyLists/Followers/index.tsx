@@ -1,7 +1,6 @@
 import { useGetFollowerUsers } from "#/api/queries/users/useGetFollowerUsers";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
-import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { useCurrentUserId } from "#/contexts/auth";
 import { ListUser } from "../ListUser";
@@ -16,11 +15,7 @@ export const Followers = () => {
   }
 
   if (isLoading || !data) {
-    return (
-      <Flex css={{ p: "$5" }}>
-        <LoadingArea size="md" />
-      </Flex>
-    );
+    return <LoadingArea size="md" />;
   }
 
   const users = data.pages.flatMap((page) => page.users);

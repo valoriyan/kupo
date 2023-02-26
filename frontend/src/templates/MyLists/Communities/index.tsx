@@ -1,7 +1,6 @@
 import { useGetFollowingCommunities } from "#/api/queries/users/useGetFollowingCommunities";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
-import { Flex } from "#/components/Layout";
 import { LoadingArea } from "#/components/LoadingArea";
 import { ListCommunity } from "../ListCommunities";
 
@@ -14,11 +13,7 @@ export const Communities = () => {
   }
 
   if (isLoading || !data) {
-    return (
-      <Flex css={{ p: "$5" }}>
-        <LoadingArea size="md" />
-      </Flex>
-    );
+    return <LoadingArea size="md" />;
   }
 
   const communities = data.pages.flatMap((page) => page.publishingChannels);

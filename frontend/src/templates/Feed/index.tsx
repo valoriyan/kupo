@@ -3,12 +3,12 @@ import { useCallback, useRef, useState } from "react";
 import { UserContentFeedFilter } from "#/api";
 import { useUpdateContentFilters } from "#/api/mutations/feed/updateContentFilters";
 import { useGetContentFilters } from "#/api/queries/feed/useGetContentFilters";
-import { useAppLayoutState } from "#/components/AppLayout";
 import { FeedIcon, SearchIcon } from "#/components/Icons";
 import { Flex, Grid, Stack } from "#/components/Layout";
 import { MainTitle, truncateByWidth } from "#/components/Typography";
 import { useVerifyEmailReminder } from "#/components/VerifyEmailModal";
 import { VerticalSlideDialog } from "#/components/VerticalSlideDialog";
+import { MAX_APP_CONTENT_WIDTH, SIDE_PANEL_WIDTH } from "#/constants";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { translucentBg } from "#/styling/mixins";
@@ -17,12 +17,13 @@ import { ContentFeed } from "./ContentFeed";
 import { FeedListEditor } from "./FeedListEditor";
 import { getContentFeedFilterDisplayName } from "./utilities";
 
+const FEED_HEADER_HEIGHT = "57px";
+
 const storedFilter = SessionStorageItem<UserContentFeedFilter>("selectedContentFilter");
 
 export const Feed = () => {
   const clientUserId = useCurrentUserId();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const scrollToTop = useAppLayoutState((store) => store.scrollToTop);
 
   const { data: contentFilters } = useGetContentFilters({
     clientUserId: clientUserId ?? "",
@@ -32,25 +33,25 @@ export const Feed = () => {
   const [selectedFilter, _setSelectedFilter] = useState(
     storedFilter.get() ?? contentFilters[0],
   );
-  const setSelectedFilter = useCallback(
-    (filter: UserContentFeedFilter) => {
-      scrollToTop();
-      _setSelectedFilter(filter);
-      storedFilter.set(filter);
-    },
-    [scrollToTop],
-  );
+  const setSelectedFilter = useCallback((filter: UserContentFeedFilter) => {
+    window.scrollTo({ top: 0 });
+    _setSelectedFilter(filter);
+    storedFilter.set(filter);
+  }, []);
 
   const currentFilterDisplayName = getContentFeedFilterDisplayName(selectedFilter);
 
   useVerifyEmailReminder();
 
   return (
-    <Stack ref={containerRef} css={{ position: "relative" }}>
-      <Header>
+    <Stack css={{ pt: FEED_HEADER_HEIGHT }}>
+      <Header ref={containerRef}>
         <Flex css={{ alignItems: "center", gap: "$4", color: "$text" }}>
           <Logo />
-          <CurrentFilter as="h1" onClick={() => scrollToTop(true)}>
+          <CurrentFilter
+            as="h1"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
             {currentFilterDisplayName}
           </CurrentFilter>
         </Flex>
@@ -97,9 +98,9 @@ const Logo = styled("div", {
 });
 
 const Header = styled(Grid, translucentBg, {
-  position: "sticky",
+  position: "fixed",
   top: 0,
-  zIndex: 1,
+  zIndex: 2,
   gridTemplateColumns: "minmax(0, 1fr) auto",
   alignItems: "center",
   width: "100%",
@@ -107,6 +108,10 @@ const Header = styled(Grid, translucentBg, {
   pl: "$5",
   pr: "$3",
   borderBottom: "solid $borderWidths$1 $border",
+  "@md": {
+    width: `calc(100vw - ${SIDE_PANEL_WIDTH})`,
+    maxWidth: MAX_APP_CONTENT_WIDTH,
+  },
 });
 
 const CurrentFilter = styled(MainTitle, truncateByWidth("100%"));

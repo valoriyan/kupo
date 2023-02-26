@@ -16,7 +16,7 @@ export const SearchResults = ({ query }: SearchResultsProps) => {
   );
 
   return (
-    <Stack css={{ pt: "$6" }}>
+    <Stack>
       <HashtagResults query={strippedQuery} />
       {divider}
       <UserResults query={strippedQuery} />

@@ -18,8 +18,6 @@ const CommunityPagePage = () => {
   );
 };
 
-CommunityPagePage.getLayout = (page: ReactElement) => (
-  <AppLayout trackContentScroll>{page}</AppLayout>
-);
+CommunityPagePage.getLayout = (page: ReactElement) => <AppLayout>{page}</AppLayout>;
 
 export default CommunityPagePage;

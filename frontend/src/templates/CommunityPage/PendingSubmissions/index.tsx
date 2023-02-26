@@ -35,11 +35,7 @@ export const PendingSubmissions = ({
   }
 
   if (isLoading || !data) {
-    return (
-      <Flex css={{ p: "$6" }}>
-        <LoadingArea size="lg" />
-      </Flex>
-    );
+    return <LoadingArea size="lg" />;
   }
 
   const submissions = data.pages.flatMap((page) => page.publishedSubmissions);

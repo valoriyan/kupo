@@ -21,6 +21,7 @@ export interface PreviewImageProps {
     moveDown: () => void;
     delete: () => void;
   };
+  unBoundHeight?: boolean;
 }
 
 export const PreviewImage = (props: PreviewImageProps) => {
@@ -34,9 +35,16 @@ export const PreviewImage = (props: PreviewImageProps) => {
   return (
     <Wrapper id={props.id} as={props.onClick ? "button" : "div"} onClick={props.onClick}>
       {props.media.mimeType.includes("image") ? (
-        <Image src={props.media.src} alt="Preview Image" />
+        <Image
+          src={props.media.src}
+          alt="Preview Image"
+          css={props.unBoundHeight ? unBoundHeighMediaStyled : undefined}
+        />
       ) : (
-        <Video controls={!!props.id}>
+        <Video
+          controls={!!props.id}
+          css={props.unBoundHeight ? unBoundHeighMediaStyled : undefined}
+        >
           <source src={props.media.src} type={props.media.mimeType} />
         </Video>
       )}
@@ -69,7 +77,7 @@ export const PreviewImage = (props: PreviewImageProps) => {
 
 const Wrapper = styled("div", {
   position: "relative",
-  size: "100%",
+  width: "100%",
   flexShrink: 0,
 });
 
@@ -80,6 +88,12 @@ const mediaStyles = css({
   size: "100%",
   objectFit: "cover",
 });
+
+const unBoundHeighMediaStyled = {
+  height: "unset",
+  position: "static",
+  objectFit: "contain",
+};
 
 const Image = styled("img", mediaStyles);
 

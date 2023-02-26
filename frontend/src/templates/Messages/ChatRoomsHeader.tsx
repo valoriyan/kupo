@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AddRIcon, SearchIcon } from "#/components/Icons";
 import { Flex } from "#/components/Layout";
+import { NESTED_PAGE_LAYOUT_HEADER_HEIGHT } from "#/constants";
 import { styled } from "#/styling";
 
 export interface ChatRoomsHeaderProps {
@@ -39,7 +40,7 @@ const Wrapper = styled(Flex, {
   borderBottom: "solid $borderWidths$1 $border",
   bg: "$background1",
   position: "sticky",
-  top: 0,
+  top: NESTED_PAGE_LAYOUT_HEADER_HEIGHT,
   zIndex: 1,
 });
 

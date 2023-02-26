@@ -5,6 +5,7 @@ import { keyframes, prefersMotionSelector, styled } from "#/styling";
 import { transitionInMilliseconds } from "#/utils/transitionInMilliseconds";
 
 export * from "./helpers";
+export { openModal };
 
 const [openModal, useOpenModalListener] = createPubSub("openModal");
 
@@ -41,8 +42,6 @@ export const ModalContainer = () => {
     </>
   );
 };
-
-export { openModal };
 
 interface ModalProps {
   onRemoveModal: () => void;

@@ -1,9 +1,8 @@
 import { DateTime } from "luxon";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { RenderableChatMessage, RenderableUser } from "#/api";
 import { ReverseInfiniteList } from "#/components/InfiniteList";
 import { Flex, Stack } from "#/components/Layout";
-import { ScrollArea } from "#/components/ScrollArea";
 import { Subtext } from "#/components/Typography";
 import { ChatRoomMessage } from "./ChatRoomMessage";
 
@@ -26,65 +25,58 @@ export const ChatMessagesList = ({
   isGroupChat,
   memberMap,
 }: ChatMessagesListProps) => {
-  const [listRef, setListRef] = useState<HTMLDivElement | null>(null);
-
   return (
-    <ScrollArea ref={setListRef}>
-      {listRef && (
-        <Stack css={{ px: "$4", py: "$2" }}>
-          <ReverseInfiniteList
-            scrollParent={listRef}
-            hasNextPage={hasPreviousPage ?? false}
-            isNextPageLoading={isFetchingPreviousPage}
-            loadNextPage={fetchPreviousPage}
-            data={chatMessages}
-            renderItem={(index, message) => {
-              const isClientMessage = message.authorUserId === clientUserId;
-              const previousIndex =
-                // ReverseInfiniteList starts counting back from Number.MAX_SAFE_INTEGER
-                // since we don't know the total number of list items
-                chatMessages.length - (Number.MAX_SAFE_INTEGER - index) - 1;
-              const previousMessage = chatMessages[previousIndex];
+    <Stack css={{ px: "$4", py: "$2", pt: "$10", pb: "$12" }}>
+      <ReverseInfiniteList
+        hasNextPage={hasPreviousPage ?? false}
+        isNextPageLoading={isFetchingPreviousPage}
+        loadNextPage={fetchPreviousPage}
+        data={chatMessages}
+        renderItem={(index, message) => {
+          const isClientMessage = message.authorUserId === clientUserId;
+          const previousIndex =
+            // ReverseInfiniteList starts counting back from Number.MAX_SAFE_INTEGER
+            // since we don't know the total number of list items
+            chatMessages.length - (Number.MAX_SAFE_INTEGER - index) - 1;
+          const previousMessage = chatMessages[previousIndex];
 
-              const isDateTransition =
-                !previousMessage ||
-                getCalendarDate(previousMessage.creationTimestamp) !==
-                  getCalendarDate(message.creationTimestamp);
+          const isDateTransition =
+            !previousMessage ||
+            getCalendarDate(previousMessage.creationTimestamp) !==
+              getCalendarDate(message.creationTimestamp);
 
-              const isUserTransition =
-                !previousMessage ||
-                isDateTransition ||
-                previousMessage.authorUserId !== message.authorUserId;
+          const isUserTransition =
+            !previousMessage ||
+            isDateTransition ||
+            previousMessage.authorUserId !== message.authorUserId;
 
-              return (
-                <Fragment key={message.chatMessageId}>
-                  {isDateTransition && (
-                    <Flex css={{ pt: "$5", pb: "$4", justifyContent: "center" }}>
-                      <Subtext css={{ color: "$secondaryText" }}>
-                        {getCalendarDate(message.creationTimestamp)}
-                      </Subtext>
-                    </Flex>
-                  )}
-                  <Flex
-                    css={{
-                      pb: "$3",
-                      justifyContent: isClientMessage ? "flex-end" : "flex-start",
-                    }}
-                  >
-                    <ChatRoomMessage
-                      message={message}
-                      isClientMessage={isClientMessage}
-                      isUserTransition={isGroupChat ? isUserTransition : undefined}
-                      author={memberMap[message.authorUserId]}
-                    />
-                  </Flex>
-                </Fragment>
-              );
-            }}
-          />
-        </Stack>
-      )}
-    </ScrollArea>
+          return (
+            <Fragment key={message.chatMessageId}>
+              {isDateTransition && (
+                <Flex css={{ pt: "$5", pb: "$4", justifyContent: "center" }}>
+                  <Subtext css={{ color: "$secondaryText" }}>
+                    {getCalendarDate(message.creationTimestamp)}
+                  </Subtext>
+                </Flex>
+              )}
+              <Flex
+                css={{
+                  pb: "$3",
+                  justifyContent: isClientMessage ? "flex-end" : "flex-start",
+                }}
+              >
+                <ChatRoomMessage
+                  message={message}
+                  isClientMessage={isClientMessage}
+                  isUserTransition={isGroupChat ? isUserTransition : undefined}
+                  author={memberMap[message.authorUserId]}
+                />
+              </Flex>
+            </Fragment>
+          );
+        }}
+      />
+    </Stack>
   );
 };
 
