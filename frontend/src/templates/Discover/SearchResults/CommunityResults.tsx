@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchForPublishingChannels } from "#/api/queries/discover/useSearchForCommunities";
-import { Grid } from "#/components/Layout";
+import { Stack } from "#/components/Layout";
 import { CommunityPreview } from "../Previews/CommunityPreview";
 import { ResultsWrapper } from "../ResultsWrapper";
 
@@ -41,18 +41,11 @@ export const CommunityResults = ({ query }: CommunityResultsProps) => {
       pagination={pagination}
     >
       {!data ? null : (
-        <Grid
-          css={{
-            width: "100%",
-            gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-            columnGap: "$3",
-            rowGap: "$3",
-          }}
-        >
+        <Stack css={{ gap: "$3", width: "100%" }}>
           {data.publishingChannels.map((community) => (
             <CommunityPreview key={community.publishingChannelId} community={community} />
           ))}
-        </Grid>
+        </Stack>
       )}
     </ResultsWrapper>
   );
