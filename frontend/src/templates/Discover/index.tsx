@@ -1,5 +1,5 @@
 import create from "zustand";
-import { DetailLayout } from "#/components/DetailLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { SearchIcon } from "#/components/Icons";
 import { styled } from "#/styling";
 import { SearchResults } from "./SearchResults";
@@ -17,7 +17,7 @@ export const Discover = () => {
   const { searchText, setSearchText } = useSearchText();
 
   return (
-    <DetailLayout heading="Discover">
+    <StandardPageLayout heading="Discover">
       <SearchBar>
         <SearchIcon />
         <SearchInput
@@ -31,13 +31,14 @@ export const Discover = () => {
         />
       </SearchBar>
       {searchText ? <SearchResults query={searchText} /> : <SuggestedContent />}
-    </DetailLayout>
+    </StandardPageLayout>
   );
 };
 
 const SearchBar = styled("label", {
   display: "flex",
   alignItems: "center",
+  bg: "$background1",
   border: "solid $borderWidths$1 $border",
   borderRadius: "$round",
   gap: "$2",

@@ -1,7 +1,7 @@
-import Router from "next/router";
 import Head from "next/head";
+import Router from "next/router";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Settings } from "#/templates/Settings";
 import { SessionStorageItem } from "#/utils/storage";
@@ -29,9 +29,9 @@ const SettingsPage = ProtectedPage(() => {
 SettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
-      <NestedPageLayout heading="Settings" closeHref={getSettingsCloseHref()}>
+      <StandardPageLayout heading="Settings" closeHref={getSettingsCloseHref()}>
         {page}
-      </NestedPageLayout>
+      </StandardPageLayout>
     </AppLayout>
   );
 };

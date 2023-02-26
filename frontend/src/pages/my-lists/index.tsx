@@ -1,7 +1,7 @@
-import Router from "next/router";
 import Head from "next/head";
+import Router from "next/router";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { MyLists } from "#/templates/MyLists";
 import { SessionStorageItem } from "#/utils/storage";
@@ -28,9 +28,9 @@ const MyListsPage = ProtectedPage(() => {
 
 MyListsPage.getLayout = (page) => (
   <AppLayout>
-    <NestedPageLayout heading="My Lists" closeHref={getMyListsCloseHref()}>
+    <StandardPageLayout heading="My Lists" closeHref={getMyListsCloseHref()}>
       {page}
-    </NestedPageLayout>
+    </StandardPageLayout>
   </AppLayout>
 );
 

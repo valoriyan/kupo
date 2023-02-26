@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useGetPageOfOldNotifications } from "#/api/queries/notifications/useGetPageOfOldNotifications";
 import { useWebsocketState } from "#/components/AppLayout/WebsocketContext";
-import { DetailLayout } from "#/components/DetailLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
@@ -21,7 +21,7 @@ export const Notifications = () => {
   const oldNotifications = data?.pages.flatMap((page) => page.userNotifications);
 
   return (
-    <DetailLayout heading="Notifications">
+    <StandardPageLayout heading="Notifications">
       {error && !isLoading ? (
         <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
       ) : isLoading || !oldNotifications ? (
@@ -39,6 +39,6 @@ export const Notifications = () => {
           )}
         />
       )}
-    </DetailLayout>
+    </StandardPageLayout>
   );
 };

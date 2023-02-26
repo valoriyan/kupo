@@ -1,9 +1,9 @@
 import Head from "next/head";
 import { useGetClientUserProfile } from "#/api/queries/users/useGetClientUserProfile";
 import { AppLayout } from "#/components/AppLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Profile } from "#/templates/Settings/Profile";
 import { getSettingsCloseHref } from ".";
@@ -30,13 +30,13 @@ const ProfileSettingsPage = ProtectedPage(() => {
 ProfileSettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
-      <NestedPageLayout
+      <StandardPageLayout
         heading="Settings / Profile"
         closeHref={getSettingsCloseHref()}
         backHref="/settings"
       >
         {page}
-      </NestedPageLayout>
+      </StandardPageLayout>
     </AppLayout>
   );
 };

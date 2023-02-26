@@ -166,13 +166,13 @@ const BackgroundImage = (props: { src?: string }) => {
 
 const BgImg = styled("img", {
   size: "100%",
-  maxHeight: "$11",
+  height: "$11",
   objectFit: "cover",
 });
 
 const BgImgFallback = styled("div", {
   size: "100%",
-  maxHeight: "$11",
+  height: "$11",
   bg: "$border",
 });
 
@@ -181,7 +181,7 @@ const EditMedia = styled("label", {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  size: "100%",
+  width: "100%",
   color: "$accentText",
   cursor: "pointer",
 

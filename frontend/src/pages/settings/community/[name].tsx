@@ -2,9 +2,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useGetCommunityByName } from "#/api/queries/community/useGetCommunityByName";
 import { AppLayout } from "#/components/AppLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
 import { ProtectedPage, useCurrentUserId } from "#/contexts/auth";
 import { Community } from "#/templates/Settings/Community";
 import { getSettingsCloseHref } from "..";
@@ -37,13 +37,13 @@ const CommunitySettingsPage = ProtectedPage(() => {
 CommunitySettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
-      <NestedPageLayout
+      <StandardPageLayout
         heading={<PageHeading />}
         closeHref={getSettingsCloseHref()}
         backHref="/settings"
       >
         {page}
-      </NestedPageLayout>
+      </StandardPageLayout>
     </AppLayout>
   );
 };

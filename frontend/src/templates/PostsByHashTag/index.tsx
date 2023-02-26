@@ -1,7 +1,7 @@
 import Router from "next/router";
 import { RenderablePost, UserContentFeedFilterType } from "#/api";
 import { useGetPageOfContentFeed } from "#/api/queries/feed/useGetPageOfContentFeed";
-import { DetailLayout } from "#/components/DetailLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { DEFAULT_EOL_MESSAGE, InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
@@ -34,11 +34,11 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
 
   const posts = data?.pages.flatMap((page) => page.publishedItems);
 
-  const backRoute =
+  const backHref =
     SessionStorage.getItem<string>(PREVIOUS_LOCATION_BASE_KEY + hashTag) ?? "/feed";
 
   return (
-    <DetailLayout heading={`#${hashTag}`} backRoute={backRoute}>
+    <StandardPageLayout heading={`#${hashTag}`} backHref={backHref}>
       {!isLoading && error ? (
         <ErrorArea>{error.message || "An error occurred"}</ErrorArea>
       ) : isLoading || !posts ? (
@@ -59,6 +59,6 @@ export const PostsByHashTag = ({ hashTag }: PostsByHashTagProps) => {
           endOfListMessage={DEFAULT_EOL_MESSAGE}
         />
       )}
-    </DetailLayout>
+    </StandardPageLayout>
   );
 };

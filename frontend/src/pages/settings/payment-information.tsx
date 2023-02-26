@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Script from "next/script";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { useSecurion } from "#/contexts/securion";
 import { PaymentInformation } from "#/templates/Settings/PaymentInformation";
@@ -32,13 +32,13 @@ const PaymentInformationSettingsPage = ProtectedPage(() => {
 PaymentInformationSettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
-      <NestedPageLayout
+      <StandardPageLayout
         heading="Settings / Payment Information"
         closeHref={getSettingsCloseHref()}
         backHref="/settings"
       >
         {page}
-      </NestedPageLayout>
+      </StandardPageLayout>
     </AppLayout>
   );
 };

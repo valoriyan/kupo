@@ -2,11 +2,11 @@ import Link from "next/link";
 import Router from "next/router";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { CloseIcon } from "#/components/Icons";
-import { Stack } from "#/components/Layout";
+import { Flex, Stack } from "#/components/Layout";
 import { MainTitle } from "#/components/Typography";
 import {
   MAX_APP_CONTENT_WIDTH,
-  NESTED_PAGE_LAYOUT_HEADER_HEIGHT,
+  STANDARD_PAGE_HEADER_HEIGHT,
   SIDE_PANEL_WIDTH,
 } from "#/constants";
 import { styled } from "#/styling";
@@ -117,6 +117,9 @@ export const AddContent = ({ publishingChannelId }: AddContentProps) => {
   return (
     <FormStateProvider>
       <Header>
+        <MainTitle as="h1">
+          {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
+        </MainTitle>
         {additionalScreen ? (
           <CloseButton onClick={() => setAdditionalScreen(null)}>Back</CloseButton>
         ) : (
@@ -126,21 +129,19 @@ export const AddContent = ({ publishingChannelId }: AddContentProps) => {
             </CloseButton>
           </Link>
         )}
-        <MainTitle as="h1">
-          {additionalScreen ? additionalScreen.heading : screenToHeading[currentScreen]}
-        </MainTitle>
       </Header>
-      <Stack css={{ pt: NESTED_PAGE_LAYOUT_HEADER_HEIGHT }}>
+      <Stack css={{ pt: STANDARD_PAGE_HEADER_HEIGHT }}>
         {additionalScreen?.node || bodyNode}
       </Stack>
     </FormStateProvider>
   );
 };
 
-export const Header = styled(Stack, translucentBg, {
+export const Header = styled(Flex, translucentBg, {
   position: "fixed",
   top: 0,
   zIndex: 2,
+  justifyContent: "space-between",
   px: "$6",
   py: "$5",
   gap: "$1",

@@ -4,7 +4,7 @@ import { Box } from "#/components/Layout";
 import { UserName } from "#/components/UserName";
 import {
   MAX_APP_CONTENT_WIDTH,
-  NESTED_PAGE_LAYOUT_HEADER_HEIGHT,
+  STANDARD_PAGE_HEADER_HEIGHT,
   SIDE_PANEL_WIDTH,
 } from "#/constants";
 import { styled } from "#/styling";
@@ -44,7 +44,7 @@ export const ChatRoomMembersDisplay = ({
 
 const Wrapper = styled("div", translucentBg, {
   position: "fixed",
-  top: NESTED_PAGE_LAYOUT_HEADER_HEIGHT,
+  top: STANDARD_PAGE_HEADER_HEIGHT,
   zIndex: 1,
   display: "flex",
   alignItems: "center",

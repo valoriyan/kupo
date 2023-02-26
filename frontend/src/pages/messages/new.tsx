@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { NewChatRoom } from "#/templates/Messages/CreateChatRoom";
 import { getMessagesCloseHref } from ".";
@@ -27,14 +27,13 @@ const CreateChatRoomPage = ProtectedPage(() => {
 
 CreateChatRoomPage.getLayout = (page) => (
   <AppLayout>
-    <NestedPageLayout
+    <StandardPageLayout
       heading="New Message"
       backHref="/messages"
       closeHref={getMessagesCloseHref()}
-      handleScroll={false}
     >
       {page}
-    </NestedPageLayout>
+    </StandardPageLayout>
   </AppLayout>
 );
 

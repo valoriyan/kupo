@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "#/components/Button";
-import { DetailLayout } from "#/components/DetailLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { Input } from "#/components/Input";
 import { Stack } from "#/components/Layout";
 import { TextArea } from "#/components/TextArea";
@@ -29,7 +29,7 @@ export const Support = () => {
   )}&body=${encodeURIComponent(description)}`;
 
   return (
-    <DetailLayout heading="Support">
+    <StandardPageLayout heading="Support">
       <Stack css={{ p: "$6", gap: "$7" }}>
         <Body>
           Hello! If you&apos;re experiencing any issues with Kupo, please describe the
@@ -64,7 +64,7 @@ export const Support = () => {
           <Button type="submit">Send Email</Button>
         </Form>
       </Stack>
-    </DetailLayout>
+    </StandardPageLayout>
   );
 };
 

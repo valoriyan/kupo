@@ -2,7 +2,7 @@ import { FormEvent, KeyboardEvent } from "react";
 import { Button } from "#/components/Button";
 import { Subtext } from "#/components/Typography";
 import { UserAutoComplete } from "#/components/UserAutoComplete";
-import { MAX_APP_CONTENT_WIDTH, SIDE_PANEL_WIDTH } from "#/constants";
+import { APP_FOOTER_HEIGHT, MAX_APP_CONTENT_WIDTH, SIDE_PANEL_WIDTH } from "#/constants";
 import { styled } from "#/styling";
 import { useWarnUnsavedChanges } from "#/utils/useWarnUnsavedChanges";
 
@@ -68,12 +68,13 @@ export const MessageComposer = ({
 
 const Wrapper = styled("form", {
   position: "fixed",
-  bottom: 0,
+  bottom: APP_FOOTER_HEIGHT,
   zIndex: 2,
   display: "flex",
   flexDirection: "column",
   width: "100%",
   "@md": {
+    bottom: 0,
     width: `calc(100vw - ${SIDE_PANEL_WIDTH})`,
     maxWidth: MAX_APP_CONTENT_WIDTH,
   },

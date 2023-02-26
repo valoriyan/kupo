@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Communities } from "#/templates/MyLists/Communities";
 import { getMyListsCloseHref } from ".";
@@ -18,13 +18,13 @@ const MyListsCommunitiesPage = ProtectedPage(() => {
 
 MyListsCommunitiesPage.getLayout = (page) => (
   <AppLayout>
-    <NestedPageLayout
+    <StandardPageLayout
       heading="My Lists - Communities"
       closeHref={getMyListsCloseHref()}
       backHref="/my-lists"
     >
       {page}
-    </NestedPageLayout>
+    </StandardPageLayout>
   </AppLayout>
 );
 

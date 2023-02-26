@@ -1,6 +1,6 @@
 import { RenderablePost } from "#/api";
 import { useGetSavedPosts } from "#/api/queries/posts/useGetSavedPosts";
-import { DetailLayout } from "#/components/DetailLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ErrorMessage } from "#/components/ErrorArea";
 import { InfiniteList } from "#/components/InfiniteList";
 import { LoadingArea } from "#/components/LoadingArea";
@@ -14,7 +14,7 @@ export const SavedPosts = () => {
   const posts = data?.pages.flatMap((page) => page.publishedItems);
 
   return (
-    <DetailLayout heading="Saved Posts">
+    <StandardPageLayout heading="Saved Posts">
       {error && !isLoading ? (
         <ErrorMessage>{error.message || "An error occurred"}</ErrorMessage>
       ) : isLoading || !posts ? (
@@ -36,6 +36,6 @@ export const SavedPosts = () => {
           )}
         />
       )}
-    </DetailLayout>
+    </StandardPageLayout>
   );
 };

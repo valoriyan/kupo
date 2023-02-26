@@ -8,7 +8,11 @@ import { Flex, Grid, Stack } from "#/components/Layout";
 import { MainTitle, truncateByWidth } from "#/components/Typography";
 import { useVerifyEmailReminder } from "#/components/VerifyEmailModal";
 import { VerticalSlideDialog } from "#/components/VerticalSlideDialog";
-import { MAX_APP_CONTENT_WIDTH, SIDE_PANEL_WIDTH } from "#/constants";
+import {
+  STANDARD_PAGE_HEADER_HEIGHT,
+  MAX_APP_CONTENT_WIDTH,
+  SIDE_PANEL_WIDTH,
+} from "#/constants";
 import { useCurrentUserId } from "#/contexts/auth";
 import { styled } from "#/styling";
 import { translucentBg } from "#/styling/mixins";
@@ -16,8 +20,6 @@ import { SessionStorageItem } from "#/utils/storage";
 import { ContentFeed } from "./ContentFeed";
 import { FeedListEditor } from "./FeedListEditor";
 import { getContentFeedFilterDisplayName } from "./utilities";
-
-const FEED_HEADER_HEIGHT = "57px";
 
 const storedFilter = SessionStorageItem<UserContentFeedFilter>("selectedContentFilter");
 
@@ -44,7 +46,7 @@ export const Feed = () => {
   useVerifyEmailReminder();
 
   return (
-    <Stack css={{ pt: FEED_HEADER_HEIGHT }}>
+    <Stack css={{ pt: STANDARD_PAGE_HEADER_HEIGHT }}>
       <Header ref={containerRef}>
         <Flex css={{ alignItems: "center", gap: "$4", color: "$text" }}>
           <Logo />
@@ -108,6 +110,7 @@ const Header = styled(Grid, translucentBg, {
   pl: "$5",
   pr: "$3",
   borderBottom: "solid $borderWidths$1 $border",
+  height: STANDARD_PAGE_HEADER_HEIGHT,
   "@md": {
     width: `calc(100vw - ${SIDE_PANEL_WIDTH})`,
     maxWidth: MAX_APP_CONTENT_WIDTH,

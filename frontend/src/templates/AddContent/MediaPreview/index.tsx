@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Stack } from "#/components/Layout";
-import { NESTED_PAGE_LAYOUT_HEADER_HEIGHT } from "#/constants";
+import { STANDARD_PAGE_HEADER_HEIGHT } from "#/constants";
 import { useFormState } from "../FormContext";
 import { PreviewImage } from "./PreviewImage";
 
@@ -22,7 +22,7 @@ export const MediaPreview = (props: MediaPreviewProps) => {
         top:
           initialElement.getBoundingClientRect().y -
           window.scrollY -
-          +NESTED_PAGE_LAYOUT_HEADER_HEIGHT.slice(0, -2),
+          +STANDARD_PAGE_HEADER_HEIGHT.slice(0, -2),
       });
     }
   }, [props.initialId]);

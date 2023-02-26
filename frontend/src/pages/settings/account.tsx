@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Account } from "#/templates/Settings/Account";
 import { getSettingsCloseHref } from ".";
@@ -19,13 +19,13 @@ const AccountSettingsPage = ProtectedPage(() => {
 AccountSettingsPage.getLayout = (page) => {
   return (
     <AppLayout>
-      <NestedPageLayout
+      <StandardPageLayout
         heading="Settings / Account"
         closeHref={getSettingsCloseHref()}
         backHref="/settings"
       >
         {page}
-      </NestedPageLayout>
+      </StandardPageLayout>
     </AppLayout>
   );
 };

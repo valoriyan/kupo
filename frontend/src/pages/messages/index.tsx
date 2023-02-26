@@ -1,7 +1,7 @@
-import Router from "next/router";
 import Head from "next/head";
+import Router from "next/router";
 import { AppLayout } from "#/components/AppLayout";
-import { NestedPageLayout } from "#/components/NestedPageLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ProtectedPage } from "#/contexts/auth";
 import { Messages } from "#/templates/Messages";
 import { SessionStorageItem } from "#/utils/storage";
@@ -28,9 +28,9 @@ const MessagesPage = ProtectedPage(() => {
 
 MessagesPage.getLayout = (page) => (
   <AppLayout>
-    <NestedPageLayout heading="Messages" closeHref={getMessagesCloseHref()}>
+    <StandardPageLayout heading="Messages" closeHref={getMessagesCloseHref()}>
       {page}
-    </NestedPageLayout>
+    </StandardPageLayout>
   </AppLayout>
 );
 

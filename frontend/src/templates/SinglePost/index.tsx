@@ -1,6 +1,6 @@
 import Router from "next/router";
 import { useGetPostById } from "#/api/queries/posts/useGetPostById";
-import { DetailLayout } from "#/components/DetailLayout";
+import { StandardPageLayout } from "#/components/StandardPageLayout";
 import { ErrorArea } from "#/components/ErrorArea";
 import { LoadingArea } from "#/components/LoadingArea";
 import { Post } from "#/components/Post";
@@ -21,11 +21,11 @@ export interface SinglePostProps {
 export const SinglePost = ({ postId }: SinglePostProps) => {
   const { data, isLoading, error } = useGetPostById({ postId });
 
-  const backRoute =
+  const backHref =
     SessionStorage.getItem<string>(PREVIOUS_LOCATION_BASE_KEY + postId) ?? "/feed";
 
   return (
-    <DetailLayout heading="Post" backRoute={backRoute}>
+    <StandardPageLayout heading="Post" backHref={backHref}>
       {!isLoading && error ? (
         <ErrorArea>{error.message || "An error occurred"}</ErrorArea>
       ) : isLoading || !data ? (
@@ -33,6 +33,6 @@ export const SinglePost = ({ postId }: SinglePostProps) => {
       ) : (
         <Post post={data} />
       )}
-    </DetailLayout>
+    </StandardPageLayout>
   );
 };
