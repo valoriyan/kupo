@@ -351,7 +351,7 @@ export function generateWelcomeEmailHtml({ homepageUrl }: { homepageUrl: string 
                       <tr>
                         <td>
                           <p>Welcome to <a href="${homepageUrl}" target="_blank">kupo.social</a></p>
-                          <p>Your account has successfully been created. Make your profile stand out by filling our your profile </p>
+                          <p>Your account has successfully been created. Make your profile stand out by filling out your profile </p>
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                             <tbody>
                               <tr>
