@@ -1,0 +1,91 @@
+# Google Search Engine Robot
+# ==========================
+User-agent: Googlebot
+
+Allow: /posts/*
+Allow: /discover
+Disallow: /notifications
+Disallow: /messages
+Disallow: /my-lists
+Disallow: /support
+Disallow: /settings/*
+Disallow: /add-content
+Disallow: /profile
+
+# Yahoo! Search Engine Robot
+# ==========================
+User-Agent: Slurp
+
+Allow: /posts/*
+Allow: /discover
+Disallow: /notifications
+Disallow: /messages
+Disallow: /my-lists
+Disallow: /support
+Disallow: /settings/*
+Disallow: /add-content
+Disallow: /profile
+
+# Yandex Search Engine Robot
+# ==========================
+User-agent: Yandex
+
+Allow: /posts/*
+Allow: /discover
+Disallow: /notifications
+Disallow: /messages
+Disallow: /my-lists
+Disallow: /support
+Disallow: /settings/*
+Disallow: /add-content
+Disallow: /profile
+
+# Microsoft Search Engine Robot
+# =============================
+User-Agent: msnbot
+
+Allow: /posts/*
+Allow: /discover
+Disallow: /notifications
+Disallow: /messages
+Disallow: /my-lists
+Disallow: /support
+Disallow: /settings/*
+Disallow: /add-content
+Disallow: /profile
+
+# Bing Search Engine Robot
+# ========================
+User-Agent: bingbot
+
+Allow: /posts/*
+Allow: /discover
+Disallow: /notifications
+Disallow: /messages
+Disallow: /my-lists
+Disallow: /support/*
+Disallow: /settings
+Disallow: /add-content
+Disallow: /profile
+
+# Every bot that might possibly read this file
+# ============================================
+User-agent: *
+
+Allow: /posts/*
+Allow: /discover
+Disallow: /notifications
+Disallow: /messages
+Disallow: /my-lists
+Disallow: /support
+Disallow: /settings/*
+Disallow: /add-content
+Disallow: /profile
+
+
+# Wait 1 second between successive requests. See ONBOARD-2698 for details.
+Crawl-delay: 1
+
+# Independent of user agent. Links in the sitemap are full URLs using https:// and need to match
+# the protocol of the sitemap.
+Sitemap: https://kubo.social/sitemap.xml
