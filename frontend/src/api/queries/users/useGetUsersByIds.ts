@@ -6,7 +6,7 @@ export const useGetUsersByUserIds = ({ userIds }: { userIds: string[] }) => {
   return useQuery<(RenderableUser | null)[], Error>(
     [CacheKeys.UserById, ...userIds.slice().sort()],
     async () => {
-      const res = await Api.getUsersByIds({ userIds });
+      const res = await Api.getUsersByIds({ userIds }, { authStrat: "tryToken" });
 
       if (res.data.success) {
         const users: (RenderableUser | null)[] = res.data.success.users;

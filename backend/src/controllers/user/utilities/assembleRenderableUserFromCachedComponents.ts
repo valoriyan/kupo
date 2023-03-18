@@ -26,7 +26,7 @@ export async function assembleRenderableUsersFromCachedComponents({
   databaseService,
 }: {
   controller: Controller;
-  requestorUserId: string;
+  requestorUserId: string | undefined;
   unrenderableUsers: UnrenderableUser[];
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;

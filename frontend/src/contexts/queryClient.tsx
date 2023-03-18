@@ -48,7 +48,7 @@ export const queryClient = new QueryClient({
     queries: {
       notifyOnChangePropsExclusions: ["isStale"],
       staleTime: 5000, // Dedupe any requests made more than once within 5 seconds
-      retry: 3, // Will retry failed requests 3 times before displaying an error
+      retry: 2, // Will retry failed requests 2 times before displaying an error
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
   },

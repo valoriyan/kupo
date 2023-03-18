@@ -1,16 +1,16 @@
+import { MD5 } from "crypto-js";
 import { Request } from "express";
 import { sign, verify } from "jsonwebtoken";
 import { Controller } from "tsoa";
-import { MD5 } from "crypto-js";
-import { AuthFailedReason, AuthFailed } from "../models";
 import { getEnvironmentVariable } from "../../../utilities";
 import {
-  EitherType,
   ErrorReasonTypes,
   Failure,
+  FailureResponse,
   InternalServiceResponse,
   Success,
 } from "../../../utilities/monads";
+import { AuthFailedReason } from "../models";
 
 export const REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7; // one week
 export const ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60; // five minutes
@@ -79,10 +79,7 @@ export async function checkAuthentication(
   request: Request,
 ): Promise<{
   clientUserId: string;
-  errorResponse?: {
-    type: EitherType.failure;
-    error: AuthFailed;
-  };
+  errorResponse?: FailureResponse<AuthFailedReason>;
 }> {
   const jwtPrivateKey = getEnvironmentVariable("JWT_PRIVATE_KEY");
   try {
@@ -93,15 +90,15 @@ export async function checkAuthentication(
 
     return { clientUserId: validateTokenAndGetUserId({ token, jwtPrivateKey }) };
   } catch {
-    controller.setStatus(403);
     return {
       clientUserId: "",
-      errorResponse: {
-        type: EitherType.failure,
-        error: {
-          reason: AuthFailedReason.AuthorizationError,
-        },
-      },
+      errorResponse: Failure({
+        controller,
+        httpStatusCode: 403,
+        reason: AuthFailedReason.AuthorizationError,
+        error: "Auth token not found at checkAuthentication",
+        additionalErrorInformation: "Error at checkAuthentication",
+      }),
     };
   }
 }

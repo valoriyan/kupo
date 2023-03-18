@@ -5,7 +5,7 @@ import {
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
-import { checkAuthentication } from "../auth/utilities";
+import { getClientUserId } from "../auth/utilities";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { assembleRenderableUsersByIds } from "./utilities/assembleRenderableUserById";
@@ -39,12 +39,7 @@ export async function handleGetUsersByIds({
   //////////////////////////////////////////////////
   // Inputs & Authentication
   //////////////////////////////////////////////////
-  const { clientUserId, errorResponse: error } = await checkAuthentication(
-    controller,
-    request,
-  );
-  if (error) return error;
-
+  const clientUserId = await getClientUserId(request);
   const { userIds } = requestBody;
 
   //////////////////////////////////////////////////
