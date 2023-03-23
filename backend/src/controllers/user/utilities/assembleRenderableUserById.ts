@@ -22,7 +22,7 @@ export async function assembleRenderableUsersByIds({
   databaseService,
 }: {
   controller: Controller;
-  requestorUserId: string;
+  requestorUserId: string | undefined;
   userIds: string[];
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;
@@ -63,7 +63,7 @@ export async function assembleRenderableUserById({
   databaseService,
 }: {
   controller: Controller;
-  requestorUserId: string;
+  requestorUserId: string | undefined;
   userId: string;
   blobStorageService: BlobStorageService;
   databaseService: DatabaseService;

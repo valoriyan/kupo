@@ -55,8 +55,9 @@ export async function canUserIdViewUserContentFromUnrenderableUser({
   // If Target User Has a Public Profile Then
   // the Target User Profile is Viewable
   //////////////////////////////////////////////////
-  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public)
+  if (targetUser.profilePrivacySetting === ProfilePrivacySetting.Public) {
     return Success(true);
+  }
 
   //////////////////////////////////////////////////
   // Return if Target User Has a Private Profile

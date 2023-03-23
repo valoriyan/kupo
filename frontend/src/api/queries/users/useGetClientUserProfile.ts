@@ -6,7 +6,7 @@ export const useGetClientUserProfile = (enabled = true) => {
   return useQuery<GetClientUserProfileSuccess, Error>(
     CacheKeys.ClientProfile,
     async () => {
-      const res = await Api.getClientUserProfile();
+      const res = await Api.getClientUserProfile({ authStrat: "tryToken" });
 
       if (res.data.success) return res.data.success;
       throw new Error((res.data.error.reason as string) ?? "Failed to fetch user");
