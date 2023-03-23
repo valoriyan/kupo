@@ -18,6 +18,7 @@ export class EmailService extends EmailServiceInterface {
   sendOrderReceiptEmail = EmailService.implementation.sendOrderReceiptEmail;
   sendVerifyUserEmailEmail = EmailService.implementation.sendVerifyUserEmailEmail;
   sendKupoTeamUpdate = EmailService.implementation.sendKupoTeamUpdate;
+  sendUserOfflineNotification = EmailService.implementation.sendUserOfflineNotification;
 
   static selectEmailServiceImplementation(): EmailServiceInterface {
     const implementedBlobStorageServiceType: string = getEnvironmentVariable(

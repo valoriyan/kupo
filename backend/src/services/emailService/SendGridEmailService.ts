@@ -26,6 +26,7 @@ import {
   KupoTeamUpdateMetrics,
   generateKupoTeamUpdateEmailHtml,
 } from "./templates/generateKupoTeamUpdateEmailHtml";
+import { generateOfflineNotificationEmailHtml } from "./templates/generateOfflineNotificationEmailHtml";
 
 export class SendGridEmailService extends EmailServiceInterface {
   private static SENDGRID_API_KEY: string = getEnvironmentVariable("SENDGRID_API_KEY");
@@ -279,6 +280,44 @@ export class SendGridEmailService extends EmailServiceInterface {
         reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
         error,
         additionalErrorInformation: "Error at sendKupoTeamUpdate",
+      });
+    }
+  }
+
+  async sendUserOfflineNotification({
+    controller,
+    email,
+  }: {
+    controller: Controller;
+    email: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      const message = {
+        to: email,
+        from: {
+          name: "Kupo.social",
+          email: "noreply@kupo.social",
+        },
+        subject: "Kupo Team Update",
+        html: await generateOfflineNotificationEmailHtml({}),
+      };
+
+      await SendgridMailer.send(message)
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
+
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendUserOfflineNotification",
       });
     }
   }

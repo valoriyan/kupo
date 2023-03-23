@@ -56,6 +56,14 @@ export abstract class EmailServiceInterface {
     email: string;
     kupoTeamUpdateMetrics: KupoTeamUpdateMetrics;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>>;
+
+  abstract sendUserOfflineNotification({
+    controller,
+    email,
+  }: {
+    controller: Controller;
+    email: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>>;
 }
 
 export interface ResetPasswordJWTData {

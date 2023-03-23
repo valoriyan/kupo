@@ -70,6 +70,12 @@ import {
   UpdateUserProfilePictureRequestBody,
   UpdateUserProfilePictureSuccess,
 } from "./handleUpdateUserProfilePicture";
+import {
+  AutocompleteUsernameStrategy2FailedReason,
+  AutocompleteUsernameStrategy2RequestBody,
+  AutocompleteUsernameStrategy2Success,
+  handleAutocompleteUsernameStrategy2,
+} from "./handleAutocompleteUsernameStrategy2";
 
 @injectable()
 @Route("user")
@@ -201,6 +207,23 @@ export class UserPageController extends Controller {
     >
   > {
     return await handleGetPageOfUsersFollowingUserId({
+      controller: this,
+      request,
+      requestBody,
+    });
+  }
+
+  @Post("autocompleteUsernameStrategy2")
+  public async autocompleteUsernameStrategy2(
+    @Request() request: express.Request,
+    @Body() requestBody: AutocompleteUsernameStrategy2RequestBody,
+  ): Promise<
+    SecuredHTTPResponse<
+      ErrorReasonTypes<string | AutocompleteUsernameStrategy2FailedReason>,
+      AutocompleteUsernameStrategy2Success
+    >
+  > {
+    return await handleAutocompleteUsernameStrategy2({
       controller: this,
       request,
       requestBody,

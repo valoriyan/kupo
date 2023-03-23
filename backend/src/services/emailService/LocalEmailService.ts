@@ -183,4 +183,25 @@ export class LocalEmailService extends EmailServiceInterface {
       });
     }
   }
+
+  async sendUserOfflineNotification({
+    controller,
+    email,
+  }: {
+    controller: Controller;
+    email: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, {}>> {
+    try {
+      console.log(`Sending sendUserOfflineNotification to ${email}`);
+      return Success({});
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.EMAIL_SERVICE_ERROR,
+        error,
+        additionalErrorInformation: "Error at sendConfirmUserEmailEmail",
+      });
+    }
+  }
 }

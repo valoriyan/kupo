@@ -477,6 +477,48 @@ export class UsersTableService extends TableService {
     }
   }
 
+  // Strategy 2 is to prioritize usernames starting with the provided substring
+  public async selectUsersByUsernameMatchingSubstringStrategy2({
+    controller,
+    usernameSubstring,
+  }: {
+    controller: Controller;
+    usernameSubstring: string;
+  }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    try {
+      const query: QueryConfig = {
+        text: `
+          SELECT
+            *
+          FROM
+            ${this.tableName}
+          WHERE
+            username LIKE CONCAT('%', $1::text, '%' )
+          ORDER BY
+            username LIKE CONCAT($1::text, '%' )
+            DESC
+          ;
+        `,
+        values: [usernameSubstring],
+      };
+
+      const response: QueryResult<DBUser> = await this.datastorePool.query(query);
+
+      const rows = response.rows;
+
+      return Success(rows.map(convertDBUserToUnrenderableUser));
+    } catch (error) {
+      return Failure({
+        controller,
+        httpStatusCode: 500,
+        reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
+        error,
+        additionalErrorInformation:
+          "Error at usersTableService.selectUsersByUsernameMatchingSubstringStrategy2",
+      });
+    }
+  }
+
   public async selectMaybeUserByUserId({
     controller,
     userId,

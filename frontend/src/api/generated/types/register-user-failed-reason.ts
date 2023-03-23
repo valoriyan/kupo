@@ -19,5 +19,5 @@
  */
 export enum RegisterUserFailedReason {
   UnknownCause = "Unknown Cause",
-  AllUsernameCharactersMustBeLowercaseEnglishLettersOrDigits = "All Username Characters Must Be Lowercase English Letters Or Digits",
+  UsernamesMayOnlyIncludeLowercaseEnglishLettersDigitsHyphensAndUnderscores = "Usernames may only include lowercase English letters, digits, hyphens, and underscores",
 }
