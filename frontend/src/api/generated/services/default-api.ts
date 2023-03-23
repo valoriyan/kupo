@@ -39,6 +39,8 @@ import {
 // @ts-ignore
 import { AddModeratorToPublishingChannelRequestBody } from "../types";
 // @ts-ignore
+import { AutoCompleteUsernameRequestBody } from "../types";
+// @ts-ignore
 import { BanUserFromPublishingChannelRequestBody } from "../types";
 // @ts-ignore
 import { BlockUserRequestBody } from "../types";
@@ -72,6 +74,8 @@ import { DoesChatRoomExistWithUserIdsRequestBody } from "../types";
 import { EitherAuthFailedReasonAuthSuccess } from "../types";
 // @ts-ignore
 import { EitherCheckResetPasswordTokenValidityFailedReasonCheckResetPasswordTokenValiditySuccess } from "../types";
+// @ts-ignore
+import { EitherErrorReasonTypesStringAutoCompleteUsernameSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrAddModeratorToPublishingChannelFailedReasonAddModeratorToPublishingChannelSuccess } from "../types";
 // @ts-ignore
@@ -448,6 +452,55 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         addModeratorToPublishingChannelRequestBody,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {AutoCompleteUsernameRequestBody} autoCompleteUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    autoCompleteUsername: async (
+      autoCompleteUsernameRequestBody: AutoCompleteUsernameRequestBody,
+      options: any = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'autoCompleteUsernameRequestBody' is not null or undefined
+      assertParamExists(
+        "autoCompleteUsername",
+        "autoCompleteUsernameRequestBody",
+        autoCompleteUsernameRequestBody,
+      );
+      const localVarPath = `/user/autoCompleteUsername`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "POST", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        autoCompleteUsernameRequestBody,
         localVarRequestOptions,
         configuration,
       );
@@ -5146,6 +5199,32 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {AutoCompleteUsernameRequestBody} autoCompleteUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async autoCompleteUsername(
+      autoCompleteUsernameRequestBody: AutoCompleteUsernameRequestBody,
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringAutoCompleteUsernameSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.autoCompleteUsername(
+        autoCompleteUsernameRequestBody,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {BanUserFromPublishingChannelRequestBody} banUserFromPublishingChannelRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7721,6 +7800,20 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {AutoCompleteUsernameRequestBody} autoCompleteUsernameRequestBody
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    autoCompleteUsername(
+      autoCompleteUsernameRequestBody: AutoCompleteUsernameRequestBody,
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringAutoCompleteUsernameSuccess> {
+      return localVarFp
+        .autoCompleteUsername(autoCompleteUsernameRequestBody, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {BanUserFromPublishingChannelRequestBody} banUserFromPublishingChannelRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9155,6 +9248,22 @@ export class DefaultApi extends BaseAPI {
         addModeratorToPublishingChannelRequestBody,
         options,
       )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {AutoCompleteUsernameRequestBody} autoCompleteUsernameRequestBody
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public autoCompleteUsername(
+    autoCompleteUsernameRequestBody: AutoCompleteUsernameRequestBody,
+    options?: any,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .autoCompleteUsername(autoCompleteUsernameRequestBody, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

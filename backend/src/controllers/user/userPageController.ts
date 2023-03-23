@@ -6,6 +6,11 @@ import { PaymentProcessingService } from "../../services/paymentProcessingServic
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { BlobStorageService } from "./../../services/blobStorageService";
 import {
+  AutoCompleteUsernameRequestBody,
+  AutoCompleteUsernameSuccess,
+  handleAutoCompleteUsername,
+} from "./handleAutoCompleteUsername";
+import {
   GetClientUserProfileFailedReason,
   GetClientUserProfileSuccess,
   handleGetClientUserProfile,
@@ -70,12 +75,6 @@ import {
   UpdateUserProfilePictureRequestBody,
   UpdateUserProfilePictureSuccess,
 } from "./handleUpdateUserProfilePicture";
-import {
-  AutocompleteUsernameStrategy2FailedReason,
-  AutocompleteUsernameStrategy2RequestBody,
-  AutocompleteUsernameStrategy2Success,
-  handleAutocompleteUsernameStrategy2,
-} from "./handleAutocompleteUsernameStrategy2";
 
 @injectable()
 @Route("user")
@@ -213,17 +212,12 @@ export class UserPageController extends Controller {
     });
   }
 
-  @Post("autocompleteUsernameStrategy2")
-  public async autocompleteUsernameStrategy2(
+  @Post("autoCompleteUsername")
+  public async autoCompleteUsername(
     @Request() request: express.Request,
-    @Body() requestBody: AutocompleteUsernameStrategy2RequestBody,
-  ): Promise<
-    SecuredHTTPResponse<
-      ErrorReasonTypes<string | AutocompleteUsernameStrategy2FailedReason>,
-      AutocompleteUsernameStrategy2Success
-    >
-  > {
-    return await handleAutocompleteUsernameStrategy2({
+    @Body() requestBody: AutoCompleteUsernameRequestBody,
+  ): Promise<SecuredHTTPResponse<ErrorReasonTypes<string>, AutoCompleteUsernameSuccess>> {
+    return await handleAutoCompleteUsername({
       controller: this,
       request,
       requestBody,

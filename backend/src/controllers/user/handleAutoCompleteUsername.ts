@@ -2,42 +2,32 @@ import express from "express";
 import {
   EitherType,
   ErrorReasonTypes,
-  Failure,
   SecuredHTTPResponse,
   Success,
 } from "../../utilities/monads";
 import { checkAuthentication } from "../auth/utilities";
-import { GenericResponseFailedReason } from "../models";
 import { RenderableUser } from "./models";
 import { UserPageController } from "./userPageController";
 import { assembleRenderableUsersFromCachedComponents } from "./utilities/assembleRenderableUserFromCachedComponents";
 
-export interface AutocompleteUsernameStrategy2RequestBody {
+export interface AutoCompleteUsernameRequestBody {
   searchString: string;
+  limit: number;
 }
 
-export interface AutocompleteUsernameStrategy2Success {
+export interface AutoCompleteUsernameSuccess {
   results: RenderableUser[];
 }
 
-export enum AutocompleteUsernameStrategy2FailedReason {
-  NotFound = "User Not Found",
-}
-
-export async function handleAutocompleteUsernameStrategy2({
+export async function handleAutoCompleteUsername({
   controller,
   request,
   requestBody,
 }: {
   controller: UserPageController;
   request: express.Request;
-  requestBody: AutocompleteUsernameStrategy2RequestBody;
-}): Promise<
-  SecuredHTTPResponse<
-    ErrorReasonTypes<string | AutocompleteUsernameStrategy2FailedReason>,
-    AutocompleteUsernameStrategy2Success
-  >
-> {
+  requestBody: AutoCompleteUsernameRequestBody;
+}): Promise<SecuredHTTPResponse<ErrorReasonTypes<string>, AutoCompleteUsernameSuccess>> {
   //////////////////////////////////////////////////
   // Inputs & Authentication
   //////////////////////////////////////////////////
@@ -47,7 +37,7 @@ export async function handleAutocompleteUsernameStrategy2({
   );
   if (error) return error;
 
-  const { searchString } = requestBody;
+  const { searchString, limit } = requestBody;
 
   //////////////////////////////////////////////////
   // Read UnrenderableUsers from DB
@@ -58,6 +48,7 @@ export async function handleAutocompleteUsernameStrategy2({
       {
         controller,
         usernameSubstring: searchString.toLowerCase(),
+        limit,
       },
     );
   if (selectUsersByUsernameMatchingSubstringResponse.type === EitherType.failure) {
@@ -67,13 +58,7 @@ export async function handleAutocompleteUsernameStrategy2({
   const { success: unrenderableUsers } = selectUsersByUsernameMatchingSubstringResponse;
 
   if (unrenderableUsers.length === 0) {
-    return Failure({
-      controller,
-      httpStatusCode: 404,
-      reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
-      error: AutocompleteUsernameStrategy2FailedReason.NotFound,
-      additionalErrorInformation: "Error at handleAutocompleteUsernameStrategy2",
-    });
+    return Success({ results: [] });
   }
 
   //////////////////////////////////////////////////

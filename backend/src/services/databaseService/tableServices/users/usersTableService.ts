@@ -442,10 +442,15 @@ export class UsersTableService extends TableService {
   public async selectUsersByUsernameMatchingSubstring({
     controller,
     usernameSubstring,
+    limit,
   }: {
     controller: Controller;
     usernameSubstring: string;
+    limit?: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    const values: Array<string | number> = [usernameSubstring];
+    if (limit) values.push(limit);
+
     try {
       const query: QueryConfig = {
         text: `
@@ -455,9 +460,10 @@ export class UsersTableService extends TableService {
             ${this.tableName}
           WHERE
             username LIKE CONCAT('%', $1::text, '%' )
+          ${limit ? "LIMIT $2" : ""}
           ;
         `,
-        values: [usernameSubstring],
+        values: [usernameSubstring, limit],
       };
 
       const response: QueryResult<DBUser> = await this.datastorePool.query(query);
