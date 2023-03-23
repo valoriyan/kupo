@@ -463,7 +463,7 @@ export class UsersTableService extends TableService {
           ${limit ? "LIMIT $2" : ""}
           ;
         `,
-        values: [usernameSubstring, limit],
+        values,
       };
 
       const response: QueryResult<DBUser> = await this.datastorePool.query(query);
