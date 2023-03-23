@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider as BaseQueryClientProvider } from "rea
 export enum CacheKeys {
   UserById = "UserById",
   UserByUsername = "UserByUsername",
+  AutoCompleteUsername = "AutoCompleteUsername",
   ClientProfile = "ClientProfile",
   UserPostPages = "UserPostPages",
   UserShopItemPages = "UserShopItemPages",

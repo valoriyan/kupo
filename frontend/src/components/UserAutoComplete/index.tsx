@@ -2,7 +2,7 @@ import * as RadixPopover from "@radix-ui/react-popover";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { styled } from "#/styling";
-import { useSearchForUsers } from "#/api/queries/discover/useSearchForUsers";
+import { useAutoCompleteUsername } from "#/api/queries/users/useAutoCompleteUsername";
 import { Avatar } from "../Avatar";
 import { Flex } from "../Layout";
 import { Spinner } from "../Spinner";
@@ -34,13 +34,12 @@ export const UserAutoComplete = ({
   const usernameToAutoComplete =
     parsedUsernames[parsedUsernames.length - 1]?.replaceAll("@", "") ?? "";
 
-  const { data, isLoading, isError } = useSearchForUsers({
-    query: usernameToAutoComplete,
-    pageNumber: 1,
-    pageSize: 10,
+  const { data, isLoading, isError } = useAutoCompleteUsername({
+    searchString: usernameToAutoComplete,
+    limit: 10,
   });
 
-  const users = data?.users;
+  const users = data?.results;
 
   useEffect(() => {
     setOpen(!!text && !!usernameToAutoComplete && text.endsWith(usernameToAutoComplete));
