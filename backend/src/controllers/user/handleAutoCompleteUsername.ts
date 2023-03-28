@@ -44,7 +44,7 @@ export async function handleAutoCompleteUsername({
   //////////////////////////////////////////////////
 
   const selectUsersByUsernameMatchingSubstringResponse =
-    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstring(
+    await controller.databaseService.tableNameToServicesMap.usersTableService.selectUsersByUsernameMatchingSubstringStrategy2(
       {
         controller,
         usernameSubstring: searchString.toLowerCase(),
