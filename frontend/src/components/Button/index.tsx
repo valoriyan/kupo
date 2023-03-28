@@ -4,7 +4,7 @@ export const Button = styled("button", {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  color: "$accentText",
+  color: "$inverseText",
   bg: "$primary",
   px: "$6",
   py: "$3",

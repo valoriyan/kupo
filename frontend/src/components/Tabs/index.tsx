@@ -65,9 +65,7 @@ const TabRoot = styled(TabsPrimitive.Root, {
 const TabList = styled(TabsPrimitive.TabsList, {
   display: "grid",
   gridTemplateColumns: "minmax(0, 1fr) auto",
-  borderBottomStyle: "solid",
-  borderBottomWidth: "$1",
-  borderBottomColor: "$border",
+  boxShadow: "inset 0 -1px 0 0 $colors$border",
 
   variants: {
     hasRightContent: { true: { justifyContent: "space-between" } },
@@ -90,7 +88,8 @@ const Trigger = styled(TabsPrimitive.Trigger, mainTitleStyles, {
 
   '&[data-state="active"]': {
     color: "$primary",
-    boxShadow: "inset 0 -3px 0 0 currentColor, 0 1px 0 0 currentColor",
+    boxShadow:
+      "inset 0 -3px 0 0 $colors$primarySubdued, 0 1px 0 0 $colors$primarySubdued",
   },
 
   variants: {

@@ -1,4 +1,4 @@
-import { ComponentType, useState } from "react";
+import { ComponentType, ReactNode, useState } from "react";
 import {
   MediaElement,
   PublishedItemType,
@@ -6,10 +6,10 @@ import {
   RenderableShopItem,
   RootRenderablePost,
 } from "#/api";
-import { styled } from "#/styling";
+import { styled, ThemeScale } from "#/styling";
 import { getRelativeTimestamp } from "#/utils/getRelativeTimestamp";
 import { HashTag } from "../HashTags";
-import { BookmarkIcon, CommentIcon, HeartIcon, PaperPlanIcon } from "../Icons";
+import { BookmarkIcon, CommentIcon, HeartIcon, ShareIcon } from "../Icons";
 import { Box, Flex } from "../Layout";
 import { Body } from "../Typography";
 import { VerticalSlideDialog } from "../VerticalSlideDialog";
@@ -86,25 +86,26 @@ export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProp
         }}
       >
         <PostAction
-          Icon={HeartIcon}
+          icon={<HeartIcon isFilled={isLikedByClient} />}
           isSelected={isLikedByClient}
           onClick={handleLikeButton}
           metric={likes.count}
+          color="$heart"
         />
         {handleClickOfCommentsButton ? (
           <PostAction
-            Icon={CommentIcon}
+            icon={<CommentIcon />}
             metric={comments.count}
             onClick={handleClickOfCommentsButton}
             data-cy="new-comment-button"
           />
         ) : (
-          <PostAction Icon={CommentIcon} metric={comments.count} />
+          <PostAction icon={<CommentIcon />} metric={comments.count} />
         )}
         <VerticalSlideDialog
           origin="fromBottom"
           position={{ left: "0px", right: "0px" }}
-          trigger={<PostAction as="div" Icon={PaperPlanIcon} />}
+          trigger={<PostAction as="div" icon={<ShareIcon />} />}
         >
           {({ hide }) => (
             <ShareMenu
@@ -115,9 +116,10 @@ export const Post = ({ post, handleClickOfCommentsButton, borderLess }: PostProp
           )}
         </VerticalSlideDialog>
         <PostAction
-          Icon={BookmarkIcon}
+          icon={<BookmarkIcon isFilled={isSavedByClient} />}
           isSelected={isSavedByClient}
           onClick={handleSaveButton}
+          color="$save"
         />
       </Flex>
       {!handleClickOfCommentsButton && <Comments postId={post.id} />}
@@ -134,29 +136,37 @@ const HashTagsWrapper = styled(Flex, {
 });
 
 interface PostActionProps {
-  Icon: ComponentType;
+  icon: ReactNode;
   metric?: number;
   onClick?: () => void;
   isSelected?: boolean;
+  color?: ThemeScale<"colors">;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: string | ComponentType<any>;
   "data-cy"?: string;
 }
 
 const PostAction = (props: PostActionProps) => {
-  const { Icon, metric, onClick, isSelected, "data-cy": dataCy } = props;
+  const {
+    icon,
+    metric,
+    onClick,
+    isSelected,
+    color = "$primary",
+    "data-cy": dataCy,
+  } = props;
   return (
     <Flex
       as={props.as ?? "button"}
       css={{
         alignItems: "center",
         gap: "$3",
-        color: isSelected ? "$primary" : "$secondaryText",
+        color: isSelected ? color : "$secondaryText",
       }}
       onClick={onClick}
       data-cy={dataCy}
     >
-      <Icon />
+      {icon}
       {metric && <Body>{metric}</Body>}
     </Flex>
   );

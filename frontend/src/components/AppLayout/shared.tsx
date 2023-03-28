@@ -80,9 +80,9 @@ export const UploadLink = styled("a", mainTitleStyles, {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  color: "$accentText",
+  color: "$inverseText",
   borderRadius: "$5",
   px: "$6",
   py: "$3",
-  background: "linear-gradient(180deg, $primary 0%, #8913FF 100%)",
+  background: "linear-gradient(180deg, $primaryBlendTop 0%, $primaryBlendBottom 100%)",
 });

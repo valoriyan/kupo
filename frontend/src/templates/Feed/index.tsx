@@ -92,8 +92,8 @@ export const Feed = () => {
 const Logo = styled("div", {
   size: "$8",
   bg: "$text",
-  "-webkit-mask": "url(otter-outline.svg) no-repeat",
-  mask: "url(otter-outline.svg) no-repeat",
+  "-webkit-mask": "url(/otter-outline.svg) no-repeat",
+  mask: "url(/otter-outline.svg) no-repeat",
   "-webkit-mask-size": "100%",
   maskSize: "100%",
   transform: "translateY(3px)",

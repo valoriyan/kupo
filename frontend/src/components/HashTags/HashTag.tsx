@@ -3,12 +3,11 @@ import { goToPostByHashTagPage } from "#/templates/PostsByHashTag";
 
 export interface HashTagProps {
   hashtag: string;
-  outlined?: boolean;
 }
 
-export const HashTag = ({ hashtag, outlined }: HashTagProps) => {
+export const HashTag = ({ hashtag }: HashTagProps) => {
   return (
-    <HashTagElement onClick={() => goToPostByHashTagPage(hashtag)} outlined={outlined}>
+    <HashTagElement onClick={() => goToPostByHashTagPage(hashtag)}>
       #{hashtag}
     </HashTagElement>
   );
@@ -22,16 +21,6 @@ const HashTagElement = styled("button", {
   bg: "$primarySubdued",
   fontWeight: "$bold",
   border: "solid $borderWidths$1 $primarySubdued",
-
-  variants: {
-    outlined: {
-      true: {
-        color: "$primary",
-        bg: "$transparent",
-        borderColor: "$primary",
-      },
-    },
-  },
 });
 
 export interface AnimatedHashTagProps {

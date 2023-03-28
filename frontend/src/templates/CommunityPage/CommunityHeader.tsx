@@ -4,7 +4,7 @@ import { Avatar } from "#/components/Avatar";
 import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
 import { FollowCommunityButton } from "#/components/FollowButton";
-import { MailIcon, ShareIcon } from "#/components/Icons";
+import { LinkIcon, MailIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
 import { Body, MainTitle, Subtext } from "#/components/Typography";
 import { setPreviousLocationForMessages } from "#/pages/messages";
@@ -92,7 +92,7 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
                 copyTextToClipboard(link, "Link");
               }}
             >
-              <ShareIcon />
+              <LinkIcon />
             </Button>
           </Flex>
         </Flex>
@@ -119,7 +119,7 @@ export const CommunityHeader = ({ isOwnCommunity, community }: CommunityHeaderPr
           </Stack>
         </AvatarAndName>
       </Wrapper>
-      <Stack css={{ mt: "107px", py: "$4", px: "$6", gap: "$4" }}>
+      <Stack css={{ mt: "107px", py: "$4", px: "$6", gap: "$3" }}>
         {!!description && <Body>{description}</Body>}
       </Stack>
     </Stack>
