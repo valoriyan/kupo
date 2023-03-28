@@ -46,12 +46,12 @@ const lightThemeColors = {
    * The app content backgrounds are appended with numbers that increase in the order
    * that the colors should be layered on top of each other.
    */
-  pageBackground: "hsl(110, 4%, 99%)",
-  modalBackground: "hsl(110, 4%, 98%)",
-  background1: "hsl(110, 4%, 99%)",
-  background2: "hsl(110, 4%, 96%)", // Backgrounds that sit on top of background1
-  background3: "hsla(242, 16%, 94%, 1)", // Backgrounds that sit on top of background2
-  background1Translucent: "hsla(110, 16%, 99%, 0.7)",
+  pageBackground: "hsl(220, 4%, 99%)",
+  modalBackground: "hsl(220, 4%, 98%)",
+  background1: "hsl(220, 4%, 99%)",
+  background2: "hsl(220, 4%, 96%)", // Backgrounds that sit on top of background1
+  background3: "hsla(220, 16%, 94%, 1)", // Backgrounds that sit on top of background2
+  background1Translucent: "hsla(220, 16%, 99%, 0.7)",
   overlay: "rgba(0,0,0,0.5)",
   heavyOverlay: "rgba(255,255,255,0.6)",
   mediaOverlay: "rgba(115, 115, 115, 0.5)",
@@ -91,12 +91,12 @@ const darkThemeColors = {
 
   secondary: "#EF5DA8",
 
-  pageBackground: "hsl(110, 2%, 6%)",
-  modalBackground: "hsl(110, 2%, 12%)",
-  background1: "hsl(110, 2%, 6%)",
-  background2: "hsl(110, 2%, 9%)",
-  background3: "hsl(110, 2%, 12%)",
-  background1Translucent: "hsla(110, 2%, 6%, 0.7)",
+  pageBackground: "hsl(220, 2%, 8%)",
+  modalBackground: "hsl(220, 2%, 12%)",
+  background1: "hsl(220, 2%, 8%)",
+  background2: "hsl(220, 2%, 10%)",
+  background3: "hsl(220, 2%, 12%)",
+  background1Translucent: "hsla(220, 2%, 8%, 0.7)",
   overlay: "rgba(0,0,0,0.5)",
   heavyOverlay: "rgba(0,0,0,0.6)",
   mediaOverlay: "rgba(115, 115, 115, 0.7)",
