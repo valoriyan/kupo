@@ -483,14 +483,19 @@ export class UsersTableService extends TableService {
     }
   }
 
-  // Strategy 2 is to prioritize usernames starting with the provided substring
-  public async selectUsersByUsernameMatchingSubstringStrategy2({
+  /** This query to prioritizes usernames starting with the provided substring */
+  public async selectOrderedUsersByUsernameMatchingSubstring({
     controller,
     usernameSubstring,
+    limit,
   }: {
     controller: Controller;
     usernameSubstring: string;
+    limit?: number;
   }): Promise<InternalServiceResponse<ErrorReasonTypes<string>, UnrenderableUser[]>> {
+    const values: Array<string | number> = [usernameSubstring];
+    if (limit) values.push(limit);
+
     try {
       const query: QueryConfig = {
         text: `
@@ -503,9 +508,10 @@ export class UsersTableService extends TableService {
           ORDER BY
             username LIKE CONCAT($1::text, '%' )
             DESC
+          ${limit ? "LIMIT $2" : ""}
           ;
         `,
-        values: [usernameSubstring],
+        values,
       };
 
       const response: QueryResult<DBUser> = await this.datastorePool.query(query);
@@ -520,7 +526,7 @@ export class UsersTableService extends TableService {
         reason: GenericResponseFailedReason.DATABASE_TRANSACTION_ERROR,
         error,
         additionalErrorInformation:
-          "Error at usersTableService.selectUsersByUsernameMatchingSubstringStrategy2",
+          "Error at usersTableService.selectOrderedUsersByUsernameMatchingSubstring",
       });
     }
   }

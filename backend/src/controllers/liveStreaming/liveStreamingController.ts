@@ -1,4 +1,4 @@
-import { Controller, Post, Route, Request } from "tsoa";
+import { Controller, Post, Route, Request, Get } from "tsoa";
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";
@@ -28,7 +28,7 @@ export class LiveStreamingController extends Controller {
   // CREATE ////////////////////////////////////////
   //////////////////////////////////////////////////
 
-  @Post("createLiveStream")
+  @Get("createLiveStream")
   public async createLiveStream(
     @Request() request: express.Request,
     // @Body() requestBody: CreateLiveStreamRequestBody,

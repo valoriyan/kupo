@@ -89,6 +89,8 @@ import { EitherErrorReasonTypesStringOrCreateChatMessageFailedReasonCreateChatMe
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrCreateChatMessageInNewChatRoomFailedReasonCreateChatMessageInNewChatRoomSuccess } from "../types";
 // @ts-ignore
+import { EitherErrorReasonTypesStringOrCreateLiveStreamFailedReasonCreateLiveStreamSuccess } from "../types";
+// @ts-ignore
 import { EitherErrorReasonTypesStringOrCreatePostFailedReasonCreatePostSuccess } from "../types";
 // @ts-ignore
 import { EitherErrorReasonTypesStringOrCreatePublishedItemCommentFailedReasonCreatePublishedItemCommentSuccess } from "../types";
@@ -745,6 +747,38 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         localVarRequestOptions,
         configuration,
       );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createLiveStream: async (options: any = {}): Promise<RequestArgs> => {
+      const localVarPath = `/live-streaming/createLiveStream`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: "GET", ...baseOptions, ...options };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
 
       return {
         url: toPathString(localVarUrlObj),
@@ -5358,6 +5392,27 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async createLiveStream(
+      options?: any,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<EitherErrorReasonTypesStringOrCreateLiveStreamFailedReasonCreateLiveStreamSuccess>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.createLiveStream(options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {CreatePostRequestBody} createPostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7887,6 +7942,18 @@ export const DefaultApiFactory = function (
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createLiveStream(
+      options?: any,
+    ): AxiosPromise<EitherErrorReasonTypesStringOrCreateLiveStreamFailedReasonCreateLiveStreamSuccess> {
+      return localVarFp
+        .createLiveStream(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {CreatePostRequestBody} createPostRequestBody
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9344,6 +9411,18 @@ export class DefaultApi extends BaseAPI {
   ) {
     return DefaultApiFp(this.configuration)
       .createChatMessageInNewChatRoom(createChatMessageInNewRoomRequestBody, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public createLiveStream(options?: any) {
+    return DefaultApiFp(this.configuration)
+      .createLiveStream(options)
       .then((request) => request(this.axios, this.basePath));
   }
 
