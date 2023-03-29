@@ -1,6 +1,10 @@
 import { InfiniteData, QueryClient } from "react-query";
 import { CacheKeys } from "#/contexts/queryClient";
-import { RenderablePublishedItem, GetPublishedItemsByUsernameSuccess } from "../..";
+import {
+  RenderablePublishedItem,
+  GetPublishedItemsByUsernameSuccess,
+  GetSavedPublishedItemsSuccess,
+} from "../..";
 
 export const updateCachedPost = ({
   queryClient,
@@ -15,7 +19,9 @@ export const updateCachedPost = ({
   postUpdater: ((oldPost: RenderablePublishedItem) => RenderablePublishedItem) | null;
 }) => {
   const userPostsCacheKey = [CacheKeys.UserPostPages, authorUserId];
+  const userShopItemsCacheKey = [CacheKeys.UserShopItemPages, authorUserId];
   const singlePostCacheKey = [CacheKeys.PostById, publishedItemId];
+  const savedPostsCacheKey = [CacheKeys.SavedPosts];
 
   const contentFeedQueries = queryClient.getQueriesData<
     InfiniteData<GetPublishedItemsByUsernameSuccess>
@@ -24,8 +30,16 @@ export const updateCachedPost = ({
     queryClient.getQueryData<InfiniteData<GetPublishedItemsByUsernameSuccess>>(
       userPostsCacheKey,
     );
+  const userShopItemsData =
+    queryClient.getQueryData<InfiniteData<GetPublishedItemsByUsernameSuccess>>(
+      userShopItemsCacheKey,
+    );
   const singlePostData =
     queryClient.getQueryData<RenderablePublishedItem>(singlePostCacheKey);
+  const savedPostsData =
+    queryClient.getQueryData<InfiniteData<GetSavedPublishedItemsSuccess>>(
+      savedPostsCacheKey,
+    );
 
   for (const [queryKey, queryData] of contentFeedQueries) {
     const updatedQueryData = {
@@ -63,6 +77,42 @@ export const updateCachedPost = ({
     queryClient.setQueryData(userPostsCacheKey, updatedUserPostsData);
   }
 
+  if (userShopItemsData) {
+    const updatedUserShopItemsData = {
+      ...userShopItemsData,
+      pages: userShopItemsData.pages.map((page) => ({
+        ...page,
+        publishedItems: postUpdater
+          ? page.publishedItems.map((publishedItem) => {
+              if (publishedItem.id === publishedItemId) return postUpdater(publishedItem);
+              return publishedItem;
+            })
+          : page.publishedItems.filter(
+              (publishedItem) => publishedItem.id !== publishedItemId,
+            ),
+      })),
+    };
+    queryClient.setQueryData(userShopItemsCacheKey, updatedUserShopItemsData);
+  }
+
+  if (savedPostsData) {
+    const updatedSavedPostsData = {
+      ...savedPostsData,
+      pages: savedPostsData.pages.map((page) => ({
+        ...page,
+        publishedItems: postUpdater
+          ? page.publishedItems.map((publishedItem) => {
+              if (publishedItem.id === publishedItemId) return postUpdater(publishedItem);
+              return publishedItem;
+            })
+          : page.publishedItems.filter(
+              (publishedItem) => publishedItem.id !== publishedItemId,
+            ),
+      })),
+    };
+    queryClient.setQueryData(savedPostsCacheKey, updatedSavedPostsData);
+  }
+
   if (!postUpdater) {
     queryClient.removeQueries(singlePostCacheKey);
   } else if (singlePostData) {
@@ -78,7 +128,9 @@ export const resetPostFeeds = ({
   authorUserId?: string;
 }) => {
   queryClient.resetQueries([CacheKeys.ContentFeed]);
+  queryClient.resetQueries([CacheKeys.SavedPosts]);
   if (authorUserId) {
     queryClient.resetQueries([CacheKeys.UserPostPages, authorUserId]);
+    queryClient.resetQueries([CacheKeys.UserShopItemPages, authorUserId]);
   }
 };
