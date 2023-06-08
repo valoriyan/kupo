@@ -11,57 +11,124 @@ export type ThemeScale<TScale extends keyof typeof theme> =
   | `$${Exclude<keyof (typeof theme)[TScale], bigint | symbol>}`
   | NoInfer<string>;
 
+const primaryColor = {
+  50: "hsl(107, 53%, 97%)",
+  100: "hsl(108, 53%, 93%)",
+  200: "hsl(109, 50%, 85%)",
+  300: "hsl(110, 49%, 73%)",
+  350: "hsl(110, 47%, 64%)",
+  400: "hsl(110, 44%, 55%)",
+  500: "hsl(111, 45%, 45%)",
+  600: "hsl(111, 48%, 36%)",
+  700: "hsl(111, 45%, 29%)",
+  800: "hsl(111, 40%, 24%)",
+  899: "hsl(111, 53%, 20%)",
+  900: "hsl(111, 38%, 20%)",
+  901: "hsl(111, 53%, 12%)",
+};
+
+const lightThemeColors = {
+  /**
+   * Primary accent color. It will be used for actionable items and accents
+   */
+  primary: primaryColor[500],
+  primarySubdued: primaryColor[300],
+  primaryStrong: primaryColor[899],
+  primaryTranslucent: "hsla(111, 45%, 45%, 0.2)",
+  primaryBlendTop: primaryColor[400],
+  primaryBlendBottom: "hsl(140, 64%, 40%)",
+
+  secondary: "#EF5DA8",
+
+  /**
+   * The background colors include colors for the backgrounds of app content.
+   *
+   * The app content backgrounds are appended with numbers that increase in the order
+   * that the colors should be layered on top of each other.
+   */
+  pageBackground: "hsl(220, 4%, 99%)",
+  modalBackground: "hsl(220, 4%, 98%)",
+  background1: "hsl(220, 4%, 99%)",
+  background2: "hsl(220, 4%, 96%)", // Backgrounds that sit on top of background1
+  background3: "hsla(220, 16%, 94%, 1)", // Backgrounds that sit on top of background2
+  background1Translucent: "hsla(220, 16%, 99%, 0.7)",
+  overlay: "rgba(0,0,0,0.5)",
+  heavyOverlay: "rgba(255,255,255,0.6)",
+  mediaOverlay: "rgba(115, 115, 115, 0.5)",
+
+  text: "hsla(242, 14%, 8%, 1)", // Text that sits on the background colors
+  secondaryText: "hsla(242, 8%, 50%, 1)", // Secondary text that sits on background colors
+  accentText: "hsla(242, 16%, 100%, 1)", // Text that sits on primary and secondary accent colors
+  inverseText: "hsla(242, 16%, 100%, 1)",
+  disabledText: "hsl(0, 0%, 27%)",
+
+  link: primaryColor[600], // Link color
+
+  border: "hsl(0, 0%, 78%)", // For borders around elements
+  borderSubdued: "hsl(0, 0%, 85%)", // For secondary borders around elements
+
+  success: "hsl(119, 82%, 65%)", // For success messages
+  warning: "hsl(49, 100%, 44%)", // For warning messages
+  failure: "hsl(359, 82%, 60%)", // For error messages
+  disabled: "hsl(0, 0%, 69%)", // For disabled elements
+
+  heart: "hsl(359, 82%, 65%)",
+  save: "hsl(49, 100%, 50%)",
+
+  scrollBar: "rgba(194, 194, 194, 1)",
+  scrollBarTrack: "rgba(250, 250, 250, 0.3)",
+
+  transparent: "rgba(0,0,0,0)",
+};
+
+const darkThemeColors = {
+  primary: primaryColor[400],
+  primarySubdued: primaryColor[350],
+  primaryStrong: primaryColor[901],
+  primaryTranslucent: "hsla(110, 44%, 55%, 0.2)",
+  primaryBlendTop: primaryColor[350],
+  primaryBlendBottom: "hsl(140, 64%, 40%)",
+
+  secondary: "#EF5DA8",
+
+  pageBackground: "hsl(220, 2%, 8%)",
+  modalBackground: "hsl(220, 2%, 12%)",
+  background1: "hsl(220, 2%, 8%)",
+  background2: "hsl(220, 2%, 10%)",
+  background3: "hsl(220, 2%, 12%)",
+  background1Translucent: "hsla(220, 2%, 8%, 0.7)",
+  overlay: "rgba(0,0,0,0.5)",
+  heavyOverlay: "rgba(0,0,0,0.6)",
+  mediaOverlay: "rgba(115, 115, 115, 0.7)",
+
+  text: "hsla(232, 16%, 98%, 1)",
+  secondaryText: "hsla(232, 8%, 60%, 1)",
+  accentText: "hsla(232, 16%, 100%, 1)",
+  inverseText: "hsla(242, 14%, 8%, 1)",
+  disabledText: "hsl(0, 0%, 20%)",
+
+  link: primaryColor[350],
+
+  border: "hsl(0, 0%, 52%)",
+  borderSubdued: "hsl(0, 0%, 35%)",
+
+  success: "hsl(119, 82%, 65%)",
+  warning: "hsl(49, 100%, 44%)",
+  failure: "hsl(359, 82%, 60%)",
+  disabled: "hsl(0, 0%, 63%)",
+
+  heart: "hsl(359, 82%, 65%)",
+  save: "hsl(49, 100%, 50%)",
+
+  scrollBar: "rgba(127, 127, 127, 1)",
+  scrollBarTrack: "rgba(46, 46, 46, 0.3)",
+
+  transparent: "rgba(0,0,0,0)",
+};
+
 const themedStitches = createStitches({
   theme: {
-    colors: {
-      /**
-       * Primary accent color. It will be used for actionable items and accents
-       */
-      primary: "hsla(250, 90%, 64%, 1)",
-      primarySubdued: "hsla(250, 98%, 92%, 1)",
-      primaryStrong: "hsla(250, 60%, 35%, 1)",
-      primaryTranslucent: "hsla(250, 90%, 62%, 0.2)",
-
-      secondary: "#EF5DA8",
-
-      /**
-       * The background colors include colors for the backgrounds of app content.
-       *
-       * The app content backgrounds are appended with numbers that increase in the order
-       * that the colors should be layered on top of each other.
-       */
-      pageBackground: "hsla(242, 30%, 99%, 1)",
-      modalBackground: "hsla(242, 16%, 99%, 1)",
-      background1: "hsla(242, 16%, 99%, 1)",
-      background2: "hsla(242, 16%, 98%, 1)", // Backgrounds that sit on top of background1
-      background3: "hsla(242, 16%, 94%, 1)", // Backgrounds that sit on top of background2
-      background1Translucent: "hsla(242, 16%, 99%, 0.7)",
-      overlay: "rgba(0,0,0,0.5)",
-      heavyOverlay: "rgba(255,255,255,0.6)",
-      mediaOverlay: "rgba(115, 115, 115, 0.5)",
-
-      text: "hsla(242, 14%, 8%, 1)", // Text that sits on the background colors
-      secondaryText: "hsla(242, 8%, 56%, 1)", // Secondary text that sits on background colors
-      tertiaryText: "hsla(242, 8%, 60%, 1)", // Tertiary text that sits on background colors
-      accentText: "hsla(242, 16%, 100%, 1)", // Text that sits on primary and secondary accent colors
-      inverseText: "hsla(242, 16%, 100%, 1)",
-      disabledText: "#454545",
-
-      link: "hsla(250, 90%, 64%, 1)", // Link color
-
-      border: "hsl(0, 0%, 78%)", // For borders around elements
-      borderSubdued: "hsl(0, 0%, 85%)", // For secondary borders around elements
-
-      success: "#5FEF5D", // For success messages
-      warning: "#EFED5D", // For warning messages
-      failure: "#EF5D5F", // For error messages
-      disabled: "#b0b0b0", // For disabled elements
-
-      scrollBar: "rgba(194, 194, 194)",
-      scrollBarTrack: "rgba(250, 250, 250, 0.3)",
-
-      transparent: "rgba(0,0,0,0)",
-    },
+    colors: lightThemeColors,
     space: {
       0: "0px",
       1: "2px",
@@ -265,49 +332,10 @@ const themedStitches = createStitches({
   },
 });
 
+export const darkTheme = themedStitches.createTheme("dark", {
+  colors: darkThemeColors,
+});
+
 export const { styled, css, globalCss, keyframes, theme, getCssText, config } =
   themedStitches;
 export type CSS = Stitches.CSS<typeof config>;
-
-export const darkTheme = themedStitches.createTheme("dark", {
-  colors: {
-    primary: "hsla(250, 90%, 70%, 1)",
-    primarySubdued: "hsla(250, 98%, 76%, 1)",
-    primaryStrong: "hsla(250, 54%, 10%, 1)",
-    primaryTranslucent: "hsla(250, 90%, 70%, 0.2)",
-
-    secondary: "#EF5DA8",
-
-    pageBackground: "hsla(242, 15%, 6%, 1)",
-    modalBackground: "hsla(242, 10%, 12%, 1)",
-    background1: "hsla(242, 10%, 7%, 1)",
-    background2: "hsla(242, 10%, 9%, 1)",
-    background3: "hsla(242, 10%, 12%, 1)",
-    background1Translucent: "hsla(242, 10%, 6%, 0.7)",
-    overlay: "rgba(0,0,0,0.5)",
-    heavyOverlay: "rgba(0,0,0,0.6)",
-    mediaOverlay: "rgba(115, 115, 115, 0.7)",
-
-    text: "hsla(242, 16%, 98%, 1)",
-    secondaryText: "hsla(242, 8%, 60%, 1)",
-    tertiaryText: "hsla(242, 14%, 28%, 1)",
-    accentText: "hsla(242, 16%, 100%, 1)",
-    inverseText: "#000000",
-    disabledText: "#323232",
-
-    link: "hsla(250, 90%, 70%, 1)",
-
-    border: "hsl(0, 0%, 52%)",
-    borderSubdued: "hsl(0, 0%, 35%)",
-
-    success: "#5FEF5D",
-    warning: "#EFED5D",
-    failure: "#EF5D5F",
-    disabled: "#a0a0a0",
-
-    scrollBar: "rgba(127, 127, 127)",
-    scrollBarTrack: "rgba(46, 46, 46, 0.3)",
-
-    transparent: "rgba(0,0,0,0)",
-  },
-});

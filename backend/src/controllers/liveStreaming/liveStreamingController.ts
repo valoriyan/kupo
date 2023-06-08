@@ -1,4 +1,4 @@
-import { Controller, Post, Route, Request, Get } from "tsoa";
+import { Controller, Route, Request, Get } from "tsoa";
 import { ErrorReasonTypes, SecuredHTTPResponse } from "../../utilities/monads";
 import { injectable } from "tsyringe";
 import { DatabaseService } from "../../services/databaseService";

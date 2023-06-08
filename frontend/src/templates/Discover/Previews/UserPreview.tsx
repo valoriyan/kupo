@@ -25,7 +25,7 @@ export const UserPreview = ({ user }: { user: RenderableUser }) => {
       {!!hashtags.length && (
         <Flex css={{ gap: "$3" }}>
           {hashtags.map((hashtag) => (
-            <HashTag key={hashtag} hashtag={hashtag} outlined />
+            <HashTag key={hashtag} hashtag={hashtag} />
           ))}
         </Flex>
       )}

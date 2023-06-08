@@ -5,16 +5,16 @@ import { BackgroundImage } from "#/components/BackgroundImage";
 import { Button } from "#/components/Button";
 import { FollowUserButton } from "#/components/FollowButton";
 import { HashTag } from "#/components/HashTags";
-import { MailIcon, ShareIcon } from "#/components/Icons";
+import { LinkIcon, MailIcon } from "#/components/Icons";
 import { Box, Flex, Stack } from "#/components/Layout";
-import { Body, MainTitle, Subtext, subtextStyles } from "#/components/Typography";
+import { Body, bodyStyles, MainTitle, Subtext } from "#/components/Typography";
+import { setPreviousLocationForMessages } from "#/pages/messages";
 import { setPreviousLocationForSettings } from "#/pages/settings";
 import { styled } from "#/styling";
 import { copyTextToClipboard } from "#/utils/copyTextToClipboard";
 import { formatStat } from "#/utils/formatStat";
 import { getProfilePageUrl } from "#/utils/generateLinkUrls";
 import { getExternalLink } from "#/utils/getExternalLink";
-import { setPreviousLocationForMessages } from "#/pages/messages";
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean | undefined;
@@ -85,7 +85,7 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 copyTextToClipboard(link, "Link");
               }}
             >
-              <ShareIcon />
+              <LinkIcon />
             </Button>
           </ActionsWrapper>
         </Flex>
@@ -113,21 +113,24 @@ export const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
           </Stack>
         </AvatarAndName>
       </Wrapper>
-      <Stack css={{ mt: "107px", py: "$4", px: "$6", gap: "$4" }}>
+      <Stack css={{ mt: "107px", py: "$4", px: "$6", gap: "$3" }}>
         {!!shortBio && <Body>{shortBio}</Body>}
         {!!userWebsite && (
-          <ExternalLink
-            target="_blank"
-            rel="noopener noreferrer"
-            href={getExternalLink(userWebsite)}
-          >
-            {userWebsite}
-          </ExternalLink>
+          <Flex css={{ alignItems: "center", gap: "$3", color: "$secondaryText" }}>
+            <LinkIcon />
+            <ExternalLink
+              target="_blank"
+              rel="noopener noreferrer"
+              href={getExternalLink(userWebsite)}
+            >
+              {userWebsite}
+            </ExternalLink>
+          </Flex>
         )}
         {!!hashtags.length && (
-          <Flex css={{ gap: "$3" }}>
+          <Flex css={{ gap: "$3", pt: "$3" }}>
             {hashtags.map((hashtag) => (
-              <HashTag key={hashtag} hashtag={hashtag} outlined />
+              <HashTag key={hashtag} hashtag={hashtag} />
             ))}
           </Flex>
         )}
@@ -157,4 +160,4 @@ const ActionsWrapper = styled(Flex, {
   zIndex: 1,
 });
 
-const ExternalLink = styled("a", subtextStyles);
+const ExternalLink = styled("a", bodyStyles);

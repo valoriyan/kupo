@@ -1,8 +1,8 @@
 import { RenderablePost, RenderableShopItem } from "#/api";
 import { useLikePublishedItem } from "#/api/mutations/posts/likePublishedItem";
 import { useSavePublishedItem } from "#/api/mutations/posts/savePublishedItem";
-import { useUnlikePublishedItem } from "#/api/mutations/publishedItems/unlikePublishedItem";
-import { useUnsavePublishedItem } from "#/api/mutations/publishedItems/unsavePublishedItem";
+import { useUnlikePublishedItem } from "#/api/mutations/posts/unlikePublishedItem";
+import { useUnsavePublishedItem } from "#/api/mutations/posts/unsavePublishedItem";
 import { useGetUserByUserId } from "#/api/queries/users/useGetUserByUserId";
 import { useCurrentUserId } from "#/contexts/auth";
 import { InfoIcon, TrashIcon } from "../Icons";

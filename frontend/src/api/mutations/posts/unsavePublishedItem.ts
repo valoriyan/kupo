@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "react-query";
 import { Api } from "../..";
-import { updateCachedPost } from "../posts/utilities";
+import { updateCachedPost } from "./utilities";
 
 export const useUnsavePublishedItem = ({
   publishedItemId,
