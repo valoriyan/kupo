@@ -1,3 +1,0 @@
-Brewfile linguist-detectable=false
-Makefile linguist-detectable=false
-*.podspec linguist-detectable=false
